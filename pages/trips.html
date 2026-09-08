@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trips & Consignments - MTC & TTC Logistics</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <!-- Custom TMS Theme -->
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+  <!-- Sidebar Navigation -->
+  <nav id="sidebar"></nav>
+
+  <!-- Main Workspace -->
+  <div id="main-content">
+    
+    <!-- Top Navbar -->
+    <header class="top-navbar d-flex align-items-center justify-content-between">
+      <div class="d-flex align-items-center gap-3">
+        <button id="sidebar-toggle" class="btn btn-light d-lg-none">
+          <i class="bi bi-list fs-5"></i>
+        </button>
+        <div>
+          <h5 class="mb-0 fw-bold text-dark">Trips & Consignment Register</h5>
+          <small class="text-muted">Lifecycle tracking of all truck movements, routes, and billing across MTC, TTC & SMTC</small>
+        </div>
+      </div>
+
+      <div class="d-flex align-items-center gap-2">
+        <a href="./bilty-booking.html" class="btn btn-primary btn-sm d-flex align-items-center gap-1 shadow-sm">
+          <i class="bi bi-plus-lg"></i> <span>Book New Bilty</span>
+        </a>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <main class="page-container">
+
+      <!-- Summary Stat Cards -->
+      <div class="row g-3 mb-4">
+        <div class="col-12 col-md-4">
+          <div class="metric-card">
+            <div class="metric-icon bg-primary-subtle text-primary">
+              <i class="bi bi-truck"></i>
+            </div>
+            <div class="metric-title">Total Trips Logged</div>
+            <div id="stat-total-trips" class="metric-value">0</div>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <div class="metric-card">
+            <div class="metric-icon bg-warning-subtle text-warning">
+              <i class="bi bi-hourglass-split"></i>
+            </div>
+            <div class="metric-title">Active / In-Transit Trips</div>
+            <div id="stat-active-trips" class="metric-value text-warning">0</div>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <div class="metric-card">
+            <div class="metric-icon bg-success-subtle text-success">
+              <i class="bi bi-cash-stack"></i>
+            </div>
+            <div class="metric-title">Total Freight Value</div>
+            <div id="stat-total-freight" class="metric-value text-success">₹0.00</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trips Data Card -->
+      <div class="data-card">
+        <div class="data-card-header">
+          <div class="d-flex align-items-center gap-2 flex-grow-1" style="max-width: 450px;">
+            <div class="input-group input-group-sm">
+              <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
+              <input type="text" id="search-trips" class="form-control" placeholder="Search by Bilty No., Truck No., Destination, Party...">
+            </div>
+          </div>
+
+          <!-- Firm Filter Buttons -->
+          <div class="btn-group btn-group-sm" role="group">
+            <button type="button" class="btn btn-outline-secondary filter-firm-btn active btn-primary text-white" data-firm="All">All Firms</button>
+            <button type="button" class="btn btn-outline-secondary filter-firm-btn" data-firm="TTC">TTC</button>
+            <button type="button" class="btn btn-outline-secondary filter-firm-btn" data-firm="MTC">MTC</button>
+            <button type="button" class="btn btn-outline-secondary filter-firm-btn" data-firm="SMTC">SMTC</button>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-custom mb-0">
+            <thead>
+              <tr>
+                <th>Bilty / G.R. No.</th>
+                <th>Truck & Owner</th>
+                <th>Driver & Phone</th>
+                <th>Route (From - To)</th>
+                <th>Consignee & Commodity</th>
+                <th class="text-end">Weight & Rate</th>
+                <th class="text-end">Total Freight</th>
+                <th>Status</th>
+                <th class="text-center" style="width: 100px;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="trips-tbody">
+              <tr>
+                <td colspan="9" class="text-center py-4 text-muted">
+                  <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div> Loading trips...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- Trip Detail Modal -->
+  <div class="modal fade" id="tripDetailModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header bg-primary text-white">
+          <h6 class="modal-title fw-bold"><i class="bi bi-file-earmark-text me-1"></i> Trip & Bilty Full Particulars</h6>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4" id="trip-detail-content">
+          <!-- Dynamic Content -->
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5 Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Firebase SDK (Compatible v8 CDN) -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
+  <!-- Core App Scripts -->
+  <script src="../js/config.js"></script>
+  <script src="../js/db-service.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/modules/trips.js"></script>
+</body>
+</html>

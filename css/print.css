@@ -1,0 +1,26 @@
+/* Print Styling for Bilty & GST Invoices */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 11pt;
+  }
+  #sidebar, .top-navbar, .btn-print, .no-print, .btn-action, .data-card-header {
+    display: none !important;
+  }
+  #main-content {
+    margin: 0 !important;
+    width: 100% !important;
+    padding: 0 !important;
+  }
+  .page-container {
+    padding: 0 !important;
+  }
+  .bilty-print-document {
+    border: 2px solid #000 !important;
+    padding: 15px !important;
+    margin: 0 auto;
+    width: 100% !important;
+    page-break-inside: avoid;
+  }
+}

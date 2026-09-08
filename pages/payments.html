@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payments & Settlements - MTC & TTC Logistics</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <!-- Custom TMS Theme -->
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+  <!-- Sidebar Navigation -->
+  <nav id="sidebar"></nav>
+
+  <!-- Main Workspace -->
+  <div id="main-content">
+    
+    <!-- Top Navbar -->
+    <header class="top-navbar d-flex align-items-center justify-content-between">
+      <div class="d-flex align-items-center gap-3">
+        <button id="sidebar-toggle" class="btn btn-light d-lg-none">
+          <i class="bi bi-list fs-5"></i>
+        </button>
+        <div>
+          <h5 class="mb-0 fw-bold text-dark">Party & Owner Payments Register</h5>
+          <small class="text-muted">NEFT/RTGS, Cheque, and Cash settlements for customer freight & truck payouts</small>
+        </div>
+      </div>
+
+      <div class="d-flex align-items-center gap-2">
+        <button class="btn btn-outline-primary btn-sm" onclick="PaymentsModule.openPartyPaymentModal()">
+          <i class="bi bi-download me-1"></i> Receive Party Payment
+        </button>
+        <button class="btn btn-primary btn-sm" onclick="PaymentsModule.openOwnerPaymentModal()">
+          <i class="bi bi-upload me-1"></i> Pay Truck Owner / Driver
+        </button>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <main class="page-container">
+
+      <!-- Summary KPI Counters -->
+      <div class="row g-3 mb-4">
+        <div class="col-12 col-sm-6 col-xl-3">
+          <div class="metric-card">
+            <div class="metric-icon bg-success-subtle text-success">
+              <i class="bi bi-cash-stack"></i>
+            </div>
+            <div class="metric-title">Party Freight Received</div>
+            <div id="kpi-party-received" class="metric-value">₹0.00</div>
+            <small class="text-muted">Direct receipts & RTGS</small>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+          <div class="metric-card">
+            <div class="metric-icon bg-danger-subtle text-danger">
+              <i class="bi bi-wallet2"></i>
+            </div>
+            <div class="metric-title">Truck Owner Paid</div>
+            <div id="kpi-owner-paid" class="metric-value">₹0.00</div>
+            <small class="text-muted">Advances & POD balance</small>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+          <div class="metric-card">
+            <div class="metric-icon bg-warning-subtle text-warning">
+              <i class="bi bi-hourglass-split"></i>
+            </div>
+            <div class="metric-title">Pending Party Due</div>
+            <div id="kpi-party-pending" class="metric-value">₹0.00</div>
+            <small class="text-muted">Receivable from clients</small>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+          <div class="metric-card">
+            <div class="metric-icon bg-info-subtle text-info">
+              <i class="bi bi-truck-front"></i>
+            </div>
+            <div class="metric-title">Pending Truck Balance</div>
+            <div id="kpi-owner-pending" class="metric-value">₹0.00</div>
+            <small class="text-muted">Payable to market owners</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs & Table -->
+      <div class="data-card">
+        
+        <!-- Tab Headers -->
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 p-3 border-bottom">
+          <ul class="nav nav-pills" id="paymentTabs" role="tablist">
+            <li class="nav-item">
+              <button class="nav-link active" id="party-tab" data-bs-toggle="pill" data-bs-target="#party-payments-pane" type="button" role="tab">
+                <i class="bi bi-arrow-down-left-circle me-1 text-success"></i> Party Receipts (जमा)
+              </button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link" id="owner-tab" data-bs-toggle="pill" data-bs-target="#owner-payments-pane" type="button" role="tab">
+                <i class="bi bi-arrow-up-right-circle me-1 text-danger"></i> Owner Advances & Payouts (भुगतान)
+              </button>
+            </li>
+          </ul>
+
+          <!-- Filter & Search Controls -->
+          <div class="d-flex align-items-center gap-2">
+            <select id="firm-filter" class="form-select form-select-sm" style="width: 130px;" onchange="PaymentsModule.applyFilters()">
+              <option value="ALL">All Firms</option>
+              <option value="TTC">TTC</option>
+              <option value="MTC">MTC</option>
+              <option value="SMTC">SMTC</option>
+            </select>
+            <input type="text" id="payment-search" class="form-control form-control-sm" placeholder="Search party, truck, GR, ref..." style="width: 220px;" onkeyup="PaymentsModule.applyFilters()">
+          </div>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="paymentTabsContent">
+          
+          <!-- Pane 1: Party Payments -->
+          <div class="tab-pane fade show active" id="party-payments-pane" role="tabpanel">
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Firm</th>
+                    <th>Party Name (Client)</th>
+                    <th>G.R. / Bilty No.</th>
+                    <th>Mode & Reference</th>
+                    <th>Bank Account</th>
+                    <th class="text-end">Amount Received</th>
+                    <th class="text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="party-payments-tbody">
+                  <tr>
+                    <td colspan="8" class="text-center py-4 text-muted">
+                      <div class="spinner-border spinner-border-sm text-primary me-2"></div> Loading party payments...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Pane 2: Owner Payments -->
+          <div class="tab-pane fade" id="owner-payments-pane" role="tabpanel">
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Firm</th>
+                    <th>Truck Owner</th>
+                    <th>Truck No.</th>
+                    <th>Linked Trip / GR</th>
+                    <th>Stage</th>
+                    <th>Mode & Voucher</th>
+                    <th class="text-end">Amount Paid</th>
+                    <th class="text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="owner-payments-tbody">
+                  <tr>
+                    <td colspan="9" class="text-center py-4 text-muted">
+                      <div class="spinner-border spinner-border-sm text-primary me-2"></div> Loading owner payments...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Modal: Receive Party Payment -->
+  <div class="modal fade" id="modalPartyPayment" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header bg-success text-white">
+          <h6 class="modal-title fw-bold"><i class="bi bi-download me-2"></i> Receive Party Payment (ग्राहक भाड़ा जमा)</h6>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <form id="form-party-payment" onsubmit="PaymentsModule.savePartyPayment(event)">
+          <div class="modal-body p-4">
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Payment Date *</label>
+                <input type="date" id="pp-date" class="form-control" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Operating Firm *</label>
+                <select id="pp-firm" class="form-select" required>
+                  <option value="TTC">TTC Transport Corp</option>
+                  <option value="MTC">Mahaveer Transport Co</option>
+                  <option value="SMTC">Shree Mahaveer Transport</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Payment Mode *</label>
+                <select id="pp-mode" class="form-select" required>
+                  <option value="NEFT/RTGS">NEFT / RTGS</option>
+                  <option value="Cheque">Cheque</option>
+                  <option value="Cash">Cash</option>
+                  <option value="PhonePe/GPay/UPI">UPI / PhonePe / GPay</option>
+                  <option value="Adjustment">Adjustment / Less TDS</option>
+                  <option value="Less Freight">Less Freight / Shortage</option>
+                </select>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Customer / Party *</label>
+                <select id="pp-party" class="form-select" required onchange="PaymentsModule.onPartyChange()">
+                  <option value="">-- Select Party --</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Linked Trip / G.R. No. (Optional)</label>
+                <select id="pp-trip" class="form-select" onchange="PaymentsModule.onTripChange()">
+                  <option value="">Direct On-Account (No single GR)</option>
+                </select>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Amount Received (₹) *</label>
+                <input type="number" id="pp-amount" class="form-control fw-bold text-success fs-5" placeholder="0.00" min="1" step="any" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Deposited In Bank Account *</label>
+                <select id="pp-bank-acc" class="form-select" required>
+                  <option value="TTC Current A/c - IDBI Bank">TTC Current A/c - IDBI Bank</option>
+                  <option value="MTC Current A/c - HDFC Bank">MTC Current A/c - HDFC Bank</option>
+                  <option value="SMTC Current A/c - SBI Bank">SMTC Current A/c - SBI Bank</option>
+                  <option value="Cash in Shahpura Office">Cash in Shahpura Office</option>
+                </select>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">UTR / Cheque / Ref Number</label>
+                <input type="text" id="pp-ref-no" class="form-control" placeholder="e.g. IDBIN2624098711">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Narration / Remarks</label>
+                <input type="text" id="pp-remarks" class="form-control" placeholder="e.g. Cleared for August invoices">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer bg-light">
+            <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-sm btn-success px-3 shadow-sm">
+              <i class="bi bi-check2-circle me-1"></i> Save Receipt
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Pay Truck Owner / Driver -->
+  <div class="modal fade" id="modalOwnerPayment" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header bg-primary text-white">
+          <h6 class="modal-title fw-bold"><i class="bi bi-upload me-2"></i> Pay Truck Owner / Driver (गाड़ी भुगतान & एडवांस)</h6>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <form id="form-owner-payment" onsubmit="PaymentsModule.saveOwnerPayment(event)">
+          <div class="modal-body p-4">
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Payment Date *</label>
+                <input type="date" id="op-date" class="form-control" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Operating Firm *</label>
+                <select id="op-firm" class="form-select" required>
+                  <option value="TTC">TTC Transport Corp</option>
+                  <option value="MTC">Mahaveer Transport Co</option>
+                  <option value="SMTC">Shree Mahaveer Transport</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Payment Stage *</label>
+                <select id="op-stage" class="form-select" required>
+                  <option value="Advance at Loading">Advance at Loading (रवानगी एडवांस)</option>
+                  <option value="Diesel Advance">Diesel Advance (डीजल पर्ची)</option>
+                  <option value="Balance at POD/Unload">Balance at POD / Unload (खाली भुगतान)</option>
+                  <option value="Driver Kharcha">Driver Kharcha / Petty</option>
+                  <option value="Halting Charges">Halting / Detention Charges</option>
+                </select>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Truck Owner *</label>
+                <select id="op-owner" class="form-select" required onchange="PaymentsModule.onOwnerChange()">
+                  <option value="">-- Select Truck Owner --</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Truck Number</label>
+                <select id="op-truck" class="form-select">
+                  <option value="">-- Select Truck --</option>
+                </select>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Linked Trip / G.R. No. (Optional)</label>
+                <select id="op-trip" class="form-select">
+                  <option value="">On-Account (No single GR)</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Payment Mode *</label>
+                <select id="op-mode" class="form-select" required>
+                  <option value="Cash">Cash (Shahpura / Yard)</option>
+                  <option value="Bank Transfer / IMPS">Bank Transfer / IMPS</option>
+                  <option value="Diesel Slip">Diesel Slip (Pump Voucher)</option>
+                  <option value="Cheque">Cheque</option>
+                  <option value="PhonePe/UPI">UPI / PhonePe</option>
+                </select>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Amount Paid (₹) *</label>
+                <input type="number" id="op-amount" class="form-control fw-bold text-danger fs-5" placeholder="0.00" min="1" step="any" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Voucher / Slip Number</label>
+                <input type="text" id="op-voucher" class="form-control" placeholder="e.g. VCH-2026-092">
+              </div>
+
+              <div class="col-12">
+                <label class="form-label fw-semibold small">Remarks / Driver Name</label>
+                <input type="text" id="op-remarks" class="form-control" placeholder="e.g. Paid to driver Rk Dewanda at Shahpura office">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer bg-light">
+            <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-sm btn-primary px-3 shadow-sm">
+              <i class="bi bi-check2-circle me-1"></i> Save Payment
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5 Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
+  <!-- Core App Scripts -->
+  <script src="../js/config.js"></script>
+  <script src="../js/db-service.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/modules/payments.js"></script>
+</body>
+</html>

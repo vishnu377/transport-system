@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shahpura Cash Book & DEF - MTC & TTC Logistics</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <!-- Custom TMS Theme -->
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+  <!-- Sidebar Navigation -->
+  <nav id="sidebar"></nav>
+
+  <!-- Main Workspace -->
+  <div id="main-content">
+    
+    <!-- Top Navbar -->
+    <header class="top-navbar d-flex align-items-center justify-content-between">
+      <div class="d-flex align-items-center gap-3">
+        <button id="sidebar-toggle" class="btn btn-light d-lg-none">
+          <i class="bi bi-list fs-5"></i>
+        </button>
+        <div>
+          <h5 class="mb-0 fw-bold text-dark">Shahpura Cash Book & DEF Register</h5>
+          <small class="text-muted">Branch cash flow, driver advances, petty cash & AdBlue DEF bucket inventory</small>
+        </div>
+      </div>
+
+      <div class="d-flex align-items-center gap-2">
+        <button class="btn btn-outline-primary btn-sm" onclick="CashModule.openAddCashModal()">
+          <i class="bi bi-wallet2 me-1"></i> Add Cash Entry
+        </button>
+        <button class="btn btn-primary btn-sm" onclick="CashModule.openIssueDefModal()">
+          <i class="bi bi-droplet-half me-1"></i> Issue DEF Urea
+        </button>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <main class="page-container">
+
+      <!-- Summary KPI Counters -->
+      <div class="row g-3 mb-4">
+        <div class="col-12 col-sm-6 col-xl-3">
+          <div class="metric-card border-primary border-2">
+            <div class="metric-icon bg-primary-subtle text-primary">
+              <i class="bi bi-safe2"></i>
+            </div>
+            <div class="metric-title">Cash in Hand (Shahpura)</div>
+            <div id="kpi-cash-in-hand" class="metric-value text-primary">₹0.00</div>
+            <small class="text-muted">Net physical cash balance</small>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+          <div class="metric-card">
+            <div class="metric-icon bg-success-subtle text-success">
+              <i class="bi bi-arrow-down-circle"></i>
+            </div>
+            <div class="metric-title">Total Cash In (जमा)</div>
+            <div id="kpi-cash-in" class="metric-value">₹0.00</div>
+            <small class="text-muted">Bank withdrawals & receipts</small>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+          <div class="metric-card">
+            <div class="metric-icon bg-danger-subtle text-danger">
+              <i class="bi bi-arrow-up-circle"></i>
+            </div>
+            <div class="metric-title">Total Cash Out (खर्च)</div>
+            <div id="kpi-cash-out" class="metric-value">₹0.00</div>
+            <small class="text-muted">Driver advances & branch petty</small>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+          <div class="metric-card">
+            <div class="metric-icon bg-info-subtle text-info">
+              <i class="bi bi-bucket"></i>
+            </div>
+            <div class="metric-title">DEF Buckets Stock</div>
+            <div id="kpi-def-stock" class="metric-value">0</div>
+            <small id="kpi-def-pending-return" class="text-warning-emphasis">0 pending return</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Data Tabs -->
+      <div class="data-card">
+        
+        <!-- Tab Headers -->
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 p-3 border-bottom">
+          <ul class="nav nav-pills" id="cashTabs" role="tablist">
+            <li class="nav-item">
+              <button class="nav-link active" id="cash-tab" data-bs-toggle="pill" data-bs-target="#cash-book-pane" type="button" role="tab">
+                <i class="bi bi-journal-text me-1 text-primary"></i> Shahpura Cash Book (रोकड़ बही)
+              </button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link" id="def-tab" data-bs-toggle="pill" data-bs-target="#def-urea-pane" type="button" role="tab">
+                <i class="bi bi-droplet me-1 text-info"></i> DEF Urea (AdBlue) Register (बाल्टी रजिस्टर)
+              </button>
+            </li>
+          </ul>
+
+          <div class="d-flex align-items-center gap-2">
+            <input type="text" id="cash-search" class="form-control form-control-sm" placeholder="Search narration, truck, voucher..." style="width: 250px;" onkeyup="CashModule.applyFilters()">
+          </div>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="cashTabsContent">
+          
+          <!-- Pane 1: Cash Book -->
+          <div class="tab-pane fade show active" id="cash-book-pane" role="tabpanel">
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Firm</th>
+                    <th>Type</th>
+                    <th>Category</th>
+                    <th>Narration / Particulars</th>
+                    <th>Truck No.</th>
+                    <th>Voucher No.</th>
+                    <th class="text-end">Cash In (जमा)</th>
+                    <th class="text-end">Cash Out (नाम)</th>
+                    <th class="text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="cash-book-tbody">
+                  <tr>
+                    <td colspan="10" class="text-center py-4 text-muted">
+                      <div class="spinner-border spinner-border-sm text-primary me-2"></div> Loading cash book...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Pane 2: DEF Urea Register -->
+          <div class="tab-pane fade" id="def-urea-pane" role="tabpanel">
+            
+            <div class="p-3 bg-light border-bottom d-flex justify-content-between align-items-center">
+              <div>
+                <span class="fw-bold text-dark">DEF Urea Buckets Log (20L / 26L)</span>
+                <small class="text-muted ms-2">Tracks purchases, dispatches to trucks, and driver empty bucket returns</small>
+              </div>
+              <button class="btn btn-outline-success btn-sm" onclick="CashModule.openPurchaseDefModal()">
+                <i class="bi bi-cart-plus me-1"></i> Purchase DEF Stock
+              </button>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Truck / Supplier</th>
+                    <th>Driver Name</th>
+                    <th class="text-center">Buckets Qty</th>
+                    <th>Empty Bucket Return</th>
+                    <th>Remarks</th>
+                    <th class="text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="def-urea-tbody">
+                  <tr>
+                    <td colspan="8" class="text-center py-4 text-muted">
+                      <div class="spinner-border spinner-border-sm text-primary me-2"></div> Loading DEF register...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Modal: Add Cash Entry -->
+  <div class="modal fade" id="modalAddCash" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header bg-primary text-white">
+          <h6 class="modal-title fw-bold"><i class="bi bi-wallet2 me-2"></i> Add Cash Entry (रोकड़ प्रविष्टि)</h6>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <form id="form-add-cash" onsubmit="CashModule.saveCashEntry(event)">
+          <div class="modal-body p-4">
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Date *</label>
+                <input type="date" id="ce-date" class="form-control" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Entry Type *</label>
+                <select id="ce-type" class="form-select" required onchange="CashModule.onCashTypeChange()">
+                  <option value="OUT">Cash Out (खर्च / एडवांस)</option>
+                  <option value="IN">Cash In (जमा)</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Firm *</label>
+                <select id="ce-firm" class="form-select" required>
+                  <option value="TTC">TTC</option>
+                  <option value="MTC">MTC</option>
+                  <option value="SMTC">SMTC</option>
+                </select>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Category *</label>
+                <select id="ce-category" class="form-select" required>
+                  <!-- Populated dynamically -->
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Amount (₹) *</label>
+                <input type="number" id="ce-amount" class="form-control fw-bold fs-5" placeholder="0.00" min="1" step="any" required>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Truck No. (If applicable)</label>
+                <input type="text" id="ce-truck" class="form-control text-uppercase" placeholder="e.g. RJ52GB3114">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Voucher / Slip No.</label>
+                <input type="text" id="ce-voucher" class="form-control" placeholder="e.g. VCH-098">
+              </div>
+
+              <div class="col-12">
+                <label class="form-label fw-semibold small">Narration / Particulars *</label>
+                <input type="text" id="ce-particulars" class="form-control" placeholder="e.g. Driver advance given at Shahpura yard" required>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer bg-light">
+            <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-sm btn-primary px-3 shadow-sm">
+              <i class="bi bi-check2-circle me-1"></i> Save Entry
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Issue DEF Urea to Truck -->
+  <div class="modal fade" id="modalIssueDef" tabindex="-1">
+    <div class="modal-dialog modal-md modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header bg-info text-dark">
+          <h6 class="modal-title fw-bold"><i class="bi bi-droplet-half me-2"></i> Issue DEF Urea to Truck (गाड़ी को यूरिया दें)</h6>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <form id="form-issue-def" onsubmit="CashModule.saveIssueDef(event)">
+          <div class="modal-body p-4">
+            <div class="row g-3">
+              <div class="col-12">
+                <label class="form-label fw-semibold small">Date *</label>
+                <input type="date" id="def-issue-date" class="form-control" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Truck Number *</label>
+                <input type="text" id="def-issue-truck" class="form-control text-uppercase font-monospace" placeholder="RJ52GA7729" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Driver Name</label>
+                <input type="text" id="def-issue-driver" class="form-control" placeholder="e.g. Bhagchand">
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Buckets Issued (Qty) *</label>
+                <input type="number" id="def-issue-qty" class="form-control" value="1" min="1" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Empty Bucket Returned? *</label>
+                <select id="def-issue-empty" class="form-select" required>
+                  <option value="No (Pending)">No (Pending - ड्राइवर से लेनी है)</option>
+                  <option value="Yes">Yes (हाँ - खाली बाल्टी जमा)</option>
+                </select>
+              </div>
+
+              <div class="col-12">
+                <label class="form-label fw-semibold small">Remarks / Trip Note</label>
+                <input type="text" id="def-issue-remarks" class="form-control" placeholder="e.g. Sandila trip dispatch">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer bg-light">
+            <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-sm btn-info px-3 shadow-sm fw-bold">
+              <i class="bi bi-check2-circle me-1"></i> Issue DEF
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Purchase DEF Stock -->
+  <div class="modal fade" id="modalPurchaseDef" tabindex="-1">
+    <div class="modal-dialog modal-md modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header bg-success text-white">
+          <h6 class="modal-title fw-bold"><i class="bi bi-cart-plus me-2"></i> Purchase DEF Urea Stock (नया स्टॉक आवक)</h6>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <form id="form-purchase-def" onsubmit="CashModule.savePurchaseDef(event)">
+          <div class="modal-body p-4">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Purchase Date *</label>
+                <input type="date" id="def-pur-date" class="form-control" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Bucket Size *</label>
+                <select id="def-pur-size" class="form-select" required>
+                  <option value="20 Litres">20 Litres Bucket</option>
+                  <option value="26 Litres">26 Litres Bucket</option>
+                </select>
+              </div>
+
+              <div class="col-12">
+                <label class="form-label fw-semibold small">Supplier Name *</label>
+                <input type="text" id="def-pur-supplier" class="form-control" placeholder="e.g. HPCL Distributor Shahpura" required>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Buckets Quantity *</label>
+                <input type="number" id="def-pur-qty" class="form-control" placeholder="e.g. 50" min="1" required onchange="CashModule.calcDefTotal()">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Rate per Bucket (₹) *</label>
+                <input type="number" id="def-pur-rate" class="form-control" placeholder="e.g. 720" min="1" step="any" required onchange="CashModule.calcDefTotal()">
+              </div>
+
+              <div class="col-12">
+                <label class="form-label fw-semibold small">Total Purchase Amount (₹)</label>
+                <input type="text" id="def-pur-total" class="form-control fw-bold text-success" readonly value="₹0.00">
+              </div>
+
+              <div class="col-12">
+                <label class="form-label fw-semibold small">Invoice / Remarks</label>
+                <input type="text" id="def-pur-remarks" class="form-control" placeholder="e.g. Received at Shahpura yard">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer bg-light">
+            <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-sm btn-success px-3 shadow-sm">
+              <i class="bi bi-check2-circle me-1"></i> Save Stock Inward
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5 Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
+  <!-- Core App Scripts -->
+  <script src="../js/config.js"></script>
+  <script src="../js/db-service.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/modules/cash-register.js"></script>
+</body>
+</html>

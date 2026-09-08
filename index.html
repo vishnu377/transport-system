@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MTC & TTC Logistics - Executive Dashboard</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <!-- Custom TMS Theme -->
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+
+  <!-- Sidebar Navigation -->
+  <nav id="sidebar"></nav>
+
+  <!-- Main Workspace -->
+  <div id="main-content">
+    
+    <!-- Top Navbar -->
+    <header class="top-navbar d-flex align-items-center justify-content-between">
+      <div class="d-flex align-items-center gap-3">
+        <button id="sidebar-toggle" class="btn btn-light d-lg-none">
+          <i class="bi bi-list fs-5"></i>
+        </button>
+        <div>
+          <h5 class="mb-0 fw-bold text-dark">Executive Operations Dashboard</h5>
+          <small class="text-muted"><i class="bi bi-geo-alt text-danger"></i> Central Hub: Rajsamand & Shahpura (Rajasthan)</small>
+        </div>
+      </div>
+
+      <div class="d-flex align-items-center gap-2">
+        <span class="badge bg-light text-dark border d-none d-md-inline-block px-3 py-2">
+          <i class="bi bi-calendar3 me-1 text-primary"></i> FY 2026 - 2027
+        </span>
+        <a href="./pages/bilty-booking.html" class="btn btn-primary btn-sm d-flex align-items-center gap-1 shadow-sm">
+          <i class="bi bi-plus-lg"></i> <span class="d-none d-sm-inline">New Bilty (LR)</span>
+        </a>
+      </div>
+    </header>
+
+    <!-- Dashboard Content -->
+    <main class="page-container">
+
+      <!-- Executive Metric Cards -->
+      <div class="row g-3 mb-4">
+        
+        <!-- Active Trips -->
+        <div class="col-12 col-sm-6 col-xl-3">
+          <div class="metric-card">
+            <div class="metric-icon bg-primary-subtle text-primary">
+              <i class="bi bi-truck"></i>
+            </div>
+            <div class="metric-title">Active Fleet Trips</div>
+            <div id="kpi-active-trips" class="metric-value">Loading...</div>
+            <small class="text-muted">Own 10 + Market Trucks</small>
+          </div>
+        </div>
+
+        <!-- Total Freight Handled -->
+        <div class="col-12 col-sm-6 col-xl-3">
+          <div class="metric-card">
+            <div class="metric-icon bg-success-subtle text-success">
+              <i class="bi bi-cash-stack"></i>
+            </div>
+            <div class="metric-title">Total Freight Billed</div>
+            <div id="kpi-total-freight" class="metric-value">Loading...</div>
+            <small class="text-muted">Consignor / Consignee Total</small>
+          </div>
+        </div>
+
+        <!-- Party Due (Receivable) -->
+        <div class="col-12 col-sm-6 col-xl-3">
+          <div class="metric-card">
+            <div class="metric-icon bg-danger-subtle text-danger">
+              <i class="bi bi-arrow-down-left-circle"></i>
+            </div>
+            <div class="metric-title">Party Outstanding Due</div>
+            <div id="kpi-party-due" class="metric-value text-danger">Loading...</div>
+            <small class="text-muted">Total Customer Receivables</small>
+          </div>
+        </div>
+
+        <!-- Owner Due (Payable) -->
+        <div class="col-12 col-sm-6 col-xl-3">
+          <div class="metric-card">
+            <div class="metric-icon bg-warning-subtle text-warning">
+              <i class="bi bi-arrow-up-right-circle"></i>
+            </div>
+            <div class="metric-title">Truck Owner Due</div>
+            <div id="kpi-owner-due" class="metric-value text-warning">Loading...</div>
+            <small class="text-muted">Market Truck Balance</small>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Quick Action Shortcuts -->
+      <div class="data-card mb-4 p-3 bg-white">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+          <div class="fw-bold text-dark"><i class="bi bi-lightning-charge-fill text-warning me-1"></i> Quick Fleet Shortcuts:</div>
+          <div class="d-flex flex-wrap gap-2">
+            <a href="./pages/bilty-booking.html" class="btn btn-outline-primary btn-sm">
+              <i class="bi bi-file-earmark-plus me-1"></i> Book New Bilty
+            </a>
+            <a href="./pages/parties.html" class="btn btn-outline-secondary btn-sm">
+              <i class="bi bi-building me-1"></i> Party Directory
+            </a>
+            <a href="./pages/owners.html" class="btn btn-outline-secondary btn-sm">
+              <i class="bi bi-truck me-1"></i> Truck Owners Master
+            </a>
+            <a href="./pages/cash-register.html" class="btn btn-outline-danger btn-sm">
+              <i class="bi bi-wallet2 me-1"></i> Shahpura Cash Book
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Trips Table Card -->
+      <div class="data-card">
+        <div class="data-card-header">
+          <div>
+            <h6 class="mb-0 fw-bold text-dark">Recent Trips & Consignments</h6>
+            <small class="text-muted">Real-time tracking of MTC, TTC & SMTC dispatches</small>
+          </div>
+          <a href="./pages/trips.html" class="btn btn-sm btn-light border">
+            View All Trips <i class="bi bi-arrow-right ms-1"></i>
+          </a>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-custom mb-0">
+            <thead>
+              <tr>
+                <th>Bilty / G.R. No.</th>
+                <th>Truck & Driver</th>
+                <th>Route (From - To)</th>
+                <th>Consignee & Material</th>
+                <th class="text-end">Freight</th>
+                <th>Status</th>
+                <th class="text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody id="dashboard-trips-tbody">
+              <tr>
+                <td colspan="7" class="text-center py-4 text-muted">
+                  <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div> Loading live trips...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- Bootstrap 5 Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Firebase SDK (Compatible v8 CDN) -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
+  <!-- Core App Scripts -->
+  <script src="./js/config.js"></script>
+  <script src="./js/db-service.js"></script>
+  <script src="./js/app.js"></script>
+  <script src="./js/modules/dashboard.js"></script>
+</body>
+</html>

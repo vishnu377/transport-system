@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cheques Register - MTC & TTC Logistics</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <!-- Custom TMS Theme -->
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+  <!-- Sidebar Navigation -->
+  <nav id="sidebar"></nav>
+
+  <!-- Main Workspace -->
+  <div id="main-content">
+    
+    <!-- Top Navbar -->
+    <header class="top-navbar d-flex align-items-center justify-content-between">
+      <div class="d-flex align-items-center gap-3">
+        <button id="sidebar-toggle" class="btn btn-light d-lg-none">
+          <i class="bi bi-list fs-5"></i>
+        </button>
+        <div>
+          <h5 class="mb-0 fw-bold text-dark">Customer Cheques Register</h5>
+          <small class="text-muted">Track incoming customer cheques, bank deposits, clearings & bounces</small>
+        </div>
+      </div>
+
+      <div class="d-flex align-items-center gap-2">
+        <button class="btn btn-primary btn-sm" onclick="ChequesModule.openAddChequeModal()">
+          <i class="bi bi-plus-lg me-1"></i> Add Incoming Cheque
+        </button>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <main class="page-container">
+
+      <!-- Summary KPI Counters -->
+      <div class="row g-3 mb-4">
+        <div class="col-12 col-sm-6 col-xl-3">
+          <div class="metric-card">
+            <div class="metric-icon bg-warning-subtle text-warning">
+              <i class="bi bi-hourglass-top"></i>
+            </div>
+            <div class="metric-title">Pending in Hand</div>
+            <div id="kpi-chq-pending" class="metric-value">₹0.00</div>
+            <small id="kpi-chq-pending-count" class="text-muted">0 Cheques</small>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+          <div class="metric-card">
+            <div class="metric-icon bg-info-subtle text-info">
+              <i class="bi bi-bank"></i>
+            </div>
+            <div class="metric-title">Deposited in Bank</div>
+            <div id="kpi-chq-deposited" class="metric-value">₹0.00</div>
+            <small id="kpi-chq-deposited-count" class="text-muted">0 Cheques</small>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+          <div class="metric-card">
+            <div class="metric-icon bg-success-subtle text-success">
+              <i class="bi bi-check-circle"></i>
+            </div>
+            <div class="metric-title">Cleared in Account</div>
+            <div id="kpi-chq-cleared" class="metric-value">₹0.00</div>
+            <small id="kpi-chq-cleared-count" class="text-muted">0 Cheques</small>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+          <div class="metric-card">
+            <div class="metric-icon bg-danger-subtle text-danger">
+              <i class="bi bi-x-octagon"></i>
+            </div>
+            <div class="metric-title">Bounced / Returned</div>
+            <div id="kpi-chq-bounced" class="metric-value">₹0.00</div>
+            <small id="kpi-chq-bounced-count" class="text-muted">0 Cheques</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Cheque Table Card -->
+      <div class="data-card">
+        
+        <!-- Controls & Filters -->
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 p-3 border-bottom">
+          <ul class="nav nav-pills" id="chequeTabs" role="tablist">
+            <li class="nav-item">
+              <button class="nav-link active" onclick="ChequesModule.setStatusFilter('ALL', this)">All Cheques</button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link" onclick="ChequesModule.setStatusFilter('Pending', this)">Pending</button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link" onclick="ChequesModule.setStatusFilter('Deposited', this)">Deposited</button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link" onclick="ChequesModule.setStatusFilter('Cleared', this)">Cleared</button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link" onclick="ChequesModule.setStatusFilter('Bounced', this)">Bounced</button>
+            </li>
+          </ul>
+
+          <div class="d-flex align-items-center gap-2">
+            <select id="firm-filter" class="form-select form-select-sm" style="width: 130px;" onchange="ChequesModule.renderTable()">
+              <option value="ALL">All Firms</option>
+              <option value="TTC">TTC</option>
+              <option value="MTC">MTC</option>
+              <option value="SMTC">SMTC</option>
+            </select>
+            <input type="text" id="cheque-search" class="form-control form-control-sm" placeholder="Search cheque no, party, bank..." style="width: 230px;" onkeyup="ChequesModule.renderTable()">
+          </div>
+        </div>
+
+        <!-- Cheque Table -->
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead>
+              <tr>
+                <th>Cheque No.</th>
+                <th>Cheque Date</th>
+                <th>Party (Customer)</th>
+                <th>Bank & Payee</th>
+                <th>Deposited Account</th>
+                <th class="text-end">Amount</th>
+                <th>Status</th>
+                <th class="text-center">Quick Action</th>
+              </tr>
+            </thead>
+            <tbody id="cheques-tbody">
+              <tr>
+                <td colspan="8" class="text-center py-4 text-muted">
+                  <div class="spinner-border spinner-border-sm text-primary me-2"></div> Loading cheques...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Modal: Add Incoming Cheque -->
+  <div class="modal fade" id="modalAddCheque" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header bg-primary text-white">
+          <h6 class="modal-title fw-bold"><i class="bi bi-credit-card-2-front me-2"></i> Add Incoming Cheque (चेक प्रविष्टि)</h6>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <form id="form-add-cheque" onsubmit="ChequesModule.saveCheque(event)">
+          <div class="modal-body p-4">
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Cheque Number *</label>
+                <input type="text" id="chq-number" class="form-control font-monospace" placeholder="e.g. 004512" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Cheque Date (Maturity) *</label>
+                <input type="date" id="chq-date" class="form-control" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Payee Firm *</label>
+                <select id="chq-firm" class="form-select" required>
+                  <option value="TTC">TTC Transport Corp</option>
+                  <option value="MTC">Mahaveer Transport Co</option>
+                  <option value="SMTC">Shree Mahaveer Transport</option>
+                </select>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Customer / Party *</label>
+                <select id="chq-party" class="form-select" required>
+                  <option value="">-- Select Party --</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Issuing Bank Name *</label>
+                <input type="text" id="chq-bank" class="form-control" placeholder="e.g. HDFC Bank, ICICI, SBI" required>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Cheque Amount (₹) *</label>
+                <input type="number" id="chq-amount" class="form-control fw-bold text-success fs-5" placeholder="0.00" min="1" step="any" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Target Deposit Bank Account</label>
+                <select id="chq-deposit-acc" class="form-select">
+                  <option value="TTC Current A/c - IDBI Bank">TTC Current A/c - IDBI Bank</option>
+                  <option value="MTC Current A/c - HDFC Bank">MTC Current A/c - HDFC Bank</option>
+                  <option value="SMTC Current A/c - SBI Bank">SMTC Current A/c - SBI Bank</option>
+                </select>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Current Status *</label>
+                <select id="chq-status" class="form-select" required>
+                  <option value="Pending">Pending in Hand (ऑफिस में सुरक्षित)</option>
+                  <option value="Deposited">Deposited in Bank (बैंक में जमा)</option>
+                  <option value="Cleared">Cleared (खाते में पास)</option>
+                  <option value="Bounced">Bounced (बाउंस / वापस)</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Remarks / Narration</label>
+                <input type="text" id="chq-remarks" class="form-control" placeholder="e.g. Towards Sandila billing">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer bg-light">
+            <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-sm btn-primary px-3 shadow-sm">
+              <i class="bi bi-check2-circle me-1"></i> Save Cheque
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5 Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
+  <!-- Core App Scripts -->
+  <script src="../js/config.js"></script>
+  <script src="../js/db-service.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/modules/cheques.js"></script>
+</body>
+</html>

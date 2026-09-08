@@ -1,0 +1,316 @@
+:root {
+  --primary-color: #1e3a8a;       /* Deep Royal Blue */
+  --primary-light: #3b82f6;
+  --secondary-color: #0f172a;     /* Slate / Dark Navy */
+  --sidebar-bg: #0f172a;
+  --sidebar-hover: #1e293b;
+  --sidebar-active: #2563eb;
+  --bg-color: #f8fafc;
+  --card-bg: #ffffff;
+  --border-color: #e2e8f0;
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --accent-orange: #f97316;
+  --accent-green: #10b981;
+  --accent-red: #ef4444;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  min-height: 100vh;
+  margin: 0;
+  display: flex;
+}
+
+/* Sidebar Styling */
+#sidebar {
+  width: 260px;
+  background: var(--sidebar-bg);
+  color: #fff;
+  min-height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 1000;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+#sidebar .brand-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #1e293b;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+#sidebar .brand-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+#sidebar .brand-text h5 {
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #f8fafc;
+}
+
+#sidebar .brand-text small {
+  color: #94a3b8;
+  font-size: 0.75rem;
+}
+
+.sidebar-nav {
+  padding: 1rem 0.75rem;
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.nav-section-title {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #64748b;
+  padding: 0.5rem 0.75rem;
+  font-weight: 700;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0.65rem 0.85rem;
+  color: #cbd5e1;
+  text-decoration: none;
+  border-radius: 8px;
+  margin-bottom: 4px;
+  font-size: 0.92rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.sidebar-link i {
+  font-size: 1.15rem;
+  width: 22px;
+  text-align: center;
+}
+
+.sidebar-link:hover {
+  background: var(--sidebar-hover);
+  color: #ffffff;
+}
+
+.sidebar-link.active {
+  background: var(--sidebar-active);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+}
+
+.sidebar-footer {
+  padding: 1rem;
+  border-top: 1px solid #1e293b;
+  background: rgba(15, 23, 42, 0.7);
+}
+
+/* Main Content Area */
+#main-content {
+  margin-left: 260px;
+  flex-grow: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-color);
+  width: calc(100% - 260px);
+}
+
+/* Top Navbar */
+.top-navbar {
+  background: #ffffff;
+  border-bottom: 1px solid var(--border-color);
+  padding: 0.75rem 1.75rem;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+}
+
+/* Content Container */
+.page-container {
+  padding: 1.75rem;
+  flex-grow: 1;
+}
+
+/* Modern Metric Cards */
+.metric-card {
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.25rem;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.metric-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.06);
+}
+
+.metric-card .metric-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  margin-bottom: 0.75rem;
+}
+
+.metric-card .metric-title {
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+}
+
+.metric-card .metric-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-top: 0.25rem;
+}
+
+/* Tables & Data Cards */
+.data-card {
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+  margin-bottom: 1.5rem;
+}
+
+.data-card-header {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.table-custom th {
+  background: #f8fafc;
+  color: #475569;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  border-bottom: 1px solid var(--border-color);
+  padding: 0.75rem 1rem;
+  white-space: nowrap;
+}
+
+.table-custom td {
+  padding: 0.85rem 1rem;
+  vertical-align: middle;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 0.9rem;
+}
+
+.table-custom tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+/* Custom Status Badges */
+.badge-status {
+  padding: 0.35rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.badge-status.due {
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+
+.badge-status.paid {
+  background-color: #dcfce7;
+  color: #16a34a;
+}
+
+.badge-status.transit {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+
+.badge-status.pending {
+  background-color: #e0e7ff;
+  color: #4338ca;
+}
+
+.badge-status.settled {
+  background-color: #e2e8f0;
+  color: #475569;
+}
+
+/* Firm Pills */
+.firm-pill {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.firm-ttc { background: #dbeafe; color: #1d4ed8; }
+.firm-mtc { background: #fae8ff; color: #86198f; }
+.firm-smtc { background: #ffedd5; color: #c2410c; }
+
+/* Action Buttons */
+.btn-action {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  background: #ffffff;
+  color: var(--text-main);
+  transition: all 0.15s;
+}
+
+.btn-action:hover {
+  background: #f1f5f9;
+  color: var(--primary-light);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 991px) {
+  #sidebar {
+    margin-left: -260px;
+  }
+  #sidebar.show {
+    margin-left: 0;
+  }
+  #main-content {
+    margin-left: 0;
+    width: 100%;
+  }
+}
