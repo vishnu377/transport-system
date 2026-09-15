@@ -29,6 +29,9 @@ const AppUI = {
         <a href="${pagesPath}bilty-booking.html" class="sidebar-link ${activePage === 'bilty' ? 'active' : ''}">
           <i class="bi bi-file-earmark-text"></i> Bilty (LR) Booking
         </a>
+        <a href="${pagesPath}pod-register.html" class="sidebar-link ${activePage === 'pod' ? 'active' : ''}">
+          <i class="bi bi-card-checklist"></i> POD (पावती) Register
+        </a>
 
         <div class="nav-section-title mt-3">Master Directories</div>
         <a href="${pagesPath}parties.html" class="sidebar-link ${activePage === 'parties' ? 'active' : ''}">
@@ -44,7 +47,10 @@ const AppUI = {
           <i class="bi bi-people"></i> Brokers / Dallal
         </a>
 
-        <div class="nav-section-title mt-3">Accounts & Branch</div>
+        <div class="nav-section-title mt-3">Accounts & Billing</div>
+        <a href="${pagesPath}gst-invoices.html" class="sidebar-link ${activePage === 'gst' ? 'active' : ''}">
+          <i class="bi bi-receipt-cutoff"></i> GST Freight Invoices
+        </a>
         <a href="${pagesPath}payments.html" class="sidebar-link ${activePage === 'payments' ? 'active' : ''}">
           <i class="bi bi-cash-coin"></i> Party & Owner Paid
         </a>
@@ -54,13 +60,21 @@ const AppUI = {
         <a href="${pagesPath}cash-register.html" class="sidebar-link ${activePage === 'cash' ? 'active' : ''}">
           <i class="bi bi-wallet2"></i> Shahpura Cash & DEF
         </a>
+        <a href="${pagesPath}diesel-register.html" class="sidebar-link ${activePage === 'diesel' ? 'active' : ''}">
+          <i class="bi bi-fuel-pump"></i> Diesel Pump Register
+        </a>
         <a href="${pagesPath}ledger.html" class="sidebar-link ${activePage === 'ledger' ? 'active' : ''}">
           <i class="bi bi-journal-bookmark"></i> Financial Ledger
+        </a>
+
+        <div class="nav-section-title mt-3">System & Data</div>
+        <a href="${pagesPath}data-tools.html" class="sidebar-link ${activePage === 'data-tools' ? 'active' : ''}">
+          <i class="bi bi-database-down"></i> Excel Import & Backup
         </a>
       </div>
       <div class="sidebar-footer text-muted small d-flex justify-content-between align-items-center">
         <span><i class="bi bi-shield-check text-success"></i> Standalone Mode</span>
-        <span class="badge bg-primary">v1.0</span>
+        <span class="badge bg-primary">v1.2</span>
       </div>
     `;
 

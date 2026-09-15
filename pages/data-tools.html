@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Import & Backup - MTC & TTC Logistics</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <!-- Custom TMS Theme -->
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+  <!-- Sidebar Navigation -->
+  <nav id="sidebar"></nav>
+
+  <!-- Main Workspace -->
+  <div id="main-content">
+    
+    <!-- Top Navbar -->
+    <header class="top-navbar d-flex align-items-center justify-content-between">
+      <div class="d-flex align-items-center gap-3">
+        <button id="sidebar-toggle" class="btn btn-light d-lg-none">
+          <i class="bi bi-list fs-5"></i>
+        </button>
+        <div>
+          <h5 class="mb-0 fw-bold text-dark">Data Import, Export & Offline Backup</h5>
+          <small class="text-muted">Bulk upload 3,000+ parties & 500+ trucks from CSV/Excel, download complete database backups</small>
+        </div>
+      </div>
+
+      <div class="d-flex align-items-center gap-2">
+        <button class="btn btn-success btn-sm shadow-sm" onclick="DataToolsModule.downloadFullJsonBackup()">
+          <i class="bi bi-download me-1"></i> Full System Backup (JSON)
+        </button>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <main class="page-container">
+
+      <!-- Alert Box: Complete Freedom -->
+      <div class="alert alert-success d-flex align-items-center gap-3 shadow-sm mb-4" role="alert">
+        <i class="bi bi-shield-lock-fill fs-3 text-success"></i>
+        <div>
+          <h6 class="fw-bold mb-1">100% डेटा सुरक्षा और आज़ादी (Complete Data Independence)</h6>
+          <small class="text-muted">
+            आपका सारा डेटा आपके अपने नियंत्रण में है। आप जब चाहें अपने पूरे ट्रांसपोर्ट सिस्टम (बिल्टियाँ, पार्टियाँ, गाड़ियाँ, पेमेंट) का बैकअप एक क्लिक में अपने कंप्यूटर या पेनड्राइव में सुरक्षित रख सकते हैं।
+          </small>
+        </div>
+      </div>
+
+      <div class="row g-4">
+        
+        <!-- Column 1: Bulk CSV / Excel Importer -->
+        <div class="col-12 col-lg-7">
+          <div class="data-card p-4 h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div>
+                <h5 class="fw-bold text-dark mb-0"><i class="bi bi-file-earmark-spreadsheet text-primary me-2"></i> Bulk CSV / Excel Importer</h5>
+                <small class="text-muted">पुराने AppSheet या Excel से हजारों रिकॉर्ड्स 5 सेकंड में लोड करें</small>
+              </div>
+              <button class="btn btn-outline-primary btn-sm" onclick="DataToolsModule.downloadTemplate()">
+                <i class="bi bi-file-arrow-down me-1"></i> Sample Template
+              </button>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold small">1. किस मास्टर में डेटा लोड करना है? (Select Target Collection)</label>
+              <select id="import-target" class="form-select" onchange="DataToolsModule.onTargetChange()">
+                <option value="parties">Parties Master (ग्राहक / कंसाइनर - 3,383 Records)</option>
+                <option value="truckOwners">Truck Owners Master (गाड़ी मालिक - 577 Records)</option>
+                <option value="drivers">Drivers Master (ड्राइवर सूची)</option>
+                <option value="brokers">Brokers / Dallal Master (दलाल सूची)</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold small">2. CSV फ़ाइल चुनें (Choose CSV File)</label>
+              <input type="file" id="import-file" class="form-control" accept=".csv, text/csv" onchange="DataToolsModule.onFileSelected(event)">
+              <small class="text-muted d-block mt-1">
+                Tip: Excel में अपनी शीट को <strong>"Save As ➔ CSV (Comma delimited) (*.csv)"</strong> करके सेव करें।
+              </small>
+            </div>
+
+            <!-- Preview Table -->
+            <div id="import-preview-section" class="d-none mb-3">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="fw-bold small text-dark" id="preview-count-label">0 Rows Detected</span>
+                <span class="badge bg-success-subtle text-success">File Validated</span>
+              </div>
+              <div class="table-responsive border rounded" style="max-height: 220px; overflow-y: auto;">
+                <table class="table table-sm table-hover align-middle mb-0" style="font-size: 0.85rem;">
+                  <thead class="table-light" id="preview-thead"></thead>
+                  <tbody id="preview-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="d-grid mt-4">
+              <button id="btn-start-import" class="btn btn-primary" disabled onclick="DataToolsModule.processImport()">
+                <i class="bi bi-cloud-arrow-up me-1"></i> Confirm & Import to Cloud Database
+              </button>
+            </div>
+
+            <div id="import-progress-box" class="d-none mt-3">
+              <div class="progress" style="height: 12px;">
+                <div id="import-progress-bar" class="progress-bar progress-bar-striped progress-bar-animated bg-success" style="width: 0%"></div>
+              </div>
+              <small class="text-muted d-block mt-1 text-center" id="import-progress-status">Uploading records...</small>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Column 2: Export & System Backup -->
+        <div class="col-12 col-lg-5">
+          <div class="data-card p-4 h-100">
+            <h5 class="fw-bold text-dark mb-1"><i class="bi bi-database-down text-success me-2"></i> Database Export & Backup</h5>
+            <small class="text-muted d-block mb-3">डाउनलोड करें पूरा डेटा Excel या सुरक्षित JSON बैकअप में</small>
+
+            <!-- Live Database Health Counts -->
+            <div class="p-3 bg-light rounded border mb-3" style="font-size: 0.88rem;">
+              <span class="fw-bold text-dark d-block mb-2">Current System Records Count:</span>
+              <div class="row g-2 text-muted">
+                <div class="col-6">Parties: <strong id="cnt-parties" class="text-dark">0</strong></div>
+                <div class="col-6">Truck Owners: <strong id="cnt-owners" class="text-dark">0</strong></div>
+                <div class="col-6">Dispatches/Bilties: <strong id="cnt-trips" class="text-dark">0</strong></div>
+                <div class="col-6">Payments/Receipts: <strong id="cnt-payments" class="text-dark">0</strong></div>
+                <div class="col-6">Cheques: <strong id="cnt-cheques" class="text-dark">0</strong></div>
+                <div class="col-6">Fuel Slips: <strong id="cnt-diesel" class="text-dark">0</strong></div>
+              </div>
+            </div>
+
+            <!-- Download Action Buttons -->
+            <div class="d-flex flex-column gap-2 mb-4">
+              <button class="btn btn-outline-dark text-start py-2" onclick="DataToolsModule.exportCollectionToCsv('trips')">
+                <i class="bi bi-filetype-csv text-primary me-2 fs-5"></i> Export All Bilties / Trips to CSV
+              </button>
+              <button class="btn btn-outline-dark text-start py-2" onclick="DataToolsModule.exportCollectionToCsv('parties')">
+                <i class="bi bi-filetype-csv text-primary me-2 fs-5"></i> Export Parties Master to CSV
+              </button>
+              <button class="btn btn-outline-dark text-start py-2" onclick="DataToolsModule.exportCollectionToCsv('truckOwners')">
+                <i class="bi bi-filetype-csv text-primary me-2 fs-5"></i> Export Truck Owners to CSV
+              </button>
+              <button class="btn btn-outline-dark text-start py-2" onclick="DataToolsModule.exportCollectionToCsv('payments')">
+                <i class="bi bi-filetype-csv text-primary me-2 fs-5"></i> Export All Payments & Advances to CSV
+              </button>
+            </div>
+
+            <hr>
+
+            <!-- Restore Section -->
+            <div>
+              <h6 class="fw-bold text-dark mb-1"><i class="bi bi-cloud-arrow-up text-warning me-1"></i> Restore from JSON Backup</h6>
+              <small class="text-muted d-block mb-2">पुराना डाउनलोड किया हुआ .json बैकअप अपलोड करें</small>
+              <input type="file" id="restore-file" class="form-control form-control-sm mb-2" accept=".json">
+              <button class="btn btn-outline-warning btn-sm w-100" onclick="DataToolsModule.restoreJsonBackup()">
+                <i class="bi bi-arrow-counterclockwise me-1"></i> Restore System Database
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Bootstrap 5 Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
+  <!-- Core App Scripts -->
+  <script src="../js/config.js"></script>
+  <script src="../js/db-service.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/modules/data-tools.js"></script>
+</body>
+</html>

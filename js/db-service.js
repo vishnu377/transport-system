@@ -159,7 +159,8 @@ class DBService {
         console.log("⚡ Syncing initial master data to Firebase Cloud Firestore...");
         const seedCollections = [
           'parties', 'truckOwners', 'drivers', 'brokers', 'trips',
-          'payments', 'cheques', 'cashBook', 'defUrea'
+          'payments', 'cheques', 'cashBook', 'defUrea',
+          'gstInvoices', 'podRecords', 'dieselSlips'
         ];
         for (const col of seedCollections) {
           const localItems = JSON.parse(localStorage.getItem(`tms_${col}`) || '[]');
@@ -591,9 +592,165 @@ class DBService {
       localStorage.setItem('tms_defUrea', JSON.stringify(defUrea));
       localStorage.setItem('tms_seeded_phase2', 'true');
     }
+
+    // Phase 3 Seed Data: GST Invoices, POD Records, Diesel Pump Slips
+    if (!localStorage.getItem('tms_seeded_phase3')) {
+      const gstInvoices = [
+        {
+          id: "inv_1",
+          invoiceNo: "INV-2026-TTC-0042",
+          firm: "TTC",
+          invoiceDate: "2026-08-31",
+          dueDate: "2026-09-15",
+          partyName: "Berger Paints India Ltd.",
+          partyGstin: "09AABCB0976E2ZS",
+          partyAddress: "Sandila Industrial Area, Hardoi, Uttar Pradesh",
+          sacCode: "996511",
+          isRcm: "Yes", // Reverse Charge Mechanism
+          trips: [
+            {
+              grNo: "2026-2027-1882_TTC",
+              tripDate: "2026-08-26",
+              truckNo: "RJ01GC2159",
+              origin: "Rajsamand (Raj.)",
+              destination: "Dadri (U.P.)",
+              material: "Marble Powder",
+              weight: 100.25,
+              rate: 1600,
+              freight: 160400
+            }
+          ],
+          subTotal: 160400,
+          cgstRate: 0,
+          cgstAmount: 0,
+          sgstRate: 0,
+          sgstAmount: 0,
+          igstRate: 5,
+          igstAmount: 8020,
+          grandTotal: 168420,
+          status: "Generated",
+          remarks: "Consolidated freight invoice for August Dadri dispatches"
+        }
+      ];
+
+      const podRecords = [
+        {
+          id: "pod_1",
+          grNo: "2026-2027-1882_TTC",
+          tripId: "trip_1882_TTC",
+          firm: "TTC",
+          truckNo: "RJ01GC2159",
+          driver: "Kaluram Jat Shrinagar",
+          consignee: "Berger Paints India Ltd.",
+          origin: "Rajsamand (Raj.)",
+          destination: "Dadri (U.P.)",
+          dispatchDate: "2026-08-26",
+          deliveryDate: "2026-08-28",
+          status: "Submitted to Client",
+          receivedBy: "Berger Dadri Depot Warehouse Incharge",
+          shortageKg: 0,
+          shortageAmount: 0,
+          remarks: "Verified clean POD with company stamp"
+        },
+        {
+          id: "pod_2",
+          grNo: "2026-2027-1924_TTC",
+          tripId: "trip_1924_TTC",
+          firm: "TTC",
+          truckNo: "RJ52GB3114",
+          driver: "Rk Dewanda 3114",
+          consignee: "Berger Paints India Ltd.",
+          origin: "Rajsamand (Raj.)",
+          destination: "Noida (U.P.)",
+          dispatchDate: "2026-08-31",
+          deliveryDate: "2026-09-02",
+          status: "Received at Branch",
+          receivedBy: "Security Guard & Unloading Supervisor",
+          shortageKg: 30,
+          shortageAmount: 1200,
+          remarks: "30 kg bag damaged in transit. Shortage deducted from owner balance"
+        },
+        {
+          id: "pod_3",
+          grNo: "2026-2027-164_SMTC",
+          tripId: "trip_164_SMTC",
+          firm: "SMTC",
+          truckNo: "RJ52GA7310",
+          driver: "Kalu Gurjar",
+          consignee: "Berger Paints India Ltd.",
+          origin: "Udaipur (Raj.)",
+          destination: "Sikandrabad (U.P.)",
+          dispatchDate: "2026-08-31",
+          deliveryDate: "",
+          status: "In Transit",
+          receivedBy: "",
+          shortageKg: 0,
+          shortageAmount: 0,
+          remarks: "Vehicle currently in transit, expected delivery tomorrow"
+        }
+      ];
+
+      const dieselSlips = [
+        {
+          id: "dsl_1",
+          slipNo: "DSL-SHP-4401",
+          date: "2026-08-31",
+          pumpName: "IOCL Shahpura (Kisan Seva Kendra)",
+          firm: "TTC",
+          truckNo: "RJ52GB3114",
+          driver: "Rk Dewanda 3114",
+          ownerName: "Pappu Badak",
+          tripGrNo: "2026-2027-1924_TTC",
+          liters: 250,
+          rate: 90.50,
+          amount: 22625,
+          status: "Unsettled",
+          remarks: "Fuel advance for Noida trip"
+        },
+        {
+          id: "dsl_2",
+          slipNo: "DSL-SHP-4402",
+          date: "2026-08-31",
+          pumpName: "IOCL Shahpura (Kisan Seva Kendra)",
+          firm: "SMTC",
+          truckNo: "RJ52GA7310",
+          driver: "Kalu Gurjar",
+          ownerName: "Laxmi Prakash Jat",
+          tripGrNo: "2026-2027-164_SMTC",
+          liters: 300,
+          rate: 90.50,
+          amount: 27150,
+          status: "Unsettled",
+          remarks: "Fuel advance for Sikandrabad trip"
+        },
+        {
+          id: "dsl_3",
+          slipNo: "DSL-RAJ-1089",
+          date: "2026-08-26",
+          pumpName: "HPCL Rajsamand (Mahaveer Auto)",
+          firm: "TTC",
+          truckNo: "RJ01GC2159",
+          driver: "Kaluram Jat Shrinagar",
+          ownerName: "Mahendra Rawat Shrinagar",
+          tripGrNo: "2026-2027-1882_TTC",
+          liters: 350,
+          rate: 90.20,
+          amount: 31570,
+          status: "Settled",
+          settledDate: "2026-08-31",
+          remarks: "Settled in monthly August pump statement"
+        }
+      ];
+
+      localStorage.setItem('tms_gstInvoices', JSON.stringify(gstInvoices));
+      localStorage.setItem('tms_podRecords', JSON.stringify(podRecords));
+      localStorage.setItem('tms_dieselSlips', JSON.stringify(dieselSlips));
+      localStorage.setItem('tms_seeded_phase3', 'true');
+    }
   }
 }
 
 // Global Singleton Instance
 const dbService = new DBService();
+
 

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diesel Pump Register - MTC & TTC Logistics</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <!-- Custom TMS Theme -->
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+  <!-- Sidebar Navigation -->
+  <nav id="sidebar"></nav>
+
+  <!-- Main Workspace -->
+  <div id="main-content">
+    
+    <!-- Top Navbar -->
+    <header class="top-navbar d-flex align-items-center justify-content-between">
+      <div class="d-flex align-items-center gap-3">
+        <button id="sidebar-toggle" class="btn btn-light d-lg-none">
+          <i class="bi bi-list fs-5"></i>
+        </button>
+        <div>
+          <h5 class="mb-0 fw-bold text-dark">Diesel Pump Register & Fuel Slips</h5>
+          <small class="text-muted">Manage petrol pump fuel slips (Shahpura & Rajsamand), driver diesel advances & monthly pump settlements</small>
+        </div>
+      </div>
+
+      <div class="d-flex align-items-center gap-2">
+        <button class="btn btn-primary btn-sm" onclick="DieselModule.openIssueSlipModal()">
+          <i class="bi bi-fuel-pump me-1"></i> Issue Diesel Slip (पर्ची)
+        </button>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <main class="page-container">
+
+      <!-- Summary KPI Counters -->
+      <div class="row g-3 mb-4">
+        <div class="col-12 col-sm-6 col-xl-3">
+          <div class="metric-card">
+            <div class="metric-icon bg-primary-subtle text-primary">
+              <i class="bi bi-droplet-half"></i>
+            </div>
+            <div class="metric-title">Total Diesel Issued</div>
+            <div id="kpi-diesel-liters" class="metric-value">0 Ltr</div>
+            <small class="text-muted">Fleet fuel consumption</small>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+          <div class="metric-card">
+            <div class="metric-icon bg-dark-subtle text-dark">
+              <i class="bi bi-cash-stack"></i>
+            </div>
+            <div class="metric-title">Total Fuel Billed</div>
+            <div id="kpi-diesel-amount" class="metric-value">₹0.00</div>
+            <small class="text-muted">Total diesel slips value</small>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+          <div class="metric-card">
+            <div class="metric-icon bg-danger-subtle text-danger">
+              <i class="bi bi-hourglass-top"></i>
+            </div>
+            <div class="metric-title">Unsettled Pump Due</div>
+            <div id="kpi-diesel-unsettled" class="metric-value">₹0.00</div>
+            <small class="text-muted">Payable to petrol pumps</small>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+          <div class="metric-card">
+            <div class="metric-icon bg-success-subtle text-success">
+              <i class="bi bi-check2-all"></i>
+            </div>
+            <div class="metric-title">Settled Pump Slips</div>
+            <div id="kpi-diesel-settled" class="metric-value">₹0.00</div>
+            <small class="text-muted">Paid in monthly statements</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Slips Register Card -->
+      <div class="data-card">
+        
+        <!-- Controls & Filters -->
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 p-3 border-bottom">
+          <ul class="nav nav-pills" id="dieselTabs" role="tablist">
+            <li class="nav-item">
+              <button class="nav-link active" onclick="DieselModule.setStatusFilter('ALL', this)">All Slips</button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link" onclick="DieselModule.setStatusFilter('Unsettled', this)">Unsettled (Due)</button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link" onclick="DieselModule.setStatusFilter('Settled', this)">Settled (Cleared)</button>
+            </li>
+          </ul>
+
+          <div class="d-flex align-items-center gap-2">
+            <select id="pump-filter" class="form-select form-select-sm" style="width: 170px;" onchange="DieselModule.renderTable()">
+              <option value="ALL">All Petrol Pumps</option>
+              <option value="IOCL Shahpura">IOCL Shahpura</option>
+              <option value="HPCL Rajsamand">HPCL Rajsamand</option>
+              <option value="BPCL Dadri">BPCL Dadri</option>
+            </select>
+            <input type="text" id="diesel-search" class="form-control form-control-sm" placeholder="Search slip no, truck, driver, GR..." style="width: 230px;" onkeyup="DieselModule.renderTable()">
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead>
+              <tr>
+                <th>Slip No.</th>
+                <th>Date</th>
+                <th>Petrol Pump</th>
+                <th>Firm</th>
+                <th>Truck No. & Owner</th>
+                <th>Driver Name</th>
+                <th>Linked Trip / GR</th>
+                <th class="text-center">Liters & Rate</th>
+                <th class="text-end">Slip Amount (₹)</th>
+                <th>Status</th>
+                <th class="text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody id="diesel-tbody">
+              <tr>
+                <td colspan="11" class="text-center py-4 text-muted">
+                  <div class="spinner-border spinner-border-sm text-primary me-2"></div> Loading fuel slips...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Modal: Issue Diesel Slip -->
+  <div class="modal fade" id="modalIssueSlip" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header bg-primary text-white">
+          <h6 class="modal-title fw-bold"><i class="bi bi-fuel-pump me-2"></i> Issue Diesel Slip (डीजल पर्ची जारी करें)</h6>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <form id="form-issue-slip" onsubmit="DieselModule.saveSlip(event)">
+          <div class="modal-body p-4">
+            <div class="row g-3">
+              
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Date *</label>
+                <input type="date" id="dsl-date" class="form-control" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Slip Number *</label>
+                <input type="text" id="dsl-number" class="form-control font-monospace fw-bold" placeholder="e.g. DSL-SHP-4405" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Operating Firm *</label>
+                <select id="dsl-firm" class="form-select" required>
+                  <option value="TTC">TTC Transport Corp</option>
+                  <option value="MTC">Mahaveer Transport Co</option>
+                  <option value="SMTC">Shree Mahaveer Transport</option>
+                </select>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Petrol Pump *</label>
+                <select id="dsl-pump" class="form-select" required>
+                  <option value="IOCL Shahpura (Kisan Seva Kendra)">IOCL Shahpura (Kisan Seva Kendra)</option>
+                  <option value="HPCL Rajsamand (Mahaveer Auto)">HPCL Rajsamand (Mahaveer Auto)</option>
+                  <option value="BPCL Dadri (Highway Service)">BPCL Dadri (Highway Service)</option>
+                  <option value="Indian Oil Alwar Highway">Indian Oil Alwar Highway</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Truck Number *</label>
+                <input type="text" id="dsl-truck" class="form-control text-uppercase font-monospace" placeholder="e.g. RJ52GB3114" required onblur="DieselModule.autoFillTrip()">
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Driver Name</label>
+                <input type="text" id="dsl-driver" class="form-control" placeholder="e.g. Rk Dewanda">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Linked Trip / G.R. No. (Optional)</label>
+                <select id="dsl-trip" class="form-select">
+                  <option value="">-- No specific GR (General Fleet Advance) --</option>
+                </select>
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Diesel Liters (Qty) *</label>
+                <input type="number" id="dsl-liters" class="form-control" placeholder="e.g. 250" min="1" step="any" required onchange="DieselModule.calcTotal()">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Rate per Liter (₹) *</label>
+                <input type="number" id="dsl-rate" class="form-control" placeholder="e.g. 90.50" min="1" step="any" value="90.50" required onchange="DieselModule.calcTotal()">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Total Slip Amount (₹)</label>
+                <input type="text" id="dsl-total" class="form-control fw-bold text-danger fs-5" readonly value="₹0.00">
+              </div>
+
+              <div class="col-12">
+                <div class="p-2 border rounded bg-light">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="dsl-auto-advance" checked>
+                    <label class="form-check-label small fw-semibold text-dark" for="dsl-auto-advance">
+                      Automatically record this slip as a "Diesel Advance" in Truck Owner's payment account
+                    </label>
+                  </div>
+                  <small class="text-muted d-block ms-4" style="font-size: 0.78rem;">
+                    (This ensures the fuel slip amount is automatically deducted from the truck owner's final freight payment).
+                  </small>
+                </div>
+              </div>
+
+              <div class="col-12">
+                <label class="form-label fw-semibold small">Remarks / Trip Destination</label>
+                <input type="text" id="dsl-remarks" class="form-control" placeholder="e.g. En route to Hardoi via Shahpura yard">
+              </div>
+
+            </div>
+          </div>
+          <div class="modal-footer bg-light">
+            <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-sm btn-primary px-3 shadow-sm">
+              <i class="bi bi-check2-circle me-1"></i> Issue Slip
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5 Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
+  <!-- Core App Scripts -->
+  <script src="../js/config.js"></script>
+  <script src="../js/db-service.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/modules/diesel-register.js"></script>
+</body>
+</html>
