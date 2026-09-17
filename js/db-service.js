@@ -161,7 +161,7 @@ class DBService {
           'parties', 'truckOwners', 'drivers', 'brokers', 'trips',
           'payments', 'cheques', 'cashBook', 'defUrea',
           'gstInvoices', 'podRecords', 'dieselSlips',
-          'ewayBills', 'fleetCompliance'
+          'ewayBills', 'fleetCompliance', 'users'
         ];
         for (const col of seedCollections) {
           const localItems = JSON.parse(localStorage.getItem(`tms_${col}`) || '[]');
@@ -877,6 +877,51 @@ class DBService {
       localStorage.setItem('tms_ewayBills', JSON.stringify(ewayBills));
       localStorage.setItem('tms_fleetCompliance', JSON.stringify(fleetCompliance));
       localStorage.setItem('tms_seeded_phase4', 'true');
+    }
+
+    // Pre-seeded Staff User Accounts
+    if (!localStorage.getItem('tms_seeded_users')) {
+      const users = [
+        {
+          id: "usr_1",
+          name: "Mosa Ji (Owner)",
+          email: "admin@ttclogistics.com",
+          mobile: "9414312586",
+          password: "admin123",
+          role: "SUPER_ADMIN",
+          firm: "All Firms (TTC + MTC + SMTC)",
+          branch: "Head Office (Shahpura)",
+          status: "Active",
+          createdAt: new Date().toISOString()
+        },
+        {
+          id: "usr_2",
+          name: "Kaluram Ji (Shahpura Munshi)",
+          email: "shahpura@ttclogistics.com",
+          mobile: "9784175913",
+          password: "munshi123",
+          role: "BRANCH_MUNSHI",
+          firm: "TTC",
+          branch: "Shahpura Yard",
+          status: "Active",
+          createdAt: new Date().toISOString()
+        },
+        {
+          id: "usr_3",
+          name: "Rameshwar Ji (Head Accountant)",
+          email: "accounts@ttclogistics.com",
+          mobile: "9829241717",
+          password: "accounts123",
+          role: "ACCOUNTANT",
+          firm: "All Firms (TTC + MTC + SMTC)",
+          branch: "Rajsamand Accounts Office",
+          status: "Active",
+          createdAt: new Date().toISOString()
+        }
+      ];
+
+      localStorage.setItem('tms_users', JSON.stringify(users));
+      localStorage.setItem('tms_seeded_users', 'true');
     }
   }
 }

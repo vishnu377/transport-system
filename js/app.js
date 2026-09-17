@@ -3,6 +3,29 @@
  * MTC & TTC Logistics Management System
  */
 
+const AuthService = {
+  getCurrentUser() {
+    const userStr = localStorage.getItem('tms_current_user');
+    if (userStr) {
+      try { return JSON.parse(userStr); } catch (e) {}
+    }
+    // Fallback to default Super Admin if not logged in
+    return {
+      id: "usr_1",
+      name: "Mosa Ji (Owner)",
+      email: "admin@ttclogistics.com",
+      role: "SUPER_ADMIN"
+    };
+  },
+
+  logout() {
+    localStorage.removeItem('tms_current_user');
+    localStorage.removeItem('tms_active_role');
+    const isInsidePages = window.location.pathname.includes('/pages/');
+    window.location.href = isInsidePages ? '../login.html' : './login.html';
+  }
+};
+
 const AppUI = {
   // Render Sidebar dynamically based on current page
   renderSidebar(activePage = 'dashboard') {
@@ -74,22 +97,39 @@ const AppUI = {
         </a>
 
         <div class="nav-section-title mt-3">System & Data</div>
+        <a href="${pagesPath}users.html" class="sidebar-link ${activePage === 'users' ? 'active' : ''}">
+          <i class="bi bi-people-fill"></i> Staff & User Accounts
+        </a>
         <a href="${pagesPath}data-tools.html" class="sidebar-link ${activePage === 'data-tools' ? 'active' : ''}">
           <i class="bi bi-database-down"></i> Excel Import & Backup
         </a>
       </div>
 
-      <!-- Role Switcher & Status Footer -->
+      <!-- Logged-in Staff Profile & Logout Footer -->
       <div class="sidebar-footer p-2 border-top bg-dark-subtle">
         <div class="d-flex justify-content-between align-items-center mb-1">
-          <small class="fw-bold text-dark"><i class="bi bi-person-lock me-1"></i> Active Role:</small>
-          <span class="badge bg-primary" id="role-badge">Admin</span>
+          <div class="d-flex align-items-center gap-2 overflow-hidden">
+            <span class="fs-5" id="user-avatar-icon">👑</span>
+            <div class="text-truncate">
+              <div class="fw-bold text-dark small text-truncate" id="logged-user-name">Mosa Ji</div>
+              <span class="badge bg-primary" id="role-badge" style="font-size: 0.65rem;">Super Admin</span>
+            </div>
+          </div>
+          <button class="btn btn-outline-danger btn-sm py-0 px-2" title="Logout" onclick="AuthService.logout()">
+            <i class="bi bi-box-arrow-right"></i>
+          </button>
         </div>
-        <select id="user-role-select" class="form-select form-select-sm" style="font-size: 0.78rem;" onchange="AppUI.switchUserRole(this.value)">
-          <option value="SUPER_ADMIN">👑 Mosa Ji (Super Admin)</option>
-          <option value="BRANCH_MUNSHI">🏢 Shahpura Munshi (Operator)</option>
-          <option value="ACCOUNTANT">💼 Accountant (Munim Ji)</option>
-        </select>
+        
+        <div class="mt-2 pt-1 border-top">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <small class="text-muted" style="font-size: 0.72rem;">Quick Role Switch:</small>
+          </div>
+          <select id="user-role-select" class="form-select form-select-sm" style="font-size: 0.75rem;" onchange="AppUI.switchUserRole(this.value)">
+            <option value="SUPER_ADMIN">👑 Mosa Ji (Super Admin)</option>
+            <option value="BRANCH_MUNSHI">🏢 Shahpura Munshi (Operator)</option>
+            <option value="ACCOUNTANT">💼 Accountant (Munim Ji)</option>
+          </select>
+        </div>
       </div>
     `;
 
@@ -97,18 +137,64 @@ const AppUI = {
     if (sidebarEl) {
       sidebarEl.innerHTML = sidebarHTML;
       this.initRoleSelector();
+      this.renderNavbarUser();
     }
+  },
+
+  // Render Logged-in User profile pill in top navbar
+  renderNavbarUser() {
+    const user = AuthService.getCurrentUser();
+    const navbar = document.querySelector('.top-navbar');
+    if (!navbar) return;
+
+    let userContainer = document.getElementById('topbar-user-profile');
+    if (!userContainer) {
+      userContainer = document.createElement('div');
+      userContainer.id = 'topbar-user-profile';
+      userContainer.className = 'd-none d-md-flex align-items-center gap-2 ms-auto me-2';
+      
+      const rightSideActions = navbar.lastElementChild;
+      if (rightSideActions && rightSideActions !== navbar.firstElementChild) {
+        navbar.insertBefore(userContainer, rightSideActions);
+      } else {
+        navbar.appendChild(userContainer);
+      }
+    }
+
+    const roleBadgeClass = user.role === 'SUPER_ADMIN' ? 'bg-primary' : (user.role === 'BRANCH_MUNSHI' ? 'bg-warning text-dark' : 'bg-info text-dark');
+    const roleText = APP_CONFIG.userRoles[user.role]?.name || user.role;
+
+    userContainer.innerHTML = `
+      <div class="px-2 py-1 bg-light rounded border d-flex align-items-center gap-2">
+        <i class="bi bi-person-circle fs-5 text-secondary"></i>
+        <div style="line-height: 1.1;">
+          <div class="fw-bold small text-dark">${user.name}</div>
+          <small class="badge ${roleBadgeClass}" style="font-size: 0.65rem;">${roleText.split(' ')[0]}</small>
+        </div>
+        <button class="btn btn-outline-danger btn-sm py-0 px-2 ms-1" style="font-size: 0.75rem;" title="Sign Out" onclick="AuthService.logout()">
+          <i class="bi bi-box-arrow-right"></i>
+        </button>
+      </div>
+    `;
   },
 
   // Role Management
   getActiveRole() {
-    return localStorage.getItem('tms_active_role') || 'SUPER_ADMIN';
+    return localStorage.getItem('tms_active_role') || AuthService.getCurrentUser().role || 'SUPER_ADMIN';
   },
 
   initRoleSelector() {
+    const user = AuthService.getCurrentUser();
     const role = this.getActiveRole();
     const select = document.getElementById('user-role-select');
     const badge = document.getElementById('role-badge');
+    const nameEl = document.getElementById('logged-user-name');
+    const avatarIcon = document.getElementById('user-avatar-icon');
+
+    if (nameEl) nameEl.innerText = user.name;
+    if (avatarIcon) {
+      avatarIcon.innerText = role === 'SUPER_ADMIN' ? '👑' : (role === 'BRANCH_MUNSHI' ? '🏢' : '💼');
+    }
     if (select) select.value = role;
     if (badge) {
       if (role === 'SUPER_ADMIN') {
@@ -127,10 +213,19 @@ const AppUI = {
 
   switchUserRole(roleId) {
     localStorage.setItem('tms_active_role', roleId);
+    
+    // Update active user profile
+    const currentUser = AuthService.getCurrentUser();
+    currentUser.role = roleId;
+    if (roleId === 'SUPER_ADMIN') currentUser.name = "Mosa Ji (Owner)";
+    else if (roleId === 'BRANCH_MUNSHI') currentUser.name = "Kaluram Ji (Munshi)";
+    else if (roleId === 'ACCOUNTANT') currentUser.name = "Rameshwar Ji (Accountant)";
+    localStorage.setItem('tms_current_user', JSON.stringify(currentUser));
+
     this.initRoleSelector();
     const roleName = APP_CONFIG.userRoles[roleId]?.name || roleId;
-    this.showToast(`Switched user role to: ${roleName}`, 'info');
-    setTimeout(() => { window.location.reload(); }, 600);
+    this.showToast(`Switched active profile to: ${roleName}`, 'info');
+    setTimeout(() => { window.location.reload(); }, 500);
   },
 
   applyRolePermissions(role) {
