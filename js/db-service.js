@@ -160,7 +160,8 @@ class DBService {
         const seedCollections = [
           'parties', 'truckOwners', 'drivers', 'brokers', 'trips',
           'payments', 'cheques', 'cashBook', 'defUrea',
-          'gstInvoices', 'podRecords', 'dieselSlips'
+          'gstInvoices', 'podRecords', 'dieselSlips',
+          'ewayBills', 'fleetCompliance'
         ];
         for (const col of seedCollections) {
           const localItems = JSON.parse(localStorage.getItem(`tms_${col}`) || '[]');
@@ -747,10 +748,141 @@ class DBService {
       localStorage.setItem('tms_dieselSlips', JSON.stringify(dieselSlips));
       localStorage.setItem('tms_seeded_phase3', 'true');
     }
+
+    // Phase 4 Seed Data: E-Way Bills & Fleet Compliance
+    if (!localStorage.getItem('tms_seeded_phase4')) {
+      const now = new Date();
+      const in12Hours = new Date(now.getTime() + 12 * 60 * 60 * 1000).toISOString().slice(0, 16);
+      const in48Hours = new Date(now.getTime() + 48 * 60 * 60 * 1000).toISOString().slice(0, 16);
+      const past2Days = new Date(now.getTime() - 48 * 60 * 60 * 1000).toISOString().slice(0, 16);
+
+      const ewayBills = [
+        {
+          id: "ewb_1",
+          ewbNo: "321458902145",
+          grNo: "2026-2027-1924_TTC",
+          firm: "TTC",
+          truckNo: "RJ52GB3114",
+          driver: "Rk Dewanda 3114",
+          driverMobile: "6376140149",
+          origin: "Rajsamand (Raj.)",
+          destination: "Noida (U.P.)",
+          distanceKm: 650,
+          generatedAt: new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString().slice(0, 16),
+          validUntil: in48Hours,
+          status: "Active",
+          remarks: "Marble powder consignment"
+        },
+        {
+          id: "ewb_2",
+          ewbNo: "551240987112",
+          grNo: "2026-2027-164_SMTC",
+          firm: "SMTC",
+          truckNo: "RJ52GA7310",
+          driver: "Kalu Gurjar",
+          driverMobile: "7297854407",
+          origin: "Udaipur (Raj.)",
+          destination: "Sikandrabad (U.P.)",
+          distanceKm: 720,
+          generatedAt: new Date(now.getTime() - 60 * 60 * 1000).toISOString().slice(0, 16),
+          validUntil: in12Hours,
+          status: "Expiring Soon",
+          remarks: "Tyre puncture delay near Jaipur bypass - Needs extension if delayed"
+        },
+        {
+          id: "ewb_3",
+          ewbNo: "119800234510",
+          grNo: "2026-2027-1882_TTC",
+          firm: "TTC",
+          truckNo: "RJ01GC2159",
+          driver: "Kaluram Jat Shrinagar",
+          driverMobile: "9784175913",
+          origin: "Rajsamand (Raj.)",
+          destination: "Dadri (U.P.)",
+          distanceKm: 610,
+          generatedAt: new Date(now.getTime() - 96 * 60 * 60 * 1000).toISOString().slice(0, 16),
+          validUntil: past2Days,
+          status: "Completed",
+          remarks: "Delivered & unloaded safely"
+        }
+      ];
+
+      const fleetCompliance = [
+        {
+          id: "flt_1",
+          truckNo: "RJ52GA7729",
+          model: "Tata Signa 4825.TK 16-Tyre",
+          ownership: "Self (MTC Fleet)",
+          driver: "Bhagchand 0729",
+          driverMobile: "8955266993",
+          insurancePolicy: "New India Assurance - POL-890214",
+          insuranceExpiry: "2026-10-15",
+          fitnessExpiry: "2026-11-20",
+          npExpiry: "2027-02-28",
+          pucExpiry: "2026-09-25",
+          currentKm: 152000,
+          lastServiceKm: 145000,
+          remarks: "Next engine oil & filter service due at 155,000 Km"
+        },
+        {
+          id: "flt_2",
+          truckNo: "RJ52GA8678",
+          model: "Ashok Leyland 4220 14-Tyre",
+          ownership: "Self (MTC Fleet)",
+          driver: "Mahendra Jat 2585",
+          driverMobile: "9521891459",
+          insurancePolicy: "United India Insurance - POL-554109",
+          insuranceExpiry: "2026-09-18", // Expiring soon!
+          fitnessExpiry: "2027-01-10",
+          npExpiry: "2026-12-31",
+          pucExpiry: "2026-10-10",
+          currentKm: 188500,
+          lastServiceKm: 180000,
+          remarks: "Insurance renewal urgent"
+        },
+        {
+          id: "flt_3",
+          truckNo: "RJ52GB2589",
+          model: "BharatBenz 3523R 12-Tyre",
+          ownership: "Self (MTC Fleet)",
+          driver: "Ramdev Gurjar",
+          driverMobile: "9829100234",
+          insurancePolicy: "ICICI Lombard - POL-112450",
+          insuranceExpiry: "2027-03-05",
+          fitnessExpiry: "2026-09-22", // Expiring soon!
+          npExpiry: "2027-04-15",
+          pucExpiry: "2026-11-05",
+          currentKm: 104000,
+          lastServiceKm: 98000,
+          remarks: "RTO Passing / Fitness scheduled this week at Rajsamand DTO"
+        },
+        {
+          id: "flt_4",
+          truckNo: "RJ52GA7335",
+          model: "Tata LPT 3118 10-Tyre",
+          ownership: "Self (MTC Fleet)",
+          driver: "Shravan Lal",
+          driverMobile: "9414209811",
+          insurancePolicy: "Oriental Insurance - POL-998120",
+          insuranceExpiry: "2027-05-12",
+          fitnessExpiry: "2027-06-15",
+          npExpiry: "2027-08-30",
+          pucExpiry: "2026-12-01",
+          currentKm: 215000,
+          lastServiceKm: 210000,
+          remarks: "All papers valid"
+        }
+      ];
+
+      localStorage.setItem('tms_ewayBills', JSON.stringify(ewayBills));
+      localStorage.setItem('tms_fleetCompliance', JSON.stringify(fleetCompliance));
+      localStorage.setItem('tms_seeded_phase4', 'true');
+    }
   }
 }
 
 // Global Singleton Instance
 const dbService = new DBService();
+
 
 

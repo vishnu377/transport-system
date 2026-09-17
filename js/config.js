@@ -54,14 +54,33 @@ const APP_CONFIG = {
     "Less Freight"
   ],
 
-  // Trip / Bilty Statuses
-  tripStatuses: [
-    "Open",
-    "Transit",
-    "POD Pending",
-    "Settled"
-  ]
+  // User Roles for Staff Security
+  userRoles: {
+    SUPER_ADMIN: {
+      id: "SUPER_ADMIN",
+      name: "Mosa Ji (Super Admin)",
+      canDelete: true,
+      canViewPnl: true,
+      canManageUsers: true
+    },
+    BRANCH_MUNSHI: {
+      id: "BRANCH_MUNSHI",
+      name: "Shahpura Munshi / Yard Operator",
+      canDelete: false,
+      canViewPnl: false,
+      canManageUsers: false
+    },
+    ACCOUNTANT: {
+      id: "ACCOUNTANT",
+      name: "Accountant / Munim Ji",
+      canDelete: false,
+      canViewPnl: true,
+      canManageUsers: false
+    }
+  }
 };
 
 // Freeze to prevent accidental modification
 Object.freeze(APP_CONFIG.firms);
+Object.freeze(APP_CONFIG.userRoles);
+

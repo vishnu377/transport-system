@@ -29,6 +29,9 @@ const AppUI = {
         <a href="${pagesPath}bilty-booking.html" class="sidebar-link ${activePage === 'bilty' ? 'active' : ''}">
           <i class="bi bi-file-earmark-text"></i> Bilty (LR) Booking
         </a>
+        <a href="${pagesPath}eway-bills.html" class="sidebar-link ${activePage === 'eway' ? 'active' : ''}">
+          <i class="bi bi-shield-exclamation"></i> E-Way Bills & Validity
+        </a>
         <a href="${pagesPath}pod-register.html" class="sidebar-link ${activePage === 'pod' ? 'active' : ''}">
           <i class="bi bi-card-checklist"></i> POD (पावती) Register
         </a>
@@ -42,6 +45,9 @@ const AppUI = {
         </a>
         <a href="${pagesPath}drivers.html" class="sidebar-link ${activePage === 'drivers' ? 'active' : ''}">
           <i class="bi bi-person-vcard"></i> Drivers Master
+        </a>
+        <a href="${pagesPath}fleet-maintenance.html" class="sidebar-link ${activePage === 'fleet' ? 'active' : ''}">
+          <i class="bi bi-shield-check"></i> Fleet & Documents
         </a>
         <a href="${pagesPath}brokers.html" class="sidebar-link ${activePage === 'brokers' ? 'active' : ''}">
           <i class="bi bi-people"></i> Brokers / Dallal
@@ -72,15 +78,71 @@ const AppUI = {
           <i class="bi bi-database-down"></i> Excel Import & Backup
         </a>
       </div>
-      <div class="sidebar-footer text-muted small d-flex justify-content-between align-items-center">
-        <span><i class="bi bi-shield-check text-success"></i> Standalone Mode</span>
-        <span class="badge bg-primary">v1.2</span>
+
+      <!-- Role Switcher & Status Footer -->
+      <div class="sidebar-footer p-2 border-top bg-dark-subtle">
+        <div class="d-flex justify-content-between align-items-center mb-1">
+          <small class="fw-bold text-dark"><i class="bi bi-person-lock me-1"></i> Active Role:</small>
+          <span class="badge bg-primary" id="role-badge">Admin</span>
+        </div>
+        <select id="user-role-select" class="form-select form-select-sm" style="font-size: 0.78rem;" onchange="AppUI.switchUserRole(this.value)">
+          <option value="SUPER_ADMIN">👑 Mosa Ji (Super Admin)</option>
+          <option value="BRANCH_MUNSHI">🏢 Shahpura Munshi (Operator)</option>
+          <option value="ACCOUNTANT">💼 Accountant (Munim Ji)</option>
+        </select>
       </div>
     `;
 
     const sidebarEl = document.getElementById('sidebar');
     if (sidebarEl) {
       sidebarEl.innerHTML = sidebarHTML;
+      this.initRoleSelector();
+    }
+  },
+
+  // Role Management
+  getActiveRole() {
+    return localStorage.getItem('tms_active_role') || 'SUPER_ADMIN';
+  },
+
+  initRoleSelector() {
+    const role = this.getActiveRole();
+    const select = document.getElementById('user-role-select');
+    const badge = document.getElementById('role-badge');
+    if (select) select.value = role;
+    if (badge) {
+      if (role === 'SUPER_ADMIN') {
+        badge.innerText = 'Super Admin';
+        badge.className = 'badge bg-primary';
+      } else if (role === 'BRANCH_MUNSHI') {
+        badge.innerText = 'Munshi';
+        badge.className = 'badge bg-warning text-dark';
+      } else {
+        badge.innerText = 'Accountant';
+        badge.className = 'badge bg-info text-dark';
+      }
+    }
+    this.applyRolePermissions(role);
+  },
+
+  switchUserRole(roleId) {
+    localStorage.setItem('tms_active_role', roleId);
+    this.initRoleSelector();
+    const roleName = APP_CONFIG.userRoles[roleId]?.name || roleId;
+    this.showToast(`Switched user role to: ${roleName}`, 'info');
+    setTimeout(() => { window.location.reload(); }, 600);
+  },
+
+  applyRolePermissions(role) {
+    const roleConfig = APP_CONFIG.userRoles[role] || APP_CONFIG.userRoles.SUPER_ADMIN;
+
+    // Hide or disable delete buttons if user cannot delete
+    if (!roleConfig.canDelete) {
+      setTimeout(() => {
+        document.querySelectorAll('.btn-outline-danger, button[title*="Delete"]').forEach(btn => {
+          btn.style.display = 'none';
+        });
+      }, 300);
     }
   },
 
