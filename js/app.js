@@ -12,7 +12,7 @@ const AuthService = {
     // Fallback to default Super Admin if not logged in
     return {
       id: "usr_1",
-      name: "Mosa Ji (Owner)",
+      name: " (Owner)",
       email: "admin@ttclogistics.com",
       role: "SUPER_ADMIN"
     };
@@ -111,7 +111,7 @@ const AppUI = {
           <div class="d-flex align-items-center gap-2 overflow-hidden">
             <span class="fs-5" id="user-avatar-icon">👑</span>
             <div class="text-truncate">
-              <div class="fw-bold text-dark small text-truncate" id="logged-user-name">Mosa Ji</div>
+              <div class="fw-bold text-dark small text-truncate" id="logged-user-name">super admin</div>
               <span class="badge bg-primary" id="role-badge" style="font-size: 0.65rem;">Super Admin</span>
             </div>
           </div>
@@ -125,7 +125,7 @@ const AppUI = {
             <small class="text-muted" style="font-size: 0.72rem;">Quick Role Switch:</small>
           </div>
           <select id="user-role-select" class="form-select form-select-sm" style="font-size: 0.75rem;" onchange="AppUI.switchUserRole(this.value)">
-            <option value="SUPER_ADMIN">👑 Mosa Ji (Super Admin)</option>
+            <option value="SUPER_ADMIN">👑  (Super Admin)</option>
             <option value="BRANCH_MUNSHI">🏢 Shahpura Munshi (Operator)</option>
             <option value="ACCOUNTANT">💼 Accountant (Munim Ji)</option>
           </select>
@@ -217,7 +217,7 @@ const AppUI = {
     // Update active user profile
     const currentUser = AuthService.getCurrentUser();
     currentUser.role = roleId;
-    if (roleId === 'SUPER_ADMIN') currentUser.name = "Mosa Ji (Owner)";
+    if (roleId === 'SUPER_ADMIN') currentUser.name = " (Owner)";
     else if (roleId === 'BRANCH_MUNSHI') currentUser.name = "Kaluram Ji (Munshi)";
     else if (roleId === 'ACCOUNTANT') currentUser.name = "Rameshwar Ji (Accountant)";
     localStorage.setItem('tms_current_user', JSON.stringify(currentUser));
