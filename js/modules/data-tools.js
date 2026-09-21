@@ -196,10 +196,15 @@ const DataToolsModule = {
 
     if (target === 'trips') {
       // High-performance bulk import for trips
+      const isReplaceMode = document.getElementById('mode-replace')?.checked ?? false;
       statusText.innerText = `Preparing ${total.toLocaleString('en-IN')} bilties for import...`;
       progressBar.style.width = '30%';
 
-      const existingTrips = await dbService.getAll('trips');
+      if (isReplaceMode) {
+        dbService.clearAllTrips();
+      }
+
+      const existingTrips = isReplaceMode ? [] : await dbService.getAll('trips');
       const tripMap = new Map();
       existingTrips.forEach(t => tripMap.set(t.grNo || t.id, t));
 
@@ -265,10 +270,14 @@ const DataToolsModule = {
       }
 
       const mergedList = Array.from(tripMap.values());
+      localStorage.setItem('tms_custom_trips', JSON.stringify(mergedList));
       localStorage.setItem('tms_trips', JSON.stringify(mergedList));
       progressBar.style.width = '100%';
-      statusText.innerText = `Success! ${total} bilties imported into Trips Register.`;
-      AppUI.showToast(`Successfully imported ${total} bilties into Trips Register!`, "success");
+      const msg = isReplaceMode 
+        ? `पुरानी फाइल हटा दी गई और नई फ़ाइल की ${total} बिल्टियां लोड हो गईं!` 
+        : `सफलतापूर्वक ${total} बिल्टियां सिस्टम में जोड़ दी गईं!`;
+      statusText.innerText = msg;
+      AppUI.showToast(msg, "success");
       await this.updateRecordCounts();
       return;
     }
@@ -371,6 +380,15 @@ const DataToolsModule = {
         btn.disabled = false;
         btn.innerHTML = `⚡ 1-Click: Load Mosa Ji's 5,103 Real Bilties & 74 Trucks Now`;
       }
+    }
+  },
+
+  // Clear all trips
+  async confirmClearAllTrips() {
+    if (confirm("क्या आप वाकई पुरानी सभी 5,103 बिल्टियां हटाकर सिस्टम बिल्कुल खाली करना चाहते हैं?\n\nइसके बाद आप अपनी नई Excel फ़ाइल फ्रेश लोड कर सकेंगे।")) {
+      dbService.clearAllTrips();
+      await this.updateRecordCounts();
+      AppUI.showToast("पुरानी सभी बिल्टियां हटा दी गईं। अब आप नई Excel फ़ाइल फ्रेश लोड कर सकते हैं!", "success");
     }
   },
 

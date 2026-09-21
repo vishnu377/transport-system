@@ -68,15 +68,26 @@ const BiltyBookingModule = {
     const firm = document.getElementById('bilty-firm').value || 'TTC';
     const year = document.getElementById('bilty-year').value || '2026-2027';
 
-    // Find highest GR sequence number in database
+    // Find highest GR sequence number in database for the selected firm & year
     const allTrips = await dbService.getAll('trips');
-    let maxSeq = 2079; // Default based on Mosa ji's highest in 2026-2027
+    let maxSeq = 0;
     allTrips.forEach(t => {
-      const seq = parseInt(t.grSeq, 10);
-      if (!isNaN(seq) && seq > maxSeq && seq < 100000) {
-        maxSeq = seq;
+      if ((!t.transport || t.transport === firm) && (!t.financialYear || t.financialYear === year)) {
+        const seq = parseInt(t.grSeq, 10);
+        if (!isNaN(seq) && seq > maxSeq && seq < 100000) {
+          maxSeq = seq;
+        }
       }
     });
+
+    if (maxSeq === 0) {
+      allTrips.forEach(t => {
+        const seq = parseInt(t.grSeq, 10);
+        if (!isNaN(seq) && seq > maxSeq && seq < 100000) {
+          maxSeq = seq;
+        }
+      });
+    }
 
     const nextSeq = maxSeq + 1;
     const shortGr = `${nextSeq}_${firm}`;

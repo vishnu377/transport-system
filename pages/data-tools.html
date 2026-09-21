@@ -62,25 +62,25 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <span class="badge bg-primary text-white mb-1"><i class="bi bi-star-fill me-1"></i> Mosa Ji's Transport Data</span>
-                <h5 class="fw-bold text-dark mb-0">GR14926 (2).xlsx Direct Import (5,103 Bilties)</h5>
-                <small class="text-muted">शाहपुरा व राजसमंद के वास्तविक 5,103 बिल्टियां और 74 गाड़ियाँ लोड करें</small>
+                <h5 class="fw-bold text-dark mb-0">AppSheet.ViewData (6,643 Real Bilties)</h5>
+                <small class="text-muted">शाहपुरा व राजसमंद के वास्तविक 6,643 बिल्टियां और 74 गाड़ियाँ लोड करें</small>
               </div>
               <span class="badge bg-success fs-6">19 Fields Ready</span>
             </div>
 
             <div class="p-3 bg-white rounded border mb-3">
               <div class="row g-2 text-muted small">
-                <div class="col-4">📋 कुल रिकॉर्ड्स: <strong class="text-dark">5,103</strong></div>
+                <div class="col-4">📋 कुल रिकॉर्ड्स: <strong class="text-dark">6,643</strong></div>
                 <div class="col-4">🚛 गाड़ियाँ: <strong class="text-dark">74 Trucks</strong></div>
-                <div class="col-4">📍 गंतव्य: <strong class="text-dark">808 Cities</strong></div>
+                <div class="col-4">📍 गंतव्य: <strong class="text-dark">497 Cities</strong></div>
                 <div class="col-12 mt-1">
-                  <span class="text-primary font-monospace">C:\Users\HP\Downloads\GR14926 (2).xlsx</span>
+                  <span class="text-primary font-monospace">C:\Users\HP\Downloads\AppSheet.ViewData.2026-09-21 (1).csv</span>
                 </div>
               </div>
             </div>
 
             <button class="btn btn-success fw-bold w-100 shadow-sm py-2" onclick="DataToolsModule.loadMosaJiExcelData()">
-              <i class="bi bi-lightning-charge-fill me-1"></i> ⚡ 1-Click: Load Mosa Ji's 5,103 Real Bilties & 74 Trucks Now
+              <i class="bi bi-lightning-charge-fill me-1"></i> ⚡ 1-Click: Load 6,643 Real Bilties & 74 Trucks Now
             </button>
           </div>
 
@@ -110,8 +110,26 @@
               <label class="form-label fw-semibold small">2. Excel (.xlsx / .xls) या CSV फ़ाइल चुनें</label>
               <input type="file" id="import-file" class="form-control" accept=".xlsx, .xls, .csv, text/csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onchange="DataToolsModule.onFileSelected(event)">
               <small class="text-muted d-block mt-1">
-                Tip: आप सीधे अपनी Excel फ़ाइल (.xlsx) चुन सकते हैं, CSV में बदलने की भी ज़रूरत नहीं है!
+                Tip: आप सीधे अपनी नई Excel फ़ाइल (.xlsx) चुन सकते हैं, CSV में बदलने की भी ज़रूरत नहीं है!
               </small>
+            </div>
+
+            <!-- Import Mode: Replace vs Append -->
+            <div class="mb-3 p-3 bg-light rounded border" id="import-mode-container">
+              <label class="form-label fw-semibold small text-dark d-block mb-2">3. पुराना डेटा हटाना है या नया जोड़ना है? (Import Mode)</label>
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="radio" name="importMode" id="mode-replace" value="replace" checked>
+                <label class="form-check-label fw-bold text-danger small" for="mode-replace">
+                  <i class="bi bi-trash3 me-1"></i> पुरानी सभी बिल्टियां हटाकर सिर्फ इस नई Excel फ़ाइल का डेटा रखें (Replace All)
+                </label>
+                <small class="text-muted d-block ps-4">पुरानी 5,103 बिल्टियां साफ़ हो जाएंगी और केवल इस नई Excel फ़ाइल का फ्रेश डेटा दिखेगा।</small>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="importMode" id="mode-append" value="append">
+                <label class="form-check-label fw-semibold text-dark small" for="mode-append">
+                  <i class="bi bi-plus-circle me-1"></i> पुरानी बिल्टियों के साथ जोड़ें (Append to Existing Data)
+                </label>
+              </div>
             </div>
 
             <!-- Preview Table -->
@@ -188,6 +206,17 @@
               <input type="file" id="restore-file" class="form-control form-control-sm mb-2" accept=".json">
               <button class="btn btn-outline-warning btn-sm w-100" onclick="DataToolsModule.restoreJsonBackup()">
                 <i class="bi bi-arrow-counterclockwise me-1"></i> Restore System Database
+              </button>
+            </div>
+
+            <hr>
+
+            <!-- Danger Zone: Reset / Clear Trips -->
+            <div class="p-3 bg-danger-subtle rounded border border-danger">
+              <h6 class="fw-bold text-danger mb-1"><i class="bi bi-exclamation-triangle-fill me-1"></i> पुरानी सभी बिल्टियां हटाएं (Reset Trips)</h6>
+              <small class="text-muted d-block mb-2">अगर आप पुरानी सभी 5,103 बिल्टियां तुरंत साफ़ करके सिस्टम बिल्कुल खाली करना चाहते हैं:</small>
+              <button class="btn btn-danger btn-sm w-100 fw-bold" onclick="DataToolsModule.confirmClearAllTrips()">
+                <i class="bi bi-trash3-fill me-1"></i> पुरानी सभी बिल्टियां साफ़ करें (Clear All Trips)
               </button>
             </div>
 

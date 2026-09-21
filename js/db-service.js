@@ -68,8 +68,9 @@ class DBService {
   }
 
   getAllTrips(cloudItems = []) {
-    // 1. Base dataset: window.INITIAL_EXCEL_TRIPS (5,103 trips)
-    const baseTrips = (typeof window !== 'undefined' && Array.isArray(window.INITIAL_EXCEL_TRIPS))
+    // Check if user chose to clear/reset the initial base dataset
+    const isBaseCleared = localStorage.getItem('tms_base_trips_cleared') === 'true';
+    const baseTrips = (!isBaseCleared && typeof window !== 'undefined' && Array.isArray(window.INITIAL_EXCEL_TRIPS))
       ? window.INITIAL_EXCEL_TRIPS
       : [];
 
@@ -80,7 +81,7 @@ class DBService {
 
     const tripMap = new Map();
 
-    // 1. Add all 5,103 base trips
+    // 1. Add base trips (if not cleared)
     for (const t of baseTrips) {
       const key = t.grNo || t.id;
       if (!deletedSet.has(String(t.id)) && !deletedSet.has(String(t.grNo))) {
@@ -115,6 +116,26 @@ class DBService {
     });
 
     return all;
+  }
+
+  // Clear all trips (removes old Excel trips and custom trips)
+  clearAllTrips() {
+    localStorage.setItem('tms_base_trips_cleared', 'true');
+    localStorage.removeItem('tms_custom_trips');
+    localStorage.removeItem('tms_edited_trips');
+    localStorage.removeItem('tms_deleted_trips');
+    localStorage.removeItem('tms_trips');
+  }
+
+  // Restore the original base dataset from sample-trips-data.js
+  restoreBaseTrips() {
+    localStorage.removeItem('tms_base_trips_cleared');
+    localStorage.removeItem('tms_custom_trips');
+    localStorage.removeItem('tms_edited_trips');
+    localStorage.removeItem('tms_deleted_trips');
+    if (typeof window !== 'undefined' && window.INITIAL_EXCEL_TRIPS) {
+      localStorage.setItem('tms_trips', JSON.stringify(window.INITIAL_EXCEL_TRIPS));
+    }
   }
 
   async getById(collectionName, id) {

@@ -723,12 +723,6 @@ _MTC & TTC Logistics Management System_`;
   },
 
   async deleteTrip(id) {
-    const user = AuthService.getCurrentUser();
-    if (user && user.role === 'BRANCH_MUNSHI') {
-      AppUI.showToast("Permission Denied: Munshi cannot delete trip records.", "danger");
-      return;
-    }
-
     if (confirm("Are you sure you want to delete this trip record?")) {
       await dbService.delete('trips', id);
       this.allTrips = this.allTrips.filter(t => String(t.id) !== String(id));
