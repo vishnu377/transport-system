@@ -220,7 +220,11 @@ const TripsModule = {
     if (!controls) return;
 
     if (totalPages <= 1) {
-      controls.innerHTML = '';
+      controls.innerHTML = `
+        <li class="page-item disabled"><a class="page-link" href="javascript:void(0)">&laquo; Prev</a></li>
+        <li class="page-item active"><a class="page-link" href="javascript:void(0)">1</a></li>
+        <li class="page-item disabled"><a class="page-link" href="javascript:void(0)">Next &raquo;</a></li>
+      `;
       return;
     }
 
@@ -229,14 +233,14 @@ const TripsModule = {
     // First button
     html += `
       <li class="page-item ${this.currentPage === 1 ? 'disabled' : ''}">
-        <a class="page-link" href="#" onclick="TripsModule.goToPage(1); return false;" title="First Page">&laquo;&laquo;</a>
+        <a class="page-link" href="javascript:void(0)" onclick="TripsModule.goToPage(1)" title="First Page">&laquo;&laquo; First</a>
       </li>
     `;
 
     // Previous button
     html += `
       <li class="page-item ${this.currentPage === 1 ? 'disabled' : ''}">
-        <a class="page-link" href="#" onclick="TripsModule.goToPage(${this.currentPage - 1}); return false;">&laquo; Prev</a>
+        <a class="page-link" href="javascript:void(0)" onclick="TripsModule.goToPage(${this.currentPage - 1})" title="Previous Page">&laquo; Prev</a>
       </li>
     `;
 
@@ -249,34 +253,34 @@ const TripsModule = {
     }
 
     if (startPage > 1) {
-      html += `<li class="page-item"><a class="page-link" href="#" onclick="TripsModule.goToPage(1); return false;">1</a></li>`;
+      html += `<li class="page-item"><a class="page-link" href="javascript:void(0)" onclick="TripsModule.goToPage(1)">1</a></li>`;
       if (startPage > 2) html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
     }
 
     for (let i = startPage; i <= endPage; i++) {
       html += `
         <li class="page-item ${i === this.currentPage ? 'active' : ''}">
-          <a class="page-link" href="#" onclick="TripsModule.goToPage(${i}); return false;">${i}</a>
+          <a class="page-link" href="javascript:void(0)" onclick="TripsModule.goToPage(${i})">${i}</a>
         </li>
       `;
     }
 
     if (endPage < totalPages) {
       if (endPage < totalPages - 1) html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
-      html += `<li class="page-item"><a class="page-link" href="#" onclick="TripsModule.goToPage(${totalPages}); return false;">${totalPages}</a></li>`;
+      html += `<li class="page-item"><a class="page-link" href="javascript:void(0)" onclick="TripsModule.goToPage(${totalPages})">${totalPages}</a></li>`;
     }
 
     // Next button
     html += `
       <li class="page-item ${this.currentPage === totalPages ? 'disabled' : ''}">
-        <a class="page-link" href="#" onclick="TripsModule.goToPage(${this.currentPage + 1}); return false;">Next &raquo;</a>
+        <a class="page-link" href="javascript:void(0)" onclick="TripsModule.goToPage(${this.currentPage + 1})" title="Next Page">Next &raquo;</a>
       </li>
     `;
 
     // Last button
     html += `
       <li class="page-item ${this.currentPage === totalPages ? 'disabled' : ''}">
-        <a class="page-link" href="#" onclick="TripsModule.goToPage(${totalPages}); return false;" title="Last Page">&raquo;&raquo;</a>
+        <a class="page-link" href="javascript:void(0)" onclick="TripsModule.goToPage(${totalPages})" title="Last Page">Last &raquo;&raquo;</a>
       </li>
     `;
 

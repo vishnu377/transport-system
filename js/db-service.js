@@ -43,11 +43,15 @@ class DBService {
   // --- Universal CRUD Operations ---
 
   async getAll(collectionName) {
+    let cloudItems = [];
     if (this.isFirebaseReady) {
       try {
         const snapshot = await this.db.collection(collectionName).get();
         if (!snapshot.empty) {
-          return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          cloudItems = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          if (collectionName !== 'trips') {
+            return cloudItems;
+          }
         }
       } catch (err) {
         console.warn(`Firestore read failed for ${collectionName}, reading from LocalStorage:`, err.message);
@@ -55,7 +59,7 @@ class DBService {
     }
 
     if (collectionName === 'trips') {
-      return this.getAllTrips();
+      return this.getAllTrips(cloudItems);
     }
 
     // LocalStorage Fallback for other collections
@@ -63,47 +67,54 @@ class DBService {
     return localData ? JSON.parse(localData) : [];
   }
 
-  getAllTrips() {
+  getAllTrips(cloudItems = []) {
     // 1. Base dataset: window.INITIAL_EXCEL_TRIPS (5,103 trips)
-    let baseTrips = (typeof window !== 'undefined' && Array.isArray(window.INITIAL_EXCEL_TRIPS))
+    const baseTrips = (typeof window !== 'undefined' && Array.isArray(window.INITIAL_EXCEL_TRIPS))
       ? window.INITIAL_EXCEL_TRIPS
       : [];
 
-    // Check if user previously imported into localStorage tms_trips with > 100 items
-    try {
-      const storedTrips = JSON.parse(localStorage.getItem('tms_trips') || '[]');
-      if (storedTrips.length > baseTrips.length) {
-        baseTrips = storedTrips;
-      }
-    } catch (e) {
-      // quota or parse issue, ignore
-    }
-
-    // 2. Apply any user modifications/edits from tms_edited_trips
     const editedMap = JSON.parse(localStorage.getItem('tms_edited_trips') || '{}');
     const deletedList = JSON.parse(localStorage.getItem('tms_deleted_trips') || '[]');
     const deletedSet = new Set(deletedList.map(String));
-
-    // 3. User newly created custom trips from tms_custom_trips
     const customTrips = JSON.parse(localStorage.getItem('tms_custom_trips') || '[]');
 
-    const result = [];
-    
-    // Add custom trips first (newest at top)
-    for (const t of customTrips) {
-      if (!deletedSet.has(String(t.id))) {
-        result.push(editedMap[t.id] ? { ...t, ...editedMap[t.id] } : t);
-      }
-    }
+    const tripMap = new Map();
 
-    // Add base trips
+    // 1. Add all 5,103 base trips
     for (const t of baseTrips) {
-      if (!deletedSet.has(String(t.id))) {
-        result.push(editedMap[t.id] ? { ...t, ...editedMap[t.id] } : t);
+      const key = t.grNo || t.id;
+      if (!deletedSet.has(String(t.id)) && !deletedSet.has(String(t.grNo))) {
+        tripMap.set(key, editedMap[t.id] ? { ...t, ...editedMap[t.id] } : t);
       }
     }
 
-    return result;
+    // 2. Add/override with local custom trips
+    for (const t of customTrips) {
+      const key = t.grNo || t.id;
+      if (!deletedSet.has(String(t.id)) && !deletedSet.has(String(t.grNo))) {
+        tripMap.set(key, editedMap[t.id] ? { ...t, ...editedMap[t.id] } : t);
+      }
+    }
+
+    // 3. Add/override with cloud items from Firestore
+    if (Array.isArray(cloudItems)) {
+      for (const t of cloudItems) {
+        const key = t.grNo || t.id;
+        if (!deletedSet.has(String(t.id)) && !deletedSet.has(String(t.grNo))) {
+          tripMap.set(key, { ...(tripMap.get(key) || {}), ...t });
+        }
+      }
+    }
+
+    const all = Array.from(tripMap.values());
+    all.sort((a, b) => {
+      const dateA = a.tripStartDate || '';
+      const dateB = b.tripStartDate || '';
+      if (dateA !== dateB) return dateB.localeCompare(dateA);
+      return String(b.grNo || '').localeCompare(String(a.grNo || ''));
+    });
+
+    return all;
   }
 
   async getById(collectionName, id) {
