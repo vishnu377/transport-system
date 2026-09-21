@@ -51,20 +51,34 @@
 
             <form id="bilty-booking-form" class="p-4">
               
-              <!-- Row 1: Operating Firm & Bilty Series -->
+              <!-- Row 1: Operating Firm, FY & Bilty Series -->
               <div class="row g-3 mb-3 p-3 bg-light rounded border">
-                <div class="col-md-3">
+                <div class="col-md-2">
                   <label class="form-label fw-bold small">Transport Firm *</label>
                   <select id="bilty-firm" class="form-select fw-semibold text-primary">
                     <option value="TTC" selected>TTC Transport</option>
-                    <option value="MTC">MTC (Mahaveer Transport)</option>
+                    <option value="MTC">MTC (Mahaveer)</option>
                     <option value="SMTC">SMTC</option>
                   </select>
                 </div>
 
+                <div class="col-md-2">
+                  <label class="form-label fw-bold small">Financial Year *</label>
+                  <select id="bilty-year" class="form-select fw-semibold">
+                    <option value="2026-2027" selected>2026-2027</option>
+                    <option value="2025-2026">2025-2026</option>
+                    <option value="2024-2025">2024-2025</option>
+                  </select>
+                </div>
+
                 <div class="col-md-3">
-                  <label class="form-label fw-bold small">Bilty / G.R. Number *</label>
+                  <label class="form-label fw-bold small">Full G.R. Number *</label>
                   <input type="text" id="bilty-gr-no" class="form-control font-monospace fw-bold bg-white text-dark" readonly>
+                </div>
+
+                <div class="col-md-2">
+                  <label class="form-label fw-bold small">Short GR (N_G.R.No.)</label>
+                  <input type="text" id="bilty-short-gr" class="form-control font-monospace text-muted bg-white" readonly>
                 </div>
 
                 <div class="col-md-3">
@@ -74,21 +88,13 @@
                     <option value="URP">URP</option>
                   </select>
                 </div>
-
-                <div class="col-md-3">
-                  <label class="form-label fw-bold small">Is GST Applicable?</label>
-                  <select id="bilty-gst" class="form-select">
-                    <option value="Yes" selected>Yes (5% / 12%)</option>
-                    <option value="No">No (RCM / Exempt)</option>
-                  </select>
-                </div>
               </div>
 
               <!-- Row 2: Truck & Driver Details -->
               <div class="row g-3 mb-3">
                 <div class="col-md-4">
                   <label class="form-label fw-semibold small">Truck Registration Number *</label>
-                  <input type="text" id="bilty-truck-no" class="form-control font-monospace text-uppercase fw-bold" placeholder="e.g. RJ52GB3114" required>
+                  <input type="text" id="bilty-truck-no" class="form-control font-monospace text-uppercase fw-bold" placeholder="e.g. RJ52GB2510" required>
                 </div>
 
                 <div class="col-md-4">
@@ -116,72 +122,149 @@
                 </div>
               </div>
 
-              <!-- Row 3: Consignor & Consignee -->
+              <!-- Row 3: Consignor, Consignee, Delivery Address & Bill No -->
               <div class="row g-3 mb-3 p-3 bg-white rounded border">
-                <div class="col-md-6">
+                <div class="col-md-3">
                   <label class="form-label fw-bold small text-dark">Consignor (माल भेजने वाली पार्टी) *</label>
                   <select id="bilty-consignor" class="form-select" required>
                     <option value="">-- Select Consignor --</option>
                   </select>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-3">
+                  <label class="form-label fw-semibold small">Consignor GSTIN</label>
+                  <input type="text" id="bilty-consignor-gstin" class="form-control font-monospace text-uppercase" placeholder="e.g. 08AAJFR3111N1Z1">
+                </div>
+
+                <div class="col-md-3">
                   <label class="form-label fw-bold small text-primary">Consignee (माल पाने वाली पार्टी) *</label>
                   <select id="bilty-consignee" class="form-select" required>
                     <option value="">-- Select Consignee --</option>
                   </select>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-3">
+                  <label class="form-label fw-semibold small">Consignee GSTIN</label>
+                  <input type="text" id="bilty-consignee-gstin" class="form-control font-monospace text-uppercase" placeholder="e.g. 06AAACH2676Q1Z4">
+                </div>
+
+                <div class="col-md-3">
                   <label class="form-label fw-semibold small">Origin (कहाँ से)</label>
                   <input type="text" id="bilty-origin" class="form-control" value="Rajsamand (Raj.)" required>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-3">
                   <label class="form-label fw-semibold small">Destination (कहाँ तक)</label>
                   <input type="text" id="bilty-destination" class="form-control" placeholder="e.g. Sandila (U.P.), Noida, Delhi" required>
                 </div>
+
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold small">Consignee Delivery Address (डिलीवरी का पूरा पता)</label>
+                  <input type="text" id="bilty-delivery-address" class="form-control" placeholder="e.g. Plot No. B4 & B5, Ind. Area, Sandila">
+                </div>
               </div>
 
-              <!-- Row 4: Material & Freight Calculations -->
-              <div class="row g-3 mb-4">
-                <div class="col-md-4">
+              <!-- Row 4: Material, Weight, Rate, E-way Bill & Charges -->
+              <div class="row g-3 mb-3">
+                <div class="col-md-3">
                   <label class="form-label fw-semibold small">Material / Commodity *</label>
-                  <input type="text" id="bilty-material" class="form-control" placeholder="e.g. Marble Powder, Putty Dolomite" required>
+                  <input type="text" id="bilty-material" class="form-control" value="Marble Powder" placeholder="e.g. Marble Powder, Putty Dolomite" required>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-3">
                   <label class="form-label fw-semibold small">Weight in Tonnes (MT) *</label>
-                  <input type="number" id="bilty-weight" class="form-control fw-bold" placeholder="e.g. 41.500" step="any" required>
+                  <input type="number" id="bilty-weight" class="form-control fw-bold" placeholder="e.g. 42.360" step="any" required>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-3">
                   <label class="form-label fw-semibold small">Rate per Tonne (₹) *</label>
-                  <input type="number" id="bilty-rate" class="form-control fw-bold" placeholder="e.g. 2200" step="any" required>
+                  <input type="number" id="bilty-rate" class="form-control fw-bold" placeholder="e.g. 2150" step="any" required>
                 </div>
 
-                <div class="col-md-4">
-                  <label class="form-label fw-bold small text-success">Total Party Freight (₹) [Auto-Calculated]</label>
+                <div class="col-md-3">
+                  <label class="form-label fw-bold small text-success">Freight (Weight × Rate) (₹)</label>
                   <input type="number" id="bilty-freight" class="form-control fw-bold fs-5 text-success bg-light" readonly>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-3">
+                  <label class="form-label fw-semibold small">Party Bill / Invoice No.</label>
+                  <input type="text" id="bilty-bill-no" class="form-control font-monospace" placeholder="e.g. 2026-27/491">
+                </div>
+
+                <div class="col-md-3">
+                  <label class="form-label fw-semibold small">E-way Bill Number</label>
+                  <input type="text" id="bilty-eway-bill" class="form-control font-monospace" placeholder="e.g. 7516 5237 4578">
+                </div>
+
+                <div class="col-md-3">
+                  <label class="form-label fw-semibold small">Invoice / Goods Value (₹)</label>
+                  <input type="number" id="bilty-invoice-value" class="form-control" placeholder="e.g. 222600" step="any">
+                </div>
+
+                <div class="col-md-3">
+                  <label class="form-label fw-semibold small">Loading Charges / हमाली (₹)</label>
+                  <input type="number" id="bilty-loading-charges" class="form-control" value="0" step="any">
+                </div>
+
+                <div class="col-md-3">
+                  <label class="form-label fw-semibold small">Halt Charges / रुकने का खर्च (₹)</label>
+                  <input type="number" id="bilty-halt-charges" class="form-control" value="0" step="any">
+                </div>
+
+                <div class="col-md-3">
                   <label class="form-label fw-semibold small">Broker / Dallal Reference</label>
                   <select id="bilty-broker" class="form-select">
                     <option value="">-- Direct (No Broker) --</option>
                   </select>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-3">
                   <label class="form-label fw-semibold small">Brokerage / Commission (₹)</label>
-                  <input type="number" id="bilty-commission" class="form-control" value="2000" step="any">
+                  <input type="number" id="bilty-commission" class="form-control" value="0" step="any">
+                </div>
+
+                <div class="col-md-3">
+                  <label class="form-label fw-semibold small">Person Liable for GST</label>
+                  <select id="bilty-person-liable-gst" class="form-select">
+                    <option value="Consignor/Consignee/Transporter" selected>Consignor/Consignee/Transporter</option>
+                    <option value="Consignor">Consignor</option>
+                    <option value="Consignee">Consignee</option>
+                    <option value="Transporter">Transporter</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Row 5: GST Compliance & Grand Total -->
+              <div class="row g-3 mb-4 p-3 bg-light rounded border">
+                <div class="col-md-3">
+                  <label class="form-label fw-bold small">Is GST Paid by Party? *</label>
+                  <select id="bilty-gst-paid-party" class="form-select">
+                    <option value="Yes">Yes (GST Paid by Party)</option>
+                    <option value="No" selected>No (RCM / Paid by Consignor)</option>
+                    <option value="Exempt">Exempt</option>
+                  </select>
+                </div>
+
+                <div class="col-md-3">
+                  <label class="form-label fw-semibold small">GST Tax Amount (₹)</label>
+                  <input type="number" id="bilty-gst-amount" class="form-control" value="0" step="any">
+                </div>
+
+                <div class="col-md-3">
+                  <label class="form-label fw-semibold small">GST Due Amount (₹)</label>
+                  <input type="number" id="bilty-gst-due" class="form-control" value="0" step="any">
+                </div>
+
+                <div class="col-md-3">
+                  <label class="form-label fw-bold small text-primary">Grand Total Bill (₹) [Freight + Loading + GST]</label>
+                  <input type="number" id="bilty-grand-total" class="form-control fw-bold fs-5 text-primary bg-white" readonly>
                 </div>
               </div>
 
               <!-- Submit Buttons -->
               <div class="d-flex justify-content-end gap-2 border-top pt-3">
                 <button type="reset" class="btn btn-light border px-3">Reset Form</button>
-                <button type="submit" class="btn btn-primary px-4 shadow-sm fw-bold">
+                <button type="submit" id="bilty-submit-btn" class="btn btn-primary px-4 shadow-sm fw-bold">
                   <i class="bi bi-check2-circle me-1"></i> Save & Generate Bilty
                 </button>
               </div>
@@ -232,6 +315,7 @@
 
   <!-- Core App Scripts -->
   <script src="../js/config.js"></script>
+  <script src="../js/sample-trips-data.js"></script>
   <script src="../js/db-service.js"></script>
   <script src="../js/app.js"></script>
   <script src="../js/modules/bilty-booking.js"></script>

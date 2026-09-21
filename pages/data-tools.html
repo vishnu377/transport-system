@@ -56,11 +56,39 @@
         
         <!-- Column 1: Bulk CSV / Excel Importer -->
         <div class="col-12 col-lg-7">
-          <div class="data-card p-4 h-100">
+          
+          <!-- Mosa Ji's Excel Direct 1-Click Card -->
+          <div class="data-card p-4 mb-4 border-primary border-2 shadow-sm bg-light">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <span class="badge bg-primary text-white mb-1"><i class="bi bi-star-fill me-1"></i> Mosa Ji's Transport Data</span>
+                <h5 class="fw-bold text-dark mb-0">GR14926 (2).xlsx Direct Import (5,103 Bilties)</h5>
+                <small class="text-muted">शाहपुरा व राजसमंद के वास्तविक 5,103 बिल्टियां और 74 गाड़ियाँ लोड करें</small>
+              </div>
+              <span class="badge bg-success fs-6">19 Fields Ready</span>
+            </div>
+
+            <div class="p-3 bg-white rounded border mb-3">
+              <div class="row g-2 text-muted small">
+                <div class="col-4">📋 कुल रिकॉर्ड्स: <strong class="text-dark">5,103</strong></div>
+                <div class="col-4">🚛 गाड़ियाँ: <strong class="text-dark">74 Trucks</strong></div>
+                <div class="col-4">📍 गंतव्य: <strong class="text-dark">808 Cities</strong></div>
+                <div class="col-12 mt-1">
+                  <span class="text-primary font-monospace">C:\Users\HP\Downloads\GR14926 (2).xlsx</span>
+                </div>
+              </div>
+            </div>
+
+            <button class="btn btn-success fw-bold w-100 shadow-sm py-2" onclick="DataToolsModule.loadMosaJiExcelData()">
+              <i class="bi bi-lightning-charge-fill me-1"></i> ⚡ 1-Click: Load Mosa Ji's 5,103 Real Bilties & 74 Trucks Now
+            </button>
+          </div>
+
+          <div class="data-card p-4">
             <div class="d-flex justify-content-between align-items-center mb-3">
               <div>
-                <h5 class="fw-bold text-dark mb-0"><i class="bi bi-file-earmark-spreadsheet text-primary me-2"></i> Bulk CSV / Excel Importer</h5>
-                <small class="text-muted">पुराने AppSheet या Excel से हजारों रिकॉर्ड्स 5 सेकंड में लोड करें</small>
+                <h5 class="fw-bold text-dark mb-0"><i class="bi bi-file-earmark-spreadsheet text-primary me-2"></i> Custom Excel (.xlsx) / CSV Importer</h5>
+                <small class="text-muted">कोई भी नई Excel (.xlsx / .xls) या CSV फ़ाइल यहाँ अपलोड करें</small>
               </div>
               <button class="btn btn-outline-primary btn-sm" onclick="DataToolsModule.downloadTemplate()">
                 <i class="bi bi-file-arrow-down me-1"></i> Sample Template
@@ -70,18 +98,19 @@
             <div class="mb-3">
               <label class="form-label fw-semibold small">1. किस मास्टर में डेटा लोड करना है? (Select Target Collection)</label>
               <select id="import-target" class="form-select" onchange="DataToolsModule.onTargetChange()">
-                <option value="parties">Parties Master (ग्राहक / कंसाइनर - 3,383 Records)</option>
-                <option value="truckOwners">Truck Owners Master (गाड़ी मालिक - 577 Records)</option>
+                <option value="trips" selected>Trips & Bilties Master (5,103+ Dispatches & All 19 Fields)</option>
+                <option value="parties">Parties Master (ग्राहक / कंसाइनर)</option>
+                <option value="truckOwners">Truck Owners Master (गाड़ी मालिक)</option>
                 <option value="drivers">Drivers Master (ड्राइवर सूची)</option>
                 <option value="brokers">Brokers / Dallal Master (दलाल सूची)</option>
               </select>
             </div>
 
             <div class="mb-3">
-              <label class="form-label fw-semibold small">2. CSV फ़ाइल चुनें (Choose CSV File)</label>
-              <input type="file" id="import-file" class="form-control" accept=".csv, text/csv" onchange="DataToolsModule.onFileSelected(event)">
+              <label class="form-label fw-semibold small">2. Excel (.xlsx / .xls) या CSV फ़ाइल चुनें</label>
+              <input type="file" id="import-file" class="form-control" accept=".xlsx, .xls, .csv, text/csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onchange="DataToolsModule.onFileSelected(event)">
               <small class="text-muted d-block mt-1">
-                Tip: Excel में अपनी शीट को <strong>"Save As ➔ CSV (Comma delimited) (*.csv)"</strong> करके सेव करें।
+                Tip: आप सीधे अपनी Excel फ़ाइल (.xlsx) चुन सकते हैं, CSV में बदलने की भी ज़रूरत नहीं है!
               </small>
             </div>
 
@@ -178,8 +207,12 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
+  <!-- SheetJS (Excel Parser) CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
   <!-- Core App Scripts -->
   <script src="../js/config.js"></script>
+  <script src="../js/sample-trips-data.js"></script>
   <script src="../js/db-service.js"></script>
   <script src="../js/app.js"></script>
   <script src="../js/modules/data-tools.js"></script>

@@ -10,6 +10,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
   <!-- Custom TMS Theme -->
   <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/print.css">
 </head>
 <body>
 
@@ -84,12 +85,22 @@
             </div>
           </div>
 
-          <!-- Firm Filter Buttons -->
-          <div class="btn-group btn-group-sm" role="group">
-            <button type="button" class="btn btn-outline-secondary filter-firm-btn active btn-primary text-white" data-firm="All">All Firms</button>
-            <button type="button" class="btn btn-outline-secondary filter-firm-btn" data-firm="TTC">TTC</button>
-            <button type="button" class="btn btn-outline-secondary filter-firm-btn" data-firm="MTC">MTC</button>
-            <button type="button" class="btn btn-outline-secondary filter-firm-btn" data-firm="SMTC">SMTC</button>
+          <!-- Filters: FY & Firm -->
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <select id="filter-year" class="form-select form-select-sm fw-semibold" style="width: 150px;">
+              <option value="All" selected>All Financial Years</option>
+              <option value="2026-2027">FY 2026-2027</option>
+              <option value="2025-2026">FY 2025-2026</option>
+              <option value="2024-2025">FY 2024-2025</option>
+            </select>
+
+            <!-- Firm Filter Buttons -->
+            <div class="btn-group btn-group-sm" role="group">
+              <button type="button" class="btn btn-outline-secondary filter-firm-btn active btn-primary text-white" data-firm="All">All Firms</button>
+              <button type="button" class="btn btn-outline-secondary filter-firm-btn" data-firm="TTC">TTC</button>
+              <button type="button" class="btn btn-outline-secondary filter-firm-btn" data-firm="MTC">MTC</button>
+              <button type="button" class="btn btn-outline-secondary filter-firm-btn" data-firm="SMTC">SMTC</button>
+            </div>
           </div>
         </div>
 
@@ -97,25 +108,44 @@
           <table class="table table-custom mb-0">
             <thead>
               <tr>
-                <th>Bilty / G.R. No.</th>
+                <th>G.R. / Bilty No.</th>
                 <th>Truck & Owner</th>
-                <th>Driver & Phone</th>
-                <th>Route (From - To)</th>
-                <th>Consignee & Commodity</th>
+                <th>Route & Delivery Address</th>
+                <th>Bill No. & FY</th>
                 <th class="text-end">Weight & Rate</th>
-                <th class="text-end">Total Freight</th>
+                <th class="text-end">Freight (₹)</th>
+                <th class="text-end">Loading & GST</th>
+                <th class="text-end">Due / Paid</th>
                 <th>Status</th>
-                <th class="text-center" style="width: 100px;">Actions</th>
+                <th class="text-center" style="width: 90px;">Actions</th>
               </tr>
             </thead>
             <tbody id="trips-tbody">
               <tr>
-                <td colspan="9" class="text-center py-4 text-muted">
+                <td colspan="10" class="text-center py-4 text-muted">
                   <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div> Loading trips...
                 </td>
               </tr>
             </tbody>
           </table>
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center p-3 border-top gap-3 bg-light">
+          <div class="d-flex align-items-center gap-2">
+            <span class="text-muted small">Show</span>
+            <select id="items-per-page" class="form-select form-select-sm" style="width: 80px;">
+              <option value="25">25</option>
+              <option value="50" selected>50</option>
+              <option value="100">100</option>
+            </select>
+            <span class="text-muted small" id="pagination-info">Showing 1 to 50 of 0 trips</span>
+          </div>
+          <nav>
+            <ul class="pagination pagination-sm mb-0" id="pagination-controls">
+              <!-- Dynamic page links -->
+            </ul>
+          </nav>
         </div>
       </div>
 
@@ -128,14 +158,48 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content border-0 shadow">
         <div class="modal-header bg-primary text-white">
-          <h6 class="modal-title fw-bold"><i class="bi bi-file-earmark-text me-1"></i> Trip & Bilty Full Particulars</h6>
+          <h6 class="modal-title fw-bold"><i class="bi bi-file-earmark-text me-1"></i> Trip & Bilty Full Particulars (All 19 Fields)</h6>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body p-4" id="trip-detail-content">
           <!-- Dynamic Content -->
         </div>
-        <div class="modal-footer bg-light">
+        <div class="modal-footer bg-light d-flex justify-content-between">
+          <div class="d-flex gap-2">
+            <button type="button" id="modal-btn-edit" class="btn btn-warning btn-sm fw-bold">
+              <i class="bi bi-pencil-square me-1"></i> Edit This Bilty
+            </button>
+            <button type="button" id="modal-btn-print" class="btn btn-success btn-sm fw-bold">
+              <i class="bi bi-printer me-1"></i> Print Official Bilty
+            </button>
+          </div>
           <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Official Bilty Print & WhatsApp Modal -->
+  <div class="modal fade" id="tripPrintModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header bg-dark text-white">
+          <h6 class="modal-title fw-bold"><i class="bi bi-printer me-2"></i> Official Bilty (Lorry Receipt) - Print Preview</h6>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4" id="trip-print-preview">
+          <!-- Official Bilty HTML -->
+        </div>
+        <div class="modal-footer bg-light d-flex justify-content-between">
+          <button type="button" class="btn btn-success d-flex align-items-center gap-1" id="btn-share-whatsapp">
+            <i class="bi bi-whatsapp"></i> <span>Share on WhatsApp</span>
+          </button>
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary btn-sm px-3" onclick="window.print()">
+              <i class="bi bi-printer me-1"></i> Print A4 Bilty
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -151,6 +215,7 @@
 
   <!-- Core App Scripts -->
   <script src="../js/config.js"></script>
+  <script src="../js/sample-trips-data.js"></script>
   <script src="../js/db-service.js"></script>
   <script src="../js/app.js"></script>
   <script src="../js/modules/trips.js"></script>

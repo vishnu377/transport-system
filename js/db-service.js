@@ -53,9 +53,57 @@ class DBService {
         console.warn(`Firestore read failed for ${collectionName}, reading from LocalStorage:`, err.message);
       }
     }
-    // LocalStorage Fallback
+
+    if (collectionName === 'trips') {
+      return this.getAllTrips();
+    }
+
+    // LocalStorage Fallback for other collections
     const localData = localStorage.getItem(`tms_${collectionName}`);
     return localData ? JSON.parse(localData) : [];
+  }
+
+  getAllTrips() {
+    // 1. Base dataset: window.INITIAL_EXCEL_TRIPS (5,103 trips)
+    let baseTrips = (typeof window !== 'undefined' && Array.isArray(window.INITIAL_EXCEL_TRIPS))
+      ? window.INITIAL_EXCEL_TRIPS
+      : [];
+
+    // Check if user previously imported into localStorage tms_trips with > 100 items
+    try {
+      const storedTrips = JSON.parse(localStorage.getItem('tms_trips') || '[]');
+      if (storedTrips.length > baseTrips.length) {
+        baseTrips = storedTrips;
+      }
+    } catch (e) {
+      // quota or parse issue, ignore
+    }
+
+    // 2. Apply any user modifications/edits from tms_edited_trips
+    const editedMap = JSON.parse(localStorage.getItem('tms_edited_trips') || '{}');
+    const deletedList = JSON.parse(localStorage.getItem('tms_deleted_trips') || '[]');
+    const deletedSet = new Set(deletedList.map(String));
+
+    // 3. User newly created custom trips from tms_custom_trips
+    const customTrips = JSON.parse(localStorage.getItem('tms_custom_trips') || '[]');
+
+    const result = [];
+    
+    // Add custom trips first (newest at top)
+    for (const t of customTrips) {
+      if (!deletedSet.has(String(t.id))) {
+        result.push(editedMap[t.id] ? { ...t, ...editedMap[t.id] } : t);
+      }
+    }
+
+    // Add base trips
+    for (const t of baseTrips) {
+      if (!deletedSet.has(String(t.id))) {
+        result.push(editedMap[t.id] ? { ...t, ...editedMap[t.id] } : t);
+      }
+    }
+
+    return result;
   }
 
   async getById(collectionName, id) {
@@ -70,10 +118,32 @@ class DBService {
       }
     }
     const items = await this.getAll(collectionName);
-    return items.find(item => String(item.id) === String(id)) || null;
+    return items.find(item => String(item.id) === String(id) || String(item.grNo) === String(id)) || null;
   }
 
   async add(collectionName, itemData) {
+    if (collectionName === 'trips') {
+      const newItem = {
+        ...itemData,
+        id: itemData.id || `TRIP_NEW_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      const customTrips = JSON.parse(localStorage.getItem('tms_custom_trips') || '[]');
+      customTrips.unshift(newItem);
+      localStorage.setItem('tms_custom_trips', JSON.stringify(customTrips));
+
+      if (this.isFirebaseReady) {
+        try {
+          await this.db.collection('trips').doc(newItem.id).set(newItem);
+          console.log(` Cloud Synced: trips/${newItem.id}`);
+        } catch (err) {
+          console.warn('Firestore sync error for trips:', err.message);
+        }
+      }
+      return newItem;
+    }
+
     const newItem = {
       ...itemData,
       id: itemData.id || `${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
@@ -107,6 +177,34 @@ class DBService {
   async update(collectionName, id, updatedFields) {
     const updatedAt = new Date().toISOString();
 
+    if (collectionName === 'trips') {
+      let customTrips = JSON.parse(localStorage.getItem('tms_custom_trips') || '[]');
+      const customIdx = customTrips.findIndex(t => String(t.id) === String(id) || String(t.grNo) === String(id));
+      let updatedItem = null;
+
+      if (customIdx >= 0) {
+        updatedItem = { ...customTrips[customIdx], ...updatedFields, updatedAt };
+        customTrips[customIdx] = updatedItem;
+        localStorage.setItem('tms_custom_trips', JSON.stringify(customTrips));
+      } else {
+        const editedMap = JSON.parse(localStorage.getItem('tms_edited_trips') || '{}');
+        const existing = await this.getById('trips', id);
+        updatedItem = { ...(existing || {}), id, ...updatedFields, updatedAt };
+        editedMap[id] = updatedItem;
+        localStorage.setItem('tms_edited_trips', JSON.stringify(editedMap));
+      }
+
+      if (this.isFirebaseReady) {
+        try {
+          await this.db.collection('trips').doc(String(id)).set(updatedItem, { merge: true });
+          console.log(` Cloud Updated: trips/${id}`);
+        } catch (err) {
+          console.warn('Firestore update error for trips:', err.message);
+        }
+      }
+      return updatedItem;
+    }
+
     // Update locally
     const items = await this.getAll(collectionName);
     const index = items.findIndex(item => String(item.id) === String(id));
@@ -132,6 +230,28 @@ class DBService {
   }
 
   async delete(collectionName, id) {
+    if (collectionName === 'trips') {
+      let customTrips = JSON.parse(localStorage.getItem('tms_custom_trips') || '[]');
+      customTrips = customTrips.filter(t => String(t.id) !== String(id) && String(t.grNo) !== String(id));
+      localStorage.setItem('tms_custom_trips', JSON.stringify(customTrips));
+
+      const deletedList = JSON.parse(localStorage.getItem('tms_deleted_trips') || '[]');
+      if (!deletedList.includes(String(id))) {
+        deletedList.push(String(id));
+        localStorage.setItem('tms_deleted_trips', JSON.stringify(deletedList));
+      }
+
+      if (this.isFirebaseReady) {
+        try {
+          await this.db.collection('trips').doc(String(id)).delete();
+          console.log(` Cloud Deleted: trips/${id}`);
+        } catch (err) {
+          console.warn('Firestore delete error for trips:', err.message);
+        }
+      }
+      return true;
+    }
+
     // Delete locally
     let items = await this.getAll(collectionName);
     items = items.filter(item => String(item.id) !== String(id));
@@ -422,6 +542,32 @@ class DBService {
       localStorage.setItem('tms_brokers', JSON.stringify(brokers));
       localStorage.setItem('tms_trips', JSON.stringify(trips));
       localStorage.setItem('tms_seeded_v1', 'true');
+    }
+
+    // Auto-seed Mosa Ji's 5,103 Real Excel Trips if available
+    if (typeof window !== 'undefined' && window.INITIAL_EXCEL_TRIPS && window.INITIAL_EXCEL_TRIPS.length > 0) {
+      try {
+        const storedTrips = JSON.parse(localStorage.getItem('tms_trips') || '[]');
+        if (storedTrips.length <= 5 || !localStorage.getItem('tms_excel_imported_v1')) {
+          localStorage.setItem('tms_trips', JSON.stringify(window.INITIAL_EXCEL_TRIPS));
+          localStorage.setItem('tms_excel_imported_v1', 'true');
+          console.log(` Loaded ${window.INITIAL_EXCEL_TRIPS.length} real trips from Mosa ji's Excel file!`);
+        }
+      } catch (e) {
+        console.warn("Storage quota warning on seed:", e);
+      }
+    }
+
+    // Auto-seed Mosa Ji's 74 Real Trucks if available
+    if (typeof window !== 'undefined' && window.INITIAL_EXCEL_TRUCKS && window.INITIAL_EXCEL_TRUCKS.length > 0) {
+      try {
+        const storedOwners = JSON.parse(localStorage.getItem('tms_truckOwners') || '[]');
+        if (storedOwners.length <= 4) {
+          localStorage.setItem('tms_truckOwners', JSON.stringify([...storedOwners, ...window.INITIAL_EXCEL_TRUCKS]));
+        }
+      } catch (e) {
+        console.warn("Storage quota warning on trucks seed:", e);
+      }
     }
 
     // Phase 2 Seed Data: Payments, Cheques, Cash Book, DEF Urea

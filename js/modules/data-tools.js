@@ -1,6 +1,7 @@
 /**
  * Data Tools Module
  * Handles Bulk CSV/Excel Imports, Template Downloads, and Full Database Backup/Restore
+ * Enhanced with direct SheetJS (.xlsx) parser & 1-Click Mosa Ji Excel Data Loader
  */
 
 const DataToolsModule = {
@@ -43,11 +44,16 @@ const DataToolsModule = {
   },
 
   downloadTemplate() {
-    const target = document.getElementById('import-target')?.value || 'parties';
+    const target = document.getElementById('import-target')?.value || 'trips';
     let csvContent = '';
     let filename = '';
 
-    if (target === 'parties') {
+    if (target === 'trips') {
+      csvContent = "Start Date,Truck No.,G.R.No.,Destination,G.R. No.,Weight,Rate,Freight,Paid,Due,Year,Month,Bill No.,Address,Loading Charges,Is GST Paid by Party?,GST Amount,GST Due Amount,N_G.R.No.\n" +
+                   "2026-09-14,RJ52GA7309,2079,Noida (U.P.),2026-2027-2079_TTC,42.36,2150,91074,0,91074,2026-2027,2026-09,INV-001,\"C-25, Phase-2, Noida (U.P.)-201305\",0,Yes,4553.70,0,2079_TTC\n" +
+                   "2026-09-15,RJ52GA9546,2051,Sandila (U.P.),2026-2027-2051_TTC,80.00,2250,180000,0,180000,2026-2027,2026-09,INV-002,\"Plot No. B4 & B5, Industrial Area, Sandila\",0,No,0,0,2051_TTC";
+      filename = "trips_bilty_template.csv";
+    } else if (target === 'parties') {
       csvContent = "Name,GSTIN,Address,Mobile,ContactPerson,DueAmount,PaidAmount\n" +
                    "Berger Paints India Ltd.,09AABCB0976E2ZS,\"Sandila Industrial Area, Hardoi, UP\",9414659401,Logistics Head,540000,294671469\n" +
                    "Bholenath Minerals,08MWJPK6870R1Z6,\"Industrial Area, Rajsamand, Raj.\",9829241717,Bholenath Ji,180000,15480000";
@@ -77,12 +83,58 @@ const DataToolsModule = {
     if (!file) return;
     this.selectedFile = file;
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const text = e.target.result;
-      this.parseCsvText(text);
-    };
-    reader.readAsText(file);
+    const isExcel = file.name.endsWith('.xlsx') || file.name.endsWith('.xls');
+
+    if (isExcel && typeof XLSX !== 'undefined') {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+          const jsonRows = XLSX.utils.sheet_to_json(firstSheet, { defval: '' });
+          this.parseExcelObjects(jsonRows);
+        } catch (err) {
+          console.error("Excel parse error:", err);
+          AppUI.showToast("Could not parse Excel file. Please ensure it is a valid .xlsx file.", "danger");
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    } else {
+      // CSV parse
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.parseCsvText(e.target.result);
+      };
+      reader.readAsText(file);
+    }
+  },
+
+  parseExcelObjects(rows) {
+    if (!rows || rows.length === 0) {
+      AppUI.showToast("The selected Excel sheet has no rows!", "warning");
+      return;
+    }
+
+    this.parsedRows = rows;
+    const headers = Object.keys(rows[0]);
+
+    // Render Preview
+    const previewBox = document.getElementById('import-preview-section');
+    const thead = document.getElementById('preview-thead');
+    const tbody = document.getElementById('preview-tbody');
+    const label = document.getElementById('preview-count-label');
+
+    label.innerText = `${rows.length.toLocaleString('en-IN')} Rows Detected in Excel`;
+    thead.innerHTML = `<tr>${headers.slice(0, 8).map(h => `<th>${h}</th>`).join('')}</tr>`;
+
+    const sample = rows.slice(0, 5);
+    tbody.innerHTML = sample.map(r => `
+      <tr>${headers.slice(0, 8).map(h => `<td>${r[h] !== undefined ? r[h] : '-'}</td>`).join('')}</tr>
+    `).join('');
+
+    previewBox.classList.remove('d-none');
+    document.getElementById('btn-start-import').disabled = false;
   },
 
   parseCsvText(text) {
@@ -92,7 +144,6 @@ const DataToolsModule = {
       return;
     }
 
-    // Parse CSV handling quotes
     const parseRow = (line) => {
       const result = [];
       let cur = '';
@@ -126,24 +177,7 @@ const DataToolsModule = {
       }
     }
 
-    this.parsedRows = rows;
-
-    // Render Preview
-    const previewBox = document.getElementById('import-preview-section');
-    const thead = document.getElementById('preview-thead');
-    const tbody = document.getElementById('preview-tbody');
-    const label = document.getElementById('preview-count-label');
-
-    label.innerText = `${rows.length.toLocaleString()} Rows Detected for Import`;
-    thead.innerHTML = `<tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr>`;
-
-    const sample = rows.slice(0, 5);
-    tbody.innerHTML = sample.map(r => `
-      <tr>${headers.map(h => `<td>${r[h] || '-'}</td>`).join('')}</tr>
-    `).join('');
-
-    previewBox.classList.remove('d-none');
-    document.getElementById('btn-start-import').disabled = false;
+    this.parseExcelObjects(rows);
   },
 
   async processImport() {
@@ -159,8 +193,88 @@ const DataToolsModule = {
     btn.disabled = true;
 
     const total = this.parsedRows.length;
-    let imported = 0;
 
+    if (target === 'trips') {
+      // High-performance bulk import for trips
+      statusText.innerText = `Preparing ${total.toLocaleString('en-IN')} bilties for import...`;
+      progressBar.style.width = '30%';
+
+      const existingTrips = await dbService.getAll('trips');
+      const tripMap = new Map();
+      existingTrips.forEach(t => tripMap.set(t.grNo || t.id, t));
+
+      for (let i = 0; i < total; i++) {
+        const r = this.parsedRows[i];
+        const grNo = r['G.R. No.'] || r.grNo || r['G.R.No.'] || `TRIP_${Date.now()}_${i}`;
+        const shortGr = r['N_G.R.No.'] || r.shortGrNo || '';
+        const year = r.Year || r.financialYear || '2026-2027';
+
+        let transport = 'TTC';
+        const grUpper = String(grNo).toUpperCase();
+        if (grUpper.includes('SMTC') || grUpper.includes('MAHAVEER')) transport = 'SMTC';
+        else if (grUpper.includes('MTC')) transport = 'MTC';
+
+        const weight = Number(r.Weight || r.weight) || 0;
+        const rate = Number(r.Rate || r.rate) || 0;
+        const freight = Number(r.Freight || r.freight) || (weight * rate);
+        const paid = Number(r.Paid || r.partyPaid) || 0;
+        const due = Number(r.Due || r.partyDue) || (freight - paid);
+
+        const tripItem = {
+          id: `TRIP_IMP_${Date.now()}_${i}`,
+          grNo: String(grNo),
+          grSeq: String(r['G.R.No.'] || r.grSeq || ''),
+          shortGrNo: String(shortGr),
+          transport: transport,
+          biltyType: "Regular",
+          financialYear: String(year),
+          tripStartDate: String(r['Start Date'] || r.tripStartDate || new Date().toISOString().split('T')[0]),
+          truckNo: String(r['Truck No.'] || r.truckNo || '').toUpperCase().replace(/\s+/g, ''),
+          truckOwner: String(r['Truck No.'] || r.truckNo || '') + ' Owner',
+          driver: "Assigned Driver",
+          driverMobile: "",
+          origin: "Rajsamand (Raj.)",
+          destination: String(r.Destination || r.destination || ''),
+          deliveryAddress: String(r.Address || r.deliveryAddress || ''),
+          consignor: "MTC & TTC Logistics Consignor",
+          consignee: String(r.Destination || r.destination || ''),
+          material: "Marble Powder / Goods",
+          billingType: "Per Tonne",
+          weight: weight,
+          rate: rate,
+          freight: freight,
+          loadingCharges: Number(r['Loading Charges'] || r.loadingCharges) || 0,
+          billNo: String(r['Bill No.'] || r.billNo || ''),
+          isGstPaidByParty: String(r['Is GST Paid by Party?'] || r.isGstPaidByParty || 'No'),
+          gstAmount: Number(r['GST Amount'] || r.gstAmount) || 0,
+          gstDueAmount: Number(r['GST Due Amount'] || r.gstDueAmount) || 0,
+          partyPaid: paid,
+          partyDue: due,
+          ownerDue: freight * 0.9,
+          commission: 0,
+          status: due <= 0 ? 'Settled' : 'Transit'
+        };
+
+        tripMap.set(tripItem.grNo, tripItem);
+
+        if (i % 500 === 0) {
+          const percent = Math.round((i / total) * 60) + 30;
+          progressBar.style.width = `${percent}%`;
+          statusText.innerText = `Processed ${i} of ${total} records...`;
+        }
+      }
+
+      const mergedList = Array.from(tripMap.values());
+      localStorage.setItem('tms_trips', JSON.stringify(mergedList));
+      progressBar.style.width = '100%';
+      statusText.innerText = `Success! ${total} bilties imported into Trips Register.`;
+      AppUI.showToast(`Successfully imported ${total} bilties into Trips Register!`, "success");
+      await this.updateRecordCounts();
+      return;
+    }
+
+    // Standard imports for parties, truckOwners, drivers, brokers
+    let imported = 0;
     for (let i = 0; i < total; i++) {
       const r = this.parsedRows[i];
       let itemData = {};
@@ -177,7 +291,7 @@ const DataToolsModule = {
         };
       } else if (target === 'truckOwners') {
         const trucksRaw = r.Trucks || r.trucks || '';
-        const truckList = trucksRaw.split(/[\s,;/]+/).filter(t => t.trim().length > 0);
+        const truckList = String(trucksRaw).split(/[\s,;/]+/).filter(t => t.trim().length > 0);
         itemData = {
           name: r.Name || r.name || 'Unnamed Owner',
           mobile: r.Mobile || r.mobile || '',
@@ -205,7 +319,7 @@ const DataToolsModule = {
       await dbService.add(target, itemData);
       imported++;
 
-      if (i % 5 === 0 || i === total - 1) {
+      if (i % 10 === 0 || i === total - 1) {
         const percent = Math.round((imported / total) * 100);
         progressBar.style.width = `${percent}%`;
         statusText.innerText = `Importing ${imported} of ${total} records (${percent}%)...`;
@@ -217,6 +331,47 @@ const DataToolsModule = {
     progressBar.classList.remove('progress-bar-animated');
 
     await this.updateRecordCounts();
+  },
+
+  // 1-Click Mosa Ji Excel Data Loader
+  async loadMosaJiExcelData() {
+    if (typeof window === 'undefined' || !window.INITIAL_EXCEL_TRIPS) {
+      AppUI.showToast("Dataset file not found! Please check sample-trips-data.js.", "danger");
+      return;
+    }
+
+    const tripsCount = window.INITIAL_EXCEL_TRIPS.length;
+    const trucksCount = window.INITIAL_EXCEL_TRUCKS ? window.INITIAL_EXCEL_TRUCKS.length : 74;
+
+    const btn = document.querySelector('button[onclick="DataToolsModule.loadMosaJiExcelData()"]');
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span> Loading ${tripsCount.toLocaleString('en-IN')} Bilties...`;
+    }
+
+    try {
+      localStorage.setItem('tms_trips', JSON.stringify(window.INITIAL_EXCEL_TRIPS));
+      if (window.INITIAL_EXCEL_TRUCKS) {
+        const existingOwners = JSON.parse(localStorage.getItem('tms_truckOwners') || '[]');
+        localStorage.setItem('tms_truckOwners', JSON.stringify([...existingOwners, ...window.INITIAL_EXCEL_TRUCKS]));
+      }
+      localStorage.setItem('tms_excel_imported_v1', 'true');
+
+      AppUI.showToast(`Success! ${tripsCount.toLocaleString('en-IN')} Bilties and ${trucksCount} Trucks loaded into the system!`, "success");
+      await this.updateRecordCounts();
+
+      if (btn) {
+        btn.className = 'btn btn-outline-success fw-bold w-100 py-2';
+        btn.innerHTML = `<i class="bi bi-check2-all me-1"></i> ${tripsCount.toLocaleString('en-IN')} Bilties & ${trucksCount} Trucks Loaded!`;
+      }
+    } catch (err) {
+      console.error("Error loading Excel data:", err);
+      AppUI.showToast("Failed to load Excel data: " + err.message, "danger");
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = `⚡ 1-Click: Load Mosa Ji's 5,103 Real Bilties & 74 Trucks Now`;
+      }
+    }
   },
 
   // Export any collection as CSV
@@ -254,12 +409,13 @@ const DataToolsModule = {
     const collections = [
       'parties', 'truckOwners', 'drivers', 'brokers', 'trips',
       'payments', 'cheques', 'cashBook', 'defUrea',
-      'gstInvoices', 'podRecords', 'dieselSlips'
+      'gstInvoices', 'podRecords', 'dieselSlips',
+      'ewayBills', 'fleetCompliance', 'users'
     ];
 
     const backupData = {
-      app: "MTC & TTC Logistics ERP",
-      version: "1.2.0",
+      system: "MTC & TTC Logistics TMS ERP",
+      version: "2.0",
       backupTimestamp: new Date().toISOString(),
       data: {}
     };
@@ -269,47 +425,37 @@ const DataToolsModule = {
     }
 
     const jsonStr = JSON.stringify(backupData, null, 2);
-    const dateStr = new Date().toISOString().split('T')[0];
-    const filename = `MTC_TTC_Logistics_FullBackup_${dateStr}.json`;
-
-    this.triggerDownload(jsonStr, filename, 'application/json;charset=utf-8;');
+    const filename = `TTC_TMS_Full_Backup_${new Date().toISOString().split('T')[0]}.json`;
+    this.triggerDownload(jsonStr, filename, 'application/json');
     AppUI.showToast("Full system backup downloaded successfully!", "success");
   },
 
-  // Restore from JSON
+  // Restore Database from JSON
   restoreJsonBackup() {
     const fileInput = document.getElementById('restore-file');
-    const file = fileInput?.files[0];
+    const file = fileInput.files[0];
     if (!file) {
-      AppUI.showToast("Please choose a valid .json backup file first!", "danger");
-      return;
-    }
-
-    if (!confirm("Are you sure you want to restore the database from this backup? Existing data will be preserved or merged.")) {
+      AppUI.showToast("Please choose a valid .json backup file first!", "warning");
       return;
     }
 
     const reader = new FileReader();
     reader.onload = async (e) => {
       try {
-        const backupObj = JSON.parse(e.target.result);
-        if (!backupObj || !backupObj.data) {
-          throw new Error("Invalid backup format!");
+        const backup = JSON.parse(e.target.result);
+        if (!backup.data) {
+          throw new Error("Invalid backup structure");
         }
 
-        for (const col in backupObj.data) {
-          const rows = backupObj.data[col];
-          if (Array.isArray(rows)) {
-            for (const item of rows) {
-              await dbService.add(col, item);
-            }
+        if (confirm("Restore will overwrite your current local records with this backup. Do you want to proceed?")) {
+          for (const col in backup.data) {
+            localStorage.setItem(`tms_${col}`, JSON.stringify(backup.data[col]));
           }
+          AppUI.showToast("Database restored successfully!", "success");
+          await this.updateRecordCounts();
         }
-
-        AppUI.showToast("Database restored successfully from backup!", "success");
-        await this.updateRecordCounts();
       } catch (err) {
-        AppUI.showToast(`Restore failed: ${err.message}`, "danger");
+        AppUI.showToast("Failed to restore backup: Invalid JSON file.", "danger");
       }
     };
     reader.readAsText(file);

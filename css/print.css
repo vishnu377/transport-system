@@ -1,26 +1,236 @@
-/* Print Styling for Bilty & GST Invoices */
+/* ==========================================================================
+   Pixel-Perfect Official Bilty (Lorry Receipt / LR) Print & PDF Styling
+   Exact Replica of MTC & TTC Logistics Format
+   ========================================================================== */
+
+.bilty-official-doc {
+  font-family: 'Arial', 'Segoe UI', sans-serif;
+  color: #000;
+  background: #fff;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  border: 2px solid #000;
+  padding: 12px 16px;
+  box-sizing: border-box;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+/* Header Grid */
+.bilty-official-doc .bilty-top-strip {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  font-size: 11px;
+  margin-bottom: 6px;
+}
+
+.bilty-official-doc .bilty-top-left {
+  font-weight: bold;
+}
+
+.bilty-official-doc .bilty-top-center {
+  font-weight: bold;
+  text-align: center;
+}
+
+.bilty-official-doc .bilty-top-right {
+  text-align: right;
+  font-weight: bold;
+}
+
+/* Brand Banner Box */
+.bilty-official-doc .bilty-brand-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 2px solid #000;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  background: #fff;
+}
+
+.bilty-official-doc .bilty-brand-box .brand-title-box {
+  text-align: center;
+  flex: 1;
+}
+
+.bilty-official-doc .bilty-brand-box h2 {
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.bilty-official-doc .bilty-brand-box .brand-subtitle {
+  font-size: 10px;
+  font-weight: bold;
+  margin-top: 2px;
+  text-transform: uppercase;
+}
+
+.bilty-official-doc .bilty-brand-box .brand-address {
+  font-size: 10.5px;
+  font-weight: bold;
+  margin-top: 2px;
+}
+
+.bilty-official-doc .bilty-truck-graphic {
+  width: 85px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Main Particulars Grid Table */
+.bilty-table-grid {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1.5px solid #000;
+  margin-bottom: 0;
+}
+
+.bilty-table-grid td, 
+.bilty-table-grid th {
+  border: 1px solid #000;
+  padding: 4px 6px;
+  vertical-align: top;
+  font-size: 10.5px;
+}
+
+.bilty-table-grid th {
+  background: #f0f0f0;
+  font-weight: bold;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.bilty-table-grid .field-label {
+  font-weight: bold;
+  font-size: 10px;
+  text-transform: uppercase;
+  color: #111;
+  display: block;
+}
+
+.bilty-table-grid .field-value {
+  font-weight: bold;
+  font-size: 11px;
+}
+
+/* Bank and Tax Bottom Section */
+.bilty-bottom-section {
+  display: flex;
+  width: 100%;
+  border-left: 1.5px solid #000;
+  border-right: 1.5px solid #000;
+  border-bottom: 1.5px solid #000;
+}
+
+.bilty-bottom-left {
+  flex: 1.2;
+  border-right: 1px solid #000;
+  padding: 6px;
+}
+
+.bilty-bottom-right {
+  flex: 1;
+}
+
+.bilty-tax-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.bilty-tax-table td {
+  border-bottom: 1px solid #000;
+  border-left: 1px solid #000;
+  padding: 3px 6px;
+  font-size: 10.5px;
+}
+
+.bilty-tax-table tr:last-child td {
+  border-bottom: none;
+}
+
+.bilty-tax-table .tax-label {
+  font-weight: bold;
+}
+
+.bilty-tax-table .tax-val {
+  text-align: right;
+  font-weight: bold;
+}
+
+/* Footer Notes and Signatures */
+.bilty-footer-strip {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-left: 1.5px solid #000;
+  border-right: 1.5px solid #000;
+  border-bottom: 1.5px solid #000;
+  padding: 8px;
+}
+
+.bilty-notes {
+  font-size: 9.5px;
+  line-height: 1.3;
+}
+
+.bilty-signature-box {
+  text-align: center;
+  min-width: 160px;
+  font-weight: bold;
+  font-size: 11px;
+}
+
+.bilty-daily-service {
+  text-align: center;
+  font-weight: bold;
+  font-size: 10px;
+  border-left: 1.5px solid #000;
+  border-right: 1.5px solid #000;
+  border-bottom: 1.5px solid #000;
+  padding: 4px;
+  background: #fafafa;
+}
+
+/* Print Specific */
 @media print {
-  body {
-    background: #ffffff !important;
-    color: #000000 !important;
-    font-size: 11pt;
+  @page {
+    size: A4 portrait;
+    margin: 8mm;
   }
-  #sidebar, .top-navbar, .btn-print, .no-print, .btn-action, .data-card-header {
+
+  body {
+    background: #fff !important;
+    color: #000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  #sidebar, .top-navbar, .btn, .modal-header, .modal-footer, .no-print, header, nav {
     display: none !important;
   }
-  #main-content {
+
+  #main-content, .modal-dialog, .modal-content, .modal-body {
     margin: 0 !important;
+    padding: 0 !important;
     width: 100% !important;
-    padding: 0 !important;
+    max-width: 100% !important;
+    border: none !important;
+    box-shadow: none !important;
   }
-  .page-container {
-    padding: 0 !important;
-  }
-  .bilty-print-document {
+
+  .bilty-official-doc {
     border: 2px solid #000 !important;
-    padding: 15px !important;
-    margin: 0 auto;
     width: 100% !important;
+    max-width: 100% !important;
     page-break-inside: avoid;
+    box-shadow: none !important;
   }
 }
