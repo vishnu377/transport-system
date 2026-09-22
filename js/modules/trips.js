@@ -1,16 +1,17 @@
 /**
- * Trips Management Module
+ * Trips & Bilty Management Module
  * MTC & TTC Logistics Management System
- * Enhanced with 5,103 Real Excel Records, Smooth Pagination, Edit Bilty, and Exact A4 Print Preview
+ * Designed to match AppSheet Bilty Register and Details View (Date-grouped, TTC/SMTC vs MTC tabs, 30-field sheet)
  */
 
 const TripsModule = {
-  currentFirmFilter: 'All',
+  currentFirmTab: 'TTC_SMTC', // 'TTC_SMTC', 'MTC', 'All'
   currentYearFilter: 'All',
   currentPage: 1,
   itemsPerPage: 50,
   allTrips: [],
   filteredTrips: [],
+  currentDetailIndex: -1,
   activeTripForPrint: null,
 
   async init() {
@@ -39,17 +40,6 @@ const TripsModule = {
       });
     }
 
-    // Firm Filter Pills
-    document.querySelectorAll('.filter-firm-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.filter-firm-btn').forEach(b => b.classList.remove('active', 'btn-primary', 'text-white'));
-        btn.classList.add('active', 'btn-primary', 'text-white');
-        this.currentFirmFilter = btn.getAttribute('data-firm');
-        this.currentPage = 1;
-        this.applyFilters();
-      });
-    });
-
     // Items per page selector
     const perPageSelect = document.getElementById('items-per-page');
     if (perPageSelect) {
@@ -67,8 +57,53 @@ const TripsModule = {
     }
   },
 
+  setFirmTab(tab) {
+    this.currentFirmTab = tab;
+
+    // Update active tab buttons
+    document.querySelectorAll('.appsheet-tab-btn').forEach(btn => btn.classList.remove('active'));
+    if (tab === 'TTC_SMTC') {
+      document.getElementById('tab-ttc-smtc')?.classList.add('active');
+    } else if (tab === 'MTC') {
+      document.getElementById('tab-mtc')?.classList.add('active');
+    } else {
+      document.getElementById('tab-all')?.classList.add('active');
+    }
+
+    // Update search placeholder
+    const searchInput = document.getElementById('search-trips');
+    if (searchInput) {
+      if (tab === 'TTC_SMTC') searchInput.placeholder = "Search TTC And SMTC...";
+      else if (tab === 'MTC') searchInput.placeholder = "Search MTC...";
+      else searchInput.placeholder = "Search All Bilties...";
+    }
+
+    this.currentPage = 1;
+    this.applyFilters();
+  },
+
+  formatDateDMY(dateStr) {
+    if (!dateStr) return '-';
+    // If YYYY-MM-DD
+    const parts = String(dateStr).split('-');
+    if (parts.length === 3) {
+      return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    }
+    // If M/D/YYYY
+    const slashParts = String(dateStr).split('/');
+    if (slashParts.length === 3) {
+      const d = slashParts[1].padStart(2, '0');
+      const m = slashParts[0].padStart(2, '0');
+      const y = slashParts[2];
+      return `${d}/${m}/${y}`;
+    }
+    return dateStr;
+  },
+
   async loadTrips() {
     this.allTrips = await dbService.getAll('trips');
+    const allCountEl = document.getElementById('tab-all-count');
+    if (allCountEl) allCountEl.innerText = this.allTrips.length.toLocaleString('en-IN');
     this.applyFilters();
   },
 
@@ -76,10 +111,12 @@ const TripsModule = {
     const q = (document.getElementById('search-trips')?.value || '').toLowerCase().trim();
     
     this.filteredTrips = this.allTrips.filter(t => {
-      // Firm Filter
-      if (this.currentFirmFilter !== 'All') {
-        const firm = (t.transport || '').toUpperCase();
-        if (firm !== this.currentFirmFilter.toUpperCase()) return false;
+      // AppSheet Firm Tab Filter
+      const firm = (t.transport || '').toUpperCase();
+      if (this.currentFirmTab === 'TTC_SMTC') {
+        if (firm !== 'TTC' && firm !== 'SMTC') return false;
+      } else if (this.currentFirmTab === 'MTC') {
+        if (firm !== 'MTC') return false;
       }
 
       // Year Filter
@@ -90,13 +127,14 @@ const TripsModule = {
 
       // Search Query
       if (q) {
-        const matchGr = (t.grNo && t.grNo.toLowerCase().includes(q)) || (t.shortGrNo && t.shortGrNo.toLowerCase().includes(q));
+        const matchGr = (t.grNo && t.grNo.toLowerCase().includes(q)) || (t.shortGrNo && t.shortGrNo.toLowerCase().includes(q)) || (t.grSeq && String(t.grSeq).toLowerCase().includes(q));
         const matchTruck = t.truckNo && t.truckNo.toLowerCase().includes(q);
         const matchDest = (t.destination && t.destination.toLowerCase().includes(q)) || (t.origin && t.origin.toLowerCase().includes(q));
-        const matchParty = (t.consignee && t.consignee.toLowerCase().includes(q)) || (t.consignor && t.consignor.toLowerCase().includes(q));
+        const matchParty = (t.reference && t.reference.toLowerCase().includes(q)) || (t.consignee && t.consignee.toLowerCase().includes(q)) || (t.consignor && t.consignor.toLowerCase().includes(q));
+        const matchDriver = (t.driver && t.driver.toLowerCase().includes(q)) || (t.driverMobile && t.driverMobile.includes(q));
         const matchBill = t.billNo && t.billNo.toLowerCase().includes(q);
-        const matchAddr = t.deliveryAddress && t.deliveryAddress.toLowerCase().includes(q);
-        if (!matchGr && !matchTruck && !matchDest && !matchParty && !matchBill && !matchAddr) {
+        const matchDate = t.tripStartDate && t.tripStartDate.includes(q);
+        if (!matchGr && !matchTruck && !matchDest && !matchParty && !matchDriver && !matchBill && !matchDate) {
           return false;
         }
       }
@@ -118,14 +156,14 @@ const TripsModule = {
     if (total === 0) {
       tbody.innerHTML = `
         <tr>
-          <td colspan="10" class="text-center py-5 text-muted">
+          <td colspan="7" class="text-center py-5 text-muted">
             <i class="bi bi-truck fs-1 d-block mb-2 text-secondary"></i>
-            No consignments found matching the current filters.
+            No bilties found matching the current search or filters.
           </td>
         </tr>
       `;
       if (paginationControls) paginationControls.innerHTML = '';
-      if (paginationInfo) paginationInfo.innerText = 'Showing 0 to 0 of 0 trips';
+      if (paginationInfo) paginationInfo.innerText = 'Showing 0 to 0 of 0 bilties';
       return;
     }
 
@@ -138,81 +176,105 @@ const TripsModule = {
     const pageItems = this.filteredTrips.slice(startIndex, endIndex);
 
     if (paginationInfo) {
-      paginationInfo.innerText = `Showing ${startIndex + 1} to ${endIndex} of ${total.toLocaleString('en-IN')} trips (Page ${this.currentPage} of ${totalPages})`;
+      paginationInfo.innerText = `Showing ${startIndex + 1} to ${endIndex} of ${total.toLocaleString('en-IN')} bilties (Page ${this.currentPage} of ${totalPages})`;
     }
 
-    tbody.innerHTML = pageItems.map(t => {
-      const firmClass = t.transport === 'MTC' ? 'firm-mtc' : t.transport === 'SMTC' ? 'firm-smtc' : 'firm-ttc';
-      const statusClass = t.status === 'Due' ? 'due' : t.status === 'Transit' ? 'transit' : 'settled';
+    // Group current page items by tripStartDate
+    const dateGroups = [];
+    let currentDateKey = null;
+    let currentGroup = null;
 
-      const shortGrBadge = t.shortGrNo ? `<span class="badge bg-light text-dark border ms-1 font-monospace">${t.shortGrNo}</span>` : '';
-      const billBadge = t.billNo ? `<div class="font-monospace small text-primary"><i class="bi bi-receipt me-1"></i>${t.billNo}</div>` : '';
-      const fyBadge = t.financialYear ? `<span class="badge bg-secondary-subtle text-secondary small">${t.financialYear}</span>` : '';
+    pageItems.forEach(t => {
+      const d = t.tripStartDate || 'No Date';
+      if (d !== currentDateKey) {
+        currentDateKey = d;
+        currentGroup = { date: d, items: [] };
+        dateGroups.push(currentGroup);
+      }
+      currentGroup.items.push(t);
+    });
 
-      return `
-        <tr>
-          <td>
-            <div class="d-flex align-items-center gap-1">
-              <span class="firm-pill ${firmClass}">${t.transport || 'TTC'}</span>
-              ${shortGrBadge}
-            </div>
-            <div class="fw-bold font-monospace mt-1 text-dark">${t.grNo}</div>
-            <small class="text-muted"><i class="bi bi-calendar3 me-1"></i>${AppUI.formatDate(t.tripStartDate)}</small>
-          </td>
-          <td>
-            <div class="fw-bold font-monospace text-uppercase">${t.truckNo}</div>
-            <small class="text-muted">${t.truckOwner || 'Fleet'}</small>
-          </td>
-          <td>
-            <div><strong>${t.origin || 'Rajsamand'}</strong> ➔ <strong class="text-primary">${t.destination || '-'}</strong></div>
-            ${t.deliveryAddress ? `<small class="text-muted d-block text-truncate" style="max-width: 200px;" title="${t.deliveryAddress}"><i class="bi bi-geo-alt"></i> ${t.deliveryAddress}</small>` : ''}
-          </td>
-          <td>
-            ${billBadge}
-            <div class="mt-1">${fyBadge}</div>
-          </td>
-          <td class="text-end">
-            <div><strong>${t.weight ? Number(t.weight).toFixed(2) + ' MT' : '-'}</strong></div>
-            <small class="text-muted">@ ₹${Number(t.rate || 0).toLocaleString('en-IN')}</small>
-          </td>
-          <td class="text-end fw-bold text-dark">
-            ${AppUI.formatCurrency(t.freight || 0)}
-          </td>
-          <td class="text-end">
-            ${t.loadingCharges ? `<div><small class="text-muted">Hamali:</small> ₹${Number(t.loadingCharges).toLocaleString('en-IN')}</div>` : ''}
-            ${t.gstAmount ? `<div><small class="text-muted">GST:</small> ₹${Number(t.gstAmount).toLocaleString('en-IN')}</div>` : `<span class="badge bg-light text-muted border">RCM/Exempt</span>`}
-          </td>
-          <td class="text-end">
-            <div class="${t.partyDue > 0 ? 'text-danger fw-bold' : 'text-success'}">Due: ${AppUI.formatCurrency(t.partyDue || 0)}</div>
-            ${t.partyPaid > 0 ? `<small class="text-success d-block">Paid: ${AppUI.formatCurrency(t.partyPaid)}</small>` : ''}
-          </td>
-          <td>
-            <span class="badge-status ${statusClass}">
-              <i class="bi bi-circle-fill" style="font-size: 6px;"></i> ${t.status || 'Settled'}
+    let html = '';
+
+    dateGroups.forEach(group => {
+      // Date Group Header Badge
+      const countForDate = group.items.length;
+      html += `
+        <tr class="table-group-header">
+          <td colspan="7" class="py-2 px-3 bg-light border-0">
+            <span class="date-group-badge">
+              <span class="dot-green"></span> ${this.formatDateDMY(group.date)} (${countForDate})
             </span>
-          </td>
-          <td class="text-center">
-            <div class="d-flex justify-content-center gap-1">
-              <button class="btn-action" title="View Full Details" onclick="TripsModule.viewTripDetails('${t.id}')">
-                <i class="bi bi-eye text-primary"></i>
-              </button>
-              <button class="btn-action" title="Edit Bilty" onclick="TripsModule.editTrip('${t.id}')">
-                <i class="bi bi-pencil-square text-warning"></i>
-              </button>
-              <button class="btn-action" title="Print Official Bilty" onclick="TripsModule.printBilty('${t.id}')">
-                <i class="bi bi-printer text-success"></i>
-              </button>
-              <button class="btn-action" title="Delete Trip" onclick="TripsModule.deleteTrip('${t.id}')">
-                <i class="bi bi-trash text-danger"></i>
-              </button>
-            </div>
           </td>
         </tr>
       `;
-    }).join('');
 
+      // Rows for this date
+      group.items.forEach(t => {
+        const shortGr = t.shortGrNo || t.grSeq || t.grNo;
+        const refText = t.reference || t.consignee || 'Consignor / Consignee';
+        const driverText = t.driver || 'Assigned Driver';
+        const driverMobile = t.driverMobile ? ` (${t.driverMobile})` : '';
+
+        html += `
+          <tr class="appsheet-row" onclick="TripsModule.viewTripDetails('${t.id}')">
+            <td>
+              <div class="d-flex align-items-center">
+                <span class="dot-green"></span>
+                <strong class="font-monospace text-dark">${shortGr}</strong>
+              </div>
+            </td>
+            <td>
+              <div class="d-flex align-items-center">
+                <span class="dot-green"></span>
+                <span class="font-monospace fw-semibold text-dark text-uppercase">${t.truckNo}</span>
+              </div>
+            </td>
+            <td>
+              <div class="d-flex align-items-center">
+                <span class="dot-green"></span>
+                <span class="text-dark">${t.destination || '-'}</span>
+              </div>
+            </td>
+            <td>
+              <div class="d-flex align-items-center text-truncate" style="max-width: 250px;" title="${refText}">
+                <span class="dot-green"></span>
+                <span class="text-secondary small text-truncate">${refText}</span>
+              </div>
+            </td>
+            <td>
+              <div class="d-flex align-items-center text-truncate" style="max-width: 230px;" title="${driverText}${driverMobile}">
+                <span class="dot-green"></span>
+                <span class="text-secondary small text-truncate">${driverText}${driverMobile}</span>
+              </div>
+            </td>
+            <td class="text-nowrap">
+              <span class="text-dark small">${this.formatDateDMY(t.tripStartDate)}</span>
+              <i class="bi bi-chevron-right text-muted ms-1" style="font-size: 0.75rem;"></i>
+            </td>
+            <td class="text-center" onclick="event.stopPropagation()">
+              <div class="d-flex justify-content-center gap-1">
+                <button class="btn-action" title="View Full Details" onclick="TripsModule.viewTripDetails('${t.id}')">
+                  <i class="bi bi-eye text-primary"></i>
+                </button>
+                <button class="btn-action" title="Edit Bilty" onclick="TripsModule.editTrip('${t.id}')">
+                  <i class="bi bi-pencil-square text-warning"></i>
+                </button>
+                <button class="btn-action" title="Print Official Bilty" onclick="TripsModule.printBilty('${t.id}')">
+                  <i class="bi bi-printer text-success"></i>
+                </button>
+                <button class="btn-action" title="Delete Bilty" onclick="TripsModule.deleteTrip('${t.id}')">
+                  <i class="bi bi-trash text-danger"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+    });
+
+    tbody.innerHTML = html;
     this.renderPagination(totalPages);
-    AppUI.applyRolePermissions();
   },
 
   renderPagination(totalPages) {
@@ -293,7 +355,7 @@ const TripsModule = {
     if (page > totalPages) page = totalPages;
     this.currentPage = page;
     this.renderTable();
-    window.scrollTo({ top: 220, behavior: 'smooth' });
+    window.scrollTo({ top: 180, behavior: 'smooth' });
   },
 
   updateSummary(trips) {
@@ -311,153 +373,181 @@ const TripsModule = {
   },
 
   editTrip(id) {
-    // Redirect to bilty-booking.html with id query param
     window.location.href = `./bilty-booking.html?id=${encodeURIComponent(id)}`;
   },
 
+  // AppSheet Exact Bilty Details Viewer
   async viewTripDetails(id) {
-    const trip = this.allTrips.find(t => String(t.id) === String(id)) || await dbService.getById('trips', id);
+    this.currentDetailIndex = this.filteredTrips.findIndex(t => String(t.id) === String(id));
+    const trip = (this.currentDetailIndex >= 0 ? this.filteredTrips[this.currentDetailIndex] : null) || 
+                 this.allTrips.find(t => String(t.id) === String(id)) || 
+                 await dbService.getById('trips', id);
     if (!trip) return;
 
-    const grandTotal = (Number(trip.freight) || 0) + (Number(trip.loadingCharges) || 0) + (Number(trip.haltCharges) || 0) + (trip.isGstPaidByParty === 'Yes' ? (Number(trip.gstAmount) || 0) : 0);
+    this.renderDetailContent(trip);
+
+    const modalEl = document.getElementById('tripDetailModal');
+    let modal = bootstrap.Modal.getInstance(modalEl);
+    if (!modal) {
+      modal = new bootstrap.Modal(modalEl);
+    }
+    modal.show();
+  },
+
+  navigateDetail(direction) {
+    if (this.currentDetailIndex < 0) return;
+    const newIdx = this.currentDetailIndex + direction;
+    if (newIdx >= 0 && newIdx < this.filteredTrips.length) {
+      this.currentDetailIndex = newIdx;
+      this.renderDetailContent(this.filteredTrips[newIdx]);
+    }
+  },
+
+  renderDetailContent(trip) {
+    // Navigation button states
+    const prevBtn = document.getElementById('nav-btn-prev');
+    const nextBtn = document.getElementById('nav-btn-next');
+    if (prevBtn) prevBtn.disabled = this.currentDetailIndex <= 0;
+    if (nextBtn) nextBtn.disabled = this.currentDetailIndex >= this.filteredTrips.length - 1;
+
+    // Attach footer buttons
+    const editBtn = document.getElementById('modal-btn-edit');
+    const printBtn = document.getElementById('modal-btn-print');
+    const waBtn = document.getElementById('modal-btn-wa');
+    if (editBtn) editBtn.onclick = () => this.editTrip(trip.id);
+    if (printBtn) printBtn.onclick = () => {
+      bootstrap.Modal.getInstance(document.getElementById('tripDetailModal'))?.hide();
+      this.printBilty(trip.id);
+    };
+    if (waBtn) waBtn.onclick = () => this.shareOnWhatsApp(trip);
+
+    // Build the exact 30-field AppSheet Bilty Details Card
+    const loadType = trip.loadType || (Number(trip.weight || 0) > 40 ? 'Over Load' : 'Normal');
+    const commissionVal = trip.commission !== undefined && trip.commission !== null ? Number(trip.commission) : 2000;
+    const otherVal = Number(trip.loadingCharges || trip.otherCharges || 0);
 
     const content = `
-      <div class="row g-3">
-        <!-- Firm, FY & GR No -->
-        <div class="col-md-6 border-end">
-          <label class="text-muted small">Full G.R. / Bilty Number:</label>
-          <div class="fw-bold font-monospace fs-5 text-primary">${trip.grNo}</div>
-          <div class="mt-1">
-            <span class="badge bg-light text-dark border font-monospace">Short: ${trip.shortGrNo || '-'}</span>
-            <span class="badge bg-secondary-subtle text-secondary ms-1">FY: ${trip.financialYear || '2026-2027'}</span>
-            <span class="firm-pill firm-${(trip.transport || 'ttc').toLowerCase()} ms-1">${trip.transport}</span>
+      <div class="bilty-sheet-card">
+        <div class="bilty-sheet-row">
+          <div class="bilty-sheet-label">Lock for Edit</div>
+          <div class="bilty-sheet-value"><span class="badge bg-success-subtle text-success">Unlocked</span></div>
+        </div>
+        <div class="bilty-sheet-row">
+          <div class="bilty-sheet-label">G.R.No.</div>
+          <div class="bilty-sheet-value font-monospace text-primary fw-bold">${trip.grNo}</div>
+        </div>
+        <div class="bilty-sheet-row">
+          <div class="bilty-sheet-label">Bilty Date</div>
+          <div class="bilty-sheet-value">${this.formatDateDMY(trip.tripStartDate)}</div>
+        </div>
+        <div class="bilty-sheet-row">
+          <div class="bilty-sheet-label">Bilty Type</div>
+          <div class="bilty-sheet-value">${trip.biltyType || 'Regular'}</div>
+        </div>
+        <div class="bilty-sheet-row">
+          <div class="bilty-sheet-label">Truck No.</div>
+          <div class="bilty-sheet-value font-monospace text-uppercase fw-bold">${trip.truckNo}</div>
+        </div>
+        <div class="bilty-sheet-row">
+          <div class="bilty-sheet-label">Truck Owner Name</div>
+          <div class="bilty-sheet-value">${trip.truckOwner || 'Assigned Owner'}</div>
+        </div>
+        <div class="bilty-sheet-row">
+          <div class="bilty-sheet-label">Load Type</div>
+          <div class="bilty-sheet-value">${loadType}</div>
+        </div>
+        <div class="bilty-sheet-row">
+          <div class="bilty-sheet-label">Commission</div>
+          <div class="bilty-sheet-value">
+            ₹${commissionVal.toLocaleString('en-IN')}.00 
+            <span class="text-muted mx-2">|</span> 
+            <span class="badge bg-success-subtle text-success">Paid</span> 
+            <span class="text-muted mx-2">|</span> 
+            <span class="text-secondary small">Cash</span>
           </div>
         </div>
-
-        <div class="col-md-6">
-          <label class="text-muted small">Party Bill / Invoice Number:</label>
-          <div class="fw-bold font-monospace fs-6">${trip.billNo || '<span class="text-muted">Not Invoiced Yet</span>'}</div>
-          <div class="small text-muted mt-1">Dispatch Date: <strong>${AppUI.formatDate(trip.tripStartDate)}</strong></div>
-        </div>
-
-        <!-- Truck & Driver -->
-        <div class="col-12 p-2 bg-light rounded border">
-          <div class="row g-2">
-            <div class="col-md-4">
-              <label class="text-muted small">Truck Registration:</label>
-              <div class="fw-bold font-monospace fs-6 text-uppercase">${trip.truckNo}</div>
-            </div>
-            <div class="col-md-4">
-              <label class="text-muted small">Truck Owner:</label>
-              <div>${trip.truckOwner || 'Fleet Owner'}</div>
-            </div>
-            <div class="col-md-4">
-              <label class="text-muted small">Driver & Contact:</label>
-              <div>${trip.driver || '-'} ${trip.driverMobile ? `(${trip.driverMobile})` : ''}</div>
-            </div>
+        <div class="bilty-sheet-row">
+          <div class="bilty-sheet-label">Other</div>
+          <div class="bilty-sheet-value">
+            ₹${otherVal.toLocaleString('en-IN')}.00 
+            <span class="text-muted mx-2">|</span> 
+            <span class="badge bg-success-subtle text-success">Paid</span> 
+            <span class="text-muted mx-2">|</span> 
+            <span class="text-secondary small">Cash</span>
           </div>
         </div>
-
-        <!-- Route & Delivery Address -->
-        <div class="col-md-6">
-          <label class="text-muted small">Route (कहाँ से कहाँ तक):</label>
-          <div><strong>${trip.origin || 'Rajsamand (Raj.)'}</strong> ➔ <strong class="text-primary">${trip.destination}</strong></div>
+        <div class="bilty-sheet-row">
+          <div class="bilty-sheet-label">Reference</div>
+          <div class="bilty-sheet-value">${trip.reference || trip.consignee || '-'}</div>
         </div>
-
-        <div class="col-md-6">
-          <label class="text-muted small">Consignee Delivery Address (डिलीवरी पता):</label>
-          <div class="small text-dark bg-light p-2 rounded border">${trip.deliveryAddress || trip.destination || '-'}</div>
+        <div class="bilty-sheet-row">
+          <div class="bilty-sheet-label">Driver</div>
+          <div class="bilty-sheet-value">${trip.driver || 'Assigned Driver'} ${trip.driverMobile ? `(${trip.driverMobile})` : ''}</div>
         </div>
-
-        <!-- Consignor & Consignee -->
-        <div class="col-md-6">
-          <label class="text-muted small">Consignor (माल भेजने वाला):</label>
-          <div class="fw-bold">${trip.consignor || 'MTC / TTC Consignor'}</div>
-          <small class="text-muted">GSTIN: ${trip.consignorGstin || '-'}</small>
+        <div class="bilty-sheet-row">
+          <div class="bilty-sheet-label">From</div>
+          <div class="bilty-sheet-value">${trip.origin || 'Rajsamand (Raj.)'}</div>
         </div>
-
-        <div class="col-md-6">
-          <label class="text-muted small">Consignee (माल पाने वाला):</label>
-          <div class="fw-bold text-primary">${trip.consignee || trip.destination}</div>
-          <small class="text-muted">GSTIN: ${trip.consigneeGstin || '-'}</small>
+        <div class="bilty-sheet-row">
+          <div class="bilty-sheet-label">To</div>
+          <div class="bilty-sheet-value text-primary fw-bold">${trip.destination || '-'}</div>
         </div>
-
-        <!-- Financial Particulars -->
-        <div class="col-12">
-          <table class="table table-sm table-bordered mt-2">
-            <thead class="table-light">
-              <tr>
-                <th>Weight</th>
-                <th>Rate / MT</th>
-                <th class="text-end">Freight Amount</th>
-                <th class="text-end">Loading Charges</th>
-                <th class="text-end">GST Amount</th>
-                <th class="text-end">Grand Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td class="fw-bold">${trip.weight ? Number(trip.weight).toFixed(2) + ' MT' : '-'}</td>
-                <td>₹${Number(trip.rate || 0).toLocaleString('en-IN')}</td>
-                <td class="text-end fw-bold">${AppUI.formatCurrency(trip.freight || 0)}</td>
-                <td class="text-end">₹${Number(trip.loadingCharges || 0).toLocaleString('en-IN')}</td>
-                <td class="text-end">₹${Number(trip.gstAmount || 0).toLocaleString('en-IN')} <small class="text-muted">(${trip.isGstPaidByParty || 'RCM'})</small></td>
-                <td class="text-end fw-bold text-success fs-6">${AppUI.formatCurrency(grandTotal)}</td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="bilty-sheet-row">
+          <div class="bilty-sheet-label">GSTIN Consignor</div>
+          <div class="bilty-sheet-value font-monospace">${trip.consignorGstin || '-'}</div>
         </div>
-
-        <!-- Due & Paid Status -->
-        <div class="col-md-6">
-          <div class="p-2 border rounded bg-light">
-            <div class="d-flex justify-content-between">
-              <span class="text-muted small">Party Paid:</span>
-              <strong class="text-success">${AppUI.formatCurrency(trip.partyPaid || 0)}</strong>
-            </div>
-            <div class="d-flex justify-content-between mt-1">
-              <span class="text-muted small">Party Due Balance:</span>
-              <strong class="${trip.partyDue > 0 ? 'text-danger' : 'text-success'}">${AppUI.formatCurrency(trip.partyDue || 0)}</strong>
-            </div>
-            ${trip.gstDueAmount ? `
-            <div class="d-flex justify-content-between mt-1">
-              <span class="text-muted small">GST Due:</span>
-              <strong class="text-warning">₹${Number(trip.gstDueAmount).toLocaleString('en-IN')}</strong>
-            </div>` : ''}
-          </div>
+        <div class="bilty-sheet-row">
+          <div class="bilty-sheet-label">Bill No.</div>
+          <div class="bilty-sheet-value font-monospace">${trip.billNo || '-'}</div>
         </div>
-
-        <div class="col-md-6">
-          <div class="p-2 border rounded bg-light">
-            <div class="d-flex justify-content-between">
-              <span class="text-muted small">Consignment Status:</span>
-              <span class="badge-status ${trip.status === 'Due' ? 'due' : trip.status === 'Transit' ? 'transit' : 'settled'}">
-                ${trip.status || 'Settled'}
-              </span>
-            </div>
-            <div class="d-flex justify-content-between mt-1">
-              <span class="text-muted small">Owner Advance/Due:</span>
-              <strong>${AppUI.formatCurrency(trip.ownerDue || 0)}</strong>
-            </div>
-          </div>
+        <div class="bilty-sheet-row">
+          <div class="bilty-sheet-label">Bill Value</div>
+          <div class="bilty-sheet-value">${trip.billValue ? AppUI.formatCurrency(trip.billValue) : '-'}</div>
         </div>
-
+        <div class="bilty-sheet-row">
+          <div class="bilty-sheet-label">Material</div>
+          <div class="bilty-sheet-value">${trip.material || 'Marble Powder'}</div>
+        </div>
+        <div class="bilty-sheet-row">
+          <div class="bilty-sheet-label">GSTIN Consignee</div>
+          <div class="bilty-sheet-value font-monospace">${trip.consigneeGstin || '-'}</div>
+        </div>
+        <div class="bilty-sheet-row">
+          <div class="bilty-sheet-label">Actual Billing Type</div>
+          <div class="bilty-sheet-value">${trip.billingType || 'Per Tonne'}</div>
+        </div>
+        <div class="bilty-sheet-row">
+          <div class="bilty-sheet-label">Actual Weight</div>
+          <div class="bilty-sheet-value font-monospace fw-bold">${Number(trip.weight || 0).toFixed(3)}</div>
+        </div>
+        <div class="bilty-sheet-row">
+          <div class="bilty-sheet-label">Actual Rate</div>
+          <div class="bilty-sheet-value">₹${Number(trip.rate || 0).toLocaleString('en-IN')}.00</div>
+        </div>
+        <div class="bilty-sheet-row">
+          <div class="bilty-sheet-label">Freight</div>
+          <div class="bilty-sheet-value fs-6 fw-bold text-success">₹${Number(trip.freight || 0).toLocaleString('en-IN')}.00</div>
+        </div>
+        <div class="bilty-sheet-row">
+          <div class="bilty-sheet-label">Bilty Billing Type</div>
+          <div class="bilty-sheet-value text-muted">To be Billed</div>
+        </div>
+        <div class="bilty-sheet-row">
+          <div class="bilty-sheet-label">Bilty Weight</div>
+          <div class="bilty-sheet-value font-monospace">${Number(trip.weight || 0).toFixed(3)}</div>
+        </div>
+        <div class="bilty-sheet-row">
+          <div class="bilty-sheet-label">Rate Bilty</div>
+          <div class="bilty-sheet-value text-muted">To be Billed</div>
+        </div>
+        <div class="bilty-sheet-row">
+          <div class="bilty-sheet-label">Amount Bilty</div>
+          <div class="bilty-sheet-value text-muted">To be Billed</div>
+        </div>
       </div>
     `;
 
     document.getElementById('trip-detail-content').innerHTML = content;
-
-    // Attach click handler to modal edit and print buttons
-    const editBtn = document.getElementById('modal-btn-edit');
-    const printBtn = document.getElementById('modal-btn-print');
-    if (editBtn) editBtn.onclick = () => this.editTrip(trip.id);
-    if (printBtn) printBtn.onclick = () => {
-      bootstrap.Modal.getInstance(document.getElementById('tripDetailModal')).hide();
-      this.printBilty(trip.id);
-    };
-
-    const modal = new bootstrap.Modal(document.getElementById('tripDetailModal'));
-    modal.show();
   },
 
   async printBilty(id) {

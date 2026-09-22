@@ -75,55 +75,57 @@
         </div>
       </div>
 
+      <!-- AppSheet Firm Tab Navigation -->
+      <div class="appsheet-tab-nav">
+        <button type="button" class="appsheet-tab-btn active" id="tab-ttc-smtc" onclick="TripsModule.setFirmTab('TTC_SMTC')">
+          <i class="bi bi-truck"></i> TTC And SMTC
+        </button>
+        <button type="button" class="appsheet-tab-btn" id="tab-mtc" onclick="TripsModule.setFirmTab('MTC')">
+          <i class="bi bi-truck-front"></i> MTC
+        </button>
+        <button type="button" class="appsheet-tab-btn" id="tab-all" onclick="TripsModule.setFirmTab('All')">
+          <i class="bi bi-grid-3x3-gap"></i> All Bilties (<span id="tab-all-count">6,643</span>)
+        </button>
+      </div>
+
       <!-- Trips Data Card -->
       <div class="data-card">
-        <div class="data-card-header">
-          <div class="d-flex align-items-center gap-2 flex-grow-1" style="max-width: 450px;">
+        <div class="data-card-header flex-wrap gap-2">
+          <div class="d-flex align-items-center gap-2 flex-grow-1" style="max-width: 500px;">
             <div class="input-group input-group-sm">
               <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
-              <input type="text" id="search-trips" class="form-control" placeholder="Search by Bilty No., Truck No., Destination, Party...">
+              <input type="text" id="search-trips" class="form-control" placeholder="Search G.R.No, Truck No, Destination, Reference, Driver...">
             </div>
           </div>
 
-          <!-- Filters: FY & Firm -->
-          <div class="d-flex align-items-center gap-2 flex-wrap">
+          <!-- Filters: FY & Page size -->
+          <div class="d-flex align-items-center gap-2">
             <select id="filter-year" class="form-select form-select-sm fw-semibold" style="width: 150px;">
               <option value="All" selected>All Financial Years</option>
               <option value="2026-2027">FY 2026-2027</option>
               <option value="2025-2026">FY 2025-2026</option>
               <option value="2024-2025">FY 2024-2025</option>
             </select>
-
-            <!-- Firm Filter Buttons -->
-            <div class="btn-group btn-group-sm" role="group">
-              <button type="button" class="btn btn-outline-secondary filter-firm-btn active btn-primary text-white" data-firm="All">All Firms</button>
-              <button type="button" class="btn btn-outline-secondary filter-firm-btn" data-firm="TTC">TTC</button>
-              <button type="button" class="btn btn-outline-secondary filter-firm-btn" data-firm="MTC">MTC</button>
-              <button type="button" class="btn btn-outline-secondary filter-firm-btn" data-firm="SMTC">SMTC</button>
-            </div>
           </div>
         </div>
 
         <div class="table-responsive">
-          <table class="table table-custom mb-0">
-            <thead>
+          <table class="table mb-0 align-middle" style="font-size: 0.9rem;">
+            <thead class="table-light text-secondary border-bottom">
               <tr>
-                <th>G.R. / Bilty No.</th>
-                <th>Truck & Owner</th>
-                <th>Route & Delivery Address</th>
-                <th>Bill No. & FY</th>
-                <th class="text-end">Weight & Rate</th>
-                <th class="text-end">Freight (₹)</th>
-                <th class="text-end">Loading & GST</th>
-                <th class="text-end">Due / Paid</th>
-                <th>Status</th>
-                <th class="text-center" style="width: 90px;">Actions</th>
+                <th style="min-width: 140px;">G.R.No.</th>
+                <th style="min-width: 150px;">Truck No.</th>
+                <th style="min-width: 180px;">To</th>
+                <th style="min-width: 240px;">Reference</th>
+                <th style="min-width: 220px;">Driver</th>
+                <th style="min-width: 130px;">Bilty Date</th>
+                <th class="text-center" style="width: 120px;">Actions</th>
               </tr>
             </thead>
             <tbody id="trips-tbody">
               <tr>
-                <td colspan="10" class="text-center py-4 text-muted">
-                  <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div> Loading trips...
+                <td colspan="7" class="text-center py-4 text-muted">
+                  <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div> Loading bilties...
                 </td>
               </tr>
             </tbody>
@@ -138,8 +140,9 @@
               <option value="25">25</option>
               <option value="50" selected>50</option>
               <option value="100">100</option>
+              <option value="200">200</option>
             </select>
-            <span class="text-muted small" id="pagination-info">Showing 1 to 50 of 0 trips</span>
+            <span class="text-muted small" id="pagination-info">Showing 1 to 50 of 0 bilties</span>
           </div>
           <nav>
             <ul class="pagination pagination-sm mb-0" id="pagination-controls">
@@ -153,24 +156,44 @@
 
   </div>
 
-  <!-- Trip Detail Modal -->
+  <!-- AppSheet Exact Bilty Details Modal -->
   <div class="modal fade" id="tripDetailModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-      <div class="modal-content border-0 shadow">
-        <div class="modal-header bg-primary text-white">
-          <h6 class="modal-title fw-bold"><i class="bi bi-file-earmark-text me-1"></i> Trip & Bilty Full Particulars (All 19 Fields)</h6>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body p-4" id="trip-detail-content">
-          <!-- Dynamic Content -->
-        </div>
-        <div class="modal-footer bg-light d-flex justify-content-between">
-          <div class="d-flex gap-2">
-            <button type="button" id="modal-btn-edit" class="btn btn-warning btn-sm fw-bold">
-              <i class="bi bi-pencil-square me-1"></i> Edit This Bilty
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+      <div class="modal-content border-0 shadow-lg">
+        <!-- Top AppSheet Breadcrumb Header with Navigation Arrows -->
+        <div class="modal-header bg-white border-bottom py-2 px-3 d-flex justify-content-between align-items-center">
+          <div class="d-flex align-items-center gap-2 small text-muted">
+            <i class="bi bi-house-door"></i> Home <i class="bi bi-chevron-right" style="font-size: 0.7rem;"></i> 
+            Bilty Booking <i class="bi bi-chevron-right" style="font-size: 0.7rem;"></i> 
+            <strong class="text-dark">Bilty Details</strong>
+          </div>
+          <div class="d-flex align-items-center gap-1">
+            <button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2" id="nav-btn-prev" title="Previous Bilty" onclick="TripsModule.navigateDetail(-1)">
+              <i class="bi bi-chevron-left"></i>
             </button>
+            <button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2" id="nav-btn-next" title="Next Bilty" onclick="TripsModule.navigateDetail(1)">
+              <i class="bi bi-chevron-right"></i>
+            </button>
+            <button type="button" class="btn-close ms-2" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+        </div>
+
+        <!-- Bilty Details Content (AppSheet 2-Column Format) -->
+        <div class="modal-body p-3 bg-light" id="trip-detail-content">
+          <!-- Dynamic AppSheet 2-Column Key-Value Rows -->
+        </div>
+
+        <!-- Footer Actions -->
+        <div class="modal-footer bg-white d-flex justify-content-between py-2 px-3">
+          <div class="d-flex gap-2">
             <button type="button" id="modal-btn-print" class="btn btn-success btn-sm fw-bold">
-              <i class="bi bi-printer me-1"></i> Print Official Bilty
+              <i class="bi bi-printer me-1"></i> Print Official A4 Bilty
+            </button>
+            <button type="button" id="modal-btn-edit" class="btn btn-warning btn-sm fw-bold">
+              <i class="bi bi-pencil-square me-1"></i> Edit Bilty
+            </button>
+            <button type="button" id="modal-btn-wa" class="btn btn-outline-success btn-sm fw-semibold">
+              <i class="bi bi-whatsapp me-1"></i> Share WhatsApp
             </button>
           </div>
           <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>

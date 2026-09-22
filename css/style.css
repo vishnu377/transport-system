@@ -314,3 +314,114 @@ body {
     width: 100%;
   }
 }
+
+/* AppSheet-Style Bilty Views */
+.appsheet-tab-nav {
+  display: flex;
+  gap: 8px;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 8px;
+  margin-bottom: 1rem;
+}
+
+.appsheet-tab-btn {
+  padding: 8px 18px;
+  font-weight: 600;
+  font-size: 0.92rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.appsheet-tab-btn:hover {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.appsheet-tab-btn.active {
+  background: #1e3a8a;
+  color: #ffffff;
+  border-color: #1e3a8a;
+  box-shadow: 0 2px 4px rgba(30, 58, 138, 0.2);
+}
+
+.date-group-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin: 12px 0 6px 0;
+}
+
+.dot-green {
+  width: 8px;
+  height: 8px;
+  background-color: #10b981;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 6px;
+  flex-shrink: 0;
+}
+
+.appsheet-row {
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.appsheet-row:hover {
+  background-color: #f1f5f9 !important;
+}
+
+.appsheet-row td {
+  padding: 10px 12px;
+  vertical-align: middle;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+/* Bilty Details Sheet (Exact AppSheet Layout) */
+.bilty-sheet-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.bilty-sheet-row {
+  display: flex;
+  padding: 11px 18px;
+  border-bottom: 1px solid #f1f5f9;
+  align-items: center;
+}
+
+.bilty-sheet-row:nth-child(even) {
+  background-color: #fafafa;
+}
+
+.bilty-sheet-label {
+  width: 240px;
+  min-width: 180px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.bilty-sheet-value {
+  flex-grow: 1;
+  font-size: 0.93rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
