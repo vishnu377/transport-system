@@ -28,8 +28,8 @@
         </button>
         <div>
           <div class="d-flex align-items-center gap-2">
-            <span class="badge bg-primary px-2 py-1">AppSheet Model</span>
-            <h5 class="mb-0 fw-bold text-dark" id="page-title-text">MTC And TTC - Ledger</h5>
+            <span class="badge bg-primary px-2 py-1"><i class="bi bi-shield-check me-1"></i>Logistics ERP</span>
+            <h5 class="mb-0 fw-bold text-dark" id="page-title-text">MTC & TTC - Debts & Financial Ledger</h5>
           </div>
           <small class="text-muted" id="page-breadcrumb">Home &gt; Ledger &gt; Open Debts Register</small>
         </div>
@@ -49,6 +49,14 @@
             <i class="bi bi-file-earmark-spreadsheet me-1"></i> Statements
           </button>
         </div>
+
+        <button class="btn btn-outline-secondary btn-sm" id="btn-toggle-fy" onclick="LedgerModule.toggleFYSidebar()" title="Toggle Financial Years Sidebar">
+          <i class="bi bi-layout-sidebar-inset me-1"></i> <span id="toggle-fy-text">FY Sidebar</span>
+        </button>
+
+        <button class="btn btn-outline-success btn-sm" onclick="LedgerModule.exportToCSV()" title="Export current filtered debts to CSV/Excel">
+          <i class="bi bi-file-earmark-excel me-1"></i> Export Excel
+        </button>
 
         <button class="btn btn-primary btn-sm" onclick="LedgerModule.openAddDebtModal()">
           <i class="bi bi-plus-circle me-1"></i> New Debt Entry
@@ -70,13 +78,69 @@
     <main class="page-container">
 
       <!-- ========================================== -->
-      <!-- VIEW 1: OPEN / SETTLED DEBTS REGISTER (AppSheet) -->
+      <!-- VIEW 1: MODERN OPEN / SETTLED DEBTS REGISTER -->
       <!-- ========================================== -->
       <div id="ledger-view-register">
+        
+        <!-- TOP KPI METRIC CARDS ROW -->
+        <div class="row g-3 mb-3">
+          <div class="col-xl-3 col-sm-6 col-12">
+            <div class="kpi-metric-card">
+              <div class="kpi-icon-wrap kpi-icon-red">
+                <i class="bi bi-exclamation-octagon-fill"></i>
+              </div>
+              <div class="flex-grow-1 min-w-0">
+                <small class="text-muted fw-semibold text-uppercase d-block" style="font-size: 0.72rem; letter-spacing: 0.05em;">Total Due Balance</small>
+                <div class="fs-5 fw-bold text-danger font-monospace text-truncate" id="summary-total-due">₹0.00</div>
+                <small class="text-muted" style="font-size: 0.75rem;">Outstanding unrecovered</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xl-3 col-sm-6 col-12">
+            <div class="kpi-metric-card">
+              <div class="kpi-icon-wrap kpi-icon-blue">
+                <i class="bi bi-receipt"></i>
+              </div>
+              <div class="flex-grow-1 min-w-0">
+                <small class="text-muted fw-semibold text-uppercase d-block" style="font-size: 0.72rem; letter-spacing: 0.05em;">Total Debt Billed</small>
+                <div class="fs-5 fw-bold text-dark font-monospace text-truncate" id="summary-total-debt">₹0.00</div>
+                <small class="text-muted" style="font-size: 0.75rem;">Freight & commission booked</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xl-3 col-sm-6 col-12">
+            <div class="kpi-metric-card">
+              <div class="kpi-icon-wrap kpi-icon-green">
+                <i class="bi bi-check2-circle"></i>
+              </div>
+              <div class="flex-grow-1 min-w-0">
+                <small class="text-muted fw-semibold text-uppercase d-block" style="font-size: 0.72rem; letter-spacing: 0.05em;">Total Recovered</small>
+                <div class="fs-5 fw-bold text-success font-monospace text-truncate" id="summary-total-returned">₹0.00</div>
+                <small class="text-muted" style="font-size: 0.75rem;">Received & settled back</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xl-3 col-sm-6 col-12">
+            <div class="kpi-metric-card">
+              <div class="kpi-icon-wrap kpi-icon-purple">
+                <i class="bi bi-database-fill-check"></i>
+              </div>
+              <div class="flex-grow-1 min-w-0">
+                <small class="text-muted fw-semibold text-uppercase d-block" style="font-size: 0.72rem; letter-spacing: 0.05em;">Matching Records</small>
+                <div class="fs-5 fw-bold text-primary font-monospace" id="summary-count">0</div>
+                <small class="text-muted" style="font-size: 0.75rem;">Entries in current view</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="ledger-layout">
           
           <!-- LEFT SIDEBAR: FINANCIAL YEAR DUE -->
-          <div class="ledger-sidebar-fy">
+          <div class="ledger-sidebar-fy d-none" id="ledger-fy-sidebar">
             <div class="fy-header">
               <span><i class="bi bi-calendar3 me-1 text-primary"></i> Financial Year Due</span>
               <span class="badge bg-secondary rounded-pill" id="fy-active-label">All</span>
@@ -92,7 +156,21 @@
           <!-- RIGHT MAIN REGISTER AREA -->
           <div class="flex-grow-1" style="min-width: 0;">
 
-            <!-- MONTH SELECTOR BAR (AppSheet 1 Apr .. 12 Mar) -->
+            <!-- QUICK FINANCIAL YEAR SELECTOR BAR -->
+            <div class="d-flex align-items-center gap-1 mb-2 overflow-x-auto pb-1" id="fy-quick-pills">
+              <span class="text-muted fw-bold small me-1 text-nowrap"><i class="bi bi-calendar3 text-primary"></i> FY:</span>
+              <button class="btn btn-sm btn-primary py-0 px-2 fw-semibold fy-quick-btn" data-fy="ALL" onclick="LedgerModule.filterByFY('ALL')">All Years</button>
+              <button class="btn btn-sm btn-outline-secondary py-0 px-2 fw-semibold fy-quick-btn" data-fy="2026-2027" onclick="LedgerModule.filterByFY('2026-2027')">26-27 (₹6.36L)</button>
+              <button class="btn btn-sm btn-outline-secondary py-0 px-2 fw-semibold fy-quick-btn" data-fy="2025-2026" onclick="LedgerModule.filterByFY('2025-2026')">25-26 (₹7.90L)</button>
+              <button class="btn btn-sm btn-outline-secondary py-0 px-2 fw-semibold fy-quick-btn" data-fy="2024-2025" onclick="LedgerModule.filterByFY('2024-2025')">24-25 (₹6.18L)</button>
+              <button class="btn btn-sm btn-outline-secondary py-0 px-2 fw-semibold fy-quick-btn" data-fy="2023-2024" onclick="LedgerModule.filterByFY('2023-2024')">23-24 (₹1.48L)</button>
+              <button class="btn btn-sm btn-outline-secondary py-0 px-2 fw-semibold fy-quick-btn" data-fy="2022-2023" onclick="LedgerModule.filterByFY('2022-2023')">22-23 (₹10K)</button>
+              <button class="btn btn-sm btn-outline-secondary py-0 px-2 fw-semibold fy-quick-btn" data-fy="2021-2022" onclick="LedgerModule.filterByFY('2021-2022')">21-22 (₹0)</button>
+              <button class="btn btn-sm btn-outline-secondary py-0 px-2 fw-semibold fy-quick-btn" data-fy="2020-2021" onclick="LedgerModule.filterByFY('2020-2021')">20-21 (₹20K)</button>
+              <button class="btn btn-sm btn-outline-secondary py-0 px-2 fw-semibold fy-quick-btn" data-fy="2019-2020" onclick="LedgerModule.filterByFY('2019-2020')">19-20 (₹6K)</button>
+            </div>
+
+            <!-- MONTH SELECTOR BAR (1 Apr .. 12 Mar) -->
             <div class="month-bar" id="month-bar-container">
               <button class="month-pill active" onclick="LedgerModule.filterByMonth('ALL')">All Months</button>
               <button class="month-pill" onclick="LedgerModule.filterByMonth('1 Apr')">1 Apr</button>
@@ -113,15 +191,18 @@
             <div class="data-card p-3 mb-3">
               <div class="row g-2 align-items-center">
                 <!-- Search input -->
-                <div class="col-md-4">
-                  <div class="input-group">
+                <div class="col-lg-4 col-md-12">
+                  <div class="input-group input-group-sm">
                     <span class="input-group-text bg-white"><i class="bi bi-search text-muted"></i></span>
-                    <input type="text" id="ledger-search-input" class="form-control" placeholder="Search G.R., Truck, To, Party, Borrower, Receiver..." oninput="LedgerModule.onSearchInput(this.value)">
+                    <input type="text" id="ledger-search-input" class="form-control form-control-sm" placeholder="Search G.R., Truck, Party, Receiver, Borrower..." oninput="LedgerModule.onSearchInput(this.value)">
+                    <button class="btn btn-outline-secondary" type="button" onclick="LedgerModule.clearSearch()" title="Clear Search">
+                      <i class="bi bi-x"></i>
+                    </button>
                   </div>
                 </div>
 
                 <!-- Company filter -->
-                <div class="col-md-2 col-6">
+                <div class="col-lg-2 col-sm-4 col-6">
                   <select id="filter-company" class="form-select form-select-sm" onchange="LedgerModule.applyFilters()">
                     <option value="ALL">All Companies</option>
                     <option value="TTC">TTC</option>
@@ -131,7 +212,7 @@
                 </div>
 
                 <!-- Debt Type filter -->
-                <div class="col-md-2 col-6">
+                <div class="col-lg-2 col-sm-4 col-6">
                   <select id="filter-debt-type" class="form-select form-select-sm" onchange="LedgerModule.applyFilters()">
                     <option value="ALL">All Debt Types</option>
                     <option value="Commission">Commission</option>
@@ -144,7 +225,7 @@
                 </div>
 
                 <!-- Mode filter -->
-                <div class="col-md-2 col-6">
+                <div class="col-lg-2 col-sm-4 col-6">
                   <select id="filter-debt-mode" class="form-select form-select-sm" onchange="LedgerModule.applyFilters()">
                     <option value="ALL">All Modes</option>
                     <option value="Cash">Cash</option>
@@ -153,69 +234,37 @@
                   </select>
                 </div>
 
-                <!-- Reset Filters Button -->
-                <div class="col-md-2 col-6 text-end">
-                  <button class="btn btn-outline-secondary btn-sm w-100" onclick="LedgerModule.resetFilters()">
-                    <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
+                <!-- Per page & Reset Filters Buttons -->
+                <div class="col-lg-2 col-sm-12 col-6 d-flex align-items-center gap-1 justify-content-end">
+                  <select id="ledger-page-size" class="form-select form-select-sm" style="width: auto;" onchange="LedgerModule.changePageSize(this.value)">
+                    <option value="50">50</option>
+                    <option value="100" selected>100</option>
+                    <option value="250">250</option>
+                    <option value="ALL">All</option>
+                  </select>
+                  <button class="btn btn-outline-secondary btn-sm" onclick="LedgerModule.resetFilters()" title="Reset all filters">
+                    <i class="bi bi-arrow-counterclockwise"></i> Reset
                   </button>
                 </div>
               </div>
             </div>
 
-            <!-- KPI SUMMARY & CONTROLS BAR -->
-            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 p-3 bg-white rounded border mb-3">
-              <div class="d-flex align-items-center gap-4 flex-wrap">
-                <div>
-                  <small class="text-muted d-block">Total Due Balance</small>
-                  <span class="fs-5 fw-bold text-danger font-monospace" id="summary-total-due">₹0.00</span>
-                </div>
-                <div class="border-start ps-3">
-                  <small class="text-muted d-block">Total Debt Amount</small>
-                  <span class="fs-6 fw-bold text-dark font-monospace" id="summary-total-debt">₹0.00</span>
-                </div>
-                <div class="border-start ps-3">
-                  <small class="text-muted d-block">Total Returned</small>
-                  <span class="fs-6 fw-bold text-success font-monospace" id="summary-total-returned">₹0.00</span>
-                </div>
-                <div class="border-start ps-3">
-                  <small class="text-muted d-block">Matching Records</small>
-                  <span class="badge bg-secondary fs-6" id="summary-count">0</span>
-                </div>
-              </div>
-
-              <!-- Pagination / Rows Per Page -->
-              <div class="d-flex align-items-center gap-2">
-                <small class="text-muted">Per Page:</small>
-                <select id="ledger-page-size" class="form-select form-select-sm" style="width: auto;" onchange="LedgerModule.changePageSize(this.value)">
-                  <option value="50">50</option>
-                  <option value="100" selected>100</option>
-                  <option value="250">250</option>
-                  <option value="ALL">All (Fast)</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- REGISTER TABLE CONTAINER -->
-            <div class="data-card p-0 overflow-hidden mb-3">
+            <!-- REGISTER TABLE CONTAINER (Zero horizontal scrollbar) -->
+            <div class="ledger-table-wrap mb-3">
               <div class="table-responsive" style="max-height: 720px; overflow-y: auto;">
-                <table class="table table-hover align-middle mb-0" id="debts-register-table">
-                  <thead class="table-light sticky-top" style="z-index: 5;">
+                <table class="table modern-ledger-table table-hover align-middle mb-0" id="debts-register-table">
+                  <thead class="sticky-top" style="z-index: 5;">
                     <tr>
-                      <th style="min-width: 110px;">G.R.No.</th>
-                      <th style="min-width: 125px;">Truck No.</th>
-                      <th style="min-width: 110px;">To</th>
-                      <th style="min-width: 110px;">Debt Type</th>
-                      <th class="text-end" style="min-width: 120px;">Due Amount</th>
-                      <th class="text-end" style="min-width: 110px;">Debt Amount</th>
-                      <th style="min-width: 90px;">Debt Mode</th>
-                      <th style="min-width: 170px;">Borrower Name</th>
-                      <th style="min-width: 140px;">Receiver Name</th>
-                      <th style="min-width: 160px;">Description</th>
-                      <th class="text-center" style="min-width: 60px;">View</th>
+                      <th style="width: 170px;">G.R. No. & Vehicle</th>
+                      <th style="width: 180px;">Date & Route</th>
+                      <th style="width: 250px;">Borrower & Receiver</th>
+                      <th style="width: 130px;">Type & Mode</th>
+                      <th class="text-end" style="width: 160px;">Due / Total Amount</th>
+                      <th class="text-end" style="width: 110px;">Action</th>
                     </tr>
                   </thead>
                   <tbody id="debts-table-body">
-                    <!-- Populated dynamically with date grouping rows -->
+                    <!-- Populated dynamically with clean date ribbons and rows -->
                   </tbody>
                 </table>
               </div>
@@ -265,112 +314,121 @@
           </div>
         </div>
 
-        <!-- 3 CARDS LAYOUT -->
-        <div class="debt-details-container">
+        <!-- 3 CARDS HORIZONTAL LAYOUT (Exact AppSheet Model) -->
+        <div class="row g-3 align-items-stretch">
           
-          <!-- CARD 1: PARTICULARS -->
-          <div class="debt-card">
-            <div class="debt-card-header">
-              <span><i class="bi bi-card-text text-primary me-2"></i> Particulars</span>
-              <span class="badge bg-secondary" id="detail-company-badge">TTC</span>
-            </div>
-            <div class="debt-card-body">
-              <div class="row g-2">
-                <div class="col-md-6">
-                  <div class="debt-kv-row">
-                    <div class="debt-kv-label">Debt Type</div>
-                    <div class="debt-kv-val" id="detail-debt-type">-</div>
-                  </div>
-                  <div class="debt-kv-row">
-                    <div class="debt-kv-label">Date</div>
-                    <div class="debt-kv-val font-monospace" id="detail-date">-</div>
-                  </div>
-                  <div class="debt-kv-row">
-                    <div class="debt-kv-label">Truck Owner Name</div>
-                    <div class="debt-kv-val" id="detail-truck-owner">-</div>
-                  </div>
-                  <div class="debt-kv-row">
-                    <div class="debt-kv-label">G.R.No.</div>
-                    <div class="debt-kv-val font-monospace fw-bold text-primary" id="detail-gr-no">-</div>
-                  </div>
-                  <div class="debt-kv-row">
-                    <div class="debt-kv-label">Company Name</div>
-                    <div class="debt-kv-val fw-bold" id="detail-company-name">-</div>
-                  </div>
+          <!-- CARD 1: PARTICULARS (Approx 42% width) -->
+          <div class="col-xl-5 col-lg-6 col-12">
+            <div class="debt-card h-100">
+              <div class="debt-card-header">
+                <span><i class="bi bi-card-text text-primary me-2"></i> Particulars</span>
+                <span class="badge bg-secondary" id="detail-company-badge">TTC</span>
+              </div>
+              <div class="debt-card-body">
+                <div class="debt-kv-row">
+                  <div class="debt-kv-label">Debt Type</div>
+                  <div class="debt-kv-val" id="detail-debt-type">-</div>
                 </div>
-
-                <div class="col-md-6">
-                  <div class="debt-kv-row">
-                    <div class="debt-kv-label">From</div>
-                    <div class="debt-kv-val" id="detail-from">-</div>
-                  </div>
-                  <div class="debt-kv-row">
-                    <div class="debt-kv-label">To</div>
-                    <div class="debt-kv-val" id="detail-to">-</div>
-                  </div>
-                  <div class="debt-kv-row">
-                    <div class="debt-kv-label">Borrower Name</div>
-                    <div class="debt-kv-val" id="detail-borrower">-</div>
-                  </div>
-                  <div class="debt-kv-row">
-                    <div class="debt-kv-label">Receiver Name</div>
-                    <div class="debt-kv-val" id="detail-receiver">-</div>
-                  </div>
-                  <div class="debt-kv-row">
-                    <div class="debt-kv-label">Description</div>
-                    <div class="debt-kv-val text-muted" id="detail-desc">-</div>
-                  </div>
+                <div class="debt-kv-row">
+                  <div class="debt-kv-label">Date</div>
+                  <div class="debt-kv-val font-monospace" id="detail-date">-</div>
+                </div>
+                <div class="debt-kv-row">
+                  <div class="debt-kv-label">Truck Owner Name</div>
+                  <div class="debt-kv-val" id="detail-truck-owner">-</div>
+                </div>
+                <div class="debt-kv-row">
+                  <div class="debt-kv-label">G.R.No.</div>
+                  <div class="debt-kv-val font-monospace fw-bold text-primary" id="detail-gr-no">-</div>
+                </div>
+                <div class="debt-kv-row">
+                  <div class="debt-kv-label">Company Name</div>
+                  <div class="debt-kv-val fw-bold" id="detail-company-name">-</div>
+                </div>
+                <div class="debt-kv-row">
+                  <div class="debt-kv-label">From</div>
+                  <div class="debt-kv-val" id="detail-from">-</div>
+                </div>
+                <div class="debt-kv-row">
+                  <div class="debt-kv-label">To</div>
+                  <div class="debt-kv-val" id="detail-to">-</div>
+                </div>
+                <div class="debt-kv-row">
+                  <div class="debt-kv-label">Borrower Name</div>
+                  <div class="debt-kv-val" id="detail-borrower">-</div>
+                </div>
+                <div class="debt-kv-row">
+                  <div class="debt-kv-label">Receiver Name</div>
+                  <div class="debt-kv-val" id="detail-receiver">-</div>
+                </div>
+                <div class="debt-kv-row">
+                  <div class="debt-kv-label">Description</div>
+                  <div class="debt-kv-val text-muted" id="detail-desc">-</div>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- CARD 2: RETURNED AMOUNT HISTORY -->
-          <div class="debt-card">
-            <div class="debt-card-header">
-              <span id="detail-return-count-header"><i class="bi bi-clock-history text-success me-2"></i> Returned Amount [0]</span>
-              <button class="btn btn-outline-success btn-sm" onclick="LedgerModule.openReturnPaymentModalCurrent()">
-                <i class="bi bi-plus-lg me-1"></i> Record Returned Amount
-              </button>
-            </div>
-            <div class="debt-card-body p-0">
-              <div id="detail-returns-container">
-                <!-- Populated dynamically: empty state or table of returns -->
+          <!-- CARD 2: RETURNED AMOUNT HISTORY (Approx 28% width) -->
+          <div class="col-xl-3 col-lg-6 col-12">
+            <div class="debt-card h-100 d-flex flex-column">
+              <div class="debt-card-header">
+                <span id="detail-return-count-header"><i class="bi bi-clock-history text-success me-2"></i> Returned Amount 0</span>
+              </div>
+              <div class="debt-card-body p-3 flex-grow-1">
+                <div id="detail-returns-container">
+                  <!-- Populated dynamically: empty state or table of returns -->
+                </div>
+              </div>
+              <div class="p-3 border-top bg-light">
+                <button class="btn btn-outline-success btn-sm w-100 fw-semibold" onclick="LedgerModule.openReturnPaymentModalCurrent()">
+                  <i class="bi bi-plus-lg me-1"></i> Record Returned Amount
+                </button>
               </div>
             </div>
           </div>
 
-          <!-- CARD 3: FINANCIALS -->
-          <div class="debt-card">
-            <div class="debt-card-header">
-              <span><i class="bi bi-currency-rupee text-danger me-2"></i> Financials</span>
-              <span class="badge bg-danger-subtle text-danger" id="detail-status-pill">OPEN</span>
-            </div>
-            <div class="debt-card-body">
-              <div class="row g-3">
-                <div class="col-md-3 col-6">
-                  <div class="p-3 bg-light rounded border text-center">
-                    <small class="text-muted d-block">Debt Mode</small>
-                    <span class="fs-6 fw-bold text-dark" id="detail-debt-mode">-</span>
+          <!-- CARD 3: FINANCIALS (Approx 30% width) -->
+          <div class="col-xl-4 col-lg-12 col-12">
+            <div class="debt-card h-100">
+              <div class="debt-card-header">
+                <span><i class="bi bi-currency-rupee text-danger me-2"></i> Financials</span>
+                <span class="badge bg-danger-subtle text-danger" id="detail-status-pill">OPEN</span>
+              </div>
+              <div class="debt-card-body">
+                <div class="debt-kv-row py-2">
+                  <div class="debt-kv-label">Debt Mode</div>
+                  <div class="debt-kv-val fw-bold text-dark" id="detail-debt-mode">-</div>
+                </div>
+                <div class="debt-kv-row py-2">
+                  <div class="debt-kv-label">Debt Amount</div>
+                  <div class="debt-kv-val font-monospace fs-5 fw-bold text-dark" id="detail-debt-amount">₹0.00</div>
+                </div>
+                <div class="debt-kv-row py-2">
+                  <div class="debt-kv-label text-success fw-semibold">Total Returned</div>
+                  <div class="debt-kv-val font-monospace fs-5 fw-bold text-success" id="detail-total-returned">₹0.00</div>
+                </div>
+                <div class="debt-kv-row py-2 bg-danger-subtle px-2 rounded mt-2 border border-danger-subtle">
+                  <div class="debt-kv-label text-danger fw-bold">Due Amount</div>
+                  <div class="debt-kv-val font-monospace fs-4 fw-bold text-danger" id="detail-due-amount">₹0.00</div>
+                </div>
+
+                <!-- Recovery Progress Bar -->
+                <div class="mt-3">
+                  <div class="d-flex justify-content-between small text-muted mb-1">
+                    <span>Recovery Progress</span>
+                    <span id="detail-recovery-pct" class="fw-bold text-dark">0%</span>
+                  </div>
+                  <div class="payment-progress-bar">
+                    <div id="detail-recovery-fill" class="payment-progress-fill" style="width: 0%;"></div>
                   </div>
                 </div>
-                <div class="col-md-3 col-6">
-                  <div class="p-3 bg-light rounded border text-center">
-                    <small class="text-muted d-block">Debt Amount</small>
-                    <span class="fs-5 fw-bold text-dark font-monospace" id="detail-debt-amount">₹0.00</span>
-                  </div>
-                </div>
-                <div class="col-md-3 col-6">
-                  <div class="p-3 bg-success-subtle rounded border text-center">
-                    <small class="text-success d-block fw-semibold">Total Returned</small>
-                    <span class="fs-5 fw-bold text-success font-monospace" id="detail-total-returned">₹0.00</span>
-                  </div>
-                </div>
-                <div class="col-md-3 col-6">
-                  <div class="p-3 bg-danger-subtle rounded border text-center">
-                    <small class="text-danger d-block fw-semibold">Due Amount</small>
-                    <span class="fs-5 fw-bold text-danger font-monospace" id="detail-due-amount">₹0.00</span>
-                  </div>
+
+                <!-- WhatsApp & Quick Action Buttons -->
+                <div class="mt-3 pt-3 border-top d-flex flex-column gap-2">
+                  <button class="btn btn-success btn-sm w-100 fw-semibold" onclick="LedgerModule.shareWhatsAppReminderCurrent()">
+                    <i class="bi bi-whatsapp me-2"></i> WhatsApp Payment Reminder
+                  </button>
                 </div>
               </div>
             </div>
@@ -614,6 +672,7 @@
                   <option value="2024-2025">2024-2025</option>
                   <option value="2023-2024">2023-2024</option>
                   <option value="2022-2023">2022-2023</option>
+                  <option value="2021-2022">2021-2022</option>
                   <option value="2020-2021">2020-2021</option>
                   <option value="2019-2020">2019-2020</option>
                 </select>

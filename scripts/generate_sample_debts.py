@@ -789,21 +789,63 @@ if 618400.0 - tot_24_25 > 0:
     add("D24_BAL", "2024-10-15", "850_TTC", "RJ52GA7728", "Delhi", "Loading", diff, diff, "Cash", "Laxmi Prakash Jat", "Rameshwar Prasad", "Financial year opening balance reconciliation")
 
 # ==========================================
-# Previous Financial Years (From Screenshot 4.10.05 PM)
+# Previous Financial Years (From Authentic AppSheet Screenshots in newsaveingledegers)
 # ==========================================
-# 2023-2024: Total ₹148,615.00
-add("D23_01", "2024-02-15", "OLD_23_1", "RJ52GA4366", "Delhi", "Advance", 60000, 60000, "Cash", "Laxmi Prakash Jat", "Rameshwar Prasad", "Outstanding FY 23-24 Advance")
-add("D23_02", "2023-11-20", "OLD_23_2", "RJ52GA7729", "Lucknow (U.P.)", "Loading", 50000, 50000, "Cash", "Rameshwar Prasad", "Chintu Bansal", "Outstanding FY 23-24 Loading")
-add("D23_03", "2023-08-10", "OLD_23_3", "RJ52GA8617", "Delhi", "Commission", 38615, 38615, "Cash", "Shree Mahaveer Transport Company", "Sharad Bapna", "Outstanding FY 23-24 Commission Balance")
+# FY 2023-2024: Exactly ₹148,615.00 across 19 records
+# 4 Jul
+add("D23_0729_1", "2023-07-29", "-", "RJ52GA7729", "-", "Old", 12000, 12000, "Cash", "Vijay Gurjar", "Vijay Gurjar", "Advance SKM")
 
-# 2022-2023: Total ₹10,000.00
-add("D22_01", "2023-01-18", "OLD_22_1", "RJ52GA6602", "Delhi", "Old", 10000, 10000, "Cash", "Laxmi Prakash Jat", "Laxmi Prakash Jat", "Historical ledger balance")
+# 5 Aug
+add("D23_0823_1", "2023-08-23", "-", "RJ52GA7390", "-", "Old", 2000, 2000, "Cash", "Rameshwar Prasad", "Rameshwar Prasad", "Cash")
 
-# 2020-2021: Total ₹20,000.00
-add("D20_01", "2020-12-14", "OLD_20_1", "RJ52GA4614", "Delhi", "Old", 20000, 20000, "Cash", "Rameshwar Prasad", "Rameshwar Prasad", "Historical freight balance")
+# 6 Sep
+add("D23_0902_1", "2023-09-02", "-", "RJ52GA7731", "-", "Old", 8000, 8000, "Cash", "Sharad Bapna", "Sharad Bapna", "Gurgaon Sharad Bapna")
 
-# 2019-2020: Total ₹6,000.00
-add("D19_01", "2019-09-22", "OLD_19_1", "RJ52GA7390", "Delhi", "Old", 6000, 6000, "Cash", "Laxmi Prakash Jat", "Laxmi Prakash Jat", "Historical unadjusted balance")
+# 8 Nov
+add("D23_1124_1", "2023-11-24", "-", "RJ52GA9489", "-", "Old", 1500, 1500, "Cash", "Laxmi Prakash Jat", "Laxmi Prakash Jat", "Commission-Kishangarh")
+add("D23_1123_1", "2023-11-23", "-", "RJ52GB0788", "-", "Old", 1500, 1500, "Cash", "Laxmi Prakash Jat", "Laxmi Prakash Jat", "Commission-Kishangarh")
+add("D23_1121_1", "2023-11-21", "-", "RJ52GA9489", "-", "Old", 1015, 1500, "Cash", "Laxmi Prakash Jat", "Laxmi Prakash Jat", "Commission-Kishangarh", dotColor="blue", returned=[{"id": "RET_D23_1121_1", "date": "2023-11-21", "displayDate": "21/11/2023", "amount": 485.0, "mode": "Cash", "remarks": "Partial settled"}])
+add("D23_1109_1", "2023-11-09", "-", "RJ52GA6136", "-", "Old", 51000, 51000, "Cash", "Mukesh Dhabas", "Mukesh Dhabas", "Advance Meerut White")
+
+# 9 Dec
+add("D23_1228_1", "2023-12-28", "-", "RJ52GA6148", "-", "Old", 5000, 5000, "Cash", "Laxmi Prakash Jat", "Laxmi Prakash Jat", "Commission-Udaipur")
+add("D23_1224_1", "2023-12-24", "-", "RJ52GB0721", "-", "Old", 11600, 11600, "Cash", "Kailash Doi", "Kailash Doi", "Labour Kailash Doi")
+add("D23_1223_1", "2023-12-23", "-", "RJ52GA9546", "-", "Old", 1500, 1500, "Cash", "Rameshwar Prasad", "Rameshwar Prasad", "Commission-Kishangarh")
+add("D23_1220_1", "2023-12-20", "-", "RJ52GB0729", "-", "Old", 1500, 1500, "Cash", "Laxmi Prakash Jat", "Laxmi Prakash Jat", "Commission-Kishangarh")
+add("D23_1219_1", "2023-12-19", "-", "RJ52GA9546", "-", "Old", 5000, 5000, "Cash", "Rameshwar Prasad", "Rameshwar Prasad", "Chittorgarh")
+add("D23_1217_1", "2023-12-17", "-", "RJ52GB0729", "-", "Old", 5000, 5000, "Cash", "Laxmi Prakash Jat", "Laxmi Prakash Jat", "Commission-Dabok")
+add("D23_1216_1", "2023-12-16", "-", "RJ52GA8617", "-", "Old", 1500, 1500, "Cash", "Rameshwar Prasad", "Rameshwar Prasad", "Commission")
+add("D23_1209_1", "2023-12-09", "-", "RJ52GA9546", "-", "Old", 5000, 5000, "Cash", "Rameshwar Prasad", "Rameshwar Prasad", "Commission")
+
+# 10 Jan
+add("D23_0113_1", "2024-01-13", "-", "RJ52GB0721", "-", "Old", 2000, 2000, "Cash", "Laxmi Prakash Jat", "Laxmi Prakash Jat", "Commission-Kishangarh")
+
+# 11 Feb
+add("D23_0224_1", "2024-02-24", "-", "RJ52GA7729", "-", "Old", 4500, 4500, "Cash", "Vishnu Khandelwal", "Vishnu Khandelwal", "Vishnu Khandelwal GST R...")
+add("D23_0207_1", "2024-02-07", "-", "RJ52GA7731", "-", "Old", 2000, 2000, "Cash", "Rameshwar Prasad", "Rameshwar Prasad", "Commission-Kishangarh")
+
+# 12 Mar
+add("D23_0328_1", "2024-03-28", "-", "RJ52GB0788", "-", "Old", 2000, 2000, "Cash", "Laxmi Prakash Jat", "Laxmi Prakash Jat", "Commission-Kishangarh")
+add("D23_0320_1", "2024-03-20", "-", "RJ52GA6551", "-", "Old", 13000, 13000, "Cash", "Laxmi Prakash Jat", "Laxmi Prakash Jat", "Advance")
+add("D23_0319_1", "2024-03-19", "-", "RJ52GA6551", "-", "Old", 12000, 12000, "Cash", "Laxmi Prakash Jat", "Laxmi Prakash Jat", "Mahesh Ji Baraut")
+
+# ==========================================
+# FY 2022-2023: Exactly ₹10,000.00
+# ==========================================
+# 3 Jun
+add("D22_0616_1", "2022-06-16", "-", "RJ52GA5419", "-", "Old", 10000, 10000, "Cash", "Laxmi Prakash Jat", "Laxmi Prakash Jat", "Gajroula")
+
+# ==========================================
+# FY 2020-2021: Exactly ₹20,000.00
+# ==========================================
+# 8 Nov
+add("D20_1106_1", "2020-11-06", "-", "RJ52GA5419", "-", "Old", 20000, 20000, "Cash", "Laxmi Prakash Jat", "Laxmi Prakash Jat", "Advance-Kanpur-Kalu")
+
+# ==========================================
+# FY 2019-2020: Exactly ₹6,000.00
+# ==========================================
+# 6 Sep
+add("D19_0902_1", "2019-09-02", "-", "RJ14GH0366", "-", "Old", 6000, 6000, "Cash", "Laxmi Prakash Jat", "Laxmi Prakash Jat", "Cash Rohitash")
 
 # Sort chronologically descending
 debts.sort(key=lambda x: (x['date'], x['id']), reverse=True)

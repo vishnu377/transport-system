@@ -57,6 +57,7 @@ const LedgerModule = {
       '2024-2025',
       '2023-2024',
       '2022-2023',
+      '2021-2022',
       '2020-2021',
       '2019-2020'
     ];
@@ -105,9 +106,32 @@ const LedgerModule = {
     if (label) label.innerText = this.selectedFY === 'ALL' ? 'All Years' : this.selectedFY;
   },
 
+  toggleFYSidebar() {
+    const sidebar = document.getElementById('ledger-fy-sidebar');
+    const toggleBtnText = document.getElementById('toggle-fy-text');
+    if (!sidebar) return;
+
+    const isHidden = sidebar.classList.toggle('d-none');
+    if (toggleBtnText) {
+      toggleBtnText.innerText = isHidden ? "Show FY Sidebar" : "Hide FY Sidebar";
+    }
+  },
+
   filterByFY(fy) {
     this.selectedFY = fy;
     this.currentPage = 1;
+
+    // Update quick FY buttons
+    const quickBtns = document.querySelectorAll('.fy-quick-btn');
+    quickBtns.forEach(btn => {
+      const bFy = btn.getAttribute('data-fy');
+      if (bFy === fy) {
+        btn.className = "btn btn-sm btn-primary py-0 px-2 fw-semibold fy-quick-btn";
+      } else {
+        btn.className = "btn btn-sm btn-outline-secondary py-0 px-2 fw-semibold fy-quick-btn";
+      }
+    });
+
     this.renderFYSidebar();
     this.applyFilters();
   },
@@ -133,6 +157,12 @@ const LedgerModule = {
     this.searchQuery = (val || '').toLowerCase().trim();
     this.currentPage = 1;
     this.applyFilters();
+  },
+
+  clearSearch() {
+    const sInput = document.getElementById('ledger-search-input');
+    if (sInput) sInput.value = '';
+    this.onSearchInput('');
   },
 
   changePageSize(val) {
@@ -264,21 +294,35 @@ const LedgerModule = {
   },
 
   // ----------------------------------------------------
-  // REGISTER TABLE WITH DATE GROUPING (AppSheet Layout)
+  // ----------------------------------------------------
+  // REGISTER TABLE WITH DATE GROUPING (Modern ERP Layout)
   // ----------------------------------------------------
   renderRegisterTable() {
     const tbody = document.getElementById('debts-table-body');
     if (!tbody) return;
 
     if (this.filteredList.length === 0) {
-      tbody.innerHTML = `
-        <tr>
-          <td colspan="11" class="text-center py-5 text-muted">
-            <i class="bi bi-inbox fs-2 d-block mb-2 text-secondary"></i>
-            No matching debt records found. Adjust your filters or select a different Financial Year.
-          </td>
-        </tr>
-      `;
+      if (this.selectedFY === '2021-2022') {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" class="text-center py-5">
+              <i class="bi bi-check-circle-fill fs-2 d-block mb-2 text-success"></i>
+              <div class="fw-bold text-dark fs-6">No Outstanding Due for FY 2021-2022</div>
+              <small class="text-muted">All debts for FY 2021-2022 were 100% settled and cleared (Due Balance: ₹0.00).</small>
+            </td>
+          </tr>
+        `;
+      } else {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" class="text-center py-5 text-muted">
+              <i class="bi bi-inbox fs-2 d-block mb-2 text-secondary"></i>
+              <div class="fw-semibold">No matching debt records found</div>
+              <small class="text-muted">Try adjusting your search keywords, year, or filter criteria.</small>
+            </td>
+          </tr>
+        `;
+      }
       return;
     }
 
@@ -304,65 +348,87 @@ const LedgerModule = {
 
     dateGroups.forEach((items, dateKey) => {
       const groupDue = items.reduce((sum, i) => sum + (Number(i.dueAmount) || 0), 0);
-      const dotColor = items[0]?.dotColor === 'blue' ? 'bg-primary' : 'bg-warning';
 
-      // Date Header Row
+      // Date Header Ribbon (Modern ERP sleek divider)
       html += `
-        <tr class="table-light border-top border-bottom">
-          <td colspan="11" class="py-2 px-3 fw-bold" style="background-color: #f1f5f9;">
-            <div class="d-flex justify-content-between align-items-center">
-              <div>
-                <span class="badge rounded-pill ${dotColor} me-2" style="font-size: 0.65rem;">●</span>
-                <span class="text-dark">${dateKey}</span>
-                <small class="text-muted ms-2 fw-normal">(${items.length} ${items.length === 1 ? 'entry' : 'entries'})</small>
+        <tr class="table-group-header">
+          <td colspan="6" class="p-0 border-0">
+            <div class="ledger-date-ribbon">
+              <div class="date-badge">
+                <i class="bi bi-calendar-event text-primary"></i>
+                <span>${dateKey}</span>
+                <span class="text-muted fw-normal small">(${items.length} ${items.length === 1 ? 'record' : 'records'})</span>
               </div>
-              <div class="text-end">
-                <small class="text-muted me-2">Date Due:</small>
-                <span class="fw-bold font-monospace text-danger">${AppUI.formatCurrency(groupDue)}</span>
+              <div class="d-flex align-items-center gap-2">
+                <span class="small text-muted">Day Due:</span>
+                <span class="day-due">${AppUI.formatCurrency(groupDue)}</span>
               </div>
             </div>
           </td>
         </tr>
       `;
 
-      // Item Rows
+      // Item Rows (Sleek 6 hierarchically organized columns - Zero horizontal scroll)
       items.forEach(d => {
         const due = Number(d.dueAmount) || 0;
         const debt = Number(d.debtAmount) || 0;
-        const companyBadge = d.company === 'TTC' ? 'bg-primary' : d.company === 'MTC' ? 'bg-success' : 'bg-warning text-dark';
+        const returned = Number(d.totalReturned) || 0;
+        const comp = d.company || 'TTC';
+        const firmBadgeClass = comp === 'TTC' ? 'badge-firm-ttc' : comp === 'MTC' ? 'badge-firm-mtc' : 'badge-firm-smtc';
 
         html += `
-          <tr class="appsheet-row" style="cursor: pointer;" onclick="LedgerModule.openDebtDetails('${d.id}')">
+          <tr class="ledger-row" onclick="LedgerModule.openDebtDetails('${d.id}')">
+            <!-- 1. G.R. No & Vehicle -->
             <td>
-              <span class="badge ${companyBadge} me-1 font-monospace" style="font-size: 0.72rem;">${d.company || 'TTC'}</span>
-              <span class="fw-bold font-monospace">${d.grNo || '-'}</span>
+              <div class="d-flex align-items-center gap-1">
+                <span class="fw-bold font-monospace text-primary">${d.grNo || '-'}</span>
+                <span class="${firmBadgeClass}">${comp}</span>
+              </div>
+              <div class="text-secondary small font-monospace mt-1">
+                <i class="bi bi-truck text-muted me-1"></i>${d.truckNo || 'No Vehicle'}
+              </div>
             </td>
-            <td><span class="font-monospace fw-semibold">${d.truckNo || '-'}</span></td>
-            <td><span class="text-dark">${d.to || '-'}</span></td>
-            <td><span class="badge bg-light text-dark border">${d.debtType || '-'}</span></td>
-            <td class="text-end">
-              <span class="ledger-due-text fs-6">${AppUI.formatCurrency(due)}</span>
-            </td>
-            <td class="text-end font-monospace">${AppUI.formatCurrency(debt)}</td>
-            <td><span class="small text-muted">${d.debtMode || 'Cash'}</span></td>
+
+            <!-- 2. Date & Route -->
             <td>
-              <div class="text-truncate" style="max-width: 170px;" title="${d.borrowerName || ''}">
+              <div class="fw-semibold text-dark">
+                <i class="bi bi-calendar3 text-muted me-1 small"></i>${d.displayDate || d.date || '-'}
+              </div>
+              <div class="text-muted small text-truncate mt-1" style="max-width: 175px;" title="${d.from || 'Origin'} → ${d.to || 'Destination'}">
+                <i class="bi bi-geo-alt text-danger me-1 small"></i>${d.to ? `${d.from || 'Origin'} → ${d.to}` : (d.from || '-')}
+              </div>
+            </td>
+
+            <!-- 3. Borrower & Receiver -->
+            <td>
+              <div class="fw-bold text-dark text-truncate" style="max-width: 245px;" title="${d.borrowerName || '-'}">
                 ${d.borrowerName || '-'}
               </div>
-            </td>
-            <td>
-              <div class="text-truncate" style="max-width: 140px;" title="${d.receiverName || ''}">
-                ${d.receiverName || '-'}
+              <div class="text-muted small text-truncate mt-1" style="max-width: 245px;" title="${d.receiverName || '-'}">
+                <i class="bi bi-person me-1"></i>Recv: ${d.receiverName || '-'}
               </div>
             </td>
+
+            <!-- 4. Debt Type & Mode -->
             <td>
-              <div class="text-truncate text-muted small" style="max-width: 160px;" title="${d.description || ''}">
-                ${d.description || '-'}
+              <span class="badge-type-pill">${d.debtType || 'General'}</span>
+              <div class="text-muted small mt-1">
+                <i class="bi bi-wallet2 me-1"></i>${d.debtMode || 'Cash'}
               </div>
             </td>
-            <td class="text-center">
-              <button class="btn btn-sm btn-light border px-2 py-1 text-primary" title="Open 3-Card Details" onclick="event.stopPropagation(); LedgerModule.openDebtDetails('${d.id}')">
-                <i class="bi bi-chevron-right"></i>
+
+            <!-- 5. Due / Total Amount -->
+            <td class="text-end">
+              <div class="currency-due fs-6">${AppUI.formatCurrency(due)}</div>
+              <small class="text-muted font-monospace d-block mt-1">
+                ${returned > 0 ? `<span class="currency-paid">₹${returned.toLocaleString('en-IN')} paid</span> / ` : ''}₹${debt.toLocaleString('en-IN')}
+              </small>
+            </td>
+
+            <!-- 6. Action -->
+            <td class="text-end" onclick="event.stopPropagation()">
+              <button class="btn btn-outline-primary btn-sm py-1 px-2 fw-semibold" onclick="LedgerModule.openDebtDetails('${d.id}')" title="View Details or Record Payment">
+                <i class="bi bi-eye me-1"></i> View
               </button>
             </td>
           </tr>
@@ -432,7 +498,7 @@ const LedgerModule = {
   },
 
   // ----------------------------------------------------
-  // 3-CARD OPEN DEBT DETAILS VIEW (AppSheet Layout)
+  // 3-CARD OPEN DEBT DETAILS VIEW (Modern Layout)
   // ----------------------------------------------------
   openDebtDetails(debtId) {
     const debt = this.allDebts.find(d => String(d.id) === String(debtId));
@@ -449,8 +515,8 @@ const LedgerModule = {
     document.getElementById('ledger-view-details')?.classList.remove('d-none');
 
     // Breadcrumb & title
-    document.getElementById('page-title-text').innerText = "MTC And TTC - Ledger > Open Debt Details";
-    document.getElementById('page-breadcrumb').innerText = `Home > Ledger > Open Debt Details > ${debt.grNo || debt.id}`;
+    document.getElementById('page-title-text').innerText = "MTC & TTC - Ledger > Debt Details";
+    document.getElementById('page-breadcrumb').innerText = `Home > Ledger > Debt Details > ${debt.grNo || debt.id}`;
 
     // Index position in filtered list
     const idx = this.filteredList.findIndex(d => String(d.id) === String(debtId));
@@ -475,7 +541,7 @@ const LedgerModule = {
     document.getElementById('detail-date').innerText = debt.displayDate || debt.date || '-';
     document.getElementById('detail-truck-owner').innerText = debt.truckOwner || '-';
     document.getElementById('detail-gr-no').innerText = debt.grNo || '-';
-    document.getElementById('detail-company-name').innerText = debt.company === 'TTC' ? 'TTC Transport Corp' : debt.company === 'MTC' ? 'Mahaveer Transport Co' : (debt.company || 'TTC');
+    document.getElementById('detail-company-name').innerText = debt.company === 'TTC' ? 'TTC' : debt.company === 'MTC' ? 'MTC' : (debt.company || 'TTC');
     document.getElementById('detail-from').innerText = debt.from || '-';
     document.getElementById('detail-to').innerText = debt.to || '-';
     document.getElementById('detail-borrower').innerText = debt.borrowerName || '-';
@@ -485,17 +551,17 @@ const LedgerModule = {
     // CARD 2: RETURNED AMOUNT HISTORY
     const returns = Array.isArray(debt.returnedAmounts) ? debt.returnedAmounts : [];
     document.getElementById('detail-return-count-header').innerHTML = `
-      <i class="bi bi-clock-history text-success me-2"></i> Returned Amount [${returns.length}]
+      <i class="bi bi-clock-history text-success me-2"></i> Returned Receipts (${returns.length})
     `;
 
     const returnsContainer = document.getElementById('detail-returns-container');
     if (returnsContainer) {
       if (returns.length === 0) {
         returnsContainer.innerHTML = `
-          <div class="text-center py-4 text-muted">
-            <i class="bi bi-info-circle fs-3 text-secondary d-block mb-1"></i>
-            <div>No items</div>
-            <small class="text-muted">No returned amount recorded yet for this entry.</small>
+          <div class="text-center py-5 text-muted">
+            <i class="bi bi-receipt-cutoff fs-2 d-block mb-1 text-secondary"></i>
+            <div class="fs-6 fw-normal mb-1">No payments recorded yet</div>
+            <small class="text-muted">Use "+ Record Returned Amount" to log receipts.</small>
           </div>
         `;
       } else {
@@ -504,10 +570,9 @@ const LedgerModule = {
             <thead class="table-light">
               <tr>
                 <th>Date</th>
-                <th class="text-end">Amount Returned</th>
+                <th class="text-end">Amount</th>
                 <th>Mode</th>
-                <th>Received By</th>
-                <th>Remarks</th>
+                <th>By</th>
               </tr>
             </thead>
             <tbody>
@@ -519,7 +584,6 @@ const LedgerModule = {
               <td class="text-end font-monospace fw-bold text-success">${AppUI.formatCurrency(r.amount)}</td>
               <td><span class="badge bg-light text-dark border">${r.mode || 'Cash'}</span></td>
               <td>${r.receivedBy || '-'}</td>
-              <td class="small text-muted">${r.remarks || '-'}</td>
             </tr>
           `;
         });
@@ -528,7 +592,7 @@ const LedgerModule = {
       }
     }
 
-    // CARD 3: FINANCIALS
+    // CARD 3: FINANCIALS & RECOVERY PROGRESS
     const debtAmt = Number(debt.debtAmount) || 0;
     const retAmt = Number(debt.totalReturned) || 0;
     const dueAmt = Number(debt.dueAmount) || 0;
@@ -537,6 +601,13 @@ const LedgerModule = {
     document.getElementById('detail-debt-amount').innerText = AppUI.formatCurrency(debtAmt);
     document.getElementById('detail-total-returned').innerText = AppUI.formatCurrency(retAmt);
     document.getElementById('detail-due-amount').innerText = AppUI.formatCurrency(dueAmt);
+
+    // Calculate recovery percentage
+    const pct = debtAmt > 0 ? Math.min(100, Math.round((retAmt / debtAmt) * 100)) : 0;
+    const pctEl = document.getElementById('detail-recovery-pct');
+    if (pctEl) pctEl.innerText = `${pct}% Paid`;
+    const fillEl = document.getElementById('detail-recovery-fill');
+    if (fillEl) fillEl.style.width = `${pct}%`;
 
     const statusPill = document.getElementById('detail-status-pill');
     if (statusPill) {
@@ -567,8 +638,111 @@ const LedgerModule = {
     document.getElementById('ledger-view-statements')?.classList.add('d-none');
     document.getElementById('ledger-view-register')?.classList.remove('d-none');
 
-    document.getElementById('page-title-text').innerText = "MTC And TTC - Ledger";
+    document.getElementById('page-title-text').innerText = "MTC & TTC - Debts & Financial Ledger";
     document.getElementById('page-breadcrumb').innerText = "Home > Ledger > Open Debts Register";
+  },
+
+  shareWhatsAppReminderCurrent() {
+    if (!this.currentDebtId) return;
+    const debt = this.allDebts.find(d => String(d.id) === String(this.currentDebtId));
+    if (!debt) return;
+
+    const due = Number(debt.dueAmount) || 0;
+    const total = Number(debt.debtAmount) || 0;
+    const ret = Number(debt.totalReturned) || 0;
+
+    let msg = `*MTC & TTC LOGISTICS - PAYMENT REMINDER*\n`;
+    msg += `----------------------------------------\n`;
+    msg += `Namaste Ji,\n`;
+    msg += `This is a payment reminder regarding the pending debt balance:\n\n`;
+    msg += `*G.R. No.*: ${debt.grNo || 'N/A'}\n`;
+    msg += `*Vehicle No.*: ${debt.truckNo || 'N/A'}\n`;
+    msg += `*Borrower / Party*: ${debt.borrowerName || 'N/A'}\n`;
+    msg += `*Route*: ${debt.from || 'Origin'} -> ${debt.to || 'Destination'}\n`;
+    msg += `*Debt Type*: ${debt.debtType || 'General'}\n`;
+    msg += `*Date*: ${debt.displayDate || debt.date}\n\n`;
+    msg += `*Total Billed*: Rs. ${total.toLocaleString('en-IN')}\n`;
+    if (ret > 0) {
+      msg += `*Amount Received*: Rs. ${ret.toLocaleString('en-IN')}\n`;
+    }
+    msg += `*Outstanding Due Balance*: *Rs. ${due.toLocaleString('en-IN')}*\n`;
+    msg += `----------------------------------------\n`;
+    msg += `Kindly arrange the balance payment at the earliest. Thank you!\n`;
+    msg += `*Mahaveer Transport Co. & TTC Logistics*`;
+
+    const url = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+    window.open(url, '_blank');
+  },
+
+  exportToCSV() {
+    if (!this.filteredList || this.filteredList.length === 0) {
+      AppUI.showToast("No records to export in current filter view", "warning");
+      return;
+    }
+
+    const headers = [
+      "G.R. No",
+      "Company",
+      "Vehicle No",
+      "Date",
+      "From",
+      "To",
+      "Truck Owner",
+      "Borrower Name",
+      "Receiver Name",
+      "Debt Type",
+      "Debt Mode",
+      "Debt Amount (INR)",
+      "Total Returned (INR)",
+      "Due Balance (INR)",
+      "Financial Year",
+      "Description"
+    ];
+
+    const escapeCSV = (val) => {
+      if (val === null || val === undefined) return '""';
+      const str = String(val).replace(/"/g, '""');
+      return `"${str}"`;
+    };
+
+    let csvContent = '\uFEFF'; // UTF-8 BOM for Microsoft Excel
+    csvContent += headers.join(',') + '\r\n';
+
+    this.filteredList.forEach(d => {
+      const row = [
+        escapeCSV(d.grNo || ''),
+        escapeCSV(d.company || 'TTC'),
+        escapeCSV(d.truckNo || ''),
+        escapeCSV(d.displayDate || d.date || ''),
+        escapeCSV(d.from || ''),
+        escapeCSV(d.to || ''),
+        escapeCSV(d.truckOwner || ''),
+        escapeCSV(d.borrowerName || ''),
+        escapeCSV(d.receiverName || ''),
+        escapeCSV(d.debtType || ''),
+        escapeCSV(d.debtMode || ''),
+        escapeCSV(Number(d.debtAmount) || 0),
+        escapeCSV(Number(d.totalReturned) || 0),
+        escapeCSV(Number(d.dueAmount) || 0),
+        escapeCSV(d.fy || ''),
+        escapeCSV(d.description || '')
+      ];
+      csvContent += row.join(',') + '\r\n';
+    });
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    const fyLabel = this.selectedFY === 'ALL' ? 'All_Years' : this.selectedFY;
+    const dateLabel = new Date().toISOString().split('T')[0];
+    link.setAttribute('href', url);
+    link.setAttribute('download', `MTC_TTC_Debts_Export_${fyLabel}_${dateLabel}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    AppUI.showToast(`Exported ${this.filteredList.length} debt records to CSV successfully!`, "success");
   },
 
   // ----------------------------------------------------

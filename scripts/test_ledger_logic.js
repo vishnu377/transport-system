@@ -23,8 +23,8 @@ async function test() {
   const allDebts = await dbService.getAll('debts');
   console.log(`Loaded debts count: ${allDebts.length}`);
 
-  if (allDebts.length !== 650) {
-    throw new Error(`Expected 650 debts, got ${allDebts.length}`);
+  if (allDebts.length !== 668) {
+    throw new Error(`Expected 668 debts, got ${allDebts.length}`);
   }
 
   // FY Due calculations (including credit adjustment entries)
