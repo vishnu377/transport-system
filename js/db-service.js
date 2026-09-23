@@ -62,6 +62,10 @@ class DBService {
       return this.getAllTrips(cloudItems);
     }
 
+    if (collectionName === 'debts') {
+      return this.getAllDebts(cloudItems);
+    }
+
     // LocalStorage Fallback for other collections
     const localData = localStorage.getItem(`tms_${collectionName}`);
     return localData ? JSON.parse(localData) : [];
@@ -138,6 +142,98 @@ class DBService {
     }
   }
 
+  // --- Authentic AppSheet Ledger Debts Engine ---
+  getAllDebts(cloudItems = []) {
+    const isBaseCleared = localStorage.getItem('tms_base_debts_cleared') === 'true';
+    const baseDebts = (!isBaseCleared && typeof window !== 'undefined' && Array.isArray(window.SAMPLE_DEBTS_DATA))
+      ? window.SAMPLE_DEBTS_DATA
+      : [];
+
+    const editedMap = JSON.parse(localStorage.getItem('tms_edited_debts') || '{}');
+    const deletedList = JSON.parse(localStorage.getItem('tms_deleted_debts') || '[]');
+    const deletedSet = new Set(deletedList.map(String));
+    const customDebts = JSON.parse(localStorage.getItem('tms_custom_debts') || '[]');
+
+    const debtMap = new Map();
+
+    // 1. Add base debts
+    for (const d of baseDebts) {
+      if (!deletedSet.has(String(d.id))) {
+        debtMap.set(String(d.id), editedMap[d.id] ? { ...d, ...editedMap[d.id] } : d);
+      }
+    }
+
+    // 2. Add/override with custom debts
+    for (const d of customDebts) {
+      if (!deletedSet.has(String(d.id))) {
+        debtMap.set(String(d.id), editedMap[d.id] ? { ...d, ...editedMap[d.id] } : d);
+      }
+    }
+
+    // 3. Add/override with cloud items
+    if (Array.isArray(cloudItems)) {
+      for (const d of cloudItems) {
+        if (!deletedSet.has(String(d.id))) {
+          debtMap.set(String(d.id), { ...(debtMap.get(String(d.id)) || {}), ...d });
+        }
+      }
+    }
+
+    const all = Array.from(debtMap.values());
+    all.sort((a, b) => {
+      const dateA = a.date || '';
+      const dateB = b.date || '';
+      if (dateA !== dateB) return dateB.localeCompare(dateA);
+      return String(b.id || '').localeCompare(String(a.id || ''));
+    });
+
+    return all;
+  }
+
+  clearAllDebts() {
+    localStorage.setItem('tms_base_debts_cleared', 'true');
+    localStorage.removeItem('tms_custom_debts');
+    localStorage.removeItem('tms_edited_debts');
+    localStorage.removeItem('tms_deleted_debts');
+    localStorage.removeItem('tms_debts');
+  }
+
+  restoreBaseDebts() {
+    localStorage.removeItem('tms_base_debts_cleared');
+    localStorage.removeItem('tms_custom_debts');
+    localStorage.removeItem('tms_edited_debts');
+    localStorage.removeItem('tms_deleted_debts');
+    if (typeof window !== 'undefined' && window.SAMPLE_DEBTS_DATA) {
+      localStorage.setItem('tms_debts', JSON.stringify(window.SAMPLE_DEBTS_DATA));
+    }
+  }
+
+  async recordReturnedAmount(debtId, paymentData) {
+    const debt = await this.getById('debts', debtId);
+    if (!debt) throw new Error('Debt record not found');
+
+    const returnEntry = {
+      id: `RET_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
+      date: paymentData.date || new Date().toISOString().split('T')[0],
+      displayDate: paymentData.displayDate || (typeof AppUI !== 'undefined' && AppUI.formatDate ? AppUI.formatDate(paymentData.date) : paymentData.date),
+      amount: Number(paymentData.amount) || 0,
+      mode: paymentData.mode || 'Cash',
+      receivedBy: paymentData.receivedBy || '',
+      remarks: paymentData.remarks || '',
+      createdAt: new Date().toISOString()
+    };
+
+    const returnedAmounts = Array.isArray(debt.returnedAmounts) ? [...debt.returnedAmounts, returnEntry] : [returnEntry];
+    const totalReturned = returnedAmounts.reduce((sum, r) => sum + (Number(r.amount) || 0), 0);
+    const dueAmount = Math.max(0, Number(debt.debtAmount || 0) - totalReturned);
+
+    return await this.update('debts', debtId, {
+      returnedAmounts,
+      totalReturned,
+      dueAmount
+    });
+  }
+
   async getById(collectionName, id) {
     if (this.isFirebaseReady) {
       try {
@@ -171,6 +267,28 @@ class DBService {
           console.log(` Cloud Synced: trips/${newItem.id}`);
         } catch (err) {
           console.warn('Firestore sync error for trips:', err.message);
+        }
+      }
+      return newItem;
+    }
+
+    if (collectionName === 'debts') {
+      const newItem = {
+        ...itemData,
+        id: itemData.id || `DEBT_NEW_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      const customDebts = JSON.parse(localStorage.getItem('tms_custom_debts') || '[]');
+      customDebts.unshift(newItem);
+      localStorage.setItem('tms_custom_debts', JSON.stringify(customDebts));
+
+      if (this.isFirebaseReady) {
+        try {
+          await this.db.collection('debts').doc(newItem.id).set(newItem);
+          console.log(` Cloud Synced: debts/${newItem.id}`);
+        } catch (err) {
+          console.warn('Firestore sync error for debts:', err.message);
         }
       }
       return newItem;
@@ -237,6 +355,34 @@ class DBService {
       return updatedItem;
     }
 
+    if (collectionName === 'debts') {
+      let customDebts = JSON.parse(localStorage.getItem('tms_custom_debts') || '[]');
+      const customIdx = customDebts.findIndex(d => String(d.id) === String(id));
+      let updatedItem = null;
+
+      if (customIdx >= 0) {
+        updatedItem = { ...customDebts[customIdx], ...updatedFields, updatedAt };
+        customDebts[customIdx] = updatedItem;
+        localStorage.setItem('tms_custom_debts', JSON.stringify(customDebts));
+      } else {
+        const editedMap = JSON.parse(localStorage.getItem('tms_edited_debts') || '{}');
+        const existing = await this.getById('debts', id);
+        updatedItem = { ...(existing || {}), id, ...updatedFields, updatedAt };
+        editedMap[id] = updatedItem;
+        localStorage.setItem('tms_edited_debts', JSON.stringify(editedMap));
+      }
+
+      if (this.isFirebaseReady) {
+        try {
+          await this.db.collection('debts').doc(String(id)).set(updatedItem, { merge: true });
+          console.log(` Cloud Updated: debts/${id}`);
+        } catch (err) {
+          console.warn('Firestore update error for debts:', err.message);
+        }
+      }
+      return updatedItem;
+    }
+
     // Update locally
     const items = await this.getAll(collectionName);
     const index = items.findIndex(item => String(item.id) === String(id));
@@ -279,6 +425,28 @@ class DBService {
           console.log(` Cloud Deleted: trips/${id}`);
         } catch (err) {
           console.warn('Firestore delete error for trips:', err.message);
+        }
+      }
+      return true;
+    }
+
+    if (collectionName === 'debts') {
+      let customDebts = JSON.parse(localStorage.getItem('tms_custom_debts') || '[]');
+      customDebts = customDebts.filter(d => String(d.id) !== String(id));
+      localStorage.setItem('tms_custom_debts', JSON.stringify(customDebts));
+
+      const deletedList = JSON.parse(localStorage.getItem('tms_deleted_debts') || '[]');
+      if (!deletedList.includes(String(id))) {
+        deletedList.push(String(id));
+        localStorage.setItem('tms_deleted_debts', JSON.stringify(deletedList));
+      }
+
+      if (this.isFirebaseReady) {
+        try {
+          await this.db.collection('debts').doc(String(id)).delete();
+          console.log(` Cloud Deleted: debts/${id}`);
+        } catch (err) {
+          console.warn('Firestore delete error for debts:', err.message);
         }
       }
       return true;

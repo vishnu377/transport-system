@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Financial Ledger & Statements - MTC & TTC Logistics</title>
+  <title>MTC And TTC - Ledger</title>
   <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Bootstrap Icons -->
@@ -21,165 +21,693 @@
   <div id="main-content">
     
     <!-- Top Navbar -->
-    <header class="top-navbar d-flex align-items-center justify-content-between">
+    <header class="top-navbar d-flex align-items-center justify-content-between flex-wrap gap-2">
       <div class="d-flex align-items-center gap-3">
         <button id="sidebar-toggle" class="btn btn-light d-lg-none">
           <i class="bi bi-list fs-5"></i>
         </button>
         <div>
-          <h5 class="mb-0 fw-bold text-dark">Financial Ledger & Statements</h5>
-          <small class="text-muted">Party freight statements, truck owner ledgers, print & WhatsApp sharing</small>
+          <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-primary px-2 py-1">AppSheet Model</span>
+            <h5 class="mb-0 fw-bold text-dark" id="page-title-text">MTC And TTC - Ledger</h5>
+          </div>
+          <small class="text-muted" id="page-breadcrumb">Home &gt; Ledger &gt; Open Debts Register</small>
         </div>
       </div>
 
-      <div class="d-flex align-items-center gap-2">
-        <button class="btn btn-outline-secondary btn-sm" onclick="window.print()">
-          <i class="bi bi-printer me-1"></i> Print Statement
+      <!-- Header Action Buttons & Tabs -->
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <!-- View Tabs -->
+        <div class="btn-group btn-group-sm" role="group">
+          <button type="button" class="btn btn-outline-primary active" id="tab-btn-open" onclick="LedgerModule.switchTab('open')">
+            <i class="bi bi-journal-text me-1"></i> Open Debts
+          </button>
+          <button type="button" class="btn btn-outline-primary" id="tab-btn-settled" onclick="LedgerModule.switchTab('settled')">
+            <i class="bi bi-check2-circle me-1"></i> Settled
+          </button>
+          <button type="button" class="btn btn-outline-primary" id="tab-btn-statements" onclick="LedgerModule.switchTab('statements')">
+            <i class="bi bi-file-earmark-spreadsheet me-1"></i> Statements
+          </button>
+        </div>
+
+        <button class="btn btn-primary btn-sm" onclick="LedgerModule.openAddDebtModal()">
+          <i class="bi bi-plus-circle me-1"></i> New Debt Entry
         </button>
-        <button class="btn btn-success btn-sm" onclick="LedgerModule.shareWhatsAppStatement()">
-          <i class="bi bi-whatsapp me-1"></i> Share WhatsApp
-        </button>
+
+        <!-- Statements Actions (Visible only on Statements tab) -->
+        <div id="stmt-action-buttons" class="d-none align-items-center gap-1">
+          <button class="btn btn-outline-secondary btn-sm" onclick="window.print()">
+            <i class="bi bi-printer me-1"></i> Print
+          </button>
+          <button class="btn btn-success btn-sm" onclick="LedgerModule.shareWhatsAppStatement()">
+            <i class="bi bi-whatsapp me-1"></i> WhatsApp
+          </button>
+        </div>
       </div>
     </header>
 
-    <!-- Page Content -->
+    <!-- Page Content Container -->
     <main class="page-container">
 
-      <!-- Ledger Selection Card -->
-      <div class="data-card p-4 mb-4">
-        <div class="row g-3 align-items-end">
+      <!-- ========================================== -->
+      <!-- VIEW 1: OPEN / SETTLED DEBTS REGISTER (AppSheet) -->
+      <!-- ========================================== -->
+      <div id="ledger-view-register">
+        <div class="ledger-layout">
           
-          <div class="col-md-3">
-            <label class="form-label fw-semibold small">Account Category *</label>
-            <select id="ledger-category" class="form-select" onchange="LedgerModule.onCategoryChange()">
-              <option value="party">Customer / Party Ledger (ग्राहक खाता)</option>
-              <option value="owner">Truck Owner Ledger (गाड़ी मालिक खाता)</option>
-            </select>
+          <!-- LEFT SIDEBAR: FINANCIAL YEAR DUE -->
+          <div class="ledger-sidebar-fy">
+            <div class="fy-header">
+              <span><i class="bi bi-calendar3 me-1 text-primary"></i> Financial Year Due</span>
+              <span class="badge bg-secondary rounded-pill" id="fy-active-label">All</span>
+            </div>
+            <div class="list-group list-group-flush" id="fy-list-container">
+              <!-- Dynamically populated with active due amounts -->
+            </div>
+            <div class="p-2 border-top bg-light small text-center text-muted">
+              <i class="bi bi-shield-check text-success"></i> Auto-synced 2019-2027
+            </div>
           </div>
 
-          <div class="col-md-4">
-            <label class="form-label fw-semibold small" id="ledger-entity-label">Select Party *</label>
-            <select id="ledger-entity" class="form-select" onchange="LedgerModule.generateStatement()">
-              <!-- Populated dynamically -->
-            </select>
-          </div>
+          <!-- RIGHT MAIN REGISTER AREA -->
+          <div class="flex-grow-1" style="min-width: 0;">
 
-          <div class="col-md-3">
-            <label class="form-label fw-semibold small">Operating Firm Filter</label>
-            <select id="ledger-firm" class="form-select" onchange="LedgerModule.generateStatement()">
-              <option value="ALL">All Combined (TTC + MTC + SMTC)</option>
-              <option value="TTC">TTC Transport Corp</option>
-              <option value="MTC">Mahaveer Transport Co</option>
-              <option value="SMTC">Shree Mahaveer Transport</option>
-            </select>
-          </div>
+            <!-- MONTH SELECTOR BAR (AppSheet 1 Apr .. 12 Mar) -->
+            <div class="month-bar" id="month-bar-container">
+              <button class="month-pill active" onclick="LedgerModule.filterByMonth('ALL')">All Months</button>
+              <button class="month-pill" onclick="LedgerModule.filterByMonth('1 Apr')">1 Apr</button>
+              <button class="month-pill" onclick="LedgerModule.filterByMonth('2 May')">2 May</button>
+              <button class="month-pill" onclick="LedgerModule.filterByMonth('3 Jun')">3 Jun</button>
+              <button class="month-pill" onclick="LedgerModule.filterByMonth('4 Jul')">4 Jul</button>
+              <button class="month-pill" onclick="LedgerModule.filterByMonth('5 Aug')">5 Aug</button>
+              <button class="month-pill" onclick="LedgerModule.filterByMonth('6 Sep')">6 Sep</button>
+              <button class="month-pill" onclick="LedgerModule.filterByMonth('7 Oct')">7 Oct</button>
+              <button class="month-pill" onclick="LedgerModule.filterByMonth('8 Nov')">8 Nov</button>
+              <button class="month-pill" onclick="LedgerModule.filterByMonth('9 Dec')">9 Dec</button>
+              <button class="month-pill" onclick="LedgerModule.filterByMonth('10 Jan')">10 Jan</button>
+              <button class="month-pill" onclick="LedgerModule.filterByMonth('11 Feb')">11 Feb</button>
+              <button class="month-pill" onclick="LedgerModule.filterByMonth('12 Mar')">12 Mar</button>
+            </div>
 
-          <div class="col-md-2">
-            <button class="btn btn-primary w-100" onclick="LedgerModule.generateStatement()">
-              <i class="bi bi-funnel me-1"></i> Filter View
-            </button>
-          </div>
+            <!-- SEARCH & ADVANCED FILTERS CARD -->
+            <div class="data-card p-3 mb-3">
+              <div class="row g-2 align-items-center">
+                <!-- Search input -->
+                <div class="col-md-4">
+                  <div class="input-group">
+                    <span class="input-group-text bg-white"><i class="bi bi-search text-muted"></i></span>
+                    <input type="text" id="ledger-search-input" class="form-control" placeholder="Search G.R., Truck, To, Party, Borrower, Receiver..." oninput="LedgerModule.onSearchInput(this.value)">
+                  </div>
+                </div>
 
+                <!-- Company filter -->
+                <div class="col-md-2 col-6">
+                  <select id="filter-company" class="form-select form-select-sm" onchange="LedgerModule.applyFilters()">
+                    <option value="ALL">All Companies</option>
+                    <option value="TTC">TTC</option>
+                    <option value="MTC">MTC</option>
+                    <option value="SMTC">SMTC</option>
+                  </select>
+                </div>
+
+                <!-- Debt Type filter -->
+                <div class="col-md-2 col-6">
+                  <select id="filter-debt-type" class="form-select form-select-sm" onchange="LedgerModule.applyFilters()">
+                    <option value="ALL">All Debt Types</option>
+                    <option value="Commission">Commission</option>
+                    <option value="Other">Other</option>
+                    <option value="Loading">Loading</option>
+                    <option value="Advance">Advance</option>
+                    <option value="In Hand">In Hand</option>
+                    <option value="Old">Old</option>
+                  </select>
+                </div>
+
+                <!-- Mode filter -->
+                <div class="col-md-2 col-6">
+                  <select id="filter-debt-mode" class="form-select form-select-sm" onchange="LedgerModule.applyFilters()">
+                    <option value="ALL">All Modes</option>
+                    <option value="Cash">Cash</option>
+                    <option value="NEFT/RTGS">NEFT / RTGS</option>
+                    <option value="Cheque">Cheque</option>
+                  </select>
+                </div>
+
+                <!-- Reset Filters Button -->
+                <div class="col-md-2 col-6 text-end">
+                  <button class="btn btn-outline-secondary btn-sm w-100" onclick="LedgerModule.resetFilters()">
+                    <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- KPI SUMMARY & CONTROLS BAR -->
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 p-3 bg-white rounded border mb-3">
+              <div class="d-flex align-items-center gap-4 flex-wrap">
+                <div>
+                  <small class="text-muted d-block">Total Due Balance</small>
+                  <span class="fs-5 fw-bold text-danger font-monospace" id="summary-total-due">₹0.00</span>
+                </div>
+                <div class="border-start ps-3">
+                  <small class="text-muted d-block">Total Debt Amount</small>
+                  <span class="fs-6 fw-bold text-dark font-monospace" id="summary-total-debt">₹0.00</span>
+                </div>
+                <div class="border-start ps-3">
+                  <small class="text-muted d-block">Total Returned</small>
+                  <span class="fs-6 fw-bold text-success font-monospace" id="summary-total-returned">₹0.00</span>
+                </div>
+                <div class="border-start ps-3">
+                  <small class="text-muted d-block">Matching Records</small>
+                  <span class="badge bg-secondary fs-6" id="summary-count">0</span>
+                </div>
+              </div>
+
+              <!-- Pagination / Rows Per Page -->
+              <div class="d-flex align-items-center gap-2">
+                <small class="text-muted">Per Page:</small>
+                <select id="ledger-page-size" class="form-select form-select-sm" style="width: auto;" onchange="LedgerModule.changePageSize(this.value)">
+                  <option value="50">50</option>
+                  <option value="100" selected>100</option>
+                  <option value="250">250</option>
+                  <option value="ALL">All (Fast)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- REGISTER TABLE CONTAINER -->
+            <div class="data-card p-0 overflow-hidden mb-3">
+              <div class="table-responsive" style="max-height: 720px; overflow-y: auto;">
+                <table class="table table-hover align-middle mb-0" id="debts-register-table">
+                  <thead class="table-light sticky-top" style="z-index: 5;">
+                    <tr>
+                      <th style="min-width: 110px;">G.R.No.</th>
+                      <th style="min-width: 125px;">Truck No.</th>
+                      <th style="min-width: 110px;">To</th>
+                      <th style="min-width: 110px;">Debt Type</th>
+                      <th class="text-end" style="min-width: 120px;">Due Amount</th>
+                      <th class="text-end" style="min-width: 110px;">Debt Amount</th>
+                      <th style="min-width: 90px;">Debt Mode</th>
+                      <th style="min-width: 170px;">Borrower Name</th>
+                      <th style="min-width: 140px;">Receiver Name</th>
+                      <th style="min-width: 160px;">Description</th>
+                      <th class="text-center" style="min-width: 60px;">View</th>
+                    </tr>
+                  </thead>
+                  <tbody id="debts-table-body">
+                    <!-- Populated dynamically with date grouping rows -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- PAGINATION BAR -->
+            <div class="d-flex align-items-center justify-content-between p-2 bg-white rounded border">
+              <small class="text-muted" id="pagination-info">Showing 0 of 0 entries</small>
+              <div class="btn-group btn-group-sm" id="pagination-buttons">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+
+          </div>
         </div>
       </div>
 
-      <!-- Printable Statement Sheet -->
-      <div id="statement-card" class="data-card p-4">
+      <!-- ========================================== -->
+      <!-- VIEW 2: 3-CARD OPEN DEBT DETAILS (AppSheet) -->
+      <!-- ========================================== -->
+      <div id="ledger-view-details" class="d-none">
         
-        <!-- Statement Header -->
-        <div class="border-bottom pb-3 mb-3 d-flex flex-column flex-md-row justify-content-between align-items-md-center">
-          <div>
-            <h4 id="stmt-company-title" class="fw-bold text-primary mb-1">MTC & TTC LOGISTICS</h4>
-            <div class="text-muted small">Head Office: Shahpura & Rajsamand (Rajasthan) | GST Registered Logistics</div>
-            <div class="text-muted small">Specialized in Marble, Dolomite, Paint & FMCG Fleet Movement</div>
+        <!-- Navigation Header -->
+        <div class="d-flex align-items-center justify-content-between bg-white p-3 rounded border mb-4 flex-wrap gap-2">
+          <div class="d-flex align-items-center gap-3">
+            <button class="btn btn-outline-secondary btn-sm" onclick="LedgerModule.backToRegister()">
+              <i class="bi bi-arrow-left me-1"></i> Back to Open Debts
+            </button>
+            <span class="badge bg-light text-dark border px-3 py-2 fw-semibold" id="detail-nav-counter">
+              Record 1 of 1
+            </span>
           </div>
-          <div class="text-md-end mt-2 mt-md-0">
-            <div class="badge bg-dark-subtle text-dark fs-6 px-3 py-2 font-monospace" id="stmt-period">
-              Statement As on: DD/MM/YYYY
+
+          <div class="d-flex align-items-center gap-2">
+            <button class="btn btn-outline-primary btn-sm" id="btn-prev-debt" onclick="LedgerModule.stepDebt(-1)">
+              <i class="bi bi-chevron-left me-1"></i> Previous Debt
+            </button>
+            <button class="btn btn-outline-primary btn-sm" id="btn-next-debt" onclick="LedgerModule.stepDebt(1)">
+              Next Debt <i class="bi bi-chevron-right ms-1"></i>
+            </button>
+            <button class="btn btn-success btn-sm ms-2" onclick="LedgerModule.openReturnPaymentModalCurrent()">
+              <i class="bi bi-cash-stack me-1"></i> + Record Return Payment
+            </button>
+            <button class="btn btn-outline-danger btn-sm" onclick="LedgerModule.deleteCurrentDebt()">
+              <i class="bi bi-trash"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- 3 CARDS LAYOUT -->
+        <div class="debt-details-container">
+          
+          <!-- CARD 1: PARTICULARS -->
+          <div class="debt-card">
+            <div class="debt-card-header">
+              <span><i class="bi bi-card-text text-primary me-2"></i> Particulars</span>
+              <span class="badge bg-secondary" id="detail-company-badge">TTC</span>
+            </div>
+            <div class="debt-card-body">
+              <div class="row g-2">
+                <div class="col-md-6">
+                  <div class="debt-kv-row">
+                    <div class="debt-kv-label">Debt Type</div>
+                    <div class="debt-kv-val" id="detail-debt-type">-</div>
+                  </div>
+                  <div class="debt-kv-row">
+                    <div class="debt-kv-label">Date</div>
+                    <div class="debt-kv-val font-monospace" id="detail-date">-</div>
+                  </div>
+                  <div class="debt-kv-row">
+                    <div class="debt-kv-label">Truck Owner Name</div>
+                    <div class="debt-kv-val" id="detail-truck-owner">-</div>
+                  </div>
+                  <div class="debt-kv-row">
+                    <div class="debt-kv-label">G.R.No.</div>
+                    <div class="debt-kv-val font-monospace fw-bold text-primary" id="detail-gr-no">-</div>
+                  </div>
+                  <div class="debt-kv-row">
+                    <div class="debt-kv-label">Company Name</div>
+                    <div class="debt-kv-val fw-bold" id="detail-company-name">-</div>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="debt-kv-row">
+                    <div class="debt-kv-label">From</div>
+                    <div class="debt-kv-val" id="detail-from">-</div>
+                  </div>
+                  <div class="debt-kv-row">
+                    <div class="debt-kv-label">To</div>
+                    <div class="debt-kv-val" id="detail-to">-</div>
+                  </div>
+                  <div class="debt-kv-row">
+                    <div class="debt-kv-label">Borrower Name</div>
+                    <div class="debt-kv-val" id="detail-borrower">-</div>
+                  </div>
+                  <div class="debt-kv-row">
+                    <div class="debt-kv-label">Receiver Name</div>
+                    <div class="debt-kv-val" id="detail-receiver">-</div>
+                  </div>
+                  <div class="debt-kv-row">
+                    <div class="debt-kv-label">Description</div>
+                    <div class="debt-kv-val text-muted" id="detail-desc">-</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CARD 2: RETURNED AMOUNT HISTORY -->
+          <div class="debt-card">
+            <div class="debt-card-header">
+              <span id="detail-return-count-header"><i class="bi bi-clock-history text-success me-2"></i> Returned Amount [0]</span>
+              <button class="btn btn-outline-success btn-sm" onclick="LedgerModule.openReturnPaymentModalCurrent()">
+                <i class="bi bi-plus-lg me-1"></i> Record Returned Amount
+              </button>
+            </div>
+            <div class="debt-card-body p-0">
+              <div id="detail-returns-container">
+                <!-- Populated dynamically: empty state or table of returns -->
+              </div>
+            </div>
+          </div>
+
+          <!-- CARD 3: FINANCIALS -->
+          <div class="debt-card">
+            <div class="debt-card-header">
+              <span><i class="bi bi-currency-rupee text-danger me-2"></i> Financials</span>
+              <span class="badge bg-danger-subtle text-danger" id="detail-status-pill">OPEN</span>
+            </div>
+            <div class="debt-card-body">
+              <div class="row g-3">
+                <div class="col-md-3 col-6">
+                  <div class="p-3 bg-light rounded border text-center">
+                    <small class="text-muted d-block">Debt Mode</small>
+                    <span class="fs-6 fw-bold text-dark" id="detail-debt-mode">-</span>
+                  </div>
+                </div>
+                <div class="col-md-3 col-6">
+                  <div class="p-3 bg-light rounded border text-center">
+                    <small class="text-muted d-block">Debt Amount</small>
+                    <span class="fs-5 fw-bold text-dark font-monospace" id="detail-debt-amount">₹0.00</span>
+                  </div>
+                </div>
+                <div class="col-md-3 col-6">
+                  <div class="p-3 bg-success-subtle rounded border text-center">
+                    <small class="text-success d-block fw-semibold">Total Returned</small>
+                    <span class="fs-5 fw-bold text-success font-monospace" id="detail-total-returned">₹0.00</span>
+                  </div>
+                </div>
+                <div class="col-md-3 col-6">
+                  <div class="p-3 bg-danger-subtle rounded border text-center">
+                    <small class="text-danger d-block fw-semibold">Due Amount</small>
+                    <span class="fs-5 fw-bold text-danger font-monospace" id="detail-due-amount">₹0.00</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- ========================================== -->
+      <!-- VIEW 3: PARTY & TRUCK OWNER STATEMENTS (Preserved) -->
+      <!-- ========================================== -->
+      <div id="ledger-view-statements" class="d-none">
+        
+        <!-- Selection Card -->
+        <div class="data-card p-4 mb-4">
+          <div class="row g-3 align-items-end">
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Account Category *</label>
+              <select id="ledger-category" class="form-select" onchange="LedgerModule.onCategoryChange()">
+                <option value="party">Customer / Party Ledger (ग्राहक खाता)</option>
+                <option value="owner">Truck Owner Ledger (गाड़ी मालिक खाता)</option>
+              </select>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label fw-semibold small" id="ledger-entity-label">Select Party *</label>
+              <select id="ledger-entity" class="form-select" onchange="LedgerModule.generateStatement()">
+                <!-- Populated dynamically -->
+              </select>
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Operating Firm Filter</label>
+              <select id="ledger-firm" class="form-select" onchange="LedgerModule.generateStatement()">
+                <option value="ALL">All Combined (TTC + MTC + SMTC)</option>
+                <option value="TTC">TTC Transport Corp</option>
+                <option value="MTC">Mahaveer Transport Co</option>
+                <option value="SMTC">Shree Mahaveer Transport</option>
+              </select>
+            </div>
+
+            <div class="col-md-2">
+              <button class="btn btn-primary w-100" onclick="LedgerModule.generateStatement()">
+                <i class="bi bi-funnel me-1"></i> Filter View
+              </button>
             </div>
           </div>
         </div>
 
-        <!-- Entity Details & KPI Summary -->
-        <div class="row g-3 mb-4">
-          <div class="col-md-6">
-            <div class="p-3 bg-light rounded border h-100">
-              <span class="text-uppercase text-muted small fw-bold d-block mb-1">Account Particulars</span>
-              <h5 id="stmt-name" class="fw-bold text-dark mb-1">Select an account</h5>
-              <div id="stmt-details" class="small text-muted">Address & Contact will appear here</div>
+        <!-- Printable Statement Sheet -->
+        <div id="statement-card" class="data-card p-4">
+          <!-- Statement Header -->
+          <div class="border-bottom pb-3 mb-3 d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+            <div>
+              <h4 id="stmt-company-title" class="fw-bold text-primary mb-1">MTC & TTC LOGISTICS</h4>
+              <div class="text-muted small">Head Office: Shahpura & Rajsamand (Rajasthan) | GST Registered Logistics</div>
+              <div class="text-muted small">Specialized in Marble, Dolomite, Paint & FMCG Fleet Movement</div>
+            </div>
+            <div class="text-md-end mt-2 mt-md-0">
+              <div class="badge bg-dark-subtle text-dark fs-6 px-3 py-2 font-monospace" id="stmt-period">
+                Statement As on: DD/MM/YYYY
+              </div>
             </div>
           </div>
 
-          <div class="col-md-6">
-            <div class="row g-2">
-              <div class="col-6">
-                <div class="p-2 border rounded text-center bg-light">
-                  <small class="text-muted d-block">Total Billed / Earned</small>
-                  <span id="stmt-total-debit" class="fw-bold text-dark fs-6">₹0.00</span>
-                </div>
+          <!-- Entity Details & Summary -->
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <div class="p-3 bg-light rounded border h-100">
+                <span class="text-uppercase text-muted small fw-bold d-block mb-1">Account Particulars</span>
+                <h5 id="stmt-name" class="fw-bold text-dark mb-1">Select an account</h5>
+                <div id="stmt-details" class="small text-muted">Address & Contact will appear here</div>
               </div>
-              <div class="col-6">
-                <div class="p-2 border rounded text-center bg-light">
-                  <small class="text-muted d-block">Total Received / Paid</small>
-                  <span id="stmt-total-credit" class="fw-bold text-success fs-6">₹0.00</span>
+            </div>
+
+            <div class="col-md-6">
+              <div class="row g-2">
+                <div class="col-6">
+                  <div class="p-2 border rounded text-center bg-light">
+                    <small class="text-muted d-block">Total Billed / Earned</small>
+                    <span id="stmt-total-debit" class="fw-bold text-dark fs-6">₹0.00</span>
+                  </div>
                 </div>
-              </div>
-              <div class="col-12">
-                <div class="p-2 border rounded text-center bg-warning-subtle">
-                  <small class="text-muted d-block fw-semibold">Net Outstanding Closing Balance</small>
-                  <span id="stmt-closing-due" class="fw-bold text-danger fs-5">₹0.00</span>
+                <div class="col-6">
+                  <div class="p-2 border rounded text-center bg-light">
+                    <small class="text-muted d-block">Total Received / Paid</small>
+                    <span id="stmt-total-credit" class="fw-bold text-success fs-6">₹0.00</span>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="p-2 border rounded text-center bg-warning-subtle">
+                    <small class="text-muted d-block fw-semibold">Net Outstanding Closing Balance</small>
+                    <span id="stmt-closing-due" class="fw-bold text-danger fs-5">₹0.00</span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Detailed Statement Table -->
-        <div class="table-responsive">
-          <table class="table table-bordered align-middle mb-0">
-            <thead class="table-light">
-              <tr id="stmt-table-header">
-                <th>Date</th>
-                <th>Firm</th>
-                <th>G.R. / Ref No.</th>
-                <th>Particulars / Route</th>
-                <th class="text-end">Billed / Freight (₹)</th>
-                <th class="text-end">Received / Paid (₹)</th>
-                <th class="text-end">Balance Due (₹)</th>
-              </tr>
-            </thead>
-            <tbody id="stmt-table-body">
-              <tr>
-                <td colspan="7" class="text-center py-4 text-muted">
-                  Please select an account above to generate statement.
-                </td>
-              </tr>
-            </tbody>
-            <tfoot class="table-light fw-bold" id="stmt-table-footer">
-              <!-- Totals row -->
-            </tfoot>
-          </table>
-        </div>
+          <!-- Statement Table -->
+          <div class="table-responsive">
+            <table class="table table-bordered align-middle mb-0">
+              <thead class="table-light">
+                <tr id="stmt-table-header">
+                  <th>Date</th>
+                  <th>Firm</th>
+                  <th>G.R. / Ref No.</th>
+                  <th>Particulars / Route</th>
+                  <th class="text-end">Billed / Freight (₹)</th>
+                  <th class="text-end">Received / Paid (₹)</th>
+                  <th class="text-end">Balance Due (₹)</th>
+                </tr>
+              </thead>
+              <tbody id="stmt-table-body">
+                <tr>
+                  <td colspan="7" class="text-center py-4 text-muted">
+                    Please select an account above to generate statement.
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot class="table-light fw-bold" id="stmt-table-footer">
+                <!-- Totals row -->
+              </tfoot>
+            </table>
+          </div>
 
-        <!-- Footer Signatures -->
-        <div class="row mt-5 pt-4 border-top text-center text-muted small">
-          <div class="col-4">
-            <div class="border-top border-dark mx-auto" style="width: 150px; margin-bottom: 5px;"></div>
-            Prepared By
-          </div>
-          <div class="col-4">
-            <div class="border-top border-dark mx-auto" style="width: 150px; margin-bottom: 5px;"></div>
-            Checked By / Accounts
-          </div>
-          <div class="col-4">
-            <div class="border-top border-dark mx-auto" style="width: 150px; margin-bottom: 5px;"></div>
-            Authorized Signatory
+          <!-- Signatures -->
+          <div class="row mt-5 pt-4 border-top text-center text-muted small">
+            <div class="col-4">
+              <div class="border-top border-dark mx-auto" style="width: 150px; margin-bottom: 5px;"></div>
+              Prepared By
+            </div>
+            <div class="col-4">
+              <div class="border-top border-dark mx-auto" style="width: 150px; margin-bottom: 5px;"></div>
+              Checked By / Accounts
+            </div>
+            <div class="col-4">
+              <div class="border-top border-dark mx-auto" style="width: 150px; margin-bottom: 5px;"></div>
+              Authorized Signatory
+            </div>
           </div>
         </div>
 
       </div>
 
     </main>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: RECORD RETURN PAYMENT -->
+  <!-- ========================================== -->
+  <div class="modal fade" id="modal-record-return" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-success text-white">
+          <h6 class="modal-title fw-bold"><i class="bi bi-cash-stack me-2"></i> Record Returned Amount</h6>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <form id="form-record-return" onsubmit="LedgerModule.submitReturnPayment(event)">
+          <div class="modal-body">
+            <input type="hidden" id="return-debt-id">
+            
+            <div class="p-2 mb-3 bg-light rounded border">
+              <div class="d-flex justify-content-between">
+                <span class="small text-muted">Debt / G.R. Ref:</span>
+                <span class="small fw-bold" id="return-modal-ref">-</span>
+              </div>
+              <div class="d-flex justify-content-between mt-1">
+                <span class="small text-muted">Current Due Balance:</span>
+                <span class="small fw-bold text-danger" id="return-modal-due">₹0.00</span>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Return Date *</label>
+              <input type="date" id="return-date" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Returned Amount (₹) *</label>
+              <input type="number" id="return-amount" class="form-control font-monospace fs-5 fw-bold" min="1" step="any" required placeholder="0.00">
+            </div>
+
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <label class="form-label small fw-semibold">Payment Mode</label>
+                <select id="return-mode" class="form-select">
+                  <option value="Cash">Cash</option>
+                  <option value="NEFT/RTGS">NEFT / RTGS</option>
+                  <option value="PhonePe/GPay">UPI / PhonePe / GPay</option>
+                  <option value="Cheque">Cheque</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label class="form-label small fw-semibold">Received By</label>
+                <input type="text" id="return-received-by" class="form-control" placeholder="e.g. Hardan Ji">
+              </div>
+            </div>
+
+            <div class="mb-2">
+              <label class="form-label small fw-semibold">Remarks / Note</label>
+              <input type="text" id="return-remarks" class="form-control" placeholder="e.g. Payment settled via cash">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-success btn-sm">
+              <i class="bi bi-check2-circle me-1"></i> Save Return Receipt
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: ADD / EDIT DEBT ENTRY -->
+  <!-- ========================================== -->
+  <div class="modal fade" id="modal-add-debt" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h6 class="modal-title fw-bold" id="add-debt-modal-title"><i class="bi bi-plus-circle me-2"></i> New Debt Entry</h6>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <form id="form-add-debt" onsubmit="LedgerModule.submitAddDebt(event)">
+          <div class="modal-body">
+            <input type="hidden" id="debt-form-id">
+
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label small fw-semibold">Date *</label>
+                <input type="date" id="debt-form-date" class="form-control" required onchange="LedgerModule.autoSetFYAndMonth(this.value)">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small fw-semibold">Financial Year *</label>
+                <select id="debt-form-fy" class="form-select" required>
+                  <option value="2026-2027">2026-2027</option>
+                  <option value="2025-2026">2025-2026</option>
+                  <option value="2024-2025">2024-2025</option>
+                  <option value="2023-2024">2023-2024</option>
+                  <option value="2022-2023">2022-2023</option>
+                  <option value="2020-2021">2020-2021</option>
+                  <option value="2019-2020">2019-2020</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small fw-semibold">Company *</label>
+                <select id="debt-form-company" class="form-select" required>
+                  <option value="TTC">TTC</option>
+                  <option value="MTC">MTC</option>
+                  <option value="SMTC">SMTC</option>
+                </select>
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label small fw-semibold">G.R. No.</label>
+                <input type="text" id="debt-form-gr" class="form-control" placeholder="e.g. 2188_TTC">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small fw-semibold">Truck No.</label>
+                <input type="text" id="debt-form-truck" class="form-control" placeholder="e.g. RJ52GB5640">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small fw-semibold">Debt Type *</label>
+                <select id="debt-form-type" class="form-select" required>
+                  <option value="Commission">Commission</option>
+                  <option value="Other">Other</option>
+                  <option value="Loading">Loading</option>
+                  <option value="Advance">Advance</option>
+                  <option value="In Hand">In Hand</option>
+                  <option value="Old">Old</option>
+                </select>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">From (Origin)</label>
+                <input type="text" id="debt-form-from" class="form-control" placeholder="e.g. Kishangarh (Raj.)">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">To (Destination)</label>
+                <input type="text" id="debt-form-to" class="form-control" placeholder="e.g. Delhi">
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Truck Owner Name</label>
+                <input type="text" id="debt-form-owner" class="form-control" placeholder="e.g. Shree Mahaveer Transport Company">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label small fw-semibold">Debt Amount (₹) *</label>
+                <input type="number" id="debt-form-amount" class="form-control font-monospace fw-bold" min="1" step="any" required placeholder="0.00">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label small fw-semibold">Debt Mode</label>
+                <select id="debt-form-mode" class="form-select">
+                  <option value="Cash">Cash</option>
+                  <option value="NEFT/RTGS">NEFT / RTGS</option>
+                  <option value="Cheque">Cheque</option>
+                </select>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Borrower Name (किसके नाम बकाया)</label>
+                <input type="text" id="debt-form-borrower" class="form-control" placeholder="Borrower name or company">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Receiver Name (किसने प्राप्त किया / फोन)</label>
+                <input type="text" id="debt-form-receiver" class="form-control" placeholder="Receiver name and mobile">
+              </div>
+
+              <div class="col-12">
+                <label class="form-label small fw-semibold">Description / Notes</label>
+                <textarea id="debt-form-desc" class="form-control" rows="2" placeholder="Commission, detention, loading or other remarks"></textarea>
+              </div>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary btn-sm">
+              <i class="bi bi-save me-1"></i> Save Debt Entry
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999;">
+    <div id="live-toast" class="toast align-items-center text-bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body" id="toast-message">Notification</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    </div>
   </div>
 
   <!-- Bootstrap 5 Bundle JS -->
@@ -192,6 +720,7 @@
 
   <!-- Core App Scripts -->
   <script src="../js/config.js"></script>
+  <script src="../js/sample-debts-data.js"></script>
   <script src="../js/db-service.js"></script>
   <script src="../js/app.js"></script>
   <script src="../js/modules/ledger.js"></script>
