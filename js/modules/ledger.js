@@ -33,6 +33,7 @@ const LedgerModule = {
     AppUI.renderSidebar('ledger');
     await this.loadData();
     this.renderFYSidebar();
+    this.renderMonthBar();
     this.applyFilters();
   },
 
@@ -119,6 +120,7 @@ const LedgerModule = {
 
   filterByFY(fy) {
     this.selectedFY = fy;
+    this.selectedMonth = 'ALL';
     this.currentPage = 1;
 
     // Update quick FY buttons
@@ -133,23 +135,74 @@ const LedgerModule = {
     });
 
     this.renderFYSidebar();
+    this.renderMonthBar();
     this.applyFilters();
+  },
+
+  renderMonthBar() {
+    const container = document.getElementById('month-bar-container');
+    if (!container) return;
+
+    // Financial year months descending (like AppSheet)
+    const allMonths = [
+      '12 Mar', '11 Feb', '10 Jan', '9 Dec', '8 Nov', '7 Oct',
+      '6 Sep', '5 Aug', '4 Jul', '3 Jun', '2 May', '1 Apr'
+    ];
+
+    const monthTotals = {};
+    const monthCounts = {};
+    let totalFYDue = 0;
+    let totalFYCount = 0;
+
+    allMonths.forEach(m => {
+      monthTotals[m] = 0;
+      monthCounts[m] = 0;
+    });
+
+    this.allDebts.forEach(d => {
+      const due = Number(d.dueAmount) || 0;
+      if (this.selectedFY === 'ALL' || d.fy === this.selectedFY) {
+        totalFYDue += due;
+        totalFYCount++;
+        if (monthTotals.hasOwnProperty(d.monthKey)) {
+          monthTotals[d.monthKey] += due;
+          monthCounts[d.monthKey] += 1;
+        }
+      }
+    });
+
+    let html = `
+      <button class="month-pill ${this.selectedMonth === 'ALL' ? 'active' : ''}" onclick="LedgerModule.filterByMonth('ALL')">
+        <span>All Months</span>
+        <span class="badge bg-secondary ms-1">${totalFYCount}</span>
+        ${totalFYDue !== 0 ? `<span class="badge ${totalFYDue > 0 ? 'bg-danger' : 'bg-success'} ms-1">${AppUI.formatCurrency(totalFYDue)}</span>` : ''}
+      </button>
+    `;
+
+    allMonths.forEach(m => {
+      const amt = monthTotals[m] || 0;
+      const cnt = monthCounts[m] || 0;
+      if (this.selectedFY !== 'ALL' && cnt === 0) {
+        return; // hide empty month for this FY to keep UI clean
+      }
+
+      const isActive = this.selectedMonth === m;
+      html += `
+        <button class="month-pill ${isActive ? 'active' : ''}" onclick="LedgerModule.filterByMonth('${m}')">
+          <span>${m}</span>
+          <span class="badge bg-secondary ms-1">${cnt}</span>
+          ${amt !== 0 ? `<span class="badge ${amt > 0 ? 'bg-danger' : 'bg-success'} ms-1">${AppUI.formatCurrency(amt)}</span>` : ''}
+        </button>
+      `;
+    });
+
+    container.innerHTML = html;
   },
 
   filterByMonth(monthKey) {
     this.selectedMonth = monthKey;
     this.currentPage = 1;
-
-    // Update month pill styles
-    const pills = document.querySelectorAll('.month-pill');
-    pills.forEach(pill => {
-      if (pill.innerText.trim() === (monthKey === 'ALL' ? 'All Months' : monthKey)) {
-        pill.classList.add('active');
-      } else {
-        pill.classList.remove('active');
-      }
-    });
-
+    this.renderMonthBar();
     this.applyFilters();
   },
 
@@ -189,13 +242,8 @@ const LedgerModule = {
     const fMode = document.getElementById('filter-debt-mode');
     if (fMode) fMode.value = 'ALL';
 
-    const pills = document.querySelectorAll('.month-pill');
-    pills.forEach((p, idx) => {
-      if (idx === 0) p.classList.add('active');
-      else p.classList.remove('active');
-    });
-
     this.renderFYSidebar();
+    this.renderMonthBar();
     this.applyFilters();
   },
 
@@ -427,9 +475,14 @@ const LedgerModule = {
 
             <!-- 6. Action -->
             <td class="text-end" onclick="event.stopPropagation()">
-              <button class="btn btn-outline-primary btn-sm py-1 px-2 fw-semibold" onclick="LedgerModule.openDebtDetails('${d.id}')" title="View Details or Record Payment">
-                <i class="bi bi-eye me-1"></i> View
-              </button>
+              <div class="d-flex justify-content-end gap-1">
+                <button class="btn btn-outline-primary btn-sm py-1 px-2 fw-semibold" onclick="LedgerModule.openDebtDetails('${d.id}')" title="View Details or Record Payment">
+                  <i class="bi bi-eye me-1"></i> View
+                </button>
+                <button class="btn btn-outline-secondary btn-sm py-1 px-2" onclick="LedgerModule.openEditDebtModal('${d.id}')" title="Quick Edit this entry">
+                  <i class="bi bi-pencil"></i>
+                </button>
+              </div>
             </td>
           </tr>
         `;
@@ -812,12 +865,14 @@ const LedgerModule = {
   },
 
   // ----------------------------------------------------
-  // ADD / EDIT NEW DEBT ENTRY
+  // ADD / EDIT DEBT ENTRY
   // ----------------------------------------------------
   openAddDebtModal() {
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('form-add-debt').reset();
     document.getElementById('debt-form-id').value = '';
+    const titleEl = document.getElementById('add-debt-modal-title');
+    if (titleEl) titleEl.innerHTML = `<i class="bi bi-plus-circle me-2"></i> New Debt Entry`;
     document.getElementById('debt-form-date').value = today;
     this.autoSetFYAndMonth(today);
 
@@ -825,20 +880,51 @@ const LedgerModule = {
     modal.show();
   },
 
+  openEditDebtModal(debtId) {
+    const debt = this.allDebts.find(d => String(d.id) === String(debtId));
+    if (!debt) {
+      AppUI.showToast("Record not found", "error");
+      return;
+    }
+
+    document.getElementById('form-add-debt').reset();
+    const titleEl = document.getElementById('add-debt-modal-title');
+    if (titleEl) {
+      titleEl.innerHTML = `<i class="bi bi-pencil-square me-2"></i> Edit Debt Entry (${debt.grNo || debt.id})`;
+    }
+
+    document.getElementById('debt-form-id').value = debt.id;
+    document.getElementById('debt-form-date').value = debt.date || '';
+    document.getElementById('debt-form-fy').value = debt.fy || '2026-2027';
+    document.getElementById('debt-form-company').value = debt.company || 'TTC';
+    document.getElementById('debt-form-gr').value = debt.grNo || '';
+    document.getElementById('debt-form-truck').value = debt.truckNo || '';
+    document.getElementById('debt-form-type').value = debt.debtType || 'Commission';
+    document.getElementById('debt-form-from').value = debt.from || '';
+    document.getElementById('debt-form-to').value = debt.to || '';
+    document.getElementById('debt-form-owner').value = debt.truckOwner || '';
+    document.getElementById('debt-form-amount').value = debt.debtAmount || debt.dueAmount || 0;
+    document.getElementById('debt-form-mode').value = debt.debtMode || 'Cash';
+    document.getElementById('debt-form-borrower').value = debt.borrowerName || '';
+    document.getElementById('debt-form-receiver').value = debt.receiverName || '';
+    document.getElementById('debt-form-desc').value = debt.description || '';
+
+    const modal = new bootstrap.Modal(document.getElementById('modal-add-debt'));
+    modal.show();
+  },
+
+  openEditDebtModalCurrent() {
+    if (this.currentDebtId) {
+      this.openEditDebtModal(this.currentDebtId);
+    }
+  },
+
   autoSetFYAndMonth(dateStr) {
     if (!dateStr) return;
-    const d = new Date(dateStr);
-    const year = d.getFullYear();
-    const month = d.getMonth() + 1; // 1-12
-
-    let fy = `${year}-${year + 1}`;
-    if (month < 4) {
-      fy = `${year - 1}-${year}`;
-    }
+    const { fy } = this.calculateFYAndMonth(dateStr);
 
     const fySelect = document.getElementById('debt-form-fy');
     if (fySelect) {
-      // If FY exists in dropdown, select it
       for (let i = 0; i < fySelect.options.length; i++) {
         if (fySelect.options[i].value === fy) {
           fySelect.selectedIndex = i;
@@ -850,19 +936,20 @@ const LedgerModule = {
 
   async submitAddDebt(event) {
     event.preventDefault();
+    const id = document.getElementById('debt-form-id').value;
     const date = document.getElementById('debt-form-date').value;
     const fy = document.getElementById('debt-form-fy').value;
     const company = document.getElementById('debt-form-company').value;
-    const grNo = document.getElementById('debt-form-gr').value.trim();
-    const truckNo = document.getElementById('debt-form-truck').value.trim().toUpperCase();
+    const grNo = document.getElementById('debt-form-gr').value.trim() || '-';
+    const truckNo = document.getElementById('debt-form-truck').value.trim().toUpperCase() || '-';
     const debtType = document.getElementById('debt-form-type').value;
-    const from = document.getElementById('debt-form-from').value.trim();
+    const from = document.getElementById('debt-form-from').value.trim() || 'Kishangarh (Raj.)';
     const to = document.getElementById('debt-form-to').value.trim();
     const truckOwner = document.getElementById('debt-form-owner').value.trim();
     const amount = Number(document.getElementById('debt-form-amount').value);
     const debtMode = document.getElementById('debt-form-mode').value;
-    const borrowerName = document.getElementById('debt-form-borrower').value.trim();
-    const receiverName = document.getElementById('debt-form-receiver').value.trim();
+    const borrowerName = document.getElementById('debt-form-borrower').value.trim() || '-';
+    const receiverName = document.getElementById('debt-form-receiver').value.trim() || borrowerName;
     const description = document.getElementById('debt-form-desc').value.trim();
 
     if (!date || isNaN(amount) || amount <= 0) {
@@ -870,21 +957,67 @@ const LedgerModule = {
       return;
     }
 
-    // Compute monthKey e.g. "6 Sep"
-    const dObj = new Date(date);
-    const mNum = dObj.getMonth() + 1;
-    const mNames = ['', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'];
-    const monthKey = `${mNum} ${dObj.toLocaleString('en-US', { month: 'short' })}`;
+    const { monthKey } = this.calculateFYAndMonth(date);
+    const displayDate = AppUI.formatDate(date);
 
+    if (id) {
+      // EDIT EXISTING RECORD
+      const existing = this.allDebts.find(d => String(d.id) === String(id));
+      const totalReturned = existing ? Number(existing.totalReturned || 0) : 0;
+      const dueAmount = Math.max(0, amount - totalReturned);
+
+      const updatedFields = {
+        date,
+        displayDate,
+        fy,
+        monthKey,
+        grNo,
+        truckNo,
+        company,
+        truckOwner: truckOwner || borrowerName,
+        debtType,
+        from,
+        to,
+        debtAmount: amount,
+        dueAmount,
+        debtMode,
+        borrowerName,
+        receiverName,
+        description,
+        dotColor: totalReturned > 0 ? 'blue' : 'yellow'
+      };
+
+      try {
+        await dbService.update('debts', id, updatedFields);
+        await this.loadData();
+        this.renderFYSidebar();
+        this.applyFilters();
+
+        const modalEl = document.getElementById('modal-add-debt');
+        const modalInstance = bootstrap.Modal.getInstance(modalEl);
+        if (modalInstance) modalInstance.hide();
+
+        AppUI.showToast(`Debt record updated successfully!`, "success");
+        if (this.currentDebtId === id) {
+          this.openDebtDetails(id);
+        }
+      } catch (err) {
+        console.error("Failed to update debt:", err);
+        AppUI.showToast("Failed to update debt: " + err.message, "error");
+      }
+      return;
+    }
+
+    // ADD NEW RECORD
     const newDebt = {
       date,
-      displayDate: AppUI.formatDate(date),
+      displayDate,
       fy,
       monthKey,
       grNo,
       truckNo,
       company,
-      truckOwner,
+      truckOwner: truckOwner || borrowerName,
       debtType,
       from,
       to,
@@ -927,10 +1060,403 @@ const LedgerModule = {
       this.renderFYSidebar();
       this.applyFilters();
 
-      AppUI.showToast("Debt entry deleted.", "info");
+      AppUI.showToast("Debt entry deleted successfully.", "info");
       this.backToRegister();
     } catch (err) {
       AppUI.showToast("Delete failed: " + err.message, "error");
+    }
+  },
+
+  // ----------------------------------------------------
+  // BULK EXCEL / CSV IMPORTER & MANAGER
+  // ----------------------------------------------------
+  openImportModal() {
+    this.stagedImportDebts = [];
+    const fileInput = document.getElementById('debt-import-file-input');
+    if (fileInput) fileInput.value = '';
+
+    document.getElementById('import-preview-section')?.classList.add('d-none');
+    document.getElementById('import-action-buttons')?.classList.add('d-none');
+
+    const modal = new bootstrap.Modal(document.getElementById('modal-import-debts'));
+    modal.show();
+  },
+
+  downloadExcelTemplate() {
+    const headers = [
+      "Date (DD/MM/YYYY)",
+      "G.R. No",
+      "Company (TTC/MTC/SMTC)",
+      "Truck No",
+      "From City",
+      "To City",
+      "Truck Owner",
+      "Borrower Name",
+      "Receiver Name",
+      "Debt Type",
+      "Payment Mode",
+      "Debt Amount (INR)",
+      "Total Returned (INR)",
+      "Due Balance (INR)",
+      "Financial Year",
+      "Description"
+    ];
+
+    const sampleRows = [
+      ["23/09/2026", "2188_TTC", "TTC", "RJ52GB5640", "Kishangarh (Raj.)", "Delhi", "Shree Mahaveer Transport Company", "Shree Mahaveer Transport Company", "Hardan 8890178907", "Commission", "Cash", "1500", "0", "1500", "2026-2027", "Commission - Delhi"],
+      ["21/11/2023", "-", "TTC", "RJ52GA9489", "Kishangarh (Raj.)", "Delhi", "Laxmi Prakash Jat", "Laxmi Prakash Jat", "Laxmi Prakash Jat", "Old", "Cash", "1500", "485", "1015", "2023-2024", "Commission-Kishangarh"],
+      ["16/06/2022", "-", "TTC", "RJ52GA5419", "Kishangarh (Raj.)", "Delhi", "Laxmi Prakash Jat", "Laxmi Prakash Jat", "Laxmi Prakash Jat", "Old", "Cash", "10000", "0", "10000", "2022-2023", "Gajroula"]
+    ];
+
+    const escapeCSV = (val) => {
+      if (val === null || val === undefined) return '""';
+      const str = String(val).replace(/"/g, '""');
+      return `"${str}"`;
+    };
+
+    let csvContent = '\uFEFF'; // UTF-8 BOM
+    csvContent += headers.join(',') + '\r\n';
+    sampleRows.forEach(row => {
+      csvContent += row.map(escapeCSV).join(',') + '\r\n';
+    });
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `MTC_TTC_Debts_Import_Template.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    AppUI.showToast("Sample Excel/CSV template downloaded!", "info");
+  },
+
+  parseAnyDate(val) {
+    if (!val) return null;
+    if (val instanceof Date && !isNaN(val.getTime())) {
+      const y = val.getFullYear();
+      const m = String(val.getMonth() + 1).padStart(2, '0');
+      const d = String(val.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+    if (typeof val === 'number') {
+      const dateObj = new Date(Math.round((val - 25569) * 86400 * 1000));
+      if (!isNaN(dateObj.getTime())) {
+        const y = dateObj.getFullYear();
+        const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const d = String(dateObj.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+      }
+    }
+    const str = String(val).trim();
+    // DD/MM/YYYY or DD-MM-YYYY
+    let m = str.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+    if (m) {
+      const day = m[1].padStart(2, '0');
+      const mon = m[2].padStart(2, '0');
+      const yr = m[3];
+      return `${yr}-${mon}-${day}`;
+    }
+    // YYYY-MM-DD or YYYY/MM/DD
+    m = str.match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})$/);
+    if (m) {
+      const yr = m[1];
+      const mon = m[2].padStart(2, '0');
+      const day = m[3].padStart(2, '0');
+      return `${yr}-${mon}-${day}`;
+    }
+    const parsed = new Date(str);
+    if (!isNaN(parsed.getTime())) {
+      const y = parsed.getFullYear();
+      const mo = String(parsed.getMonth() + 1).padStart(2, '0');
+      const da = String(parsed.getDate()).padStart(2, '0');
+      return `${y}-${mo}-${da}`;
+    }
+    return null;
+  },
+
+  calculateFYAndMonth(dateStr) {
+    if (!dateStr) return { fy: '2026-2027', monthKey: '6 Sep' };
+    const parts = dateStr.split('-');
+    const y = parseInt(parts[0], 10);
+    const m = parseInt(parts[1], 10);
+
+    const fy = m >= 4 ? `${y}-${y + 1}` : `${y - 1}-${y}`;
+    const monthNames = {
+      4: "1 Apr", 5: "2 May", 6: "3 Jun", 7: "4 Jul", 8: "5 Aug", 9: "6 Sep",
+      10: "7 Oct", 11: "8 Nov", 12: "9 Dec", 1: "10 Jan", 2: "11 Feb", 3: "12 Mar"
+    };
+    const monthKey = monthNames[m] || `${m} Month`;
+    return { fy, monthKey };
+  },
+
+  onImportFileSelected(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const fileNameEl = document.getElementById('import-file-name');
+    if (fileNameEl) fileNameEl.innerText = file.name;
+
+    const isExcel = file.name.endsWith('.xlsx') || file.name.endsWith('.xls');
+
+    if (isExcel && typeof XLSX !== 'undefined') {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array', cellDates: true });
+          const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+          const jsonRows = XLSX.utils.sheet_to_json(firstSheet, { defval: '', raw: false });
+          this.processRawImportRows(jsonRows);
+        } catch (err) {
+          console.error("Excel parse error:", err);
+          AppUI.showToast("Could not parse Excel file: " + err.message, "danger");
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    } else {
+      // CSV parse
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.parseCSVText(e.target.result);
+      };
+      reader.readAsText(file);
+    }
+  },
+
+  parseCSVText(csvText) {
+    if (!csvText) return;
+    const lines = csvText.split(/\r?\n/).filter(line => line.trim().length > 0);
+    if (lines.length < 2) {
+      AppUI.showToast("CSV file is empty or missing data rows!", "warning");
+      return;
+    }
+
+    const parseLine = (line) => {
+      const row = [];
+      let inQuotes = false;
+      let token = '';
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        if (char === '"') {
+          if (inQuotes && line[i + 1] === '"') {
+            token += '"';
+            i++;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (char === ',' && !inQuotes) {
+          row.push(token);
+          token = '';
+        } else {
+          token += char;
+        }
+      }
+      row.push(token);
+      return row;
+    };
+
+    const headers = parseLine(lines[0]).map(h => h.trim().replace(/^\uFEFF/, ''));
+    const rows = [];
+    for (let i = 1; i < lines.length; i++) {
+      const vals = parseLine(lines[i]);
+      if (vals.length === 0 || vals.every(v => v.trim() === '')) continue;
+      const rowObj = {};
+      headers.forEach((h, idx) => {
+        rowObj[h] = vals[idx] !== undefined ? vals[idx].trim() : '';
+      });
+      rows.push(rowObj);
+    }
+
+    this.processRawImportRows(rows);
+  },
+
+  processRawImportRows(rawRows) {
+    if (!rawRows || rawRows.length === 0) {
+      AppUI.showToast("No data rows found in this file!", "warning");
+      return;
+    }
+
+    const getField = (row, aliases) => {
+      for (const alias of aliases) {
+        for (const key of Object.keys(row)) {
+          if (key.trim().toLowerCase() === alias.toLowerCase()) {
+            return String(row[key] !== undefined ? row[key] : '').trim();
+          }
+        }
+      }
+      return '';
+    };
+
+    const parsedDebts = [];
+    const fyCounts = {};
+    let totalDue = 0;
+
+    rawRows.forEach((row, idx) => {
+      const rawDate = getField(row, ['Date', 'Date (DD/MM/YYYY)', 'tariq', 'दिनांक', 'displayDate', 'Date *']);
+      const parsedDate = this.parseAnyDate(rawDate);
+      if (!parsedDate) return;
+
+      const grNo = getField(row, ['G.R. No', 'GR No', 'grNo', 'G.R.No.', 'GR', 'Bilty No', 'LR No']) || '-';
+      const truckNo = (getField(row, ['Truck No', 'Truck', 'truckNo', 'Vehicle', 'Vehicle No', 'गाड़ी नं.']) || '-').toUpperCase();
+      let company = (getField(row, ['Company', 'Company (TTC/MTC/SMTC)', 'Firm', 'company']) || 'TTC').toUpperCase();
+      if (company !== 'MTC' && company !== 'SMTC') company = 'TTC';
+
+      const from = getField(row, ['From City', 'From', 'from', 'Origin']) || 'Kishangarh (Raj.)';
+      const to = getField(row, ['To City', 'To', 'to', 'Destination']) || '-';
+      const borrowerName = getField(row, ['Borrower Name', 'Borrower', 'borrowerName', 'Party', 'Customer']) || '-';
+      const receiverName = getField(row, ['Receiver Name', 'Receiver', 'receiverName', 'Recv']) || borrowerName;
+      const truckOwner = getField(row, ['Truck Owner', 'Truck Owner Name', 'truckOwner', 'Owner']) || (borrowerName.includes('Mahaveer') ? 'Shree Mahaveer Transport Company' : borrowerName);
+      const debtType = getField(row, ['Debt Type', 'Type', 'debtType']) || 'Old';
+      const debtMode = getField(row, ['Payment Mode', 'Debt Mode', 'debtMode', 'Mode']) || 'Cash';
+      const description = getField(row, ['Description', 'Remarks', 'Notes', 'desc']) || '';
+
+      const debtAmtRaw = getField(row, ['Debt Amount (INR)', 'Debt Amount', 'debtAmount', 'Total Debt', 'Amount', 'Total Amount']);
+      const retAmtRaw = getField(row, ['Total Returned (INR)', 'Total Returned', 'totalReturned', 'Returned Amount', 'Paid']);
+      const dueAmtRaw = getField(row, ['Due Balance (INR)', 'Due Amount', 'dueAmount', 'Due Balance', 'Balance', 'बाकी']);
+
+      const cleanNum = (val) => {
+        if (!val) return 0;
+        const cleaned = String(val).replace(/[^\d.-]/g, '');
+        const n = parseFloat(cleaned);
+        return isNaN(n) ? 0 : n;
+      };
+
+      const debtAmount = cleanNum(debtAmtRaw) || cleanNum(dueAmtRaw) || 0;
+      const totalReturned = cleanNum(retAmtRaw);
+      const dueAmount = dueAmtRaw ? cleanNum(dueAmtRaw) : Math.max(0, debtAmount - totalReturned);
+
+      const { fy, monthKey } = this.calculateFYAndMonth(parsedDate);
+      const displayDate = AppUI.formatDate(parsedDate);
+
+      const debtItem = {
+        id: `IMP_${Date.now()}_${idx}_${Math.random().toString(36).substr(2, 4)}`,
+        date: parsedDate,
+        displayDate,
+        fy,
+        monthKey,
+        grNo,
+        truckNo,
+        from,
+        to,
+        company,
+        truckOwner,
+        debtType,
+        debtAmount,
+        totalReturned,
+        dueAmount,
+        debtMode,
+        borrowerName,
+        receiverName,
+        description,
+        dotColor: totalReturned > 0 ? 'blue' : 'yellow',
+        returnedAmounts: totalReturned > 0 ? [{
+          id: `RET_IMP_${Date.now()}_${idx}`,
+          date: parsedDate,
+          displayDate,
+          amount: totalReturned,
+          mode: debtMode,
+          remarks: 'Imported return'
+        }] : []
+      };
+
+      parsedDebts.push(debtItem);
+      fyCounts[fy] = (fyCounts[fy] || 0) + 1;
+      totalDue += dueAmount;
+    });
+
+    if (parsedDebts.length === 0) {
+      AppUI.showToast("Could not extract any valid records! Check date column format.", "warning");
+      return;
+    }
+
+    this.stagedImportDebts = parsedDebts;
+
+    // Render Preview
+    document.getElementById('import-summary-count').innerText = parsedDebts.length;
+    document.getElementById('import-summary-amount').innerText = `Total Due: ${AppUI.formatCurrency(totalDue)}`;
+
+    // FY breakdown pills
+    let fyHtml = '';
+    Object.keys(fyCounts).sort().reverse().forEach(fy => {
+      fyHtml += `<span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1">${fy}: ${fyCounts[fy]} records</span>`;
+    });
+    document.getElementById('import-fy-breakdown').innerHTML = fyHtml;
+
+    // First 5 rows in preview table
+    let tableHtml = '';
+    parsedDebts.slice(0, 5).forEach((d, i) => {
+      tableHtml += `
+        <tr>
+          <td>${i + 1}</td>
+          <td>${d.displayDate}</td>
+          <td><span class="badge bg-light text-dark border">${d.fy}</span></td>
+          <td class="fw-bold">${d.grNo}</td>
+          <td>${d.truckNo}</td>
+          <td>${d.borrowerName}</td>
+          <td class="text-end fw-bold text-danger">${AppUI.formatCurrency(d.dueAmount)}</td>
+        </tr>
+      `;
+    });
+    document.getElementById('import-preview-tbody').innerHTML = tableHtml;
+
+    document.getElementById('import-preview-section')?.classList.remove('d-none');
+    document.getElementById('import-action-buttons')?.classList.remove('d-none');
+
+    AppUI.showToast(`Analyzed ${parsedDebts.length} valid rows from file! Ready to import.`, "success");
+  },
+
+  async executeImport() {
+    if (!this.stagedImportDebts || this.stagedImportDebts.length === 0) {
+      AppUI.showToast("No valid records to import!", "warning");
+      return;
+    }
+
+    const mode = document.querySelector('input[name="import-mode"]:checked')?.value || 'replace';
+
+    try {
+      if (mode === 'replace') {
+        dbService.clearAllDebts();
+        localStorage.setItem('tms_custom_debts', JSON.stringify(this.stagedImportDebts));
+      } else {
+        const existing = JSON.parse(localStorage.getItem('tms_custom_debts') || '[]');
+        const combined = [...existing, ...this.stagedImportDebts];
+        localStorage.setItem('tms_custom_debts', JSON.stringify(combined));
+      }
+
+      await this.loadData();
+      this.renderFYSidebar();
+      this.applyFilters();
+
+      const modalEl = document.getElementById('modal-import-debts');
+      const modalInstance = bootstrap.Modal.getInstance(modalEl);
+      if (modalInstance) modalInstance.hide();
+
+      AppUI.showToast(`Successfully imported ${this.stagedImportDebts.length} ledger records into system!`, "success");
+    } catch (err) {
+      console.error("Import failed:", err);
+      AppUI.showToast("Import failed: " + err.message, "danger");
+    }
+  },
+
+  async resetToFactoryData() {
+    if (!confirm("Are you sure you want to restore the standard 668 AppSheet records? Any custom imports will be cleared.")) return;
+    try {
+      dbService.restoreBaseDebts();
+      await this.loadData();
+      this.renderFYSidebar();
+      this.applyFilters();
+
+      const modalEl = document.getElementById('modal-import-debts');
+      const modalInstance = bootstrap.Modal.getInstance(modalEl);
+      if (modalInstance) modalInstance.hide();
+
+      AppUI.showToast("Restored all 668 standard AppSheet records successfully!", "success");
+    } catch (err) {
+      console.error("Reset failed:", err);
+      AppUI.showToast("Reset failed: " + err.message, "danger");
     }
   },
 

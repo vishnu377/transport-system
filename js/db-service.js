@@ -49,7 +49,7 @@ class DBService {
         const snapshot = await this.db.collection(collectionName).get();
         if (!snapshot.empty) {
           cloudItems = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-          if (collectionName !== 'trips') {
+          if (collectionName !== 'trips' && collectionName !== 'debts') {
             return cloudItems;
           }
         }
@@ -144,6 +144,16 @@ class DBService {
 
   // --- Authentic AppSheet Ledger Debts Engine ---
   getAllDebts(cloudItems = []) {
+    // Ensure dataset version consistency
+    const CURRENT_DEBTS_VERSION = '2026_09_24_V3';
+    if (localStorage.getItem('tms_debts_data_version') !== CURRENT_DEBTS_VERSION) {
+      localStorage.removeItem('tms_base_debts_cleared');
+      localStorage.removeItem('tms_custom_debts');
+      localStorage.removeItem('tms_edited_debts');
+      localStorage.removeItem('tms_deleted_debts');
+      localStorage.setItem('tms_debts_data_version', CURRENT_DEBTS_VERSION);
+    }
+
     const isBaseCleared = localStorage.getItem('tms_base_debts_cleared') === 'true';
     const baseDebts = (!isBaseCleared && typeof window !== 'undefined' && Array.isArray(window.SAMPLE_DEBTS_DATA))
       ? window.SAMPLE_DEBTS_DATA

@@ -72,7 +72,26 @@ async function test() {
     throw new Error(`Persistence check failed: expected ${firstDebt.debtAmount - 200}, got ${reloadedFirst.dueAmount}`);
   }
 
-  console.log("\nAll Ledger Engine tests PASSED successfully!");
+  // Test simulated Firestore with partial items
+  dbService.isFirebaseReady = true;
+  dbService.db = {
+    collection: (name) => ({
+      get: async () => ({
+        empty: false,
+        docs: [
+          { id: 'cloud_test_1', data: () => ({ id: 'cloud_test_1', fy: '2026-2027', dueAmount: 500, debtAmount: 500, driverOrPartyName: 'Cloud Driver' }) }
+        ]
+      })
+    })
+  };
+
+  const debtsWithCloud = await dbService.getAll('debts');
+  console.log(`With Firebase simulated (1 cloud doc): Total returned is ${debtsWithCloud.length}`);
+  if (debtsWithCloud.length !== 669) {
+    throw new Error(`Expected 669 items (668 base + 1 cloud), but got ${debtsWithCloud.length}`);
+  }
+
+  console.log("\nAll Ledger Engine tests (including Firestore simulation) PASSED successfully!");
 }
 
 test().catch(err => {

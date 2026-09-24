@@ -58,6 +58,10 @@
           <i class="bi bi-file-earmark-excel me-1"></i> Export Excel
         </button>
 
+        <button class="btn btn-success btn-sm" onclick="LedgerModule.openImportModal()" title="Upload and import Excel (.xlsx) or CSV data">
+          <i class="bi bi-file-earmark-arrow-up me-1"></i> Import Excel / CSV
+        </button>
+
         <button class="btn btn-primary btn-sm" onclick="LedgerModule.openAddDebtModal()">
           <i class="bi bi-plus-circle me-1"></i> New Debt Entry
         </button>
@@ -429,6 +433,14 @@
                   <button class="btn btn-success btn-sm w-100 fw-semibold" onclick="LedgerModule.shareWhatsAppReminderCurrent()">
                     <i class="bi bi-whatsapp me-2"></i> WhatsApp Payment Reminder
                   </button>
+                  <div class="d-flex gap-2">
+                    <button class="btn btn-outline-primary btn-sm flex-grow-1 fw-semibold" onclick="LedgerModule.openEditDebtModalCurrent()">
+                      <i class="bi bi-pencil-square me-1"></i> Edit Entry
+                    </button>
+                    <button class="btn btn-outline-danger btn-sm fw-semibold" onclick="LedgerModule.deleteCurrentDebt()" title="Delete this debt record">
+                      <i class="bi bi-trash me-1"></i> Delete
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -759,6 +771,128 @@
     </div>
   </div>
 
+  <!-- ========================================== -->
+  <!-- MODAL: BULK EXCEL / CSV IMPORTER -->
+  <!-- ========================================== -->
+  <div class="modal fade" id="modal-import-debts" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header bg-success text-white">
+          <h6 class="modal-title fw-bold">
+            <i class="bi bi-file-earmark-spreadsheet me-2"></i> Import Debts & Ledger Excel / CSV (Bulk Upload)
+          </h6>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+
+          <!-- STEP 1: DOWNLOAD TEMPLATE & GUIDELINES -->
+          <div class="p-3 bg-light rounded border mb-3">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+              <div>
+                <span class="fw-bold text-dark d-block">
+                  <i class="bi bi-file-earmark-arrow-down text-primary me-1"></i> Excel फ़ाइल तैयार करें या मौजूदा डेटा डाउनलोड करें
+                </span>
+                <small class="text-muted">आप मौजूदा 668 रिकॉर्ड्स को Excel में डाउनलोड करके एडिट कर सकते हैं या ब्लैंक टेम्पलेट ले सकते हैं।</small>
+              </div>
+              <div class="d-flex gap-2">
+                <button type="button" class="btn btn-outline-primary btn-sm fw-semibold" onclick="LedgerModule.downloadExcelTemplate()">
+                  <i class="bi bi-download me-1"></i> Blank Template
+                </button>
+                <button type="button" class="btn btn-outline-success btn-sm fw-semibold" onclick="LedgerModule.exportToCSV()">
+                  <i class="bi bi-file-earmark-excel me-1"></i> Export Current Excel
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 2: FILE PICKER -->
+          <div class="mb-3">
+            <label class="form-label fw-bold small">
+              <i class="bi bi-cloud-arrow-up text-success me-1"></i> 1. अपनी Excel (.xlsx / .xls) या CSV फ़ाइल चुनें
+            </label>
+            <input type="file" id="debt-import-file-input" class="form-control" accept=".xlsx, .xls, .csv, text/csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onchange="LedgerModule.onImportFileSelected(event)">
+            <small class="text-muted d-block mt-1">
+              <i class="bi bi-check-circle text-success me-1"></i> ऑटो-डिटेक्ट: Date, G.R. No, Truck No, Party Name, Due Amount, Financial Year और Month अपने-आप सेट हो जाएंगे।
+            </small>
+          </div>
+
+          <!-- STEP 3: LIVE PREVIEW & AUDIT (Hidden until file selected) -->
+          <div id="import-preview-section" class="d-none">
+            <div class="alert alert-success d-flex align-items-center justify-content-between py-2 px-3 mb-3">
+              <div>
+                <i class="bi bi-check2-all fs-5 me-2"></i>
+                <span class="fw-bold fs-6" id="import-summary-count">0</span> वैध रिकॉर्ड्स मिले
+                <span class="ms-2 font-monospace fw-bold text-dark fs-6" id="import-summary-amount">Total: ₹0.00</span>
+              </div>
+              <div class="badge bg-success text-white px-2 py-1" id="import-file-name">file.xlsx</div>
+            </div>
+
+            <!-- FY BREAKDOWN PILLS -->
+            <div class="mb-3">
+              <span class="text-muted small fw-semibold d-block mb-1">Financial Year Breakdown:</span>
+              <div class="d-flex flex-wrap gap-1" id="import-fy-breakdown">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+
+            <!-- PREVIEW TABLE (First 5 rows) -->
+            <div class="table-responsive border rounded mb-3" style="max-height: 220px;">
+              <table class="table table-sm table-striped align-middle mb-0 font-monospace small">
+                <thead class="table-light sticky-top">
+                  <tr>
+                    <th>#</th>
+                    <th>Date</th>
+                    <th>FY</th>
+                    <th>G.R. No</th>
+                    <th>Truck No</th>
+                    <th>Borrower / Party</th>
+                    <th class="text-end">Due (₹)</th>
+                  </tr>
+                </thead>
+                <tbody id="import-preview-tbody">
+                  <!-- First rows -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- IMPORT MODE RADIO SELECTION -->
+            <div class="p-3 bg-light rounded border mb-3">
+              <span class="fw-bold small d-block mb-2">2. इम्पोर्ट मोड चुनें:</span>
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="radio" name="import-mode" id="mode-replace" value="replace" checked>
+                <label class="form-check-label small" for="mode-replace">
+                  <strong>Replace All Existing Data (अनुशंसित / Recommended):</strong> पुराना सारा डेटा हटाकर इस नई एक्सेल शीट को लेजर का मास्टर डेटा बनाएं।
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="import-mode" id="mode-append" value="append">
+                <label class="form-check-label small" for="mode-append">
+                  <strong>Append / Merge:</strong> मौजूदा रिकॉर्ड्स के साथ इन नए रिकॉर्ड्स को जोड़ें।
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- RESTORE ORIGINAL APPSHEET DATA OPTION -->
+          <div class="border-top pt-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+              <button type="button" class="btn btn-outline-secondary btn-sm" onclick="LedgerModule.resetToFactoryData()" title="Revert to standard 668 AppSheet records">
+                <i class="bi bi-arrow-counterclockwise me-1"></i> Reset to Standard 668 AppSheet Data
+              </button>
+            </div>
+            <div id="import-action-buttons" class="d-none">
+              <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancel</button>
+              <button type="button" class="btn btn-success btn-sm px-3 fw-bold" onclick="LedgerModule.executeImport()">
+                <i class="bi bi-cloud-check me-1"></i> Confirm & Import Records Now
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Notification Container -->
   <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999;">
     <div id="live-toast" class="toast align-items-center text-bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
@@ -772,6 +906,9 @@
   <!-- Bootstrap 5 Bundle JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   
+  <!-- SheetJS for Native Excel (.xlsx, .xls) & CSV parsing -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
