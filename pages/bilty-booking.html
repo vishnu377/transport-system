@@ -62,48 +62,66 @@
       <!-- Top KPI Summary Bar (Live Metrics) -->
       <div class="row g-3 mb-4">
         <div class="col-6 col-md-4 col-xl-2">
-          <div class="summary-kpi-card p-3 bg-white border rounded-3 shadow-sm h-100">
-            <div class="text-muted small fw-semibold">Total Bilties (कुल बिल्टियां)</div>
+          <div class="summary-kpi-card kpi-total p-3 bg-white border rounded-3 shadow-sm h-100">
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="text-muted small fw-semibold">Total Bilties (कुल)</span>
+              <span class="badge bg-primary-subtle text-primary p-1"><i class="bi bi-collection-fill"></i></span>
+            </div>
             <div class="fs-4 fw-bold text-dark mt-1" id="kpi-total-bilties">0</div>
             <small class="text-primary fw-semibold"><i class="bi bi-check-circle me-1"></i>Active Fleet Log</small>
           </div>
         </div>
 
         <div class="col-6 col-md-4 col-xl-2">
-          <div class="summary-kpi-card p-3 bg-white border rounded-3 shadow-sm h-100">
-            <div class="text-muted small fw-semibold">Today's Bilties (आज की)</div>
+          <div class="summary-kpi-card kpi-today p-3 bg-white border rounded-3 shadow-sm h-100">
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="text-muted small fw-semibold">Today's Bilties (आज की)</span>
+              <span class="badge bg-success-subtle text-success p-1"><i class="bi bi-clock-history"></i></span>
+            </div>
             <div class="fs-4 fw-bold text-success mt-1" id="kpi-today-bilties">0</div>
-            <small class="text-muted">Booked Today</small>
+            <small class="text-success fw-semibold"><i class="bi bi-lightning-charge-fill me-1"></i>Booked Today</small>
           </div>
         </div>
 
         <div class="col-6 col-md-4 col-xl-2">
-          <div class="summary-kpi-card p-3 bg-white border rounded-3 shadow-sm h-100">
-            <div class="text-muted small fw-semibold">TTC Transport</div>
+          <div class="summary-kpi-card kpi-ttc p-3 bg-white border rounded-3 shadow-sm h-100">
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="text-muted small fw-semibold">TTC Transport</span>
+              <span class="badge bg-primary-subtle text-primary p-1"><i class="bi bi-truck-front-fill"></i></span>
+            </div>
             <div class="fs-4 fw-bold text-primary mt-1" id="kpi-ttc-bilties">0</div>
             <small class="badge bg-primary-subtle text-primary">TTC Series</small>
           </div>
         </div>
 
         <div class="col-6 col-md-4 col-xl-2">
-          <div class="summary-kpi-card p-3 bg-white border rounded-3 shadow-sm h-100">
-            <div class="text-muted small fw-semibold">MTC Mahaveer</div>
+          <div class="summary-kpi-card kpi-mtc p-3 bg-white border rounded-3 shadow-sm h-100">
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="text-muted small fw-semibold">MTC Mahaveer</span>
+              <span class="badge bg-success-subtle text-success p-1"><i class="bi bi-shield-fill-check"></i></span>
+            </div>
             <div class="fs-4 fw-bold text-success mt-1" id="kpi-mtc-bilties">0</div>
             <small class="badge bg-success-subtle text-success">MTC Series</small>
           </div>
         </div>
 
         <div class="col-6 col-md-4 col-xl-2">
-          <div class="summary-kpi-card p-3 bg-white border rounded-3 shadow-sm h-100">
-            <div class="text-muted small fw-semibold">SMTC Transport</div>
+          <div class="summary-kpi-card kpi-smtc p-3 bg-white border rounded-3 shadow-sm h-100">
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="text-muted small fw-semibold">SMTC Transport</span>
+              <span class="badge bg-secondary-subtle text-purple p-1"><i class="bi bi-buildings-fill"></i></span>
+            </div>
             <div class="fs-4 fw-bold text-purple mt-1" style="color: #7c3aed;" id="kpi-smtc-bilties">0</div>
             <small class="badge bg-secondary-subtle text-dark">SMTC Series</small>
           </div>
         </div>
 
         <div class="col-6 col-md-4 col-xl-2">
-          <div class="summary-kpi-card p-3 bg-white border rounded-3 shadow-sm h-100">
-            <div class="text-muted small fw-semibold">Total Freight Booked</div>
+          <div class="summary-kpi-card kpi-freight p-3 bg-white border rounded-3 shadow-sm h-100">
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="text-muted small fw-semibold">Total Freight Booked</span>
+              <span class="badge bg-warning-subtle text-warning p-1"><i class="bi bi-currency-rupee"></i></span>
+            </div>
             <div class="fs-5 fw-bold text-dark mt-1 text-truncate" id="kpi-total-freight">₹ 0.00</div>
             <small class="text-muted">Total Revenue Value</small>
           </div>
@@ -638,6 +656,27 @@
 
                   <div class="bilty-preview-slip">
                     
+                    <!-- Sacred Ganesha Mini Strip -->
+                    <div class="preview-sacred-strip">
+                      <span class="preview-sacred-text">॥ शुभ लाभ ॥</span>
+                      <div class="preview-ganesha-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="18" height="18">
+                          <path d="M43 16 L50 4 L57 16 Z" fill="#b91c1c"/>
+                          <circle cx="50" cy="9" r="2.2" fill="#d97706"/>
+                          <path d="M47 20 C47 24 53 24 53 20 M50 17 L50 25" fill="none" stroke="#b91c1c" stroke-width="2" stroke-linecap="round"/>
+                          <ellipse cx="44" cy="32" rx="2.5" ry="1.3" fill="#b91c1c"/>
+                          <ellipse cx="56" cy="32" rx="2.5" ry="1.3" fill="#b91c1c"/>
+                          <path d="M48 36 C48 48 44 58 48 68 C52 74 60 76 64 71" fill="none" stroke="#b91c1c" stroke-width="3" stroke-linecap="round"/>
+                          <circle cx="64" cy="62" r="3.2" fill="#d97706"/>
+                        </svg>
+                        <span class="preview-ganesha-mantra">॥ श्री गणेशाय नमः ॥</span>
+                      </div>
+                      <span class="preview-sacred-text">॥ शुभ लाभ ॥</span>
+                    </div>
+
+                    <!-- Watermark Stamp Badge -->
+                    <div class="preview-stamp-badge"><i class="bi bi-shield-fill-check me-1"></i> VERIFIED &amp; BOOKED</div>
+
                     <div class="slip-header">
                       <div class="fw-bold fs-6 text-uppercase text-dark" id="preview-firm-title">THE TRANSPORT CORPORATION</div>
                       <div class="text-muted" style="font-size: 0.72rem;">FLEET OWNERS &amp; TRANSPORT CONTRACTORS</div>

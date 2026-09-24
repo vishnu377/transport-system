@@ -926,24 +926,55 @@ body {
 
 .bilty-preview-card {
   background: #ffffff;
-  border: 2px dashed #94a3b8;
-  border-radius: 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 14px;
   padding: 16px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
 }
 
 .bilty-preview-slip {
   font-family: 'Segoe UI', system-ui, sans-serif;
-  background: #fafaf9;
-  border: 1px solid #d6d3d1;
-  border-radius: 8px;
-  padding: 14px;
-  font-size: 0.82rem;
+  background: #fffdfa;
+  border: 2px solid #b91c1c;
+  border-radius: 10px;
+  padding: 16px;
+  font-size: 0.83rem;
+  box-shadow: inset 0 0 12px rgba(185, 28, 28, 0.04);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Sacred Ganesha Mini Strip on Preview */
+.preview-sacred-strip {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px dashed #fca5a5;
+  padding-bottom: 6px;
+  margin-bottom: 8px;
+}
+
+.preview-sacred-text {
+  font-size: 10px;
+  font-weight: 800;
+  color: #b91c1c;
+}
+
+.preview-ganesha-center {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.preview-ganesha-mantra {
+  font-size: 11px;
+  font-weight: 900;
+  color: #b91c1c;
 }
 
 .bilty-preview-slip .slip-header {
   text-align: center;
-  border-bottom: 2px solid #292524;
+  border-bottom: 2px solid #1c1917;
   padding-bottom: 8px;
   margin-bottom: 10px;
 }
@@ -951,20 +982,78 @@ body {
 .bilty-preview-slip .slip-row {
   display: flex;
   justify-content: space-between;
-  padding: 3px 0;
+  padding: 3.5px 0;
   border-bottom: 1px dashed #e7e5e4;
 }
 
 .bilty-preview-slip .slip-label {
   color: #78716c;
-  font-weight: 500;
+  font-weight: 600;
+  font-size: 0.8rem;
 }
 
 .bilty-preview-slip .slip-val {
   font-weight: 700;
   color: #1c1917;
   text-align: right;
+  font-size: 0.83rem;
 }
+
+/* Watermark Stamp Effect */
+.preview-stamp-badge {
+  position: absolute;
+  right: 15px;
+  bottom: 60px;
+  transform: rotate(-18deg);
+  border: 2px solid rgba(16, 185, 129, 0.55);
+  color: rgba(16, 185, 129, 0.75);
+  font-weight: 900;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  padding: 3px 10px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Enhanced KPI Summary Cards */
+.summary-kpi-card {
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #e2e8f0 !important;
+}
+
+.summary-kpi-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.1) !important;
+  border-color: #cbd5e1 !important;
+}
+
+.summary-kpi-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #cbd5e1;
+}
+
+.summary-kpi-card.kpi-total::before { background: linear-gradient(90deg, #3b82f6, #1d4ed8); }
+.summary-kpi-card.kpi-today::before { background: linear-gradient(90deg, #10b981, #059669); }
+.summary-kpi-card.kpi-ttc::before { background: linear-gradient(90deg, #1e3a8a, #3b82f6); }
+.summary-kpi-card.kpi-mtc::before { background: linear-gradient(90deg, #047857, #10b981); }
+.summary-kpi-card.kpi-smtc::before { background: linear-gradient(90deg, #7c3aed, #a855f7); }
+.summary-kpi-card.kpi-freight::before { background: linear-gradient(90deg, #f59e0b, #d97706); }
+
+/* Bilty Form Section Left Accents */
+.bilty-section-card:nth-of-type(1) { border-left: 4px solid #2563eb; }
+.bilty-section-card:nth-of-type(2) { border-left: 4px solid #10b981; }
+.bilty-section-card:nth-of-type(3) { border-left: 4px solid #0284c7; }
+.bilty-section-card:nth-of-type(4) { border-left: 4px solid #f59e0b; }
+.bilty-section-card:nth-of-type(5) { border-left: 4px solid #8b5cf6; }
 
 /* Bilty Register Date Ribbon */
 .bilty-date-ribbon {

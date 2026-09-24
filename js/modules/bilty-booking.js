@@ -1550,6 +1550,36 @@ const BiltyBookingModule = {
     const html = `
       <div class="bilty-official-doc shadow-sm">
         
+        <!-- Sacred Lord Ganesha Auspicious Header Banner -->
+        <div class="bilty-sacred-header">
+          <div class="bilty-sacred-side">॥ शुभ लाभ ॥</div>
+          <div class="bilty-sacred-center">
+            <div class="bilty-ganesha-emblem">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="36" height="36">
+                <!-- Crown / Mukut -->
+                <path d="M43 16 L50 3 L57 16 Z" fill="#b91c1c"/>
+                <circle cx="50" cy="8" r="2.2" fill="#d97706"/>
+                <!-- Tilak / Trishul -->
+                <path d="M47 20 C47 24 53 24 53 20 M50 16 L50 25" fill="none" stroke="#b91c1c" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="50" cy="27" r="1.5" fill="#d97706"/>
+                <!-- Eyes & Face -->
+                <ellipse cx="44" cy="32" rx="2.5" ry="1.3" fill="#b91c1c"/>
+                <ellipse cx="56" cy="32" rx="2.5" ry="1.3" fill="#b91c1c"/>
+                <!-- Large Ears -->
+                <path d="M38 33 C27 31 21 38 22 49 C23 55 31 55 37 47" fill="none" stroke="#b91c1c" stroke-width="2.2" stroke-linecap="round"/>
+                <path d="M62 33 C73 31 79 38 78 49 C77 55 69 55 63 47" fill="none" stroke="#b91c1c" stroke-width="2.2" stroke-linecap="round"/>
+                <!-- Graceful Trunk with Modak -->
+                <path d="M48 36 C48 48 44 58 48 68 C52 74 60 76 64 71 C67 67 65 63 61 63 C57 63 55 67 57 70" fill="none" stroke="#b91c1c" stroke-width="2.6" stroke-linecap="round"/>
+                <circle cx="64" cy="62" r="3.2" fill="#d97706" stroke="#b91c1c" stroke-width="0.8"/>
+                <!-- Broken Tusk (Ekdant) -->
+                <path d="M44 44 L39 47" stroke="#b91c1c" stroke-width="2.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <span class="bilty-ganesha-mantra">॥ श्री गणेशाय नमः ॥</span>
+          </div>
+          <div class="bilty-sacred-side">॥ श्री सांवरिया सेठाय नमः ॥</div>
+        </div>
+
         <!-- Top Strip -->
         <div class="bilty-top-strip">
           <div class="bilty-top-left">
