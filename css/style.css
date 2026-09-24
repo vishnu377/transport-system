@@ -1133,5 +1133,209 @@ body {
   margin-bottom: 12px;
 }
 
+/* ==========================================================================
+   Guided 3-Step Wizard, Express Mode & Workflow Enhancements
+   ========================================================================== */
+
+/* Mode Switcher Bar */
+.bilty-workflow-toolbar {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 10px 16px;
+  margin-bottom: 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.mode-toggle-group {
+  display: inline-flex;
+  background: #f1f5f9;
+  border-radius: 8px;
+  padding: 3px;
+  gap: 3px;
+}
+
+.mode-toggle-btn {
+  border: none;
+  background: transparent;
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.mode-toggle-btn:hover {
+  color: #1e293b;
+}
+
+.mode-toggle-btn.active {
+  background: #ffffff;
+  color: #2563eb;
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Quick Route / Party Templates */
+.quick-templates-strip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.quick-template-pill {
+  font-size: 0.76rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 14px;
+  background: #f8fafc;
+  color: #334155;
+  border: 1px dashed #cbd5e1;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.quick-template-pill:hover {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border-color: #93c5fd;
+  border-style: solid;
+}
+
+/* Stepper Navigation Progress Bar */
+.bilty-stepper-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  margin-bottom: 1.25rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.bilty-stepper-container::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 60px;
+  right: 60px;
+  height: 2px;
+  background: #e2e8f0;
+  z-index: 1;
+  transform: translateY(-50%);
+}
+
+.stepper-step {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #ffffff;
+  padding: 4px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.step-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  border: 2px solid #cbd5e1;
+  color: #64748b;
+  font-weight: 800;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.step-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.step-title {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: #64748b;
+  margin: 0;
+}
+
+.step-desc {
+  font-size: 0.7rem;
+  color: #94a3b8;
+}
+
+.stepper-step.active .step-circle {
+  background: #2563eb;
+  border-color: #1d4ed8;
+  color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2);
+}
+
+.stepper-step.active .step-title {
+  color: #1e3a8a;
+  font-weight: 800;
+}
+
+.stepper-step.completed .step-circle {
+  background: #10b981;
+  border-color: #059669;
+  color: #ffffff;
+}
+
+.stepper-step.completed .step-title {
+  color: #0f172a;
+}
+
+/* Stepper Bottom Controls */
+.stepper-nav-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+/* Express Bilty Card */
+.express-bilty-card {
+  background: #ffffff;
+  border: 2px solid #3b82f6;
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.12);
+  margin-bottom: 1.5rem;
+}
+
+/* Full Form Mode Override */
+.full-form-mode .bilty-step-pane {
+  display: block !important;
+  margin-bottom: 1.5rem;
+}
+
+.full-form-mode .bilty-step-nav {
+  display: none !important;
+}
+
+
 
 

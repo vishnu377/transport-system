@@ -129,17 +129,172 @@
       </div>
 
       <!-- ==================================================================== -->
-      <!-- VIEW 1: CREATE / EDIT BILTY (5-SECTION MODERN ERP FORM + LIVE DOCK)  -->
+      <!-- VIEW 1: CREATE / EDIT BILTY (WIZARD, EXPRESS & ALL-IN-ONE MODES)     -->
       <!-- ==================================================================== -->
       <div id="bilty-create-view">
+
+        <!-- WORKFLOW TOOLBAR: Creation Modes & 1-Click Templates -->
+        <div class="bilty-workflow-toolbar">
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <span class="small fw-bold text-dark me-1"><i class="bi bi-sliders2-vertical me-1 text-primary"></i>Mode:</span>
+            <div class="mode-toggle-group" id="bilty-mode-group">
+              <button type="button" class="mode-toggle-btn active" id="btn-mode-stepper" onclick="BiltyBookingModule.setFormMode('stepper')">
+                <i class="bi bi-segmented-nav"></i> 🎯 3-Step Wizard
+              </button>
+              <button type="button" class="mode-toggle-btn" id="btn-mode-express" onclick="BiltyBookingModule.setFormMode('express')">
+                <i class="bi bi-lightning-charge-fill text-warning"></i> ⚡ Express 30-Sec Entry
+              </button>
+              <button type="button" class="mode-toggle-btn" id="btn-mode-full" onclick="BiltyBookingModule.setFormMode('full')">
+                <i class="bi bi-card-checklist"></i> 📜 All-in-One Full Form
+              </button>
+            </div>
+          </div>
+
+          <div class="quick-templates-strip">
+            <span class="small fw-bold text-muted me-1"><i class="bi bi-magic text-warning me-1"></i>Quick 1-Click Templates:</span>
+            <button type="button" class="quick-template-pill" onclick="BiltyBookingModule.loadTemplate('berger')" title="Autofill Berger Paints Sandila">
+              <i class="bi bi-paint-bucket text-primary me-1"></i>Berger (Sandila)
+            </button>
+            <button type="button" class="quick-template-pill" onclick="BiltyBookingModule.loadTemplate('asian')" title="Autofill Asian Paints Pataudi">
+              <i class="bi bi-brush text-danger me-1"></i>Asian Paints (Pataudi)
+            </button>
+            <button type="button" class="quick-template-pill" onclick="BiltyBookingModule.loadTemplate('hardoi')" title="Autofill Bholenath Hardoi">
+              <i class="bi bi-truck text-success me-1"></i>Bholenath (Hardoi)
+            </button>
+            <button type="button" class="quick-template-pill" onclick="BiltyBookingModule.loadTemplate('jk')" title="Autofill JK White Cement Gotan">
+              <i class="bi bi-building text-info me-1"></i>JK White (Gotan)
+            </button>
+          </div>
+        </div>
+
+        <!-- 3-STEP PROGRESS STEPPER (Visible in Stepper Mode) -->
+        <div class="bilty-stepper-container" id="bilty-stepper-bar">
+          <div class="stepper-step active" id="stepper-step-1" onclick="BiltyBookingModule.goToStep(1)">
+            <div class="step-circle" id="step-circle-1">1</div>
+            <div class="step-info">
+              <span class="step-title">Step 1: Transport &amp; Fleet</span>
+              <span class="step-desc">गाड़ी, ट्रांसपोर्ट फर्म व ड्राइवर</span>
+            </div>
+          </div>
+
+          <div class="stepper-step" id="stepper-step-2" onclick="BiltyBookingModule.goToStep(2)">
+            <div class="step-circle" id="step-circle-2">2</div>
+            <div class="step-info">
+              <span class="step-title">Step 2: Route &amp; Consignment</span>
+              <span class="step-desc">पार्टियां (भेजने/पाने वाले), माल व ई-वे</span>
+            </div>
+          </div>
+
+          <div class="stepper-step" id="stepper-step-3" onclick="BiltyBookingModule.goToStep(3)">
+            <div class="step-circle" id="step-circle-3">3</div>
+            <div class="step-info">
+              <span class="step-title">Step 3: Freight &amp; Accounts</span>
+              <span class="step-desc">वास्तविक भाड़ा, बिल्टी भाड़ा व खाता</span>
+            </div>
+          </div>
+        </div>
+
         <form id="bilty-booking-form">
           <div class="row g-4">
             
             <!-- Left Column: The 5-Section Structured Form (col-lg-8) -->
             <div class="col-12 col-lg-8">
 
-              <!-- SECTION 1: Operating Firm, FY & Series Control -->
-              <div class="bilty-section-card">
+              <!-- EXPRESS ENTRY 30-SECOND MODE CARD (Shown when Express mode is chosen) -->
+              <div id="express-entry-view" class="express-bilty-card d-none">
+                <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                  <div>
+                    <h5 class="fw-bold text-primary mb-0"><i class="bi bi-lightning-charge-fill text-warning me-2"></i>Express 30-Sec Consignment Entry</h5>
+                    <span class="small text-muted">High-speed single-card entry for routine daily dispatches</span>
+                  </div>
+                  <span class="badge bg-warning text-dark px-3 py-2 fw-bold"><i class="bi bi-stopwatch-fill me-1"></i>30-Sec Fast Mode</span>
+                </div>
+
+                <div class="row g-3">
+                  <div class="col-md-4">
+                    <label class="form-label fw-bold small">Operating Firm *</label>
+                    <select id="express-firm" class="form-select fw-bold text-primary border-primary" onchange="BiltyBookingModule.syncExpressToMain('bilty-firm', this.value)">
+                      <option value="TTC" selected>TTC (The Transport Corp)</option>
+                      <option value="MTC">MTC (Mahaveer Transport)</option>
+                      <option value="SMTC">SMTC (Shree Mahaveer)</option>
+                    </select>
+                  </div>
+
+                  <div class="col-md-4">
+                    <label class="form-label fw-bold small">Dispatch Date *</label>
+                    <input type="date" id="express-date" class="form-control fw-semibold" onchange="BiltyBookingModule.syncExpressToMain('bilty-date', this.value)">
+                  </div>
+
+                  <div class="col-md-4">
+                    <label class="form-label fw-bold small text-dark">Truck Registration No. *</label>
+                    <input type="text" id="express-truck-no" list="fleetTrucksList" class="form-control font-monospace text-uppercase fw-bold text-dark" placeholder="e.g. RJ52GB5964" oninput="BiltyBookingModule.syncExpressToMain('bilty-truck-no', this.value)">
+                  </div>
+
+                  <div class="col-md-6">
+                    <label class="form-label fw-bold small">Consignor (भेजने वाली पार्टी) *</label>
+                    <select id="express-consignor" class="form-select fw-semibold" onchange="BiltyBookingModule.syncExpressToMain('bilty-consignor', this.value)">
+                      <option value="">-- Select Consignor --</option>
+                    </select>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label class="form-label fw-bold small text-primary">Consignee (पाने वाली पार्टी / Buyer) *</label>
+                    <select id="express-consignee" class="form-select fw-semibold" onchange="BiltyBookingModule.syncExpressToMain('bilty-consignee', this.value)">
+                      <option value="">-- Select Consignee --</option>
+                    </select>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label class="form-label fw-bold small">Destination (कहाँ तक) *</label>
+                    <input type="text" id="express-destination" list="destinationsList" class="form-control fw-semibold" placeholder="e.g. Sandila (U.P.)" oninput="BiltyBookingModule.syncExpressToMain('bilty-destination', this.value)">
+                  </div>
+
+                  <div class="col-md-6">
+                    <label class="form-label fw-bold small">Material / Commodity *</label>
+                    <input type="text" id="express-material" class="form-control fw-semibold" value="Marble Powder" oninput="BiltyBookingModule.syncExpressToMain('bilty-material', this.value)">
+                  </div>
+
+                  <div class="col-md-3">
+                    <label class="form-label fw-bold small">Weight (MT) *</label>
+                    <input type="number" id="express-weight" class="form-control fw-bold" placeholder="e.g. 42.360" step="any" oninput="BiltyBookingModule.syncExpressToMain('bilty-weight', this.value)">
+                  </div>
+
+                  <div class="col-md-3">
+                    <label class="form-label fw-bold small">Rate (₹/MT) *</label>
+                    <input type="number" id="express-rate" class="form-control fw-bold" placeholder="e.g. 2150" step="any" oninput="BiltyBookingModule.syncExpressToMain('bilty-rate', this.value)">
+                  </div>
+
+                  <div class="col-md-3">
+                    <label class="form-label fw-bold small text-success">Total Freight (₹)</label>
+                    <input type="text" id="express-freight" class="form-control fw-bold text-success bg-light" readonly placeholder="₹ 0.00">
+                  </div>
+
+                  <div class="col-md-3">
+                    <label class="form-label fw-bold small">E-Way Bill No.</label>
+                    <input type="text" id="express-eway" class="form-control font-monospace" placeholder="e.g. 7516..." oninput="BiltyBookingModule.syncExpressToMain('bilty-eway-bill', this.value)">
+                  </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+                  <button type="button" class="btn btn-outline-secondary btn-sm" onclick="BiltyBookingModule.setFormMode('stepper')">
+                    <i class="bi bi-segmented-nav me-1"></i> Switch to 3-Step Wizard
+                  </button>
+                  <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-success fw-bold px-3" onclick="BiltyBookingModule.saveExpressBilty('whatsapp')">
+                      <i class="bi bi-whatsapp me-1"></i> Book &amp; WhatsApp
+                    </button>
+                    <button type="button" class="btn btn-primary fw-bold px-4 shadow" onclick="BiltyBookingModule.saveExpressBilty('print')">
+                      <i class="bi bi-printer-fill me-1"></i> ⚡ Book &amp; Print Bilty
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- STEP 1 PANE: Transport, Series & Fleet -->
+              <div id="step-container-1" class="bilty-step-pane">
+
+                <!-- SECTION 1: Operating Firm, FY & Series Control -->
+                <div class="bilty-section-card">
                 <div class="bilty-section-header bg-light">
                   <h6 class="bilty-section-title">
                     <span class="badge bg-primary rounded-circle px-2 py-1">1</span>
@@ -276,8 +431,20 @@
                 </div>
               </div>
 
-              <!-- SECTION 3: Route, Consignor & Consignee (Parties) -->
-              <div class="bilty-section-card">
+              <!-- Step 1 Navigation Bar -->
+              <div class="stepper-nav-bar bilty-step-nav">
+                <span class="text-muted small"><i class="bi bi-keyboard me-1"></i>Press <kbd>Ctrl+Enter</kbd> to proceed to Route</span>
+                <button type="button" class="btn btn-primary px-4 fw-bold" onclick="BiltyBookingModule.nextStep()">
+                  Next: Route &amp; Consignment <i class="bi bi-arrow-right ms-1"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- STEP 2 PANE: Route, Parties & Commodity -->
+            <div id="step-container-2" class="bilty-step-pane d-none">
+
+                <!-- SECTION 3: Route, Consignor & Consignee (Parties) -->
+                <div class="bilty-section-card">
                 <div class="bilty-section-header bg-light">
                   <h6 class="bilty-section-title">
                     <span class="badge bg-info text-white rounded-circle px-2 py-1">3</span>
@@ -415,8 +582,25 @@
                 </div>
               </div>
 
-              <!-- SECTION 5: Dual Freight & Accounts Breakdown (AppSheet Engine) -->
-              <div class="bilty-section-card">
+              <!-- Step 2 Navigation Bar -->
+              <div class="stepper-nav-bar bilty-step-nav">
+                <button type="button" class="btn btn-outline-secondary px-3" onclick="BiltyBookingModule.prevStep()">
+                  <i class="bi bi-arrow-left me-1"></i> Back to Fleet
+                </button>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="text-muted small d-none d-md-inline"><kbd>Ctrl+Enter</kbd></span>
+                  <button type="button" class="btn btn-primary px-4 fw-bold" onclick="BiltyBookingModule.nextStep()">
+                    Next: Freight &amp; Accounts <i class="bi bi-arrow-right ms-1"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- STEP 3 PANE: Dual Freight & Accounts Breakdown -->
+            <div id="step-container-3" class="bilty-step-pane d-none">
+
+                <!-- SECTION 5: Dual Freight & Accounts Breakdown (AppSheet Engine) -->
+                <div class="bilty-section-card">
                 <div class="bilty-section-header bg-light">
                   <h6 class="bilty-section-title">
                     <span class="badge bg-danger rounded-circle px-2 py-1">5</span>
@@ -641,6 +825,22 @@
 
                 </div>
               </div>
+
+              <!-- Step 3 Navigation Bar -->
+              <div class="stepper-nav-bar bilty-step-nav">
+                <button type="button" class="btn btn-outline-secondary px-3" onclick="BiltyBookingModule.prevStep()">
+                  <i class="bi bi-arrow-left me-1"></i> Back to Consignment
+                </button>
+                <div class="d-flex align-items-center gap-2">
+                  <button type="button" class="btn btn-success fw-bold px-3" onclick="BiltyBookingModule.saveAndWhatsApp()">
+                    <i class="bi bi-whatsapp me-1"></i> WhatsApp
+                  </button>
+                  <button type="submit" class="btn btn-primary px-4 fw-bold shadow">
+                    <i class="bi bi-printer-fill me-1"></i> Save &amp; Print Bilty
+                  </button>
+                </div>
+              </div>
+            </div>
 
             </div>
 

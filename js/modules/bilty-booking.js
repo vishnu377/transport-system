@@ -31,6 +31,9 @@ const BiltyBookingModule = {
   pageSize: 100,
   currentPage: 1,
 
+  currentStep: 1,
+  formMode: 'stepper', // 'stepper' | 'express' | 'full'
+
   editTripId: null,
   isGRLocked: true,
   currentPrintCopy: 'CONSIGNOR COPY',
@@ -59,6 +62,8 @@ const BiltyBookingModule = {
     }
 
     this.bindFormEvents();
+    this.setupKeyboardShortcuts();
+    this.setFormMode('stepper');
     this.updateKPIs();
     this.renderMonthBar();
     this.applyRegisterFilters();
@@ -141,9 +146,11 @@ const BiltyBookingModule = {
       brokersDatalist.innerHTML = Array.from(brokerNames).sort().map(name => `<option value="${name}">`).join('');
     }
 
-    // 5. Consignor & Consignee Selects
+    // 5. Consignor & Consignee Selects (Main & Express Modes)
     const consignorSelect = document.getElementById('bilty-consignor');
     const consigneeSelect = document.getElementById('bilty-consignee');
+    const expressConsignor = document.getElementById('express-consignor');
+    const expressConsignee = document.getElementById('express-consignee');
 
     if (consignorSelect && consigneeSelect) {
       let optionsHTML = '<option value="">-- Select Party / Enter Name --</option>';
@@ -152,6 +159,8 @@ const BiltyBookingModule = {
       });
       consignorSelect.innerHTML = optionsHTML;
       consigneeSelect.innerHTML = optionsHTML;
+      if (expressConsignor) expressConsignor.innerHTML = optionsHTML;
+      if (expressConsignee) expressConsignee.innerHTML = optionsHTML;
     }
   },
 
@@ -159,6 +168,9 @@ const BiltyBookingModule = {
     const today = new Date().toISOString().split('T')[0];
     const dateInput = document.getElementById('bilty-date');
     if (dateInput) dateInput.value = today;
+
+    const expressDate = document.getElementById('express-date');
+    if (expressDate) expressDate.value = today;
 
     const previewDate = document.getElementById('preview-date');
     if (previewDate) {
@@ -421,6 +433,388 @@ const BiltyBookingModule = {
     } else if (val === 'Per Tonne') {
       this.recalculateFreightAndTotals();
     }
+  },
+
+  // ----------------------------------------------------
+  // STEPPER, CREATION MODES & QUICK ROUTE TEMPLATES
+  // ----------------------------------------------------
+  setFormMode(mode) {
+    this.formMode = mode;
+    const btnStepper = document.getElementById('btn-mode-stepper');
+    const btnExpress = document.getElementById('btn-mode-express');
+    const btnFull = document.getElementById('btn-mode-full');
+    const stepperBar = document.getElementById('bilty-stepper-bar');
+    const expressView = document.getElementById('express-entry-view');
+    const formEl = document.getElementById('bilty-booking-form');
+
+    [btnStepper, btnExpress, btnFull].forEach(b => { if (b) b.classList.remove('active'); });
+
+    if (mode === 'express') {
+      if (btnExpress) btnExpress.classList.add('active');
+      if (stepperBar) stepperBar.classList.add('d-none');
+      if (formEl) formEl.classList.remove('full-form-mode');
+      for (let i = 1; i <= 3; i++) {
+        const c = document.getElementById(`step-container-${i}`);
+        if (c) c.classList.add('d-none');
+      }
+      if (expressView) expressView.classList.remove('d-none');
+      this.populateExpressFromMain();
+      const truckInput = document.getElementById('express-truck-no');
+      if (truckInput) truckInput.focus();
+    } else if (mode === 'full') {
+      if (btnFull) btnFull.classList.add('active');
+      if (stepperBar) stepperBar.classList.add('d-none');
+      if (expressView) expressView.classList.add('d-none');
+      if (formEl) {
+        formEl.classList.add('full-form-mode');
+        formEl.classList.remove('d-none');
+      }
+      for (let i = 1; i <= 3; i++) {
+        const c = document.getElementById(`step-container-${i}`);
+        if (c) c.classList.remove('d-none');
+      }
+    } else {
+      // Stepper Wizard mode (default)
+      this.formMode = 'stepper';
+      if (btnStepper) btnStepper.classList.add('active');
+      if (stepperBar) stepperBar.classList.remove('d-none');
+      if (expressView) expressView.classList.add('d-none');
+      if (formEl) {
+        formEl.classList.remove('full-form-mode');
+        formEl.classList.remove('d-none');
+      }
+      this.goToStep(this.currentStep || 1);
+    }
+  },
+
+  goToStep(stepNum, validate = false) {
+    if (this.formMode !== 'stepper') return;
+    stepNum = Math.max(1, Math.min(3, parseInt(stepNum, 10)));
+
+    if (validate) {
+      // Validation before advancing from Step 1
+      if (stepNum > 1 && !this.editTripId) {
+        const truckNo = (document.getElementById('bilty-truck-no')?.value || '').trim();
+        if (!truckNo) {
+          AppUI.showToast("Please enter Truck Registration Number before proceeding!", "warning");
+          document.getElementById('bilty-truck-no')?.focus();
+          return;
+        }
+      }
+
+      // Validation before advancing from Step 2
+      if (stepNum > 2 && !this.editTripId) {
+        const consignor = (document.getElementById('bilty-consignor')?.value || '').trim();
+        const consignee = (document.getElementById('bilty-consignee')?.value || '').trim();
+        const destination = (document.getElementById('bilty-destination')?.value || '').trim();
+        if (!consignor || !consignee || !destination) {
+          AppUI.showToast("Please specify Consignor, Consignee & Destination in Step 2!", "warning");
+          if (!consignor) document.getElementById('bilty-consignor')?.focus();
+          else if (!consignee) document.getElementById('bilty-consignee')?.focus();
+          else document.getElementById('bilty-destination')?.focus();
+          return;
+        }
+      }
+    }
+
+    this.currentStep = stepNum;
+
+    // Toggle step panes
+    for (let i = 1; i <= 3; i++) {
+      const pane = document.getElementById(`step-container-${i}`);
+      const stepBtn = document.getElementById(`stepper-step-${i}`);
+      const stepCircle = document.getElementById(`step-circle-${i}`);
+
+      if (pane) {
+        if (i === stepNum) pane.classList.remove('d-none');
+        else pane.classList.add('d-none');
+      }
+
+      if (stepBtn && stepCircle) {
+        stepBtn.classList.remove('active', 'completed');
+        if (i < stepNum) {
+          stepBtn.classList.add('completed');
+          stepCircle.innerHTML = '<i class="bi bi-check-lg"></i>';
+        } else if (i === stepNum) {
+          stepBtn.classList.add('active');
+          stepCircle.innerText = i;
+        } else {
+          stepCircle.innerText = i;
+        }
+      }
+    }
+
+    // Focus primary input for this step
+    if (stepNum === 1) {
+      document.getElementById('bilty-truck-no')?.focus();
+    } else if (stepNum === 2) {
+      document.getElementById('bilty-destination')?.focus();
+    } else if (stepNum === 3) {
+      document.getElementById('bilty-weight')?.focus();
+    }
+  },
+
+  nextStep() {
+    if (this.currentStep < 3) {
+      this.goToStep(this.currentStep + 1, true);
+    }
+  },
+
+  prevStep() {
+    if (this.currentStep > 1) {
+      this.goToStep(this.currentStep - 1, false);
+    }
+  },
+
+  loadTemplate(name) {
+    const templates = {
+      berger: {
+        firm: 'TTC',
+        origin: 'Rajsamand (Raj.)',
+        destination: 'Sandila (U.P.)',
+        consignor: 'SHREE CHARBHUJA MINCHEM',
+        consignorGstin: '08AAJFR3111N1Z1',
+        consignee: 'BERGER PAINTS INDIA LTD - SANDILA',
+        consigneeGstin: '09AAACB3132G1ZP',
+        deliveryAddress: 'Plot No. B4 & B5, Sandila Industrial Area Phase-1, Hardoi, U.P.',
+        material: 'Marble Powder',
+        rate: 2150,
+        biltyRate: 2150,
+        label: 'Berger Paints (Sandila)'
+      },
+      asian: {
+        firm: 'MTC',
+        origin: 'Rajsamand (Raj.)',
+        destination: 'Pataudi (Haryana)',
+        consignor: 'SHREE CHARBHUJA MINCHEM',
+        consignorGstin: '08AAJFR3111N1Z1',
+        consignee: 'ASIAN PAINTS LTD - PATAUDI',
+        consigneeGstin: '06AAACH2676Q1Z4',
+        deliveryAddress: 'Plot No. 1, Sector 2, IMT Manesar / Pataudi, Haryana',
+        material: 'Putty Grade Dolomite',
+        rate: 1850,
+        biltyRate: 1850,
+        label: 'Asian Paints (Pataudi)'
+      },
+      hardoi: {
+        firm: 'SMTC',
+        origin: 'Rajsamand (Raj.)',
+        destination: 'Hardoi (U.P.)',
+        consignor: 'SHREE CHARBHUJA MINCHEM',
+        consignorGstin: '08AAJFR3111N1Z1',
+        consignee: 'BHOLENATH PAINTS & CHEMICALS',
+        consigneeGstin: '09ABCDE1234F1Z5',
+        deliveryAddress: 'Industrial Area, Hardoi, U.P.',
+        material: 'Marble Powder',
+        rate: 2200,
+        biltyRate: 2200,
+        label: 'Bholenath (Hardoi)'
+      },
+      jk: {
+        firm: 'TTC',
+        origin: 'Gotan (Raj.)',
+        destination: 'Lucknow (U.P.)',
+        consignor: 'JK WHITE CEMENT WORKS',
+        consignorGstin: '08AAACJ0123C1Z8',
+        consignee: 'SHREE BALAJI TRADERS',
+        consigneeGstin: '09AAAFB5678K1Z2',
+        deliveryAddress: 'Transport Nagar, Lucknow, U.P.',
+        material: 'White Cement / Wall Putty',
+        rate: 2400,
+        biltyRate: 2400,
+        label: 'JK White (Gotan)'
+      }
+    };
+
+    const tpl = templates[name];
+    if (!tpl) return;
+
+    // Set firm & regenerate sequential GR
+    const firmEl = document.getElementById('bilty-firm');
+    if (firmEl && firmEl.value !== tpl.firm) {
+      firmEl.value = tpl.firm;
+      if (!this.editTripId) this.generateBiltyNumber();
+      this.updateFirmBranding();
+    }
+
+    document.getElementById('bilty-origin').value = tpl.origin;
+    document.getElementById('bilty-destination').value = tpl.destination;
+
+    // Match or select Consignor
+    const consignorEl = document.getElementById('bilty-consignor');
+    if (consignorEl) {
+      let optFound = false;
+      for (let opt of consignorEl.options) {
+        if (opt.value && (opt.value.includes('CHARBHUJA') || opt.value.toLowerCase().includes(tpl.consignor.toLowerCase()))) {
+          consignorEl.value = opt.value;
+          optFound = true;
+          break;
+        }
+      }
+      if (!optFound) {
+        const newOpt = new Option(tpl.consignor, tpl.consignor, true, true);
+        consignorEl.add(newOpt);
+      }
+    }
+    document.getElementById('bilty-consignor-gstin').value = tpl.consignorGstin;
+
+    // Match or select Consignee
+    const consigneeEl = document.getElementById('bilty-consignee');
+    if (consigneeEl) {
+      let optFound = false;
+      for (let opt of consigneeEl.options) {
+        if (opt.value && opt.value.toLowerCase().includes(tpl.consignee.split(' ')[0].toLowerCase())) {
+          consigneeEl.value = opt.value;
+          optFound = true;
+          break;
+        }
+      }
+      if (!optFound) {
+        const newOpt = new Option(tpl.consignee, tpl.consignee, true, true);
+        consigneeEl.add(newOpt);
+      }
+    }
+    document.getElementById('bilty-consignee-gstin').value = tpl.consigneeGstin;
+    document.getElementById('bilty-delivery-address').value = tpl.deliveryAddress;
+    document.getElementById('bilty-material').value = tpl.material;
+    document.getElementById('bilty-rate').value = tpl.rate;
+    document.getElementById('bilty-print-rate').value = tpl.biltyRate;
+
+    this.recalculateFreightAndTotals();
+    this.populateExpressFromMain();
+
+    AppUI.showToast(`Template Loaded: ${tpl.label}! 80% form autofilled.`, "success");
+  },
+
+  populateExpressFromMain() {
+    const syncPairs = [
+      ['express-firm', 'bilty-firm'],
+      ['express-date', 'bilty-date'],
+      ['express-truck-no', 'bilty-truck-no'],
+      ['express-destination', 'bilty-destination'],
+      ['express-material', 'bilty-material'],
+      ['express-weight', 'bilty-weight'],
+      ['express-rate', 'bilty-rate'],
+      ['express-eway', 'bilty-eway-bill']
+    ];
+    syncPairs.forEach(([expId, mainId]) => {
+      const exp = document.getElementById(expId);
+      const main = document.getElementById(mainId);
+      if (exp && main && main.value) exp.value = main.value;
+    });
+
+    const expConsignor = document.getElementById('express-consignor');
+    const mainConsignor = document.getElementById('bilty-consignor');
+    if (expConsignor && mainConsignor && mainConsignor.innerHTML) {
+      expConsignor.innerHTML = mainConsignor.innerHTML;
+      expConsignor.value = mainConsignor.value;
+    }
+
+    const expConsignee = document.getElementById('express-consignee');
+    const mainConsignee = document.getElementById('bilty-consignee');
+    if (expConsignee && mainConsignee && mainConsignee.innerHTML) {
+      expConsignee.innerHTML = mainConsignee.innerHTML;
+      expConsignee.value = mainConsignee.value;
+    }
+
+    const wt = parseFloat(document.getElementById('express-weight')?.value) || 0;
+    const rt = parseFloat(document.getElementById('express-rate')?.value) || 0;
+    const freightEl = document.getElementById('express-freight');
+    if (freightEl) freightEl.value = (wt * rt) ? AppUI.formatCurrency(wt * rt) : '₹ 0.00';
+  },
+
+  syncExpressToMain(targetId, val) {
+    const main = document.getElementById(targetId);
+    if (main) {
+      main.value = val;
+      main.dispatchEvent(new Event('input'));
+      main.dispatchEvent(new Event('change'));
+    }
+    if (targetId === 'bilty-weight' || targetId === 'bilty-rate') {
+      const wt = parseFloat(document.getElementById('express-weight')?.value) || 0;
+      const rt = parseFloat(document.getElementById('express-rate')?.value) || 0;
+      const freightEl = document.getElementById('express-freight');
+      if (freightEl) freightEl.value = (wt * rt) ? AppUI.formatCurrency(wt * rt) : '₹ 0.00';
+    }
+  },
+
+  async saveExpressBilty(action = 'print') {
+    const truck = (document.getElementById('express-truck-no')?.value || '').trim();
+    const consignor = (document.getElementById('express-consignor')?.value || '').trim();
+    const consignee = (document.getElementById('express-consignee')?.value || '').trim();
+    const dest = (document.getElementById('express-destination')?.value || '').trim();
+    const wt = parseFloat(document.getElementById('express-weight')?.value) || 0;
+    const rt = parseFloat(document.getElementById('express-rate')?.value) || 0;
+
+    if (!truck) {
+      AppUI.showToast("Express Mode: Please enter Truck Registration Number!", "warning");
+      document.getElementById('express-truck-no')?.focus();
+      return;
+    }
+    if (!consignor) {
+      AppUI.showToast("Express Mode: Please select Consignor party!", "warning");
+      document.getElementById('express-consignor')?.focus();
+      return;
+    }
+    if (!consignee) {
+      AppUI.showToast("Express Mode: Please select Consignee party!", "warning");
+      document.getElementById('express-consignee')?.focus();
+      return;
+    }
+    if (!dest) {
+      AppUI.showToast("Express Mode: Please enter Destination!", "warning");
+      document.getElementById('express-destination')?.focus();
+      return;
+    }
+    if (!wt || !rt) {
+      AppUI.showToast("Express Mode: Please enter Weight (MT) and Rate (₹)!", "warning");
+      if (!wt) document.getElementById('express-weight')?.focus();
+      else document.getElementById('express-rate')?.focus();
+      return;
+    }
+
+    // Sync to main form fields
+    document.getElementById('bilty-firm').value = document.getElementById('express-firm').value;
+    document.getElementById('bilty-date').value = document.getElementById('express-date').value;
+    document.getElementById('bilty-truck-no').value = truck;
+    this.autoFillTruckDetails(truck);
+    document.getElementById('bilty-consignor').value = consignor;
+    document.getElementById('bilty-consignee').value = consignee;
+    document.getElementById('bilty-destination').value = dest;
+    document.getElementById('bilty-material').value = document.getElementById('express-material').value;
+    document.getElementById('bilty-weight').value = wt;
+    document.getElementById('bilty-rate').value = rt;
+    document.getElementById('bilty-eway-bill').value = document.getElementById('express-eway').value;
+
+    this.recalculateFreightAndTotals();
+
+    if (action === 'whatsapp') {
+      await this.saveAndWhatsApp();
+    } else if (action === 'saveOnly') {
+      await this.saveOnly();
+    } else {
+      await this.saveBilty('print');
+    }
+  },
+
+  setupKeyboardShortcuts() {
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        const createView = document.getElementById('bilty-create-view');
+        if (!createView || createView.classList.contains('d-none')) return;
+
+        e.preventDefault();
+        if (this.formMode === 'express') {
+          this.saveExpressBilty('print');
+        } else if (this.formMode === 'stepper') {
+          if (this.currentStep === 1) this.nextStep();
+          else if (this.currentStep === 2) this.nextStep();
+          else if (this.currentStep === 3) this.saveBilty('print');
+        } else {
+          this.saveBilty('print');
+        }
+      }
+    });
   },
 
   // ----------------------------------------------------
@@ -757,6 +1151,17 @@ const BiltyBookingModule = {
       submitBtn.className = 'btn btn-primary btn-lg shadow fw-bold';
       submitBtn.innerHTML = '<i class="bi bi-printer-fill me-1"></i> Save & Print Official Bilty';
     }
+
+    // Reset stepper to Step 1
+    if (this.formMode === 'stepper') {
+      this.goToStep(1);
+    }
+
+    // Reset express inputs
+    ['express-truck-no', 'express-destination', 'express-weight', 'express-rate', 'express-freight', 'express-eway'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
 
     AppUI.showToast("Form reset. Ready for next consignment note.", "info");
   },
@@ -1486,6 +1891,7 @@ const BiltyBookingModule = {
 
     this.recalculateFreightAndTotals();
     this.updateLivePreview();
+    this.setFormMode('full'); // Show all sections expanded when editing
   },
 
   // ----------------------------------------------------
