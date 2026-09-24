@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>New Bilty (LR) Booking - MTC & TTC Logistics</title>
+  <title>MTC & TTC - Bilty (LR) Management Hub</title>
   <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Bootstrap Icons -->
@@ -21,286 +21,898 @@
   <div id="main-content">
     
     <!-- Top Navbar -->
-    <header class="top-navbar d-flex align-items-center justify-content-between">
+    <header class="top-navbar d-flex align-items-center justify-content-between flex-wrap gap-2">
       <div class="d-flex align-items-center gap-3">
         <button id="sidebar-toggle" class="btn btn-light d-lg-none">
           <i class="bi bi-list fs-5"></i>
         </button>
         <div>
-          <h5 class="mb-0 fw-bold text-dark">Lorry Receipt (Bilty) Booking Form</h5>
-          <small class="text-muted">Issue official transport consignment notes with auto-numbering and instant WhatsApp sharing</small>
+          <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-primary px-2 py-1"><i class="bi bi-truck me-1"></i>Freight ERP</span>
+            <h5 class="mb-0 fw-bold text-dark" id="bilty-page-title">MTC & TTC - Lorry Receipt (Bilty) Hub</h5>
+          </div>
+          <small class="text-muted" id="bilty-breadcrumb">Home &gt; Bilty Booking &gt; Create &amp; Manage Consignments</small>
         </div>
       </div>
 
-      <a href="./trips.html" class="btn btn-light btn-sm border">
-        <i class="bi bi-arrow-left me-1"></i> Trips Register
-      </a>
+      <!-- Header Mode Switcher & Actions -->
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <div class="btn-group btn-group-sm" role="group">
+          <button type="button" class="btn btn-primary active" id="btn-view-create" onclick="BiltyBookingModule.switchView('create')">
+            <i class="bi bi-plus-circle me-1"></i> + Create New Bilty
+          </button>
+          <button type="button" class="btn btn-outline-primary" id="btn-view-register" onclick="BiltyBookingModule.switchView('register')">
+            <i class="bi bi-collection me-1"></i> Bilty Register (<span id="header-total-count">0</span>)
+          </button>
+        </div>
+
+        <button class="btn btn-outline-success btn-sm" onclick="BiltyBookingModule.exportRegisterToExcel()" title="Export Bilties to Excel/CSV">
+          <i class="bi bi-file-earmark-excel me-1"></i> Export Excel
+        </button>
+
+        <a href="./trips.html" class="btn btn-outline-secondary btn-sm" title="Go to Trips Master Register">
+          <i class="bi bi-arrow-left me-1"></i> Trips
+        </a>
+      </div>
     </header>
 
-    <!-- Page Content -->
-    <main class="page-container">
+    <!-- Page Content Container -->
+    <main class="page-container p-3 p-md-4">
 
-      <div class="row justify-content-center">
-        <div class="col-12 col-xl-10">
+      <!-- Top KPI Summary Bar (Live Metrics) -->
+      <div class="row g-3 mb-4">
+        <div class="col-6 col-md-4 col-xl-2">
+          <div class="summary-kpi-card p-3 bg-white border rounded-3 shadow-sm h-100">
+            <div class="text-muted small fw-semibold">Total Bilties (कुल बिल्टियां)</div>
+            <div class="fs-4 fw-bold text-dark mt-1" id="kpi-total-bilties">0</div>
+            <small class="text-primary fw-semibold"><i class="bi bi-check-circle me-1"></i>Active Fleet Log</small>
+          </div>
+        </div>
 
-          <div class="data-card">
-            <div class="data-card-header bg-primary text-white">
-              <div class="fw-bold"><i class="bi bi-pencil-square me-2"></i> New Consignment / Bilty Booking Details</div>
-              <span class="badge bg-light text-primary">FY 2026-2027</span>
+        <div class="col-6 col-md-4 col-xl-2">
+          <div class="summary-kpi-card p-3 bg-white border rounded-3 shadow-sm h-100">
+            <div class="text-muted small fw-semibold">Today's Bilties (आज की)</div>
+            <div class="fs-4 fw-bold text-success mt-1" id="kpi-today-bilties">0</div>
+            <small class="text-muted">Booked Today</small>
+          </div>
+        </div>
+
+        <div class="col-6 col-md-4 col-xl-2">
+          <div class="summary-kpi-card p-3 bg-white border rounded-3 shadow-sm h-100">
+            <div class="text-muted small fw-semibold">TTC Transport</div>
+            <div class="fs-4 fw-bold text-primary mt-1" id="kpi-ttc-bilties">0</div>
+            <small class="badge bg-primary-subtle text-primary">TTC Series</small>
+          </div>
+        </div>
+
+        <div class="col-6 col-md-4 col-xl-2">
+          <div class="summary-kpi-card p-3 bg-white border rounded-3 shadow-sm h-100">
+            <div class="text-muted small fw-semibold">MTC Mahaveer</div>
+            <div class="fs-4 fw-bold text-success mt-1" id="kpi-mtc-bilties">0</div>
+            <small class="badge bg-success-subtle text-success">MTC Series</small>
+          </div>
+        </div>
+
+        <div class="col-6 col-md-4 col-xl-2">
+          <div class="summary-kpi-card p-3 bg-white border rounded-3 shadow-sm h-100">
+            <div class="text-muted small fw-semibold">SMTC Transport</div>
+            <div class="fs-4 fw-bold text-purple mt-1" style="color: #7c3aed;" id="kpi-smtc-bilties">0</div>
+            <small class="badge bg-secondary-subtle text-dark">SMTC Series</small>
+          </div>
+        </div>
+
+        <div class="col-6 col-md-4 col-xl-2">
+          <div class="summary-kpi-card p-3 bg-white border rounded-3 shadow-sm h-100">
+            <div class="text-muted small fw-semibold">Total Freight Booked</div>
+            <div class="fs-5 fw-bold text-dark mt-1 text-truncate" id="kpi-total-freight">₹ 0.00</div>
+            <small class="text-muted">Total Revenue Value</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================================================================== -->
+      <!-- VIEW 1: CREATE / EDIT BILTY (5-SECTION MODERN ERP FORM + LIVE DOCK)  -->
+      <!-- ==================================================================== -->
+      <div id="bilty-create-view">
+        <form id="bilty-booking-form">
+          <div class="row g-4">
+            
+            <!-- Left Column: The 5-Section Structured Form (col-lg-8) -->
+            <div class="col-12 col-lg-8">
+
+              <!-- SECTION 1: Operating Firm, FY & Series Control -->
+              <div class="bilty-section-card">
+                <div class="bilty-section-header bg-light">
+                  <h6 class="bilty-section-title">
+                    <span class="badge bg-primary rounded-circle px-2 py-1">1</span>
+                    <span>Transport Firm, Series &amp; Bilty Header</span>
+                  </h6>
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-light text-dark border font-monospace" id="header-fy-badge">FY 2026-2027</span>
+                    <button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2" id="btn-lock-toggle" onclick="BiltyBookingModule.toggleLockGR()">
+                      <i class="bi bi-lock-fill text-danger" id="lock-icon"></i> <span id="lock-text">Locked</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="bilty-section-body">
+                  <div class="row g-3">
+                    
+                    <div class="col-md-4">
+                      <label class="form-label fw-bold small">Operating Transport Firm *</label>
+                      <select id="bilty-firm" class="form-select fw-bold text-primary border-primary">
+                        <option value="TTC" selected>TTC (The Transport Corp)</option>
+                        <option value="MTC">MTC (Mahaveer Transport)</option>
+                        <option value="SMTC">SMTC (Shree Mahaveer)</option>
+                      </select>
+                    </div>
+
+                    <div class="col-md-4">
+                      <label class="form-label fw-bold small">Financial Year *</label>
+                      <select id="bilty-year" class="form-select fw-semibold">
+                        <option value="2026-2027" selected>2026-2027</option>
+                        <option value="2025-2026">2025-2026</option>
+                        <option value="2024-2025">2024-2025</option>
+                        <option value="2023-2024">2023-2024</option>
+                      </select>
+                    </div>
+
+                    <div class="col-md-4">
+                      <label class="form-label fw-bold small">Bilty / Dispatch Date *</label>
+                      <input type="date" id="bilty-date" class="form-control fw-semibold" required>
+                    </div>
+
+                    <div class="col-md-5">
+                      <label class="form-label fw-bold small">Full G.R. Number (Auto Generated) *</label>
+                      <div class="input-group">
+                        <input type="text" id="bilty-gr-no" class="form-control font-monospace fw-bold bg-light text-primary fs-6" readonly>
+                        <button class="btn btn-outline-secondary" type="button" onclick="BiltyBookingModule.regenerateGR()" title="Re-calculate next sequential GR">
+                          <i class="bi bi-arrow-repeat"></i>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div class="col-md-3">
+                      <label class="form-label fw-bold small">Short G.R. No.</label>
+                      <input type="text" id="bilty-short-gr" class="form-control font-monospace text-muted bg-light" readonly>
+                    </div>
+
+                    <div class="col-md-2">
+                      <label class="form-label fw-bold small">Bilty Type</label>
+                      <select id="bilty-type" class="form-select">
+                        <option value="Regular" selected>Regular</option>
+                        <option value="URP">URP</option>
+                      </select>
+                    </div>
+
+                    <div class="col-md-2">
+                      <label class="form-label fw-bold small">Is GST Applicable?</label>
+                      <select id="bilty-is-gst" class="form-select fw-semibold">
+                        <option value="Yes" selected>Yes</option>
+                        <option value="No">No</option>
+                      </select>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+              <!-- SECTION 2: Vehicle, Driver, Owner & Broker Info -->
+              <div class="bilty-section-card">
+                <div class="bilty-section-header bg-light">
+                  <h6 class="bilty-section-title">
+                    <span class="badge bg-success rounded-circle px-2 py-1">2</span>
+                    <span>Truck Fleet, Owner, Driver &amp; Reference (Broker)</span>
+                  </h6>
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="small fw-semibold text-muted me-1">Load Type:</span>
+                    <div class="load-type-toggle">
+                      <button type="button" class="load-type-btn active underload" id="btn-load-under" onclick="BiltyBookingModule.setLoadType('Under Load')">Under Load</button>
+                      <button type="button" class="load-type-btn" id="btn-load-over" onclick="BiltyBookingModule.setLoadType('Over Load')">Over Load</button>
+                    </div>
+                    <input type="hidden" id="bilty-load-type" value="Under Load">
+                  </div>
+                </div>
+
+                <div class="bilty-section-body">
+                  <div class="row g-3">
+                    
+                    <div class="col-md-4">
+                      <label class="form-label fw-bold small text-dark">
+                        Truck Registration Number *
+                        <span class="badge bg-primary-subtle text-primary ms-1" id="truck-fleet-badge">Fleet Search</span>
+                      </label>
+                      <input type="text" id="bilty-truck-no" list="fleetTrucksList" class="form-control font-monospace text-uppercase fw-bold text-dark" placeholder="e.g. RJ52GB5964" required autocomplete="off">
+                      <datalist id="fleetTrucksList"></datalist>
+                    </div>
+
+                    <div class="col-md-4">
+                      <label class="form-label fw-semibold small">Truck Owner (मालिक का नाम)</label>
+                      <input type="text" id="bilty-owner" list="truckOwnersList" class="form-control" placeholder="e.g. Shree Mahaveer Transport / Rameshwar">
+                      <datalist id="truckOwnersList"></datalist>
+                    </div>
+
+                    <div class="col-md-4">
+                      <label class="form-label fw-semibold small">Owner Mobile Number</label>
+                      <input type="tel" id="bilty-owner-mobile" class="form-control" placeholder="e.g. 9414312586">
+                    </div>
+
+                    <div class="col-md-4">
+                      <label class="form-label fw-semibold small">Assigned Driver Name</label>
+                      <input type="text" id="bilty-driver" list="driversList" class="form-control" placeholder="e.g. Kushiram Gurjar / Deepu">
+                      <datalist id="driversList"></datalist>
+                    </div>
+
+                    <div class="col-md-4">
+                      <label class="form-label fw-semibold small">Driver Mobile Number</label>
+                      <input type="tel" id="bilty-driver-mobile" class="form-control" placeholder="e.g. 6377445099">
+                    </div>
+
+                    <div class="col-md-4">
+                      <label class="form-label fw-semibold small">Reference / Dallal (दलाल / ब्रोकर)</label>
+                      <input type="text" id="bilty-broker" list="brokersList" class="form-control" placeholder="e.g. Ramniwas Ji Nilkant Marble">
+                      <datalist id="brokersList"></datalist>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+              <!-- SECTION 3: Route, Consignor & Consignee (Parties) -->
+              <div class="bilty-section-card">
+                <div class="bilty-section-header bg-light">
+                  <h6 class="bilty-section-title">
+                    <span class="badge bg-info text-white rounded-circle px-2 py-1">3</span>
+                    <span>Route, Consignor &amp; Consignee (पार्टी विवरण)</span>
+                  </h6>
+                </div>
+
+                <div class="bilty-section-body">
+                  <div class="row g-3">
+                    
+                    <!-- Route -->
+                    <div class="col-md-6">
+                      <label class="form-label fw-bold small">Origin (कहाँ से) *</label>
+                      <input type="text" id="bilty-origin" class="form-control fw-semibold" value="Rajsamand (Raj.)" required>
+                      <div class="quick-chips-container mt-1">
+                        <span class="quick-chip active" onclick="BiltyBookingModule.setOrigin('Rajsamand (Raj.)', this)">Rajsamand</span>
+                        <span class="quick-chip" onclick="BiltyBookingModule.setOrigin('Kishangarh (Raj.)', this)">Kishangarh</span>
+                        <span class="quick-chip" onclick="BiltyBookingModule.setOrigin('Udaipur (Raj.)', this)">Udaipur</span>
+                        <span class="quick-chip" onclick="BiltyBookingModule.setOrigin('Jaipur (Raj.)', this)">Jaipur</span>
+                      </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <label class="form-label fw-bold small">Destination (कहाँ तक) *</label>
+                      <input type="text" id="bilty-destination" list="destinationsList" class="form-control fw-semibold" placeholder="e.g. Sandila (U.P.), Pataudi, Hardoi" required>
+                      <datalist id="destinationsList">
+                        <option value="Sandila (U.P.)">
+                        <option value="Pataudi (Haryana)">
+                        <option value="Lucknow (U.P.)">
+                        <option value="Hardoi (U.P.)">
+                        <option value="Dadri (U.P.)">
+                        <option value="Greater Noida (U.P.)">
+                        <option value="Delhi">
+                        <option value="Karnal (Haryana)">
+                        <option value="Meerut (U.P.)">
+                      </datalist>
+                    </div>
+
+                    <!-- Consignor -->
+                    <div class="col-md-6 pt-2 border-top">
+                      <label class="form-label fw-bold small text-dark">Consignor (माल भेजने वाली पार्टी) *</label>
+                      <select id="bilty-consignor" class="form-select fw-semibold" required>
+                        <option value="">-- Select Consignor --</option>
+                      </select>
+                    </div>
+
+                    <div class="col-md-6 pt-2 border-top">
+                      <label class="form-label fw-semibold small">Consignor GSTIN</label>
+                      <input type="text" id="bilty-consignor-gstin" class="form-control font-monospace text-uppercase" placeholder="e.g. 08AAJFR3111N1Z1">
+                    </div>
+
+                    <div class="col-12">
+                      <div class="form-check form-switch small">
+                        <input class="form-check-input" type="checkbox" id="toggle-dispatch-from" onchange="BiltyBookingModule.toggleDispatchFrom(this.checked)">
+                        <label class="form-check-label text-muted fw-semibold" for="toggle-dispatch-from">Is Dispatch From Address Different from Consignor?</label>
+                      </div>
+                      <div id="dispatch-from-box" class="mt-2 d-none">
+                        <input type="text" id="bilty-dispatch-from" class="form-control form-control-sm" placeholder="Enter alternate Dispatch/Loading Address">
+                      </div>
+                    </div>
+
+                    <!-- Consignee -->
+                    <div class="col-md-6 pt-2 border-top">
+                      <label class="form-label fw-bold small text-primary">Consignee (माल पाने वाली पार्टी / Buyer) *</label>
+                      <select id="bilty-consignee" class="form-select fw-semibold" required>
+                        <option value="">-- Select Consignee --</option>
+                      </select>
+                    </div>
+
+                    <div class="col-md-6 pt-2 border-top">
+                      <label class="form-label fw-semibold small">Consignee GSTIN</label>
+                      <input type="text" id="bilty-consignee-gstin" class="form-control font-monospace text-uppercase" placeholder="e.g. 06AAACH2676Q1Z4">
+                    </div>
+
+                    <div class="col-md-12">
+                      <label class="form-label fw-semibold small">Consignee Delivery Address (डिलीवरी का पूरा पता)</label>
+                      <input type="text" id="bilty-delivery-address" class="form-control" placeholder="e.g. Plot No. B4 & B5, Sandila Industrial Area, Hardoi, U.P.">
+                    </div>
+
+                    <div class="col-12">
+                      <div class="form-check form-switch small">
+                        <input class="form-check-input" type="checkbox" id="toggle-ship-to" onchange="BiltyBookingModule.toggleShipTo(this.checked)">
+                        <label class="form-check-label text-muted fw-semibold" for="toggle-ship-to">Is Ship To / Delivery Location Different from Consignee Address?</label>
+                      </div>
+                      <div id="ship-to-box" class="mt-2 d-none">
+                        <input type="text" id="bilty-ship-to" class="form-control form-control-sm" placeholder="Enter alternate Ship To / Unloading Site Address">
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+              <!-- SECTION 4: Commodity, Invoices & E-Way Bill -->
+              <div class="bilty-section-card">
+                <div class="bilty-section-header bg-light">
+                  <h6 class="bilty-section-title">
+                    <span class="badge bg-warning text-dark rounded-circle px-2 py-1">4</span>
+                    <span>Material Commodity, Invoices &amp; E-Way Bill</span>
+                  </h6>
+                </div>
+
+                <div class="bilty-section-body">
+                  <div class="row g-3">
+                    
+                    <div class="col-md-12">
+                      <label class="form-label fw-bold small">Material / Commodity (माल का प्रकार) *</label>
+                      <input type="text" id="bilty-material" class="form-control fw-semibold" value="Marble Powder" placeholder="e.g. Marble Powder, Putty Dolomite, Cut Size" required>
+                      <div class="quick-chips-container mt-1">
+                        <span class="quick-chip active" onclick="BiltyBookingModule.setMaterial('Marble Powder', this)">Marble Powder</span>
+                        <span class="quick-chip" onclick="BiltyBookingModule.setMaterial('Marble Cut Size', this)">Marble Cut Size</span>
+                        <span class="quick-chip" onclick="BiltyBookingModule.setMaterial('Putty Grade Dolomite', this)">Putty Grade Dolomite</span>
+                        <span class="quick-chip" onclick="BiltyBookingModule.setMaterial('Marble Blocks', this)">Marble Blocks</span>
+                        <span class="quick-chip" onclick="BiltyBookingModule.setMaterial('Lime Stone', this)">Lime Stone</span>
+                        <span class="quick-chip" onclick="BiltyBookingModule.setMaterial('Tiles / Ceramic', this)">Tiles</span>
+                      </div>
+                    </div>
+
+                    <div class="col-md-4">
+                      <label class="form-label fw-semibold small">Party Bill / Invoice No.</label>
+                      <input type="text" id="bilty-bill-no" class="form-control font-monospace" placeholder="e.g. 1722 or 2026-27/491">
+                    </div>
+
+                    <div class="col-md-4">
+                      <label class="form-label fw-semibold small">Invoice Goods Value (₹)</label>
+                      <input type="number" id="bilty-invoice-value" class="form-control" placeholder="e.g. 222600" step="any">
+                    </div>
+
+                    <div class="col-md-4">
+                      <label class="form-label fw-semibold small">E-Way Bill Number</label>
+                      <input type="text" id="bilty-eway-bill" class="form-control font-monospace" placeholder="e.g. 7516 5237 4578">
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+              <!-- SECTION 5: Dual Freight & Accounts Breakdown (AppSheet Engine) -->
+              <div class="bilty-section-card">
+                <div class="bilty-section-header bg-light">
+                  <h6 class="bilty-section-title">
+                    <span class="badge bg-danger rounded-circle px-2 py-1">5</span>
+                    <span>Dual Freight &amp; Accounts (वास्तविक भाड़ा vs बिल्टी भाड़ा)</span>
+                  </h6>
+                </div>
+
+                <div class="bilty-section-body">
+                  
+                  <!-- Sub-section A: Actual Freight (Transporter/Owner) -->
+                  <div class="p-3 bg-light rounded-3 border mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <span class="fw-bold text-dark small"><i class="bi bi-truck me-1"></i> A. Actual Freight Details (वास्तविक भाड़ा - गाड़ी मालिक/ट्रांसपोर्टर)</span>
+                      <span class="badge bg-secondary">Actual Fleet Rate</span>
+                    </div>
+
+                    <div class="row g-2">
+                      <div class="col-md-3">
+                        <label class="form-label small mb-1">Billing Type</label>
+                        <select id="bilty-billing-type" class="form-select form-select-sm">
+                          <option value="Per Tonne" selected>Per Tonne (MT)</option>
+                          <option value="Fixed">Fixed / Lump Sum</option>
+                        </select>
+                      </div>
+
+                      <div class="col-md-3">
+                        <label class="form-label small mb-1">Actual Weight (MT) *</label>
+                        <input type="number" id="bilty-weight" class="form-control form-control-sm fw-bold" placeholder="e.g. 42.360" step="any" required>
+                      </div>
+
+                      <div class="col-md-3">
+                        <label class="form-label small mb-1">Actual Rate (₹/MT) *</label>
+                        <input type="number" id="bilty-rate" class="form-control form-control-sm fw-bold" placeholder="e.g. 2150" step="any" required>
+                      </div>
+
+                      <div class="col-md-3">
+                        <label class="form-label small mb-1 text-success fw-bold">Actual Freight (₹)</label>
+                        <input type="number" id="bilty-freight" class="form-control form-control-sm fw-bold text-success bg-white" readonly>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Sub-section B: Bilty Freight (What prints on Bilty / Bill) -->
+                  <div class="p-3 bg-white rounded-3 border mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <span class="fw-bold text-primary small"><i class="bi bi-file-earmark-text me-1"></i> B. Bilty Freight (बिल्टी पर दिखाने वाला भाड़ा)</span>
+                      <span class="badge bg-primary-subtle text-primary">Prints on LR</span>
+                    </div>
+
+                    <div class="row g-2">
+                      <div class="col-md-3">
+                        <label class="form-label small mb-1">Bilty Billing Type</label>
+                        <select id="bilty-print-billing-type" class="form-select form-select-sm" onchange="BiltyBookingModule.handleBiltyBillingTypeChange()">
+                          <option value="Per Tonne" selected>Per Tonne</option>
+                          <option value="Fixed">Fixed / Lump Sum</option>
+                          <option value="To be Billed">To be Billed</option>
+                        </select>
+                      </div>
+
+                      <div class="col-md-3">
+                        <label class="form-label small mb-1">Bilty Weight (MT)</label>
+                        <input type="number" id="bilty-print-weight" class="form-control form-control-sm" placeholder="e.g. 42.360" step="any">
+                      </div>
+
+                      <div class="col-md-3">
+                        <label class="form-label small mb-1">Rate Bilty (₹)</label>
+                        <input type="text" id="bilty-print-rate" class="form-control form-control-sm" placeholder="e.g. 2150 or To be Billed">
+                      </div>
+
+                      <div class="col-md-3">
+                        <label class="form-label small mb-1">Amount Bilty (₹)</label>
+                        <input type="text" id="bilty-print-amount" class="form-control form-control-sm" placeholder="e.g. 91074 or To be Billed">
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Sub-section C: Additional Charges & GST -->
+                  <div class="row g-3 mb-3">
+                    <div class="col-md-3">
+                      <label class="form-label fw-semibold small">Loading Charges / हमाली (₹)</label>
+                      <input type="number" id="bilty-loading-charges" class="form-control form-control-sm" value="0" step="any">
+                    </div>
+
+                    <div class="col-md-3">
+                      <label class="form-label fw-semibold small">Halt Charges / रुकने का खर्च (₹)</label>
+                      <input type="number" id="bilty-halt-charges" class="form-control form-control-sm" value="0" step="any">
+                    </div>
+
+                    <div class="col-md-3">
+                      <label class="form-label fw-semibold small">Person Liable for GST</label>
+                      <select id="bilty-person-liable-gst" class="form-select form-select-sm">
+                        <option value="Consignor/Consignee/Transporter" selected>Consignor / Consignee</option>
+                        <option value="Consignor">Consignor</option>
+                        <option value="Consignee">Consignee</option>
+                        <option value="Transporter">Transporter</option>
+                      </select>
+                    </div>
+
+                    <div class="col-md-3">
+                      <label class="form-label fw-semibold small">Is GST Paid by Party?</label>
+                      <select id="bilty-gst-paid-party" class="form-select form-select-sm">
+                        <option value="No" selected>No (RCM / Consignor)</option>
+                        <option value="Yes">Yes (5% Forward Charge)</option>
+                        <option value="Exempt">Exempt</option>
+                      </select>
+                    </div>
+
+                    <div class="col-md-3">
+                      <label class="form-label fw-semibold small">GST Tax Amount (₹)</label>
+                      <input type="number" id="bilty-gst-amount" class="form-control form-control-sm" value="0" step="any">
+                    </div>
+
+                    <div class="col-md-3">
+                      <label class="form-label fw-semibold small">GST Due Amount (₹)</label>
+                      <input type="number" id="bilty-gst-due" class="form-control form-control-sm" value="0" step="any">
+                    </div>
+
+                    <div class="col-md-6">
+                      <label class="form-label fw-bold small text-primary">Grand Total Consignment Value (₹)</label>
+                      <input type="number" id="bilty-grand-total" class="form-control fw-bold fs-6 text-primary bg-light" readonly>
+                    </div>
+                  </div>
+
+                  <!-- Sub-section D: Commission & Other Expenses -->
+                  <div class="p-3 bg-light rounded-3 border mb-3">
+                    <span class="fw-bold text-dark small d-block mb-2"><i class="bi bi-wallet2 me-1"></i> Brokerage Commission &amp; Other Trip Expenses</span>
+                    <div class="row g-2">
+                      <div class="col-md-3">
+                        <label class="form-label small mb-1">Commission (दलाली ₹)</label>
+                        <input type="number" id="bilty-commission" class="form-control form-control-sm" value="0" step="any">
+                      </div>
+
+                      <div class="col-md-2">
+                        <label class="form-label small mb-1">Comm. Status</label>
+                        <select id="bilty-commission-status" class="form-select form-select-sm">
+                          <option value="Paid" selected>Paid</option>
+                          <option value="Due">Due</option>
+                        </select>
+                      </div>
+
+                      <div class="col-md-2">
+                        <label class="form-label small mb-1">Comm. Mode</label>
+                        <select id="bilty-commission-mode" class="form-select form-select-sm">
+                          <option value="Cash" selected>Cash</option>
+                          <option value="Online">Online</option>
+                        </select>
+                      </div>
+
+                      <div class="col-md-5">
+                        <label class="form-label small mb-1">Commission Description</label>
+                        <input type="text" id="bilty-commission-desc" class="form-control form-control-sm" placeholder="e.g. Given to broker at loading">
+                      </div>
+
+                      <div class="col-md-3 mt-2">
+                        <label class="form-label small mb-1">Other Expense (₹)</label>
+                        <input type="number" id="bilty-other-expense" class="form-control form-control-sm" value="0" step="any">
+                      </div>
+
+                      <div class="col-md-2 mt-2">
+                        <label class="form-label small mb-1">Other Status</label>
+                        <select id="bilty-other-status" class="form-select form-select-sm">
+                          <option value="Paid" selected>Paid</option>
+                          <option value="Due">Due</option>
+                        </select>
+                      </div>
+
+                      <div class="col-md-2 mt-2">
+                        <label class="form-label small mb-1">Other Mode</label>
+                        <select id="bilty-other-mode" class="form-select form-select-sm">
+                          <option value="Cash" selected>Cash</option>
+                          <option value="Online">Online</option>
+                        </select>
+                      </div>
+
+                      <div class="col-md-5 mt-2">
+                        <label class="form-label small mb-1">Other Description</label>
+                        <input type="text" id="bilty-other-desc" class="form-control form-control-sm" placeholder="e.g. Weighbridge / Entry / Kharcha">
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Sub-section E: Any Debt? (Financial Ledger Integration) -->
+                  <div class="p-3 bg-white rounded-3 border">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div>
+                        <span class="fw-bold text-danger small"><i class="bi bi-book-half me-1"></i> Any Debt? (कोई उधार / खाता एंट्री?)</span>
+                        <div class="small text-muted">Automatically record open debt in the Financial Ledger module</div>
+                      </div>
+                      <div class="form-check form-switch fs-5">
+                        <input class="form-check-input" type="checkbox" id="toggle-any-debt" onchange="BiltyBookingModule.toggleDebtSection(this.checked)">
+                      </div>
+                    </div>
+
+                    <div id="bilty-debt-box" class="mt-3 p-3 bg-light rounded border d-none">
+                      <div class="row g-2">
+                        <div class="col-md-4">
+                          <label class="form-label small mb-1">Debt / Loan Amount (₹)</label>
+                          <input type="number" id="bilty-debt-amount" class="form-control form-control-sm fw-bold text-danger" placeholder="e.g. 5000">
+                        </div>
+
+                        <div class="col-md-4">
+                          <label class="form-label small mb-1">Borrower Name (किसके नाम)</label>
+                          <input type="text" id="bilty-debt-borrower" class="form-control form-control-sm" placeholder="e.g. Driver / Truck Owner Name">
+                        </div>
+
+                        <div class="col-md-4">
+                          <label class="form-label small mb-1">Debt Mode</label>
+                          <select id="bilty-debt-mode" class="form-select form-select-sm">
+                            <option value="Cash" selected>Cash</option>
+                            <option value="Online">Online Transfer</option>
+                            <option value="Diesel">Diesel Advance</option>
+                          </select>
+                        </div>
+
+                        <div class="col-md-12">
+                          <label class="form-label small mb-1">Debt Reason / Remarks</label>
+                          <input type="text" id="bilty-debt-remarks" class="form-control form-control-sm" placeholder="e.g. Advance cash given on loading for diesel/en-route expenses">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
             </div>
 
-            <form id="bilty-booking-form" class="p-4">
-              
-              <!-- Row 1: Operating Firm, FY & Bilty Series -->
-              <div class="row g-3 mb-3 p-3 bg-light rounded border">
-                <div class="col-md-2">
-                  <label class="form-label fw-bold small">Transport Firm *</label>
-                  <select id="bilty-firm" class="form-select fw-semibold text-primary">
-                    <option value="TTC" selected>TTC Transport</option>
-                    <option value="MTC">MTC (Mahaveer)</option>
-                    <option value="SMTC">SMTC</option>
-                  </select>
+            <!-- Right Column: Sticky Live Bilty Slip Preview & Action Controls (col-lg-4) -->
+            <div class="col-12 col-lg-4">
+              <div class="bilty-preview-sticky">
+
+                <div class="bilty-preview-card mb-3">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="badge bg-dark px-2 py-1"><i class="bi bi-eye me-1"></i> Live Slip Preview</span>
+                    <span class="small text-muted" id="preview-timestamp">Live</span>
+                  </div>
+
+                  <div class="bilty-preview-slip">
+                    
+                    <div class="slip-header">
+                      <div class="fw-bold fs-6 text-uppercase text-dark" id="preview-firm-title">THE TRANSPORT CORPORATION</div>
+                      <div class="text-muted" style="font-size: 0.72rem;">FLEET OWNERS &amp; TRANSPORT CONTRACTORS</div>
+                      <div class="badge bg-primary mt-1" id="preview-gr-badge">G.R. NO: PENDING</div>
+                    </div>
+
+                    <div class="slip-row">
+                      <span class="slip-label">Date:</span>
+                      <span class="slip-val" id="preview-date">--/--/----</span>
+                    </div>
+
+                    <div class="slip-row">
+                      <span class="slip-label">Truck No:</span>
+                      <span class="slip-val font-monospace" id="preview-truck">---</span>
+                    </div>
+
+                    <div class="slip-row">
+                      <span class="slip-label">Owner:</span>
+                      <span class="slip-val text-truncate" style="max-width: 160px;" id="preview-owner">---</span>
+                    </div>
+
+                    <div class="slip-row">
+                      <span class="slip-label">Route:</span>
+                      <span class="slip-val text-primary" id="preview-route">--- &rarr; ---</span>
+                    </div>
+
+                    <div class="slip-row">
+                      <span class="slip-label">Consignor:</span>
+                      <span class="slip-val text-truncate" style="max-width: 160px;" id="preview-consignor">---</span>
+                    </div>
+
+                    <div class="slip-row">
+                      <span class="slip-label">Consignee:</span>
+                      <span class="slip-val text-truncate" style="max-width: 160px;" id="preview-consignee">---</span>
+                    </div>
+
+                    <div class="slip-row">
+                      <span class="slip-label">Material:</span>
+                      <span class="slip-val" id="preview-material">Marble Powder</span>
+                    </div>
+
+                    <div class="slip-row">
+                      <span class="slip-label">Weight &amp; Rate:</span>
+                      <span class="slip-val" id="preview-wt-rate">0 MT @ ₹0</span>
+                    </div>
+
+                    <div class="slip-row bg-light px-1 py-1 rounded">
+                      <span class="slip-label fw-bold text-dark">Freight:</span>
+                      <span class="slip-val fw-bold text-success fs-6" id="preview-freight">₹ 0.00</span>
+                    </div>
+
+                    <div class="slip-row">
+                      <span class="slip-label">E-Way Bill:</span>
+                      <span class="slip-val font-monospace" id="preview-eway">---</span>
+                    </div>
+
+                    <div class="slip-row">
+                      <span class="slip-label">Load Type:</span>
+                      <span class="slip-val" id="preview-load-type"><span class="badge bg-info-subtle text-info">Under Load</span></span>
+                    </div>
+
+                  </div>
                 </div>
 
-                <div class="col-md-2">
-                  <label class="form-label fw-bold small">Financial Year *</label>
-                  <select id="bilty-year" class="form-select fw-semibold">
-                    <option value="2026-2027" selected>2026-2027</option>
-                    <option value="2025-2026">2025-2026</option>
-                    <option value="2024-2025">2024-2025</option>
-                  </select>
+                <!-- Form Action Buttons -->
+                <div class="card border-0 shadow-sm p-3 bg-white rounded-3">
+                  <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary btn-lg shadow fw-bold" id="bilty-submit-btn">
+                      <i class="bi bi-printer-fill me-1"></i> Save &amp; Print Official Bilty
+                    </button>
+
+                    <button type="button" class="btn btn-success fw-bold" onclick="BiltyBookingModule.saveAndWhatsApp()">
+                      <i class="bi bi-whatsapp me-1"></i> Save &amp; Share on WhatsApp
+                    </button>
+
+                    <button type="button" class="btn btn-outline-primary" onclick="BiltyBookingModule.saveOnly()">
+                      <i class="bi bi-save me-1"></i> Save Bilty Record Only
+                    </button>
+
+                    <button type="reset" class="btn btn-outline-secondary btn-sm" onclick="BiltyBookingModule.resetForm()">
+                      <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Form
+                    </button>
+                  </div>
                 </div>
 
-                <div class="col-md-3">
-                  <label class="form-label fw-bold small">Full G.R. Number *</label>
-                  <input type="text" id="bilty-gr-no" class="form-control font-monospace fw-bold bg-white text-dark" readonly>
-                </div>
-
-                <div class="col-md-2">
-                  <label class="form-label fw-bold small">Short GR (N_G.R.No.)</label>
-                  <input type="text" id="bilty-short-gr" class="form-control font-monospace text-muted bg-white" readonly>
-                </div>
-
-                <div class="col-md-3">
-                  <label class="form-label fw-bold small">Bilty Type</label>
-                  <select id="bilty-type" class="form-select">
-                    <option value="Regular" selected>Regular</option>
-                    <option value="URP">URP</option>
-                  </select>
-                </div>
               </div>
+            </div>
 
-              <!-- Row 2: Truck & Driver Details -->
-              <div class="row g-3 mb-3">
-                <div class="col-md-4">
-                  <label class="form-label fw-semibold small">Truck Registration Number *</label>
-                  <input type="text" id="bilty-truck-no" class="form-control font-monospace text-uppercase fw-bold" placeholder="e.g. RJ52GB2510" required>
-                </div>
+          </div>
+        </form>
+      </div>
 
-                <div class="col-md-4">
-                  <label class="form-label fw-semibold small">Truck Owner (मालिक)</label>
-                  <select id="bilty-owner" class="form-select">
-                    <option value="">-- Select Truck Owner --</option>
-                  </select>
-                </div>
+      <!-- ==================================================================== -->
+      <!-- VIEW 2: BILTY REGISTER (APPSHEET STYLE 6,643+ CONSIGNMENT FEED)      -->
+      <!-- ==================================================================== -->
+      <div id="bilty-register-view" class="d-none">
 
-                <div class="col-md-4">
-                  <label class="form-label fw-semibold small">Dispatch Date</label>
-                  <input type="date" id="bilty-date" class="form-control">
-                </div>
-
-                <div class="col-md-6">
-                  <label class="form-label fw-semibold small">Assigned Driver</label>
-                  <select id="bilty-driver" class="form-select">
-                    <option value="">-- Select Driver --</option>
-                  </select>
-                </div>
-
-                <div class="col-md-6">
-                  <label class="form-label fw-semibold small">Driver Mobile Number</label>
-                  <input type="tel" id="bilty-driver-mobile" class="form-control" placeholder="e.g. 9784175913">
-                </div>
+        <!-- Filter Controls Toolbar -->
+        <div class="card border-0 shadow-sm p-3 mb-3 bg-white rounded-3">
+          <div class="row g-2 align-items-center">
+            
+            <!-- Firm Filter Pills -->
+            <div class="col-12 col-md-auto">
+              <div class="btn-group btn-group-sm" role="group">
+                <button type="button" class="btn btn-primary active" id="filter-firm-all" onclick="BiltyBookingModule.filterRegisterFirm('ALL')">All Firms</button>
+                <button type="button" class="btn btn-outline-primary" id="filter-firm-ttc" onclick="BiltyBookingModule.filterRegisterFirm('TTC')">TTC</button>
+                <button type="button" class="btn btn-outline-primary" id="filter-firm-mtc" onclick="BiltyBookingModule.filterRegisterFirm('MTC')">MTC</button>
+                <button type="button" class="btn btn-outline-primary" id="filter-firm-smtc" onclick="BiltyBookingModule.filterRegisterFirm('SMTC')">SMTC</button>
               </div>
+            </div>
 
-              <!-- Row 3: Consignor, Consignee, Delivery Address & Bill No -->
-              <div class="row g-3 mb-3 p-3 bg-white rounded border">
-                <div class="col-md-3">
-                  <label class="form-label fw-bold small text-dark">Consignor (माल भेजने वाली पार्टी) *</label>
-                  <select id="bilty-consignor" class="form-select" required>
-                    <option value="">-- Select Consignor --</option>
-                  </select>
-                </div>
+            <!-- Financial Year Filter -->
+            <div class="col-6 col-md-auto">
+              <select id="reg-filter-fy" class="form-select form-select-sm fw-semibold" onchange="BiltyBookingModule.filterRegisterFY(this.value)">
+                <option value="ALL">All Years</option>
+                <option value="2026-2027" selected>FY 2026-2027</option>
+                <option value="2025-2026">FY 2025-2026</option>
+                <option value="2024-2025">FY 2024-2025</option>
+                <option value="2023-2024">FY 2023-2024</option>
+              </select>
+            </div>
 
-                <div class="col-md-3">
-                  <label class="form-label fw-semibold small">Consignor GSTIN</label>
-                  <input type="text" id="bilty-consignor-gstin" class="form-control font-monospace text-uppercase" placeholder="e.g. 08AAJFR3111N1Z1">
-                </div>
+            <!-- Load Type Filter -->
+            <div class="col-6 col-md-auto">
+              <select id="reg-filter-load" class="form-select form-select-sm" onchange="BiltyBookingModule.filterRegisterLoad(this.value)">
+                <option value="ALL">All Load Types</option>
+                <option value="Under Load">Under Load</option>
+                <option value="Over Load">Over Load</option>
+              </select>
+            </div>
 
-                <div class="col-md-3">
-                  <label class="form-label fw-bold small text-primary">Consignee (माल पाने वाली पार्टी) *</label>
-                  <select id="bilty-consignee" class="form-select" required>
-                    <option value="">-- Select Consignee --</option>
-                  </select>
-                </div>
-
-                <div class="col-md-3">
-                  <label class="form-label fw-semibold small">Consignee GSTIN</label>
-                  <input type="text" id="bilty-consignee-gstin" class="form-control font-monospace text-uppercase" placeholder="e.g. 06AAACH2676Q1Z4">
-                </div>
-
-                <div class="col-md-3">
-                  <label class="form-label fw-semibold small">Origin (कहाँ से)</label>
-                  <input type="text" id="bilty-origin" class="form-control" value="Rajsamand (Raj.)" required>
-                </div>
-
-                <div class="col-md-3">
-                  <label class="form-label fw-semibold small">Destination (कहाँ तक)</label>
-                  <input type="text" id="bilty-destination" class="form-control" placeholder="e.g. Sandila (U.P.), Noida, Delhi" required>
-                </div>
-
-                <div class="col-md-6">
-                  <label class="form-label fw-semibold small">Consignee Delivery Address (डिलीवरी का पूरा पता)</label>
-                  <input type="text" id="bilty-delivery-address" class="form-control" placeholder="e.g. Plot No. B4 & B5, Ind. Area, Sandila">
-                </div>
-              </div>
-
-              <!-- Row 4: Material, Weight, Rate, E-way Bill & Charges -->
-              <div class="row g-3 mb-3">
-                <div class="col-md-3">
-                  <label class="form-label fw-semibold small">Material / Commodity *</label>
-                  <input type="text" id="bilty-material" class="form-control" value="Marble Powder" placeholder="e.g. Marble Powder, Putty Dolomite" required>
-                </div>
-
-                <div class="col-md-3">
-                  <label class="form-label fw-semibold small">Weight in Tonnes (MT) *</label>
-                  <input type="number" id="bilty-weight" class="form-control fw-bold" placeholder="e.g. 42.360" step="any" required>
-                </div>
-
-                <div class="col-md-3">
-                  <label class="form-label fw-semibold small">Rate per Tonne (₹) *</label>
-                  <input type="number" id="bilty-rate" class="form-control fw-bold" placeholder="e.g. 2150" step="any" required>
-                </div>
-
-                <div class="col-md-3">
-                  <label class="form-label fw-bold small text-success">Freight (Weight × Rate) (₹)</label>
-                  <input type="number" id="bilty-freight" class="form-control fw-bold fs-5 text-success bg-light" readonly>
-                </div>
-
-                <div class="col-md-3">
-                  <label class="form-label fw-semibold small">Party Bill / Invoice No.</label>
-                  <input type="text" id="bilty-bill-no" class="form-control font-monospace" placeholder="e.g. 2026-27/491">
-                </div>
-
-                <div class="col-md-3">
-                  <label class="form-label fw-semibold small">E-way Bill Number</label>
-                  <input type="text" id="bilty-eway-bill" class="form-control font-monospace" placeholder="e.g. 7516 5237 4578">
-                </div>
-
-                <div class="col-md-3">
-                  <label class="form-label fw-semibold small">Invoice / Goods Value (₹)</label>
-                  <input type="number" id="bilty-invoice-value" class="form-control" placeholder="e.g. 222600" step="any">
-                </div>
-
-                <div class="col-md-3">
-                  <label class="form-label fw-semibold small">Loading Charges / हमाली (₹)</label>
-                  <input type="number" id="bilty-loading-charges" class="form-control" value="0" step="any">
-                </div>
-
-                <div class="col-md-3">
-                  <label class="form-label fw-semibold small">Halt Charges / रुकने का खर्च (₹)</label>
-                  <input type="number" id="bilty-halt-charges" class="form-control" value="0" step="any">
-                </div>
-
-                <div class="col-md-3">
-                  <label class="form-label fw-semibold small">Broker / Dallal Reference</label>
-                  <select id="bilty-broker" class="form-select">
-                    <option value="">-- Direct (No Broker) --</option>
-                  </select>
-                </div>
-
-                <div class="col-md-3">
-                  <label class="form-label fw-semibold small">Brokerage / Commission (₹)</label>
-                  <input type="number" id="bilty-commission" class="form-control" value="0" step="any">
-                </div>
-
-                <div class="col-md-3">
-                  <label class="form-label fw-semibold small">Person Liable for GST</label>
-                  <select id="bilty-person-liable-gst" class="form-select">
-                    <option value="Consignor/Consignee/Transporter" selected>Consignor/Consignee/Transporter</option>
-                    <option value="Consignor">Consignor</option>
-                    <option value="Consignee">Consignee</option>
-                    <option value="Transporter">Transporter</option>
-                  </select>
-                </div>
-              </div>
-
-              <!-- Row 5: GST Compliance & Grand Total -->
-              <div class="row g-3 mb-4 p-3 bg-light rounded border">
-                <div class="col-md-3">
-                  <label class="form-label fw-bold small">Is GST Paid by Party? *</label>
-                  <select id="bilty-gst-paid-party" class="form-select">
-                    <option value="Yes">Yes (GST Paid by Party)</option>
-                    <option value="No" selected>No (RCM / Paid by Consignor)</option>
-                    <option value="Exempt">Exempt</option>
-                  </select>
-                </div>
-
-                <div class="col-md-3">
-                  <label class="form-label fw-semibold small">GST Tax Amount (₹)</label>
-                  <input type="number" id="bilty-gst-amount" class="form-control" value="0" step="any">
-                </div>
-
-                <div class="col-md-3">
-                  <label class="form-label fw-semibold small">GST Due Amount (₹)</label>
-                  <input type="number" id="bilty-gst-due" class="form-control" value="0" step="any">
-                </div>
-
-                <div class="col-md-3">
-                  <label class="form-label fw-bold small text-primary">Grand Total Bill (₹) [Freight + Loading + GST]</label>
-                  <input type="number" id="bilty-grand-total" class="form-control fw-bold fs-5 text-primary bg-white" readonly>
-                </div>
-              </div>
-
-              <!-- Submit Buttons -->
-              <div class="d-flex justify-content-end gap-2 border-top pt-3">
-                <button type="reset" class="btn btn-light border px-3">Reset Form</button>
-                <button type="submit" id="bilty-submit-btn" class="btn btn-primary px-4 shadow-sm fw-bold">
-                  <i class="bi bi-check2-circle me-1"></i> Save & Generate Bilty
+            <!-- Search Input -->
+            <div class="col-12 col-md">
+              <div class="input-group input-group-sm">
+                <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
+                <input type="text" id="reg-search-input" class="form-control border-start-0" placeholder="Search by GR No, Truck No, Consignor, Consignee, Driver, Destination..." oninput="BiltyBookingModule.onSearchInput(this.value)">
+                <button class="btn btn-outline-secondary" type="button" onclick="BiltyBookingModule.clearSearch()" title="Clear Search">
+                  <i class="bi bi-x-lg"></i>
                 </button>
               </div>
+            </div>
 
-            </form>
+            <!-- Page Size -->
+            <div class="col-auto">
+              <div class="d-flex align-items-center gap-1">
+                <small class="text-muted text-nowrap">Show:</small>
+                <select id="reg-page-size" class="form-select form-select-sm" onchange="BiltyBookingModule.changePageSize(this.value)" style="width: 80px;">
+                  <option value="50">50</option>
+                  <option value="100" selected>100</option>
+                  <option value="250">250</option>
+                  <option value="ALL">All</option>
+                </select>
+              </div>
+            </div>
+
           </div>
-
         </div>
+
+        <!-- Month Bar Container (AppSheet Style Descending Months) -->
+        <div class="month-bar-wrapper mb-3">
+          <div class="month-bar-scroll" id="reg-month-bar">
+            <!-- Dynamic Month Pills -->
+          </div>
+        </div>
+
+        <!-- Register Content Container (Feed / Cards Grouped by Date) -->
+        <div id="bilty-feed-container">
+          <!-- Dynamic Bilty Cards Grouped by Date -->
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-4 pt-3 border-top" id="reg-pagination-container">
+          <small class="text-muted" id="reg-pagination-info">Showing 1-100 of 6,643 bilties</small>
+          <ul class="pagination pagination-sm mb-0" id="reg-pagination-list"></ul>
+        </div>
+
       </div>
 
     </main>
 
   </div>
 
-  <!-- Print & WhatsApp Preview Modal -->
-  <div class="modal fade" id="biltyPrintModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-      <div class="modal-content border-0 shadow">
+  <!-- ==================================================================== -->
+  <!-- MODAL 1: BILTY DETAILS (APPSHEET 3-CARD COMPREHENSIVE VIEW)           -->
+  <!-- ==================================================================== -->
+  <div class="modal fade" id="biltyDetailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+      <div class="modal-content border-0 shadow-lg">
+        
         <div class="modal-header bg-dark text-white">
-          <h6 class="modal-title fw-bold"><i class="bi bi-printer me-2"></i> Bilty (LR) Ready to Print & Share</h6>
+          <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-primary" id="modal-gr-firm-badge">TTC</span>
+            <h5 class="modal-title fw-bold mb-0" id="modal-gr-title">G.R. No: 2026-2027-2207_TTC</h5>
+          </div>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
-        <div class="modal-body p-4" id="bilty-print-preview">
-          <!-- Dynamic Bilty HTML -->
+
+        <div class="modal-body p-4 bg-light" id="bilty-modal-content">
+          <!-- Populated dynamically with 3 Cards -->
         </div>
-        <div class="modal-footer bg-light d-flex justify-content-between">
+
+        <div class="modal-footer bg-white d-flex justify-content-between">
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-outline-danger btn-sm" id="btn-modal-delete" onclick="BiltyBookingModule.deleteCurrentBilty()">
+              <i class="bi bi-trash me-1"></i> Delete
+            </button>
+            <button type="button" class="btn btn-outline-secondary btn-sm" id="btn-modal-duplicate" onclick="BiltyBookingModule.duplicateCurrentBilty()">
+              <i class="bi bi-files me-1"></i> Duplicate / Template
+            </button>
+          </div>
+
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-success btn-sm" id="btn-modal-whatsapp" onclick="BiltyBookingModule.shareCurrentOnWhatsApp()">
+              <i class="bi bi-whatsapp me-1"></i> WhatsApp
+            </button>
+            <button type="button" class="btn btn-warning btn-sm" id="btn-modal-edit" onclick="BiltyBookingModule.editCurrentBilty()">
+              <i class="bi bi-pencil-square me-1"></i> Edit Bilty
+            </button>
+            <button type="button" class="btn btn-primary btn-sm px-3" id="btn-modal-print" onclick="BiltyBookingModule.printCurrentBilty()">
+              <i class="bi bi-printer me-1"></i> Print Official Bilty
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================================================================== -->
+  <!-- MODAL 2: PRINT & WHATSAPP A4 CONSIGNMENT NOTE PREVIEW                 -->
+  <!-- ==================================================================== -->
+  <div class="modal fade" id="biltyPrintModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+      <div class="modal-content border-0 shadow">
+        
+        <div class="modal-header bg-dark text-white">
+          <div class="d-flex align-items-center gap-3">
+            <h6 class="modal-title fw-bold mb-0"><i class="bi bi-printer me-2"></i> Official Consignment Note (Lorry Receipt)</h6>
+            <!-- Copy Selector -->
+            <div class="btn-group btn-group-sm" role="group">
+              <button type="button" class="btn btn-outline-light active" id="btn-copy-consignor" onclick="BiltyBookingModule.setPrintCopy('CONSIGNOR COPY')">Consignor Copy</button>
+              <button type="button" class="btn btn-outline-light" id="btn-copy-consignee" onclick="BiltyBookingModule.setPrintCopy('CONSIGNEE COPY')">Consignee Copy</button>
+              <button type="button" class="btn btn-outline-light" id="btn-copy-driver" onclick="BiltyBookingModule.setPrintCopy('DRIVER COPY')">Driver Copy</button>
+              <button type="button" class="btn btn-outline-light" id="btn-copy-office" onclick="BiltyBookingModule.setPrintCopy('OFFICE COPY')">Office Copy</button>
+            </div>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body p-4 bg-secondary-subtle" id="bilty-print-preview" style="max-height: 80vh; overflow-y: auto;">
+          <!-- Pixel-Perfect A4 Consignment Note HTML -->
+        </div>
+
+        <div class="modal-footer bg-white d-flex justify-content-between">
           <button type="button" class="btn btn-success d-flex align-items-center gap-1" onclick="BiltyBookingModule.shareOnWhatsApp()">
             <i class="bi bi-whatsapp"></i> <span>Share on WhatsApp</span>
           </button>
           <div class="d-flex gap-2">
             <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary btn-sm px-3" onclick="window.print()">
-              <i class="bi bi-printer me-1"></i> Print Bilty
+            <button type="button" class="btn btn-primary btn-sm px-4 fw-bold" onclick="window.print()">
+              <i class="bi bi-printer me-1"></i> Print Consignment Note
             </button>
           </div>
         </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999;">
+    <div id="live-toast" class="toast align-items-center text-bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body" id="toast-message">Notification</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
       </div>
     </div>
   </div>
@@ -308,7 +920,10 @@
   <!-- Bootstrap 5 Bundle JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   
-  <!-- Firebase SDK (Compatible v8 CDN) -->
+  <!-- SheetJS for Excel Export -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
@@ -316,6 +931,7 @@
   <!-- Core App Scripts -->
   <script src="../js/config.js"></script>
   <script src="../js/sample-trips-data.js"></script>
+  <script src="../js/sample-debts-data.js"></script>
   <script src="../js/db-service.js"></script>
   <script src="../js/app.js"></script>
   <script src="../js/modules/bilty-booking.js"></script>
