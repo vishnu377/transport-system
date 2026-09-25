@@ -43,6 +43,9 @@ const AppUI = {
         <a href="${pagesPath}trips.html" class="sidebar-link ${activePage === 'trips' ? 'active' : ''}">
           <i class="bi bi-truck"></i> Trips & Dispatch
         </a>
+        <a href="${pagesPath}settlement.html" class="sidebar-link ${activePage === 'settlement' ? 'active' : ''}">
+          <i class="bi bi-patch-check-fill text-warning"></i> Trips Settlement & Dues
+        </a>
         <a href="${pagesPath}bilty-booking.html" class="sidebar-link ${activePage === 'bilty' ? 'active' : ''}">
           <i class="bi bi-file-earmark-text"></i> Bilty (LR) Booking
         </a>

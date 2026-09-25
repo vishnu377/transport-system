@@ -1336,6 +1336,420 @@ body {
   display: none !important;
 }
 
+/* ==========================================================================
+   Trips & Financial Settlement Control Hub (AppSheet 7-Audit Cards & Workflow)
+   ========================================================================== */
+
+/* 7 Audit KPI Cards Grid */
+.trips-audit-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 1.25rem;
+}
+
+@media (min-width: 1400px) {
+  .trips-audit-grid {
+    grid-template-columns: repeat(7, 1fr);
+  }
+}
+
+.audit-stat-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 14px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.audit-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.08);
+}
+
+.audit-stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+}
+
+.audit-stat-card.card-open-due::before { background: linear-gradient(90deg, #ef4444, #dc2626); }
+.audit-stat-card.card-settled::before { background: linear-gradient(90deg, #10b981, #059669); }
+.audit-stat-card.card-trips::before { background: linear-gradient(90deg, #2563eb, #1d4ed8); }
+.audit-stat-card.card-freight::before { background: linear-gradient(90deg, #6366f1, #4f46e5); }
+.audit-stat-card.card-gst-amt::before { background: linear-gradient(90deg, #8b5cf6, #7c3aed); }
+.audit-stat-card.card-gst-cnt::before { background: linear-gradient(90deg, #06b6d4, #0891b2); }
+.audit-stat-card.card-rate-diff::before { background: linear-gradient(90deg, #f59e0b, #d97706); }
+
+.audit-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.audit-card-title {
+  font-size: 0.73rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.audit-card-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+}
+
+.audit-card-value {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+
+.audit-card-subtitle {
+  font-size: 0.72rem;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+/* FY Switcher Pill Group */
+.fy-filter-toolbar {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 8px 14px;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.fy-pill-group {
+  display: inline-flex;
+  background: #f1f5f9;
+  border-radius: 8px;
+  padding: 3px;
+  gap: 3px;
+}
+
+.fy-pill-btn {
+  border: none;
+  background: transparent;
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.fy-pill-btn:hover {
+  color: #0f172a;
+}
+
+.fy-pill-btn.active {
+  background: #0f172a;
+  color: #ffffff;
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.2);
+}
+
+/* Workflow Primary Tabs */
+.trips-workflow-tabs {
+  display: flex;
+  gap: 8px;
+  border-bottom: 2px solid #e2e8f0;
+  margin-bottom: 1rem;
+  padding-bottom: 2px;
+  overflow-x: auto;
+}
+
+.workflow-tab-btn {
+  border: none;
+  background: transparent;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #64748b;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 6px 6px 0 0;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.workflow-tab-btn:hover {
+  color: #1e293b;
+  background: #f8fafc;
+}
+
+.workflow-tab-btn.active {
+  color: #1e3a8a;
+  border-bottom-color: #2563eb;
+  background: #eff6ff;
+  font-weight: 700;
+}
+
+.workflow-tab-btn.tab-open.active {
+  color: #b91c1c;
+  border-bottom-color: #ef4444;
+  background: #fef2f2;
+}
+
+.workflow-tab-btn.tab-settled.active {
+  color: #047857;
+  border-bottom-color: #10b981;
+  background: #f0fdf4;
+}
+
+.tab-counter-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 12px;
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.workflow-tab-btn.active .tab-counter-badge {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.workflow-tab-btn.tab-open.active .tab-counter-badge {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+.workflow-tab-btn.tab-settled.active .tab-counter-badge {
+  background: #10b981;
+  color: #ffffff;
+}
+
+/* Party Due & Owner Due Badges */
+.badge-party-due {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background-color: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  font-family: monospace;
+}
+
+.badge-owner-due {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background-color: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  font-family: monospace;
+}
+
+.badge-settled-zero {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background-color: #f1f5f9;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-family: monospace;
+}
+
+/* Modal Sub-Table & Payment Section */
+.owner-payment-box {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 14px;
+  margin-top: 14px;
+}
+
+.installment-table {
+  font-size: 0.82rem;
+  margin-bottom: 0;
+}
+
+.installment-table th {
+  background: #f8fafc;
+  color: #475569;
+  font-weight: 700;
+  border-bottom: 1px solid #cbd5e1;
+}
+
+.payment-mode-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: #e0e7ff;
+  color: #4338ca;
+}
+
+/* Balanced 4 + 3 Settlement Cards Deck */
+.settlement-deck-row-4 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+@media (min-width: 1100px) {
+  .settlement-deck-row-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.settlement-deck-row-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 1.25rem;
+}
+
+@media (min-width: 1100px) {
+  .settlement-deck-row-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Smart Zero-Scroll Table Styles */
+.smart-table-compact {
+  width: 100% !important;
+  margin-bottom: 0;
+}
+
+.smart-table-compact th {
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 9px 8px;
+  white-space: nowrap;
+}
+
+.smart-table-compact td {
+  padding: 8px 8px;
+  font-size: 0.85rem;
+  vertical-align: middle;
+}
+
+.smart-gr-block {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.smart-gr-title {
+  font-family: monospace;
+  font-weight: 700;
+  color: #1e3a8a;
+  font-size: 0.88rem;
+}
+
+.smart-truck-sub {
+  font-family: monospace;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: #475569;
+  text-transform: uppercase;
+}
+
+.smart-route-block {
+  display: flex;
+  flex-direction: column;
+  max-width: 170px;
+}
+
+.smart-dest {
+  font-weight: 600;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.smart-origin {
+  font-size: 0.71rem;
+  color: #94a3b8;
+}
+
+.smart-party-block {
+  max-width: 200px;
+}
+
+.smart-party-name {
+  font-weight: 600;
+  color: #334155;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.84rem;
+}
+
+.smart-bill-sub {
+  font-size: 0.71rem;
+  color: #64748b;
+  font-family: monospace;
+}
+
+.smart-freight-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.smart-freight-val {
+  font-weight: 700;
+  font-family: monospace;
+  color: #0f172a;
+  font-size: 0.86rem;
+}
+
+.smart-rate-sub {
+  font-size: 0.71rem;
+  color: #94a3b8;
+}
+
+
+
 
 
 
