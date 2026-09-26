@@ -3,13 +3,71 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Parties Master - MTC & TTC Logistics</title>
+  <title>Parties Master (3,396 Accounts) - MTC & TTC Logistics</title>
   <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Bootstrap Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
   <!-- Custom TMS Theme -->
   <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .filter-btn-group .btn {
+      font-size: 0.8rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 20px;
+    }
+    .party-name-link {
+      color: #1e3a8a;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .party-name-link:hover {
+      text-decoration: underline;
+      color: #2563eb;
+    }
+    .copy-btn {
+      opacity: 0.6;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .copy-btn:hover {
+      opacity: 1;
+    }
+    .table-fixed-layout {
+      table-layout: fixed;
+      width: 100%;
+    }
+    .table-custom th {
+      background-color: #f1f5f9;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #475569;
+      padding: 0.65rem 0.5rem;
+      white-space: nowrap;
+    }
+    .table-custom td {
+      vertical-align: middle;
+      font-size: 0.825rem;
+      padding: 0.55rem 0.5rem;
+    }
+    .badge-gst {
+      font-family: monospace;
+      letter-spacing: 0.5px;
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+    /* Prevent table horizontal scrollbar */
+    .table-container-responsive {
+      width: 100%;
+      overflow-x: auto;
+    }
+    @media (min-width: 992px) {
+      .table-container-responsive {
+        overflow-x: hidden;
+      }
+    }
+  </style>
 </head>
 <body>
 
@@ -26,12 +84,17 @@
           <i class="bi bi-list fs-5"></i>
         </button>
         <div>
-          <h5 class="mb-0 fw-bold text-dark">Parties Master (Customers & Consignors)</h5>
-          <small class="text-muted">Manage 3,000+ party profiles, GSTIN details, and outstanding ledger balances</small>
+          <h5 class="mb-0 fw-bold text-dark">
+            <i class="bi bi-buildings text-primary me-2"></i>Parties Master (3,396 Accounts)
+          </h5>
+          <small class="text-muted">GST Registered Consignors, Consignees, Verified Contacts & Ledger Balances</small>
         </div>
       </div>
 
-      <div>
+      <div class="d-flex align-items-center gap-2">
+        <button class="btn btn-outline-success btn-sm d-flex align-items-center gap-1 shadow-sm" onclick="PartiesModule.exportToCSV()" title="Export current filtered parties to CSV">
+          <i class="bi bi-file-earmark-spreadsheet"></i> <span>Export CSV</span>
+        </button>
         <button class="btn btn-primary btn-sm d-flex align-items-center gap-1 shadow-sm" onclick="PartiesModule.openAddModal()">
           <i class="bi bi-plus-lg"></i> <span>Add New Party</span>
         </button>
@@ -43,71 +106,158 @@
 
       <!-- Summary Stat Cards -->
       <div class="row g-3 mb-4">
-        <div class="col-12 col-md-4">
-          <div class="metric-card">
-            <div class="metric-icon bg-primary-subtle text-primary">
-              <i class="bi bi-building"></i>
+        <div class="col-6 col-lg-3">
+          <div class="metric-card p-3 shadow-sm border-0 rounded-3">
+            <div class="d-flex align-items-center justify-content-between mb-1">
+              <div class="metric-title text-muted small fw-semibold">Total Parties</div>
+              <div class="metric-icon bg-primary-subtle text-primary rounded-circle p-2" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
+                <i class="bi bi-buildings"></i>
+              </div>
             </div>
-            <div class="metric-title">Total Registered Parties</div>
-            <div id="stat-total-parties" class="metric-value">0</div>
+            <div id="stat-total-parties" class="fs-4 fw-bold text-dark">0</div>
+            <small class="text-muted" id="stat-parties-sub">3,396 Profiles (S.No 1 to 3396)</small>
           </div>
         </div>
 
-        <div class="col-12 col-md-4">
-          <div class="metric-card">
-            <div class="metric-icon bg-danger-subtle text-danger">
-              <i class="bi bi-exclamation-circle"></i>
+        <div class="col-6 col-lg-3">
+          <div class="metric-card p-3 shadow-sm border-0 rounded-3">
+            <div class="d-flex align-items-center justify-content-between mb-1">
+              <div class="metric-title text-muted small fw-semibold">GST Registered</div>
+              <div class="metric-icon bg-info-subtle text-info rounded-circle p-2" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
+                <i class="bi bi-shield-check"></i>
+              </div>
             </div>
-            <div class="metric-title">Total Party Due (Receivable)</div>
-            <div id="stat-total-due" class="metric-value text-danger">₹0.00</div>
+            <div id="stat-gst-parties" class="fs-4 fw-bold text-info">0</div>
+            <small class="text-muted" id="stat-gst-sub">Verified Taxpayers</small>
           </div>
         </div>
 
-        <div class="col-12 col-md-4">
-          <div class="metric-card">
-            <div class="metric-icon bg-success-subtle text-success">
-              <i class="bi bi-check2-circle"></i>
+        <div class="col-6 col-lg-3">
+          <div class="metric-card p-3 shadow-sm border-0 rounded-3">
+            <div class="d-flex align-items-center justify-content-between mb-1">
+              <div class="metric-title text-muted small fw-semibold">Total Outstanding Due</div>
+              <div class="metric-icon bg-danger-subtle text-danger rounded-circle p-2" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
+                <i class="bi bi-exclamation-triangle"></i>
+              </div>
             </div>
-            <div class="metric-title">Total Party Paid (Received)</div>
-            <div id="stat-total-paid" class="metric-value text-success">₹0.00</div>
+            <div id="stat-total-due" class="fs-4 fw-bold text-danger">₹0.00</div>
+            <small class="text-danger" id="stat-due-sub">Total Receivable (बकाया)</small>
+          </div>
+        </div>
+
+        <div class="col-6 col-lg-3">
+          <div class="metric-card p-3 shadow-sm border-0 rounded-3">
+            <div class="d-flex align-items-center justify-content-between mb-1">
+              <div class="metric-title text-muted small fw-semibold">Total Ledger Received</div>
+              <div class="metric-icon bg-success-subtle text-success rounded-circle p-2" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
+                <i class="bi bi-check2-circle"></i>
+              </div>
+            </div>
+            <div id="stat-total-paid" class="fs-4 fw-bold text-success">₹0.00</div>
+            <small class="text-success" id="stat-paid-sub">Direct Payments (जमा)</small>
           </div>
         </div>
       </div>
 
       <!-- Parties Data Card -->
-      <div class="data-card">
-        <div class="data-card-header">
-          <div class="d-flex align-items-center gap-2 flex-grow-1" style="max-width: 450px;">
-            <div class="input-group input-group-sm">
-              <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
-              <input type="text" id="search-parties" class="form-control" placeholder="Search by Party Name, GSTIN, Mobile, or City...">
+      <div class="card border-0 shadow-sm rounded-3">
+        <!-- Top Filter Bar -->
+        <div class="card-header bg-white border-bottom p-3">
+          <div class="row g-2 align-items-center">
+            <!-- Search Bar -->
+            <div class="col-12 col-md-5 col-lg-4">
+              <div class="input-group input-group-sm">
+                <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
+                <input type="text" id="search-parties" class="form-control bg-light border-start-0" placeholder="Search party, GSTIN, phone, city..." autocomplete="off">
+                <button class="btn btn-outline-secondary btn-sm" type="button" id="btn-clear-search" onclick="PartiesModule.clearSearch()" title="Clear search" style="display:none;">
+                  <i class="bi bi-x-lg"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- State Filter -->
+            <div class="col-6 col-md-3 col-lg-2">
+              <select id="filter-state" class="form-select form-select-sm" onchange="PartiesModule.onStateChange(this.value)">
+                <option value="">All States / सभी राज्य</option>
+                <option value="Raj">Rajasthan (राज.)</option>
+                <option value="U.P.">Uttar Pradesh (U.P.)</option>
+                <option value="Delhi">Delhi</option>
+                <option value="Haryana">Haryana</option>
+                <option value="Punjab">Punjab</option>
+                <option value="UK">Uttarakhand</option>
+                <option value="Gujrat">Gujarat</option>
+                <option value="M.P.">Madhya Pradesh</option>
+              </select>
+            </div>
+
+            <!-- Per Page Select -->
+            <div class="col-6 col-md-4 col-lg-2">
+              <div class="d-flex align-items-center gap-1">
+                <label class="small text-muted text-nowrap">Show:</label>
+                <select id="items-per-page" class="form-select form-select-sm" onchange="PartiesModule.setItemsPerPage(this.value)">
+                  <option value="25">25 rows</option>
+                  <option value="50" selected>50 rows</option>
+                  <option value="100">100 rows</option>
+                  <option value="250">250 rows</option>
+                  <option value="all">All (3,396)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Quick Filter Badges / Pills -->
+            <div class="col-12 col-lg-4 text-lg-end">
+              <div class="filter-btn-group btn-group" role="group">
+                <button type="button" class="btn btn-outline-primary active" id="btn-filter-all" onclick="PartiesModule.setQuickFilter('all')">
+                  All (<span id="count-all">0</span>)
+                </button>
+                <button type="button" class="btn btn-outline-danger" id="btn-filter-due" onclick="PartiesModule.setQuickFilter('due')">
+                  Due (<span id="count-due">0</span>)
+                </button>
+                <button type="button" class="btn btn-outline-success" id="btn-filter-paid" onclick="PartiesModule.setQuickFilter('paid')">
+                  Paid (<span id="count-paid">0</span>)
+                </button>
+                <button type="button" class="btn btn-outline-secondary" id="btn-filter-mobile" onclick="PartiesModule.setQuickFilter('mobile')" title="With Phone">
+                  <i class="bi bi-telephone-fill me-1"></i>Phone (<span id="count-mobile">0</span>)
+                </button>
+              </div>
             </div>
           </div>
-          <span class="badge bg-light text-dark border">
-            <i class="bi bi-shield-check text-success me-1"></i> Auto-Synced
-          </span>
         </div>
 
-        <div class="table-responsive">
-          <table class="table table-custom mb-0">
+        <!-- Table Responsive Container (Zero Horizontal Scroll) -->
+        <div class="table-container-responsive" style="min-height: 420px;">
+          <table class="table table-hover table-custom table-fixed-layout mb-0">
             <thead>
               <tr>
-                <th>Party / Company Name & Address</th>
-                <th>GSTIN</th>
-                <th>Contact Person & Phone</th>
-                <th class="text-end">Due Amount (बकाया)</th>
-                <th class="text-end">Paid Amount (जमा)</th>
-                <th class="text-center" style="width: 100px;">Actions</th>
+                <th style="width: 4%;" class="text-center">#</th>
+                <th style="width: 38%;">Party / Company Name & Location</th>
+                <th style="width: 15%;">GSTIN</th>
+                <th style="width: 15%;">Contact & Phone</th>
+                <th style="width: 11%;" class="text-end">Due (बकाया)</th>
+                <th style="width: 11%;" class="text-end">Paid (जमा)</th>
+                <th style="width: 6%;" class="text-center">Action</th>
               </tr>
             </thead>
             <tbody id="parties-tbody">
               <tr>
-                <td colspan="6" class="text-center py-4 text-muted">
-                  <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div> Loading parties...
+                <td colspan="7" class="text-center py-5 text-muted">
+                  <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div> Loading 3,396 parties...
                 </td>
               </tr>
             </tbody>
           </table>
+        </div>
+
+        <!-- Table Footer / Pagination -->
+        <div class="card-footer bg-white border-top p-3 d-flex flex-column flex-md-row align-items-center justify-content-between gap-2">
+          <div class="small text-muted" id="pagination-info">
+            Showing 0 to 0 of 0 parties
+          </div>
+          <nav aria-label="Parties pagination">
+            <ul class="pagination pagination-sm mb-0" id="pagination-controls">
+              <!-- Rendered dynamically -->
+            </ul>
+          </nav>
         </div>
       </div>
 
@@ -143,9 +293,20 @@
               </div>
             </div>
 
+            <div class="row g-2 mb-3">
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Primary Mobile Number</label>
+                <input type="tel" id="party-mobile" class="form-control" placeholder="e.g. 9829241717">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">City / Station</label>
+                <input type="text" id="party-city" class="form-control" placeholder="e.g. Rajsamand, Kanpur">
+              </div>
+            </div>
+
             <div class="mb-3">
-              <label class="form-label fw-semibold small">Primary Mobile Number</label>
-              <input type="tel" id="party-mobile" class="form-control" placeholder="e.g. 9829241717">
+              <label class="form-label fw-semibold small">State</label>
+              <input type="text" id="party-state" class="form-control" placeholder="e.g. Raj., U.P., Delhi, Haryana">
             </div>
 
             <div class="mb-3">
@@ -174,6 +335,16 @@
     </div>
   </div>
 
+  <!-- Toast Notification Container -->
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999;">
+    <div id="live-toast" class="toast align-items-center text-bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body" id="toast-message">Notification</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    </div>
+  </div>
+
   <!-- Bootstrap 5 Bundle JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   
@@ -183,6 +354,7 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
   <!-- Core App Scripts -->
+  <script src="../js/sample-parties-data.js"></script>
   <script src="../js/config.js"></script>
   <script src="../js/db-service.js"></script>
   <script src="../js/app.js"></script>

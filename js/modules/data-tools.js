@@ -289,11 +289,13 @@ const DataToolsModule = {
       let itemData = {};
 
       if (target === 'parties') {
+        const partyName = r['Party Name'] || r.PartyName || r['party name'] || r.Name || r.name || '';
+        const mobileNum = r['Mobile No.'] || r['Mobile No. 1'] || r['Mobile No'] || r.Mobile || r.mobile || '';
         itemData = {
-          name: r.Name || r.name || 'Unnamed Party',
+          name: partyName || `Party ${r.GSTIN || r.gstin || ''}`.trim() || 'Custom Party',
           gstin: r.GSTIN || r.gstin || '',
           address: r.Address || r.address || '',
-          mobile: r.Mobile || r.mobile || '',
+          mobile: mobileNum,
           contactPerson: r.ContactPerson || r.contactPerson || '',
           dueAmount: Number(r.DueAmount || r.dueAmount) || 0,
           paidAmount: Number(r.PaidAmount || r.paidAmount) || 0

@@ -49,7 +49,7 @@ class DBService {
         const snapshot = await this.db.collection(collectionName).get();
         if (!snapshot.empty) {
           cloudItems = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-          if (collectionName !== 'trips' && collectionName !== 'debts') {
+          if (collectionName !== 'trips' && collectionName !== 'debts' && collectionName !== 'parties') {
             return cloudItems;
           }
         }
@@ -64,6 +64,10 @@ class DBService {
 
     if (collectionName === 'debts') {
       return this.getAllDebts(cloudItems);
+    }
+
+    if (collectionName === 'parties') {
+      return this.getAllParties(cloudItems);
     }
 
     // LocalStorage Fallback for other collections
@@ -244,6 +248,72 @@ class DBService {
     });
   }
 
+  getAllParties(cloudItems = []) {
+    // 1. One-time auto-clean of any corrupted 'Unnamed Party' from localStorage
+    if (typeof localStorage !== 'undefined') {
+      try {
+        const cleanLegacy = (key) => {
+          const val = localStorage.getItem(key);
+          if (val) {
+            const arr = JSON.parse(val);
+            if (Array.isArray(arr)) {
+              const cleaned = arr.filter(p => p && p.name && p.name !== 'Unnamed Party');
+              if (cleaned.length !== arr.length) {
+                localStorage.setItem(key, JSON.stringify(cleaned));
+              }
+            }
+          }
+        };
+        cleanLegacy('tms_custom_parties');
+        cleanLegacy('tms_parties');
+      } catch (e) {}
+    }
+
+    const isBaseCleared = localStorage.getItem('tms_base_parties_cleared') === 'true';
+    const baseParties = (!isBaseCleared && typeof window !== 'undefined' && Array.isArray(window.INITIAL_EXCEL_PARTIES))
+      ? window.INITIAL_EXCEL_PARTIES
+      : [];
+
+    const editedMap = JSON.parse(localStorage.getItem('tms_edited_parties') || '{}');
+    const deletedList = JSON.parse(localStorage.getItem('tms_deleted_parties') || '[]');
+    const deletedSet = new Set(deletedList.map(String));
+    const customParties = JSON.parse(localStorage.getItem('tms_custom_parties') || '[]');
+
+    const partyMap = new Map();
+
+    // 2. Load all base parties from sample-parties-data.js (3,396 records)
+    baseParties.forEach(p => {
+      if (!deletedSet.has(String(p.id))) {
+        partyMap.set(String(p.id), editedMap[p.id] || p);
+      }
+    });
+
+    // 3. Add genuine custom added parties (ignore corrupted 'Unnamed Party' entries or old mock ids)
+    customParties.forEach(p => {
+      if (!deletedSet.has(String(p.id)) && p.name && p.name !== 'Unnamed Party' && !String(p.id).startsWith('party_')) {
+        partyMap.set(String(p.id), editedMap[p.id] || p);
+      }
+    });
+
+    // 4. Cloud items overlay (if any valid custom parties were saved in Firestore)
+    if (cloudItems && cloudItems.length > 0) {
+      cloudItems.forEach(p => {
+        if (!deletedSet.has(String(p.id)) && p.name && p.name !== 'Unnamed Party' && !String(p.id).startsWith('party_')) {
+          partyMap.set(String(p.id), { ...(partyMap.get(String(p.id)) || {}), ...p });
+        }
+      });
+    }
+
+    if (partyMap.size === 0) {
+      const legacy = JSON.parse(localStorage.getItem('tms_parties') || '[]');
+      legacy.forEach(p => {
+        if (p.name && p.name !== 'Unnamed Party') partyMap.set(String(p.id), p);
+      });
+    }
+
+    return Array.from(partyMap.values());
+  }
+
   async getById(collectionName, id) {
     if (this.isFirebaseReady) {
       try {
@@ -299,6 +369,28 @@ class DBService {
           console.log(` Cloud Synced: debts/${newItem.id}`);
         } catch (err) {
           console.warn('Firestore sync error for debts:', err.message);
+        }
+      }
+      return newItem;
+    }
+
+    if (collectionName === 'parties') {
+      const newItem = {
+        ...itemData,
+        id: itemData.id || `PARTY_NEW_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      const customParties = JSON.parse(localStorage.getItem('tms_custom_parties') || '[]');
+      customParties.unshift(newItem);
+      localStorage.setItem('tms_custom_parties', JSON.stringify(customParties));
+
+      if (this.isFirebaseReady) {
+        try {
+          await this.db.collection('parties').doc(newItem.id).set(newItem);
+          console.log(` Cloud Synced: parties/${newItem.id}`);
+        } catch (err) {
+          console.warn('Firestore sync error for parties:', err.message);
         }
       }
       return newItem;
@@ -393,6 +485,34 @@ class DBService {
       return updatedItem;
     }
 
+    if (collectionName === 'parties') {
+      let customParties = JSON.parse(localStorage.getItem('tms_custom_parties') || '[]');
+      const customIdx = customParties.findIndex(p => String(p.id) === String(id));
+      let updatedItem = null;
+
+      if (customIdx >= 0) {
+        updatedItem = { ...customParties[customIdx], ...updatedFields, updatedAt };
+        customParties[customIdx] = updatedItem;
+        localStorage.setItem('tms_custom_parties', JSON.stringify(customParties));
+      } else {
+        const editedMap = JSON.parse(localStorage.getItem('tms_edited_parties') || '{}');
+        const existing = await this.getById('parties', id);
+        updatedItem = { ...(existing || {}), id, ...updatedFields, updatedAt };
+        editedMap[id] = updatedItem;
+        localStorage.setItem('tms_edited_parties', JSON.stringify(editedMap));
+      }
+
+      if (this.isFirebaseReady) {
+        try {
+          await this.db.collection('parties').doc(String(id)).set(updatedItem, { merge: true });
+          console.log(` Cloud Updated: parties/${id}`);
+        } catch (err) {
+          console.warn('Firestore update error for parties:', err.message);
+        }
+      }
+      return updatedItem;
+    }
+
     // Update locally
     const items = await this.getAll(collectionName);
     const index = items.findIndex(item => String(item.id) === String(id));
@@ -457,6 +577,28 @@ class DBService {
           console.log(` Cloud Deleted: debts/${id}`);
         } catch (err) {
           console.warn('Firestore delete error for debts:', err.message);
+        }
+      }
+      return true;
+    }
+
+    if (collectionName === 'parties') {
+      let customParties = JSON.parse(localStorage.getItem('tms_custom_parties') || '[]');
+      customParties = customParties.filter(p => String(p.id) !== String(id));
+      localStorage.setItem('tms_custom_parties', JSON.stringify(customParties));
+
+      const deletedList = JSON.parse(localStorage.getItem('tms_deleted_parties') || '[]');
+      if (!deletedList.includes(String(id))) {
+        deletedList.push(String(id));
+        localStorage.setItem('tms_deleted_parties', JSON.stringify(deletedList));
+      }
+
+      if (this.isFirebaseReady) {
+        try {
+          await this.db.collection('parties').doc(String(id)).delete();
+          console.log(` Cloud Deleted: parties/${id}`);
+        } catch (err) {
+          console.warn('Firestore delete error for parties:', err.message);
         }
       }
       return true;
