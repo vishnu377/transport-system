@@ -49,7 +49,7 @@ class DBService {
         const snapshot = await this.db.collection(collectionName).get();
         if (!snapshot.empty) {
           cloudItems = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-          if (collectionName !== 'trips' && collectionName !== 'debts' && collectionName !== 'parties') {
+          if (collectionName !== 'trips' && collectionName !== 'debts' && collectionName !== 'parties' && collectionName !== 'truckOwners' && collectionName !== 'cheques') {
             return cloudItems;
           }
         }
@@ -68,6 +68,14 @@ class DBService {
 
     if (collectionName === 'parties') {
       return this.getAllParties(cloudItems);
+    }
+
+    if (collectionName === 'truckOwners') {
+      return this.getAllTruckOwners(cloudItems);
+    }
+
+    if (collectionName === 'cheques') {
+      return this.getAllCheques(cloudItems);
     }
 
     // LocalStorage Fallback for other collections
@@ -314,6 +322,139 @@ class DBService {
     return Array.from(partyMap.values());
   }
 
+  getAllTruckOwners(cloudItems = []) {
+    const baseOwners = (typeof window !== 'undefined' && Array.isArray(window.INITIAL_TRUCK_OWNERS))
+      ? window.INITIAL_TRUCK_OWNERS
+      : [];
+
+    const editedMap = JSON.parse(localStorage.getItem('tms_edited_truckOwners') || '{}');
+    const deletedList = JSON.parse(localStorage.getItem('tms_deleted_truckOwners') || '[]');
+    const deletedSet = new Set(deletedList.map(String));
+    const customOwners = JSON.parse(localStorage.getItem('tms_custom_truckOwners') || '[]');
+
+    const ownerMap = new Map();
+
+    // 1. Add base owners
+    for (const o of baseOwners) {
+      if (!deletedSet.has(String(o.id))) {
+        ownerMap.set(String(o.id), editedMap[o.id] ? { ...o, ...editedMap[o.id] } : o);
+      }
+    }
+
+    // 2. Add custom owners
+    for (const o of customOwners) {
+      if (!deletedSet.has(String(o.id))) {
+        ownerMap.set(String(o.id), editedMap[o.id] ? { ...o, ...editedMap[o.id] } : o);
+      }
+    }
+
+    // 3. Add cloud items
+    if (Array.isArray(cloudItems)) {
+      for (const o of cloudItems) {
+        if (!deletedSet.has(String(o.id))) {
+          ownerMap.set(String(o.id), { ...(ownerMap.get(String(o.id)) || {}), ...o });
+        }
+      }
+    }
+
+    // Fallback to legacy if empty
+    if (ownerMap.size === 0) {
+      const legacy = JSON.parse(localStorage.getItem('tms_truckOwners') || '[]');
+      legacy.forEach(o => {
+        if (o.name) ownerMap.set(String(o.id), o);
+      });
+    }
+
+    const all = Array.from(ownerMap.values());
+    all.sort((a, b) => (Number(b.dueAmount) || 0) - (Number(a.dueAmount) || 0));
+    return all;
+  }
+
+  getAllCheques(cloudItems = []) {
+    const baseCheques = (typeof window !== 'undefined' && Array.isArray(window.INITIAL_CHEQUES_DATA))
+      ? window.INITIAL_CHEQUES_DATA
+      : [];
+
+    const editedMap = JSON.parse(localStorage.getItem('tms_edited_cheques') || '{}');
+    const deletedList = JSON.parse(localStorage.getItem('tms_deleted_cheques') || '[]');
+    const deletedSet = new Set(deletedList.map(String));
+    const customCheques = JSON.parse(localStorage.getItem('tms_custom_cheques') || '[]');
+
+    const chequeMap = new Map();
+
+    // 1. Base cheques
+    for (const c of baseCheques) {
+      if (!deletedSet.has(String(c.id))) {
+        chequeMap.set(String(c.id), editedMap[c.id] ? { ...c, ...editedMap[c.id] } : c);
+      }
+    }
+
+    // 2. Custom cheques
+    for (const c of customCheques) {
+      if (!deletedSet.has(String(c.id))) {
+        chequeMap.set(String(c.id), editedMap[c.id] ? { ...c, ...editedMap[c.id] } : c);
+      }
+    }
+
+    // 3. Cloud items
+    if (Array.isArray(cloudItems)) {
+      for (const c of cloudItems) {
+        if (!deletedSet.has(String(c.id))) {
+          chequeMap.set(String(c.id), { ...(chequeMap.get(String(c.id)) || {}), ...c });
+        }
+      }
+    }
+
+    // Fallback to legacy if empty
+    if (chequeMap.size === 0) {
+      const legacy = JSON.parse(localStorage.getItem('tms_cheques') || '[]');
+      legacy.forEach(c => {
+        if (c.chequeNo) chequeMap.set(String(c.id), c);
+      });
+    }
+
+    const all = Array.from(chequeMap.values());
+    const statusPriority = { 'Pending': 1, 'Deposited': 2, 'Bounced': 3, 'Cleared': 4 };
+    all.sort((a, b) => {
+      const pA = statusPriority[a.status] || 5;
+      const pB = statusPriority[b.status] || 5;
+      if (pA !== pB) return pA - pB;
+      return String(b.chequeDate || '').localeCompare(String(a.chequeDate || ''));
+    });
+    return all;
+  }
+
+  async recordOwnerPayment(ownerId, paymentData) {
+    const owner = await this.getById('truckOwners', ownerId);
+    if (!owner) throw new Error('Owner not found');
+
+    const paymentAmount = Number(paymentData.amount) || 0;
+    const currentDue = Number(owner.dueAmount) || 0;
+    const currentPaid = Number(owner.paidAmount) || 0;
+
+    const newDue = Math.max(0, currentDue - paymentAmount);
+    const newPaid = currentPaid + paymentAmount;
+
+    const paymentRecord = {
+      id: `PAY_OWNER_${Date.now()}`,
+      date: paymentData.date || new Date().toISOString().split('T')[0],
+      amount: paymentAmount,
+      mode: paymentData.mode || 'Bank Transfer',
+      refNo: paymentData.refNo || '',
+      remarks: paymentData.remarks || 'Owner settlement payment',
+      status: 'Paid'
+    };
+
+    const recentTrips = Array.isArray(owner.recentTrips) ? [paymentRecord, ...owner.recentTrips] : [paymentRecord];
+
+    return await this.update('truckOwners', ownerId, {
+      dueAmount: newDue,
+      paidAmount: newPaid,
+      recentTrips
+    });
+  }
+
+
   async getById(collectionName, id) {
     if (this.isFirebaseReady) {
       try {
@@ -391,6 +532,50 @@ class DBService {
           console.log(` Cloud Synced: parties/${newItem.id}`);
         } catch (err) {
           console.warn('Firestore sync error for parties:', err.message);
+        }
+      }
+      return newItem;
+    }
+
+    if (collectionName === 'truckOwners') {
+      const newItem = {
+        ...itemData,
+        id: itemData.id || `OWNER_NEW_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      const customOwners = JSON.parse(localStorage.getItem('tms_custom_truckOwners') || '[]');
+      customOwners.unshift(newItem);
+      localStorage.setItem('tms_custom_truckOwners', JSON.stringify(customOwners));
+
+      if (this.isFirebaseReady) {
+        try {
+          await this.db.collection('truckOwners').doc(newItem.id).set(newItem);
+          console.log(` Cloud Synced: truckOwners/${newItem.id}`);
+        } catch (err) {
+          console.warn('Firestore sync error for truckOwners:', err.message);
+        }
+      }
+      return newItem;
+    }
+
+    if (collectionName === 'cheques') {
+      const newItem = {
+        ...itemData,
+        id: itemData.id || `CHQ_NEW_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      const customCheques = JSON.parse(localStorage.getItem('tms_custom_cheques') || '[]');
+      customCheques.unshift(newItem);
+      localStorage.setItem('tms_custom_cheques', JSON.stringify(customCheques));
+
+      if (this.isFirebaseReady) {
+        try {
+          await this.db.collection('cheques').doc(newItem.id).set(newItem);
+          console.log(` Cloud Synced: cheques/${newItem.id}`);
+        } catch (err) {
+          console.warn('Firestore sync error for cheques:', err.message);
         }
       }
       return newItem;
@@ -513,6 +698,62 @@ class DBService {
       return updatedItem;
     }
 
+    if (collectionName === 'truckOwners') {
+      let customOwners = JSON.parse(localStorage.getItem('tms_custom_truckOwners') || '[]');
+      const customIdx = customOwners.findIndex(o => String(o.id) === String(id));
+      let updatedItem = null;
+
+      if (customIdx >= 0) {
+        updatedItem = { ...customOwners[customIdx], ...updatedFields, updatedAt };
+        customOwners[customIdx] = updatedItem;
+        localStorage.setItem('tms_custom_truckOwners', JSON.stringify(customOwners));
+      } else {
+        const editedMap = JSON.parse(localStorage.getItem('tms_edited_truckOwners') || '{}');
+        const existing = await this.getById('truckOwners', id);
+        updatedItem = { ...(existing || {}), id, ...updatedFields, updatedAt };
+        editedMap[id] = updatedItem;
+        localStorage.setItem('tms_edited_truckOwners', JSON.stringify(editedMap));
+      }
+
+      if (this.isFirebaseReady) {
+        try {
+          await this.db.collection('truckOwners').doc(String(id)).set(updatedItem, { merge: true });
+          console.log(` Cloud Updated: truckOwners/${id}`);
+        } catch (err) {
+          console.warn('Firestore update error for truckOwners:', err.message);
+        }
+      }
+      return updatedItem;
+    }
+
+    if (collectionName === 'cheques') {
+      let customCheques = JSON.parse(localStorage.getItem('tms_custom_cheques') || '[]');
+      const customIdx = customCheques.findIndex(c => String(c.id) === String(id));
+      let updatedItem = null;
+
+      if (customIdx >= 0) {
+        updatedItem = { ...customCheques[customIdx], ...updatedFields, updatedAt };
+        customCheques[customIdx] = updatedItem;
+        localStorage.setItem('tms_custom_cheques', JSON.stringify(customCheques));
+      } else {
+        const editedMap = JSON.parse(localStorage.getItem('tms_edited_cheques') || '{}');
+        const existing = await this.getById('cheques', id);
+        updatedItem = { ...(existing || {}), id, ...updatedFields, updatedAt };
+        editedMap[id] = updatedItem;
+        localStorage.setItem('tms_edited_cheques', JSON.stringify(editedMap));
+      }
+
+      if (this.isFirebaseReady) {
+        try {
+          await this.db.collection('cheques').doc(String(id)).set(updatedItem, { merge: true });
+          console.log(` Cloud Updated: cheques/${id}`);
+        } catch (err) {
+          console.warn('Firestore update error for cheques:', err.message);
+        }
+      }
+      return updatedItem;
+    }
+
     // Update locally
     const items = await this.getAll(collectionName);
     const index = items.findIndex(item => String(item.id) === String(id));
@@ -599,6 +840,50 @@ class DBService {
           console.log(` Cloud Deleted: parties/${id}`);
         } catch (err) {
           console.warn('Firestore delete error for parties:', err.message);
+        }
+      }
+      return true;
+    }
+
+    if (collectionName === 'truckOwners') {
+      let customOwners = JSON.parse(localStorage.getItem('tms_custom_truckOwners') || '[]');
+      customOwners = customOwners.filter(o => String(o.id) !== String(id));
+      localStorage.setItem('tms_custom_truckOwners', JSON.stringify(customOwners));
+
+      const deletedList = JSON.parse(localStorage.getItem('tms_deleted_truckOwners') || '[]');
+      if (!deletedList.includes(String(id))) {
+        deletedList.push(String(id));
+        localStorage.setItem('tms_deleted_truckOwners', JSON.stringify(deletedList));
+      }
+
+      if (this.isFirebaseReady) {
+        try {
+          await this.db.collection('truckOwners').doc(String(id)).delete();
+          console.log(` Cloud Deleted: truckOwners/${id}`);
+        } catch (err) {
+          console.warn('Firestore delete error for truckOwners:', err.message);
+        }
+      }
+      return true;
+    }
+
+    if (collectionName === 'cheques') {
+      let customCheques = JSON.parse(localStorage.getItem('tms_custom_cheques') || '[]');
+      customCheques = customCheques.filter(c => String(c.id) !== String(id));
+      localStorage.setItem('tms_custom_cheques', JSON.stringify(customCheques));
+
+      const deletedList = JSON.parse(localStorage.getItem('tms_deleted_cheques') || '[]');
+      if (!deletedList.includes(String(id))) {
+        deletedList.push(String(id));
+        localStorage.setItem('tms_deleted_cheques', JSON.stringify(deletedList));
+      }
+
+      if (this.isFirebaseReady) {
+        try {
+          await this.db.collection('cheques').doc(String(id)).delete();
+          console.log(` Cloud Deleted: cheques/${id}`);
+        } catch (err) {
+          console.warn('Firestore delete error for cheques:', err.message);
         }
       }
       return true;
