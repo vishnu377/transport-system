@@ -1,0 +1,556 @@
+/**
+ * Google AppSheet Universal Design System Theme
+ * MTC & TTC Logistics Management System
+ * 100% Authentic Replica of Google AppSheet UI/UX
+ */
+
+:root {
+  --appsheet-bg: #f8f9fa;
+  --appsheet-card-bg: #ffffff;
+  --appsheet-text: #202124;
+  --appsheet-muted: #5f6368;
+  --appsheet-border: #dadce0;
+  --appsheet-border-light: #f1f3f4;
+  --appsheet-gold: #bfa15f;
+  --appsheet-gold-hover: #b0914e;
+  --appsheet-chip-bg: #e8eaed;
+  --appsheet-blue: #1a73e8;
+  --appsheet-blue-hover: #1557b0;
+  --appsheet-green: #1e8e3e;
+  --appsheet-red: #d93025;
+  --appsheet-yellow: #f9ab00;
+  --appsheet-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+body {
+  background-color: var(--appsheet-bg);
+  color: var(--appsheet-text);
+  font-family: var(--appsheet-font);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 1. AppSheet Top Bar */
+.appsheet-top-bar {
+  background: #ffffff;
+  border-bottom: 1px solid var(--appsheet-border);
+  padding: 0.6rem 1.25rem;
+  position: sticky;
+  top: 0;
+  z-index: 1020;
+}
+
+.appsheet-brand-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--appsheet-text);
+  letter-spacing: -0.2px;
+}
+
+.appsheet-search-box {
+  background: #f1f3f4;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 0.45rem 1rem;
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  transition: all 0.2s ease;
+}
+.appsheet-search-box:focus-within {
+  background: #ffffff;
+  border-color: var(--appsheet-blue);
+  box-shadow: 0 1px 3px rgba(26,115,232,0.2);
+}
+.appsheet-search-box input {
+  background: transparent;
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 0.95rem;
+  color: var(--appsheet-text);
+}
+
+/* 2. Breadcrumbs */
+.appsheet-breadcrumb {
+  font-size: 0.92rem;
+  color: var(--appsheet-muted);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.appsheet-breadcrumb a {
+  color: var(--appsheet-muted);
+  text-decoration: none;
+}
+.appsheet-breadcrumb a:hover {
+  color: var(--appsheet-blue);
+}
+.appsheet-breadcrumb span.active {
+  color: var(--appsheet-text);
+  font-weight: 600;
+}
+
+/* 3. Filter Pills */
+.appsheet-pills-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+}
+.appsheet-pill {
+  background: #ffffff;
+  border: 1px solid var(--appsheet-border);
+  color: var(--appsheet-muted);
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 0.35rem 0.9rem;
+  border-radius: 16px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.appsheet-pill:hover {
+  background: #f8f9fa;
+  color: var(--appsheet-text);
+}
+.appsheet-pill.active {
+  background: var(--appsheet-blue);
+  color: #ffffff;
+  border-color: var(--appsheet-blue);
+  font-weight: 600;
+}
+.appsheet-pill.active .badge {
+  background: rgba(255, 255, 255, 0.25) !important;
+  color: #ffffff !important;
+}
+
+/* 4. Action Buttons */
+.btn-appsheet-add {
+  background-color: var(--appsheet-gold);
+  color: #1a1a1a;
+  font-weight: 600;
+  font-size: 0.85rem;
+  border-radius: 4px;
+  padding: 0.35rem 0.9rem;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+  transition: background 0.15s ease-in-out;
+}
+.btn-appsheet-add:hover {
+  background-color: var(--appsheet-gold-hover);
+  color: #000000;
+}
+
+.btn-appsheet-primary {
+  background-color: var(--appsheet-blue);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.85rem;
+  border-radius: 4px;
+  padding: 0.35rem 0.9rem;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+}
+.btn-appsheet-primary:hover {
+  background-color: var(--appsheet-blue-hover);
+  color: #ffffff;
+}
+
+/* 5. Panels & Cards */
+.appsheet-panel {
+  background: var(--appsheet-card-bg);
+  border: 1px solid var(--appsheet-border);
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(60,64,67,0.08);
+  height: 100%;
+}
+.appsheet-panel-header {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--appsheet-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.appsheet-panel-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--appsheet-text);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* 6. Badges */
+.appsheet-badge-number {
+  background-color: var(--appsheet-chip-bg);
+  color: #3c4043;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.2rem 0.55rem;
+  border-radius: 4px;
+}
+
+/* 7. AppSheet Tables */
+.appsheet-table {
+  width: 100%;
+  margin: 0;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+.appsheet-table th {
+  background: #ffffff;
+  color: var(--appsheet-muted);
+  font-weight: 500;
+  font-size: 0.85rem;
+  padding: 0.65rem 0.85rem;
+  border-bottom: 1px solid var(--appsheet-border);
+  white-space: nowrap;
+}
+.appsheet-table td {
+  padding: 0.7rem 0.85rem;
+  border-bottom: 1px solid var(--appsheet-border-light);
+  font-size: 0.9rem;
+  vertical-align: middle;
+  color: var(--appsheet-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.appsheet-row {
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+}
+.appsheet-row:hover {
+  background-color: #f8f9fa;
+}
+
+/* 8. Status Dots (●) */
+.appsheet-status-dot {
+  font-size: 1.15rem;
+  line-height: 1;
+  display: inline-block;
+}
+.dot-red { color: var(--appsheet-red); }
+.dot-green { color: var(--appsheet-green); }
+.dot-blue { color: var(--appsheet-blue); }
+.dot-yellow { color: var(--appsheet-yellow); }
+
+/* 9. AppSheet Form Elements */
+.appsheet-form-card {
+  background: #ffffff;
+  border: 1px solid var(--appsheet-border);
+  border-radius: 6px;
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 1px 2px rgba(60,64,67,0.06);
+}
+.appsheet-form-header {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1a73e8;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-bottom: 1px solid var(--appsheet-border-light);
+  padding-bottom: 0.5rem;
+}
+.appsheet-field-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--appsheet-muted);
+  margin-bottom: 0.3rem;
+  display: block;
+}
+.appsheet-input {
+  width: 100%;
+  border: 1px solid var(--appsheet-border);
+  border-radius: 4px;
+  padding: 0.45rem 0.75rem;
+  font-size: 0.92rem;
+  color: var(--appsheet-text);
+  background: #ffffff;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.appsheet-input:focus {
+  border-color: var(--appsheet-blue);
+  box-shadow: 0 0 0 2px rgba(26,115,232,0.15);
+}
+
+/* Segmented Buttons / Pill Selector */
+.appsheet-segmented-group {
+  display: inline-flex;
+  border: 1px solid var(--appsheet-border);
+  border-radius: 4px;
+  overflow: hidden;
+  background: #ffffff;
+}
+.appsheet-segmented-btn {
+  border: none;
+  background: transparent;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--appsheet-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.appsheet-segmented-btn:not(:last-child) {
+  border-right: 1px solid var(--appsheet-border);
+}
+.appsheet-segmented-btn.active {
+  background: var(--appsheet-blue);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* Toggle Pill */
+.appsheet-toggle-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 14px;
+  border: 1px solid var(--appsheet-border);
+  background: #f8f9fa;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.appsheet-toggle-pill.active {
+  background: #e8f0fe;
+  color: var(--appsheet-blue);
+  border-color: var(--appsheet-blue);
+}
+
+/* AppSheet Right Chevron */
+.appsheet-chevron {
+  color: #9aa0a6;
+  font-size: 0.9rem;
+}
+
+/* ==================================================================== */
+/* 10. AUTHENTIC GOOGLE APPSHEET FORM VIEW & GOLD SEGMENTED CONTROLS     */
+/* Matching screenshots from C:\Users\HP\Downloads\allcreatebbilitey    */
+/* ==================================================================== */
+.appsheet-form-view-container {
+  max-width: 820px;
+  margin: 0 auto;
+  background: #ffffff;
+  border: 1px solid #dadce0;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(60,64,67,0.12);
+  overflow: hidden;
+}
+
+.appsheet-form-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.appsheet-form-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #202124;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.appsheet-form-close-btn {
+  background: none;
+  border: none;
+  color: #5f6368;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+.appsheet-form-close-btn:hover {
+  background-color: #f1f3f4;
+  color: #202124;
+}
+
+.btn-appsheet-cancel {
+  background: transparent;
+  border: none;
+  color: #5f6368;
+  font-weight: 500;
+  font-size: 0.88rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.btn-appsheet-cancel:hover {
+  background-color: #f1f3f4;
+  color: #202124;
+}
+
+.btn-appsheet-gold-save {
+  background-color: #bfa15f;
+  color: #1a1a1a;
+  font-weight: 600;
+  font-size: 0.88rem;
+  padding: 0.35rem 1.35rem;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+}
+.btn-appsheet-gold-save:hover {
+  background-color: #af904c;
+  color: #000000;
+}
+
+.appsheet-form-body {
+  padding: 1.25rem 1.75rem 2rem 1.75rem;
+  background: #ffffff;
+}
+
+.appsheet-form-row {
+  display: flex;
+  align-items: center;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid #f3f4f6;
+  min-height: 48px;
+}
+.appsheet-form-row.align-start {
+  align-items: flex-start;
+}
+
+.appsheet-form-label {
+  width: 32%;
+  min-width: 160px;
+  max-width: 260px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #4b5563;
+  padding-right: 1rem;
+  margin: 0;
+}
+
+.appsheet-form-control-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* AppSheet Gold Segmented Pill Selector (Regular/URP, No/Yes, Paid/Due, Cash/Online) */
+.appsheet-segmented-gold {
+  display: inline-flex;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #f9fafb;
+}
+
+.appsheet-segmented-gold .seg-btn {
+  border: none;
+  background: transparent;
+  padding: 0.42rem 1.35rem;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  min-width: 96px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.appsheet-segmented-gold .seg-btn:not(:last-child) {
+  border-right: 1px solid #d1d5db;
+}
+
+.appsheet-segmented-gold .seg-btn:hover:not(.active) {
+  background-color: #f3f4f6;
+}
+
+.appsheet-segmented-gold .seg-btn.active {
+  background-color: #bfa15f !important;
+  color: #111827 !important;
+  font-weight: 600 !important;
+}
+
+/* AppSheet Single-Line Text / Number / Select Inputs */
+.appsheet-input-box {
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  padding: 0.42rem 0.75rem;
+  font-size: 13.5px;
+  color: #111827;
+  background: #ffffff;
+  width: 100%;
+  max-width: 100%;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.appsheet-input-box:focus {
+  border-color: #bfa15f;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(191, 161, 95, 0.25);
+}
+.appsheet-input-box[readonly] {
+  background-color: #f9fafb;
+}
+
+/* AppSheet Pill Chip (e.g. Truck Owner Name badge in video) */
+.appsheet-chip-owner {
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 16px;
+  padding: 0.3rem 0.9rem;
+  font-size: 13px;
+  font-weight: 500;
+  color: #1f2937;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+
+.appsheet-text-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.appsheet-form-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1.75rem;
+  border-top: 1px solid #e5e7eb;
+  background: #ffffff;
+}

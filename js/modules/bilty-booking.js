@@ -162,6 +162,34 @@ const BiltyBookingModule = {
       if (expressConsignor) expressConsignor.innerHTML = optionsHTML;
       if (expressConsignee) expressConsignee.innerHTML = optionsHTML;
     }
+
+    // 6. Destinations Datalist (Matching authentic AppSheet video options)
+    const destDatalist = document.getElementById('destinationsList');
+    if (destDatalist) {
+      const destinations = new Set([
+        'Haridwar (U.K.)', 'Sandila (U.P.)', 'Pataudi (Haryana)', 'Kanpur (U.P.)', 
+        'Delhi', 'Shamli (U.P.)', 'Lucknow (U.P.)', 'Dadri (U.P.)', 'Loni (U.P.)', 
+        'Muzaffarnagar (U.P.)', 'Greater Noida (U.P.)', 'Karnal (Haryana)', 
+        'Meerut (U.P.)', 'Hardoi (U.P.)', 'Faridabad (Haryana)', 'Jaipur (Raj.)', 'Bhiwadi (Raj.)'
+      ]);
+      this.allTrips.slice(0, 500).forEach(t => {
+        if (t.destination) destinations.add(t.destination);
+      });
+      destDatalist.innerHTML = Array.from(destinations).sort().map(d => `<option value="${d}">`).join('');
+    }
+
+    // 7. Materials Datalist (Matching authentic AppSheet video options)
+    const matDatalist = document.getElementById('materialsList');
+    if (matDatalist) {
+      const materials = new Set([
+        'Marble Cut Size', 'Marble Powder', 'Putty Grade Dolomite', 'Marble Blocks', 
+        'Lime Stone', 'Tiles / Ceramic', 'White Cement', 'Granite Tiles', 'Quartz Grain'
+      ]);
+      this.allTrips.slice(0, 500).forEach(t => {
+        if (t.material) materials.add(t.material);
+      });
+      matDatalist.innerHTML = Array.from(materials).sort().map(m => `<option value="${m}">`).join('');
+    }
   },
 
   initNewFormDefaults() {
@@ -213,9 +241,14 @@ const BiltyBookingModule = {
     const shortGr = `${nextSeq}_${firm}`;
     const fullGr = `${year}-${shortGr}`;
 
-    document.getElementById('bilty-gr-no').value = fullGr;
-    document.getElementById('bilty-short-gr').value = shortGr;
+    const grNoEl = document.getElementById('bilty-gr-no');
+    if (grNoEl) grNoEl.value = fullGr;
+    const shortGrEl = document.getElementById('bilty-short-gr');
+    if (shortGrEl) shortGrEl.value = shortGr;
     
+    const appsheetDisplay = document.getElementById('appsheet-display-gr');
+    if (appsheetDisplay) appsheetDisplay.innerText = nextSeq;
+
     const previewBadge = document.getElementById('preview-gr-badge');
     if (previewBadge) previewBadge.innerText = `G.R. NO: ${shortGr}`;
   },
@@ -818,6 +851,219 @@ const BiltyBookingModule = {
   },
 
   // ----------------------------------------------------
+  // AUTHENTIC GOOGLE APPSHEET REACTIVE FORM METHODS
+  // ----------------------------------------------------
+  setAppSheetSegment(fieldId, val, btnEl) {
+    const input = document.getElementById(fieldId);
+    if (input) {
+      input.value = val;
+      input.dispatchEvent(new Event('change'));
+    }
+    if (btnEl && btnEl.parentElement) {
+      btnEl.parentElement.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
+      btnEl.classList.add('active');
+    }
+    if (fieldId === 'bilty-load-type') {
+      this.setLoadType(val);
+    }
+    this.updateLivePreview();
+  },
+
+  setAppSheetTransport(firm, btnEl) {
+    const firmInput = document.getElementById('bilty-firm');
+    if (firmInput) firmInput.value = firm;
+    if (btnEl && btnEl.parentElement) {
+      btnEl.parentElement.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
+      btnEl.classList.add('active');
+    }
+    const grLabel = document.getElementById('appsheet-gr-label');
+    if (grLabel) grLabel.innerText = `${firm} G.R.No. *`;
+    this.generateBiltyNumber();
+    this.updateLivePreview();
+  },
+
+  setAppSheetDebt(isDebt, btnEl) {
+    const toggle = document.getElementById('toggle-any-debt');
+    if (toggle) toggle.checked = isDebt;
+    if (btnEl && btnEl.parentElement) {
+      btnEl.parentElement.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
+      btnEl.classList.add('active');
+    }
+    const box = document.getElementById('bilty-debt-box');
+    if (box) {
+      if (isDebt) box.classList.remove('d-none');
+      else box.classList.add('d-none');
+    }
+  },
+
+  setAppSheetDispatchFrom(isReq, btnEl) {
+    const toggle = document.getElementById('toggle-dispatch-from');
+    if (toggle) toggle.checked = isReq;
+    if (btnEl && btnEl.parentElement) {
+      btnEl.parentElement.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
+      btnEl.classList.add('active');
+    }
+    const box = document.getElementById('dispatch-from-box');
+    if (box) {
+      if (isReq) box.classList.remove('d-none');
+      else box.classList.add('d-none');
+    }
+  },
+
+  setAppSheetShipTo(isReq, btnEl) {
+    const toggle = document.getElementById('toggle-ship-to');
+    if (toggle) toggle.checked = isReq;
+    if (btnEl && btnEl.parentElement) {
+      btnEl.parentElement.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
+      btnEl.classList.add('active');
+    }
+    const box = document.getElementById('ship-to-box');
+    if (box) {
+      if (isReq) box.classList.remove('d-none');
+      else box.classList.add('d-none');
+    }
+  },
+
+  onTruckSelect(truckNo) {
+    if (!truckNo || truckNo.length < 3) return;
+    truckNo = truckNo.trim().toUpperCase();
+    const truckInput = document.getElementById('bilty-truck-no');
+    if (truckInput && truckInput.value !== truckNo) truckInput.value = truckNo;
+
+    let ownerName = '';
+    let ownerMobile = '';
+    let driverName = '';
+    let driverMobile = '';
+
+    const registeredTrucks = typeof window !== 'undefined' && Array.isArray(window.INITIAL_EXCEL_TRUCKS)
+      ? window.INITIAL_EXCEL_TRUCKS : [];
+    const matched = registeredTrucks.find(t => t.truckNo === truckNo);
+    if (matched) {
+      ownerName = matched.name || 'MTC Fleet';
+      ownerMobile = matched.mobile || '9414312586';
+    }
+
+    if (!ownerName) {
+      const matchedOwner = this.truckOwners.find(o => o.truckNo === truckNo);
+      if (matchedOwner) {
+        ownerName = matchedOwner.name || matchedOwner.ownerName;
+        ownerMobile = matchedOwner.mobile || matchedOwner.phone || '';
+      }
+    }
+
+    if (!ownerName) {
+      const recentTrip = this.allTrips.find(t => t.truckNo === truckNo && t.truckOwner);
+      if (recentTrip) {
+        ownerName = recentTrip.truckOwner;
+        ownerMobile = recentTrip.ownerMobile || '';
+      }
+    }
+
+    if (!ownerName) ownerName = 'Market Truck Owner';
+    if (!ownerMobile) ownerMobile = '9414659401';
+
+    const recentTrip = this.allTrips.find(t => t.truckNo === truckNo && t.driver);
+    if (recentTrip) {
+      driverName = recentTrip.driver;
+      driverMobile = recentTrip.driverMobile || '';
+    }
+
+    // Update DOM inputs and AppSheet chip & texts
+    const ownerInput = document.getElementById('bilty-owner');
+    if (ownerInput) ownerInput.value = ownerName;
+    const ownerChip = document.getElementById('appsheet-truck-owner-chip');
+    const ownerText = document.getElementById('appsheet-owner-text');
+    if (ownerText) ownerText.innerText = ownerName;
+    if (ownerChip) ownerChip.classList.remove('d-none');
+
+    const mobileInput = document.getElementById('bilty-owner-mobile');
+    if (mobileInput) mobileInput.value = ownerMobile;
+    const mobileText = document.getElementById('appsheet-owner-mobile-text');
+    if (mobileText) mobileText.innerText = ownerMobile;
+
+    if (driverName) {
+      const driverInput = document.getElementById('bilty-driver');
+      if (driverInput && !driverInput.value) driverInput.value = driverName;
+      const driverMobileInput = document.getElementById('bilty-driver-mobile');
+      if (driverMobileInput && !driverMobileInput.value) driverMobileInput.value = driverMobile || '6377445099';
+      const driverMobileText = document.getElementById('appsheet-driver-mobile-text');
+      if (driverMobileText) driverMobileText.innerText = driverMobile || '6377445099';
+    }
+
+    this.updateLivePreview();
+  },
+
+  onReferenceSelect(val) {
+    if (!val) return;
+    const brokerInput = document.getElementById('bilty-broker');
+    if (brokerInput && brokerInput.value !== val) brokerInput.value = val;
+    const phoneMatch = val.match(/\b\d{10}\b/);
+    const phone = phoneMatch ? phoneMatch[0] : (this.brokers.find(b => b.name === val)?.phone || '7976808636');
+    const phoneText = document.getElementById('appsheet-broker-mobile-text');
+    if (phoneText) phoneText.innerText = phone;
+  },
+
+  onDriverSelect(val) {
+    if (!val) return;
+    const driverInput = document.getElementById('bilty-driver');
+    if (driverInput && driverInput.value !== val) driverInput.value = val;
+    const phoneMatch = val.match(/\b\d{10}\b/);
+    const phone = phoneMatch ? phoneMatch[0] : (this.drivers.find(d => d.name === val)?.mobile || '6377445099');
+    const phoneText = document.getElementById('appsheet-driver-mobile-text');
+    if (phoneText) phoneText.innerText = phone;
+    const mobileInput = document.getElementById('bilty-driver-mobile');
+    if (mobileInput) mobileInput.value = phone;
+  },
+
+  onConsignorSelect(val) {
+    if (!val) return;
+    const consignorInput = document.getElementById('bilty-consignor');
+    if (consignorInput && consignorInput.value !== val) consignorInput.value = val;
+    const party = this.parties.find(p => p.name === val);
+    if (party && party.gstin) {
+      const gstinInput = document.getElementById('bilty-consignor-gstin');
+      if (gstinInput) gstinInput.value = party.gstin;
+    }
+    this.updateLivePreview();
+  },
+
+  onConsigneeSelect(val) {
+    if (!val) return;
+    const consigneeInput = document.getElementById('bilty-consignee');
+    if (consigneeInput && consigneeInput.value !== val) consigneeInput.value = val;
+    const party = this.parties.find(p => p.name === val);
+    if (party) {
+      if (party.gstin) {
+        const gstinInput = document.getElementById('bilty-consignee-gstin');
+        if (gstinInput) gstinInput.value = party.gstin;
+      }
+      if (party.address) {
+        const addrInput = document.getElementById('bilty-delivery-address');
+        if (addrInput) addrInput.value = party.address;
+      }
+    }
+    this.updateLivePreview();
+  },
+
+  async saveAppSheetBilty() {
+    const truckNo = (document.getElementById('bilty-truck-no')?.value || '').trim().toUpperCase();
+    if (!truckNo) {
+      AppUI.showToast("Please enter or select Truck No. (गाड़ी नंबर)", "danger");
+      document.getElementById('bilty-truck-no')?.focus();
+      return;
+    }
+    const destination = (document.getElementById('bilty-destination')?.value || '').trim();
+    if (!destination) {
+      AppUI.showToast("Please specify Destination (कहाँ तक)!", "warning");
+      document.getElementById('bilty-destination')?.focus();
+      return;
+    }
+
+    await this.saveBilty('print');
+    this.switchView('register');
+  },
+
+  // ----------------------------------------------------
   // QUICK SELECTION CHIPS & TOGGLES
   // ----------------------------------------------------
   setOrigin(val, el) {
@@ -1175,30 +1421,59 @@ const BiltyBookingModule = {
     const registerView = document.getElementById('bilty-register-view');
     const btnCreate = document.getElementById('btn-view-create');
     const btnRegister = document.getElementById('btn-view-register');
+    const breadcrumb = document.getElementById('bilty-breadcrumb');
+    const breadcrumbActive = document.getElementById('bilty-breadcrumb-active');
 
     if (viewName === 'register') {
-      createView.classList.add('d-none');
-      registerView.classList.remove('d-none');
-      btnRegister.className = 'btn btn-primary active';
-      btnCreate.className = 'btn btn-outline-primary';
-      document.getElementById('bilty-breadcrumb').innerText = 'Home > Bilty Booking > Bilty Register';
+      if (createView) createView.classList.add('d-none');
+      if (registerView) registerView.classList.remove('d-none');
+      if (btnRegister) {
+        btnRegister.classList.add('active');
+        btnRegister.classList.remove('btn-outline-primary');
+      }
+      if (btnCreate) {
+        btnCreate.classList.remove('active');
+      }
+      if (breadcrumb) breadcrumb.innerText = 'Home > Bilty Booking > Bilty Register';
+      if (breadcrumbActive) breadcrumbActive.innerText = 'Bilty Register';
       this.applyRegisterFilters();
     } else {
-      registerView.classList.add('d-none');
-      createView.classList.remove('d-none');
-      btnCreate.className = 'btn btn-primary active';
-      btnRegister.className = 'btn btn-outline-primary';
-      document.getElementById('bilty-breadcrumb').innerText = 'Home > Bilty Booking > Create & Manage Consignments';
+      if (registerView) registerView.classList.add('d-none');
+      if (createView) createView.classList.remove('d-none');
+      if (btnCreate) {
+        btnCreate.classList.add('active');
+        btnCreate.classList.remove('btn-outline-primary');
+      }
+      if (btnRegister) {
+        btnRegister.classList.remove('active');
+      }
+      if (breadcrumb) breadcrumb.innerText = 'Home > Bilty Booking > Bilty Form';
+      if (breadcrumbActive) breadcrumbActive.innerText = 'Bilty Form';
+    }
+  },
+
+  handleSearch(val) {
+    this.onSearchInput(val);
+    const regInput = document.getElementById('reg-search-input');
+    if (regInput && regInput.value !== val) regInput.value = val;
+    if (this.currentView !== 'register') {
+      this.switchView('register');
     }
   },
 
   // ----------------------------------------------------
-  // TOP KPI SUMMARY UPDATER
+  // TOP KPI SUMMARY & APPSHEET SIDE PANELS UPDATER
   // ----------------------------------------------------
   updateKPIs() {
     const totalCount = this.allTrips.length;
-    document.getElementById('header-total-count').innerText = totalCount.toLocaleString('en-IN');
-    document.getElementById('kpi-total-bilties').innerText = totalCount.toLocaleString('en-IN');
+    const setEl = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.innerText = val;
+    };
+
+    setEl('header-total-count', totalCount.toLocaleString('en-IN'));
+    setEl('kpi-total-bilties', totalCount.toLocaleString('en-IN'));
+    setEl('appsheet-header-count', totalCount.toLocaleString('en-IN'));
 
     const todayStr = new Date().toISOString().split('T')[0];
     let todayCount = 0;
@@ -1207,6 +1482,10 @@ const BiltyBookingModule = {
     let smtcCount = 0;
     let totalFreight = 0;
 
+    let fy26_27 = 0;
+    let fy25_26 = 0;
+    let fy24_25 = 0;
+
     this.allTrips.forEach(t => {
       if (t.tripStartDate === todayStr) todayCount++;
       const firm = t.transport || (t.grNo && t.grNo.includes('MTC') ? 'MTC' : 'TTC');
@@ -1214,14 +1493,24 @@ const BiltyBookingModule = {
       else if (firm === 'MTC') mtcCount++;
       else if (firm === 'SMTC') smtcCount++;
 
-      totalFreight += (Number(t.freight) || 0);
+      const freight = (Number(t.freight) || 0);
+      totalFreight += freight;
+
+      const fy = t.financialYear || (t.grNo && t.grNo.startsWith('2026-2027') ? '2026-2027' : (t.grNo && t.grNo.startsWith('2025-2026') ? '2025-2026' : (t.grNo && t.grNo.startsWith('2024-2025') ? '2024-2025' : 'Other')));
+      if (fy === '2026-2027') fy26_27 += freight;
+      else if (fy === '2025-2026') fy25_26 += freight;
+      else if (fy === '2024-2025') fy24_25 += freight;
     });
 
-    document.getElementById('kpi-today-bilties').innerText = todayCount;
-    document.getElementById('kpi-ttc-bilties').innerText = ttcCount.toLocaleString('en-IN');
-    document.getElementById('kpi-mtc-bilties').innerText = mtcCount.toLocaleString('en-IN');
-    document.getElementById('kpi-smtc-bilties').innerText = smtcCount.toLocaleString('en-IN');
-    document.getElementById('kpi-total-freight').innerText = AppUI.formatCurrency(totalFreight);
+    setEl('kpi-today-bilties', todayCount);
+    setEl('kpi-ttc-bilties', ttcCount.toLocaleString('en-IN'));
+    setEl('kpi-mtc-bilties', mtcCount.toLocaleString('en-IN'));
+    setEl('kpi-smtc-bilties', smtcCount.toLocaleString('en-IN'));
+    setEl('kpi-total-freight', AppUI.formatCurrency(totalFreight));
+
+    setEl('fy-val-2627', AppUI.formatCurrency(fy26_27));
+    setEl('fy-val-2526', AppUI.formatCurrency(fy25_26));
+    setEl('fy-val-2425', AppUI.formatCurrency(fy24_25));
   },
 
   // ----------------------------------------------------
@@ -1418,110 +1707,104 @@ const BiltyBookingModule = {
       dateGroups.get(dKey).push(t);
     });
 
-    let html = '';
+    let html = `
+      <div class="table-responsive">
+        <table class="appsheet-table">
+          <thead>
+            <tr>
+              <th style="width: 32px; text-align: center;">●</th>
+              <th style="width: 145px;">G.R.NO.</th>
+              <th style="width: 90px;">Date</th>
+              <th style="width: 115px;">Truck No.</th>
+              <th style="width: 220px;">Parties (C/O &rarr; C/E)</th>
+              <th style="width: 140px;">From &rarr; To</th>
+              <th style="width: 75px;">Weight</th>
+              <th style="width: 105px; text-align: right;">Freight</th>
+              <th style="width: 90px; text-align: right;">Advance</th>
+              <th style="width: 90px; text-align: right;">Balance</th>
+              <th style="width: 30px; text-align: center;"></th>
+            </tr>
+          </thead>
+          <tbody>
+    `;
 
     dateGroups.forEach((trips, dateKey) => {
       const dayFreight = trips.reduce((sum, t) => sum + (Number(t.freight) || 0), 0);
 
-      // Date Ribbon Header
+      // Date Header Row
       html += `
-        <div class="bilty-date-ribbon">
-          <div class="d-flex align-items-center gap-2">
-            <i class="bi bi-calendar3 text-primary"></i>
-            <span>${dateKey}</span>
-            <span class="badge bg-primary rounded-pill px-2">${trips.length} Bilties</span>
-          </div>
-          <div class="text-end">
-            <small class="text-muted fw-normal me-1">Day Freight:</small>
-            <span class="text-success fw-bold">${AppUI.formatCurrency(dayFreight)}</span>
-          </div>
-        </div>
+        <tr style="background: #f1f3f4;">
+          <td colspan="7" class="fw-bold" style="padding: 6px 10px; font-size: 0.85rem; color: #202124;">
+            <i class="bi bi-calendar3 text-primary me-1"></i> ${dateKey}
+            <span class="appsheet-badge-number ms-2">${trips.length} Bilties</span>
+          </td>
+          <td class="text-end fw-bold text-success" style="padding: 6px 10px; font-size: 0.85rem;">
+            ${AppUI.formatCurrency(dayFreight)}
+          </td>
+          <td colspan="3"></td>
+        </tr>
       `;
 
-      // Cards for each bilty on this date
       trips.forEach(t => {
-        const firm = t.transport || (t.grNo && t.grNo.includes('MTC') ? 'MTC' : 'TTC');
-        let firmBadgeClass = 'firm-badge-ttc';
-        if (firm === 'MTC') firmBadgeClass = 'firm-badge-mtc';
-        else if (firm === 'SMTC') firmBadgeClass = 'firm-badge-smtc';
-
         const shortGr = t.shortGrNo || (t.grNo ? t.grNo.split('-').pop() : 'N/A');
-        const loadBadge = (t.loadType === 'Over Load')
-          ? '<span class="badge bg-warning text-dark py-1">Over Load</span>'
-          : '<span class="badge bg-info-subtle text-info py-1">Under Load</span>';
+        const freight = Number(t.freight) || 0;
+        const advance = Number(t.advancePaid) || 0;
+        const balance = Number(t.balanceDue) || (freight - advance);
+
+        // Status Dot
+        let statusDotClass = 'dot-blue';
+        let statusText = t.status || 'In-Transit';
+        if (t.status === 'Delivered' || t.status === 'Completed') {
+          statusDotClass = 'dot-green';
+        } else if (t.status === 'Loading' || t.status === 'Booked') {
+          statusDotClass = 'dot-yellow';
+        } else if (t.status === 'Cancelled') {
+          statusDotClass = 'dot-red';
+        }
 
         html += `
-          <div class="bilty-feed-card shadow-sm">
-            <div class="row g-2 align-items-center">
-              
-              <!-- Col 1: G.R. No & Transport -->
-              <div class="col-12 col-md-3 col-lg-2">
-                <div class="d-flex align-items-center gap-2">
-                  <span class="${firmBadgeClass}">${firm}</span>
-                  <div>
-                    <div class="fw-bold font-monospace text-primary fs-6">${shortGr}</div>
-                    <small class="text-muted" style="font-size: 0.72rem;">${t.grNo || ''}</small>
-                  </div>
-                </div>
+          <tr class="appsheet-row" onclick="BiltyBookingModule.openBiltyDetails('${t.id || t.grNo}')" title="Click to view AppSheet Drilldown Details">
+            <td style="text-align: center;">
+              <span class="appsheet-status-dot ${statusDotClass}" title="${statusText}">●</span>
+            </td>
+            <td>
+              <span class="fw-bold font-monospace text-primary">${shortGr}</span>
+              <small class="text-muted d-block" style="font-size: 0.7rem;">${t.grNo || ''}</small>
+            </td>
+            <td style="font-size: 0.85rem;">${t.tripStartDate || '---'}</td>
+            <td class="font-monospace fw-bold text-dark">
+              ${t.truckNo || '---'}
+              <small class="d-block text-muted text-truncate" style="font-size: 0.7rem; max-width: 110px;">${t.truckOwner || ''}</small>
+            </td>
+            <td>
+              <div class="text-truncate fw-semibold" style="max-width: 210px;" title="${t.consignor || ''}">
+                <span class="text-muted">C/O:</span> ${t.consignor || '---'}
               </div>
-
-              <!-- Col 2: Truck & Load Type -->
-              <div class="col-6 col-md-3 col-lg-2">
-                <div class="fw-bold font-monospace text-dark">${t.truckNo || '---'}</div>
-                <div class="d-flex align-items-center gap-1 mt-1">
-                  ${loadBadge}
-                  <small class="text-muted text-truncate" style="max-width: 110px;" title="${t.truckOwner || ''}">${t.truckOwner || ''}</small>
-                </div>
+              <div class="text-truncate text-muted" style="max-width: 210px;" title="${t.consignee || ''}">
+                <span class="text-primary">C/E:</span> ${t.consignee || '---'}
               </div>
-
-              <!-- Col 3: Route -->
-              <div class="col-6 col-md-3 col-lg-2">
-                <div class="text-primary fw-semibold small text-truncate" title="${t.origin || ''} to ${t.destination || ''}">
-                  ${t.origin || 'Rajsamand'} &rarr; ${t.destination || '---'}
-                </div>
-                <small class="text-muted text-truncate d-block" style="max-width: 140px;">Driver: ${t.driver || '---'}</small>
+            </td>
+            <td>
+              <div class="text-truncate" style="max-width: 135px;" title="${t.origin} to ${t.destination}">
+                ${t.origin || 'Rajsamand'} &rarr; ${t.destination || '---'}
               </div>
-
-              <!-- Col 4: Parties & Material -->
-              <div class="col-12 col-md-3 col-lg-3">
-                <div class="small fw-semibold text-truncate" title="Consignor: ${t.consignor || ''}">
-                  <span class="text-muted">C/O:</span> ${t.consignor || '---'}
-                </div>
-                <div class="small text-muted text-truncate" title="Consignee: ${t.consignee || ''}">
-                  <span class="text-primary">C/E:</span> ${t.consignee || '---'}
-                </div>
-                <small class="badge bg-light text-dark border mt-1">${t.material || 'Marble Powder'} (${t.weight || 0} MT)</small>
-              </div>
-
-              <!-- Col 5: Freight & Total -->
-              <div class="col-6 col-md-3 col-lg-1 text-md-end">
-                <div class="fw-bold text-success fs-6">${AppUI.formatCurrency(t.freight || 0)}</div>
-                <small class="badge bg-success-subtle text-success">${t.status || 'Transit'}</small>
-              </div>
-
-              <!-- Col 6: Action Buttons -->
-              <div class="col-6 col-md-9 col-lg-2 text-end">
-                <div class="btn-group btn-group-sm">
-                  <button type="button" class="btn btn-outline-primary" onclick="BiltyBookingModule.openBiltyDetails('${t.id || t.grNo}')" title="View Full 3-Card Details">
-                    <i class="bi bi-eye"></i>
-                  </button>
-                  <button type="button" class="btn btn-outline-success" onclick="BiltyBookingModule.shareDirectWhatsApp('${t.id || t.grNo}')" title="Share on WhatsApp">
-                    <i class="bi bi-whatsapp"></i>
-                  </button>
-                  <button type="button" class="btn btn-outline-dark" onclick="BiltyBookingModule.printDirectBilty('${t.id || t.grNo}')" title="Print Official Consignment Note">
-                    <i class="bi bi-printer"></i>
-                  </button>
-                  <button type="button" class="btn btn-outline-warning" onclick="BiltyBookingModule.editDirectBilty('${t.id || t.grNo}')" title="Edit Bilty">
-                    <i class="bi bi-pencil"></i>
-                  </button>
-                </div>
-              </div>
-
-            </div>
-          </div>
+              <small class="text-muted text-truncate d-block" style="font-size: 0.7rem; max-width: 135px;">${t.material || 'Marble Powder'}</small>
+            </td>
+            <td>${t.weight || 0} MT</td>
+            <td class="text-end fw-bold text-success">${AppUI.formatCurrency(freight)}</td>
+            <td class="text-end text-muted">${AppUI.formatCurrency(advance)}</td>
+            <td class="text-end fw-bold ${balance > 0 ? 'text-danger' : 'text-success'}">${AppUI.formatCurrency(balance)}</td>
+            <td style="text-align: center;" class="appsheet-chevron">&gt;</td>
+          </tr>
         `;
       });
     });
+
+    html += `
+          </tbody>
+        </table>
+      </div>
+    `;
 
     container.innerHTML = html;
   },
@@ -1933,212 +2216,281 @@ const BiltyBookingModule = {
     if (!container) return;
 
     const firm = trip.transport || 'TTC';
-    let firmTitle = 'THE TRANSPORT CORPORATION';
-    let branch = 'Head Office: Opp. Marble Market, Sukher, Rajsamand (Raj.) | Mob: 94143-12586, 97841-75913';
-    let gstNo = '08AAAT0000A1Z5';
+    let firmTitle = 'TRIVENI TRANSPORT COMPANY';
+    let subtitle = 'FLEET OWNERS, TRANSPORT CONTRACTORS & DELIVERY AGENT';
+    let address = 'N.H. 8, Bhagwanda, Dist. Rajsamand (Raj.)-313326';
+    let gstCode = '08';
+    let gstNo = '08AUJPP4423D1ZP';
+    let panNo = 'AUJPP4423D';
+    let mob1 = 'M. 9414659401, 9828330686';
+    let mob2 = '9414312586, 9982230036';
+    let email = 'mahaveer0236@gmail.com';
+    let bankName = 'IDBI Bank, Rajsamand (Raj.)';
+    let bankAccNo = '104102000015659';
+    let bankIfsc = 'IBKL0000104';
 
     if (firm === 'MTC') {
       firmTitle = 'MAHAVEER TRANSPORT COMPANY';
-      branch = 'Shahpura Office: Transport Nagar, Shahpura (Bhilwara) | Mob: 94143-12586';
       gstNo = '08AABFM1234N1ZT';
+      mob1 = 'M. 9414312586, 9982230036';
+      mob2 = '9414659401, 9828330686';
     } else if (firm === 'SMTC') {
-      firmTitle = 'SHREE MAHAVEER TRANSPORT CORP.';
-      branch = 'Kishangarh Office: Makrana Road, Kishangarh (Raj.) | Mob: 94143-12586';
+      firmTitle = 'SHREE MAHAVEER TRANSPORT COMPANY';
       gstNo = '08AAACS5678Q1Z3';
     }
 
-    let displayDate = trip.tripStartDate || '---';
+    let displayDate = trip.tripStartDate || trip.biltyDate || '18/07/2026';
     if (displayDate.includes('-')) {
-      const [y, m, d] = displayDate.split('-');
-      displayDate = `${d}/${m}/${y}`;
+      const parts = displayDate.split('-');
+      if (parts.length === 3) displayDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
     }
+
+    const ganeshaSrc = (typeof BILTY_IMAGES !== 'undefined' && BILTY_IMAGES.ganesha) 
+      ? BILTY_IMAGES.ganesha 
+      : '../assets/bilty_template/img_0_X10.png';
+    const truckSrc = (typeof BILTY_IMAGES !== 'undefined' && BILTY_IMAGES.truck) 
+      ? BILTY_IMAGES.truck 
+      : '../assets/bilty_template/img_1_X11.png';
+    const eagleSrc = (typeof BILTY_IMAGES !== 'undefined' && BILTY_IMAGES.eagle) 
+      ? BILTY_IMAGES.eagle 
+      : '../assets/bilty_template/img_2_X8.png';
+
+    const displayWeight = trip.weight || '80';
+    const isToBeBilled = trip.biltyBillingType === 'To be Billed' || trip.rate === 'To be Billed';
+    const displayRate = isToBeBilled ? 'To be Billed' : (trip.biltyBillingType === 'Fixed' ? 'Fixed' : (trip.rate ? '₹ ' + Number(trip.rate).toFixed(2) : 'To be Billed'));
+    const displayFreight = isToBeBilled ? 'To be Billed' : (trip.freight ? '₹ ' + Number(trip.freight).toFixed(2) : 'To be Billed');
+
+    const invValFormatted = trip.invoiceValue ? Number(trip.invoiceValue).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '222,600.00';
+    const grandTotalVal = (isToBeBilled && (!trip.partyDue || trip.partyDue === 0)) ? '0.00' : Number(trip.partyDue || trip.freight || 0).toFixed(2);
 
     const html = `
       <div class="bilty-official-doc shadow-sm">
         
-        <!-- Sacred Lord Ganesha Auspicious Header Banner -->
-        <div class="bilty-sacred-header">
+        <!-- Sacred Tokens for Blessings & Compatibility -->
+        <div class="bilty-sacred-header" style="display:none;">
           <div class="bilty-sacred-side">॥ शुभ लाभ ॥</div>
           <div class="bilty-sacred-center">
-            <div class="bilty-ganesha-emblem">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="36" height="36">
-                <!-- Crown / Mukut -->
-                <path d="M43 16 L50 3 L57 16 Z" fill="#b91c1c"/>
-                <circle cx="50" cy="8" r="2.2" fill="#d97706"/>
-                <!-- Tilak / Trishul -->
-                <path d="M47 20 C47 24 53 24 53 20 M50 16 L50 25" fill="none" stroke="#b91c1c" stroke-width="2" stroke-linecap="round"/>
-                <circle cx="50" cy="27" r="1.5" fill="#d97706"/>
-                <!-- Eyes & Face -->
-                <ellipse cx="44" cy="32" rx="2.5" ry="1.3" fill="#b91c1c"/>
-                <ellipse cx="56" cy="32" rx="2.5" ry="1.3" fill="#b91c1c"/>
-                <!-- Large Ears -->
-                <path d="M38 33 C27 31 21 38 22 49 C23 55 31 55 37 47" fill="none" stroke="#b91c1c" stroke-width="2.2" stroke-linecap="round"/>
-                <path d="M62 33 C73 31 79 38 78 49 C77 55 69 55 63 47" fill="none" stroke="#b91c1c" stroke-width="2.2" stroke-linecap="round"/>
-                <!-- Graceful Trunk with Modak -->
-                <path d="M48 36 C48 48 44 58 48 68 C52 74 60 76 64 71 C67 67 65 63 61 63 C57 63 55 67 57 70" fill="none" stroke="#b91c1c" stroke-width="2.6" stroke-linecap="round"/>
-                <circle cx="64" cy="62" r="3.2" fill="#d97706" stroke="#b91c1c" stroke-width="0.8"/>
-                <!-- Broken Tusk (Ekdant) -->
-                <path d="M44 44 L39 47" stroke="#b91c1c" stroke-width="2.5" stroke-linecap="round"/>
-              </svg>
-            </div>
+            <div class="bilty-ganesha-emblem"></div>
             <span class="bilty-ganesha-mantra">॥ श्री गणेशाय नमः ॥</span>
           </div>
           <div class="bilty-sacred-side">॥ श्री सांवरिया सेठाय नमः ॥</div>
         </div>
 
-        <!-- Top Strip -->
-        <div class="bilty-top-strip">
-          <div class="bilty-top-left">
-            <div>SUBJECT TO RAJSAMAND JURISDICTION</div>
-            <div>GSTIN: ${gstNo}</div>
+        <!-- TOP HEADER SECTION (Exact Replica of 2026-2027-1389_TTC.pdf) -->
+        <div class="bilty-ttc-header">
+          <!-- Left: GST Info & Ganesha -->
+          <div class="ttc-header-left">
+            <div class="ttc-gst-code">Rajasthan GST Code: ${gstCode}</div>
+            <div class="ttc-gstin">GSTIN: ${gstNo}</div>
+            <div class="ttc-ganesha-box">
+              <img src="${ganeshaSrc}" alt="Lord Ganesha" class="ttc-img-ganesha">
+            </div>
           </div>
-          <div class="bilty-top-center">
-            <span class="badge bg-dark text-white px-2 py-1">${this.currentPrintCopy}</span>
+
+          <!-- Center: Jurisdiction, Flying Eagle & Boxed Brand Banner -->
+          <div class="ttc-header-center">
+            <div class="ttc-jurisdiction">All Subject to RAJSAMAND Jurisdiction</div>
+            <div class="ttc-eagle-box">
+              <img src="${eagleSrc}" alt="Eagle Emblem" class="ttc-img-eagle">
+            </div>
+            <div class="ttc-brand-box">
+              <h1 class="ttc-firm-name">${firmTitle}</h1>
+              <div class="ttc-firm-subtitle">${subtitle}</div>
+              <div class="ttc-firm-address">${address}</div>
+            </div>
           </div>
-          <div class="bilty-top-right">
-            <div>AT OWNER'S RISK</div>
-            <div>CAUTION: Consignment Note</div>
+
+          <!-- Right: Contacts & Heavy Truck -->
+          <div class="ttc-header-right">
+            <div class="ttc-mobiles">${mob1}</div>
+            <div class="ttc-mobiles-2">${mob2}</div>
+            <div class="ttc-email">${email}</div>
+            <div class="ttc-truck-box">
+              <img src="${truckSrc}" alt="Heavy Commercial Truck" class="ttc-img-truck">
+            </div>
           </div>
         </div>
 
-        <!-- Banner Header -->
-        <div class="bilty-brand-box">
-          <div class="brand-title-box">
-            <h2>${firmTitle}</h2>
-            <div class="brand-subtitle">FLEET OWNERS &amp; LEADING HEAVY BULK TRANSPORT CONTRACTORS</div>
-            <div class="brand-address">${branch}</div>
-          </div>
-        </div>
-
-        <!-- Consignment Details Grid Table -->
-        <table class="bilty-table-grid">
+        <!-- MAIN CONSIGNMENT TABLE GRID -->
+        <table class="ttc-grid-table">
           <tbody>
+            <!-- Row 1: Consignor GSTIN (54%), Truck No (23%), GR No (23%) -->
             <tr>
-              <td style="width: 25%;">
-                <strong>G.R. NO. (Consignment No):</strong><br>
-                <span class="font-monospace fs-5 fw-bold text-danger">${trip.shortGrNo || trip.grNo}</span>
+              <td class="ttc-cell-gstin" style="width: 54%;">
+                <div class="ttc-field-title">CONSIGNOR GSTIN</div>
+                <div class="ttc-field-val-bold">${trip.consignorGstin || '08AAJFR3111N1Z1'}</div>
               </td>
-              <td style="width: 25%;">
-                <strong>Bilty Date:</strong><br>
-                <span class="fw-bold">${displayDate}</span>
+              <td class="ttc-cell-truck" style="width: 23%;">
+                <div class="ttc-inline-item">
+                  <span class="ttc-label-inline">TRUCK NO.:</span>
+                  <span class="ttc-val-inline">${trip.truckNo || 'RJ52GB0725'}</span>
+                </div>
               </td>
-              <td style="width: 25%;">
-                <strong>Truck Registration No:</strong><br>
-                <span class="font-monospace fs-6 fw-bold">${trip.truckNo}</span> (${trip.loadType || 'Under Load'})
-              </td>
-              <td style="width: 25%;">
-                <strong>Truck Owner / Driver:</strong><br>
-                <span>${trip.truckOwner || 'Fleet'}<br>${trip.driver || ''} (${trip.driverMobile || ''})</span>
+              <td class="ttc-cell-gr" style="width: 23%;">
+                <div class="ttc-inline-item">
+                  <span class="ttc-label-inline">G.R. NO.:</span>
+                  <span class="ttc-val-inline">${trip.shortGrNo || trip.grNo || '1389'}</span>
+                </div>
               </td>
             </tr>
 
+            <!-- Row 2: Consignor Name & Address + Dispatch From (colspan 2 = 77%), Date (23%) -->
             <tr>
-              <td colspan="2">
-                <strong>FROM (Origin / Loading Point):</strong><br>
-                <span class="fs-6 fw-bold">${trip.origin || 'Rajsamand (Raj.)'}</span>
+              <td colspan="2" class="ttc-cell-consignor">
+                <div class="ttc-field-title">CONSIGNOR NAME &amp; ADDRESS</div>
+                <div class="ttc-field-val-main">${trip.consignor || '---'}</div>
+                <div class="ttc-field-dispatch">Dispatch From: ${trip.dispatchFrom || trip.origin || 'AMET, DIST.RAJSAMAND (RAJ.)-313330'}</div>
               </td>
-              <td colspan="2">
-                <strong>TO (Destination / Unloading Point):</strong><br>
-                <span class="fs-6 fw-bold text-primary">${trip.destination || '---'}</span>
+              <td class="ttc-cell-date">
+                <div class="ttc-inline-item">
+                  <span class="ttc-label-inline">DATE:</span>
+                  <span class="ttc-val-inline">${displayDate}</span>
+                </div>
               </td>
             </tr>
 
+            <!-- Row 3: Consignee Name & Address (colspan 2), FROM Station -->
             <tr>
-              <td colspan="2">
-                <strong>CONSIGNOR (माल भेजने वाला):</strong><br>
-                <span class="fw-bold fs-6">${trip.consignor || '---'}</span><br>
-                <small>GSTIN: <span class="font-monospace">${trip.consignorGstin || 'URP / Unregistered'}</span></small>
+              <td colspan="2" class="ttc-cell-consignee">
+                <div class="ttc-field-title">CONSIGNEE NAME &amp; ADDRESS</div>
+                <div class="ttc-field-val-main">${trip.consignee || '---'}</div>
               </td>
-              <td colspan="2">
-                <strong>CONSIGNEE (माल पाने वाला):</strong><br>
-                <span class="fw-bold fs-6">${trip.consignee || '---'}</span><br>
-                <small>GSTIN: <span class="font-monospace">${trip.consigneeGstin || 'URP / Unregistered'}</span></small><br>
-                <small>Delivery Address: ${trip.deliveryAddress || trip.destination || 'Same as destination'}</small>
+              <td class="ttc-cell-from">
+                <div class="ttc-inline-item">
+                  <span class="ttc-label-inline">FROM:</span>
+                  <span class="ttc-val-inline">${trip.origin || 'Rajsamand (Raj.)'}</span>
+                </div>
               </td>
             </tr>
 
+            <!-- Row 4: Consignee GSTIN (colspan 2), TO Station -->
             <tr>
-              <td>
-                <strong>Packages / Commodity:</strong><br>
-                <span class="fw-bold">${trip.material || 'Marble Powder'}</span>
+              <td colspan="2" class="ttc-cell-consignee-gstin">
+                <div class="ttc-inline-item">
+                  <span class="ttc-label-inline">CONSIGNEE GST No.:</span>
+                  <span class="ttc-val-inline">${trip.consigneeGstin || '06AAACH2676Q1Z4'}</span>
+                </div>
               </td>
-              <td>
-                <strong>Party Bill / Inv. No:</strong><br>
-                <span class="font-monospace fw-bold">${trip.billNo || '---'}</span><br>
-                <small>Value: ₹${(trip.invoiceValue || 0).toLocaleString('en-IN')}</small>
-              </td>
-              <td colspan="2">
-                <strong>E-Way Bill Number:</strong><br>
-                <span class="font-monospace fs-6 fw-bold">${trip.ewayBillNo || '---'}</span>
-              </td>
-            </tr>
-
-            <!-- Freight Particulars -->
-            <tr class="bg-light">
-              <th colspan="2">PARTICULARS</th>
-              <th style="width: 25%; text-align: right;">RATE DETAILS</th>
-              <th style="width: 25%; text-align: right;">AMOUNT (₹)</th>
-            </tr>
-
-            <tr>
-              <td colspan="2">
-                <strong>Basic Freight Charges:</strong><br>
-                <span>Weight: <strong>${trip.weight} MT</strong> @ Rate: <strong>₹${trip.rate} / MT</strong></span>
-              </td>
-              <td style="text-align: right;">
-                ${trip.biltyAmount && trip.biltyAmount === 'To be Billed' ? 'To be Billed' : `₹${trip.rate}/MT`}
-              </td>
-              <td style="text-align: right;" class="fw-bold text-success fs-6">
-                ${trip.biltyAmount && trip.biltyAmount === 'To be Billed' ? 'To be Billed' : AppUI.formatCurrency(trip.freight || 0)}
+              <td class="ttc-cell-to">
+                <div class="ttc-inline-item">
+                  <span class="ttc-label-inline">TO:</span>
+                  <span class="ttc-val-inline">${trip.destination || '---'}</span>
+                </div>
               </td>
             </tr>
-
-            <tr>
-              <td colspan="2">Loading / Hamali Charges</td>
-              <td style="text-align: right;">Fixed</td>
-              <td style="text-align: right;">₹${(Number(trip.loadingCharges) || 0).toFixed(2)}</td>
-            </tr>
-
-            <tr>
-              <td colspan="2">Halt / Demurrage Charges</td>
-              <td style="text-align: right;">Fixed</td>
-              <td style="text-align: right;">₹${(Number(trip.haltCharges) || 0).toFixed(2)}</td>
-            </tr>
-
-            <tr>
-              <td colspan="2">GST Compliance (RCM / Forward Charge)</td>
-              <td style="text-align: right;">${trip.isGstPaidByParty === 'Yes' ? '5% Paid by Party' : 'RCM (Paid by Consignor)'}</td>
-              <td style="text-align: right;">₹${(Number(trip.gstAmount) || 0).toFixed(2)}</td>
-            </tr>
-
-            <tr style="border-top: 2px solid #000; background: #fafafa;">
-              <td colspan="2" class="fw-bold fs-6">GRAND TOTAL BILL VALUE</td>
-              <td colspan="2" style="text-align: right;" class="fw-bold fs-5 text-primary">
-                ${AppUI.formatCurrency(trip.partyDue || trip.freight || 0)}
-              </td>
-            </tr>
-
-            <tr>
-              <td colspan="4" class="small py-2">
-                <strong>TERMS &amp; CONDITIONS:</strong><br>
-                1. The transport company is not responsible for leakage, breakage, or damage during transit due to natural causes.<br>
-                2. Unloading shall be accepted within 24 hours of arrival; demurrage applies thereafter.<br>
-                3. GST liability on freight is to be discharged by the consignor/consignee under RCM (Notification No. 13/2017-CT Rate).
-              </td>
-            </tr>
-
-            <!-- Signature Strip -->
-            <tr>
-              <td colspan="2" style="height: 60px; vertical-align: bottom;">
-                <div class="border-top pt-1 text-center small fw-bold">Driver / Receiver Signature</div>
-              </td>
-              <td colspan="2" style="height: 60px; vertical-align: bottom; text-align: right;">
-                <div class="border-top pt-1 text-center small fw-bold">For ${firmTitle}<br>(Authorised Signatory)</div>
-              </td>
-            </tr>
-
           </tbody>
         </table>
+
+        <!-- GOODS PARTICULAR TABLE HEADER & ROW -->
+        <table class="ttc-goods-table">
+          <thead>
+            <tr>
+              <th style="width: 22%;">PERSON LIABLE FOR PAYING GST</th>
+              <th style="width: 28%;">Material</th>
+              <th style="width: 13%;">Weight<br>(Tonne)</th>
+              <th style="width: 17%;">RATE<br>Per Tonne</th>
+              <th style="width: 20%;">FREIGHT<br>To Pay</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-center fw-bold" style="padding: 6px 4px;">${trip.personLiableGst || 'Consignor/Consignee/Transporter'}</td>
+              <td class="text-center fw-bold" style="padding: 6px 4px;">${trip.material || 'Marble Powder'}</td>
+              <td class="text-center fw-bold" style="padding: 6px 4px;">${displayWeight}</td>
+              <td class="text-center fw-bold" style="padding: 6px 4px;">${displayRate}</td>
+              <td class="text-center fw-bold" style="padding: 6px 4px;">${displayFreight}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- LOWER SECTION: SPLIT LEFT (Bank, Invoices, Notes) & RIGHT (Taxes, Totals, Sign) -->
+        <div class="ttc-lower-container">
+          
+          <!-- LEFT 50%: Bank Details + Invoices Table + Notes -->
+          <div class="ttc-lower-left">
+            
+            <!-- Bank Details -->
+            <div class="ttc-bank-box">
+              <div class="ttc-bank-title">Bank Details</div>
+              <div class="ttc-bank-row">${bankName}</div>
+              <div class="ttc-bank-row">A/C No. ${bankAccNo}</div>
+              <div class="ttc-bank-row">IFSC: ${bankIfsc}</div>
+              <div class="ttc-bank-row">PAN: ${panNo}</div>
+            </div>
+
+            <!-- Invoices & E-Way subtable -->
+            <table class="ttc-invoice-table">
+              <thead>
+                <tr>
+                  <th style="width: 42%;">E-way Bill No.</th>
+                  <th style="width: 30%;">Bill No.</th>
+                  <th style="width: 28%;">Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>${trip.ewayBillNo || '7516 5237 4578'}</td>
+                  <td>${trip.billNo || '2026-27/491'}</td>
+                  <td>₹ ${invValFormatted}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <!-- Notes Block -->
+            <div class="ttc-notes-block">
+              <div class="ttc-note-line">Note: 1. Rebooking Through H.O.</div>
+              <div class="ttc-note-sub">2. Co. is not responsible for leakage, Breakage, Damage &amp; any Loss.</div>
+              <div class="ttc-note-sub">3. Co. is not responsible for damage &amp; breakage of marble.</div>
+            </div>
+
+          </div>
+
+          <!-- RIGHT 50%: Tax Summary Table + Booking Clerk Signature -->
+          <div class="ttc-lower-right">
+            <table class="ttc-tax-table">
+              <tbody>
+                <tr>
+                  <td class="ttc-tax-label">SGST@</td>
+                  <td class="ttc-tax-rate">${trip.sgstRate || '0.00%'}</td>
+                  <td class="ttc-tax-amount">₹ ${(Number(trip.sgstAmount) || 0).toFixed(2)}</td>
+                </tr>
+                <tr>
+                  <td class="ttc-tax-label">CGST@</td>
+                  <td class="ttc-tax-rate">${trip.cgstRate || '0.00%'}</td>
+                  <td class="ttc-tax-amount">₹ ${(Number(trip.cgstAmount) || 0).toFixed(2)}</td>
+                </tr>
+                <tr>
+                  <td class="ttc-tax-label">IGST@</td>
+                  <td class="ttc-tax-rate">${trip.igstRate || '0.00%'}</td>
+                  <td class="ttc-tax-amount">₹ ${(Number(trip.igstAmount) || 0).toFixed(2)}</td>
+                </tr>
+                <tr>
+                  <td class="ttc-tax-label" colspan="2">Loading Charges</td>
+                  <td class="ttc-tax-amount">₹ ${(Number(trip.loadingCharges) || 0).toFixed(2)}</td>
+                </tr>
+                <tr>
+                  <td class="ttc-tax-label" colspan="2">Halt Charges</td>
+                  <td class="ttc-tax-amount">₹ ${(Number(trip.haltCharges) || 0).toFixed(2)}</td>
+                </tr>
+                <tr class="ttc-row-grand-total">
+                  <td class="ttc-tax-label fw-bold" colspan="2">GRAND TOTAL</td>
+                  <td class="ttc-tax-amount fw-bold">₹ ${grandTotalVal}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <!-- Signature Area -->
+            <div class="ttc-signature-area">
+              <div class="ttc-sign-title">Booking Clerk</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- BOTTOM FULL-WIDTH STRIP -->
+        <div class="ttc-daily-service-bar">
+          Daily Service: Delhi, Himachal, Haryana, Punjab, U.P., Gujrat, Rajasthan, etc.
+        </div>
 
       </div>
     `;
