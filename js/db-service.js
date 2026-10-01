@@ -49,7 +49,7 @@ class DBService {
         const snapshot = await this.db.collection(collectionName).get();
         if (!snapshot.empty) {
           cloudItems = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-          if (collectionName !== 'trips' && collectionName !== 'debts' && collectionName !== 'parties' && collectionName !== 'truckOwners' && collectionName !== 'cheques') {
+          if (collectionName !== 'trips' && collectionName !== 'debts' && collectionName !== 'parties' && collectionName !== 'truckOwners' && collectionName !== 'cheques' && collectionName !== 'drivers') {
             return cloudItems;
           }
         }
@@ -76,6 +76,10 @@ class DBService {
 
     if (collectionName === 'cheques') {
       return this.getAllCheques(cloudItems);
+    }
+
+    if (collectionName === 'drivers') {
+      return this.getAllDrivers(cloudItems);
     }
 
     // LocalStorage Fallback for other collections
@@ -424,6 +428,54 @@ class DBService {
     return all;
   }
 
+  getAllDrivers(cloudItems = []) {
+    const baseDrivers = (typeof window !== 'undefined' && Array.isArray(window.INITIAL_DRIVERS))
+      ? window.INITIAL_DRIVERS
+      : [];
+
+    const editedMap = JSON.parse(localStorage.getItem('tms_edited_drivers') || '{}');
+    const deletedList = JSON.parse(localStorage.getItem('tms_deleted_drivers') || '[]');
+    const deletedSet = new Set(deletedList.map(String));
+    const customDrivers = JSON.parse(localStorage.getItem('tms_custom_drivers') || '[]');
+
+    const driverMap = new Map();
+
+    // 1. Add base drivers from sample-drivers-data.js
+    for (const d of baseDrivers) {
+      if (!deletedSet.has(String(d.id))) {
+        driverMap.set(String(d.id), editedMap[d.id] ? { ...d, ...editedMap[d.id] } : d);
+      }
+    }
+
+    // 2. Add custom registered drivers
+    for (const d of customDrivers) {
+      if (!deletedSet.has(String(d.id))) {
+        driverMap.set(String(d.id), editedMap[d.id] ? { ...d, ...editedMap[d.id] } : d);
+      }
+    }
+
+    // 3. Add cloud items from Firestore
+    if (Array.isArray(cloudItems)) {
+      for (const d of cloudItems) {
+        if (!deletedSet.has(String(d.id))) {
+          driverMap.set(String(d.id), { ...(driverMap.get(String(d.id)) || {}), ...d });
+        }
+      }
+    }
+
+    // Fallback to legacy local storage if empty
+    if (driverMap.size === 0) {
+      const legacy = JSON.parse(localStorage.getItem('tms_drivers') || '[]');
+      legacy.forEach(d => {
+        if (d.name) driverMap.set(String(d.id), d);
+      });
+    }
+
+    const all = Array.from(driverMap.values());
+    all.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+    return all;
+  }
+
   async recordOwnerPayment(ownerId, paymentData) {
     const owner = await this.getById('truckOwners', ownerId);
     if (!owner) throw new Error('Owner not found');
@@ -576,6 +628,28 @@ class DBService {
           console.log(` Cloud Synced: cheques/${newItem.id}`);
         } catch (err) {
           console.warn('Firestore sync error for cheques:', err.message);
+        }
+      }
+      return newItem;
+    }
+
+    if (collectionName === 'drivers') {
+      const newItem = {
+        ...itemData,
+        id: itemData.id || `driver_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      const customDrivers = JSON.parse(localStorage.getItem('tms_custom_drivers') || '[]');
+      customDrivers.unshift(newItem);
+      localStorage.setItem('tms_custom_drivers', JSON.stringify(customDrivers));
+
+      if (this.isFirebaseReady) {
+        try {
+          await this.db.collection('drivers').doc(newItem.id).set(newItem);
+          console.log(` Cloud Synced: drivers/${newItem.id}`);
+        } catch (err) {
+          console.warn('Firestore sync error for drivers:', err.message);
         }
       }
       return newItem;
@@ -754,6 +828,34 @@ class DBService {
       return updatedItem;
     }
 
+    if (collectionName === 'drivers') {
+      let customDrivers = JSON.parse(localStorage.getItem('tms_custom_drivers') || '[]');
+      const customIdx = customDrivers.findIndex(d => String(d.id) === String(id));
+      let updatedItem = null;
+
+      if (customIdx >= 0) {
+        customDrivers[customIdx] = { ...customDrivers[customIdx], ...updatedFields, updatedAt };
+        updatedItem = customDrivers[customIdx];
+        localStorage.setItem('tms_custom_drivers', JSON.stringify(customDrivers));
+      } else {
+        const editedMap = JSON.parse(localStorage.getItem('tms_edited_drivers') || '{}');
+        const existing = await this.getById('drivers', id);
+        updatedItem = { ...(existing || {}), id, ...updatedFields, updatedAt };
+        editedMap[id] = updatedItem;
+        localStorage.setItem('tms_edited_drivers', JSON.stringify(editedMap));
+      }
+
+      if (this.isFirebaseReady) {
+        try {
+          await this.db.collection('drivers').doc(String(id)).set(updatedItem, { merge: true });
+          console.log(` Cloud Updated: drivers/${id}`);
+        } catch (err) {
+          console.warn('Firestore update error for drivers:', err.message);
+        }
+      }
+      return updatedItem;
+    }
+
     // Update locally
     const items = await this.getAll(collectionName);
     const index = items.findIndex(item => String(item.id) === String(id));
@@ -884,6 +986,28 @@ class DBService {
           console.log(` Cloud Deleted: cheques/${id}`);
         } catch (err) {
           console.warn('Firestore delete error for cheques:', err.message);
+        }
+      }
+      return true;
+    }
+
+    if (collectionName === 'drivers') {
+      let customDrivers = JSON.parse(localStorage.getItem('tms_custom_drivers') || '[]');
+      customDrivers = customDrivers.filter(d => String(d.id) !== String(id));
+      localStorage.setItem('tms_custom_drivers', JSON.stringify(customDrivers));
+
+      const deletedList = JSON.parse(localStorage.getItem('tms_deleted_drivers') || '[]');
+      if (!deletedList.includes(String(id))) {
+        deletedList.push(String(id));
+        localStorage.setItem('tms_deleted_drivers', JSON.stringify(deletedList));
+      }
+
+      if (this.isFirebaseReady) {
+        try {
+          await this.db.collection('drivers').doc(String(id)).delete();
+          console.log(` Cloud Deleted: drivers/${id}`);
+        } catch (err) {
+          console.warn('Firestore delete error for drivers:', err.message);
         }
       }
       return true;
