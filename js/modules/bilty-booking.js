@@ -74,12 +74,53 @@ const BiltyBookingModule = {
   // DATA LOADING
   // ----------------------------------------------------
   async loadAllData() {
-    this.allTrips = await dbService.getAll('trips');
-    this.parties = await dbService.getAll('parties');
-    this.truckOwners = await dbService.getAll('truckOwners');
-    this.drivers = await dbService.getAll('drivers');
-    this.brokers = await dbService.getAll('brokers');
-    this.debts = await dbService.getAll('debts');
+    try {
+      this.allTrips = await dbService.getAll('trips');
+    } catch (e) {
+      console.warn("Trips load fallback:", e);
+      this.allTrips = (typeof window !== 'undefined' && Array.isArray(window.INITIAL_EXCEL_TRIPS)) ? window.INITIAL_EXCEL_TRIPS : [];
+    }
+
+    try {
+      this.parties = await dbService.getAll('parties');
+    } catch (e) {
+      console.warn("Parties load fallback:", e);
+      this.parties = (typeof window !== 'undefined' && Array.isArray(window.INITIAL_EXCEL_PARTIES)) ? window.INITIAL_EXCEL_PARTIES : [];
+    }
+    // Hard fallback: if parties is empty or small, immediately load all 3,396 parties from window.INITIAL_EXCEL_PARTIES
+    if ((!this.parties || this.parties.length <= 5) && typeof window !== 'undefined' && Array.isArray(window.INITIAL_EXCEL_PARTIES)) {
+      this.parties = window.INITIAL_EXCEL_PARTIES;
+    }
+
+    try {
+      this.truckOwners = await dbService.getAll('truckOwners');
+    } catch (e) {
+      this.truckOwners = (typeof window !== 'undefined' && Array.isArray(window.INITIAL_TRUCK_OWNERS)) ? window.INITIAL_TRUCK_OWNERS : [];
+    }
+    if ((!this.truckOwners || this.truckOwners.length <= 5) && typeof window !== 'undefined' && Array.isArray(window.INITIAL_TRUCK_OWNERS)) {
+      this.truckOwners = window.INITIAL_TRUCK_OWNERS;
+    }
+
+    try {
+      this.drivers = await dbService.getAll('drivers');
+    } catch (e) {
+      this.drivers = (typeof window !== 'undefined' && Array.isArray(window.INITIAL_DRIVERS)) ? window.INITIAL_DRIVERS : [];
+    }
+    if ((!this.drivers || this.drivers.length === 0) && typeof window !== 'undefined' && Array.isArray(window.INITIAL_DRIVERS)) {
+      this.drivers = window.INITIAL_DRIVERS;
+    }
+
+    try {
+      this.brokers = await dbService.getAll('brokers');
+    } catch (e) {
+      this.brokers = [];
+    }
+
+    try {
+      this.debts = await dbService.getAll('debts');
+    } catch (e) {
+      this.debts = (typeof window !== 'undefined' && Array.isArray(window.SAMPLE_DEBTS_DATA)) ? window.SAMPLE_DEBTS_DATA : [];
+    }
 
     // Auto-enrich parties from real trips if parties table is small
     if (this.parties.length <= 5 && Array.isArray(this.allTrips)) {
@@ -152,13 +193,14 @@ const BiltyBookingModule = {
     const expressConsignor = document.getElementById('express-consignor');
     const expressConsignee = document.getElementById('express-consignee');
 
-    if (consignorSelect && consigneeSelect) {
+    if (consignorSelect || consigneeSelect) {
       let optionsHTML = '<option value="">-- Select Party / Enter Name --</option>';
-      this.parties.forEach(p => {
+      (this.parties || []).forEach(p => {
+        if (!p || !p.name) return;
         optionsHTML += `<option value="${p.name}" data-gstin="${p.gstin || ''}" data-address="${p.address || ''}">${p.name}</option>`;
       });
-      consignorSelect.innerHTML = optionsHTML;
-      consigneeSelect.innerHTML = optionsHTML;
+      if (consignorSelect) consignorSelect.innerHTML = optionsHTML;
+      if (consigneeSelect) consigneeSelect.innerHTML = optionsHTML;
       if (expressConsignor) expressConsignor.innerHTML = optionsHTML;
       if (expressConsignee) expressConsignee.innerHTML = optionsHTML;
     }

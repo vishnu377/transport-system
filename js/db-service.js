@@ -3,6 +3,52 @@
  * Seamlessly connects to Firebase Cloud Firestore with automatic offline fallback
  */
 
+// Universal LocalStorage Quota Guard & Auto-Purge
+(function() {
+  if (typeof window === 'undefined' || !window.localStorage) return;
+  try {
+    // Proactively delete legacy 5.4MB full trips dump immediately
+    window.localStorage.removeItem('tms_trips');
+    window.localStorage.removeItem('tms_excel_imported_v1');
+  } catch (e) {}
+
+  const originalSetItem = window.localStorage.setItem.bind(window.localStorage);
+  window.localStorage.setItem = function(key, value) {
+    try {
+      return originalSetItem(key, value);
+    } catch (err) {
+      if (err.name === 'QuotaExceededError' || err.code === 22 || err.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+        console.warn(`[QuotaGuard] Storage quota reached while saving "${key}". Auto-purging non-essential caches...`);
+        try {
+          const purgeKeys = [
+            'tms_trips',
+            'tms_excel_imported_v1',
+            'tms_parties',
+            'tms_truckOwners',
+            'tms_debts',
+            'tms_cheques',
+            'tms_seeded_phase2',
+            'tms_seeded_phase3',
+            'tms_seeded_phase4',
+            'tms_seeded_users',
+            'tms_seeded_v1'
+          ];
+          purgeKeys.forEach(k => {
+            try { window.localStorage.removeItem(k); } catch (pe) {}
+          });
+
+          // Retry
+          return originalSetItem(key, value);
+        } catch (retryErr) {
+          console.warn(`[QuotaGuard] Unable to persist "${key}" to localStorage:`, retryErr.message);
+          return; // Absorb without crashing the page!
+        }
+      }
+      console.warn(`[QuotaGuard] Storage error for "${key}":`, err.message);
+    }
+  };
+})();
+
 class DBService {
   constructor() {
     this.isFirebaseReady = false;
@@ -182,7 +228,7 @@ class DBService {
 
   // Clear all trips (removes old Excel trips and custom trips)
   clearAllTrips() {
-    localStorage.setItem('tms_base_trips_cleared', 'true');
+    this.safeSetItem('tms_base_trips_cleared', 'true');
     localStorage.removeItem('tms_custom_trips');
     localStorage.removeItem('tms_edited_trips');
     localStorage.removeItem('tms_deleted_trips');
@@ -207,7 +253,7 @@ class DBService {
       localStorage.removeItem('tms_custom_debts');
       localStorage.removeItem('tms_edited_debts');
       localStorage.removeItem('tms_deleted_debts');
-      localStorage.setItem('tms_debts_data_version', CURRENT_DEBTS_VERSION);
+      this.safeSetItem('tms_debts_data_version', CURRENT_DEBTS_VERSION);
     }
 
     const isBaseCleared = localStorage.getItem('tms_base_debts_cleared') === 'true';
@@ -257,7 +303,7 @@ class DBService {
   }
 
   clearAllDebts() {
-    localStorage.setItem('tms_base_debts_cleared', 'true');
+    this.safeSetItem('tms_base_debts_cleared', 'true');
     localStorage.removeItem('tms_custom_debts');
     localStorage.removeItem('tms_edited_debts');
     localStorage.removeItem('tms_deleted_debts');
@@ -269,9 +315,7 @@ class DBService {
     localStorage.removeItem('tms_custom_debts');
     localStorage.removeItem('tms_edited_debts');
     localStorage.removeItem('tms_deleted_debts');
-    if (typeof window !== 'undefined' && window.SAMPLE_DEBTS_DATA) {
-      localStorage.setItem('tms_debts', JSON.stringify(window.SAMPLE_DEBTS_DATA));
-    }
+    localStorage.removeItem('tms_debts');
   }
 
   async recordReturnedAmount(debtId, paymentData) {
@@ -311,7 +355,7 @@ class DBService {
             if (Array.isArray(arr)) {
               const cleaned = arr.filter(p => p && p.name && p.name !== 'Unnamed Party');
               if (cleaned.length !== arr.length) {
-                localStorage.setItem(key, JSON.stringify(cleaned));
+                this.safeSetItem(key, JSON.stringify(cleaned));
               }
             }
           }
