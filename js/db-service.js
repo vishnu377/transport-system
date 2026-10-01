@@ -10,6 +10,16 @@ class DBService {
   }
 
   initDatabase() {
+    // Proactively clean legacy bloated 5.4MB full dump to guarantee plenty of free browser quota
+    if (typeof localStorage !== 'undefined') {
+      try {
+        if (localStorage.getItem('tms_trips')) {
+          localStorage.removeItem('tms_trips');
+          console.log(" Cleaned legacy tms_trips to free ~5MB browser quota.");
+        }
+      } catch (e) {}
+    }
+
     // Check if Firebase config is supplied and Firebase SDK is loaded
     if (
       typeof firebase !== 'undefined' &&
@@ -38,6 +48,38 @@ class DBService {
 
     // Always ensure local seed data is available
     this.seedLocalStorage();
+  }
+
+  // Bulletproof LocalStorage wrapper with auto-quota recovery
+  safeSetItem(key, value) {
+    if (typeof localStorage === 'undefined') return true;
+    try {
+      localStorage.setItem(key, value);
+      return true;
+    } catch (err) {
+      if (err.name === 'QuotaExceededError' || err.code === 22 || err.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+        console.warn(`⚠ Storage quota exceeded while saving ${key}. Auto-purging non-essential caches...`);
+        try {
+          // Immediately purge legacy 5.4MB full trips dump & redundant caches
+          localStorage.removeItem('tms_trips');
+          localStorage.removeItem('tms_excel_imported_v1');
+          localStorage.removeItem('tms_seeded_phase2');
+          localStorage.removeItem('tms_seeded_phase3');
+          localStorage.removeItem('tms_seeded_phase4');
+          localStorage.removeItem('tms_seeded_v1');
+
+          // Retry saving
+          localStorage.setItem(key, value);
+          console.log(` Successfully saved ${key} after auto-recovery!`);
+          return true;
+        } catch (retryErr) {
+          console.warn(` Could not save ${key} locally even after cache purge:`, retryErr.message);
+          return false;
+        }
+      }
+      console.warn(` Storage error for ${key}:`, err.message);
+      return false;
+    }
   }
 
   // --- Universal CRUD Operations ---
@@ -153,9 +195,7 @@ class DBService {
     localStorage.removeItem('tms_custom_trips');
     localStorage.removeItem('tms_edited_trips');
     localStorage.removeItem('tms_deleted_trips');
-    if (typeof window !== 'undefined' && window.INITIAL_EXCEL_TRIPS) {
-      localStorage.setItem('tms_trips', JSON.stringify(window.INITIAL_EXCEL_TRIPS));
-    }
+    localStorage.removeItem('tms_trips');
   }
 
   // --- Authentic AppSheet Ledger Debts Engine ---
@@ -532,7 +572,7 @@ class DBService {
       };
       const customTrips = JSON.parse(localStorage.getItem('tms_custom_trips') || '[]');
       customTrips.unshift(newItem);
-      localStorage.setItem('tms_custom_trips', JSON.stringify(customTrips));
+      this.safeSetItem('tms_custom_trips', JSON.stringify(customTrips));
 
       if (this.isFirebaseReady) {
         try {
@@ -554,7 +594,7 @@ class DBService {
       };
       const customDebts = JSON.parse(localStorage.getItem('tms_custom_debts') || '[]');
       customDebts.unshift(newItem);
-      localStorage.setItem('tms_custom_debts', JSON.stringify(customDebts));
+      this.safeSetItem('tms_custom_debts', JSON.stringify(customDebts));
 
       if (this.isFirebaseReady) {
         try {
@@ -576,7 +616,7 @@ class DBService {
       };
       const customParties = JSON.parse(localStorage.getItem('tms_custom_parties') || '[]');
       customParties.unshift(newItem);
-      localStorage.setItem('tms_custom_parties', JSON.stringify(customParties));
+      this.safeSetItem('tms_custom_parties', JSON.stringify(customParties));
 
       if (this.isFirebaseReady) {
         try {
@@ -598,7 +638,7 @@ class DBService {
       };
       const customOwners = JSON.parse(localStorage.getItem('tms_custom_truckOwners') || '[]');
       customOwners.unshift(newItem);
-      localStorage.setItem('tms_custom_truckOwners', JSON.stringify(customOwners));
+      this.safeSetItem('tms_custom_truckOwners', JSON.stringify(customOwners));
 
       if (this.isFirebaseReady) {
         try {
@@ -620,7 +660,7 @@ class DBService {
       };
       const customCheques = JSON.parse(localStorage.getItem('tms_custom_cheques') || '[]');
       customCheques.unshift(newItem);
-      localStorage.setItem('tms_custom_cheques', JSON.stringify(customCheques));
+      this.safeSetItem('tms_custom_cheques', JSON.stringify(customCheques));
 
       if (this.isFirebaseReady) {
         try {
@@ -642,7 +682,7 @@ class DBService {
       };
       const customDrivers = JSON.parse(localStorage.getItem('tms_custom_drivers') || '[]');
       customDrivers.unshift(newItem);
-      localStorage.setItem('tms_custom_drivers', JSON.stringify(customDrivers));
+      this.safeSetItem('tms_custom_drivers', JSON.stringify(customDrivers));
 
       if (this.isFirebaseReady) {
         try {
@@ -670,7 +710,7 @@ class DBService {
     } else {
       items.unshift(newItem);
     }
-    localStorage.setItem(`tms_${collectionName}`, JSON.stringify(items));
+    this.safeSetItem(`tms_${collectionName}`, JSON.stringify(items));
 
     // Sync to Firestore in Cloud
     if (this.isFirebaseReady) {
@@ -696,13 +736,13 @@ class DBService {
       if (customIdx >= 0) {
         updatedItem = { ...customTrips[customIdx], ...updatedFields, updatedAt };
         customTrips[customIdx] = updatedItem;
-        localStorage.setItem('tms_custom_trips', JSON.stringify(customTrips));
+        this.safeSetItem('tms_custom_trips', JSON.stringify(customTrips));
       } else {
         const editedMap = JSON.parse(localStorage.getItem('tms_edited_trips') || '{}');
         const existing = await this.getById('trips', id);
         updatedItem = { ...(existing || {}), id, ...updatedFields, updatedAt };
         editedMap[id] = updatedItem;
-        localStorage.setItem('tms_edited_trips', JSON.stringify(editedMap));
+        this.safeSetItem('tms_edited_trips', JSON.stringify(editedMap));
       }
 
       if (this.isFirebaseReady) {
@@ -724,13 +764,13 @@ class DBService {
       if (customIdx >= 0) {
         updatedItem = { ...customDebts[customIdx], ...updatedFields, updatedAt };
         customDebts[customIdx] = updatedItem;
-        localStorage.setItem('tms_custom_debts', JSON.stringify(customDebts));
+        this.safeSetItem('tms_custom_debts', JSON.stringify(customDebts));
       } else {
         const editedMap = JSON.parse(localStorage.getItem('tms_edited_debts') || '{}');
         const existing = await this.getById('debts', id);
         updatedItem = { ...(existing || {}), id, ...updatedFields, updatedAt };
         editedMap[id] = updatedItem;
-        localStorage.setItem('tms_edited_debts', JSON.stringify(editedMap));
+        this.safeSetItem('tms_edited_debts', JSON.stringify(editedMap));
       }
 
       if (this.isFirebaseReady) {
@@ -752,13 +792,13 @@ class DBService {
       if (customIdx >= 0) {
         updatedItem = { ...customParties[customIdx], ...updatedFields, updatedAt };
         customParties[customIdx] = updatedItem;
-        localStorage.setItem('tms_custom_parties', JSON.stringify(customParties));
+        this.safeSetItem('tms_custom_parties', JSON.stringify(customParties));
       } else {
         const editedMap = JSON.parse(localStorage.getItem('tms_edited_parties') || '{}');
         const existing = await this.getById('parties', id);
         updatedItem = { ...(existing || {}), id, ...updatedFields, updatedAt };
         editedMap[id] = updatedItem;
-        localStorage.setItem('tms_edited_parties', JSON.stringify(editedMap));
+        this.safeSetItem('tms_edited_parties', JSON.stringify(editedMap));
       }
 
       if (this.isFirebaseReady) {
@@ -780,13 +820,13 @@ class DBService {
       if (customIdx >= 0) {
         updatedItem = { ...customOwners[customIdx], ...updatedFields, updatedAt };
         customOwners[customIdx] = updatedItem;
-        localStorage.setItem('tms_custom_truckOwners', JSON.stringify(customOwners));
+        this.safeSetItem('tms_custom_truckOwners', JSON.stringify(customOwners));
       } else {
         const editedMap = JSON.parse(localStorage.getItem('tms_edited_truckOwners') || '{}');
         const existing = await this.getById('truckOwners', id);
         updatedItem = { ...(existing || {}), id, ...updatedFields, updatedAt };
         editedMap[id] = updatedItem;
-        localStorage.setItem('tms_edited_truckOwners', JSON.stringify(editedMap));
+        this.safeSetItem('tms_edited_truckOwners', JSON.stringify(editedMap));
       }
 
       if (this.isFirebaseReady) {
@@ -808,13 +848,13 @@ class DBService {
       if (customIdx >= 0) {
         updatedItem = { ...customCheques[customIdx], ...updatedFields, updatedAt };
         customCheques[customIdx] = updatedItem;
-        localStorage.setItem('tms_custom_cheques', JSON.stringify(customCheques));
+        this.safeSetItem('tms_custom_cheques', JSON.stringify(customCheques));
       } else {
         const editedMap = JSON.parse(localStorage.getItem('tms_edited_cheques') || '{}');
         const existing = await this.getById('cheques', id);
         updatedItem = { ...(existing || {}), id, ...updatedFields, updatedAt };
         editedMap[id] = updatedItem;
-        localStorage.setItem('tms_edited_cheques', JSON.stringify(editedMap));
+        this.safeSetItem('tms_edited_cheques', JSON.stringify(editedMap));
       }
 
       if (this.isFirebaseReady) {
@@ -836,13 +876,13 @@ class DBService {
       if (customIdx >= 0) {
         customDrivers[customIdx] = { ...customDrivers[customIdx], ...updatedFields, updatedAt };
         updatedItem = customDrivers[customIdx];
-        localStorage.setItem('tms_custom_drivers', JSON.stringify(customDrivers));
+        this.safeSetItem('tms_custom_drivers', JSON.stringify(customDrivers));
       } else {
         const editedMap = JSON.parse(localStorage.getItem('tms_edited_drivers') || '{}');
         const existing = await this.getById('drivers', id);
         updatedItem = { ...(existing || {}), id, ...updatedFields, updatedAt };
         editedMap[id] = updatedItem;
-        localStorage.setItem('tms_edited_drivers', JSON.stringify(editedMap));
+        this.safeSetItem('tms_edited_drivers', JSON.stringify(editedMap));
       }
 
       if (this.isFirebaseReady) {
@@ -864,7 +904,7 @@ class DBService {
     if (index !== -1) {
       updatedItem = { ...items[index], ...updatedFields, updatedAt };
       items[index] = updatedItem;
-      localStorage.setItem(`tms_${collectionName}`, JSON.stringify(items));
+      this.safeSetItem(`tms_${collectionName}`, JSON.stringify(items));
     }
 
     // Update in Firestore
@@ -884,12 +924,12 @@ class DBService {
     if (collectionName === 'trips') {
       let customTrips = JSON.parse(localStorage.getItem('tms_custom_trips') || '[]');
       customTrips = customTrips.filter(t => String(t.id) !== String(id) && String(t.grNo) !== String(id));
-      localStorage.setItem('tms_custom_trips', JSON.stringify(customTrips));
+      this.safeSetItem('tms_custom_trips', JSON.stringify(customTrips));
 
       const deletedList = JSON.parse(localStorage.getItem('tms_deleted_trips') || '[]');
       if (!deletedList.includes(String(id))) {
         deletedList.push(String(id));
-        localStorage.setItem('tms_deleted_trips', JSON.stringify(deletedList));
+        this.safeSetItem('tms_deleted_trips', JSON.stringify(deletedList));
       }
 
       if (this.isFirebaseReady) {
@@ -906,12 +946,12 @@ class DBService {
     if (collectionName === 'debts') {
       let customDebts = JSON.parse(localStorage.getItem('tms_custom_debts') || '[]');
       customDebts = customDebts.filter(d => String(d.id) !== String(id));
-      localStorage.setItem('tms_custom_debts', JSON.stringify(customDebts));
+      this.safeSetItem('tms_custom_debts', JSON.stringify(customDebts));
 
       const deletedList = JSON.parse(localStorage.getItem('tms_deleted_debts') || '[]');
       if (!deletedList.includes(String(id))) {
         deletedList.push(String(id));
-        localStorage.setItem('tms_deleted_debts', JSON.stringify(deletedList));
+        this.safeSetItem('tms_deleted_debts', JSON.stringify(deletedList));
       }
 
       if (this.isFirebaseReady) {
@@ -928,12 +968,12 @@ class DBService {
     if (collectionName === 'parties') {
       let customParties = JSON.parse(localStorage.getItem('tms_custom_parties') || '[]');
       customParties = customParties.filter(p => String(p.id) !== String(id));
-      localStorage.setItem('tms_custom_parties', JSON.stringify(customParties));
+      this.safeSetItem('tms_custom_parties', JSON.stringify(customParties));
 
       const deletedList = JSON.parse(localStorage.getItem('tms_deleted_parties') || '[]');
       if (!deletedList.includes(String(id))) {
         deletedList.push(String(id));
-        localStorage.setItem('tms_deleted_parties', JSON.stringify(deletedList));
+        this.safeSetItem('tms_deleted_parties', JSON.stringify(deletedList));
       }
 
       if (this.isFirebaseReady) {
@@ -950,12 +990,12 @@ class DBService {
     if (collectionName === 'truckOwners') {
       let customOwners = JSON.parse(localStorage.getItem('tms_custom_truckOwners') || '[]');
       customOwners = customOwners.filter(o => String(o.id) !== String(id));
-      localStorage.setItem('tms_custom_truckOwners', JSON.stringify(customOwners));
+      this.safeSetItem('tms_custom_truckOwners', JSON.stringify(customOwners));
 
       const deletedList = JSON.parse(localStorage.getItem('tms_deleted_truckOwners') || '[]');
       if (!deletedList.includes(String(id))) {
         deletedList.push(String(id));
-        localStorage.setItem('tms_deleted_truckOwners', JSON.stringify(deletedList));
+        this.safeSetItem('tms_deleted_truckOwners', JSON.stringify(deletedList));
       }
 
       if (this.isFirebaseReady) {
@@ -972,12 +1012,12 @@ class DBService {
     if (collectionName === 'cheques') {
       let customCheques = JSON.parse(localStorage.getItem('tms_custom_cheques') || '[]');
       customCheques = customCheques.filter(c => String(c.id) !== String(id));
-      localStorage.setItem('tms_custom_cheques', JSON.stringify(customCheques));
+      this.safeSetItem('tms_custom_cheques', JSON.stringify(customCheques));
 
       const deletedList = JSON.parse(localStorage.getItem('tms_deleted_cheques') || '[]');
       if (!deletedList.includes(String(id))) {
         deletedList.push(String(id));
-        localStorage.setItem('tms_deleted_cheques', JSON.stringify(deletedList));
+        this.safeSetItem('tms_deleted_cheques', JSON.stringify(deletedList));
       }
 
       if (this.isFirebaseReady) {
@@ -994,12 +1034,12 @@ class DBService {
     if (collectionName === 'drivers') {
       let customDrivers = JSON.parse(localStorage.getItem('tms_custom_drivers') || '[]');
       customDrivers = customDrivers.filter(d => String(d.id) !== String(id));
-      localStorage.setItem('tms_custom_drivers', JSON.stringify(customDrivers));
+      this.safeSetItem('tms_custom_drivers', JSON.stringify(customDrivers));
 
       const deletedList = JSON.parse(localStorage.getItem('tms_deleted_drivers') || '[]');
       if (!deletedList.includes(String(id))) {
         deletedList.push(String(id));
-        localStorage.setItem('tms_deleted_drivers', JSON.stringify(deletedList));
+        this.safeSetItem('tms_deleted_drivers', JSON.stringify(deletedList));
       }
 
       if (this.isFirebaseReady) {
@@ -1016,7 +1056,7 @@ class DBService {
     // Delete locally
     let items = await this.getAll(collectionName);
     items = items.filter(item => String(item.id) !== String(id));
-    localStorage.setItem(`tms_${collectionName}`, JSON.stringify(items));
+    this.safeSetItem(`tms_${collectionName}`, JSON.stringify(items));
 
     // Delete in Firestore
     if (this.isFirebaseReady) {
@@ -1301,22 +1341,14 @@ class DBService {
       localStorage.setItem('tms_truckOwners', JSON.stringify(owners));
       localStorage.setItem('tms_drivers', JSON.stringify(drivers));
       localStorage.setItem('tms_brokers', JSON.stringify(brokers));
-      localStorage.setItem('tms_trips', JSON.stringify(trips));
       localStorage.setItem('tms_seeded_v1', 'true');
     }
 
-    // Auto-seed Mosa Ji's 5,103 Real Excel Trips if available
-    if (typeof window !== 'undefined' && window.INITIAL_EXCEL_TRIPS && window.INITIAL_EXCEL_TRIPS.length > 0) {
+    // Ensure legacy bloated tms_trips is removed so localStorage quota is always free
+    if (typeof localStorage !== 'undefined') {
       try {
-        const storedTrips = JSON.parse(localStorage.getItem('tms_trips') || '[]');
-        if (storedTrips.length <= 5 || !localStorage.getItem('tms_excel_imported_v1')) {
-          localStorage.setItem('tms_trips', JSON.stringify(window.INITIAL_EXCEL_TRIPS));
-          localStorage.setItem('tms_excel_imported_v1', 'true');
-          console.log(` Loaded ${window.INITIAL_EXCEL_TRIPS.length} real trips from Mosa ji's Excel file!`);
-        }
-      } catch (e) {
-        console.warn("Storage quota warning on seed:", e);
-      }
+        localStorage.removeItem('tms_trips');
+      } catch (e) {}
     }
 
     // Auto-seed Mosa Ji's 74 Real Trucks if available

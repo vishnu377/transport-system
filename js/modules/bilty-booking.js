@@ -1085,17 +1085,32 @@ const BiltyBookingModule = {
   },
 
   setLoadType(val) {
-    document.getElementById('bilty-load-type').value = val;
+    const input = document.getElementById('bilty-load-type');
+    if (input) input.value = val;
     const btnUnder = document.getElementById('btn-load-under');
     const btnOver = document.getElementById('btn-load-over');
 
     if (val === 'Over Load') {
-      btnOver.className = 'load-type-btn active overload';
-      btnUnder.className = 'load-type-btn';
+      if (btnOver) btnOver.className = 'load-type-btn active overload';
+      if (btnUnder) btnUnder.className = 'load-type-btn';
     } else {
-      btnUnder.className = 'load-type-btn active underload';
-      btnOver.className = 'load-type-btn';
+      if (btnUnder) btnUnder.className = 'load-type-btn active underload';
+      if (btnOver) btnOver.className = 'load-type-btn';
     }
+
+    // Also sync AppSheet segmented control if present
+    const seg = document.getElementById('seg-load-type');
+    if (seg) {
+      const btns = seg.querySelectorAll('.seg-btn');
+      btns.forEach(b => {
+        if (b.innerText.trim().toLowerCase() === String(val).trim().toLowerCase()) {
+          b.classList.add('active');
+        } else {
+          b.classList.remove('active');
+        }
+      });
+    }
+
     this.updateLivePreview();
   },
 
@@ -1312,12 +1327,18 @@ const BiltyBookingModule = {
     };
 
     // Save Bilty / Trip to database
-    if (this.editTripId) {
-      await dbService.update('trips', this.editTripId, biltyData);
-      AppUI.showToast(`Bilty ${biltyData.grNo} updated successfully!`, "success");
-    } else {
-      await dbService.add('trips', biltyData);
-      AppUI.showToast(`Bilty ${biltyData.grNo} saved successfully!`, "success");
+    try {
+      if (this.editTripId) {
+        await dbService.update('trips', this.editTripId, biltyData);
+        AppUI.showToast(`Bilty ${biltyData.grNo} updated successfully!`, "success");
+      } else {
+        await dbService.add('trips', biltyData);
+        AppUI.showToast(`Bilty ${biltyData.grNo} saved successfully!`, "success");
+      }
+    } catch (saveErr) {
+      console.error("Error saving bilty:", saveErr);
+      AppUI.showToast(`Error saving bilty: ${saveErr.message || 'Storage error'}`, "danger");
+      return;
     }
 
     // Check if Any Debt? is checked -> Automatically link to Financial Ledger!

@@ -271,7 +271,7 @@ const DataToolsModule = {
 
       const mergedList = Array.from(tripMap.values());
       localStorage.setItem('tms_custom_trips', JSON.stringify(mergedList));
-      localStorage.setItem('tms_trips', JSON.stringify(mergedList));
+      localStorage.removeItem('tms_trips');
       progressBar.style.width = '100%';
       const msg = isReplaceMode 
         ? `पुरानी फाइल हटा दी गई और नई फ़ाइल की ${total} बिल्टियां लोड हो गईं!` 
@@ -361,7 +361,8 @@ const DataToolsModule = {
     }
 
     try {
-      localStorage.setItem('tms_trips', JSON.stringify(window.INITIAL_EXCEL_TRIPS));
+      localStorage.removeItem('tms_base_trips_cleared');
+      localStorage.removeItem('tms_trips');
       if (window.INITIAL_EXCEL_TRUCKS) {
         const existingOwners = JSON.parse(localStorage.getItem('tms_truckOwners') || '[]');
         localStorage.setItem('tms_truckOwners', JSON.stringify([...existingOwners, ...window.INITIAL_EXCEL_TRUCKS]));
