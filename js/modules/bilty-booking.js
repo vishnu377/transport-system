@@ -227,7 +227,7 @@ const BiltyBookingModule = {
         'Delhi', 'Shamli (U.P.)', 'Lucknow (U.P.)', 'Dadri (U.P.)', 'Loni (U.P.)', 
         'Muzaffarnagar (U.P.)', 'Greater Noida (U.P.)', 'Karnal (Haryana)', 
         'Meerut (U.P.)', 'Hardoi (U.P.)', 'Faridabad (Haryana)', 'Jaipur (Raj.)', 'Bhiwadi (Raj.)'
-      ]);
+      ]);      
       this.allTrips.slice(0, 500).forEach(t => {
         if (t.destination) destinations.add(t.destination);
       });
@@ -307,13 +307,10 @@ const BiltyBookingModule = {
     let count = 1;
     if (this.extraBuyers && this.extraBuyers.length > 0) {
       count = 1 + this.extraBuyers.length;
-    } else if (this.extraSellers && this.extraSellers.length > 0) {
-      count = 1 + this.extraSellers.length;
     } else if (this.bookingMode === 'multi_consignee') {
       count = Math.max(1, this.multiBuyers.length);
-    } else if (this.bookingMode === 'multi_consignor') {
-      count = Math.max(1, this.multiSellers.length);
     }
+    // Note: Multiple sellers on a single vehicle always share ONE consolidated G.R. number!
 
     const seqs = this.getNextGrSequences(firm, year, count);
     const first = seqs[0];
@@ -325,7 +322,10 @@ const BiltyBookingModule = {
 
     const appsheetDisplay = document.getElementById('appsheet-display-gr');
     if (appsheetDisplay) {
-      if (count > 1) {
+      if (this.extraSellers && this.extraSellers.length > 0) {
+        const totalSellers = 1 + this.extraSellers.length;
+        appsheetDisplay.innerHTML = `<span class="badge bg-success-subtle text-success border border-success px-2 py-1">${first.seq} (1 Single GR — ${totalSellers} Sellers)</span>`;
+      } else if (count > 1) {
         const last = seqs[seqs.length - 1];
         appsheetDisplay.innerHTML = `<span class="badge bg-warning-subtle text-dark border border-warning px-2 py-1">${first.seq} – ${last.seq} (${count} GRs Allocated)</span>`;
       } else {
@@ -335,9 +335,13 @@ const BiltyBookingModule = {
 
     const previewBadge = document.getElementById('preview-gr-badge');
     if (previewBadge) {
-      previewBadge.innerText = count > 1 
-        ? `G.R. NO: ${first.shortGr} – ${seqs[seqs.length - 1].shortGr} (${count} GRs)`
-        : `G.R. NO: ${first.shortGr}`;
+      if (this.extraSellers && this.extraSellers.length > 0) {
+        previewBadge.innerText = `G.R. NO: ${first.shortGr} (1 Bilty - ${1 + this.extraSellers.length} Sellers)`;
+      } else if (count > 1) {
+        previewBadge.innerText = `G.R. NO: ${first.shortGr} – ${seqs[seqs.length - 1].shortGr} (${count} GRs)`;
+      } else {
+        previewBadge.innerText = `G.R. NO: ${first.shortGr}`;
+      }
     }
 
     return seqs;
@@ -1450,23 +1454,17 @@ const BiltyBookingModule = {
     const container = document.getElementById('extra-sellers-list');
     if (!container) return;
 
-    const firm = document.getElementById('bilty-firm')?.value || 'TTC';
-    const year = document.getElementById('bilty-year')?.value || '2026-2027';
-    const totalGrs = 1 + (this.extraSellers ? this.extraSellers.length : 0);
-    const seqs = this.getNextGrSequences(firm, year, totalGrs);
-
     let html = '';
     (this.extraSellers || []).forEach((s, i) => {
       const sellerIndex = i + 2;
-      const grInfo = seqs[i + 1] ? seqs[i + 1].shortGr : `${sellerIndex}`;
       const partyOptions = this.getPartiesOptionsHtml(s.consignor);
 
       html += `
         <div class="extra-party-block mt-3 pt-2 pb-1 border-top" style="border-top: 2px dashed #d1d5db !important;">
           <div class="appsheet-form-row bg-light py-2 px-2 rounded mb-2 d-flex justify-content-between align-items-center">
             <div class="fw-bold text-dark d-flex align-items-center gap-2">
-              <span class="badge bg-primary px-2 py-1"><i class="bi bi-file-earmark-text"></i> G.R. ${grInfo}</span>
-              <span>Seller / Consignor #${sellerIndex} (अतिरिक्त सेलर #${sellerIndex})</span>
+              <span class="badge bg-secondary px-2 py-1"><i class="bi bi-shop"></i> Seller #${sellerIndex}</span>
+              <span>Seller / Consignor #${sellerIndex} (अतिरिक्त सेलर #${sellerIndex} - Same Bilty)</span>
             </div>
             <button type="button" class="btn btn-outline-danger btn-sm py-0 px-2" onclick="BiltyBookingModule.removeExtraSeller(${i})" title="Remove Seller #${sellerIndex}">
               <i class="bi bi-trash3"></i> Remove
@@ -1591,7 +1589,6 @@ const BiltyBookingModule = {
         totalFreight += fr;
       });
     } else if (this.extraSellers && this.extraSellers.length > 0) {
-      totalGrs += this.extraSellers.length;
       this.extraSellers.forEach(s => {
         const wt = parseFloat(s.weight) || 0;
         const rt = parseFloat(s.rate) || 0;
@@ -1604,10 +1601,18 @@ const BiltyBookingModule = {
 
     const summaryStrip = document.getElementById('trip-multi-summary-strip');
     if (summaryStrip) {
-      if (totalGrs > 1) {
+      const hasExtraSellers = this.extraSellers && this.extraSellers.length > 0;
+      const hasExtraBuyers = this.extraBuyers && this.extraBuyers.length > 0;
+      if (hasExtraSellers || hasExtraBuyers || totalGrs > 1) {
         summaryStrip.classList.remove('d-none');
         const grsEl = document.getElementById('multi-sum-grs');
-        if (grsEl) grsEl.innerText = `${totalGrs} GRs`;
+        if (grsEl) {
+          if (hasExtraSellers) {
+            grsEl.innerText = `1 Single GR (${1 + this.extraSellers.length} Sellers)`;
+          } else {
+            grsEl.innerText = `${totalGrs} GRs`;
+          }
+        }
         const wtEl = document.getElementById('multi-sum-weight');
         if (wtEl) wtEl.innerText = `${totalWeight.toFixed(3)} MT`;
         const frEl = document.getElementById('multi-sum-freight');
@@ -2391,7 +2396,7 @@ const BiltyBookingModule = {
     }
 
     // ------------------------------------------------------------------------
-    // CASE B: INLINE APPSHEET EXTRA SELLERS (Multiple Sellers -> 1 Buyer)
+    // CASE B: INLINE APPSHEET EXTRA SELLERS (Multiple Sellers ➔ 1 Consolidated GR & Bilty)
     // ------------------------------------------------------------------------
     if (this.extraSellers && this.extraSellers.length > 0) {
       const consignee = (document.getElementById('bilty-consignee')?.value || '').trim();
@@ -2457,114 +2462,143 @@ const BiltyBookingModule = {
         }
       }
 
-      const seqs = this.getNextGrSequences(firm, year, allSellers.length);
-      const tripGroupId = `TRIP_GRP_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`;
-      const tripsToSave = [];
+      // Generate ONLY 1 Single G.R. Number for the consolidated truck load
+      let grInfo;
+      if (this.editTripId) {
+        grInfo = {
+          seq: document.getElementById('bilty-short-gr')?.value || '',
+          shortGr: document.getElementById('bilty-short-gr')?.value || '',
+          fullGr: document.getElementById('bilty-gr-no')?.value || ''
+        };
+      } else {
+        const seqs = this.getNextGrSequences(firm, year, 1);
+        grInfo = seqs[0];
+      }
 
-      for (let i = 0; i < allSellers.length; i++) {
-        const s = allSellers[i];
-        const grInfo = seqs[i];
+      let totalWeight = 0;
+      let totalFreight = 0;
+      let totalInvoiceValue = 0;
+      let totalLoading = 0;
+      let totalHalt = 0;
+      const billNumbers = [];
+      const ewayBills = [];
+      const consignorNames = [];
+      const consignorGstins = [];
+      const dispatchLocations = [];
+
+      allSellers.forEach((s) => {
         const wt = parseFloat(s.weight) || 0;
         const rt = parseFloat(s.rate) || 0;
         const fr = (s.billingType === 'Fixed') ? rt : (wt * rt);
+        s.freight = fr;
+        totalWeight += wt;
+        totalFreight += fr;
+        totalInvoiceValue += (parseFloat(s.invoiceValue) || 0);
+        totalLoading += (parseFloat(s.loadingCharges) || 0);
+        totalHalt += (parseFloat(s.haltCharges) || 0);
+        if (s.billNo && !billNumbers.includes(s.billNo)) billNumbers.push(s.billNo);
+        if (s.ewayBillNo && !ewayBills.includes(s.ewayBillNo)) ewayBills.push(s.ewayBillNo);
+        if (s.consignor && !consignorNames.includes(s.consignor)) consignorNames.push(s.consignor);
+        if (s.consignorGstin && !consignorGstins.includes(s.consignorGstin)) consignorGstins.push(s.consignorGstin);
+        if (s.dispatchFromAddress && !dispatchLocations.includes(s.dispatchFromAddress)) dispatchLocations.push(s.dispatchFromAddress);
+      });
 
-        const comm = (i === 0) ? tripCommission : 0;
-        const oth = (i === 0) ? tripOtherExpense : 0;
+      const grandDue = totalFreight + totalLoading + totalHalt;
 
-        tripsToSave.push({
-          id: `TRIP_${Date.now()}_${i}_${Math.random().toString(36).substr(2, 4)}`,
-          grNo: grInfo.fullGr,
-          grSeq: String(grInfo.seq),
-          shortGrNo: grInfo.shortGr,
-          transport: firm,
-          financialYear: year,
-          tripStartDate: date,
-          biltyType: biltyType,
-          isGstApplicable: isGstApplicable,
-          truckNo: truckNo,
-          truckOwner: truckOwner,
-          ownerMobile: ownerMobile,
-          loadType: loadType,
-          driver: driver,
-          driverMobile: driverMobile,
-          reference: reference,
+      const singleTripData = {
+        id: this.editTripId || `TRIP_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
+        grNo: grInfo.fullGr,
+        grSeq: String(grInfo.seq),
+        shortGrNo: grInfo.shortGr,
+        transport: firm,
+        financialYear: year,
+        tripStartDate: date,
+        biltyType: biltyType,
+        isGstApplicable: isGstApplicable,
+        truckNo: truckNo,
+        truckOwner: truckOwner,
+        ownerMobile: ownerMobile,
+        loadType: loadType,
+        driver: driver,
+        driverMobile: driverMobile,
+        reference: reference,
 
-          origin: 'Rajsamand (Raj.)',
-          destination: destination,
-          consignor: s.consignor,
-          consignorGstin: s.consignorGstin || '',
-          dispatchFromAddress: s.dispatchFromAddress || '',
-          consignee: consignee,
-          consigneeGstin: consigneeGstin,
-          deliveryAddress: deliveryAddress,
-          shipToAddress: deliveryAddress,
+        origin: 'Rajsamand (Raj.)',
+        destination: destination,
+        consignor: s1Consignor,
+        consignorGstin: consignorGstins.join(', ') || allSellers[0].consignorGstin || '',
+        dispatchFromAddress: dispatchLocations.join(' | ') || allSellers[0].dispatchFromAddress || 'Rajsamand (Raj.)',
+        consignee: consignee,
+        consigneeGstin: consigneeGstin,
+        deliveryAddress: deliveryAddress,
+        shipToAddress: deliveryAddress,
 
-          material: s.material || 'Marble Cut Size',
-          billNo: s.billNo || '',
-          invoiceValue: parseFloat(s.invoiceValue) || 0,
-          ewayBillNo: s.ewayBillNo || '',
+        material: allSellers.map(s => s.material).filter(Boolean).join(', ') || 'Marble Cut Size',
+        billNo: billNumbers.join(', '),
+        invoiceValue: totalInvoiceValue,
+        ewayBillNo: ewayBills.join(', '),
 
-          billingType: s.billingType || 'Per Tonne',
-          weight: wt,
-          rate: rt,
-          freight: fr,
-          loadingCharges: parseFloat(s.loadingCharges) || 0,
-          haltCharges: parseFloat(s.haltCharges) || 0,
+        billingType: s1BillingType,
+        weight: totalWeight,
+        rate: s1Rate,
+        freight: totalFreight,
+        loadingCharges: totalLoading,
+        haltCharges: totalHalt,
 
-          biltyBillingType: s.billingType || 'Per Tonne',
-          biltyWeight: wt,
-          biltyRate: rt,
-          biltyAmount: fr,
+        biltyBillingType: s1BillingType,
+        biltyWeight: totalWeight,
+        biltyRate: s1Rate,
+        biltyAmount: totalFreight,
 
-          commission: comm,
-          commissionStatus: tripCommissionStatus,
-          commissionMode: tripCommissionMode,
-          commissionDesc: tripCommissionDesc,
+        commission: tripCommission,
+        commissionStatus: tripCommissionStatus,
+        commissionMode: tripCommissionMode,
+        commissionDesc: tripCommissionDesc,
 
-          otherExpense: oth,
-          otherStatus: tripOtherStatus,
-          otherMode: tripOtherMode,
-          otherDesc: tripOtherDesc,
+        otherExpense: tripOtherExpense,
+        otherStatus: tripOtherStatus,
+        otherMode: tripOtherMode,
+        otherDesc: tripOtherDesc,
 
-          status: 'Transit',
-          partyDue: fr,
-          partyPaid: 0,
-          ownerDue: fr - comm,
+        status: 'Transit',
+        partyDue: grandDue,
+        partyPaid: 0,
+        ownerDue: totalFreight - tripCommission,
 
-          tripGroupId: tripGroupId,
-          isMultiGr: true,
-          multiGrRole: 'multi_consignor',
-          multiGrTotalCount: allSellers.length,
-          multiGrIndex: i + 1
-        });
-      }
+        // Consolidated multi-seller metadata
+        isConsolidated: true,
+        consolidatedType: 'multi_seller',
+        sellerList: allSellers,
+        extraSellers: allSellers.slice(1),
+        multiSellerCount: allSellers.length
+      };
 
       try {
-        for (const t of tripsToSave) {
-          await dbService.add('trips', t);
+        if (this.editTripId) {
+          await dbService.update('trips', this.editTripId, singleTripData);
+        } else {
+          await dbService.add('trips', singleTripData);
         }
       } catch (err) {
-        console.error("Error saving multi-seller bilties:", err);
-        AppUI.showToast(`Error saving bilties: ${err.message || 'Storage error'}`, "danger");
+        console.error("Error saving consolidated multi-seller bilty:", err);
+        AppUI.showToast(`Error saving bilty: ${err.message || 'Storage error'}`, "danger");
         return;
       }
 
       const isDebtChecked = document.getElementById('toggle-any-debt')?.checked;
       const debtAmount = parseFloat(document.getElementById('bilty-debt-amount')?.value) || 0;
       if (isDebtChecked && debtAmount > 0) {
-        const primaryGr = seqs[0].shortGr;
         const debtRecord = {
           id: `DEBT_BILTY_${Date.now()}`,
           date: date,
-          description: `Advance / Debt on Trip ${primaryGr} (${truckNo}) - Multi-Seller Batch (${tripsToSave.length} GRs)`,
+          description: `Advance / Debt on Trip ${grInfo.shortGr} (${truckNo}) - Consolidated Bilty (${allSellers.length} Sellers)`,
           borrower: document.getElementById('bilty-debt-borrower')?.value.trim() || driver,
           amount: debtAmount,
           mode: document.getElementById('bilty-debt-mode')?.value || 'Cash',
           status: 'Pending',
-          remarks: document.getElementById('bilty-debt-remarks')?.value.trim() || 'Booked with Multi-GR bilty',
+          remarks: document.getElementById('bilty-debt-remarks')?.value.trim() || 'Booked with Consolidated Bilty',
           truckNo: truckNo,
-          grNo: primaryGr,
-          tripGroupId: tripGroupId
+          grNo: grInfo.shortGr
         };
         try {
           await dbService.add('debts', debtRecord);
@@ -2573,9 +2607,10 @@ const BiltyBookingModule = {
         }
       }
 
-      AppUI.showToast(`All ${tripsToSave.length} Bilties saved successfully (${seqs.map(s => s.shortGr).join(', ')})!`, "success");
+      AppUI.showToast(`Single Consolidated Bilty saved successfully (${grInfo.shortGr}) with ${allSellers.length} Sellers!`, "success");
       await this.loadAllData();
-      this.openMultiPrintModal(tripsToSave);
+      this.currentActiveBilty = singleTripData;
+      this.openPrintModal(singleTripData);
       return;
     }
 
@@ -2762,6 +2797,9 @@ const BiltyBookingModule = {
     // ------------------------------------------------------------------------
     // CASE 3: MULTIPLE SELLERS ➔ 1 BUYER (MULTI-CONSIGNOR / MULTI-PICKUP)
     // ------------------------------------------------------------------------
+    // ------------------------------------------------------------------------
+    // CASE 3: MULTIPLE SELLERS ➔ 1 BUYER (MULTI-CONSIGNOR CONSOLIDATED 1 GR)
+    // ------------------------------------------------------------------------
     if (this.bookingMode === 'multi_consignor') {
       const consignee = (document.getElementById('ms-consignee')?.value || '').trim();
       if (!consignee) {
@@ -2795,100 +2833,126 @@ const BiltyBookingModule = {
         }
       }
 
-      // Generate sequential GR numbers for all sellers
-      const seqs = this.getNextGrSequences(firm, year, this.multiSellers.length);
-      const tripGroupId = `TRIP_GRP_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`;
+      // Generate 1 single GR sequence for all sellers consolidated
+      let grInfo;
+      if (this.editTripId) {
+        grInfo = {
+          seq: document.getElementById('bilty-short-gr')?.value || '',
+          shortGr: document.getElementById('bilty-short-gr')?.value || '',
+          fullGr: document.getElementById('bilty-gr-no')?.value || ''
+        };
+      } else {
+        const seqs = this.getNextGrSequences(firm, year, 1);
+        grInfo = seqs[0];
+      }
 
-      const tripsToSave = [];
-      for (let i = 0; i < this.multiSellers.length; i++) {
-        const s = this.multiSellers[i];
-        const grInfo = seqs[i];
+      let totalWeight = 0;
+      let totalFreight = 0;
+      let totalInvoiceValue = 0;
+      let totalLoading = 0;
+      let totalHalt = 0;
+      const billNumbers = [];
+      const ewayBills = [];
+      const consignorNames = [];
+      const consignorGstins = [];
+      const dispatchLocations = [];
+
+      this.multiSellers.forEach((s) => {
         const wt = parseFloat(s.weight) || 0;
         const rt = parseFloat(s.rate) || 0;
         const fr = (s.billingType === 'Fixed') ? rt : (wt * rt);
+        s.freight = fr;
+        totalWeight += wt;
+        totalFreight += fr;
+        totalInvoiceValue += (parseFloat(s.invoiceValue) || 0);
+        totalLoading += (parseFloat(s.loadingCharges) || 0);
+        totalHalt += (parseFloat(s.haltCharges) || 0);
+        if (s.billNo && !billNumbers.includes(s.billNo)) billNumbers.push(s.billNo);
+        if (s.ewayBillNo && !ewayBills.includes(s.ewayBillNo)) ewayBills.push(s.ewayBillNo);
+        if (s.consignor && !consignorNames.includes(s.consignor)) consignorNames.push(s.consignor);
+        if (s.consignorGstin && !consignorGstins.includes(s.consignorGstin)) consignorGstins.push(s.consignorGstin);
+        if (s.dispatchFromAddress && !dispatchLocations.includes(s.dispatchFromAddress)) dispatchLocations.push(s.dispatchFromAddress);
+      });
 
-        // Commission & Other expenses applied ONCE on primary GR
-        const comm = (i === 0) ? tripCommission : 0;
-        const oth = (i === 0) ? tripOtherExpense : 0;
+      const grandDue = totalFreight + totalLoading + totalHalt;
 
-        const tripData = {
-          id: `TRIP_${Date.now()}_${i}_${Math.random().toString(36).substr(2, 4)}`,
-          grNo: grInfo.fullGr,
-          grSeq: String(grInfo.seq),
-          shortGrNo: grInfo.shortGr,
-          transport: firm,
-          financialYear: year,
-          tripStartDate: date,
-          biltyType: biltyType,
-          isGstApplicable: isGstApplicable,
-          truckNo: truckNo,
-          truckOwner: truckOwner,
-          ownerMobile: ownerMobile,
-          loadType: loadType,
-          driver: driver,
-          driverMobile: driverMobile,
-          reference: reference,
+      const singleTripData = {
+        id: this.editTripId || `TRIP_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
+        grNo: grInfo.fullGr,
+        grSeq: String(grInfo.seq),
+        shortGrNo: grInfo.shortGr,
+        transport: firm,
+        financialYear: year,
+        tripStartDate: date,
+        biltyType: biltyType,
+        isGstApplicable: isGstApplicable,
+        truckNo: truckNo,
+        truckOwner: truckOwner,
+        ownerMobile: ownerMobile,
+        loadType: loadType,
+        driver: driver,
+        driverMobile: driverMobile,
+        reference: reference,
 
-          origin: 'Rajsamand (Raj.)',
-          destination: destination,
-          consignor: s.consignor,
-          consignorGstin: s.consignorGstin || '',
-          dispatchFromAddress: s.dispatchFromAddress || '',
-          consignee: consignee,
-          consigneeGstin: consigneeGstin,
-          deliveryAddress: deliveryAddress,
-          shipToAddress: deliveryAddress,
+        origin: 'Rajsamand (Raj.)',
+        destination: destination,
+        consignor: this.multiSellers[0].consignor,
+        consignorGstin: consignorGstins.join(', ') || this.multiSellers[0].consignorGstin || '',
+        dispatchFromAddress: dispatchLocations.join(' | ') || this.multiSellers[0].dispatchFromAddress || 'Rajsamand (Raj.)',
+        consignee: consignee,
+        consigneeGstin: consigneeGstin,
+        deliveryAddress: deliveryAddress,
+        shipToAddress: deliveryAddress,
 
-          material: s.material || 'Marble Cut Size',
-          billNo: s.billNo || '',
-          invoiceValue: parseFloat(s.invoiceValue) || 0,
-          ewayBillNo: s.ewayBillNo || '',
+        material: this.multiSellers.map(s => s.material).filter(Boolean).join(', ') || 'Marble Cut Size',
+        billNo: billNumbers.join(', '),
+        invoiceValue: totalInvoiceValue,
+        ewayBillNo: ewayBills.join(', '),
 
-          billingType: s.billingType || 'Per Tonne',
-          weight: wt,
-          rate: rt,
-          freight: fr,
-          loadingCharges: parseFloat(s.loadingCharges) || 0,
-          haltCharges: parseFloat(s.haltCharges) || 0,
+        billingType: this.multiSellers[0].billingType || 'Per Tonne',
+        weight: totalWeight,
+        rate: this.multiSellers[0].rate || 0,
+        freight: totalFreight,
+        loadingCharges: totalLoading,
+        haltCharges: totalHalt,
 
-          biltyBillingType: s.billingType || 'Per Tonne',
-          biltyWeight: wt,
-          biltyRate: rt,
-          biltyAmount: fr,
+        biltyBillingType: this.multiSellers[0].billingType || 'Per Tonne',
+        biltyWeight: totalWeight,
+        biltyRate: this.multiSellers[0].rate || 0,
+        biltyAmount: totalFreight,
 
-          commission: comm,
-          commissionStatus: tripCommissionStatus,
-          commissionMode: tripCommissionMode,
-          commissionDesc: tripCommissionDesc,
+        commission: tripCommission,
+        commissionStatus: tripCommissionStatus,
+        commissionMode: tripCommissionMode,
+        commissionDesc: tripCommissionDesc,
 
-          otherExpense: oth,
-          otherStatus: tripOtherStatus,
-          otherMode: tripOtherMode,
-          otherDesc: tripOtherDesc,
+        otherExpense: tripOtherExpense,
+        otherStatus: tripOtherStatus,
+        otherMode: tripOtherMode,
+        otherDesc: tripOtherDesc,
 
-          status: 'Transit',
-          partyDue: fr,
-          partyPaid: 0,
-          ownerDue: fr - comm,
+        status: 'Transit',
+        partyDue: grandDue,
+        partyPaid: 0,
+        ownerDue: totalFreight - tripCommission,
 
-          tripGroupId: tripGroupId,
-          isMultiGr: true,
-          multiGrRole: 'multi_consignor',
-          multiGrTotalCount: this.multiSellers.length,
-          multiGrIndex: i + 1
-        };
+        // Consolidated multi-seller metadata
+        isConsolidated: true,
+        consolidatedType: 'multi_seller',
+        sellerList: this.multiSellers,
+        extraSellers: this.multiSellers.slice(1),
+        multiSellerCount: this.multiSellers.length
+      };
 
-        tripsToSave.push(tripData);
-      }
-
-      // Persist all trips
       try {
-        for (const t of tripsToSave) {
-          await dbService.add('trips', t);
+        if (this.editTripId) {
+          await dbService.update('trips', this.editTripId, singleTripData);
+        } else {
+          await dbService.add('trips', singleTripData);
         }
       } catch (err) {
-        console.error("Error saving multi-seller bilties:", err);
-        AppUI.showToast(`Error saving bilties: ${err.message || 'Storage error'}`, "danger");
+        console.error("Error saving multi-seller consolidated bilty:", err);
+        AppUI.showToast(`Error saving bilty: ${err.message || 'Storage error'}`, "danger");
         return;
       }
 
@@ -2896,19 +2960,18 @@ const BiltyBookingModule = {
       const isDebtChecked = document.getElementById('toggle-any-debt')?.checked;
       const debtAmount = parseFloat(document.getElementById('bilty-debt-amount')?.value) || 0;
       if (isDebtChecked && debtAmount > 0) {
-        const primaryGr = seqs[0].shortGr;
+        const primaryGr = grInfo.shortGr;
         const debtRecord = {
           id: `DEBT_BILTY_${Date.now()}`,
           date: date,
-          description: `Advance / Debt on Trip ${primaryGr} (${truckNo}) - Multi-Seller Batch (${tripsToSave.length} GRs)`,
+          description: `Advance / Debt on Trip ${primaryGr} (${truckNo}) - Multi-Seller Consolidated (${this.multiSellers.length} Sellers)`,
           borrower: document.getElementById('bilty-debt-borrower')?.value.trim() || driver,
           amount: debtAmount,
           mode: document.getElementById('bilty-debt-mode')?.value || 'Cash',
           status: 'Pending',
-          remarks: document.getElementById('bilty-debt-remarks')?.value.trim() || 'Booked with Multi-GR bilty',
+          remarks: document.getElementById('bilty-debt-remarks')?.value.trim() || 'Booked with Consolidated Bilty',
           truckNo: truckNo,
-          grNo: primaryGr,
-          tripGroupId: tripGroupId
+          grNo: primaryGr
         };
         try {
           await dbService.add('debts', debtRecord);
@@ -2917,11 +2980,10 @@ const BiltyBookingModule = {
         }
       }
 
-      AppUI.showToast(`All ${tripsToSave.length} Bilties saved successfully (${seqs.map(s => s.shortGr).join(', ')})!`, "success");
-
-      // Reload dataset and open multi-print modal
+      AppUI.showToast(`Consolidated Multi-Seller Bilty saved successfully (${grInfo.shortGr})!`, "success");
       await this.loadAllData();
-      this.openMultiPrintModal(tripsToSave);
+      this.currentActiveBilty = singleTripData;
+      this.openPrintModal(singleTripData);
       return;
     }
   },
@@ -3912,6 +3974,46 @@ const BiltyBookingModule = {
           </div>
         </div>
 
+        ${trip.sellerList && trip.sellerList.length > 1 ? `
+          <div class="col-12">
+            <div class="bilty-detail-modal-card bg-white shadow-sm">
+              <h6 class="text-primary fw-bold"><i class="bi bi-shop me-2"></i> 4. Consolidated Sellers Breakdown (${trip.sellerList.length} Sellers on Single G.R.)</h6>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered align-middle mb-0" style="font-size: 0.85rem;">
+                  <thead class="table-light">
+                    <tr>
+                      <th style="width: 40px;">#</th>
+                      <th>Consignor Party</th>
+                      <th>GSTIN</th>
+                      <th>Dispatch / Quarry</th>
+                      <th>Material</th>
+                      <th class="text-center">Weight</th>
+                      <th class="text-center">Rate</th>
+                      <th class="text-end">Freight</th>
+                      <th>Bill / E-Way</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${trip.sellerList.map((s, idx) => `
+                      <tr>
+                        <td class="fw-bold text-center">S${idx + 1}</td>
+                        <td class="fw-bold text-dark">${s.consignor}</td>
+                        <td class="font-monospace small text-muted">${s.consignorGstin || '-'}</td>
+                        <td>${s.dispatchFromAddress || '-'}</td>
+                        <td>${s.material || '-'}</td>
+                        <td class="text-center fw-bold">${s.weight} MT</td>
+                        <td class="text-center">${s.billingType === 'Fixed' ? 'Fixed' : '₹' + s.rate}</td>
+                        <td class="text-end text-success fw-bold">₹${Number(s.freight || 0).toLocaleString('en-IN')}</td>
+                        <td class="small font-monospace">${s.billNo || '-'}${s.ewayBillNo ? ' / ' + s.ewayBillNo : ''}</td>
+                      </tr>
+                    `).join('')}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        ` : ''}
+
       </div>
     `;
 
@@ -4072,6 +4174,27 @@ const BiltyBookingModule = {
     document.getElementById('bilty-other-mode').value = trip.otherMode || 'Cash';
     document.getElementById('bilty-other-desc').value = trip.otherDesc || '';
 
+    // Restore multi-seller dynamic rows if consolidated
+    if (trip.extraSellers && trip.extraSellers.length > 0) {
+      this.extraSellers = JSON.parse(JSON.stringify(trip.extraSellers));
+      this.renderExtraSellers();
+    } else {
+      this.extraSellers = [];
+      const el = document.getElementById('extra-sellers-list');
+      if (el) el.innerHTML = '';
+    }
+
+    // Restore multi-buyer dynamic rows if multi-drop
+    if (trip.extraBuyers && trip.extraBuyers.length > 0) {
+      this.extraBuyers = JSON.parse(JSON.stringify(trip.extraBuyers));
+      this.renderExtraBuyers();
+    } else {
+      this.extraBuyers = [];
+      const el = document.getElementById('extra-buyers-list');
+      if (el) el.innerHTML = '';
+    }
+
+    this.recalculateAllTotals();
     this.recalculateFreightAndTotals();
     this.updateLivePreview();
     this.setFormMode('full'); // Show all sections expanded when editing
@@ -4347,6 +4470,32 @@ const BiltyBookingModule = {
       ? BILTY_IMAGES.eagle 
       : '../assets/bilty_template/img_2_X8.png';
 
+    const isMultiSeller = (trip.sellerList && trip.sellerList.length > 1) || 
+                          (trip.extraSellers && trip.extraSellers.length > 0) ||
+                          trip.consolidatedType === 'multi_seller';
+
+    let sellersList = [];
+    if (trip.sellerList && trip.sellerList.length > 0) {
+      sellersList = trip.sellerList;
+    } else if (trip.extraSellers && trip.extraSellers.length > 0) {
+      sellersList = [
+        {
+          consignor: trip.consignor,
+          consignorGstin: trip.consignorGstin,
+          dispatchFromAddress: trip.dispatchFromAddress || trip.dispatchFrom || trip.origin,
+          material: trip.material,
+          weight: trip.weight,
+          rate: trip.rate,
+          freight: trip.freight,
+          billNo: trip.billNo,
+          invoiceValue: trip.invoiceValue,
+          ewayBillNo: trip.ewayBillNo,
+          billingType: trip.billingType || trip.biltyBillingType
+        },
+        ...trip.extraSellers
+      ];
+    }
+
     const displayWeight = trip.weight || '80';
     const isToBeBilled = trip.biltyBillingType === 'To be Billed' || trip.rate === 'To be Billed';
     const displayRate = isToBeBilled ? 'To be Billed' : (trip.biltyBillingType === 'Fixed' ? 'Fixed' : (trip.rate ? '₹ ' + Number(trip.rate).toFixed(2) : 'To be Billed'));
@@ -4354,6 +4503,13 @@ const BiltyBookingModule = {
 
     const invValFormatted = trip.invoiceValue ? Number(trip.invoiceValue).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '222,600.00';
     const grandTotalVal = (isToBeBilled && (!trip.partyDue || trip.partyDue === 0)) ? '0.00' : Number(trip.partyDue || trip.freight || 0).toFixed(2);
+
+    let consignorGstinContent = trip.consignorGstin || '08AAJFR3111N1Z1';
+    if (isMultiSeller && sellersList.length > 0) {
+      consignorGstinContent = sellersList.map((s, idx) => {
+        return `<span style="white-space:nowrap;"><span style="font-weight:normal; font-size:9px;">S${idx+1}:</span> ${s.consignorGstin || '-'}</span>`;
+      }).join(' &nbsp;|&nbsp; ');
+    }
 
     const html = `
       <div class="bilty-official-doc shadow-sm">
@@ -4409,8 +4565,8 @@ const BiltyBookingModule = {
             <!-- Row 1: Consignor GSTIN (54%), Truck No (23%), GR No (23%) -->
             <tr>
               <td class="ttc-cell-gstin" style="width: 54%;">
-                <div class="ttc-field-title">CONSIGNOR GSTIN</div>
-                <div class="ttc-field-val-bold">${trip.consignorGstin || '08AAJFR3111N1Z1'}</div>
+                <div class="ttc-field-title">${isMultiSeller ? 'CONSIGNOR GSTIN(S)' : 'CONSIGNOR GSTIN'}</div>
+                <div class="ttc-field-val-bold" style="${isMultiSeller ? 'font-size: 10px; line-height: 1.3;' : ''}">${consignorGstinContent}</div>
               </td>
               <td class="ttc-cell-truck" style="width: 23%;">
                 <div class="ttc-inline-item">
@@ -4428,10 +4584,26 @@ const BiltyBookingModule = {
 
             <!-- Row 2: Consignor Name & Address + Dispatch From (colspan 2 = 77%), Date (23%) -->
             <tr>
-              <td colspan="2" class="ttc-cell-consignor">
-                <div class="ttc-field-title">CONSIGNOR NAME &amp; ADDRESS</div>
-                <div class="ttc-field-val-main">${trip.consignor || '---'}</div>
-                <div class="ttc-field-dispatch">Dispatch From: ${trip.dispatchFrom || trip.origin || 'AMET, DIST.RAJSAMAND (RAJ.)-313330'}</div>
+              <td colspan="2" class="ttc-cell-consignor" style="${isMultiSeller ? 'padding: 4px 6px;' : ''}">
+                ${isMultiSeller ? `
+                  <div class="ttc-field-title" style="margin-bottom: 2px;">CONSIGNOR(S) NAME &amp; ADDRESS (${sellersList.length} SELLERS CONSOLIDATED)</div>
+                  <div class="consolidated-sellers-list" style="display: flex; flex-direction: column; gap: 3px;">
+                    ${sellersList.map((s, idx) => `
+                      <div style="font-size: 10.5px; line-height: 1.3; ${idx > 0 ? 'border-top: 1px dashed #cbd5e1; padding-top: 2px;' : ''}">
+                        <span class="badge bg-secondary text-white me-1" style="font-size: 8.5px; padding: 1px 4px; vertical-align: middle;">Seller ${idx + 1}</span>
+                        <strong style="color: #000;">${s.consignor || '---'}</strong>
+                        ${s.consignorGstin ? `<span class="text-muted ms-1" style="font-size: 9.5px;">(GST: ${s.consignorGstin})</span>` : ''}
+                        <div style="color: #334155; font-size: 10px; padding-left: 2px;">
+                          Dispatch: ${s.dispatchFromAddress || s.dispatchFrom || trip.origin || 'Rajsamand (Raj.)'}
+                        </div>
+                      </div>
+                    `).join('')}
+                  </div>
+                ` : `
+                  <div class="ttc-field-title">CONSIGNOR NAME &amp; ADDRESS</div>
+                  <div class="ttc-field-val-main">${trip.consignor || '---'}</div>
+                  <div class="ttc-field-dispatch">Dispatch From: ${trip.dispatchFrom || trip.dispatchFromAddress || trip.origin || 'AMET, DIST.RAJSAMAND (RAJ.)-313330'}</div>
+                `}
               </td>
               <td class="ttc-cell-date">
                 <div class="ttc-inline-item">
@@ -4477,21 +4649,63 @@ const BiltyBookingModule = {
         <table class="ttc-goods-table">
           <thead>
             <tr>
-              <th style="width: 22%;">PERSON LIABLE FOR PAYING GST</th>
-              <th style="width: 28%;">Material</th>
-              <th style="width: 13%;">Weight<br>(Tonne)</th>
-              <th style="width: 17%;">RATE<br>Per Tonne</th>
-              <th style="width: 20%;">FREIGHT<br>To Pay</th>
+              <th style="width: 20%;">PERSON LIABLE FOR PAYING GST</th>
+              <th style="width: 32%;">${isMultiSeller ? 'Material &amp; Seller Particulars' : 'Material'}</th>
+              <th style="width: 14%;">Weight<br>(Tonne)</th>
+              <th style="width: 16%;">RATE<br>Per Tonne</th>
+              <th style="width: 18%;">FREIGHT<br>To Pay</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td class="text-center fw-bold" style="padding: 6px 4px;">${trip.personLiableGst || 'Consignor/Consignee/Transporter'}</td>
-              <td class="text-center fw-bold" style="padding: 6px 4px;">${trip.material || 'Marble Powder'}</td>
-              <td class="text-center fw-bold" style="padding: 6px 4px;">${displayWeight}</td>
-              <td class="text-center fw-bold" style="padding: 6px 4px;">${displayRate}</td>
-              <td class="text-center fw-bold" style="padding: 6px 4px;">${displayFreight}</td>
-            </tr>
+            ${isMultiSeller ? `
+              ${sellersList.map((s, idx) => {
+                const sWt = parseFloat(s.weight) || 0;
+                const sRt = parseFloat(s.rate) || 0;
+                const sIsFixed = (s.billingType === 'Fixed');
+                const sFr = (s.freight !== undefined) ? parseFloat(s.freight) : (sIsFixed ? sRt : sWt * sRt);
+                return `
+                  <tr>
+                    <td class="text-center" style="padding: 3px 2px; font-size: 10px; vertical-align: middle;">
+                      ${idx === 0 ? (trip.personLiableGst || 'Consignor/Consignee/Transporter') : '<span class="text-muted">"</span>'}
+                    </td>
+                    <td style="padding: 3px 5px; font-size: 10.5px; vertical-align: middle;">
+                      <div class="fw-bold"><span class="badge bg-light text-dark border me-1" style="font-size: 8.5px; padding: 1px 3px;">S${idx + 1}</span> ${s.material || 'Marble Cut Size'}</div>
+                      <div class="text-muted" style="font-size: 9.5px;">${s.consignor}</div>
+                    </td>
+                    <td class="text-center fw-bold" style="padding: 3px 2px; font-size: 10.5px; vertical-align: middle;">
+                      ${sWt.toFixed(3)}
+                    </td>
+                    <td class="text-center fw-bold" style="padding: 3px 2px; font-size: 10.5px; vertical-align: middle;">
+                      ${sIsFixed ? 'Fixed' : (sRt > 0 ? '₹ ' + sRt.toFixed(2) : 'To be Billed')}
+                    </td>
+                    <td class="text-end fw-bold" style="padding: 3px 5px; font-size: 11px; vertical-align: middle;">
+                      ₹ ${sFr.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                    </td>
+                  </tr>
+                `;
+              }).join('')}
+              <!-- Consolidated Summary Row -->
+              <tr style="background: #f8fafc; border-top: 1.5px solid #000; font-weight: bold;">
+                <td colspan="2" class="text-end pe-2" style="padding: 4px 6px; font-size: 10.5px;">
+                  TOTAL CONSOLIDATED GOODS (${sellersList.length} SELLERS):
+                </td>
+                <td class="text-center fw-bold" style="padding: 4px 2px; font-size: 11.5px; color: #0d6efd;">
+                  ${(parseFloat(trip.weight) || 0).toFixed(3)} MT
+                </td>
+                <td class="text-center" style="padding: 4px 2px; font-size: 9.5px; color: #64748b;">(Consolidated)</td>
+                <td class="text-end fw-bold" style="padding: 4px 5px; font-size: 11.5px; color: #0d6efd;">
+                  ₹ ${(parseFloat(trip.freight) || 0).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                </td>
+              </tr>
+            ` : `
+              <tr>
+                <td class="text-center fw-bold" style="padding: 6px 4px;">${trip.personLiableGst || 'Consignor/Consignee/Transporter'}</td>
+                <td class="text-center fw-bold" style="padding: 6px 4px;">${trip.material || 'Marble Powder'}</td>
+                <td class="text-center fw-bold" style="padding: 6px 4px;">${displayWeight}</td>
+                <td class="text-center fw-bold" style="padding: 6px 4px;">${displayRate}</td>
+                <td class="text-center fw-bold" style="padding: 6px 4px;">${displayFreight}</td>
+              </tr>
+            `}
           </tbody>
         </table>
 
@@ -4520,11 +4734,32 @@ const BiltyBookingModule = {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>${trip.ewayBillNo || '7516 5237 4578'}</td>
-                  <td>${trip.billNo || '2026-27/491'}</td>
-                  <td>₹ ${invValFormatted}</td>
-                </tr>
+                ${isMultiSeller ? `
+                  ${sellersList.map((s, idx) => `
+                    <tr>
+                      <td style="padding: 2px 4px; font-size: 9.5px;">
+                        <span class="badge bg-light text-dark border me-1" style="font-size: 8px; padding: 0 2px;">S${idx + 1}</span>
+                        ${s.ewayBillNo || '-'}
+                      </td>
+                      <td style="padding: 2px 4px; font-size: 9.5px;">${s.billNo || '-'}</td>
+                      <td class="text-end" style="padding: 2px 4px; font-size: 9.5px;">
+                        ${(parseFloat(s.invoiceValue) || 0) > 0 ? '₹ ' + (parseFloat(s.invoiceValue) || 0).toLocaleString('en-IN', {minimumFractionDigits: 2}) : '-'}
+                      </td>
+                    </tr>
+                  `).join('')}
+                  ${sellersList.length > 1 ? `
+                    <tr style="background: #f1f5f9; font-weight: bold;">
+                      <td colspan="2" class="text-end pe-2" style="font-size: 9.5px; padding: 2px 4px;">Total Inv. Value:</td>
+                      <td class="text-end" style="font-size: 10px; padding: 2px 4px;">₹ ${invValFormatted}</td>
+                    </tr>
+                  ` : ''}
+                ` : `
+                  <tr>
+                    <td>${trip.ewayBillNo || '7516 5237 4578'}</td>
+                    <td>${trip.billNo || '2026-27/491'}</td>
+                    <td>₹ ${invValFormatted}</td>
+                  </tr>
+                `}
               </tbody>
             </table>
 
@@ -4618,16 +4853,22 @@ const BiltyBookingModule = {
       displayDate = `${d}/${m}/${y}`;
     }
 
+    let consignorMsg = `🏢 *Consignor:* ${t.consignor}`;
+    if (t.sellerList && t.sellerList.length > 1) {
+      consignorMsg = `🏢 *Consignors (${t.sellerList.length} Consolidated):*\n` + 
+        t.sellerList.map((s, idx) => `   ▫️ *S${idx + 1}:* ${s.consignor} (${s.weight} MT | ₹${Number(s.freight || 0).toLocaleString('en-IN')})`).join('\n');
+    }
+
     const msg = `🚚 *${firmName} - LORRY RECEIPT*
 ━━━━━━━━━━━━━━━━━━━━
 📄 *G.R. No:* ${t.grNo || t.shortGrNo}
 📅 *Date:* ${displayDate}
 🚛 *Truck No:* ${t.truckNo} (${t.loadType || 'Under Load'})
 📍 *Route:* ${t.origin || 'Rajsamand'} ➔ ${t.destination}
-🏢 *Consignor:* ${t.consignor}
+${consignorMsg}
 🏬 *Consignee:* ${t.consignee}
-📦 *Material:* ${t.material || 'Marble Powder'} | ${t.weight || 0} MT
-💰 *Freight:* ₹${Number(t.freight || 0).toLocaleString('en-IN')}
+📦 *Material:* ${t.material || 'Marble Powder'} | Total: ${t.weight || 0} MT
+💰 *Total Freight:* ₹${Number(t.freight || 0).toLocaleString('en-IN')}
 📄 *Bill No:* ${t.billNo || 'N/A'}
 🔢 *E-Way Bill:* ${t.ewayBillNo || 'N/A'}
 👤 *Driver:* ${t.driver || 'Driver'} ${t.driverMobile ? `(${t.driverMobile})` : ''}

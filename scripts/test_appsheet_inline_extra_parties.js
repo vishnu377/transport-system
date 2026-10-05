@@ -25,6 +25,12 @@ global.AppUI = {
   showToast: (msg, type) => console.log(`[Toast ${type}]: ${msg}`)
 };
 global.APP_CONFIG = { firebase: null };
+global.bootstrap = {
+  Modal: {
+    getOrCreateInstance: () => ({ show: () => {}, hide: () => {} }),
+    getInstance: () => ({ show: () => {}, hide: () => {} })
+  }
+};
 
 // Stateful mock DOM
 const elementStore = {};
@@ -231,36 +237,83 @@ async function runTests() {
 
   // Verify DOM render in #extra-sellers-list
   const extraSellersList = document.getElementById('extra-sellers-list');
-  if (!extraSellersList.innerHTML.includes('Seller / Consignor #2') || !extraSellersList.innerHTML.includes('appsheet-form-row')) {
+  if (!extraSellersList.innerHTML.includes('Seller #2') || !extraSellersList.innerHTML.includes('appsheet-form-row')) {
     throw new Error("Extra seller was not rendered in .appsheet-form-row format!");
   }
   console.log("✓ PASS: Extra seller rendered inside #extra-sellers-list in pure .appsheet-form-row style.");
 
+  // Verify Summary Strip shows 1 Single GR (2 Sellers)
+  const stripSeller = document.getElementById('trip-multi-summary-strip');
+  if (stripSeller.classList.contains('d-none')) {
+    throw new Error("Summary strip should be visible when extra seller is present!");
+  }
+  const sellerGrText = document.getElementById('multi-sum-grs').innerText;
+  console.log(`Summary strip multi-seller GRs text: ${sellerGrText}`);
+  if (!sellerGrText.includes('1 Single GR') || !sellerGrText.includes('2 Sellers')) {
+    throw new Error(`Summary strip should show '1 Single GR (2 Sellers)', got: ${sellerGrText}`);
+  }
+  console.log("✓ PASS: Summary strip indicates 1 Single Consolidated GR for multiple sellers.");
+
   // Save via saveAppSheetBilty()
   await BiltyBookingModule.saveAppSheetBilty();
 
-  // Verify trips in dbService
+  // Verify trips in dbService: Must be exactly ONE consolidated trip!
   const allTripsAfterSeller = await dbService.getAll('trips');
-  const savedSellerBatch = allTripsAfterSeller
-    .filter(t => t.truckNo === 'RJ52GB9900' && t.tripStartDate === '2026-10-06')
-    .sort((a, b) => parseInt(a.grSeq) - parseInt(b.grSeq));
-  console.log(`Saved seller batch trips: ${savedSellerBatch.length}`);
-  if (savedSellerBatch.length !== 2) throw new Error("Expected 2 seller trips saved, got " + savedSellerBatch.length);
+  const savedSellerTrips = allTripsAfterSeller
+    .filter(t => t.truckNo === 'RJ52GB9900' && t.tripStartDate === '2026-10-06');
+  console.log(`Saved seller trips count: ${savedSellerTrips.length}`);
+  if (savedSellerTrips.length !== 1) {
+    throw new Error("Expected exactly 1 consolidated trip saved, got " + savedSellerTrips.length);
+  }
 
-  const [s1, s2] = savedSellerBatch;
-  console.log(`GR 1: ${s1.shortGrNo} - ${s1.consignor} (${s1.weight} MT, Freight: ₹${s1.freight}, Comm: ₹${s1.commission})`);
-  console.log(`GR 2: ${s2.shortGrNo} - ${s2.consignor} (${s2.weight} MT, Freight: ₹${s2.freight}, Comm: ₹${s2.commission})`);
+  const consolidatedTrip = savedSellerTrips[0];
+  console.log(`Consolidated GR: ${consolidatedTrip.shortGrNo} - Sellers: ${consolidatedTrip.sellerList ? consolidatedTrip.sellerList.length : 1} (Total Weight: ${consolidatedTrip.weight} MT, Freight: ₹${consolidatedTrip.freight}, Comm: ₹${consolidatedTrip.commission})`);
 
-  if (s1.commission !== 1000 || s2.commission !== 0) {
-    throw new Error("Commission must be charged exactly once on primary GR!");
+  if (!consolidatedTrip.isConsolidated) {
+    throw new Error("Trip should have isConsolidated: true!");
   }
-  if (s1.weight !== 16.0 || s2.weight !== 24.0) {
-    throw new Error("Trip weights do not match individual consignments!");
+  if (!consolidatedTrip.sellerList || consolidatedTrip.sellerList.length !== 2) {
+    throw new Error("sellerList should contain both sellers (length 2)!");
   }
-  if (!s1.tripGroupId || s1.tripGroupId !== s2.tripGroupId) {
-    throw new Error("Both GRs must share the same tripGroupId!");
+  if (consolidatedTrip.weight !== 40.0) {
+    throw new Error(`Consolidated weight should be 40.0 MT (16 + 24), got ${consolidatedTrip.weight}`);
   }
-  console.log("✓ PASS: Multi-Seller consignment saved seamlessly from single AppSheet form!");
+  if (consolidatedTrip.freight !== 72000) {
+    throw new Error(`Consolidated freight should be ₹72000 (28800 + 43200), got ${consolidatedTrip.freight}`);
+  }
+  if (consolidatedTrip.commission !== 1000) {
+    throw new Error(`Commission should be 1000, got ${consolidatedTrip.commission}`);
+  }
+  console.log("✓ PASS: Database trip saved as 1 Single Consolidated record with full sellerList.");
+
+  // Verify Official Bilty Document HTML
+  const biltyDocHTML = BiltyBookingModule.getBiltyDocHTML(consolidatedTrip);
+
+  if (!biltyDocHTML.includes('CONSIGNOR(S) NAME &amp; ADDRESS (2 SELLERS CONSOLIDATED)')) {
+    throw new Error("Bilty document header does not indicate 2 sellers consolidated!");
+  }
+  if (!biltyDocHTML.includes('Seller 1 - Marble Processing Co') || !biltyDocHTML.includes('Seller 2 - Royal Stone Suppliers')) {
+    throw new Error("Both seller names must appear in the bilty document Consignor box!");
+  }
+  if (!biltyDocHTML.includes('08AAACM1111S1Z1') || !biltyDocHTML.includes('08AAACR2222S1Z2')) {
+    throw new Error("Both seller GSTINs must appear in the bilty document!");
+  }
+  if (!biltyDocHTML.includes('16.000') || !biltyDocHTML.includes('24.000')) {
+    throw new Error("Both individual seller weights (16.000 MT and 24.000 MT) must appear in goods table!");
+  }
+  if (!biltyDocHTML.includes('40.000 MT')) {
+    throw new Error("Total consolidated weight (40.000 MT) must appear in goods table summary row!");
+  }
+  if (!biltyDocHTML.includes('72,000.00')) {
+    throw new Error("Total consolidated freight (₹ 72,000.00) must appear in goods table summary row!");
+  }
+  if (!biltyDocHTML.includes('INV-SEL1-01') || !biltyDocHTML.includes('INV-SEL2-02')) {
+    throw new Error("Both bill numbers must appear in invoice table!");
+  }
+  if (!biltyDocHTML.includes('751688880001') || !biltyDocHTML.includes('751688880002')) {
+    throw new Error("Both e-way bill numbers must appear in invoice table!");
+  }
+  console.log("✓ PASS: Official Bilty Document HTML contains all sellers itemized with totals on 1 single bilty!");
 
   console.log("\n🎉 ALL INLINE APPSHEET EXTRA PARTIES TESTS PASSED 100%! 🎉");
 }

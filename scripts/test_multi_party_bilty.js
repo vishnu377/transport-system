@@ -225,22 +225,26 @@ async function runTests() {
 
   const allUpdatedTrips = await dbService.getAll('trips');
   const sellerBatch = allUpdatedTrips
-    .filter(t => t.truckNo === 'RJ52GB2503' && t.tripStartDate === '2026-10-06')
-    .sort((a, b) => parseInt(a.grSeq) - parseInt(b.grSeq));
+    .filter(t => t.truckNo === 'RJ52GB2503' && t.tripStartDate === '2026-10-06');
   console.log(`Saved multi-seller bilties found: ${sellerBatch.length}`);
-  if (sellerBatch.length !== 3) throw new Error("Expected 3 trips for multi-seller load!");
+  if (sellerBatch.length !== 1) throw new Error("Expected exactly 1 consolidated trip for multi-seller load!");
 
-  console.log(`Seller 1: ${sellerBatch[0].consignor} -> ${sellerBatch[0].consignee} (${sellerBatch[0].weight} MT, GR: ${sellerBatch[0].shortGrNo})`);
-  console.log(`Seller 2: ${sellerBatch[1].consignor} -> ${sellerBatch[1].consignee} (${sellerBatch[1].weight} MT, GR: ${sellerBatch[1].shortGrNo})`);
-  console.log(`Seller 3: ${sellerBatch[2].consignor} -> ${sellerBatch[2].consignee} (${sellerBatch[2].weight} MT, GR: ${sellerBatch[2].shortGrNo})`);
+  const tripConsolidated = sellerBatch[0];
+  console.log(`Consolidated GR: ${tripConsolidated.shortGrNo} - ${tripConsolidated.consignor} (${tripConsolidated.weight} MT, Freight: ₹${tripConsolidated.freight})`);
 
-  if (sellerBatch[0].consignee !== 'Jindal Building Material, Delhi' || sellerBatch[2].consignee !== 'Jindal Building Material, Delhi') {
-    throw new Error("Common buyer must be shared across all 3 seller bilties!");
+  if (!tripConsolidated.isConsolidated) {
+    throw new Error("Multi-seller load must be flagged as isConsolidated: true!");
   }
-  if (sellerBatch[0].commission !== 1200 || sellerBatch[1].commission !== 0) {
+  if (!tripConsolidated.sellerList || tripConsolidated.sellerList.length !== 3) {
+    throw new Error("sellerList should contain all 3 sellers!");
+  }
+  if (tripConsolidated.consignee !== 'Jindal Building Material, Delhi') {
+    throw new Error("Common buyer must be shared across consolidated bilty!");
+  }
+  if (tripConsolidated.commission !== 1200) {
     throw new Error("Multi-seller commission not correctly single-attributed!");
   }
-  console.log("✓ PASS: Case 3 Multi-Seller consignment fully verified!");
+  console.log("✓ PASS: Case 3 Multi-Seller consolidated single GR consignment fully verified!");
 
   // -------------------------------------------------------------------------
   // TEST 4: Multi-Bilty Print Preview Generation
