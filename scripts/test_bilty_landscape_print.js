@@ -121,16 +121,16 @@ const sandbox = {
   SAMPLE_DEBTS: []
 };
 
-// Extract renderPrintPreview
-const fnMatch = jsContent.match(/renderPrintPreview\(trip\)\s*\{([\s\S]*?)\n  \},/);
-assert(fnMatch, "Could not find renderPrintPreview in bilty-booking.js");
+// Extract getBiltyDocHTML
+const docFnMatch = jsContent.match(/getBiltyDocHTML\(trip\)\s*\{([\s\S]*?)\n  \},/);
+assert(docFnMatch, "Could not find getBiltyDocHTML in bilty-booking.js");
 
-const renderFn = new Function('trip', 'BILTY_IMAGES', `
-  const BiltyBookingModule = {
-    currentPrintCopy: 'CONSIGNOR COPY'
-  };
-  ${fnMatch[1]}
-`);
+const renderFn = function(trip, images) {
+  const BILTY_IMAGES = images;
+  const fn = new Function('trip', 'BILTY_IMAGES', docFnMatch[1]);
+  renderedHtml = fn(trip, BILTY_IMAGES);
+  return renderedHtml;
+};
 
 // Test TTC trip
 renderFn(sampleTripTTC, biltyImages);

@@ -4080,6 +4080,68 @@ const BiltyBookingModule = {
   // ----------------------------------------------------
   // PIXEL-PERFECT OFFICIAL A4 BILTY PRINT GENERATOR
   // ----------------------------------------------------
+  printOrientation: 'portrait',
+
+  setPrintOrientation(orientation = 'portrait') {
+    this.printOrientation = orientation;
+    const btnPortrait = document.getElementById('btn-orient-portrait');
+    const btnLandscape = document.getElementById('btn-orient-landscape');
+    const previewContainer = document.getElementById('bilty-print-preview');
+
+    let styleEl = document.getElementById('bilty-print-page-style');
+    if (!styleEl && typeof document !== 'undefined' && document.head) {
+      styleEl = document.createElement('style');
+      styleEl.id = 'bilty-print-page-style';
+      document.head.appendChild(styleEl);
+    }
+
+    if (orientation === 'landscape') {
+      if (btnLandscape) {
+        btnLandscape.className = 'btn btn-warning active fw-bold px-3';
+      }
+      if (btnPortrait) {
+        btnPortrait.className = 'btn btn-outline-light px-3';
+      }
+      if (styleEl) {
+        styleEl.innerHTML = `@media print { @page { size: A4 landscape !important; margin: 6mm 8mm !important; } }`;
+      }
+      if (typeof document !== 'undefined' && document.body && document.body.classList) {
+        document.body.classList.remove('print-portrait');
+        document.body.classList.add('print-landscape');
+      }
+      if (previewContainer && previewContainer.classList) {
+        previewContainer.classList.remove('preview-portrait');
+        previewContainer.classList.add('preview-landscape');
+      }
+    } else {
+      // Default: सीधी (Portrait)
+      if (btnPortrait) {
+        btnPortrait.className = 'btn btn-warning active fw-bold px-3';
+      }
+      if (btnLandscape) {
+        btnLandscape.className = 'btn btn-outline-light px-3';
+      }
+      if (styleEl) {
+        styleEl.innerHTML = `@media print { @page { size: A4 portrait !important; margin: 8mm 6mm !important; } }`;
+      }
+      if (typeof document !== 'undefined' && document.body && document.body.classList) {
+        document.body.classList.remove('print-landscape');
+        document.body.classList.add('print-portrait');
+      }
+      if (previewContainer && previewContainer.classList) {
+        previewContainer.classList.remove('preview-landscape');
+        previewContainer.classList.add('preview-portrait');
+      }
+    }
+  },
+
+  triggerPrint() {
+    this.setPrintOrientation(this.printOrientation || 'portrait');
+    setTimeout(() => {
+      window.print();
+    }, 100);
+  },
+
   setPrintCopy(copyTitle) {
     this.currentPrintCopy = copyTitle;
     ['consignor', 'consignee', 'driver', 'office'].forEach(c => {
@@ -4106,6 +4168,7 @@ const BiltyBookingModule = {
 
   openPrintModal(trip) {
     this.currentActiveBilty = trip;
+    this.setPrintOrientation('portrait');
 
     // Check if this trip belongs to a multi-GR batch
     if (trip && trip.tripGroupId) {
@@ -4134,6 +4197,7 @@ const BiltyBookingModule = {
   openMultiPrintModal(trips) {
     this.currentBatchTrips = trips;
     this.activeBatchIndex = 'all';
+    this.setPrintOrientation('portrait');
 
     const tabsBar = document.getElementById('multi-bilty-tabs-bar');
     if (tabsBar) tabsBar.classList.remove('d-none');
@@ -4229,6 +4293,7 @@ const BiltyBookingModule = {
 
   printAllMultiBilties() {
     this.selectMultiPrintTab('all');
+    this.setPrintOrientation(this.printOrientation || 'portrait');
     setTimeout(() => {
       window.print();
     }, 150);

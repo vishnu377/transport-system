@@ -929,14 +929,27 @@
       <div class="modal-content border-0 shadow">
         
         <div class="modal-header bg-dark text-white">
-          <div class="d-flex align-items-center gap-3">
+          <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 w-100 me-2">
             <h6 class="modal-title fw-bold mb-0"><i class="bi bi-printer me-2"></i> Official Consignment Note (Lorry Receipt)</h6>
-            <!-- Copy Selector -->
-            <div class="btn-group btn-group-sm" role="group">
-              <button type="button" class="btn btn-outline-light active" id="btn-copy-consignor" onclick="BiltyBookingModule.setPrintCopy('CONSIGNOR COPY')">Consignor Copy</button>
-              <button type="button" class="btn btn-outline-light" id="btn-copy-consignee" onclick="BiltyBookingModule.setPrintCopy('CONSIGNEE COPY')">Consignee Copy</button>
-              <button type="button" class="btn btn-outline-light" id="btn-copy-driver" onclick="BiltyBookingModule.setPrintCopy('DRIVER COPY')">Driver Copy</button>
-              <button type="button" class="btn btn-outline-light" id="btn-copy-office" onclick="BiltyBookingModule.setPrintCopy('OFFICE COPY')">Office Copy</button>
+            
+            <div class="d-flex align-items-center flex-wrap gap-2">
+              <!-- Orientation Selector: सीधी (Portrait) vs आड़ी (Landscape) -->
+              <div class="btn-group btn-group-sm" role="group" title="प्रिंट की दिशा चुनें (Choose Orientation)">
+                <button type="button" class="btn btn-warning active fw-bold px-3" id="btn-orient-portrait" onclick="BiltyBookingModule.setPrintOrientation('portrait')">
+                  <i class="bi bi-file-earmark me-1"></i> सीधी (Portrait)
+                </button>
+                <button type="button" class="btn btn-outline-light px-3" id="btn-orient-landscape" onclick="BiltyBookingModule.setPrintOrientation('landscape')">
+                  <i class="bi bi-file-earmark-landscape me-1"></i> आड़ी (Landscape)
+                </button>
+              </div>
+
+              <!-- Copy Selector -->
+              <div class="btn-group btn-group-sm" role="group">
+                <button type="button" class="btn btn-outline-light active" id="btn-copy-consignor" onclick="BiltyBookingModule.setPrintCopy('CONSIGNOR COPY')">Consignor Copy</button>
+                <button type="button" class="btn btn-outline-light" id="btn-copy-consignee" onclick="BiltyBookingModule.setPrintCopy('CONSIGNEE COPY')">Consignee Copy</button>
+                <button type="button" class="btn btn-outline-light" id="btn-copy-driver" onclick="BiltyBookingModule.setPrintCopy('DRIVER COPY')">Driver Copy</button>
+                <button type="button" class="btn btn-outline-light" id="btn-copy-office" onclick="BiltyBookingModule.setPrintCopy('OFFICE COPY')">Office Copy</button>
+              </div>
             </div>
           </div>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
@@ -956,7 +969,7 @@
           </div>
         </div>
 
-        <div class="modal-body p-4 bg-secondary-subtle" id="bilty-print-preview" style="max-height: 80vh; overflow-y: auto;">
+        <div class="modal-body p-4 bg-secondary-subtle preview-portrait" id="bilty-print-preview" style="max-height: 80vh; overflow-y: auto;">
           <!-- Pixel-Perfect A4 Consignment Note HTML -->
         </div>
 
@@ -969,7 +982,7 @@
             <button type="button" class="btn btn-outline-primary btn-sm px-3 fw-bold d-none" id="btn-print-all-grs" onclick="BiltyBookingModule.printAllMultiBilties()">
               <i class="bi bi-printer-fill me-1"></i> Print All GRs (एक साथ सभी GR प्रिंट करें)
             </button>
-            <button type="button" class="btn btn-primary btn-sm px-4 fw-bold" id="btn-print-single-gr" onclick="window.print()">
+            <button type="button" class="btn btn-primary btn-sm px-4 fw-bold" id="btn-print-single-gr" onclick="BiltyBookingModule.triggerPrint()">
               <i class="bi bi-printer me-1"></i> Print Consignment Note
             </button>
           </div>
