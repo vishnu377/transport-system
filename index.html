@@ -3,64 +3,157 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MTC And TTC - Trips (Google AppSheet Portal)</title>
+  <title>MTC And TTC - Trips</title>
   <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Bootstrap Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-  <!-- AppSheet Universal Theme & Style -->
-  <link rel="stylesheet" href="./css/appsheet-theme.css?v=20261006_v2">
-  <link rel="stylesheet" href="./css/style.css?v=20261006_v2">
   <style>
-    /* Google AppSheet Authentic Light Theme & Clean Portal Styles */
+    /* 100% AUTHENTIC GOOGLE APPSHEET DESIGN SYSTEM (Exact match of media_1791229132227.png) */
     :root {
       --app-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    }
-    body {
-      font-family: var(--app-font);
-      background-color: #fafafa !important;
-      color: #202124 !important;
+      --appsheet-bg: #f8f9fa;
+      --appsheet-card-bg: #ffffff;
+      --appsheet-text: #202124;
+      --appsheet-muted: #5f6368;
+      --appsheet-border: #dadce0;
+      --appsheet-border-light: #ebebeb;
+      --appsheet-gold: #bfa15f;
+      --appsheet-gold-hover: #b0914e;
+      --appsheet-pill-active: #dfcfab;
+      --appsheet-pill-active-text: #7a5f1e;
     }
 
-    /* AppSheet Top Bar */
-    .appsheet-top-header {
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--app-font);
+      background-color: var(--appsheet-bg);
+      color: var(--appsheet-text);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+    }
+
+    /* 1. Left Slim AppSheet Icon Rail (48px) */
+    .appsheet-rail {
+      width: 48px;
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
       background: #ffffff;
-      border-bottom: 1px solid #e0e0e0;
-      padding: 8px 20px;
+      border-right: 1px solid var(--appsheet-border-light);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 6px;
+      z-index: 1040;
+    }
+
+    .appsheet-rail-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--appsheet-muted);
+      text-decoration: none;
+      border: none;
+      background: transparent;
+      margin-bottom: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .appsheet-rail-btn:hover {
+      background: #f1f3f4;
+      color: #202124;
+    }
+
+    .appsheet-rail-btn.active {
+      background: var(--appsheet-pill-active);
+      color: var(--appsheet-pill-active-text);
+    }
+
+    /* 2. Main Workspace (Offset by 48px rail) */
+    .appsheet-workspace {
+      margin-left: 48px;
+      width: calc(100% - 48px);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+    }
+
+    /* 3. Top Navigation Bar */
+    .appsheet-top-bar {
+      background: #ffffff;
+      border-bottom: 1px solid var(--appsheet-border-light);
+      padding: 6px 16px;
+      height: 48px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       position: sticky;
       top: 0;
-      z-index: 990;
+      z-index: 1020;
     }
-    .appsheet-title-brand {
-      font-size: 15px;
-      font-weight: 600;
-      color: #202124;
+
+    .appsheet-top-left {
       display: flex;
       align-items: center;
-      gap: 10px;
-      text-decoration: none;
+      gap: 12px;
     }
-    .appsheet-search-home {
+
+    .btn-hamburger {
+      background: transparent;
+      border: none;
+      font-size: 19px;
+      color: #202124;
+      cursor: pointer;
+      padding: 4px 6px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .btn-hamburger:hover {
+      background: #f1f3f4;
+    }
+
+    .appsheet-brand-title {
+      font-size: 14.5px;
+      font-weight: 600;
+      color: #202124;
+      letter-spacing: -0.1px;
+      user-select: none;
+    }
+
+    .appsheet-search-box {
       background: #f1f3f4;
       border: 1px solid transparent;
       border-radius: 8px;
-      padding: 5px 12px;
+      padding: 5px 14px;
       width: 100%;
       max-width: 440px;
       display: flex;
       align-items: center;
       gap: 8px;
-      transition: all 0.2s;
+      transition: all 0.2s ease;
     }
-    .appsheet-search-home:focus-within {
+    .appsheet-search-box:focus-within {
       background: #ffffff;
       border-color: #1a73e8;
       box-shadow: 0 1px 3px rgba(26,115,232,0.2);
     }
-    .appsheet-search-home input {
+    .appsheet-search-box input {
       background: transparent;
       border: none;
       outline: none;
@@ -68,6 +161,31 @@
       font-size: 13.5px;
       color: #202124;
     }
+
+    .appsheet-top-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-top-icon {
+      background: transparent;
+      border: none;
+      font-size: 16px;
+      color: var(--appsheet-muted);
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .btn-top-icon:hover {
+      background: #f1f3f4;
+      color: #202124;
+    }
+
     .appsheet-user-avatar {
       width: 32px;
       height: 32px;
@@ -82,7 +200,8 @@
       user-select: none;
     }
 
-    .appsheet-subheader-bar {
+    /* 4. Subheader Bar (Home + Grid Toggle) */
+    .appsheet-subheader {
       padding: 8px 24px;
       background: #ffffff;
       border-bottom: 1px solid #f1f3f4;
@@ -91,194 +210,339 @@
       justify-content: space-between;
     }
 
-    /* Pixel-Perfect AppSheet Panel Cards (Exact replica of media_1791229132227.png) */
-    .appsheet-panel-card {
-      background: #ffffff !important;
-      border: 1px solid #e0e0e0 !important;
-      border-radius: 4px !important;
-      overflow: hidden !important;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.02) !important;
+    .appsheet-subheader-title {
+      font-size: 14.5px;
+      font-weight: 600;
+      color: #202124;
+    }
+
+    .btn-grid-toggle {
+      background: transparent;
+      border: none;
+      font-size: 17px;
+      color: var(--appsheet-muted);
+      cursor: pointer;
+      padding: 2px 6px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .btn-grid-toggle:hover {
+      background: #f1f3f4;
+      color: #202124;
+    }
+
+    /* 5. Home Portal Panels Container */
+    .appsheet-home-body {
+      padding: 16px 24px;
+      background: #ffffff;
+      flex-grow: 1;
+    }
+
+    .appsheet-card {
+      background: #ffffff;
+      border: 1px solid var(--appsheet-border);
+      border-radius: 4px;
+      box-shadow: 0 1px 2px rgba(60,64,67,0.04);
       height: 100%;
       display: flex;
       flex-direction: column;
     }
-    .appsheet-panel-top {
-      padding: 10px 16px !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: space-between !important;
-      border-bottom: 1px solid #e0e0e0 !important;
-      font-size: 13.5px !important;
-      font-weight: 600 !important;
-      color: #202124 !important;
+
+    .appsheet-card-header {
+      padding: 10px 16px;
+      border-bottom: 1px solid #ebebeb;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       background: #ffffff;
     }
-    .appsheet-group-divider {
-      padding: 8px 16px !important;
-      font-size: 12px !important;
-      font-weight: 600 !important;
-      color: #202124 !important;
-      border-bottom: 1px solid #f1f3f4 !important;
-      background: #ffffff !important;
-    }
-    .appsheet-group-divider:not(:first-child) {
-      border-top: 1px solid #e0e0e0 !important;
+
+    .appsheet-card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #202124;
     }
 
-    /* Clean Horizontal AppSheet Rows */
-    .appsheet-portal-row {
-      display: flex !important;
-      flex-direction: row !important;
-      align-items: center !important;
-      justify-content: space-between !important;
-      padding: 10px 16px !important;
-      border-bottom: 1px solid #f4f4f4 !important;
-      text-decoration: none !important;
-      color: #202124 !important;
-      background: #ffffff !important;
-      transition: background 0.12s ease !important;
-    }
-    .appsheet-portal-row:last-child {
-      border-bottom: none !important;
-    }
-    .appsheet-portal-row:hover {
-      background-color: #f8f9fa !important;
-      color: #1a73e8 !important;
-    }
-    .appsheet-row-left {
-      display: flex !important;
-      align-items: center !important;
-      gap: 16px !important;
-    }
-    .appsheet-row-thumb {
-      width: 38px !important;
-      height: 38px !important;
-      border-radius: 50% !important;
-      object-fit: cover !important;
-      flex-shrink: 0 !important;
-    }
-    .appsheet-row-name {
-      font-size: 13.5px !important;
-      font-weight: 500 !important;
-      color: #202124 !important;
-      letter-spacing: -0.1px !important;
-    }
-    .appsheet-portal-row:hover .appsheet-row-name {
-      color: #1a73e8 !important;
-    }
-    .appsheet-row-chevron {
-      font-size: 14px !important;
-      color: #5f6368 !important;
-      opacity: 0.5 !important;
-      transition: transform 0.15s ease, opacity 0.15s ease;
-    }
-    .appsheet-portal-row:hover .appsheet-row-chevron {
-      opacity: 1 !important;
-      color: #1a73e8 !important;
-      transform: translateX(3px) !important;
+    .appsheet-card-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .btn-bilty-gold {
-      background: #bfa15f !important;
-      color: #1a1a1a !important;
-      font-weight: 700 !important;
-      font-size: 12px !important;
-      padding: 3px 10px !important;
-      border-radius: 4px !important;
-      border: none !important;
-      display: inline-flex !important;
-      align-items: center !important;
-      gap: 4px !important;
-      text-decoration: none !important;
+      background: var(--appsheet-gold);
+      color: #1a1a1a;
+      font-weight: 700;
+      font-size: 12px;
+      padding: 3px 10px;
+      border-radius: 4px;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      text-decoration: none;
+      transition: background 0.15s ease;
     }
     .btn-bilty-gold:hover {
-      background: #af904a !important;
-      color: #000 !important;
+      background: var(--appsheet-gold-hover);
+      color: #000000;
+    }
+
+    .btn-card-action {
+      background: transparent;
+      border: none;
+      color: var(--appsheet-muted);
+      cursor: pointer;
+      padding: 2px 4px;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .btn-card-action:hover {
+      color: #202124;
+    }
+
+    /* Section divider inside cards */
+    .appsheet-section-title {
+      padding: 8px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #202124;
+      background: #ffffff;
+      border-bottom: 1px solid #f1f3f4;
+    }
+    .appsheet-section-group:not(:first-child) .appsheet-section-title {
+      border-top: 1px solid #ebebeb;
+    }
+
+    /* Clean Horizontal AppSheet Module Row */
+    .appsheet-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px 16px;
+      border-bottom: 1px solid #f4f4f4;
+      text-decoration: none;
+      color: #202124;
+      background: #ffffff;
+      transition: background 0.12s ease;
+    }
+    .appsheet-row:last-child {
+      border-bottom: none;
+    }
+    .appsheet-row:hover {
+      background-color: #f8f9fa;
+      color: #1a73e8;
+    }
+
+    .appsheet-row-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .appsheet-row-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .appsheet-row-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: #202124;
+      letter-spacing: -0.1px;
+    }
+    .appsheet-row:hover .appsheet-row-name {
+      color: #1a73e8;
+    }
+
+    .appsheet-row-chevron {
+      font-size: 14px;
+      color: #80868b;
+      opacity: 0.5;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+    .appsheet-row:hover .appsheet-row-chevron {
+      opacity: 1;
+      color: #1a73e8;
+      transform: translateX(3px);
+    }
+
+    /* Offcanvas Navigation Drawer (Clean Google AppSheet Light Theme) */
+    .offcanvas-appsheet {
+      width: 280px !important;
+      background: #ffffff !important;
+      border-right: 1px solid #dadce0 !important;
+    }
+    .offcanvas-appsheet .offcanvas-header {
+      padding: 14px 20px;
+      border-bottom: 1px solid #ebebeb;
+      background: #ffffff;
+    }
+    .offcanvas-appsheet .offcanvas-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #202124;
+    }
+    .drawer-nav-section {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #5f6368;
+      padding: 12px 16px 4px 16px;
+    }
+    .drawer-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 16px;
+      color: #3c4043;
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 500;
+      border-radius: 6px;
+      margin: 2px 8px;
+      transition: all 0.15s ease;
+    }
+    .drawer-link:hover {
+      background: #f1f3f4;
+      color: #1a73e8;
+    }
+    .drawer-link.active {
+      background: var(--appsheet-pill-active);
+      color: var(--appsheet-pill-active-text);
+      font-weight: 700;
+    }
+
+    /* Bottom Collapsible Executive Overview */
+    .executive-drawer-toggle {
+      margin-top: 24px;
+      border-top: 1px solid #ebebeb;
+      padding-top: 16px;
+    }
+    .btn-metrics-toggle {
+      background: #f8f9fa;
+      border: 1px solid #dadce0;
+      color: #3c4043;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-metrics-toggle:hover {
+      background: #f1f3f4;
+      color: #202124;
     }
   </style>
 </head>
 <body>
 
-  <!-- App Sidebar Navigation (Clean White AppSheet Light Theme) -->
-  <nav id="sidebar"></nav>
+  <!-- 1. Left Slim AppSheet Rail (48px) -->
+  <aside class="appsheet-rail">
+    <button class="appsheet-rail-btn" title="Filter" data-bs-toggle="offcanvas" data-bs-target="#appsheetNavDrawer">
+      <i class="bi bi-funnel"></i>
+    </button>
+    <a href="./index.html" class="appsheet-rail-btn active" title="Home">
+      <i class="bi bi-house-door-fill"></i>
+    </a>
+    <button class="appsheet-rail-btn" title="About" onclick="alert('MTC & TTC Logistics Management System v2026.1')">
+      <i class="bi bi-info-circle"></i>
+    </button>
+    <button class="appsheet-rail-btn" title="Feedback" onclick="alert('Support Hotline: +91 9829241717')">
+      <i class="bi bi-chat-square-dots"></i>
+    </button>
+    <div class="mt-auto mb-2">
+      <button class="appsheet-rail-btn" title="All Modules" data-bs-toggle="offcanvas" data-bs-target="#appsheetNavDrawer">
+        <i class="bi bi-grid-3x3-gap"></i>
+      </button>
+    </div>
+  </aside>
 
-  <!-- Main Content Workspace -->
-  <div id="main-content">
+  <!-- 2. Main Workspace -->
+  <div class="appsheet-workspace">
     
     <!-- Top AppSheet Navigation Bar -->
-    <header class="appsheet-top-header">
-      <div class="d-flex align-items-center gap-3">
-        <button id="sidebar-toggle" class="btn btn-light btn-sm d-lg-none">
-          <i class="bi bi-list fs-5"></i>
+    <header class="appsheet-top-bar">
+      <div class="appsheet-top-left">
+        <button class="btn-hamburger" title="Open Navigation Menu" data-bs-toggle="offcanvas" data-bs-target="#appsheetNavDrawer">
+          <i class="bi bi-list"></i>
         </button>
-        <a href="./index.html" class="appsheet-title-brand">
-          <span class="fs-5">☰</span>
-          <span>MTC And TTC - Trips</span>
-        </a>
+        <span class="appsheet-brand-title">MTC And TTC - Trips</span>
       </div>
 
-      <!-- Search Home Bar -->
-      <div class="appsheet-search-home">
+      <!-- Centered Search Box -->
+      <div class="appsheet-search-box">
         <i class="bi bi-search text-muted"></i>
-        <input type="text" id="search-home-input" placeholder="Search Home" oninput="HomeSearchModule.filter(this.value)">
+        <input type="text" id="search-home-input" placeholder="Search Home" oninput="HomeFilter.search(this.value)">
       </div>
 
       <!-- Right Sync & Avatar -->
-      <div class="d-flex align-items-center gap-2">
-        <button class="btn btn-sm btn-light border-0 text-muted" onclick="location.reload()" title="Sync & Refresh Data">
-          <i class="bi bi-arrow-repeat fs-5"></i>
+      <div class="appsheet-top-right">
+        <button class="btn-top-icon" onclick="location.reload()" title="Sync & Refresh Data">
+          <i class="bi bi-arrow-repeat"></i>
         </button>
         <div class="appsheet-user-avatar" title="Sachin / Super Admin">S</div>
       </div>
     </header>
 
-    <!-- Subheader with Title and Grid Icon -->
-    <div class="appsheet-subheader-bar">
-      <div class="fw-bold text-dark fs-6">Home</div>
+    <!-- Subheader Bar (Home + Grid Toggle) -->
+    <div class="appsheet-subheader">
+      <span class="appsheet-subheader-title">Home</span>
       <div>
-        <button class="btn btn-sm btn-link text-muted p-0" title="Grid View Toggle">
-          <i class="bi bi-grid fs-5"></i>
+        <button class="btn-grid-toggle" title="Toggle Grid View">
+          <i class="bi bi-grid"></i>
         </button>
       </div>
     </div>
 
     <!-- Main Home Portal: 2 Columns Matching Google AppSheet Exactly -->
-    <main class="page-container p-3 p-lg-4">
-      <div class="row g-4 mb-4">
+    <main class="appsheet-home-body">
+      <div class="row g-4">
         
         <!-- LEFT COLUMN: Frequent -->
-        <div class="col-12 col-xl-6">
-          <div class="appsheet-panel-card">
+        <div class="col-12 col-lg-6">
+          <div class="appsheet-card">
             
-            <!-- Frequent Header -->
-            <div class="appsheet-panel-top">
-              <span>Frequent</span>
-              <div class="d-flex align-items-center gap-2">
+            <!-- Card Header: Frequent + Gold Bilty Button -->
+            <div class="appsheet-card-header">
+              <span class="appsheet-card-title">Frequent</span>
+              <div class="appsheet-card-actions">
                 <a href="./pages/bilty-booking.html" class="btn-bilty-gold" title="Create New Bilty">
                   <i class="bi bi-arrow-up-right-square"></i> Bilty
                 </a>
-                <button class="btn btn-sm btn-link text-muted p-0" title="Sort"><i class="bi bi-filter-right fs-5"></i></button>
-                <button class="btn btn-sm btn-link text-muted p-0" title="Expand"><i class="bi bi-arrows-angle-expand fs-6"></i></button>
+                <button class="btn-card-action" title="Sort"><i class="bi bi-filter-right"></i></button>
+                <button class="btn-card-action" title="Expand"><i class="bi bi-arrows-angle-expand"></i></button>
               </div>
             </div>
 
             <!-- Group 1: 1 Bilty -->
-            <div class="appsheet-group-wrapper" data-group="1 Bilty">
-              <div class="appsheet-group-divider">1 Bilty</div>
+            <div class="appsheet-section-group" data-group="1 Bilty">
+              <div class="appsheet-section-title">1 Bilty</div>
               
               <!-- 1. Bilty Booking -->
-              <a href="./pages/bilty-booking.html" class="appsheet-portal-row" data-name="Bilty Booking" data-keywords="bilty booking lr consignment note 1">
+              <a href="./pages/bilty-booking.html" class="appsheet-row" data-name="Bilty Booking" data-keywords="bilty booking lr consignment note 1">
                 <div class="appsheet-row-left">
-                  <img src="./assets/appsheet_icons/bilty_booking.png" alt="Bilty Booking" class="appsheet-row-thumb">
+                  <img src="./assets/appsheet_icons/bilty_booking.png" alt="Bilty Booking" class="appsheet-row-icon">
                   <span class="appsheet-row-name">Bilty Booking</span>
                 </div>
                 <i class="bi bi-chevron-right appsheet-row-chevron"></i>
               </a>
 
               <!-- 2. Ledger -->
-              <a href="./pages/ledger.html" class="appsheet-portal-row" data-name="Ledger" data-keywords="ledger khata party debt dues balance 2">
+              <a href="./pages/ledger.html" class="appsheet-row" data-name="Ledger" data-keywords="ledger khata party debt dues balance 2">
                 <div class="appsheet-row-left">
-                  <img src="./assets/appsheet_icons/ledger.png" alt="Ledger" class="appsheet-row-thumb">
+                  <img src="./assets/appsheet_icons/ledger.png" alt="Ledger" class="appsheet-row-icon">
                   <span class="appsheet-row-name">Ledger</span>
                 </div>
                 <i class="bi bi-chevron-right appsheet-row-chevron"></i>
@@ -286,49 +550,49 @@
             </div>
 
             <!-- Group 2: 2 Trip -->
-            <div class="appsheet-group-wrapper" data-group="2 Trip">
-              <div class="appsheet-group-divider">2 Trip</div>
+            <div class="appsheet-section-group" data-group="2 Trip">
+              <div class="appsheet-section-title">2 Trip</div>
               
               <!-- 3. Trips -->
-              <a href="./pages/trips.html" class="appsheet-portal-row" data-name="Trips" data-keywords="trips dispatch fleet active open settled total freight gst 3">
+              <a href="./pages/trips.html" class="appsheet-row" data-name="Trips" data-keywords="trips dispatch fleet active open settled total freight gst 3">
                 <div class="appsheet-row-left">
-                  <img src="./assets/appsheet_icons/trips.png" alt="Trips" class="appsheet-row-thumb">
+                  <img src="./assets/appsheet_icons/trips.png" alt="Trips" class="appsheet-row-icon">
                   <span class="appsheet-row-name">Trips</span>
                 </div>
                 <i class="bi bi-chevron-right appsheet-row-chevron"></i>
               </a>
 
               <!-- 4. Cheques -->
-              <a href="./pages/cheques.html" class="appsheet-portal-row" data-name="Cheques" data-keywords="cheques due bounced cleared not used bank 4">
+              <a href="./pages/cheques.html" class="appsheet-row" data-name="Cheques" data-keywords="cheques due bounced cleared not used bank 4">
                 <div class="appsheet-row-left">
-                  <img src="./assets/appsheet_icons/cheques.png" alt="Cheques" class="appsheet-row-thumb">
+                  <img src="./assets/appsheet_icons/cheques.png" alt="Cheques" class="appsheet-row-icon">
                   <span class="appsheet-row-name">Cheques</span>
                 </div>
                 <i class="bi bi-chevron-right appsheet-row-chevron"></i>
               </a>
 
               <!-- 5. To be Created -->
-              <a href="./pages/trips.html?view=to_be_created" class="appsheet-portal-row" data-name="To be Created" data-keywords="to be created pending bilty bill generation loading unbilled 5">
+              <a href="./pages/trips.html?view=to_be_created" class="appsheet-row" data-name="To be Created" data-keywords="to be created pending bilty bill generation loading unbilled 5">
                 <div class="appsheet-row-left">
-                  <img src="./assets/appsheet_icons/to_be_created.png" alt="To be Created" class="appsheet-row-thumb">
+                  <img src="./assets/appsheet_icons/to_be_created.png" alt="To be Created" class="appsheet-row-icon">
                   <span class="appsheet-row-name">To be Created</span>
                 </div>
                 <i class="bi bi-chevron-right appsheet-row-chevron"></i>
               </a>
 
               <!-- 6. Parties -->
-              <a href="./pages/parties.html" class="appsheet-portal-row" data-name="Parties" data-keywords="parties consignor consignee customer buyer seller 3396 6">
+              <a href="./pages/parties.html" class="appsheet-row" data-name="Parties" data-keywords="parties consignor consignee customer buyer seller 3396 6">
                 <div class="appsheet-row-left">
-                  <img src="./assets/appsheet_icons/parties.png" alt="Parties" class="appsheet-row-thumb">
+                  <img src="./assets/appsheet_icons/parties.png" alt="Parties" class="appsheet-row-icon">
                   <span class="appsheet-row-name">Parties</span>
                 </div>
                 <i class="bi bi-chevron-right appsheet-row-chevron"></i>
               </a>
 
               <!-- 7. Owners -->
-              <a href="./pages/owners.html" class="appsheet-portal-row" data-name="Owners" data-keywords="owners truck lorry fleet market 586 7">
+              <a href="./pages/owners.html" class="appsheet-row" data-name="Owners" data-keywords="owners truck lorry fleet market 586 7">
                 <div class="appsheet-row-left">
-                  <img src="./assets/appsheet_icons/owners.png" alt="Owners" class="appsheet-row-thumb">
+                  <img src="./assets/appsheet_icons/owners.png" alt="Owners" class="appsheet-row-icon">
                   <span class="appsheet-row-name">Owners</span>
                 </div>
                 <i class="bi bi-chevron-right appsheet-row-chevron"></i>
@@ -336,22 +600,22 @@
             </div>
 
             <!-- Group 3: 3 Shahpura -->
-            <div class="appsheet-group-wrapper" data-group="3 Shahpura">
-              <div class="appsheet-group-divider">3 Shahpura</div>
+            <div class="appsheet-section-group" data-group="3 Shahpura">
+              <div class="appsheet-section-title">3 Shahpura</div>
               
               <!-- 8. DEF Urea -->
-              <a href="./pages/cash-register.html#def-urea" class="appsheet-portal-row" data-name="DEF Urea" data-keywords="def urea bs6 solution cans barrels depot stock 8">
+              <a href="./pages/cash-register.html#def-urea" class="appsheet-row" data-name="DEF Urea" data-keywords="def urea bs6 solution cans barrels depot stock 8">
                 <div class="appsheet-row-left">
-                  <img src="./assets/appsheet_icons/def_urea.png" alt="DEF Urea" class="appsheet-row-thumb">
+                  <img src="./assets/appsheet_icons/def_urea.png" alt="DEF Urea" class="appsheet-row-icon">
                   <span class="appsheet-row-name">DEF Urea</span>
                 </div>
                 <i class="bi bi-chevron-right appsheet-row-chevron"></i>
               </a>
 
               <!-- 9. Shahpura -->
-              <a href="./pages/cash-register.html" class="appsheet-portal-row" data-name="Shahpura" data-keywords="shahpura cash book register driver kharcha branch advance depot 9">
+              <a href="./pages/cash-register.html" class="appsheet-row" data-name="Shahpura" data-keywords="shahpura cash book register driver kharcha branch advance depot 9">
                 <div class="appsheet-row-left">
-                  <img src="./assets/appsheet_icons/shahpura.png" alt="Shahpura" class="appsheet-row-thumb">
+                  <img src="./assets/appsheet_icons/shahpura.png" alt="Shahpura" class="appsheet-row-icon">
                   <span class="appsheet-row-name">Shahpura</span>
                 </div>
                 <i class="bi bi-chevron-right appsheet-row-chevron"></i>
@@ -362,53 +626,53 @@
         </div>
 
         <!-- RIGHT COLUMN: Infrequent -->
-        <div class="col-12 col-xl-6">
-          <div class="appsheet-panel-card">
+        <div class="col-12 col-lg-6">
+          <div class="appsheet-card">
             
-            <!-- Infrequent Header -->
-            <div class="appsheet-panel-top">
-              <span>Infrequent</span>
-              <div class="d-flex align-items-center gap-2">
-                <button class="btn btn-sm btn-link text-muted p-0" title="Sort"><i class="bi bi-filter-right fs-5"></i></button>
-                <button class="btn btn-sm btn-link text-muted p-0" title="Expand"><i class="bi bi-arrows-angle-expand fs-6"></i></button>
+            <!-- Card Header: Infrequent -->
+            <div class="appsheet-card-header">
+              <span class="appsheet-card-title">Infrequent</span>
+              <div class="appsheet-card-actions">
+                <button class="btn-card-action" title="Sort"><i class="bi bi-filter-right"></i></button>
+                <button class="btn-card-action" title="Expand"><i class="bi bi-arrows-angle-expand"></i></button>
               </div>
             </div>
 
             <!-- Group 1: 1 Resources -->
-            <div class="appsheet-group-wrapper" data-group="1 Resources">
-              <div class="appsheet-group-divider">1 Resources</div>
+            <div class="appsheet-section-group" data-group="1 Resources">
+              <div class="appsheet-section-title">1 Resources</div>
               
               <!-- 10. PDF -->
-              <a href="./pages/bilty-booking.html#pdf" class="appsheet-portal-row" data-name="PDF" data-keywords="pdf documents bilty prints invoice download 10">
+              <a href="./pages/bilty-booking.html#pdf" class="appsheet-row" data-name="PDF" data-keywords="pdf documents bilty prints invoice download 10">
                 <div class="appsheet-row-left">
-                  <img src="./assets/appsheet_icons/pdf.png" alt="PDF" class="appsheet-row-thumb">
+                  <img src="./assets/appsheet_icons/pdf.png" alt="PDF" class="appsheet-row-icon">
                   <span class="appsheet-row-name">PDF</span>
                 </div>
                 <i class="bi bi-chevron-right appsheet-row-chevron"></i>
               </a>
 
               <!-- 11. Brokers -->
-              <a href="./pages/brokers.html" class="appsheet-portal-row" data-name="Brokers" data-keywords="brokers dallal 764 commission dalali transport 11">
+              <a href="./pages/brokers.html" class="appsheet-row" data-name="Brokers" data-keywords="brokers dallal 764 commission dalali transport 11">
                 <div class="appsheet-row-left">
-                  <img src="./assets/appsheet_icons/brokers.png" alt="Brokers" class="appsheet-row-thumb">
+                  <img src="./assets/appsheet_icons/brokers.png" alt="Brokers" class="appsheet-row-icon">
                   <span class="appsheet-row-name">Brokers</span>
                 </div>
                 <i class="bi bi-chevron-right appsheet-row-chevron"></i>
               </a>
 
               <!-- 12. Drivers -->
-              <a href="./pages/drivers.html" class="appsheet-portal-row" data-name="Drivers" data-keywords="drivers 888 driver master mobile kotputli truck 12">
+              <a href="./pages/drivers.html" class="appsheet-row" data-name="Drivers" data-keywords="drivers 888 driver master mobile kotputli truck 12">
                 <div class="appsheet-row-left">
-                  <img src="./assets/appsheet_icons/drivers.png" alt="Drivers" class="appsheet-row-thumb">
+                  <img src="./assets/appsheet_icons/drivers.png" alt="Drivers" class="appsheet-row-icon">
                   <span class="appsheet-row-name">Drivers</span>
                 </div>
                 <i class="bi bi-chevron-right appsheet-row-chevron"></i>
               </a>
 
               <!-- 13. Partnership -->
-              <a href="./pages/settlement.html#partnership" class="appsheet-portal-row" data-name="Partnership" data-keywords="partnership partner share profit distribution mtc ttc 13">
+              <a href="./pages/settlement.html#partnership" class="appsheet-row" data-name="Partnership" data-keywords="partnership partner share profit distribution mtc ttc 13">
                 <div class="appsheet-row-left">
-                  <img src="./assets/appsheet_icons/partnership.png" alt="Partnership" class="appsheet-row-thumb">
+                  <img src="./assets/appsheet_icons/partnership.png" alt="Partnership" class="appsheet-row-icon">
                   <span class="appsheet-row-name">Partnership</span>
                 </div>
                 <i class="bi bi-chevron-right appsheet-row-chevron"></i>
@@ -420,119 +684,155 @@
 
       </div>
 
-      <!-- Live Executive Summary KPIs -->
-      <div class="card mb-4 p-3 bg-white border" style="border-radius: 4px;">
+      <!-- Collapsible Executive Analytics & KPIs Toggle Strip -->
+      <div class="executive-drawer-toggle">
         <div class="d-flex align-items-center justify-content-between mb-3">
-          <div class="fw-bold text-dark fs-6">
-            <i class="bi bi-speedometer2 text-primary me-2"></i> Executive Operations & Financial KPIs
-          </div>
-          <span class="badge bg-light text-dark border">FY 2026 - 2027</span>
+          <button class="btn-metrics-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#executiveKpiCollapse" aria-expanded="false">
+            <i class="bi bi-speedometer2 text-primary"></i> <span>Executive Fleet Metrics & KPIs</span> <i class="bi bi-chevron-down ms-1"></i>
+          </button>
+          <small class="text-muted">FY 2026 - 2027 Central Hub</small>
         </div>
 
-        <div class="row g-3">
-          <div class="col-12 col-sm-6 col-xl-3">
-            <div class="p-3 border rounded bg-light">
-              <div class="text-primary mb-2"><i class="bi bi-truck fs-5"></i></div>
-              <div class="text-muted small">Active Fleet Trips</div>
-              <div id="kpi-active-trips" class="fs-5 fw-bold text-dark">Loading...</div>
-              <small class="text-muted">Own + Market Fleet</small>
+        <div class="collapse" id="executiveKpiCollapse">
+          <div class="card p-3 mb-4 border" style="border-radius: 4px; background: #ffffff;">
+            <div class="row g-3">
+              <div class="col-6 col-md-3">
+                <div class="p-2 border rounded bg-light">
+                  <small class="text-muted d-block">Active Fleet Trips</small>
+                  <div id="kpi-active-trips" class="fw-bold fs-6 text-dark">Loading...</div>
+                </div>
+              </div>
+              <div class="col-6 col-md-3">
+                <div class="p-2 border rounded bg-light">
+                  <small class="text-muted d-block">Total Freight Billed</small>
+                  <div id="kpi-total-freight" class="fw-bold fs-6 text-dark">Loading...</div>
+                </div>
+              </div>
+              <div class="col-6 col-md-3">
+                <div class="p-2 border rounded bg-light">
+                  <small class="text-muted d-block">Party Outstanding</small>
+                  <div id="kpi-party-due" class="fw-bold fs-6 text-danger">Loading...</div>
+                </div>
+              </div>
+              <div class="col-6 col-md-3">
+                <div class="p-2 border rounded bg-light">
+                  <small class="text-muted d-block">Truck Owner Due</small>
+                  <div id="kpi-owner-due" class="fw-bold fs-6 text-warning">Loading...</div>
+                </div>
+              </div>
             </div>
           </div>
-
-          <div class="col-12 col-sm-6 col-xl-3">
-            <div class="p-3 border rounded bg-light">
-              <div class="text-success mb-2"><i class="bi bi-cash-stack fs-5"></i></div>
-              <div class="text-muted small">Total Freight Billed</div>
-              <div id="kpi-total-freight" class="fs-5 fw-bold text-dark">Loading...</div>
-              <small class="text-muted">All Consignments</small>
-            </div>
-          </div>
-
-          <div class="col-12 col-sm-6 col-xl-3">
-            <div class="p-3 border rounded bg-light">
-              <div class="text-danger mb-2"><i class="bi bi-arrow-down-left-circle fs-5"></i></div>
-              <div class="text-muted small">Party Outstanding Due</div>
-              <div id="kpi-party-due" class="fs-5 fw-bold text-danger">Loading...</div>
-              <small class="text-muted">Receivable From Customers</small>
-            </div>
-          </div>
-
-          <div class="col-12 col-sm-6 col-xl-3">
-            <div class="p-3 border rounded bg-light">
-              <div class="text-warning mb-2"><i class="bi bi-arrow-up-right-circle fs-5"></i></div>
-              <div class="text-muted small">Truck Owner Due</div>
-              <div id="kpi-owner-due" class="fs-5 fw-bold text-warning">Loading...</div>
-              <small class="text-muted">Market Truck Payable</small>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Recent Fleet Consignments Table -->
-      <div class="card bg-white p-3 border" style="border-radius: 4px;">
-        <div class="d-flex align-items-center justify-content-between mb-3">
-          <div>
-            <h6 class="mb-0 fw-bold text-dark"><i class="bi bi-clock-history me-1 text-primary"></i> Recent Trips & Consignments</h6>
-            <small class="text-muted">Real-time tracking of MTC, TTC & SMTC dispatches</small>
-          </div>
-          <a href="./pages/trips.html" class="btn btn-sm btn-outline-primary">
-            View All Trips <i class="bi bi-arrow-right ms-1"></i>
-          </a>
-        </div>
-
-        <div class="table-responsive">
-          <table class="table table-hover mb-0" style="font-size: 13px;">
-            <thead>
-              <tr class="table-light">
-                <th>Bilty / G.R. No.</th>
-                <th>Truck & Driver</th>
-                <th>Route (From - To)</th>
-                <th>Consignee & Material</th>
-                <th class="text-end">Freight</th>
-                <th>Status</th>
-                <th class="text-center">Action</th>
-              </tr>
-            </thead>
-            <tbody id="dashboard-trips-tbody">
-              <tr>
-                <td colspan="7" class="text-center py-4 text-muted">
-                  <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div> Loading live trips...
-                </td>
-              </tr>
-            </tbody>
-          </table>
         </div>
       </div>
     </main>
 
   </div>
 
+  <!-- Offcanvas Navigation Drawer (Clean AppSheet Light Theme) -->
+  <div class="offcanvas offcanvas-start offcanvas-appsheet" tabindex="-1" id="appsheetNavDrawer" aria-labelledby="drawerTitle">
+    <div class="offcanvas-header">
+      <div class="d-flex align-items-center gap-2">
+        <span class="fs-5">🚛</span>
+        <h6 class="offcanvas-title mb-0" id="drawerTitle">MTC & TTC Logistics</h6>
+      </div>
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body p-2">
+      <a href="./index.html" class="drawer-link active">
+        <i class="bi bi-house-door-fill text-warning"></i> AppSheet Home Portal
+      </a>
+
+      <!-- 1 Bilty -->
+      <div class="drawer-nav-section text-warning">1 Bilty</div>
+      <a href="./pages/bilty-booking.html" class="drawer-link">
+        <i class="bi bi-file-earmark-plus text-warning"></i> Bilty Booking
+      </a>
+      <a href="./pages/ledger.html" class="drawer-link">
+        <i class="bi bi-journal-bookmark text-danger"></i> Ledger (खाताबही)
+      </a>
+
+      <!-- 2 Trip -->
+      <div class="drawer-nav-section text-info">2 Trip</div>
+      <a href="./pages/trips.html" class="drawer-link">
+        <i class="bi bi-truck text-primary"></i> Trips
+      </a>
+      <a href="./pages/cheques.html" class="drawer-link">
+        <i class="bi bi-credit-card-2-front text-warning"></i> Cheques
+      </a>
+      <a href="./pages/trips.html?view=to_be_created" class="drawer-link">
+        <i class="bi bi-calculator text-info"></i> To be Created
+      </a>
+      <a href="./pages/parties.html" class="drawer-link">
+        <i class="bi bi-building text-success"></i> Parties Master
+      </a>
+      <a href="./pages/owners.html" class="drawer-link">
+        <i class="bi bi-person-badge text-secondary"></i> Owners (गाड़ी मालिक)
+      </a>
+
+      <!-- 3 Shahpura -->
+      <div class="drawer-nav-section text-success">3 Shahpura</div>
+      <a href="./pages/cash-register.html#def-urea" class="drawer-link">
+        <i class="bi bi-droplet-half text-info"></i> DEF Urea
+      </a>
+      <a href="./pages/cash-register.html" class="drawer-link">
+        <i class="bi bi-wallet2 text-success"></i> Shahpura (Cash Book)
+      </a>
+
+      <!-- 1 Resources -->
+      <div class="drawer-nav-section text-secondary">1 Resources</div>
+      <a href="./pages/bilty-booking.html#pdf" class="drawer-link">
+        <i class="bi bi-file-earmark-pdf text-danger"></i> PDF (बिल्टी प्रिंट्स)
+      </a>
+      <a href="./pages/brokers.html" class="drawer-link">
+        <i class="bi bi-people text-primary"></i> Brokers (764 दलाल)
+      </a>
+      <a href="./pages/drivers.html" class="drawer-link">
+        <i class="bi bi-person-vcard text-info"></i> Drivers (888 ड्राइवर)
+      </a>
+      <a href="./pages/settlement.html#partnership" class="drawer-link">
+        <i class="bi bi-diagram-3 text-warning"></i> Partnership
+      </a>
+
+      <!-- Utilities -->
+      <div class="drawer-nav-section text-muted">More Operations</div>
+      <a href="./pages/settlement.html" class="drawer-link">
+        <i class="bi bi-patch-check-fill text-warning"></i> Trips Settlement
+      </a>
+      <a href="./pages/eway-bills.html" class="drawer-link">
+        <i class="bi bi-shield-exclamation text-warning"></i> E-Way Bills
+      </a>
+      <a href="./pages/pod-register.html" class="drawer-link">
+        <i class="bi bi-card-checklist text-info"></i> POD Register
+      </a>
+      <a href="./pages/gst-invoices.html" class="drawer-link">
+        <i class="bi bi-receipt-cutoff text-success"></i> GST Freight Invoices
+      </a>
+      <a href="./pages/diesel-register.html" class="drawer-link">
+        <i class="bi bi-fuel-pump text-danger"></i> Diesel Register
+      </a>
+    </div>
+  </div>
+
   <!-- Bootstrap 5 Bundle JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   
-  <!-- Firebase SDK (Compatible v8 CDN) -->
+  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
   <!-- Core App Scripts -->
   <script src="./js/config.js"></script>
-  <script src="./js/sample-parties-data.js"></script>
-  <script src="./js/sample-truck-owners-data.js"></script>
-  <script src="./js/sample-drivers-data.js"></script>
-  <script src="./js/sample-trips-data.js"></script>
-  <script src="./js/sample-debts-data.js"></script>
-  <script src="./js/sample-cheques-data.js"></script>
   <script src="./js/db-service.js"></script>
   <script src="./js/app.js"></script>
   <script src="./js/modules/dashboard.js"></script>
 
   <script>
-    const HomeSearchModule = {
-      filter(query) {
+    const HomeFilter = {
+      search(query) {
         const q = (query || '').toLowerCase().trim();
-        const rows = document.querySelectorAll('.appsheet-portal-row');
-        const groups = document.querySelectorAll('.appsheet-group-wrapper');
+        const rows = document.querySelectorAll('.appsheet-row');
+        const groups = document.querySelectorAll('.appsheet-section-group');
 
         rows.forEach(row => {
           const name = (row.getAttribute('data-name') || '').toLowerCase();
@@ -546,7 +846,7 @@
 
         // Hide empty groups when searching
         groups.forEach(group => {
-          const visibleRows = group.querySelectorAll('.appsheet-portal-row:not([style*="display: none"])');
+          const visibleRows = group.querySelectorAll('.appsheet-row:not([style*="display: none"])');
           if (visibleRows.length === 0 && q) {
             group.style.display = 'none';
           } else {
