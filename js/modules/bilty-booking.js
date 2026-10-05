@@ -43,6 +43,8 @@ const BiltyBookingModule = {
   bookingMode: 'single', // 'single' | 'multi_consignee' | 'multi_consignor'
   multiBuyers: [],
   multiSellers: [],
+  extraBuyers: [],
+  extraSellers: [],
   currentBatchTrips: [],
   activeBatchIndex: 'all',
 
@@ -302,11 +304,16 @@ const BiltyBookingModule = {
     const firm = document.getElementById('bilty-firm')?.value || 'TTC';
     const year = document.getElementById('bilty-year')?.value || '2026-2027';
 
-    const count = (this.bookingMode === 'multi_consignee')
-      ? Math.max(1, this.multiBuyers.length)
-      : (this.bookingMode === 'multi_consignor')
-        ? Math.max(1, this.multiSellers.length)
-        : 1;
+    let count = 1;
+    if (this.extraBuyers && this.extraBuyers.length > 0) {
+      count = 1 + this.extraBuyers.length;
+    } else if (this.extraSellers && this.extraSellers.length > 0) {
+      count = 1 + this.extraSellers.length;
+    } else if (this.bookingMode === 'multi_consignee') {
+      count = Math.max(1, this.multiBuyers.length);
+    } else if (this.bookingMode === 'multi_consignor') {
+      count = Math.max(1, this.multiSellers.length);
+    }
 
     const seqs = this.getNextGrSequences(firm, year, count);
     const first = seqs[0];
@@ -535,6 +542,7 @@ const BiltyBookingModule = {
     const grandTotal = freight + loading + halt + gst;
     document.getElementById('bilty-grand-total').value = grandTotal ? grandTotal.toFixed(2) : '0.00';
 
+    this.recalculateAllTotals();
     this.updateLivePreview();
   },
 
@@ -1131,6 +1139,487 @@ const BiltyBookingModule = {
   // ----------------------------------------------------
   // MULTI-PARTY & MULTI-GR CONSIGNMENT WORKFLOW
   // ----------------------------------------------------
+  getPartiesOptionsHtml(selectedVal = '') {
+    let html = '<option value="">-- Select Party / Enter Name --</option>';
+    (this.parties || []).forEach(p => {
+      if (p && p.name) {
+        const isSel = (p.name === selectedVal) ? 'selected' : '';
+        html += `<option value="${p.name}" ${isSel}>${p.name}</option>`;
+      }
+    });
+    return html;
+  },
+
+  addExtraBuyer(initialData = {}) {
+    if (this.extraSellers && this.extraSellers.length > 0) {
+      AppUI.showToast("Consignment already configured for multiple sellers. Cannot mix multiple buyers.", "warning");
+      return;
+    }
+    if (!this.extraBuyers) this.extraBuyers = [];
+
+    const defDest = (document.getElementById('bilty-destination')?.value || '').trim();
+    const defMaterial = (document.getElementById('bilty-material')?.value || '').trim() || 'Marble Cut Size';
+    const defBillingType = document.getElementById('bilty-billing-type')?.value || 'Per Tonne';
+    const defRate = parseFloat(document.getElementById('bilty-rate')?.value) || 0;
+
+    const row = {
+      consignee: initialData.consignee || '',
+      consigneeGstin: initialData.consigneeGstin || '',
+      destination: (initialData.destination !== undefined) ? initialData.destination : defDest,
+      deliveryAddress: initialData.deliveryAddress || '',
+      material: (initialData.material !== undefined) ? initialData.material : defMaterial,
+      billingType: (initialData.billingType !== undefined) ? initialData.billingType : defBillingType,
+      weight: (initialData.weight !== undefined) ? initialData.weight : 0,
+      rate: (initialData.rate !== undefined) ? initialData.rate : defRate,
+      freight: 0,
+      billNo: initialData.billNo || '',
+      invoiceValue: initialData.invoiceValue || 0,
+      ewayBillNo: initialData.ewayBillNo || '',
+      loadingCharges: initialData.loadingCharges || 0,
+      haltCharges: initialData.haltCharges || 0
+    };
+    row.freight = (row.billingType === 'Fixed') ? row.rate : (row.weight * row.rate);
+    this.extraBuyers.push(row);
+    this.renderExtraBuyers();
+    this.recalculateAllTotals();
+    this.generateBiltyNumber();
+  },
+
+  removeExtraBuyer(index) {
+    if (this.extraBuyers && this.extraBuyers[index] !== undefined) {
+      this.extraBuyers.splice(index, 1);
+      this.renderExtraBuyers();
+      this.recalculateAllTotals();
+      this.generateBiltyNumber();
+    }
+  },
+
+  onExtraBuyerChange(index, field, value) {
+    const b = this.extraBuyers ? this.extraBuyers[index] : null;
+    if (!b) return;
+
+    if (field === 'consignee') {
+      b.consignee = value;
+      const p = (this.parties || []).find(x => x.name === value);
+      if (p) {
+        b.consigneeGstin = p.gstin || '';
+        if (p.address && !b.deliveryAddress) b.deliveryAddress = p.address;
+        const gstinEl = document.getElementById(`extra-buyer-gstin-${index}`);
+        if (gstinEl) gstinEl.value = b.consigneeGstin;
+        const addrEl = document.getElementById(`extra-buyer-addr-${index}`);
+        if (addrEl && !addrEl.value) addrEl.value = b.deliveryAddress;
+      }
+    } else if (field === 'weight') {
+      b.weight = parseFloat(value) || 0;
+      b.freight = (b.billingType === 'Fixed') ? b.rate : (b.weight * b.rate);
+      const frEl = document.getElementById(`extra-buyer-freight-${index}`);
+      if (frEl) frEl.value = '₹ ' + b.freight.toFixed(2);
+    } else if (field === 'rate') {
+      b.rate = parseFloat(value) || 0;
+      b.freight = (b.billingType === 'Fixed') ? b.rate : (b.weight * b.rate);
+      const frEl = document.getElementById(`extra-buyer-freight-${index}`);
+      if (frEl) frEl.value = '₹ ' + b.freight.toFixed(2);
+    } else if (field === 'billingType') {
+      b.billingType = value;
+      b.freight = (value === 'Fixed') ? b.rate : (b.weight * b.rate);
+      const frEl = document.getElementById(`extra-buyer-freight-${index}`);
+      if (frEl) frEl.value = '₹ ' + b.freight.toFixed(2);
+    } else {
+      b[field] = value;
+    }
+
+    this.recalculateAllTotals();
+  },
+
+  renderExtraBuyers() {
+    const container = document.getElementById('extra-buyers-list');
+    if (!container) return;
+
+    const firm = document.getElementById('bilty-firm')?.value || 'TTC';
+    const year = document.getElementById('bilty-year')?.value || '2026-2027';
+    const totalGrs = 1 + (this.extraBuyers ? this.extraBuyers.length : 0);
+    const seqs = this.getNextGrSequences(firm, year, totalGrs);
+
+    let html = '';
+    (this.extraBuyers || []).forEach((b, i) => {
+      const buyerIndex = i + 2;
+      const grInfo = seqs[i + 1] ? seqs[i + 1].shortGr : `${buyerIndex}`;
+      const partyOptions = this.getPartiesOptionsHtml(b.consignee);
+
+      html += `
+        <div class="extra-party-block mt-3 pt-2 pb-1 border-top" style="border-top: 2px dashed #d1d5db !important;">
+          <div class="appsheet-form-row bg-light py-2 px-2 rounded mb-2 d-flex justify-content-between align-items-center">
+            <div class="fw-bold text-dark d-flex align-items-center gap-2">
+              <span class="badge bg-primary px-2 py-1"><i class="bi bi-file-earmark-text"></i> G.R. ${grInfo}</span>
+              <span>Buyer / Consignee #${buyerIndex} (अतिरिक्त खरीदार #${buyerIndex})</span>
+            </div>
+            <button type="button" class="btn btn-outline-danger btn-sm py-0 px-2" onclick="BiltyBookingModule.removeExtraBuyer(${i})" title="Remove Buyer #${buyerIndex}">
+              <i class="bi bi-trash3"></i> Remove
+            </button>
+          </div>
+
+          <div class="appsheet-form-row">
+            <label class="appsheet-form-label">Buyer #${buyerIndex} Consignee *</label>
+            <div class="appsheet-form-control-wrap">
+              <div class="w-100" style="max-width: 440px;">
+                <select class="appsheet-input-box" onchange="BiltyBookingModule.onExtraBuyerChange(${i}, 'consignee', this.value)">
+                  ${partyOptions}
+                </select>
+                <input type="hidden" id="extra-buyer-gstin-${i}" value="${b.consigneeGstin || ''}">
+              </div>
+            </div>
+          </div>
+
+          <div class="appsheet-form-row">
+            <label class="appsheet-form-label">Buyer #${buyerIndex} Destination *</label>
+            <div class="appsheet-form-control-wrap">
+              <div class="w-100" style="max-width: 380px;">
+                <input type="text" list="destinationsList" class="appsheet-input-box fw-semibold" value="${b.destination || ''}" placeholder="Select destination city..." oninput="BiltyBookingModule.onExtraBuyerChange(${i}, 'destination', this.value)">
+              </div>
+            </div>
+          </div>
+
+          <div class="appsheet-form-row">
+            <label class="appsheet-form-label">Delivery / Unload Address</label>
+            <div class="appsheet-form-control-wrap">
+              <input type="text" id="extra-buyer-addr-${i}" class="appsheet-input-box" style="max-width: 480px;" value="${b.deliveryAddress || ''}" placeholder="Enter alternate Ship To / Unloading Site Address" oninput="BiltyBookingModule.onExtraBuyerChange(${i}, 'deliveryAddress', this.value)">
+            </div>
+          </div>
+
+          <div class="appsheet-form-row">
+            <label class="appsheet-form-label">Material *</label>
+            <div class="appsheet-form-control-wrap">
+              <div class="w-100" style="max-width: 380px;">
+                <input type="text" list="materialsList" class="appsheet-input-box" value="${b.material || 'Marble Cut Size'}" oninput="BiltyBookingModule.onExtraBuyerChange(${i}, 'material', this.value)">
+              </div>
+            </div>
+          </div>
+
+          <div class="appsheet-form-row">
+            <label class="appsheet-form-label">Bill No.</label>
+            <div class="appsheet-form-control-wrap">
+              <input type="text" class="appsheet-input-box font-monospace" style="max-width: 240px;" placeholder="e.g. 1024" value="${b.billNo || ''}" oninput="BiltyBookingModule.onExtraBuyerChange(${i}, 'billNo', this.value)">
+            </div>
+          </div>
+
+          <div class="appsheet-form-row">
+            <label class="appsheet-form-label">Bill Value</label>
+            <div class="appsheet-form-control-wrap">
+              <div class="input-group" style="max-width: 240px;">
+                <span class="input-group-text bg-light text-muted" style="border: 1px solid #d1d5db; border-right: none; font-size: 13px;">₹</span>
+                <input type="number" class="appsheet-input-box" placeholder="0.00" value="${b.invoiceValue > 0 ? b.invoiceValue : ''}" step="any" style="border-top-left-radius: 0; border-bottom-left-radius: 0;" oninput="BiltyBookingModule.onExtraBuyerChange(${i}, 'invoiceValue', this.value)">
+              </div>
+            </div>
+          </div>
+
+          <div class="appsheet-form-row">
+            <label class="appsheet-form-label">E-way Bill No.</label>
+            <div class="appsheet-form-control-wrap">
+              <input type="text" class="appsheet-input-box font-monospace" style="max-width: 340px;" placeholder="12-digit E-Way" value="${b.ewayBillNo || ''}" oninput="BiltyBookingModule.onExtraBuyerChange(${i}, 'ewayBillNo', this.value)">
+            </div>
+          </div>
+
+          <div class="appsheet-form-row">
+            <label class="appsheet-form-label">Actual Billing Type *</label>
+            <div class="appsheet-form-control-wrap">
+              <select class="appsheet-input-box" style="max-width: 260px;" onchange="BiltyBookingModule.onExtraBuyerChange(${i}, 'billingType', this.value)">
+                <option value="Per Tonne" ${b.billingType === 'Per Tonne' ? 'selected' : ''}>Per Tonne</option>
+                <option value="Fixed" ${b.billingType === 'Fixed' ? 'selected' : ''}>Fixed</option>
+                <option value="To be Billed" ${b.billingType === 'To be Billed' ? 'selected' : ''}>To be Billed</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="appsheet-form-row">
+            <label class="appsheet-form-label">Actual Weight *</label>
+            <div class="appsheet-form-control-wrap">
+              <input type="number" class="appsheet-input-box fw-bold" style="max-width: 240px;" placeholder="e.g. 15.50" value="${b.weight > 0 ? b.weight : ''}" step="any" oninput="BiltyBookingModule.onExtraBuyerChange(${i}, 'weight', this.value)">
+            </div>
+          </div>
+
+          <div class="appsheet-form-row">
+            <label class="appsheet-form-label">Actual Rate *</label>
+            <div class="appsheet-form-control-wrap">
+              <div class="input-group" style="max-width: 240px;">
+                <span class="input-group-text bg-light text-muted" style="border: 1px solid #d1d5db; border-right: none; font-size: 13px;">₹</span>
+                <input type="number" class="appsheet-input-box fw-bold" style="max-width: 240px; border-top-left-radius: 0; border-bottom-left-radius: 0;" placeholder="e.g. 1850" value="${b.rate > 0 ? b.rate : ''}" step="any" oninput="BiltyBookingModule.onExtraBuyerChange(${i}, 'rate', this.value)">
+              </div>
+            </div>
+          </div>
+
+          <div class="appsheet-form-row">
+            <label class="appsheet-form-label">Freight *</label>
+            <div class="appsheet-form-control-wrap">
+              <div class="input-group" style="max-width: 240px;">
+                <span class="input-group-text bg-light text-muted" style="border: 1px solid #d1d5db; border-right: none; font-size: 13px;">₹</span>
+                <input type="text" id="extra-buyer-freight-${i}" class="appsheet-input-box fw-bold text-success bg-light" readonly style="border-top-left-radius: 0; border-bottom-left-radius: 0;" value="₹ ${(b.freight || 0).toFixed(2)}">
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+
+    container.innerHTML = html;
+  },
+
+  addExtraSeller(initialData = {}) {
+    if (this.extraBuyers && this.extraBuyers.length > 0) {
+      AppUI.showToast("Consignment already configured for multiple buyers. Cannot mix multiple sellers.", "warning");
+      return;
+    }
+    if (!this.extraSellers) this.extraSellers = [];
+    if (this.extraSellers.length >= 5) {
+      AppUI.showToast("Maximum 6 Sellers allowed per consolidated load!", "warning");
+      return;
+    }
+
+    const defMaterial = (document.getElementById('bilty-material')?.value || '').trim() || 'Marble Cut Size';
+    const defBillingType = document.getElementById('bilty-billing-type')?.value || 'Per Tonne';
+    const defRate = parseFloat(document.getElementById('bilty-rate')?.value) || 0;
+
+    const row = {
+      consignor: initialData.consignor || '',
+      consignorGstin: initialData.consignorGstin || '',
+      dispatchFromAddress: initialData.dispatchFromAddress || '',
+      material: (initialData.material !== undefined) ? initialData.material : defMaterial,
+      billingType: (initialData.billingType !== undefined) ? initialData.billingType : defBillingType,
+      weight: (initialData.weight !== undefined) ? initialData.weight : 0,
+      rate: (initialData.rate !== undefined) ? initialData.rate : defRate,
+      freight: 0,
+      billNo: initialData.billNo || '',
+      invoiceValue: initialData.invoiceValue || 0,
+      ewayBillNo: initialData.ewayBillNo || '',
+      loadingCharges: initialData.loadingCharges || 0,
+      haltCharges: initialData.haltCharges || 0
+    };
+    row.freight = (row.billingType === 'Fixed') ? row.rate : (row.weight * row.rate);
+    this.extraSellers.push(row);
+    this.renderExtraSellers();
+    this.recalculateAllTotals();
+    this.generateBiltyNumber();
+  },
+
+  removeExtraSeller(index) {
+    if (this.extraSellers && this.extraSellers[index] !== undefined) {
+      this.extraSellers.splice(index, 1);
+      this.renderExtraSellers();
+      this.recalculateAllTotals();
+      this.generateBiltyNumber();
+    }
+  },
+
+  onExtraSellerChange(index, field, value) {
+    const s = this.extraSellers ? this.extraSellers[index] : null;
+    if (!s) return;
+
+    if (field === 'consignor') {
+      s.consignor = value;
+      const p = (this.parties || []).find(x => x.name === value);
+      if (p) {
+        s.consignorGstin = p.gstin || '';
+        if (p.address && !s.dispatchFromAddress) s.dispatchFromAddress = p.address;
+        const gstinEl = document.getElementById(`extra-seller-gstin-${index}`);
+        if (gstinEl) gstinEl.value = s.consignorGstin;
+        const dispEl = document.getElementById(`extra-seller-disp-${index}`);
+        if (dispEl && !dispEl.value) dispEl.value = s.dispatchFromAddress;
+      }
+    } else if (field === 'weight') {
+      s.weight = parseFloat(value) || 0;
+      s.freight = (s.billingType === 'Fixed') ? s.rate : (s.weight * s.rate);
+      const frEl = document.getElementById(`extra-seller-freight-${index}`);
+      if (frEl) frEl.value = '₹ ' + s.freight.toFixed(2);
+    } else if (field === 'rate') {
+      s.rate = parseFloat(value) || 0;
+      s.freight = (s.billingType === 'Fixed') ? s.rate : (s.weight * s.rate);
+      const frEl = document.getElementById(`extra-seller-freight-${index}`);
+      if (frEl) frEl.value = '₹ ' + s.freight.toFixed(2);
+    } else if (field === 'billingType') {
+      s.billingType = value;
+      s.freight = (value === 'Fixed') ? s.rate : (s.weight * s.rate);
+      const frEl = document.getElementById(`extra-seller-freight-${index}`);
+      if (frEl) frEl.value = '₹ ' + s.freight.toFixed(2);
+    } else {
+      s[field] = value;
+    }
+
+    this.recalculateAllTotals();
+  },
+
+  renderExtraSellers() {
+    const container = document.getElementById('extra-sellers-list');
+    if (!container) return;
+
+    const firm = document.getElementById('bilty-firm')?.value || 'TTC';
+    const year = document.getElementById('bilty-year')?.value || '2026-2027';
+    const totalGrs = 1 + (this.extraSellers ? this.extraSellers.length : 0);
+    const seqs = this.getNextGrSequences(firm, year, totalGrs);
+
+    let html = '';
+    (this.extraSellers || []).forEach((s, i) => {
+      const sellerIndex = i + 2;
+      const grInfo = seqs[i + 1] ? seqs[i + 1].shortGr : `${sellerIndex}`;
+      const partyOptions = this.getPartiesOptionsHtml(s.consignor);
+
+      html += `
+        <div class="extra-party-block mt-3 pt-2 pb-1 border-top" style="border-top: 2px dashed #d1d5db !important;">
+          <div class="appsheet-form-row bg-light py-2 px-2 rounded mb-2 d-flex justify-content-between align-items-center">
+            <div class="fw-bold text-dark d-flex align-items-center gap-2">
+              <span class="badge bg-primary px-2 py-1"><i class="bi bi-file-earmark-text"></i> G.R. ${grInfo}</span>
+              <span>Seller / Consignor #${sellerIndex} (अतिरिक्त सेलर #${sellerIndex})</span>
+            </div>
+            <button type="button" class="btn btn-outline-danger btn-sm py-0 px-2" onclick="BiltyBookingModule.removeExtraSeller(${i})" title="Remove Seller #${sellerIndex}">
+              <i class="bi bi-trash3"></i> Remove
+            </button>
+          </div>
+
+          <div class="appsheet-form-row">
+            <label class="appsheet-form-label">Seller #${sellerIndex} Consignor *</label>
+            <div class="appsheet-form-control-wrap">
+              <div class="w-100" style="max-width: 440px;">
+                <select class="appsheet-input-box" onchange="BiltyBookingModule.onExtraSellerChange(${i}, 'consignor', this.value)">
+                  ${partyOptions}
+                </select>
+                <input type="hidden" id="extra-seller-gstin-${i}" value="${s.consignorGstin || ''}">
+              </div>
+            </div>
+          </div>
+
+          <div class="appsheet-form-row">
+            <label class="appsheet-form-label">Dispatch / Loading Address</label>
+            <div class="appsheet-form-control-wrap">
+              <input type="text" id="extra-seller-disp-${i}" class="appsheet-input-box" style="max-width: 480px;" value="${s.dispatchFromAddress || ''}" placeholder="Factory or Mine Location" oninput="BiltyBookingModule.onExtraSellerChange(${i}, 'dispatchFromAddress', this.value)">
+            </div>
+          </div>
+
+          <div class="appsheet-form-row">
+            <label class="appsheet-form-label">Material *</label>
+            <div class="appsheet-form-control-wrap">
+              <div class="w-100" style="max-width: 380px;">
+                <input type="text" list="materialsList" class="appsheet-input-box" value="${s.material || 'Marble Cut Size'}" oninput="BiltyBookingModule.onExtraSellerChange(${i}, 'material', this.value)">
+              </div>
+            </div>
+          </div>
+
+          <div class="appsheet-form-row">
+            <label class="appsheet-form-label">Bill No.</label>
+            <div class="appsheet-form-control-wrap">
+              <input type="text" class="appsheet-input-box font-monospace" style="max-width: 240px;" placeholder="e.g. 1024" value="${s.billNo || ''}" oninput="BiltyBookingModule.onExtraSellerChange(${i}, 'billNo', this.value)">
+            </div>
+          </div>
+
+          <div class="appsheet-form-row">
+            <label class="appsheet-form-label">Bill Value</label>
+            <div class="appsheet-form-control-wrap">
+              <div class="input-group" style="max-width: 240px;">
+                <span class="input-group-text bg-light text-muted" style="border: 1px solid #d1d5db; border-right: none; font-size: 13px;">₹</span>
+                <input type="number" class="appsheet-input-box" placeholder="0.00" value="${s.invoiceValue > 0 ? s.invoiceValue : ''}" step="any" style="border-top-left-radius: 0; border-bottom-left-radius: 0;" oninput="BiltyBookingModule.onExtraSellerChange(${i}, 'invoiceValue', this.value)">
+              </div>
+            </div>
+          </div>
+
+          <div class="appsheet-form-row">
+            <label class="appsheet-form-label">E-way Bill No.</label>
+            <div class="appsheet-form-control-wrap">
+              <input type="text" class="appsheet-input-box font-monospace" style="max-width: 340px;" placeholder="12-digit E-Way" value="${s.ewayBillNo || ''}" oninput="BiltyBookingModule.onExtraSellerChange(${i}, 'ewayBillNo', this.value)">
+            </div>
+          </div>
+
+          <div class="appsheet-form-row">
+            <label class="appsheet-form-label">Actual Billing Type *</label>
+            <div class="appsheet-form-control-wrap">
+              <select class="appsheet-input-box" style="max-width: 260px;" onchange="BiltyBookingModule.onExtraSellerChange(${i}, 'billingType', this.value)">
+                <option value="Per Tonne" ${s.billingType === 'Per Tonne' ? 'selected' : ''}>Per Tonne</option>
+                <option value="Fixed" ${s.billingType === 'Fixed' ? 'selected' : ''}>Fixed</option>
+                <option value="To be Billed" ${s.billingType === 'To be Billed' ? 'selected' : ''}>To be Billed</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="appsheet-form-row">
+            <label class="appsheet-form-label">Actual Weight *</label>
+            <div class="appsheet-form-control-wrap">
+              <input type="number" class="appsheet-input-box fw-bold" style="max-width: 240px;" placeholder="e.g. 15.50" value="${s.weight > 0 ? s.weight : ''}" step="any" oninput="BiltyBookingModule.onExtraSellerChange(${i}, 'weight', this.value)">
+            </div>
+          </div>
+
+          <div class="appsheet-form-row">
+            <label class="appsheet-form-label">Actual Rate *</label>
+            <div class="appsheet-form-control-wrap">
+              <div class="input-group" style="max-width: 240px;">
+                <span class="input-group-text bg-light text-muted" style="border: 1px solid #d1d5db; border-right: none; font-size: 13px;">₹</span>
+                <input type="number" class="appsheet-input-box fw-bold" style="max-width: 240px; border-top-left-radius: 0; border-bottom-left-radius: 0;" placeholder="e.g. 1850" value="${s.rate > 0 ? s.rate : ''}" step="any" oninput="BiltyBookingModule.onExtraSellerChange(${i}, 'rate', this.value)">
+              </div>
+            </div>
+          </div>
+
+          <div class="appsheet-form-row">
+            <label class="appsheet-form-label">Freight *</label>
+            <div class="appsheet-form-control-wrap">
+              <div class="input-group" style="max-width: 240px;">
+                <span class="input-group-text bg-light text-muted" style="border: 1px solid #d1d5db; border-right: none; font-size: 13px;">₹</span>
+                <input type="text" id="extra-seller-freight-${i}" class="appsheet-input-box fw-bold text-success bg-light" readonly style="border-top-left-radius: 0; border-bottom-left-radius: 0;" value="₹ ${(s.freight || 0).toFixed(2)}">
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+
+    container.innerHTML = html;
+  },
+
+  recalculateAllTotals() {
+    const mainWeight = parseFloat(document.getElementById('bilty-weight')?.value) || 0;
+    const mainRate = parseFloat(document.getElementById('bilty-rate')?.value) || 0;
+    const mainBillingType = document.getElementById('bilty-billing-type')?.value || 'Per Tonne';
+    const mainFreight = (mainBillingType === 'Fixed') ? mainRate : (mainWeight * mainRate);
+    const commVal = parseFloat(document.getElementById('bilty-commission')?.value) || 0;
+
+    let totalWeight = mainWeight;
+    let totalFreight = mainFreight;
+    let totalGrs = 1;
+
+    if (this.extraBuyers && this.extraBuyers.length > 0) {
+      totalGrs += this.extraBuyers.length;
+      this.extraBuyers.forEach(b => {
+        const wt = parseFloat(b.weight) || 0;
+        const rt = parseFloat(b.rate) || 0;
+        const fr = (b.billingType === 'Fixed') ? rt : (wt * rt);
+        b.freight = fr;
+        totalWeight += wt;
+        totalFreight += fr;
+      });
+    } else if (this.extraSellers && this.extraSellers.length > 0) {
+      totalGrs += this.extraSellers.length;
+      this.extraSellers.forEach(s => {
+        const wt = parseFloat(s.weight) || 0;
+        const rt = parseFloat(s.rate) || 0;
+        const fr = (s.billingType === 'Fixed') ? rt : (wt * rt);
+        s.freight = fr;
+        totalWeight += wt;
+        totalFreight += fr;
+      });
+    }
+
+    const summaryStrip = document.getElementById('trip-multi-summary-strip');
+    if (summaryStrip) {
+      if (totalGrs > 1) {
+        summaryStrip.classList.remove('d-none');
+        const grsEl = document.getElementById('multi-sum-grs');
+        if (grsEl) grsEl.innerText = `${totalGrs} GRs`;
+        const wtEl = document.getElementById('multi-sum-weight');
+        if (wtEl) wtEl.innerText = `${totalWeight.toFixed(3)} MT`;
+        const frEl = document.getElementById('multi-sum-freight');
+        if (frEl) frEl.innerText = '₹ ' + totalFreight.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+        const commEl = document.getElementById('multi-sum-commission');
+        if (commEl) commEl.innerText = '₹ ' + commVal.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+      } else {
+        summaryStrip.classList.add('d-none');
+      }
+    }
+  },
+
   switchToMultiBuyer() {
     this.setConsignmentMode('multi_consignee', document.getElementById('btn-mode-multi-buyer'));
     if (this.multiBuyers.length === 1 && this.multiBuyers[0].consignee) {
@@ -1152,10 +1641,10 @@ const BiltyBookingModule = {
 
     // Update active segmented button
     const seg = document.getElementById('seg-consignment-mode');
-    if (seg) {
+    if (seg && typeof seg.querySelectorAll === 'function') {
       seg.querySelectorAll('.seg-btn').forEach(btn => btn.classList.remove('active'));
     }
-    if (el) el.classList.add('active');
+    if (el && el.classList) el.classList.add('active');
 
     // Toggle container views
     const secSingle = document.getElementById('section-single-consignment');
@@ -1705,6 +2194,390 @@ const BiltyBookingModule = {
     const tripOtherStatus = document.getElementById('bilty-other-status')?.value || 'Paid';
     const tripOtherMode = document.getElementById('bilty-other-mode')?.value || 'Cash';
     const tripOtherDesc = (document.getElementById('bilty-other-desc')?.value || '').trim();
+
+    // ------------------------------------------------------------------------
+    // CASE A: INLINE APPSHEET EXTRA BUYERS (1 Seller -> Multiple Buyers)
+    // ------------------------------------------------------------------------
+    if (this.extraBuyers && this.extraBuyers.length > 0) {
+      const consignor = (document.getElementById('bilty-consignor')?.value || '').trim();
+      if (!consignor) {
+        AppUI.showToast("Please select Consignor party (माल भेजने वाला)!", "danger");
+        document.getElementById('bilty-consignor')?.focus();
+        return;
+      }
+      const origin = (document.getElementById('bilty-origin')?.value || '').trim() || 'Rajsamand (Raj.)';
+      const consignorGstin = (document.getElementById('bilty-consignor-gstin')?.value || '').trim();
+      const dispatchFrom = (document.getElementById('bilty-dispatch-from')?.value || '').trim();
+
+      // Buyer 1 (Main form)
+      const b1Consignee = (document.getElementById('bilty-consignee')?.value || '').trim();
+      if (!b1Consignee) {
+        AppUI.showToast("Please select Consignee party for Buyer #1!", "danger");
+        document.getElementById('bilty-consignee')?.focus();
+        return;
+      }
+      const b1Destination = (document.getElementById('bilty-destination')?.value || '').trim();
+      if (!b1Destination) {
+        AppUI.showToast("Please specify Destination for Buyer #1!", "danger");
+        document.getElementById('bilty-destination')?.focus();
+        return;
+      }
+      const b1Weight = parseFloat(document.getElementById('bilty-weight')?.value) || 0;
+      if (b1Weight <= 0) {
+        AppUI.showToast("Please enter valid Weight for Buyer #1!", "danger");
+        document.getElementById('bilty-weight')?.focus();
+        return;
+      }
+      const b1Rate = parseFloat(document.getElementById('bilty-rate')?.value) || 0;
+      const b1BillingType = document.getElementById('bilty-billing-type')?.value || 'Per Tonne';
+      const b1Freight = parseFloat(document.getElementById('bilty-freight')?.value) || (b1BillingType === 'Fixed' ? b1Rate : b1Weight * b1Rate);
+
+      const allBuyers = [
+        {
+          consignee: b1Consignee,
+          consigneeGstin: (document.getElementById('bilty-consignee-gstin')?.value || '').trim(),
+          destination: b1Destination,
+          deliveryAddress: (document.getElementById('bilty-delivery-address')?.value || document.getElementById('bilty-ship-to')?.value || '').trim(),
+          material: (document.getElementById('bilty-material')?.value || 'Marble Cut Size').trim(),
+          billNo: (document.getElementById('bilty-bill-no')?.value || '').trim(),
+          invoiceValue: parseFloat(document.getElementById('bilty-invoice-value')?.value) || 0,
+          ewayBillNo: (document.getElementById('bilty-eway-bill')?.value || '').trim(),
+          billingType: b1BillingType,
+          weight: b1Weight,
+          rate: b1Rate,
+          freight: b1Freight,
+          loadingCharges: parseFloat(document.getElementById('bilty-loading-charges')?.value) || 0,
+          haltCharges: parseFloat(document.getElementById('bilty-halt-charges')?.value) || 0
+        },
+        ...this.extraBuyers
+      ];
+
+      for (let i = 1; i < allBuyers.length; i++) {
+        const eb = allBuyers[i];
+        if (!eb.consignee) {
+          AppUI.showToast(`Please select Consignee party for Buyer #${i + 1}!`, "danger");
+          return;
+        }
+        if (!eb.destination) {
+          AppUI.showToast(`Please enter Destination for Buyer #${i + 1}!`, "danger");
+          return;
+        }
+        if ((parseFloat(eb.weight) || 0) <= 0) {
+          AppUI.showToast(`Please enter valid Weight for Buyer #${i + 1}!`, "danger");
+          return;
+        }
+      }
+
+      const seqs = this.getNextGrSequences(firm, year, allBuyers.length);
+      const tripGroupId = `TRIP_GRP_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`;
+      const tripsToSave = [];
+
+      for (let i = 0; i < allBuyers.length; i++) {
+        const b = allBuyers[i];
+        const grInfo = seqs[i];
+        const wt = parseFloat(b.weight) || 0;
+        const rt = parseFloat(b.rate) || 0;
+        const fr = (b.billingType === 'Fixed') ? rt : (wt * rt);
+
+        const comm = (i === 0) ? tripCommission : 0;
+        const oth = (i === 0) ? tripOtherExpense : 0;
+
+        tripsToSave.push({
+          id: `TRIP_${Date.now()}_${i}_${Math.random().toString(36).substr(2, 4)}`,
+          grNo: grInfo.fullGr,
+          grSeq: String(grInfo.seq),
+          shortGrNo: grInfo.shortGr,
+          transport: firm,
+          financialYear: year,
+          tripStartDate: date,
+          biltyType: biltyType,
+          isGstApplicable: isGstApplicable,
+          truckNo: truckNo,
+          truckOwner: truckOwner,
+          ownerMobile: ownerMobile,
+          loadType: loadType,
+          driver: driver,
+          driverMobile: driverMobile,
+          reference: reference,
+
+          origin: origin,
+          destination: b.destination,
+          consignor: consignor,
+          consignorGstin: consignorGstin,
+          dispatchFromAddress: dispatchFrom,
+          consignee: b.consignee,
+          consigneeGstin: b.consigneeGstin || '',
+          deliveryAddress: b.deliveryAddress || '',
+          shipToAddress: b.deliveryAddress || '',
+
+          material: b.material || 'Marble Cut Size',
+          billNo: b.billNo || '',
+          invoiceValue: parseFloat(b.invoiceValue) || 0,
+          ewayBillNo: b.ewayBillNo || '',
+
+          billingType: b.billingType || 'Per Tonne',
+          weight: wt,
+          rate: rt,
+          freight: fr,
+          loadingCharges: parseFloat(b.loadingCharges) || 0,
+          haltCharges: parseFloat(b.haltCharges) || 0,
+
+          biltyBillingType: b.billingType || 'Per Tonne',
+          biltyWeight: wt,
+          biltyRate: rt,
+          biltyAmount: fr,
+
+          commission: comm,
+          commissionStatus: tripCommissionStatus,
+          commissionMode: tripCommissionMode,
+          commissionDesc: tripCommissionDesc,
+
+          otherExpense: oth,
+          otherStatus: tripOtherStatus,
+          otherMode: tripOtherMode,
+          otherDesc: tripOtherDesc,
+
+          status: 'Transit',
+          partyDue: fr,
+          partyPaid: 0,
+          ownerDue: fr - comm,
+
+          tripGroupId: tripGroupId,
+          isMultiGr: true,
+          multiGrRole: 'multi_consignee',
+          multiGrTotalCount: allBuyers.length,
+          multiGrIndex: i + 1
+        });
+      }
+
+      try {
+        for (const t of tripsToSave) {
+          await dbService.add('trips', t);
+        }
+      } catch (err) {
+        console.error("Error saving multi-buyer bilties:", err);
+        AppUI.showToast(`Error saving bilties: ${err.message || 'Storage error'}`, "danger");
+        return;
+      }
+
+      const isDebtChecked = document.getElementById('toggle-any-debt')?.checked;
+      const debtAmount = parseFloat(document.getElementById('bilty-debt-amount')?.value) || 0;
+      if (isDebtChecked && debtAmount > 0) {
+        const primaryGr = seqs[0].shortGr;
+        const debtRecord = {
+          id: `DEBT_BILTY_${Date.now()}`,
+          date: date,
+          description: `Advance / Debt on Trip ${primaryGr} (${truckNo}) - Multi-Buyer Batch (${tripsToSave.length} GRs)`,
+          borrower: document.getElementById('bilty-debt-borrower')?.value.trim() || driver,
+          amount: debtAmount,
+          mode: document.getElementById('bilty-debt-mode')?.value || 'Cash',
+          status: 'Pending',
+          remarks: document.getElementById('bilty-debt-remarks')?.value.trim() || 'Booked with Multi-GR bilty',
+          truckNo: truckNo,
+          grNo: primaryGr,
+          tripGroupId: tripGroupId
+        };
+        try {
+          await dbService.add('debts', debtRecord);
+        } catch (dErr) {
+          console.warn("Could not save linked debt:", dErr);
+        }
+      }
+
+      AppUI.showToast(`All ${tripsToSave.length} Bilties saved successfully (${seqs.map(s => s.shortGr).join(', ')})!`, "success");
+      await this.loadAllData();
+      this.openMultiPrintModal(tripsToSave);
+      return;
+    }
+
+    // ------------------------------------------------------------------------
+    // CASE B: INLINE APPSHEET EXTRA SELLERS (Multiple Sellers -> 1 Buyer)
+    // ------------------------------------------------------------------------
+    if (this.extraSellers && this.extraSellers.length > 0) {
+      const consignee = (document.getElementById('bilty-consignee')?.value || '').trim();
+      if (!consignee) {
+        AppUI.showToast("Please select Consignee party (माल मंगाने वाला)!", "danger");
+        document.getElementById('bilty-consignee')?.focus();
+        return;
+      }
+      const destination = (document.getElementById('bilty-destination')?.value || '').trim();
+      if (!destination) {
+        AppUI.showToast("Please specify Destination (कहाँ तक)!", "danger");
+        document.getElementById('bilty-destination')?.focus();
+        return;
+      }
+      const consigneeGstin = (document.getElementById('bilty-consignee-gstin')?.value || '').trim();
+      const deliveryAddress = (document.getElementById('bilty-delivery-address')?.value || document.getElementById('bilty-ship-to')?.value || '').trim();
+
+      // Seller 1 (Main form)
+      const s1Consignor = (document.getElementById('bilty-consignor')?.value || '').trim();
+      if (!s1Consignor) {
+        AppUI.showToast("Please select Consignor party for Seller #1!", "danger");
+        document.getElementById('bilty-consignor')?.focus();
+        return;
+      }
+      const s1Weight = parseFloat(document.getElementById('bilty-weight')?.value) || 0;
+      if (s1Weight <= 0) {
+        AppUI.showToast("Please enter valid Weight for Seller #1!", "danger");
+        document.getElementById('bilty-weight')?.focus();
+        return;
+      }
+      const s1Rate = parseFloat(document.getElementById('bilty-rate')?.value) || 0;
+      const s1BillingType = document.getElementById('bilty-billing-type')?.value || 'Per Tonne';
+      const s1Freight = parseFloat(document.getElementById('bilty-freight')?.value) || (s1BillingType === 'Fixed' ? s1Rate : s1Weight * s1Rate);
+
+      const allSellers = [
+        {
+          consignor: s1Consignor,
+          consignorGstin: (document.getElementById('bilty-consignor-gstin')?.value || '').trim(),
+          dispatchFromAddress: (document.getElementById('bilty-dispatch-from')?.value || '').trim(),
+          material: (document.getElementById('bilty-material')?.value || 'Marble Cut Size').trim(),
+          billNo: (document.getElementById('bilty-bill-no')?.value || '').trim(),
+          invoiceValue: parseFloat(document.getElementById('bilty-invoice-value')?.value) || 0,
+          ewayBillNo: (document.getElementById('bilty-eway-bill')?.value || '').trim(),
+          billingType: s1BillingType,
+          weight: s1Weight,
+          rate: s1Rate,
+          freight: s1Freight,
+          loadingCharges: parseFloat(document.getElementById('bilty-loading-charges')?.value) || 0,
+          haltCharges: parseFloat(document.getElementById('bilty-halt-charges')?.value) || 0
+        },
+        ...this.extraSellers
+      ];
+
+      for (let i = 1; i < allSellers.length; i++) {
+        const es = allSellers[i];
+        if (!es.consignor) {
+          AppUI.showToast(`Please select Consignor party for Seller #${i + 1}!`, "danger");
+          return;
+        }
+        if ((parseFloat(es.weight) || 0) <= 0) {
+          AppUI.showToast(`Please enter valid Weight for Seller #${i + 1}!`, "danger");
+          return;
+        }
+      }
+
+      const seqs = this.getNextGrSequences(firm, year, allSellers.length);
+      const tripGroupId = `TRIP_GRP_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`;
+      const tripsToSave = [];
+
+      for (let i = 0; i < allSellers.length; i++) {
+        const s = allSellers[i];
+        const grInfo = seqs[i];
+        const wt = parseFloat(s.weight) || 0;
+        const rt = parseFloat(s.rate) || 0;
+        const fr = (s.billingType === 'Fixed') ? rt : (wt * rt);
+
+        const comm = (i === 0) ? tripCommission : 0;
+        const oth = (i === 0) ? tripOtherExpense : 0;
+
+        tripsToSave.push({
+          id: `TRIP_${Date.now()}_${i}_${Math.random().toString(36).substr(2, 4)}`,
+          grNo: grInfo.fullGr,
+          grSeq: String(grInfo.seq),
+          shortGrNo: grInfo.shortGr,
+          transport: firm,
+          financialYear: year,
+          tripStartDate: date,
+          biltyType: biltyType,
+          isGstApplicable: isGstApplicable,
+          truckNo: truckNo,
+          truckOwner: truckOwner,
+          ownerMobile: ownerMobile,
+          loadType: loadType,
+          driver: driver,
+          driverMobile: driverMobile,
+          reference: reference,
+
+          origin: 'Rajsamand (Raj.)',
+          destination: destination,
+          consignor: s.consignor,
+          consignorGstin: s.consignorGstin || '',
+          dispatchFromAddress: s.dispatchFromAddress || '',
+          consignee: consignee,
+          consigneeGstin: consigneeGstin,
+          deliveryAddress: deliveryAddress,
+          shipToAddress: deliveryAddress,
+
+          material: s.material || 'Marble Cut Size',
+          billNo: s.billNo || '',
+          invoiceValue: parseFloat(s.invoiceValue) || 0,
+          ewayBillNo: s.ewayBillNo || '',
+
+          billingType: s.billingType || 'Per Tonne',
+          weight: wt,
+          rate: rt,
+          freight: fr,
+          loadingCharges: parseFloat(s.loadingCharges) || 0,
+          haltCharges: parseFloat(s.haltCharges) || 0,
+
+          biltyBillingType: s.billingType || 'Per Tonne',
+          biltyWeight: wt,
+          biltyRate: rt,
+          biltyAmount: fr,
+
+          commission: comm,
+          commissionStatus: tripCommissionStatus,
+          commissionMode: tripCommissionMode,
+          commissionDesc: tripCommissionDesc,
+
+          otherExpense: oth,
+          otherStatus: tripOtherStatus,
+          otherMode: tripOtherMode,
+          otherDesc: tripOtherDesc,
+
+          status: 'Transit',
+          partyDue: fr,
+          partyPaid: 0,
+          ownerDue: fr - comm,
+
+          tripGroupId: tripGroupId,
+          isMultiGr: true,
+          multiGrRole: 'multi_consignor',
+          multiGrTotalCount: allSellers.length,
+          multiGrIndex: i + 1
+        });
+      }
+
+      try {
+        for (const t of tripsToSave) {
+          await dbService.add('trips', t);
+        }
+      } catch (err) {
+        console.error("Error saving multi-seller bilties:", err);
+        AppUI.showToast(`Error saving bilties: ${err.message || 'Storage error'}`, "danger");
+        return;
+      }
+
+      const isDebtChecked = document.getElementById('toggle-any-debt')?.checked;
+      const debtAmount = parseFloat(document.getElementById('bilty-debt-amount')?.value) || 0;
+      if (isDebtChecked && debtAmount > 0) {
+        const primaryGr = seqs[0].shortGr;
+        const debtRecord = {
+          id: `DEBT_BILTY_${Date.now()}`,
+          date: date,
+          description: `Advance / Debt on Trip ${primaryGr} (${truckNo}) - Multi-Seller Batch (${tripsToSave.length} GRs)`,
+          borrower: document.getElementById('bilty-debt-borrower')?.value.trim() || driver,
+          amount: debtAmount,
+          mode: document.getElementById('bilty-debt-mode')?.value || 'Cash',
+          status: 'Pending',
+          remarks: document.getElementById('bilty-debt-remarks')?.value.trim() || 'Booked with Multi-GR bilty',
+          truckNo: truckNo,
+          grNo: primaryGr,
+          tripGroupId: tripGroupId
+        };
+        try {
+          await dbService.add('debts', debtRecord);
+        } catch (dErr) {
+          console.warn("Could not save linked debt:", dErr);
+        }
+      }
+
+      AppUI.showToast(`All ${tripsToSave.length} Bilties saved successfully (${seqs.map(s => s.shortGr).join(', ')})!`, "success");
+      await this.loadAllData();
+      this.openMultiPrintModal(tripsToSave);
+      return;
+    }
 
     // ------------------------------------------------------------------------
     // CASE 1: SINGLE CONSIGNMENT (1 SELLER ➔ 1 BUYER)
@@ -2399,6 +3272,14 @@ const BiltyBookingModule = {
     this.editTripId = null;
     this.multiBuyers = [];
     this.multiSellers = [];
+    this.extraBuyers = [];
+    this.extraSellers = [];
+    const extraBuyersList = document.getElementById('extra-buyers-list');
+    if (extraBuyersList) extraBuyersList.innerHTML = '';
+    const extraSellersList = document.getElementById('extra-sellers-list');
+    if (extraSellersList) extraSellersList.innerHTML = '';
+    const summaryStrip = document.getElementById('trip-multi-summary-strip');
+    if (summaryStrip) summaryStrip.classList.add('d-none');
     this.setConsignmentMode('single', document.getElementById('btn-mode-single'));
     const formEl = document.getElementById('bilty-booking-form');
     if (formEl) formEl.reset();

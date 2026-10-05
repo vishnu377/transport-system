@@ -408,29 +408,7 @@
               </div>
             </div>
 
-            <!-- 22B. Consignment Mode (लोडिंग प्रकार: Single / 1 Seller ➔ Multi Buyers / Multi Sellers ➔ 1 Buyer) -->
-            <div class="appsheet-form-row bg-light-subtle py-2 border-top border-bottom my-2">
-              <label class="appsheet-form-label fw-bold text-primary">Consignment Mode *</label>
-              <div class="appsheet-form-control-wrap">
-                <div class="appsheet-segmented-gold" id="seg-consignment-mode">
-                  <button type="button" class="seg-btn active" id="btn-mode-single" onclick="BiltyBookingModule.setConsignmentMode('single', this)">
-                    <i class="bi bi-person me-1"></i> 1 Seller ➔ 1 Buyer (Single)
-                  </button>
-                  <button type="button" class="seg-btn" id="btn-mode-multi-buyer" onclick="BiltyBookingModule.setConsignmentMode('multi_consignee', this)">
-                    <i class="bi bi-people me-1"></i> 1 Seller ➔ Multi Buyers
-                  </button>
-                  <button type="button" class="seg-btn" id="btn-mode-multi-seller" onclick="BiltyBookingModule.setConsignmentMode('multi_consignor', this)">
-                    <i class="bi bi-boxes me-1"></i> Multi Sellers ➔ 1 Buyer
-                  </button>
-                </div>
-                <input type="hidden" id="bilty-consignment-mode" value="single">
-              </div>
-            </div>
-
-            <!-- ================================================================= -->
-            <!-- MODE 1: SINGLE CONSIGNMENT (1 SELLER ➔ 1 BUYER)                   -->
-            <!-- ================================================================= -->
-            <div id="section-single-consignment">
+            <input type="hidden" id="bilty-consignment-mode" value="single">
 
             <!-- 23. From * -->
             <div class="appsheet-form-row">
@@ -454,10 +432,7 @@
 
             <!-- 25. GSTIN Consignor -->
             <div class="appsheet-form-row">
-              <label class="appsheet-form-label">
-                GSTIN Consignor
-                <a href="javascript:void(0)" class="small ms-2 text-primary text-decoration-none fw-semibold" onclick="BiltyBookingModule.switchToMultiSeller()" title="Click to add multiple sellers / pick-up points">+ Add More Sellers</a>
-              </label>
+              <label class="appsheet-form-label">GSTIN Consignor</label>
               <div class="appsheet-form-control-wrap">
                 <div class="w-100" style="max-width: 440px;">
                   <select id="bilty-consignor" class="appsheet-input-box" onchange="BiltyBookingModule.onConsignorSelect(this.value)">
@@ -510,6 +485,19 @@
               </div>
             </div>
 
+            <!-- Dynamic Extra Sellers (2nd, 3rd Seller / Pick-up) in Authentic AppSheet Row Format -->
+            <div id="extra-sellers-wrapper">
+              <div id="extra-sellers-list"></div>
+              <div class="appsheet-form-row py-2 border-bottom-0">
+                <div class="appsheet-form-label"></div>
+                <div class="appsheet-form-control-wrap">
+                  <button type="button" class="btn btn-outline-primary btn-sm rounded-pill px-3 py-1 fw-semibold" onclick="BiltyBookingModule.addExtraSeller()">
+                    <i class="bi bi-plus-circle me-1"></i> + Add Another Seller / Consignor (अतिरिक्त सेलर जोड़ें)
+                  </button>
+                </div>
+              </div>
+            </div>
+
             <!-- 30. Material * -->
             <div class="appsheet-form-row">
               <label class="appsheet-form-label">Material *</label>
@@ -522,10 +510,7 @@
 
             <!-- 31. GSTIN Consignee -->
             <div class="appsheet-form-row">
-              <label class="appsheet-form-label">
-                GSTIN Consignee
-                <a href="javascript:void(0)" class="small ms-2 text-primary text-decoration-none fw-semibold" onclick="BiltyBookingModule.switchToMultiBuyer()" title="Click to add multiple buyers / drop points">+ Add More Buyers</a>
-              </label>
+              <label class="appsheet-form-label">GSTIN Consignee</label>
               <div class="appsheet-form-control-wrap">
                 <div class="w-100" style="max-width: 440px;">
                   <select id="bilty-consignee" class="appsheet-input-box" onchange="BiltyBookingModule.onConsigneeSelect(this.value)">
@@ -637,150 +622,37 @@
               </div>
             </div>
 
-            </div> <!-- End #section-single-consignment -->
-
-            <!-- ================================================================= -->
-            <!-- MODE 2: 1 SELLER ➔ MULTIPLE BUYERS (MULTI-CONSIGNEE / MULTI-DROP) -->
-            <!-- ================================================================= -->
-            <div id="section-multi-buyer" class="d-none">
-              
-              <!-- Common Consignor / Seller Header -->
-              <div class="p-3 bg-light rounded border mb-3">
-                <h6 class="fw-bold mb-2 text-primary d-flex align-items-center gap-2">
-                  <i class="bi bi-building-up"></i> Common Consignor / Seller (माल भेजने वाला)
-                </h6>
-                <div class="row g-2">
-                  <div class="col-md-6">
-                    <label class="small fw-semibold text-muted mb-1">Consignor Party *</label>
-                    <select id="mb-consignor" class="appsheet-input-box" onchange="BiltyBookingModule.onMultiBuyerConsignorChange(this.value)">
-                      <option value="">-- Select Consignor / Party --</option>
-                    </select>
-                    <input type="hidden" id="mb-consignor-gstin">
-                  </div>
-                  <div class="col-md-3">
-                    <label class="small fw-semibold text-muted mb-1">From Station *</label>
-                    <input type="text" id="mb-origin" class="appsheet-input-box" value="Rajsamand (Raj.)">
-                  </div>
-                  <div class="col-md-3">
-                    <label class="small fw-semibold text-muted mb-1">Dispatch From Address</label>
-                    <input type="text" id="mb-dispatch-from" class="appsheet-input-box" placeholder="Loading factory / site">
-                  </div>
+            <!-- Extra Buyers Container (Appended seamlessly in pure AppSheet rows) -->
+            <div id="extra-buyers-wrapper">
+              <div id="extra-buyers-list"></div>
+              <div class="appsheet-form-row py-2 border-bottom-0">
+                <div class="appsheet-form-label"></div>
+                <div class="appsheet-form-control-wrap">
+                  <button type="button" class="btn btn-outline-primary btn-sm rounded-pill px-3 py-1 fw-semibold" onclick="BiltyBookingModule.addExtraBuyer()">
+                    <i class="bi bi-plus-circle me-1"></i> + Add Another Buyer / Consignee (अतिरिक्त खरीदार जोड़ें)
+                  </button>
                 </div>
               </div>
-
-              <!-- Multi-Buyer Cards Container (Generated via JS) -->
-              <div class="d-flex align-items-center justify-content-between mb-2">
-                <h6 class="fw-bold mb-0 text-dark">
-                  <i class="bi bi-people-fill text-primary me-1"></i> Buyers / Consignees (अलग-अलग GRs)
-                </h6>
-                <button type="button" class="btn btn-sm btn-outline-primary fw-semibold" onclick="BiltyBookingModule.addBuyerRow()">
-                  <i class="bi bi-plus-circle me-1"></i> + Add Another Buyer / GR
-                </button>
-              </div>
-
-              <div id="multi-buyer-cards-container">
-                <!-- Dynamic Buyer Cards will be rendered here -->
-              </div>
-
-              <!-- Dedicated + Add Buyer Action Button -->
-              <div class="text-center my-3">
-                <button type="button" class="btn btn-outline-primary px-4 py-2 fw-semibold rounded-pill shadow-sm" onclick="BiltyBookingModule.addBuyerRow()">
-                  <i class="bi bi-plus-circle-fill me-2 text-primary"></i> + Add Another Buyer / Consignee (अगला खरीदार / GR जोड़ें)
-                </button>
-              </div>
-
-              <!-- Multi-Buyer Live Summary Strip -->
-              <div class="appsheet-summary-strip" id="mb-summary-strip">
-                <div class="appsheet-summary-item">
-                  <span class="label">Total GRs</span>
-                  <span class="value text-primary" id="mb-sum-grs">0 GR</span>
-                </div>
-                <div class="appsheet-summary-item">
-                  <span class="label">Total Truck Weight</span>
-                  <span class="value text-dark" id="mb-sum-weight">0.00 MT</span>
-                </div>
-                <div class="appsheet-summary-item">
-                  <span class="label">Total Trip Freight</span>
-                  <span class="value text-success" id="mb-sum-freight">₹ 0.00</span>
-                </div>
-                <div class="appsheet-summary-item">
-                  <span class="label">Trip Commission (दलाली)</span>
-                  <span class="value text-danger" id="mb-sum-commission">₹ 0.00</span>
-                </div>
-              </div>
-
             </div>
 
-            <!-- ================================================================= -->
-            <!-- MODE 3: MULTIPLE SELLERS ➔ 1 BUYER (MULTI-CONSIGNOR / MULTI-PICKUP) -->
-            <!-- ================================================================= -->
-            <div id="section-multi-seller" class="d-none">
-              
-              <!-- Common Consignee / Buyer Header -->
-              <div class="p-3 bg-light rounded border mb-3">
-                <h6 class="fw-bold mb-2 text-primary d-flex align-items-center gap-2">
-                  <i class="bi bi-box-arrow-in-down"></i> Common Consignee / Buyer (माल मंगाने वाला)
-                </h6>
-                <div class="row g-2">
-                  <div class="col-md-6">
-                    <label class="small fw-semibold text-muted mb-1">Consignee Party *</label>
-                    <select id="ms-consignee" class="appsheet-input-box" onchange="BiltyBookingModule.onMultiSellerConsigneeChange(this.value)">
-                      <option value="">-- Select Consignee / Party --</option>
-                    </select>
-                    <input type="hidden" id="ms-consignee-gstin">
-                  </div>
-                  <div class="col-md-3">
-                    <label class="small fw-semibold text-muted mb-1">To Destination City *</label>
-                    <input type="text" id="ms-destination" list="destinationsList" class="appsheet-input-box" placeholder="Select destination...">
-                  </div>
-                  <div class="col-md-3">
-                    <label class="small fw-semibold text-muted mb-1">Delivery / Ship-To Address</label>
-                    <input type="text" id="ms-delivery-address" class="appsheet-input-box" placeholder="Unloading site address">
-                  </div>
-                </div>
+            <!-- Multi-Party Live Summary (Only visible when extra buyer/seller exists) -->
+            <div class="appsheet-summary-strip d-none mt-3" id="trip-multi-summary-strip">
+              <div class="appsheet-summary-item">
+                <span class="label">Total GRs</span>
+                <span class="value text-primary" id="multi-sum-grs">1 GR</span>
               </div>
-
-              <!-- Multi-Seller Cards Container (Generated via JS) -->
-              <div class="d-flex align-items-center justify-content-between mb-2">
-                <h6 class="fw-bold mb-0 text-dark">
-                  <i class="bi bi-boxes text-primary me-1"></i> Sellers / Consignors (अलग-अलग GRs - Max 6)
-                </h6>
-                <button type="button" class="btn btn-sm btn-outline-primary fw-semibold" id="btn-add-seller-row" onclick="BiltyBookingModule.addSellerRow()">
-                  <i class="bi bi-plus-circle me-1"></i> + Add Seller / Pickup (Max 6)
-                </button>
+              <div class="appsheet-summary-item">
+                <span class="label">Total Truck Weight</span>
+                <span class="value text-dark" id="multi-sum-weight">0.00 MT</span>
               </div>
-
-              <div id="multi-seller-cards-container">
-                <!-- Dynamic Seller Cards will be rendered here -->
+              <div class="appsheet-summary-item">
+                <span class="label">Total Trip Freight</span>
+                <span class="value text-success" id="multi-sum-freight">₹ 0.00</span>
               </div>
-
-              <!-- Dedicated + Add Seller Action Button -->
-              <div class="text-center my-3">
-                <button type="button" class="btn btn-outline-primary px-4 py-2 fw-semibold rounded-pill shadow-sm" onclick="BiltyBookingModule.addSellerRow()">
-                  <i class="bi bi-plus-circle-fill me-2 text-primary"></i> + Add Another Seller / Pickup (अगला सेलर / GR जोड़ें - Max 6)
-                </button>
+              <div class="appsheet-summary-item">
+                <span class="label">Trip Commission (दलाली)</span>
+                <span class="value text-danger" id="multi-sum-commission">₹ 0.00</span>
               </div>
-
-              <!-- Multi-Seller Live Summary Strip -->
-              <div class="appsheet-summary-strip" id="ms-summary-strip">
-                <div class="appsheet-summary-item">
-                  <span class="label">Total GRs</span>
-                  <span class="value text-primary" id="ms-sum-grs">0 GR</span>
-                </div>
-                <div class="appsheet-summary-item">
-                  <span class="label">Total Truck Weight</span>
-                  <span class="value text-dark" id="ms-sum-weight">0.00 MT</span>
-                </div>
-                <div class="appsheet-summary-item">
-                  <span class="label">Total Trip Freight</span>
-                  <span class="value text-success" id="ms-sum-freight">₹ 0.00</span>
-                </div>
-                <div class="appsheet-summary-item">
-                  <span class="label">Trip Commission (दलाली)</span>
-                  <span class="value text-danger" id="ms-sum-commission">₹ 0.00</span>
-                </div>
-              </div>
-
             </div>
 
 
