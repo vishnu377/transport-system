@@ -119,10 +119,13 @@ const LedgerModule = {
   },
 
   toggleNavDrawer() {
-    const drawerEl = document.getElementById('tmsNavDrawer');
-    if (drawerEl && typeof bootstrap !== 'undefined' && bootstrap.Offcanvas) {
-      const bsOffcanvas = bootstrap.Offcanvas.getOrCreateInstance(drawerEl);
-      bsOffcanvas.toggle();
+    if (typeof AppUI !== 'undefined' && AppUI.toggleNavDrawer) {
+      AppUI.toggleNavDrawer();
+    } else {
+      const drawerEl = document.getElementById('appsheetNavDrawer') || document.getElementById('tmsNavDrawer');
+      if (drawerEl && typeof bootstrap !== 'undefined' && bootstrap.Offcanvas) {
+        bootstrap.Offcanvas.getOrCreateInstance(drawerEl).toggle();
+      }
     }
   },
 

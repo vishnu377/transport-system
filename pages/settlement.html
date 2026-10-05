@@ -577,44 +577,8 @@
 <body>
 
   <!-- ========================================== -->
-  <!-- 1. LEFT SLIM APPSHEET ICON RAIL -->
-  <!-- ========================================== -->
-  <aside class="appsheet-rail">
-    <!-- Top Hamburger (opens full TMS sidebar offcanvas) -->
-    <button class="appsheet-rail-btn" onclick="SettlementModule.toggleNavDrawer()" title="Main Menu (Bilty, Ledger, Parties, etc.)">
-      <i class="bi bi-list"></i>
-    </button>
-    <!-- Home Icon (Active tan/gold circle) -->
-    <a href="../index.html" class="appsheet-rail-btn active" title="TMS Dashboard">
-      <i class="bi bi-house-door-fill"></i>
-    </a>
-    <!-- Info Icon -->
-    <button class="appsheet-rail-btn" onclick="AppUI.showToast('Trips Financial Settlement & Dues Module (6,643 Records)', 'info')" title="Module Info">
-      <i class="bi bi-info-circle"></i>
-    </button>
-    <!-- Chat Icon -->
-    <button class="appsheet-rail-btn" onclick="AppUI.showToast('Direct communication channel active', 'info')" title="Messages">
-      <i class="bi bi-chat-left-text"></i>
-    </button>
-    <!-- 9-Dots Grid Icon -->
-    <button class="appsheet-rail-btn" onclick="SettlementModule.toggleNavDrawer()" title="All Apps & Modules">
-      <i class="bi bi-grid-3x3-gap"></i>
-    </button>
-  </aside>
-
-  <!-- ========================================== -->
-  <!-- 2. FULL TMS NAVIGATION DRAWER (Offcanvas) -->
-  <!-- ========================================== -->
-  <div class="offcanvas offcanvas-start" tabindex="-1" id="tmsNavDrawer" style="width: 280px; z-index: 1070;">
-    <div class="offcanvas-header bg-dark text-white py-2">
-      <h6 class="offcanvas-title fw-bold"><i class="bi bi-truck me-2"></i> MTC & TTC TMS ERP</h6>
-      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
-    </div>
-    <div class="offcanvas-body p-0 bg-dark">
-      <!-- Standard TMS sidebar navigation is rendered here dynamically -->
-      <nav id="sidebar"></nav>
-    </div>
-  </div>
+  <!-- Google AppSheet 48px Slim Icon Rail (Populated by AppUI) -->
+  <nav id="sidebar" class="appsheet-rail"></nav>
 
   <!-- ========================================== -->
   <!-- 3. MAIN WORKSPACE -->

@@ -24,121 +24,116 @@ body {
   display: flex;
 }
 
-/* Sidebar Styling - Clean Google AppSheet Light Modern Theme */
-#sidebar {
-  width: 250px;
-  background: var(--sidebar-bg);
-  color: var(--text-main);
+/* Authentic Google AppSheet 48px Slim Icon Rail System */
+#sidebar,
+.appsheet-rail {
+  width: 48px !important;
+  min-width: 48px !important;
+  max-width: 48px !important;
+  background: #ffffff !important;
+  color: var(--text-main) !important;
   min-height: 100vh;
-  position: fixed;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  z-index: 1000;
-  border-right: 1px solid #ebebeb;
-  transition: all 0.3s ease;
-  display: flex;
-  flex-direction: column;
+  position: fixed !important;
+  left: 0 !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  z-index: 1040 !important;
+  border-right: 1px solid #ebebeb !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  padding-top: 6px !important;
+  padding-bottom: 8px !important;
+  margin-left: 0 !important;
+  overflow: visible !important;
 }
 
-#sidebar .brand-header {
-  padding: 1rem 1.25rem;
-  border-bottom: 1px solid #f1f3f4;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: #ffffff;
-}
-
-#sidebar .brand-icon {
-  width: 36px;
-  height: 36px;
-  background: linear-gradient(135deg, #1a73e8, #3b82f6);
-  border-radius: 8px;
+.appsheet-rail-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.15rem;
-  color: #ffffff;
-  font-weight: bold;
+  color: var(--text-muted);
+  text-decoration: none;
+  border: none;
+  background: transparent;
+  margin-bottom: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.15s, color 0.15s;
 }
 
-#sidebar .brand-text h5 {
-  margin: 0;
-  font-weight: 700;
-  font-size: 0.95rem;
-  letter-spacing: -0.2px;
+.appsheet-rail-btn:hover {
+  background: #f1f3f4;
   color: #202124;
 }
 
-#sidebar .brand-text small {
-  color: #5f6368;
-  font-size: 0.72rem;
-  font-weight: 500;
+.appsheet-rail-btn.active {
+  background: #dfcfab;
+  color: #7a5f1e;
 }
 
-.sidebar-nav {
-  padding: 0.75rem 0.5rem;
-  flex-grow: 1;
-  overflow-y: auto;
+/* Offcanvas Navigation Drawer (Authentic Google AppSheet Light Theme) */
+.offcanvas-appsheet {
+  width: 280px !important;
+  background: #ffffff !important;
+  border-right: 1px solid #dadce0 !important;
 }
-
-.nav-section-title {
-  font-size: 0.72rem;
+.offcanvas-appsheet .offcanvas-header {
+  padding: 14px 20px;
+  border-bottom: 1px solid #ebebeb;
+  background: #ffffff;
+}
+.offcanvas-appsheet .offcanvas-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #202124;
+}
+.drawer-nav-section {
+  font-size: 11px;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.8px;
   color: #5f6368;
-  padding: 0.6rem 0.75rem 0.35rem 0.75rem;
-  font-weight: 700;
+  padding: 12px 16px 4px 16px;
 }
-
-.sidebar-link {
+.drawer-link {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 0.55rem 0.85rem;
+  padding: 8px 16px;
   color: #3c4043;
   text-decoration: none;
-  border-radius: 8px;
-  margin-bottom: 2px;
-  font-size: 0.88rem;
+  font-size: 13.5px;
   font-weight: 500;
+  border-radius: 6px;
+  margin: 2px 8px;
   transition: all 0.15s ease;
 }
-
-.sidebar-link i {
-  font-size: 1.1rem;
-  width: 22px;
-  text-align: center;
-}
-
-.sidebar-link:hover {
-  background: var(--sidebar-hover);
+.drawer-link:hover {
+  background: #f1f3f4;
   color: #1a73e8;
 }
-
-.sidebar-link.active {
-  background: var(--sidebar-active);
+.drawer-link.active {
+  background: #dfcfab;
   color: #7a5f1e;
   font-weight: 700;
-  box-shadow: none;
 }
 
-.sidebar-footer {
-  padding: 0.85rem 1rem;
-  border-top: 1px solid #f1f3f4;
-  background: #ffffff;
-}
-
-/* Main Content Area */
-#main-content {
-  margin-left: 250px;
+/* Main Workspace Area (Offset by 48px Slim Rail) */
+#main-content,
+.appsheet-workspace,
+.appsheet-main-workspace {
+  margin-left: 48px !important;
+  width: calc(100% - 48px) !important;
   flex-grow: 1;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   background-color: var(--bg-color);
-  width: calc(100% - 250px);
+  transition: margin-left 0.2s ease, width 0.2s ease;
 }
 
 /* Top Navbar */
@@ -307,18 +302,98 @@ body {
   color: var(--primary-light);
 }
 
-/* Mobile Responsiveness */
-@media (max-width: 991px) {
-  #sidebar {
-    margin-left: -260px;
+/* Mobile Responsiveness (Responsive on all screens) */
+@media (max-width: 768px) {
+  #sidebar,
+  .appsheet-rail {
+    display: none !important;
   }
-  #sidebar.show {
-    margin-left: 0;
+  #main-content,
+  .appsheet-workspace,
+  .appsheet-main-workspace {
+    margin-left: 0 !important;
+    width: 100% !important;
   }
-  #main-content {
-    margin-left: 0;
-    width: 100%;
+  #sidebar-toggle,
+  .btn-hamburger {
+    display: inline-flex !important;
   }
+}
+
+/* Universal Hamburger Toggle button */
+#sidebar-toggle,
+.btn-hamburger {
+  cursor: pointer;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Spin Animation for Cloud Sync */
+@keyframes appsheet-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.appsheet-spinning {
+  animation: appsheet-spin 0.8s linear infinite !important;
+  display: inline-block;
+}
+
+/* AppSheet Grid / Tile View Mode */
+.appsheet-grid-view .appsheet-card {
+  padding: 12px;
+}
+.appsheet-grid-view .appsheet-section-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 12px;
+  padding: 8px 4px 16px 4px;
+}
+.appsheet-grid-view .appsheet-section-title {
+  grid-column: 1 / -1;
+  padding: 6px 4px 2px 4px;
+  font-size: 11.5px;
+}
+.appsheet-grid-view .appsheet-row {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 16px 8px !important;
+  text-align: center !important;
+  border: 1px solid #ebebeb !important;
+  border-radius: 8px !important;
+  background: #ffffff !important;
+  min-height: 105px !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+  text-decoration: none !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+.appsheet-grid-view .appsheet-row:hover {
+  background: #f8f9fa !important;
+  border-color: #bfa15f !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.07);
+}
+.appsheet-grid-view .appsheet-row-left {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+.appsheet-grid-view .appsheet-row-icon {
+  width: 44px !important;
+  height: 44px !important;
+}
+.appsheet-grid-view .appsheet-row-name {
+  font-size: 12.5px !important;
+  font-weight: 600 !important;
+  color: #202124 !important;
+  text-align: center !important;
+  line-height: 1.25;
+}
+.appsheet-grid-view .appsheet-row-chevron {
+  display: none !important;
 }
 
 /* AppSheet-Style Bilty Views */
