@@ -620,3 +620,108 @@ body {
   color: #0f172a;
 }
 
+/* ==========================================================================
+   Google AppSheet Authentic Home Portal Grid & Row Styling
+   Exact Replica of AppSheet Home (media_1791229132227.png)
+   ========================================================================== */
+.appsheet-panel-card {
+  background: #ffffff !important;
+  border: 1px solid #e0e0e0 !important;
+  border-radius: 4px !important;
+  overflow: hidden !important;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02) !important;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.appsheet-panel-top {
+  padding: 10px 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+  color: #202124 !important;
+  background: #ffffff;
+}
+.appsheet-group-divider {
+  padding: 8px 16px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: #202124 !important;
+  border-bottom: 1px solid #f1f3f4 !important;
+  background: #ffffff !important;
+}
+.appsheet-group-divider:not(:first-child) {
+  border-top: 1px solid #e0e0e0 !important;
+}
+.appsheet-portal-row {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 10px 16px !important;
+  border-bottom: 1px solid #f4f4f4 !important;
+  text-decoration: none !important;
+  color: #202124 !important;
+  background: #ffffff !important;
+  transition: background 0.12s ease !important;
+}
+.appsheet-portal-row:last-child {
+  border-bottom: none !important;
+}
+.appsheet-portal-row:hover {
+  background-color: #f8f9fa !important;
+  color: #1a73e8 !important;
+}
+.appsheet-row-left {
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+}
+.appsheet-row-thumb {
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  flex-shrink: 0 !important;
+}
+.appsheet-row-name {
+  font-size: 13.5px !important;
+  font-weight: 500 !important;
+  color: #202124 !important;
+  letter-spacing: -0.1px !important;
+}
+.appsheet-portal-row:hover .appsheet-row-name {
+  color: #1a73e8 !important;
+}
+.appsheet-row-chevron {
+  font-size: 14px !important;
+  color: #5f6368 !important;
+  opacity: 0.5 !important;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+.appsheet-portal-row:hover .appsheet-row-chevron {
+  opacity: 1 !important;
+  color: #1a73e8 !important;
+  transform: translateX(3px) !important;
+}
+.btn-bilty-gold {
+  background: #bfa15f !important;
+  color: #1a1a1a !important;
+  font-weight: 700 !important;
+  font-size: 12px !important;
+  padding: 3px 10px !important;
+  border-radius: 4px !important;
+  border: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  text-decoration: none !important;
+}
+.btn-bilty-gold:hover {
+  background: #af904a !important;
+  color: #000 !important;
+}
+
