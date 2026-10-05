@@ -36,66 +36,92 @@ const AppUI = {
         </div>
       </div>
       <div class="sidebar-nav">
-        <div class="nav-section-title">Core Operations</div>
-        <a href="${basePath}index.html" class="sidebar-link ${activePage === 'dashboard' ? 'active' : ''}">
-          <i class="bi bi-speedometer2"></i> Executive Dashboard
+        <a href="${basePath}index.html" class="sidebar-link ${activePage === 'dashboard' || activePage === 'home' ? 'active' : ''}">
+          <i class="bi bi-house-door-fill text-warning"></i> Home Dashboard
         </a>
-        <a href="${pagesPath}trips.html" class="sidebar-link ${activePage === 'trips' ? 'active' : ''}">
-          <i class="bi bi-truck"></i> Trips & Dispatch
-        </a>
-        <a href="${pagesPath}settlement.html" class="sidebar-link ${activePage === 'settlement' ? 'active' : ''}">
-          <i class="bi bi-patch-check-fill text-warning"></i> Trips Settlement & Dues
-        </a>
+
+        <!-- 1 Bilty (AppSheet Section 1) -->
+        <div class="nav-section-title text-warning fw-bold d-flex align-items-center justify-content-between">
+          <span>1 Bilty</span>
+          <span class="badge bg-warning text-dark font-monospace" style="font-size: 10px;">CORE</span>
+        </div>
         <a href="${pagesPath}bilty-booking.html" class="sidebar-link ${activePage === 'bilty' ? 'active' : ''}">
-          <i class="bi bi-file-earmark-text"></i> Bilty (LR) Booking
-        </a>
-        <a href="${pagesPath}eway-bills.html" class="sidebar-link ${activePage === 'eway' ? 'active' : ''}">
-          <i class="bi bi-shield-exclamation"></i> E-Way Bills & Validity
-        </a>
-        <a href="${pagesPath}pod-register.html" class="sidebar-link ${activePage === 'pod' ? 'active' : ''}">
-          <i class="bi bi-card-checklist"></i> POD (पावती) Register
-        </a>
-
-        <div class="nav-section-title mt-3">Master Directories</div>
-        <a href="${pagesPath}parties.html" class="sidebar-link ${activePage === 'parties' ? 'active' : ''}">
-          <i class="bi bi-building"></i> Parties Master
-        </a>
-        <a href="${pagesPath}owners.html" class="sidebar-link ${activePage === 'owners' ? 'active' : ''}">
-          <i class="bi bi-person-badge"></i> Truck Owners
-        </a>
-        <a href="${pagesPath}drivers.html" class="sidebar-link ${activePage === 'drivers' ? 'active' : ''}">
-          <i class="bi bi-person-vcard"></i> Drivers Master
-        </a>
-        <a href="${pagesPath}fleet-maintenance.html" class="sidebar-link ${activePage === 'fleet' ? 'active' : ''}">
-          <i class="bi bi-shield-check"></i> Fleet & Documents
-        </a>
-        <a href="${pagesPath}brokers.html" class="sidebar-link ${activePage === 'brokers' ? 'active' : ''}">
-          <i class="bi bi-people"></i> Brokers / Dallal
-        </a>
-
-        <div class="nav-section-title mt-3">Accounts & Billing</div>
-        <a href="${pagesPath}gst-invoices.html" class="sidebar-link ${activePage === 'gst' ? 'active' : ''}">
-          <i class="bi bi-receipt-cutoff"></i> GST Freight Invoices
-        </a>
-        <a href="${pagesPath}payments.html" class="sidebar-link ${activePage === 'payments' ? 'active' : ''}">
-          <i class="bi bi-cash-coin"></i> Party & Owner Paid
-        </a>
-        <a href="${pagesPath}cheques.html" class="sidebar-link ${activePage === 'cheques' ? 'active' : ''}">
-          <i class="bi bi-credit-card-2-front"></i> Cheques Register
-        </a>
-        <a href="${pagesPath}cash-register.html" class="sidebar-link ${activePage === 'cash' ? 'active' : ''}">
-          <i class="bi bi-wallet2"></i> Shahpura Cash & DEF
-        </a>
-        <a href="${pagesPath}diesel-register.html" class="sidebar-link ${activePage === 'diesel' ? 'active' : ''}">
-          <i class="bi bi-fuel-pump"></i> Diesel Pump Register
+          <i class="bi bi-file-earmark-plus text-warning"></i> Bilty Booking
         </a>
         <a href="${pagesPath}ledger.html" class="sidebar-link ${activePage === 'ledger' ? 'active' : ''}">
-          <i class="bi bi-journal-bookmark"></i> Financial Ledger
+          <i class="bi bi-journal-bookmark text-danger"></i> Ledger (खाताबही)
         </a>
 
-        <div class="nav-section-title mt-3">System & Data</div>
+        <!-- 2 Trip (AppSheet Section 2) -->
+        <div class="nav-section-title mt-3 text-info fw-bold d-flex align-items-center justify-content-between">
+          <span>2 Trip</span>
+          <span class="badge bg-info text-dark font-monospace" style="font-size: 10px;">OPERATIONS</span>
+        </div>
+        <a href="${pagesPath}trips.html" class="sidebar-link ${activePage === 'trips' ? 'active' : ''}">
+          <i class="bi bi-truck text-primary"></i> Trips
+        </a>
+        <a href="${pagesPath}cheques.html" class="sidebar-link ${activePage === 'cheques' ? 'active' : ''}">
+          <i class="bi bi-credit-card-2-front text-warning"></i> Cheques
+        </a>
+        <a href="${pagesPath}trips.html?view=to_be_created" class="sidebar-link ${activePage === 'to_be_created' ? 'active' : ''}">
+          <i class="bi bi-calculator text-info"></i> To be Created (पेंडिंग बिल्टी)
+        </a>
+        <a href="${pagesPath}parties.html" class="sidebar-link ${activePage === 'parties' ? 'active' : ''}">
+          <i class="bi bi-building text-success"></i> Parties
+        </a>
+        <a href="${pagesPath}owners.html" class="sidebar-link ${activePage === 'owners' ? 'active' : ''}">
+          <i class="bi bi-person-badge text-secondary"></i> Owners (गाड़ी मालिक)
+        </a>
+
+        <!-- 3 Shahpura (AppSheet Section 3) -->
+        <div class="nav-section-title mt-3 text-success fw-bold d-flex align-items-center justify-content-between">
+          <span>3 Shahpura</span>
+          <span class="badge bg-success text-white font-monospace" style="font-size: 10px;">DEPOT</span>
+        </div>
+        <a href="${pagesPath}cash-register.html#def-urea" class="sidebar-link ${activePage === 'def_urea' ? 'active' : ''}">
+          <i class="bi bi-droplet-half text-info"></i> DEF Urea
+        </a>
+        <a href="${pagesPath}cash-register.html" class="sidebar-link ${activePage === 'shahpura' || activePage === 'cash' ? 'active' : ''}">
+          <i class="bi bi-wallet2 text-success"></i> Shahpura (Cash Book)
+        </a>
+
+        <!-- 1 Resources (AppSheet Infrequent Section) -->
+        <div class="nav-section-title mt-3 text-secondary fw-bold d-flex align-items-center justify-content-between">
+          <span>1 Resources</span>
+          <span class="badge bg-secondary text-white font-monospace" style="font-size: 10px;">MASTERS</span>
+        </div>
+        <a href="${pagesPath}bilty-booking.html#pdf" class="sidebar-link ${activePage === 'pdf' ? 'active' : ''}">
+          <i class="bi bi-file-earmark-pdf text-danger"></i> PDF (बिल्टी प्रिंट)
+        </a>
+        <a href="${pagesPath}brokers.html" class="sidebar-link ${activePage === 'brokers' ? 'active' : ''}">
+          <i class="bi bi-people text-primary"></i> Brokers (764 दलाल)
+        </a>
+        <a href="${pagesPath}drivers.html" class="sidebar-link ${activePage === 'drivers' ? 'active' : ''}">
+          <i class="bi bi-person-vcard text-info"></i> Drivers (888 ड्राइवर)
+        </a>
+        <a href="${pagesPath}settlement.html#partnership" class="sidebar-link ${activePage === 'partnership' ? 'active' : ''}">
+          <i class="bi bi-diagram-3 text-warning"></i> Partnership
+        </a>
+
+        <!-- Additional Fleet Utilities -->
+        <div class="nav-section-title mt-3 text-muted">More Fleet Utilities</div>
+        <a href="${pagesPath}settlement.html" class="sidebar-link ${activePage === 'settlement' ? 'active' : ''}">
+          <i class="bi bi-patch-check-fill text-warning"></i> Trips Settlement
+        </a>
+        <a href="${pagesPath}eway-bills.html" class="sidebar-link ${activePage === 'eway' ? 'active' : ''}">
+          <i class="bi bi-shield-exclamation text-warning"></i> E-Way Bills & Validity
+        </a>
+        <a href="${pagesPath}pod-register.html" class="sidebar-link ${activePage === 'pod' ? 'active' : ''}">
+          <i class="bi bi-card-checklist text-info"></i> POD (पावती) Register
+        </a>
+        <a href="${pagesPath}gst-invoices.html" class="sidebar-link ${activePage === 'gst' ? 'active' : ''}">
+          <i class="bi bi-receipt-cutoff text-success"></i> GST Freight Invoices
+        </a>
+        <a href="${pagesPath}diesel-register.html" class="sidebar-link ${activePage === 'diesel' ? 'active' : ''}">
+          <i class="bi bi-fuel-pump text-danger"></i> Diesel Pump Register
+        </a>
         <a href="${pagesPath}data-tools.html" class="sidebar-link ${activePage === 'data-tools' ? 'active' : ''}">
-          <i class="bi bi-database-down"></i> Excel Import & Backup
+          <i class="bi bi-database-down text-secondary"></i> Excel Import & Backup
         </a>
       </div>
     `;
