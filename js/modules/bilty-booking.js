@@ -39,6 +39,13 @@ const BiltyBookingModule = {
   currentPrintCopy: 'CONSIGNOR COPY',
   currentActiveBilty: null,
 
+  // Multi-Party & Multi-GR Consignment State
+  bookingMode: 'single', // 'single' | 'multi_consignee' | 'multi_consignor'
+  multiBuyers: [],
+  multiSellers: [],
+  currentBatchTrips: [],
+  activeBatchIndex: 'all',
+
   async init() {
     AppUI.renderSidebar('bilty');
     await this.loadAllData();
@@ -203,6 +210,11 @@ const BiltyBookingModule = {
       if (consigneeSelect) consigneeSelect.innerHTML = optionsHTML;
       if (expressConsignor) expressConsignor.innerHTML = optionsHTML;
       if (expressConsignee) expressConsignee.innerHTML = optionsHTML;
+
+      const mbConsignor = document.getElementById('mb-consignor');
+      if (mbConsignor) mbConsignor.innerHTML = optionsHTML;
+      const msConsignee = document.getElementById('ms-consignee');
+      if (msConsignee) msConsignee.innerHTML = optionsHTML;
     }
 
     // 6. Destinations Datalist (Matching authentic AppSheet video options)
@@ -254,12 +266,9 @@ const BiltyBookingModule = {
   // ----------------------------------------------------
   // SEQUENTIAL G.R. NUMBER GENERATOR
   // ----------------------------------------------------
-  async generateBiltyNumber() {
-    const firm = document.getElementById('bilty-firm').value || 'TTC';
-    const year = document.getElementById('bilty-year').value || '2026-2027';
-
+  getNextGrSequences(firm = 'TTC', year = '2026-2027', count = 1) {
     let maxSeq = 0;
-    this.allTrips.forEach(t => {
+    (this.allTrips || []).forEach(t => {
       const tFirm = t.transport || (t.grNo && t.grNo.includes('MTC') ? 'MTC' : 'TTC');
       const tYear = t.financialYear || (t.grNo && t.grNo.startsWith('2026-2027') ? '2026-2027' : '');
       
@@ -279,20 +288,52 @@ const BiltyBookingModule = {
       else maxSeq = 100;
     }
 
-    const nextSeq = maxSeq + 1;
-    const shortGr = `${nextSeq}_${firm}`;
-    const fullGr = `${year}-${shortGr}`;
+    const results = [];
+    for (let i = 1; i <= count; i++) {
+      const seq = maxSeq + i;
+      const shortGr = `${seq}_${firm}`;
+      const fullGr = `${year}-${shortGr}`;
+      results.push({ seq, shortGr, fullGr });
+    }
+    return results;
+  },
+
+  async generateBiltyNumber() {
+    const firm = document.getElementById('bilty-firm')?.value || 'TTC';
+    const year = document.getElementById('bilty-year')?.value || '2026-2027';
+
+    const count = (this.bookingMode === 'multi_consignee')
+      ? Math.max(1, this.multiBuyers.length)
+      : (this.bookingMode === 'multi_consignor')
+        ? Math.max(1, this.multiSellers.length)
+        : 1;
+
+    const seqs = this.getNextGrSequences(firm, year, count);
+    const first = seqs[0];
 
     const grNoEl = document.getElementById('bilty-gr-no');
-    if (grNoEl) grNoEl.value = fullGr;
+    if (grNoEl) grNoEl.value = first.fullGr;
     const shortGrEl = document.getElementById('bilty-short-gr');
-    if (shortGrEl) shortGrEl.value = shortGr;
-    
+    if (shortGrEl) shortGrEl.value = first.shortGr;
+
     const appsheetDisplay = document.getElementById('appsheet-display-gr');
-    if (appsheetDisplay) appsheetDisplay.innerText = nextSeq;
+    if (appsheetDisplay) {
+      if (count > 1) {
+        const last = seqs[seqs.length - 1];
+        appsheetDisplay.innerHTML = `<span class="badge bg-warning-subtle text-dark border border-warning px-2 py-1">${first.seq} – ${last.seq} (${count} GRs Allocated)</span>`;
+      } else {
+        appsheetDisplay.innerText = first.seq;
+      }
+    }
 
     const previewBadge = document.getElementById('preview-gr-badge');
-    if (previewBadge) previewBadge.innerText = `G.R. NO: ${shortGr}`;
+    if (previewBadge) {
+      previewBadge.innerText = count > 1 
+        ? `G.R. NO: ${first.shortGr} – ${seqs[seqs.length - 1].shortGr} (${count} GRs)`
+        : `G.R. NO: ${first.shortGr}`;
+    }
+
+    return seqs;
   },
 
   regenerateGR() {
@@ -1087,6 +1128,529 @@ const BiltyBookingModule = {
     this.updateLivePreview();
   },
 
+  // ----------------------------------------------------
+  // MULTI-PARTY & MULTI-GR CONSIGNMENT WORKFLOW
+  // ----------------------------------------------------
+  setConsignmentMode(mode, el) {
+    this.bookingMode = mode;
+    const hiddenInput = document.getElementById('bilty-consignment-mode');
+    if (hiddenInput) hiddenInput.value = mode;
+
+    // Update active segmented button
+    const seg = document.getElementById('seg-consignment-mode');
+    if (seg) {
+      seg.querySelectorAll('.seg-btn').forEach(btn => btn.classList.remove('active'));
+    }
+    if (el) el.classList.add('active');
+
+    // Toggle container views
+    const secSingle = document.getElementById('section-single-consignment');
+    const secMultiBuyer = document.getElementById('section-multi-buyer');
+    const secMultiSeller = document.getElementById('section-multi-seller');
+
+    if (secSingle) secSingle.className = (mode === 'single') ? '' : 'd-none';
+    if (secMultiBuyer) secMultiBuyer.className = (mode === 'multi_consignee') ? '' : 'd-none';
+    if (secMultiSeller) secMultiSeller.className = (mode === 'multi_consignor') ? '' : 'd-none';
+
+    // Populate common fields if transitioning
+    if (mode === 'multi_consignee') {
+      const mbConsignor = document.getElementById('mb-consignor');
+      const singleConsignor = document.getElementById('bilty-consignor')?.value;
+      if (mbConsignor && singleConsignor && !mbConsignor.value) {
+        mbConsignor.value = singleConsignor;
+        this.onMultiBuyerConsignorChange(singleConsignor);
+      }
+      if (this.multiBuyers.length === 0) {
+        const defConsignee = document.getElementById('bilty-consignee')?.value || '';
+        const defDest = document.getElementById('bilty-destination')?.value || 'Delhi';
+        const defWeight = parseFloat(document.getElementById('bilty-weight')?.value) || 0;
+        const defRate = parseFloat(document.getElementById('bilty-rate')?.value) || 0;
+        const defMaterial = document.getElementById('bilty-material')?.value || 'Marble Cut Size';
+
+        this.addBuyerRow({
+          consignee: defConsignee,
+          destination: defDest,
+          material: defMaterial,
+          weight: defWeight || 10,
+          rate: defRate || 1800
+        });
+        this.addBuyerRow({
+          destination: defDest,
+          material: defMaterial,
+          weight: 15,
+          rate: defRate || 1800
+        });
+        this.addBuyerRow({
+          destination: defDest,
+          material: defMaterial,
+          weight: 12,
+          rate: defRate || 1800
+        });
+      } else {
+        this.renderBuyerRows();
+      }
+    } else if (mode === 'multi_consignor') {
+      const msConsignee = document.getElementById('ms-consignee');
+      const singleConsignee = document.getElementById('bilty-consignee')?.value;
+      if (msConsignee && singleConsignee && !msConsignee.value) {
+        msConsignee.value = singleConsignee;
+        this.onMultiSellerConsigneeChange(singleConsignee);
+      }
+      const msDest = document.getElementById('ms-destination');
+      const singleDest = document.getElementById('bilty-destination')?.value;
+      if (msDest && singleDest && !msDest.value) {
+        msDest.value = singleDest;
+      }
+      if (this.multiSellers.length === 0) {
+        const defConsignor = document.getElementById('bilty-consignor')?.value || '';
+        const defWeight = parseFloat(document.getElementById('bilty-weight')?.value) || 0;
+        const defRate = parseFloat(document.getElementById('bilty-rate')?.value) || 0;
+        const defMaterial = document.getElementById('bilty-material')?.value || 'Marble Cut Size';
+
+        this.addSellerRow({
+          consignor: defConsignor,
+          material: defMaterial,
+          weight: defWeight || 12,
+          rate: defRate || 1800
+        });
+        this.addSellerRow({
+          material: defMaterial,
+          weight: 15,
+          rate: defRate || 1800
+        });
+        this.addSellerRow({
+          material: defMaterial,
+          weight: 10,
+          rate: defRate || 1800
+        });
+      } else {
+        this.renderSellerRows();
+      }
+    }
+
+    this.generateBiltyNumber();
+  },
+
+  onMultiBuyerConsignorChange(val) {
+    const p = (this.parties || []).find(x => x.name === val);
+    const gstinInput = document.getElementById('mb-consignor-gstin');
+    if (gstinInput) gstinInput.value = (p && p.gstin) ? p.gstin : '';
+  },
+
+  addBuyerRow(initialData = {}) {
+    const row = {
+      id: 'buyer_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+      consignee: initialData.consignee || '',
+      consigneeGstin: initialData.consigneeGstin || '',
+      destination: initialData.destination || (document.getElementById('bilty-destination')?.value || 'Delhi'),
+      deliveryAddress: initialData.deliveryAddress || '',
+      material: initialData.material || 'Marble Cut Size',
+      billingType: initialData.billingType || 'Per Tonne',
+      weight: (initialData.weight !== undefined) ? initialData.weight : 10,
+      rate: (initialData.rate !== undefined) ? initialData.rate : 1800,
+      freight: 0,
+      loadingCharges: initialData.loadingCharges || 0,
+      haltCharges: initialData.haltCharges || 0,
+      billNo: initialData.billNo || '',
+      invoiceValue: initialData.invoiceValue || 0,
+      ewayBillNo: initialData.ewayBillNo || ''
+    };
+    row.freight = (row.billingType === 'Fixed') ? row.rate : (row.weight * row.rate);
+    this.multiBuyers.push(row);
+    this.renderBuyerRows();
+    this.generateBiltyNumber();
+  },
+
+  removeBuyerRow(index) {
+    if (this.multiBuyers.length <= 1) {
+      AppUI.showToast("At least 1 Buyer / GR is required!", "warning");
+      return;
+    }
+    this.multiBuyers.splice(index, 1);
+    this.renderBuyerRows();
+    this.generateBiltyNumber();
+  },
+
+  onMultiBuyerChange(index, field, value) {
+    const row = this.multiBuyers[index];
+    if (!row) return;
+
+    if (field === 'consignee') {
+      row.consignee = value;
+      const p = (this.parties || []).find(x => x.name === value);
+      if (p) {
+        row.consigneeGstin = p.gstin || '';
+        if (p.address && !row.deliveryAddress) row.deliveryAddress = p.address;
+        const gstinEl = document.getElementById(`mb-gstin-${index}`);
+        if (gstinEl) gstinEl.value = row.consigneeGstin;
+        const addrEl = document.getElementById(`mb-addr-${index}`);
+        if (addrEl && !addrEl.value) addrEl.value = row.deliveryAddress;
+      }
+    } else if (field === 'weight') {
+      row.weight = parseFloat(value) || 0;
+      row.freight = (row.billingType === 'Fixed') ? row.rate : (row.weight * row.rate);
+      const freightEl = document.getElementById(`mb-freight-${index}`);
+      if (freightEl) freightEl.value = '₹ ' + row.freight.toFixed(2);
+    } else if (field === 'rate') {
+      row.rate = parseFloat(value) || 0;
+      row.freight = (row.billingType === 'Fixed') ? row.rate : (row.weight * row.rate);
+      const freightEl = document.getElementById(`mb-freight-${index}`);
+      if (freightEl) freightEl.value = '₹ ' + row.freight.toFixed(2);
+    } else if (field === 'billingType') {
+      row.billingType = value;
+      row.freight = (value === 'Fixed') ? row.rate : (row.weight * row.rate);
+      const freightEl = document.getElementById(`mb-freight-${index}`);
+      if (freightEl) freightEl.value = '₹ ' + row.freight.toFixed(2);
+    } else {
+      row[field] = value;
+    }
+
+    this.recalculateMultiBuyerTotals();
+  },
+
+  renderBuyerRows() {
+    const container = document.getElementById('multi-buyer-cards-container');
+    if (!container) return;
+
+    const firm = document.getElementById('bilty-firm')?.value || 'TTC';
+    const year = document.getElementById('bilty-year')?.value || '2026-2027';
+    const seqs = this.getNextGrSequences(firm, year, this.multiBuyers.length);
+
+    let partyOptions = '<option value="">-- Select Consignee / Party --</option>';
+    (this.parties || []).forEach(p => {
+      if (p && p.name) {
+        partyOptions += `<option value="${p.name}">${p.name}</option>`;
+      }
+    });
+
+    let html = '';
+    this.multiBuyers.forEach((b, i) => {
+      const gr = seqs[i] ? seqs[i].shortGr : `${i + 1}`;
+      b.calculatedGr = seqs[i] ? seqs[i].fullGr : '';
+      b.calculatedShortGr = gr;
+
+      html += `
+        <div class="appsheet-multi-card">
+          <div class="appsheet-multi-header">
+            <div class="d-flex align-items-center gap-2">
+              <span class="appsheet-gr-badge"><i class="bi bi-file-earmark-text"></i> G.R. No: ${gr}</span>
+              <span class="fw-bold text-dark">Buyer / Consignee #${i + 1}</span>
+            </div>
+            ${this.multiBuyers.length > 1 ? `
+              <button type="button" class="btn btn-sm btn-outline-danger py-0 px-2" onclick="BiltyBookingModule.removeBuyerRow(${i})" title="Remove this Buyer">
+                <i class="bi bi-trash3"></i> Remove
+              </button>
+            ` : ''}
+          </div>
+
+          <div class="row g-2">
+            <div class="col-md-5">
+              <label class="small fw-semibold text-muted mb-1">Consignee Party *</label>
+              <select class="appsheet-input-box" onchange="BiltyBookingModule.onMultiBuyerChange(${i}, 'consignee', this.value)">
+                ${partyOptions.replace(`value="${b.consignee}"`, `value="${b.consignee}" selected`)}
+              </select>
+              <input type="hidden" id="mb-gstin-${i}" value="${b.consigneeGstin || ''}">
+            </div>
+
+            <div class="col-md-3">
+              <label class="small fw-semibold text-muted mb-1">Destination City *</label>
+              <input type="text" list="destinationsList" class="appsheet-input-box fw-semibold" value="${b.destination || ''}" placeholder="Destination..." oninput="BiltyBookingModule.onMultiBuyerChange(${i}, 'destination', this.value)">
+            </div>
+
+            <div class="col-md-4">
+              <label class="small fw-semibold text-muted mb-1">Delivery / Unloading Address</label>
+              <input type="text" id="mb-addr-${i}" class="appsheet-input-box" value="${b.deliveryAddress || ''}" placeholder="Street, Warehouse or Site" oninput="BiltyBookingModule.onMultiBuyerChange(${i}, 'deliveryAddress', this.value)">
+            </div>
+
+            <div class="col-md-3">
+              <label class="small fw-semibold text-muted mb-1">Material *</label>
+              <input type="text" list="materialsList" class="appsheet-input-box" value="${b.material || 'Marble Cut Size'}" oninput="BiltyBookingModule.onMultiBuyerChange(${i}, 'material', this.value)">
+            </div>
+
+            <div class="col-md-3">
+              <label class="small fw-semibold text-muted mb-1">Bill No.</label>
+              <input type="text" class="appsheet-input-box font-monospace" value="${b.billNo || ''}" placeholder="e.g. 1024" oninput="BiltyBookingModule.onMultiBuyerChange(${i}, 'billNo', this.value)">
+            </div>
+
+            <div class="col-md-3">
+              <label class="small fw-semibold text-muted mb-1">Bill Value (₹)</label>
+              <input type="number" class="appsheet-input-box" value="${b.invoiceValue || 0}" step="any" oninput="BiltyBookingModule.onMultiBuyerChange(${i}, 'invoiceValue', this.value)">
+            </div>
+
+            <div class="col-md-3">
+              <label class="small fw-semibold text-muted mb-1">E-Way Bill No.</label>
+              <input type="text" class="appsheet-input-box font-monospace" value="${b.ewayBillNo || ''}" placeholder="12-digit E-Way" oninput="BiltyBookingModule.onMultiBuyerChange(${i}, 'ewayBillNo', this.value)">
+            </div>
+
+            <div class="col-md-3">
+              <label class="small fw-semibold text-muted mb-1">Billing Type</label>
+              <select class="appsheet-input-box" onchange="BiltyBookingModule.onMultiBuyerChange(${i}, 'billingType', this.value)">
+                <option value="Per Tonne" ${b.billingType === 'Per Tonne' ? 'selected' : ''}>Per Tonne</option>
+                <option value="Fixed" ${b.billingType === 'Fixed' ? 'selected' : ''}>Fixed</option>
+                <option value="To be Billed" ${b.billingType === 'To be Billed' ? 'selected' : ''}>To be Billed</option>
+              </select>
+            </div>
+
+            <div class="col-md-3">
+              <label class="small fw-semibold text-muted mb-1">Weight (MT) *</label>
+              <input type="number" class="appsheet-input-box fw-bold" value="${b.weight || 0}" step="any" oninput="BiltyBookingModule.onMultiBuyerChange(${i}, 'weight', this.value)">
+            </div>
+
+            <div class="col-md-3">
+              <label class="small fw-semibold text-muted mb-1">Rate (₹) *</label>
+              <input type="number" class="appsheet-input-box fw-bold" value="${b.rate || 0}" step="any" oninput="BiltyBookingModule.onMultiBuyerChange(${i}, 'rate', this.value)">
+            </div>
+
+            <div class="col-md-3">
+              <label class="small fw-semibold text-muted mb-1">Calculated Freight (₹)</label>
+              <input type="text" id="mb-freight-${i}" class="appsheet-input-box fw-bold text-success bg-light" readonly value="₹ ${(b.freight || (b.weight * b.rate)).toFixed(2)}">
+            </div>
+          </div>
+        </div>
+      `;
+    });
+
+    container.innerHTML = html;
+    this.recalculateMultiBuyerTotals();
+  },
+
+  recalculateMultiBuyerTotals() {
+    let totWeight = 0;
+    let totFreight = 0;
+    this.multiBuyers.forEach(b => {
+      const wt = parseFloat(b.weight) || 0;
+      const rt = parseFloat(b.rate) || 0;
+      const fr = (b.billingType === 'Fixed') ? rt : (wt * rt);
+      b.freight = fr;
+      totWeight += wt;
+      totFreight += fr;
+    });
+
+    const commVal = parseFloat(document.getElementById('bilty-commission')?.value) || 0;
+
+    const grsEl = document.getElementById('mb-sum-grs');
+    if (grsEl) grsEl.innerText = `${this.multiBuyers.length} GRs`;
+    const wtEl = document.getElementById('mb-sum-weight');
+    if (wtEl) wtEl.innerText = `${totWeight.toFixed(3)} MT`;
+    const frEl = document.getElementById('mb-sum-freight');
+    if (frEl) frEl.innerText = '₹ ' + totFreight.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+    const commEl = document.getElementById('mb-sum-commission');
+    if (commEl) commEl.innerText = '₹ ' + commVal.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+  },
+
+  // MULTI-SELLER WORKFLOW (N Sellers ➔ 1 Buyer)
+  onMultiSellerConsigneeChange(val) {
+    const p = (this.parties || []).find(x => x.name === val);
+    const gstinInput = document.getElementById('ms-consignee-gstin');
+    if (gstinInput) gstinInput.value = (p && p.gstin) ? p.gstin : '';
+    const addrInput = document.getElementById('ms-delivery-address');
+    if (addrInput && p && p.address && !addrInput.value) {
+      addrInput.value = p.address;
+    }
+  },
+
+  addSellerRow(initialData = {}) {
+    if (this.multiSellers.length >= 6) {
+      AppUI.showToast("Maximum 6 Sellers allowed per consolidated load!", "warning");
+      return;
+    }
+    const row = {
+      id: 'seller_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+      consignor: initialData.consignor || '',
+      consignorGstin: initialData.consignorGstin || '',
+      dispatchFromAddress: initialData.dispatchFromAddress || '',
+      material: initialData.material || 'Marble Cut Size',
+      billingType: initialData.billingType || 'Per Tonne',
+      weight: (initialData.weight !== undefined) ? initialData.weight : 10,
+      rate: (initialData.rate !== undefined) ? initialData.rate : 1800,
+      freight: 0,
+      loadingCharges: initialData.loadingCharges || 0,
+      haltCharges: initialData.haltCharges || 0,
+      billNo: initialData.billNo || '',
+      invoiceValue: initialData.invoiceValue || 0,
+      ewayBillNo: initialData.ewayBillNo || ''
+    };
+    row.freight = (row.billingType === 'Fixed') ? row.rate : (row.weight * row.rate);
+    this.multiSellers.push(row);
+    this.renderSellerRows();
+    this.generateBiltyNumber();
+  },
+
+  removeSellerRow(index) {
+    if (this.multiSellers.length <= 1) {
+      AppUI.showToast("At least 1 Seller / Pickup is required!", "warning");
+      return;
+    }
+    this.multiSellers.splice(index, 1);
+    this.renderSellerRows();
+    this.generateBiltyNumber();
+  },
+
+  onMultiSellerChange(index, field, value) {
+    const row = this.multiSellers[index];
+    if (!row) return;
+
+    if (field === 'consignor') {
+      row.consignor = value;
+      const p = (this.parties || []).find(x => x.name === value);
+      if (p) {
+        row.consignorGstin = p.gstin || '';
+        if (p.address && !row.dispatchFromAddress) row.dispatchFromAddress = p.address;
+        const gstinEl = document.getElementById(`ms-gstin-${index}`);
+        if (gstinEl) gstinEl.value = row.consignorGstin;
+        const addrEl = document.getElementById(`ms-disp-${index}`);
+        if (addrEl && !addrEl.value) addrEl.value = row.dispatchFromAddress;
+      }
+    } else if (field === 'weight') {
+      row.weight = parseFloat(value) || 0;
+      row.freight = (row.billingType === 'Fixed') ? row.rate : (row.weight * row.rate);
+      const freightEl = document.getElementById(`ms-freight-${index}`);
+      if (freightEl) freightEl.value = '₹ ' + row.freight.toFixed(2);
+    } else if (field === 'rate') {
+      row.rate = parseFloat(value) || 0;
+      row.freight = (row.billingType === 'Fixed') ? row.rate : (row.weight * row.rate);
+      const freightEl = document.getElementById(`ms-freight-${index}`);
+      if (freightEl) freightEl.value = '₹ ' + row.freight.toFixed(2);
+    } else if (field === 'billingType') {
+      row.billingType = value;
+      row.freight = (value === 'Fixed') ? row.rate : (row.weight * row.rate);
+      const freightEl = document.getElementById(`ms-freight-${index}`);
+      if (freightEl) freightEl.value = '₹ ' + row.freight.toFixed(2);
+    } else {
+      row[field] = value;
+    }
+
+    this.recalculateMultiSellerTotals();
+  },
+
+  renderSellerRows() {
+    const container = document.getElementById('multi-seller-cards-container');
+    if (!container) return;
+
+    const firm = document.getElementById('bilty-firm')?.value || 'TTC';
+    const year = document.getElementById('bilty-year')?.value || '2026-2027';
+    const seqs = this.getNextGrSequences(firm, year, this.multiSellers.length);
+
+    let partyOptions = '<option value="">-- Select Consignor / Party --</option>';
+    (this.parties || []).forEach(p => {
+      if (p && p.name) {
+        partyOptions += `<option value="${p.name}">${p.name}</option>`;
+      }
+    });
+
+    let html = '';
+    this.multiSellers.forEach((s, i) => {
+      const gr = seqs[i] ? seqs[i].shortGr : `${i + 1}`;
+      s.calculatedGr = seqs[i] ? seqs[i].fullGr : '';
+      s.calculatedShortGr = gr;
+
+      html += `
+        <div class="appsheet-multi-card">
+          <div class="appsheet-multi-header">
+            <div class="d-flex align-items-center gap-2">
+              <span class="appsheet-gr-badge"><i class="bi bi-file-earmark-text"></i> G.R. No: ${gr}</span>
+              <span class="fw-bold text-dark">Seller / Consignor #${i + 1}</span>
+            </div>
+            ${this.multiSellers.length > 1 ? `
+              <button type="button" class="btn btn-sm btn-outline-danger py-0 px-2" onclick="BiltyBookingModule.removeSellerRow(${i})" title="Remove this Seller">
+                <i class="bi bi-trash3"></i> Remove
+              </button>
+            ` : ''}
+          </div>
+
+          <div class="row g-2">
+            <div class="col-md-5">
+              <label class="small fw-semibold text-muted mb-1">Consignor Party *</label>
+              <select class="appsheet-input-box" onchange="BiltyBookingModule.onMultiSellerChange(${i}, 'consignor', this.value)">
+                ${partyOptions.replace(`value="${s.consignor}"`, `value="${s.consignor}" selected`)}
+              </select>
+              <input type="hidden" id="ms-gstin-${i}" value="${s.consignorGstin || ''}">
+            </div>
+
+            <div class="col-md-7">
+              <label class="small fw-semibold text-muted mb-1">Loading / Factory / Site Address</label>
+              <input type="text" id="ms-disp-${i}" class="appsheet-input-box" value="${s.dispatchFromAddress || ''}" placeholder="Factory or Mine Location" oninput="BiltyBookingModule.onMultiSellerChange(${i}, 'dispatchFromAddress', this.value)">
+            </div>
+
+            <div class="col-md-3">
+              <label class="small fw-semibold text-muted mb-1">Material *</label>
+              <input type="text" list="materialsList" class="appsheet-input-box" value="${s.material || 'Marble Cut Size'}" oninput="BiltyBookingModule.onMultiSellerChange(${i}, 'material', this.value)">
+            </div>
+
+            <div class="col-md-3">
+              <label class="small fw-semibold text-muted mb-1">Bill No.</label>
+              <input type="text" class="appsheet-input-box font-monospace" value="${s.billNo || ''}" placeholder="e.g. 1024" oninput="BiltyBookingModule.onMultiSellerChange(${i}, 'billNo', this.value)">
+            </div>
+
+            <div class="col-md-3">
+              <label class="small fw-semibold text-muted mb-1">Bill Value (₹)</label>
+              <input type="number" class="appsheet-input-box" value="${s.invoiceValue || 0}" step="any" oninput="BiltyBookingModule.onMultiSellerChange(${i}, 'invoiceValue', this.value)">
+            </div>
+
+            <div class="col-md-3">
+              <label class="small fw-semibold text-muted mb-1">E-Way Bill No.</label>
+              <input type="text" class="appsheet-input-box font-monospace" value="${s.ewayBillNo || ''}" placeholder="12-digit E-Way" oninput="BiltyBookingModule.onMultiSellerChange(${i}, 'ewayBillNo', this.value)">
+            </div>
+
+            <div class="col-md-3">
+              <label class="small fw-semibold text-muted mb-1">Billing Type</label>
+              <select class="appsheet-input-box" onchange="BiltyBookingModule.onMultiSellerChange(${i}, 'billingType', this.value)">
+                <option value="Per Tonne" ${s.billingType === 'Per Tonne' ? 'selected' : ''}>Per Tonne</option>
+                <option value="Fixed" ${s.billingType === 'Fixed' ? 'selected' : ''}>Fixed</option>
+                <option value="To be Billed" ${s.billingType === 'To be Billed' ? 'selected' : ''}>To be Billed</option>
+              </select>
+            </div>
+
+            <div class="col-md-3">
+              <label class="small fw-semibold text-muted mb-1">Weight (MT) *</label>
+              <input type="number" class="appsheet-input-box fw-bold" value="${s.weight || 0}" step="any" oninput="BiltyBookingModule.onMultiSellerChange(${i}, 'weight', this.value)">
+            </div>
+
+            <div class="col-md-3">
+              <label class="small fw-semibold text-muted mb-1">Rate (₹) *</label>
+              <input type="number" class="appsheet-input-box fw-bold" value="${s.rate || 0}" step="any" oninput="BiltyBookingModule.onMultiSellerChange(${i}, 'rate', this.value)">
+            </div>
+
+            <div class="col-md-3">
+              <label class="small fw-semibold text-muted mb-1">Calculated Freight (₹)</label>
+              <input type="text" id="ms-freight-${i}" class="appsheet-input-box fw-bold text-success bg-light" readonly value="₹ ${(s.freight || (s.weight * s.rate)).toFixed(2)}">
+            </div>
+          </div>
+        </div>
+      `;
+    });
+
+    container.innerHTML = html;
+    this.recalculateMultiSellerTotals();
+  },
+
+  recalculateMultiSellerTotals() {
+    let totWeight = 0;
+    let totFreight = 0;
+    this.multiSellers.forEach(s => {
+      const wt = parseFloat(s.weight) || 0;
+      const rt = parseFloat(s.rate) || 0;
+      const fr = (s.billingType === 'Fixed') ? rt : (wt * rt);
+      s.freight = fr;
+      totWeight += wt;
+      totFreight += fr;
+    });
+
+    const commVal = parseFloat(document.getElementById('bilty-commission')?.value) || 0;
+
+    const grsEl = document.getElementById('ms-sum-grs');
+    if (grsEl) grsEl.innerText = `${this.multiSellers.length} GRs`;
+    const wtEl = document.getElementById('ms-sum-weight');
+    if (wtEl) wtEl.innerText = `${totWeight.toFixed(3)} MT`;
+    const frEl = document.getElementById('ms-sum-freight');
+    if (frEl) frEl.innerText = '₹ ' + totFreight.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+    const commEl = document.getElementById('ms-sum-commission');
+    if (commEl) commEl.innerText = '₹ ' + commVal.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+  },
+
+  // ----------------------------------------------------
+  // UNIFIED SAVING ENGINE FOR SINGLE & MULTI-GR BILTY
+  // ----------------------------------------------------
   async saveAppSheetBilty() {
     const truckNo = (document.getElementById('bilty-truck-no')?.value || '').trim().toUpperCase();
     if (!truckNo) {
@@ -1094,15 +1658,374 @@ const BiltyBookingModule = {
       document.getElementById('bilty-truck-no')?.focus();
       return;
     }
-    const destination = (document.getElementById('bilty-destination')?.value || '').trim();
-    if (!destination) {
-      AppUI.showToast("Please specify Destination (कहाँ तक)!", "warning");
-      document.getElementById('bilty-destination')?.focus();
+
+    const firm = document.getElementById('bilty-firm')?.value || 'TTC';
+    const year = document.getElementById('bilty-year')?.value || '2026-2027';
+    const date = document.getElementById('bilty-date')?.value || new Date().toISOString().split('T')[0];
+    const truckOwner = (document.getElementById('bilty-owner')?.value || '').trim() || `${truckNo} Owner`;
+    const ownerMobile = (document.getElementById('bilty-owner-mobile')?.value || '').trim();
+    const driver = (document.getElementById('bilty-driver')?.value || '').trim() || 'Assigned Driver';
+    const driverMobile = (document.getElementById('bilty-driver-mobile')?.value || '').trim();
+    const reference = (document.getElementById('bilty-broker')?.value || '').trim();
+    const loadType = document.getElementById('bilty-load-type')?.value || 'Under Load';
+    const biltyType = document.getElementById('bilty-type')?.value || 'Regular';
+    const isGstApplicable = document.getElementById('bilty-is-gst')?.value || 'No';
+
+    const tripCommission = parseFloat(document.getElementById('bilty-commission')?.value) || 0;
+    const tripCommissionStatus = document.getElementById('bilty-commission-status')?.value || 'Paid';
+    const tripCommissionMode = document.getElementById('bilty-commission-mode')?.value || 'Cash';
+    const tripCommissionDesc = (document.getElementById('bilty-commission-desc')?.value || '').trim();
+
+    const tripOtherExpense = parseFloat(document.getElementById('bilty-other-expense')?.value) || 0;
+    const tripOtherStatus = document.getElementById('bilty-other-status')?.value || 'Paid';
+    const tripOtherMode = document.getElementById('bilty-other-mode')?.value || 'Cash';
+    const tripOtherDesc = (document.getElementById('bilty-other-desc')?.value || '').trim();
+
+    // ------------------------------------------------------------------------
+    // CASE 1: SINGLE CONSIGNMENT (1 SELLER ➔ 1 BUYER)
+    // ------------------------------------------------------------------------
+    if (this.bookingMode === 'single') {
+      const destination = (document.getElementById('bilty-destination')?.value || '').trim();
+      if (!destination) {
+        AppUI.showToast("Please specify Destination (कहाँ तक)!", "warning");
+        document.getElementById('bilty-destination')?.focus();
+        return;
+      }
+      await this.saveBilty('print');
+      this.switchView('register');
       return;
     }
 
-    await this.saveBilty('print');
-    this.switchView('register');
+    // ------------------------------------------------------------------------
+    // CASE 2: 1 SELLER ➔ MULTIPLE BUYERS (MULTI-CONSIGNEE / MULTI-DROP)
+    // ------------------------------------------------------------------------
+    if (this.bookingMode === 'multi_consignee') {
+      const consignor = (document.getElementById('mb-consignor')?.value || '').trim();
+      if (!consignor) {
+        AppUI.showToast("Please select Consignor / Seller (माल भेजने वाला)!", "danger");
+        document.getElementById('mb-consignor')?.focus();
+        return;
+      }
+      const consignorGstin = (document.getElementById('mb-consignor-gstin')?.value || '').trim();
+      const origin = (document.getElementById('mb-origin')?.value || '').trim() || 'Rajsamand (Raj.)';
+      const dispatchFrom = (document.getElementById('mb-dispatch-from')?.value || '').trim();
+
+      if (this.multiBuyers.length === 0) {
+        AppUI.showToast("Please add at least 1 Buyer / Consignee!", "warning");
+        return;
+      }
+
+      for (let i = 0; i < this.multiBuyers.length; i++) {
+        const b = this.multiBuyers[i];
+        if (!b.consignee) {
+          AppUI.showToast(`Please select Consignee party for Buyer #${i + 1}!`, "danger");
+          return;
+        }
+        if (!b.destination) {
+          AppUI.showToast(`Please enter Destination city for Buyer #${i + 1}!`, "danger");
+          return;
+        }
+        if ((parseFloat(b.weight) || 0) <= 0) {
+          AppUI.showToast(`Please enter valid Weight for Buyer #${i + 1}!`, "danger");
+          return;
+        }
+      }
+
+      // Generate sequential GR numbers for all buyers
+      const seqs = this.getNextGrSequences(firm, year, this.multiBuyers.length);
+      const tripGroupId = `TRIP_GRP_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`;
+
+      const tripsToSave = [];
+      for (let i = 0; i < this.multiBuyers.length; i++) {
+        const b = this.multiBuyers[i];
+        const grInfo = seqs[i];
+        const wt = parseFloat(b.weight) || 0;
+        const rt = parseFloat(b.rate) || 0;
+        const fr = (b.billingType === 'Fixed') ? rt : (wt * rt);
+
+        // Commission & Other expenses applied ONCE on primary GR (GR #1)
+        const comm = (i === 0) ? tripCommission : 0;
+        const oth = (i === 0) ? tripOtherExpense : 0;
+
+        const tripData = {
+          id: `TRIP_${Date.now()}_${i}_${Math.random().toString(36).substr(2, 4)}`,
+          grNo: grInfo.fullGr,
+          grSeq: String(grInfo.seq),
+          shortGrNo: grInfo.shortGr,
+          transport: firm,
+          financialYear: year,
+          tripStartDate: date,
+          biltyType: biltyType,
+          isGstApplicable: isGstApplicable,
+          truckNo: truckNo,
+          truckOwner: truckOwner,
+          ownerMobile: ownerMobile,
+          loadType: loadType,
+          driver: driver,
+          driverMobile: driverMobile,
+          reference: reference,
+
+          origin: origin,
+          destination: b.destination,
+          consignor: consignor,
+          consignorGstin: consignorGstin,
+          dispatchFromAddress: dispatchFrom,
+          consignee: b.consignee,
+          consigneeGstin: b.consigneeGstin || '',
+          deliveryAddress: b.deliveryAddress || '',
+          shipToAddress: b.deliveryAddress || '',
+
+          material: b.material || 'Marble Cut Size',
+          billNo: b.billNo || '',
+          invoiceValue: parseFloat(b.invoiceValue) || 0,
+          ewayBillNo: b.ewayBillNo || '',
+
+          billingType: b.billingType || 'Per Tonne',
+          weight: wt,
+          rate: rt,
+          freight: fr,
+          loadingCharges: parseFloat(b.loadingCharges) || 0,
+          haltCharges: parseFloat(b.haltCharges) || 0,
+
+          biltyBillingType: b.billingType || 'Per Tonne',
+          biltyWeight: wt,
+          biltyRate: rt,
+          biltyAmount: fr,
+
+          commission: comm,
+          commissionStatus: tripCommissionStatus,
+          commissionMode: tripCommissionMode,
+          commissionDesc: tripCommissionDesc,
+
+          otherExpense: oth,
+          otherStatus: tripOtherStatus,
+          otherMode: tripOtherMode,
+          otherDesc: tripOtherDesc,
+
+          status: 'Transit',
+          partyDue: fr,
+          partyPaid: 0,
+          ownerDue: fr - comm,
+
+          tripGroupId: tripGroupId,
+          isMultiGr: true,
+          multiGrRole: 'multi_consignee',
+          multiGrTotalCount: this.multiBuyers.length,
+          multiGrIndex: i + 1
+        };
+
+        tripsToSave.push(tripData);
+      }
+
+      // Persist all trips
+      try {
+        for (const t of tripsToSave) {
+          await dbService.add('trips', t);
+        }
+      } catch (err) {
+        console.error("Error saving multi-buyer bilties:", err);
+        AppUI.showToast(`Error saving bilties: ${err.message || 'Storage error'}`, "danger");
+        return;
+      }
+
+      // Check Any Debt? -> create single linked ledger debt for the vehicle trip
+      const isDebtChecked = document.getElementById('toggle-any-debt')?.checked;
+      const debtAmount = parseFloat(document.getElementById('bilty-debt-amount')?.value) || 0;
+      if (isDebtChecked && debtAmount > 0) {
+        const primaryGr = seqs[0].shortGr;
+        const debtRecord = {
+          id: `DEBT_BILTY_${Date.now()}`,
+          date: date,
+          description: `Advance / Debt on Trip ${primaryGr} (${truckNo}) - Multi-Buyer Batch (${tripsToSave.length} GRs)`,
+          borrower: document.getElementById('bilty-debt-borrower')?.value.trim() || driver,
+          amount: debtAmount,
+          mode: document.getElementById('bilty-debt-mode')?.value || 'Cash',
+          status: 'Pending',
+          remarks: document.getElementById('bilty-debt-remarks')?.value.trim() || 'Booked with Multi-GR bilty',
+          truckNo: truckNo,
+          grNo: primaryGr,
+          tripGroupId: tripGroupId
+        };
+        try {
+          await dbService.add('debts', debtRecord);
+        } catch (dErr) {
+          console.warn("Could not save linked debt:", dErr);
+        }
+      }
+
+      AppUI.showToast(`All ${tripsToSave.length} Bilties saved successfully (${seqs.map(s => s.shortGr).join(', ')})!`, "success");
+
+      // Reload dataset and open multi-print modal
+      await this.loadAllData();
+      this.openMultiPrintModal(tripsToSave);
+      return;
+    }
+
+    // ------------------------------------------------------------------------
+    // CASE 3: MULTIPLE SELLERS ➔ 1 BUYER (MULTI-CONSIGNOR / MULTI-PICKUP)
+    // ------------------------------------------------------------------------
+    if (this.bookingMode === 'multi_consignor') {
+      const consignee = (document.getElementById('ms-consignee')?.value || '').trim();
+      if (!consignee) {
+        AppUI.showToast("Please select Consignee / Buyer (माल मंगाने वाला)!", "danger");
+        document.getElementById('ms-consignee')?.focus();
+        return;
+      }
+      const consigneeGstin = (document.getElementById('ms-consignee-gstin')?.value || '').trim();
+      const destination = (document.getElementById('ms-destination')?.value || '').trim();
+      if (!destination) {
+        AppUI.showToast("Please specify Destination City (कहाँ तक)!", "warning");
+        document.getElementById('ms-destination')?.focus();
+        return;
+      }
+      const deliveryAddress = (document.getElementById('ms-delivery-address')?.value || '').trim();
+
+      if (this.multiSellers.length === 0) {
+        AppUI.showToast("Please add at least 1 Seller / Consignor!", "warning");
+        return;
+      }
+
+      for (let i = 0; i < this.multiSellers.length; i++) {
+        const s = this.multiSellers[i];
+        if (!s.consignor) {
+          AppUI.showToast(`Please select Consignor party for Seller #${i + 1}!`, "danger");
+          return;
+        }
+        if ((parseFloat(s.weight) || 0) <= 0) {
+          AppUI.showToast(`Please enter valid Weight for Seller #${i + 1}!`, "danger");
+          return;
+        }
+      }
+
+      // Generate sequential GR numbers for all sellers
+      const seqs = this.getNextGrSequences(firm, year, this.multiSellers.length);
+      const tripGroupId = `TRIP_GRP_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`;
+
+      const tripsToSave = [];
+      for (let i = 0; i < this.multiSellers.length; i++) {
+        const s = this.multiSellers[i];
+        const grInfo = seqs[i];
+        const wt = parseFloat(s.weight) || 0;
+        const rt = parseFloat(s.rate) || 0;
+        const fr = (s.billingType === 'Fixed') ? rt : (wt * rt);
+
+        // Commission & Other expenses applied ONCE on primary GR
+        const comm = (i === 0) ? tripCommission : 0;
+        const oth = (i === 0) ? tripOtherExpense : 0;
+
+        const tripData = {
+          id: `TRIP_${Date.now()}_${i}_${Math.random().toString(36).substr(2, 4)}`,
+          grNo: grInfo.fullGr,
+          grSeq: String(grInfo.seq),
+          shortGrNo: grInfo.shortGr,
+          transport: firm,
+          financialYear: year,
+          tripStartDate: date,
+          biltyType: biltyType,
+          isGstApplicable: isGstApplicable,
+          truckNo: truckNo,
+          truckOwner: truckOwner,
+          ownerMobile: ownerMobile,
+          loadType: loadType,
+          driver: driver,
+          driverMobile: driverMobile,
+          reference: reference,
+
+          origin: 'Rajsamand (Raj.)',
+          destination: destination,
+          consignor: s.consignor,
+          consignorGstin: s.consignorGstin || '',
+          dispatchFromAddress: s.dispatchFromAddress || '',
+          consignee: consignee,
+          consigneeGstin: consigneeGstin,
+          deliveryAddress: deliveryAddress,
+          shipToAddress: deliveryAddress,
+
+          material: s.material || 'Marble Cut Size',
+          billNo: s.billNo || '',
+          invoiceValue: parseFloat(s.invoiceValue) || 0,
+          ewayBillNo: s.ewayBillNo || '',
+
+          billingType: s.billingType || 'Per Tonne',
+          weight: wt,
+          rate: rt,
+          freight: fr,
+          loadingCharges: parseFloat(s.loadingCharges) || 0,
+          haltCharges: parseFloat(s.haltCharges) || 0,
+
+          biltyBillingType: s.billingType || 'Per Tonne',
+          biltyWeight: wt,
+          biltyRate: rt,
+          biltyAmount: fr,
+
+          commission: comm,
+          commissionStatus: tripCommissionStatus,
+          commissionMode: tripCommissionMode,
+          commissionDesc: tripCommissionDesc,
+
+          otherExpense: oth,
+          otherStatus: tripOtherStatus,
+          otherMode: tripOtherMode,
+          otherDesc: tripOtherDesc,
+
+          status: 'Transit',
+          partyDue: fr,
+          partyPaid: 0,
+          ownerDue: fr - comm,
+
+          tripGroupId: tripGroupId,
+          isMultiGr: true,
+          multiGrRole: 'multi_consignor',
+          multiGrTotalCount: this.multiSellers.length,
+          multiGrIndex: i + 1
+        };
+
+        tripsToSave.push(tripData);
+      }
+
+      // Persist all trips
+      try {
+        for (const t of tripsToSave) {
+          await dbService.add('trips', t);
+        }
+      } catch (err) {
+        console.error("Error saving multi-seller bilties:", err);
+        AppUI.showToast(`Error saving bilties: ${err.message || 'Storage error'}`, "danger");
+        return;
+      }
+
+      // Check Any Debt?
+      const isDebtChecked = document.getElementById('toggle-any-debt')?.checked;
+      const debtAmount = parseFloat(document.getElementById('bilty-debt-amount')?.value) || 0;
+      if (isDebtChecked && debtAmount > 0) {
+        const primaryGr = seqs[0].shortGr;
+        const debtRecord = {
+          id: `DEBT_BILTY_${Date.now()}`,
+          date: date,
+          description: `Advance / Debt on Trip ${primaryGr} (${truckNo}) - Multi-Seller Batch (${tripsToSave.length} GRs)`,
+          borrower: document.getElementById('bilty-debt-borrower')?.value.trim() || driver,
+          amount: debtAmount,
+          mode: document.getElementById('bilty-debt-mode')?.value || 'Cash',
+          status: 'Pending',
+          remarks: document.getElementById('bilty-debt-remarks')?.value.trim() || 'Booked with Multi-GR bilty',
+          truckNo: truckNo,
+          grNo: primaryGr,
+          tripGroupId: tripGroupId
+        };
+        try {
+          await dbService.add('debts', debtRecord);
+        } catch (dErr) {
+          console.warn("Could not save linked debt:", dErr);
+        }
+      }
+
+      AppUI.showToast(`All ${tripsToSave.length} Bilties saved successfully (${seqs.map(s => s.shortGr).join(', ')})!`, "success");
+
+      // Reload dataset and open multi-print modal
+      await this.loadAllData();
+      this.openMultiPrintModal(tripsToSave);
+      return;
+    }
   },
 
   // ----------------------------------------------------
@@ -1832,6 +2755,7 @@ const BiltyBookingModule = {
             </td>
             <td>
               <span class="fw-bold font-monospace text-primary">${shortGr}</span>
+              ${t.isMultiGr ? `<span class="badge bg-warning-subtle text-dark border ms-1" style="font-size: 0.65rem;" title="Part Load (${t.multiGrIndex}/${t.multiGrTotalCount})"><i class="bi bi-layers"></i> ${t.multiGrIndex}/${t.multiGrTotalCount}</span>` : ''}
               <small class="text-muted d-block" style="font-size: 0.7rem;">${t.grNo || ''}</small>
             </td>
             <td style="font-size: 0.85rem;">${t.tripStartDate || '---'}</td>
@@ -2269,15 +3193,142 @@ const BiltyBookingModule = {
 
   openPrintModal(trip) {
     this.currentActiveBilty = trip;
+
+    // Check if this trip belongs to a multi-GR batch
+    if (trip && trip.tripGroupId) {
+      const groupTrips = (this.allTrips || []).filter(t => t.tripGroupId === trip.tripGroupId);
+      if (groupTrips.length > 1) {
+        this.openMultiPrintModal(groupTrips);
+        return;
+      }
+    }
+
+    const tabsBar = document.getElementById('multi-bilty-tabs-bar');
+    if (tabsBar) tabsBar.classList.add('d-none');
+    const btnPrintAll = document.getElementById('btn-print-all-grs');
+    if (btnPrintAll) btnPrintAll.classList.add('d-none');
+    const btnPrintSingle = document.getElementById('btn-print-single-gr');
+    if (btnPrintSingle) btnPrintSingle.innerHTML = '<i class="bi bi-printer me-1"></i> Print Consignment Note';
+
     this.renderPrintPreview(trip);
-    const modal = new bootstrap.Modal(document.getElementById('biltyPrintModal'));
-    modal.show();
+    const modalEl = document.getElementById('biltyPrintModal');
+    if (modalEl && typeof bootstrap !== 'undefined') {
+      const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+      modal.show();
+    }
+  },
+
+  openMultiPrintModal(trips) {
+    this.currentBatchTrips = trips;
+    this.activeBatchIndex = 'all';
+
+    const tabsBar = document.getElementById('multi-bilty-tabs-bar');
+    if (tabsBar) tabsBar.classList.remove('d-none');
+
+    const batchInfo = document.getElementById('multi-batch-info');
+    if (batchInfo) {
+      batchInfo.innerText = `${trips.length} Bilties Generated (${trips.map(t => t.shortGrNo || t.grSeq).join(', ')})`;
+    }
+
+    const pillsContainer = document.getElementById('multi-gr-pills-container');
+    if (pillsContainer) {
+      let pillsHTML = `
+        <button type="button" class="btn btn-outline-primary active" id="pill-batch-all" onclick="BiltyBookingModule.selectMultiPrintTab('all')">
+          <i class="bi bi-collection-fill me-1"></i> All ${trips.length} GRs (Together)
+        </button>
+      `;
+      trips.forEach((t, i) => {
+        const partyLabel = t.consignee || t.consignor || `GR ${i+1}`;
+        const shortName = partyLabel.length > 14 ? partyLabel.substring(0, 14) + '...' : partyLabel;
+        pillsHTML += `
+          <button type="button" class="btn btn-outline-secondary" id="pill-batch-${i}" onclick="BiltyBookingModule.selectMultiPrintTab(${i})">
+            ${t.shortGrNo || t.grSeq} (${shortName})
+          </button>
+        `;
+      });
+      pillsContainer.innerHTML = pillsHTML;
+    }
+
+    const btnPrintAll = document.getElementById('btn-print-all-grs');
+    if (btnPrintAll) btnPrintAll.classList.remove('d-none');
+
+    const btnPrintSingle = document.getElementById('btn-print-single-gr');
+    if (btnPrintSingle) btnPrintSingle.innerHTML = '<i class="bi bi-printer me-1"></i> Print All Consignments';
+
+    this.renderMultiPrintPreview(trips, 'all');
+
+    const modalEl = document.getElementById('biltyPrintModal');
+    if (modalEl && typeof bootstrap !== 'undefined') {
+      const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+      modal.show();
+    }
+  },
+
+  selectMultiPrintTab(target) {
+    this.activeBatchIndex = target;
+    const container = document.getElementById('multi-gr-pills-container');
+    if (container) {
+      container.querySelectorAll('.btn').forEach(b => {
+        b.classList.remove('active', 'btn-outline-primary');
+        b.classList.add('btn-outline-secondary');
+      });
+      const activeBtn = (target === 'all')
+        ? document.getElementById('pill-batch-all')
+        : document.getElementById(`pill-batch-${target}`);
+      if (activeBtn) {
+        activeBtn.classList.remove('btn-outline-secondary');
+        activeBtn.classList.add('active', 'btn-outline-primary');
+      }
+    }
+
+    const btnPrintAll = document.getElementById('btn-print-all-grs');
+    const btnPrintSingle = document.getElementById('btn-print-single-gr');
+
+    if (target === 'all') {
+      if (btnPrintAll) btnPrintAll.classList.remove('d-none');
+      if (btnPrintSingle) btnPrintSingle.innerHTML = '<i class="bi bi-printer me-1"></i> Print All Consignments';
+      this.renderMultiPrintPreview(this.currentBatchTrips, 'all');
+    } else {
+      if (btnPrintAll) btnPrintAll.classList.remove('d-none');
+      const trip = this.currentBatchTrips[target];
+      this.currentActiveBilty = trip;
+      if (btnPrintSingle) btnPrintSingle.innerHTML = `<i class="bi bi-printer me-1"></i> Print GR ${trip.shortGrNo || trip.grSeq} Only`;
+      this.renderPrintPreview(trip);
+    }
+  },
+
+  renderMultiPrintPreview(trips, mode = 'all') {
+    const previewContainer = document.getElementById('bilty-print-preview');
+    if (!previewContainer) return;
+
+    if (mode === 'all') {
+      let combinedHTML = '';
+      trips.forEach((trip, idx) => {
+        const docHTML = this.getBiltyDocHTML(trip);
+        combinedHTML += docHTML;
+        if (idx < trips.length - 1) {
+          combinedHTML += '<div class="bilty-print-page-break"></div>';
+        }
+      });
+      previewContainer.innerHTML = combinedHTML;
+    }
+  },
+
+  printAllMultiBilties() {
+    this.selectMultiPrintTab('all');
+    setTimeout(() => {
+      window.print();
+    }, 150);
   },
 
   renderPrintPreview(trip) {
     const container = document.getElementById('bilty-print-preview');
     if (!container) return;
+    container.innerHTML = this.getBiltyDocHTML(trip);
+  },
 
+  getBiltyDocHTML(trip) {
+    if (!trip) return '';
     const firm = trip.transport || 'TTC';
     let firmTitle = 'TRIVENI TRANSPORT COMPANY';
     let subtitle = 'FLEET OWNERS, TRANSPORT CONTRACTORS & DELIVERY AGENT';
@@ -2558,7 +3609,7 @@ const BiltyBookingModule = {
       </div>
     `;
 
-    container.innerHTML = html;
+    return html;
   },
 
   // ----------------------------------------------------
