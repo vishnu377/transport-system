@@ -4203,9 +4203,9 @@ const BiltyBookingModule = {
   // ----------------------------------------------------
   // PIXEL-PERFECT OFFICIAL A4 BILTY PRINT GENERATOR
   // ----------------------------------------------------
-  printOrientation: 'landscape',
+  printOrientation: 'portrait',
 
-  setPrintOrientation(orientation = 'landscape') {
+  setPrintOrientation(orientation = 'portrait') {
     this.printOrientation = orientation;
     const btnPortrait = document.getElementById('btn-orient-portrait');
     const btnLandscape = document.getElementById('btn-orient-landscape');
@@ -4237,7 +4237,7 @@ const BiltyBookingModule = {
         previewContainer.classList.add('preview-landscape');
       }
     } else {
-      // सीधी (Portrait)
+      // Default: सीधी (Portrait)
       if (btnPortrait) {
         btnPortrait.className = 'btn btn-warning active fw-bold px-3';
       }
@@ -4259,7 +4259,7 @@ const BiltyBookingModule = {
   },
 
   triggerPrint() {
-    this.setPrintOrientation(this.printOrientation || 'landscape');
+    this.setPrintOrientation(this.printOrientation || 'portrait');
     setTimeout(() => {
       window.print();
     }, 100);
@@ -4291,7 +4291,7 @@ const BiltyBookingModule = {
 
   openPrintModal(trip) {
     this.currentActiveBilty = trip;
-    this.setPrintOrientation('landscape');
+    this.setPrintOrientation('portrait');
 
     // Check if this trip belongs to a multi-GR batch
     if (trip && trip.tripGroupId) {
@@ -4320,7 +4320,7 @@ const BiltyBookingModule = {
   openMultiPrintModal(trips) {
     this.currentBatchTrips = trips;
     this.activeBatchIndex = 'all';
-    this.setPrintOrientation('landscape');
+    this.setPrintOrientation('portrait');
 
     const tabsBar = document.getElementById('multi-bilty-tabs-bar');
     if (tabsBar) tabsBar.classList.remove('d-none');
