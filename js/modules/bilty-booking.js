@@ -1131,6 +1131,20 @@ const BiltyBookingModule = {
   // ----------------------------------------------------
   // MULTI-PARTY & MULTI-GR CONSIGNMENT WORKFLOW
   // ----------------------------------------------------
+  switchToMultiBuyer() {
+    this.setConsignmentMode('multi_consignee', document.getElementById('btn-mode-multi-buyer'));
+    if (this.multiBuyers.length === 1 && this.multiBuyers[0].consignee) {
+      this.addBuyerRow();
+    }
+  },
+
+  switchToMultiSeller() {
+    this.setConsignmentMode('multi_consignor', document.getElementById('btn-mode-multi-seller'));
+    if (this.multiSellers.length === 1 && this.multiSellers[0].consignor) {
+      this.addSellerRow();
+    }
+  },
+
   setConsignmentMode(mode, el) {
     this.bookingMode = mode;
     const hiddenInput = document.getElementById('bilty-consignment-mode');
@@ -1162,29 +1176,28 @@ const BiltyBookingModule = {
       }
       if (this.multiBuyers.length === 0) {
         const defConsignee = document.getElementById('bilty-consignee')?.value || '';
-        const defDest = document.getElementById('bilty-destination')?.value || 'Delhi';
+        const defDest = document.getElementById('bilty-destination')?.value || '';
         const defWeight = parseFloat(document.getElementById('bilty-weight')?.value) || 0;
         const defRate = parseFloat(document.getElementById('bilty-rate')?.value) || 0;
         const defMaterial = document.getElementById('bilty-material')?.value || 'Marble Cut Size';
+        const defBillNo = document.getElementById('bilty-bill-no')?.value || '';
+        const defEway = document.getElementById('bilty-eway-bill')?.value || '';
+        const defInvVal = parseFloat(document.getElementById('bilty-invoice-value')?.value) || 0;
+        const defAddr = document.getElementById('bilty-delivery-address')?.value || '';
+        const defGstin = document.getElementById('bilty-consignee-gstin')?.value || '';
 
+        // Start with ONLY 1 clean buyer card - additional cards added on + Add click
         this.addBuyerRow({
           consignee: defConsignee,
+          consigneeGstin: defGstin,
           destination: defDest,
+          deliveryAddress: defAddr,
           material: defMaterial,
-          weight: defWeight || 10,
-          rate: defRate || 1800
-        });
-        this.addBuyerRow({
-          destination: defDest,
-          material: defMaterial,
-          weight: 15,
-          rate: defRate || 1800
-        });
-        this.addBuyerRow({
-          destination: defDest,
-          material: defMaterial,
-          weight: 12,
-          rate: defRate || 1800
+          weight: defWeight,
+          rate: defRate,
+          billNo: defBillNo,
+          invoiceValue: defInvVal,
+          ewayBillNo: defEway
         });
       } else {
         this.renderBuyerRows();
@@ -1206,22 +1219,23 @@ const BiltyBookingModule = {
         const defWeight = parseFloat(document.getElementById('bilty-weight')?.value) || 0;
         const defRate = parseFloat(document.getElementById('bilty-rate')?.value) || 0;
         const defMaterial = document.getElementById('bilty-material')?.value || 'Marble Cut Size';
+        const defBillNo = document.getElementById('bilty-bill-no')?.value || '';
+        const defEway = document.getElementById('bilty-eway-bill')?.value || '';
+        const defInvVal = parseFloat(document.getElementById('bilty-invoice-value')?.value) || 0;
+        const defGstin = document.getElementById('bilty-consignor-gstin')?.value || '';
+        const defDisp = document.getElementById('bilty-dispatch-from')?.value || '';
 
+        // Start with ONLY 1 clean seller card - additional cards added on + Add click
         this.addSellerRow({
           consignor: defConsignor,
+          consignorGstin: defGstin,
+          dispatchFromAddress: defDisp,
           material: defMaterial,
-          weight: defWeight || 12,
-          rate: defRate || 1800
-        });
-        this.addSellerRow({
-          material: defMaterial,
-          weight: 15,
-          rate: defRate || 1800
-        });
-        this.addSellerRow({
-          material: defMaterial,
-          weight: 10,
-          rate: defRate || 1800
+          weight: defWeight,
+          rate: defRate,
+          billNo: defBillNo,
+          invoiceValue: defInvVal,
+          ewayBillNo: defEway
         });
       } else {
         this.renderSellerRows();
@@ -1238,16 +1252,22 @@ const BiltyBookingModule = {
   },
 
   addBuyerRow(initialData = {}) {
+    const firstBuyer = this.multiBuyers[0];
+    const defDest = (document.getElementById('bilty-destination')?.value || '').trim() || (firstBuyer?.destination || '');
+    const defMaterial = (document.getElementById('bilty-material')?.value || '').trim() || (firstBuyer?.material || 'Marble Cut Size');
+    const defBillingType = document.getElementById('bilty-print-billing-type')?.value || (firstBuyer?.billingType || 'Per Tonne');
+    const defRate = (firstBuyer && firstBuyer.rate) ? firstBuyer.rate : (parseFloat(document.getElementById('bilty-rate')?.value) || 0);
+
     const row = {
       id: 'buyer_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
       consignee: initialData.consignee || '',
       consigneeGstin: initialData.consigneeGstin || '',
-      destination: initialData.destination || (document.getElementById('bilty-destination')?.value || 'Delhi'),
+      destination: (initialData.destination !== undefined) ? initialData.destination : defDest,
       deliveryAddress: initialData.deliveryAddress || '',
-      material: initialData.material || 'Marble Cut Size',
-      billingType: initialData.billingType || 'Per Tonne',
-      weight: (initialData.weight !== undefined) ? initialData.weight : 10,
-      rate: (initialData.rate !== undefined) ? initialData.rate : 1800,
+      material: (initialData.material !== undefined) ? initialData.material : defMaterial,
+      billingType: (initialData.billingType !== undefined) ? initialData.billingType : defBillingType,
+      weight: (initialData.weight !== undefined) ? initialData.weight : (this.multiBuyers.length === 0 ? (parseFloat(document.getElementById('bilty-weight')?.value) || 0) : 0),
+      rate: (initialData.rate !== undefined) ? initialData.rate : defRate,
       freight: 0,
       loadingCharges: initialData.loadingCharges || 0,
       haltCharges: initialData.haltCharges || 0,
@@ -1374,7 +1394,7 @@ const BiltyBookingModule = {
 
             <div class="col-md-3">
               <label class="small fw-semibold text-muted mb-1">Bill Value (₹)</label>
-              <input type="number" class="appsheet-input-box" value="${b.invoiceValue || 0}" step="any" oninput="BiltyBookingModule.onMultiBuyerChange(${i}, 'invoiceValue', this.value)">
+              <input type="number" class="appsheet-input-box" value="${b.invoiceValue > 0 ? b.invoiceValue : ''}" placeholder="0.00" step="any" oninput="BiltyBookingModule.onMultiBuyerChange(${i}, 'invoiceValue', this.value)">
             </div>
 
             <div class="col-md-3">
@@ -1393,12 +1413,12 @@ const BiltyBookingModule = {
 
             <div class="col-md-3">
               <label class="small fw-semibold text-muted mb-1">Weight (MT) *</label>
-              <input type="number" class="appsheet-input-box fw-bold" value="${b.weight || 0}" step="any" oninput="BiltyBookingModule.onMultiBuyerChange(${i}, 'weight', this.value)">
+              <input type="number" class="appsheet-input-box fw-bold" value="${b.weight > 0 ? b.weight : ''}" placeholder="e.g. 15.50" step="any" oninput="BiltyBookingModule.onMultiBuyerChange(${i}, 'weight', this.value)">
             </div>
 
             <div class="col-md-3">
               <label class="small fw-semibold text-muted mb-1">Rate (₹) *</label>
-              <input type="number" class="appsheet-input-box fw-bold" value="${b.rate || 0}" step="any" oninput="BiltyBookingModule.onMultiBuyerChange(${i}, 'rate', this.value)">
+              <input type="number" class="appsheet-input-box fw-bold" value="${b.rate > 0 ? b.rate : ''}" placeholder="e.g. 1850" step="any" oninput="BiltyBookingModule.onMultiBuyerChange(${i}, 'rate', this.value)">
             </div>
 
             <div class="col-md-3">
@@ -1454,15 +1474,20 @@ const BiltyBookingModule = {
       AppUI.showToast("Maximum 6 Sellers allowed per consolidated load!", "warning");
       return;
     }
+    const firstSeller = this.multiSellers[0];
+    const defMaterial = (document.getElementById('bilty-material')?.value || '').trim() || (firstSeller?.material || 'Marble Cut Size');
+    const defBillingType = document.getElementById('bilty-print-billing-type')?.value || (firstSeller?.billingType || 'Per Tonne');
+    const defRate = (firstSeller && firstSeller.rate) ? firstSeller.rate : (parseFloat(document.getElementById('bilty-rate')?.value) || 0);
+
     const row = {
       id: 'seller_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
       consignor: initialData.consignor || '',
       consignorGstin: initialData.consignorGstin || '',
       dispatchFromAddress: initialData.dispatchFromAddress || '',
-      material: initialData.material || 'Marble Cut Size',
-      billingType: initialData.billingType || 'Per Tonne',
-      weight: (initialData.weight !== undefined) ? initialData.weight : 10,
-      rate: (initialData.rate !== undefined) ? initialData.rate : 1800,
+      material: (initialData.material !== undefined) ? initialData.material : defMaterial,
+      billingType: (initialData.billingType !== undefined) ? initialData.billingType : defBillingType,
+      weight: (initialData.weight !== undefined) ? initialData.weight : (this.multiSellers.length === 0 ? (parseFloat(document.getElementById('bilty-weight')?.value) || 0) : 0),
+      rate: (initialData.rate !== undefined) ? initialData.rate : defRate,
       freight: 0,
       loadingCharges: initialData.loadingCharges || 0,
       haltCharges: initialData.haltCharges || 0,
@@ -1584,7 +1609,7 @@ const BiltyBookingModule = {
 
             <div class="col-md-3">
               <label class="small fw-semibold text-muted mb-1">Bill Value (₹)</label>
-              <input type="number" class="appsheet-input-box" value="${s.invoiceValue || 0}" step="any" oninput="BiltyBookingModule.onMultiSellerChange(${i}, 'invoiceValue', this.value)">
+              <input type="number" class="appsheet-input-box" value="${s.invoiceValue > 0 ? s.invoiceValue : ''}" placeholder="0.00" step="any" oninput="BiltyBookingModule.onMultiSellerChange(${i}, 'invoiceValue', this.value)">
             </div>
 
             <div class="col-md-3">
@@ -1603,12 +1628,12 @@ const BiltyBookingModule = {
 
             <div class="col-md-3">
               <label class="small fw-semibold text-muted mb-1">Weight (MT) *</label>
-              <input type="number" class="appsheet-input-box fw-bold" value="${s.weight || 0}" step="any" oninput="BiltyBookingModule.onMultiSellerChange(${i}, 'weight', this.value)">
+              <input type="number" class="appsheet-input-box fw-bold" value="${s.weight > 0 ? s.weight : ''}" placeholder="e.g. 15.50" step="any" oninput="BiltyBookingModule.onMultiSellerChange(${i}, 'weight', this.value)">
             </div>
 
             <div class="col-md-3">
               <label class="small fw-semibold text-muted mb-1">Rate (₹) *</label>
-              <input type="number" class="appsheet-input-box fw-bold" value="${s.rate || 0}" step="any" oninput="BiltyBookingModule.onMultiSellerChange(${i}, 'rate', this.value)">
+              <input type="number" class="appsheet-input-box fw-bold" value="${s.rate > 0 ? s.rate : ''}" placeholder="e.g. 1850" step="any" oninput="BiltyBookingModule.onMultiSellerChange(${i}, 'rate', this.value)">
             </div>
 
             <div class="col-md-3">
@@ -2372,7 +2397,11 @@ const BiltyBookingModule = {
 
   resetForm() {
     this.editTripId = null;
-    document.getElementById('bilty-booking-form').reset();
+    this.multiBuyers = [];
+    this.multiSellers = [];
+    this.setConsignmentMode('single', document.getElementById('btn-mode-single'));
+    const formEl = document.getElementById('bilty-booking-form');
+    if (formEl) formEl.reset();
     this.initNewFormDefaults();
     this.generateBiltyNumber();
     this.recalculateFreightAndTotals();
@@ -2435,6 +2464,9 @@ const BiltyBookingModule = {
       }
       if (breadcrumb) breadcrumb.innerText = 'Home > Bilty Booking > Bilty Form';
       if (breadcrumbActive) breadcrumbActive.innerText = 'Bilty Form';
+      if (!this.editTripId && this.bookingMode !== 'single') {
+        this.setConsignmentMode('single', document.getElementById('btn-mode-single'));
+      }
     }
   },
 

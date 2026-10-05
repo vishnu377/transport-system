@@ -454,7 +454,10 @@
 
             <!-- 25. GSTIN Consignor -->
             <div class="appsheet-form-row">
-              <label class="appsheet-form-label">GSTIN Consignor</label>
+              <label class="appsheet-form-label">
+                GSTIN Consignor
+                <a href="javascript:void(0)" class="small ms-2 text-primary text-decoration-none fw-semibold" onclick="BiltyBookingModule.switchToMultiSeller()" title="Click to add multiple sellers / pick-up points">+ Add More Sellers</a>
+              </label>
               <div class="appsheet-form-control-wrap">
                 <div class="w-100" style="max-width: 440px;">
                   <select id="bilty-consignor" class="appsheet-input-box" onchange="BiltyBookingModule.onConsignorSelect(this.value)">
@@ -519,7 +522,10 @@
 
             <!-- 31. GSTIN Consignee -->
             <div class="appsheet-form-row">
-              <label class="appsheet-form-label">GSTIN Consignee</label>
+              <label class="appsheet-form-label">
+                GSTIN Consignee
+                <a href="javascript:void(0)" class="small ms-2 text-primary text-decoration-none fw-semibold" onclick="BiltyBookingModule.switchToMultiBuyer()" title="Click to add multiple buyers / drop points">+ Add More Buyers</a>
+              </label>
               <div class="appsheet-form-control-wrap">
                 <div class="w-100" style="max-width: 440px;">
                   <select id="bilty-consignee" class="appsheet-input-box" onchange="BiltyBookingModule.onConsigneeSelect(this.value)">
@@ -676,6 +682,13 @@
                 <!-- Dynamic Buyer Cards will be rendered here -->
               </div>
 
+              <!-- Dedicated + Add Buyer Action Button -->
+              <div class="text-center my-3">
+                <button type="button" class="btn btn-outline-primary px-4 py-2 fw-semibold rounded-pill shadow-sm" onclick="BiltyBookingModule.addBuyerRow()">
+                  <i class="bi bi-plus-circle-fill me-2 text-primary"></i> + Add Another Buyer / Consignee (अगला खरीदार / GR जोड़ें)
+                </button>
+              </div>
+
               <!-- Multi-Buyer Live Summary Strip -->
               <div class="appsheet-summary-strip" id="mb-summary-strip">
                 <div class="appsheet-summary-item">
@@ -739,6 +752,13 @@
 
               <div id="multi-seller-cards-container">
                 <!-- Dynamic Seller Cards will be rendered here -->
+              </div>
+
+              <!-- Dedicated + Add Seller Action Button -->
+              <div class="text-center my-3">
+                <button type="button" class="btn btn-outline-primary px-4 py-2 fw-semibold rounded-pill shadow-sm" onclick="BiltyBookingModule.addSellerRow()">
+                  <i class="bi bi-plus-circle-fill me-2 text-primary"></i> + Add Another Seller / Pickup (अगला सेलर / GR जोड़ें - Max 6)
+                </button>
               </div>
 
               <!-- Multi-Seller Live Summary Strip -->
@@ -814,7 +834,9 @@
           <button type="submit" id="bilty-submit-btn"></button>
         </div>
 
-      </div>
+      </div> <!-- End .appsheet-form-view-container -->
+
+      </div> <!-- End #bilty-create-view -->
 
 
       <!-- ==================================================================== -->
