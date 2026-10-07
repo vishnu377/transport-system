@@ -39,6 +39,16 @@ const BiltyBookingModule = {
   currentPrintCopy: 'CONSIGNOR COPY',
   currentActiveBilty: null,
 
+  // AppSheet Header Controls & Multi-Select State
+  mtcSortMode: 'date_desc',
+  ttcSortMode: 'date_desc',
+  selectedTripIds: new Set(),
+  multiSelectPanel: null,
+  mtcRenderLimit: 300,
+  ttcRenderLimit: 300,
+  currentMtcTrips: [],
+  currentTtcTrips: [],
+
   // Multi-Party & Multi-GR Consignment State
   bookingMode: 'single', // 'single' | 'multi_consignee' | 'multi_consignor'
   multiBuyers: [],
@@ -52,6 +62,7 @@ const BiltyBookingModule = {
     AppUI.renderSidebar('bilty');
     await this.loadAllData();
     this.populateDatalistsAndDropdowns();
+    this.bindPanelScrollListeners();
 
     // Check URL parameters for edit mode or initial view
     const urlParams = new URLSearchParams(window.location.search);
@@ -3440,6 +3451,258 @@ const BiltyBookingModule = {
     return `${day}/${month}/${year}`;
   },
 
+  bindPanelScrollListeners() {
+    const mtcFeed = document.getElementById('mtc-panel-feed');
+    if (mtcFeed && !mtcFeed._hasScrollListener) {
+      mtcFeed._hasScrollListener = true;
+      mtcFeed.addEventListener('scroll', () => {
+        if (mtcFeed.scrollTop + mtcFeed.clientHeight >= mtcFeed.scrollHeight - 150) {
+          if (this.currentMtcTrips && this.mtcRenderLimit < this.currentMtcTrips.length) {
+            this.mtcRenderLimit += 200;
+            this.renderMtcPanel(this.currentMtcTrips);
+          }
+        }
+      });
+    }
+
+    const ttcFeed = document.getElementById('ttc-panel-feed');
+    if (ttcFeed && !ttcFeed._hasScrollListener) {
+      ttcFeed._hasScrollListener = true;
+      ttcFeed.addEventListener('scroll', () => {
+        if (ttcFeed.scrollTop + ttcFeed.clientHeight >= ttcFeed.scrollHeight - 150) {
+          if (this.currentTtcTrips && this.ttcRenderLimit < this.currentTtcTrips.length) {
+            this.ttcRenderLimit += 200;
+            this.renderTtcPanel(this.currentTtcTrips);
+          }
+        }
+      });
+    }
+  },
+
+  getSortComparator(mode) {
+    switch (mode) {
+      case 'date_asc':
+        return (a, b) => {
+          const dA = a.tripStartDate || a.biltyDate || '';
+          const dB = b.tripStartDate || b.biltyDate || '';
+          if (dA !== dB) return dA.localeCompare(dB);
+          return (Number(a.grSeq) || 0) - (Number(b.grSeq) || 0);
+        };
+      case 'gr_desc':
+        return (a, b) => {
+          const gA = Number(a.grSeq || (a.shortGrNo ? parseInt(a.shortGrNo) : 0)) || 0;
+          const gB = Number(b.grSeq || (b.shortGrNo ? parseInt(b.shortGrNo) : 0)) || 0;
+          return gB - gA;
+        };
+      case 'gr_asc':
+        return (a, b) => {
+          const gA = Number(a.grSeq || (a.shortGrNo ? parseInt(a.shortGrNo) : 0)) || 0;
+          const gB = Number(b.grSeq || (b.shortGrNo ? parseInt(b.shortGrNo) : 0)) || 0;
+          return gA - gB;
+        };
+      case 'dest_asc':
+        return (a, b) => (a.destination || '').localeCompare(b.destination || '');
+      case 'date_desc':
+      default:
+        return (a, b) => {
+          const dA = a.tripStartDate || a.biltyDate || '';
+          const dB = b.tripStartDate || b.biltyDate || '';
+          if (dA !== dB) return dB.localeCompare(dA);
+          return (Number(b.grSeq) || 0) - (Number(a.grSeq) || 0);
+        };
+    }
+  },
+
+  toggleSort(panel) {
+    if (panel === 'mtc') {
+      const modes = ['date_desc', 'date_asc', 'gr_desc', 'gr_asc'];
+      const labels = {
+        'date_desc': 'Date: Newest First',
+        'date_asc': 'Date: Oldest First',
+        'gr_desc': 'G.R. No: Highest First',
+        'gr_asc': 'G.R. No: Lowest First'
+      };
+      let currIdx = modes.indexOf(this.mtcSortMode || 'date_desc');
+      let nextMode = modes[(currIdx + 1) % modes.length];
+      this.mtcSortMode = nextMode;
+      const icon = document.getElementById('icon-mtc-sort');
+      if (icon) {
+        icon.className = nextMode.includes('asc') ? 'bi bi-sort-up' : 'bi bi-sort-down';
+      }
+      AppUI.showToast(`MTC Sorted by: ${labels[nextMode]}`, "info");
+      this.renderAppSheet3Panels();
+    } else {
+      const modes = ['date_desc', 'date_asc', 'gr_desc', 'dest_asc'];
+      const labels = {
+        'date_desc': 'Date: Newest First',
+        'date_asc': 'Date: Oldest First',
+        'gr_desc': 'Bilty No: Highest First',
+        'dest_asc': 'Destination: A to Z'
+      };
+      let currIdx = modes.indexOf(this.ttcSortMode || 'date_desc');
+      let nextMode = modes[(currIdx + 1) % modes.length];
+      this.ttcSortMode = nextMode;
+      const icon = document.getElementById('icon-ttc-sort');
+      if (icon) {
+        icon.className = nextMode.includes('asc') ? 'bi bi-sort-up' : 'bi bi-sort-down';
+      }
+      AppUI.showToast(`TTC Sorted by: ${labels[nextMode]}`, "info");
+      this.renderAppSheet3Panels();
+    }
+  },
+
+  toggleSelectAll(panel) {
+    if (!this.selectedTripIds) this.selectedTripIds = new Set();
+    const btnId = panel === 'mtc' ? 'btn-mtc-select-all' : 'btn-ttc-select-all';
+    const btn = document.getElementById(btnId);
+
+    // If activating new panel
+    if (this.multiSelectPanel !== panel) {
+      this.multiSelectPanel = panel;
+      this.selectedTripIds.clear();
+      const targetList = panel === 'mtc' ? this.currentMtcTrips : this.currentTtcTrips;
+      const limit = panel === 'mtc' ? this.mtcRenderLimit : this.ttcRenderLimit;
+      (targetList || []).slice(0, limit).forEach(t => {
+        this.selectedTripIds.add(String(t.id || t.grNo));
+      });
+      document.querySelectorAll('#btn-mtc-select-all, #btn-ttc-select-all').forEach(b => b.classList.remove('btn-header-active'));
+      if (btn) btn.classList.add('btn-header-active');
+      this.updateBulkActionBar();
+      AppUI.showToast(`Multi-select active: ${this.selectedTripIds.size} bilties selected.`, "info");
+    } else {
+      // Toggle select all / none
+      const targetList = panel === 'mtc' ? this.currentMtcTrips : this.currentTtcTrips;
+      const limit = panel === 'mtc' ? this.mtcRenderLimit : this.ttcRenderLimit;
+      const visibleList = (targetList || []).slice(0, limit);
+      const allSelected = visibleList.every(t => this.selectedTripIds.has(String(t.id || t.grNo)));
+
+      if (allSelected) {
+        this.exitMultiSelect();
+        AppUI.showToast("Multi-select cancelled.", "info");
+        return;
+      } else {
+        visibleList.forEach(t => this.selectedTripIds.add(String(t.id || t.grNo)));
+        this.updateBulkActionBar();
+        AppUI.showToast(`Selected all ${this.selectedTripIds.size} bilties.`, "info");
+      }
+    }
+
+    if (panel === 'mtc') this.renderMtcPanel(this.currentMtcTrips);
+    else this.renderTtcPanel(this.currentTtcTrips);
+  },
+
+  toggleTripSelection(id) {
+    if (!this.selectedTripIds) this.selectedTripIds = new Set();
+    const strId = String(id);
+    if (this.selectedTripIds.has(strId)) {
+      this.selectedTripIds.delete(strId);
+    } else {
+      this.selectedTripIds.add(strId);
+    }
+    this.updateBulkActionBar();
+  },
+
+  updateBulkActionBar() {
+    const bar = document.getElementById('bilty-bulk-bar');
+    const countEl = document.getElementById('bulk-selected-count');
+    const count = this.selectedTripIds ? this.selectedTripIds.size : 0;
+    if (countEl) countEl.textContent = count;
+    if (bar) {
+      bar.style.display = count > 0 ? 'flex' : 'none';
+    }
+  },
+
+  exitMultiSelect() {
+    if (this.selectedTripIds) this.selectedTripIds.clear();
+    const prevPanel = this.multiSelectPanel;
+    this.multiSelectPanel = null;
+    document.querySelectorAll('#btn-mtc-select-all, #btn-ttc-select-all').forEach(b => b.classList.remove('btn-header-active'));
+    this.updateBulkActionBar();
+    if (prevPanel === 'mtc') this.renderMtcPanel(this.currentMtcTrips);
+    else if (prevPanel === 'ttc') this.renderTtcPanel(this.currentTtcTrips);
+  },
+
+  bulkPrintSelected() {
+    if (!this.selectedTripIds || this.selectedTripIds.size === 0) {
+      AppUI.showToast("No bilties selected for print.", "warning");
+      return;
+    }
+    const trips = this.allTrips.filter(t => this.selectedTripIds.has(String(t.id || t.grNo)));
+    if (trips.length > 0) {
+      this.openPrintModal(trips[0]);
+      AppUI.showToast(`Opened print preview for 1 of ${trips.length} selected bilties.`, "info");
+    }
+  },
+
+  bulkExportSelected() {
+    if (!this.selectedTripIds || this.selectedTripIds.size === 0) {
+      AppUI.showToast("No bilties selected for export.", "warning");
+      return;
+    }
+    const trips = this.allTrips.filter(t => this.selectedTripIds.has(String(t.id || t.grNo)));
+    if (typeof XLSX === 'undefined') {
+      AppUI.showToast("SheetJS library not loaded.", "danger");
+      return;
+    }
+
+    const rows = trips.map((t, idx) => ({
+      "S.No": idx + 1,
+      "G.R. Number": t.grNo || t.shortGrNo,
+      "Firm": t.transport || 'TTC',
+      "Date": t.tripStartDate || '',
+      "Truck": t.truckNo || '',
+      "Party": t.consignor || '',
+      "Destination": t.destination || '',
+      "Driver": t.driver || '',
+      "Weight (MT)": Number(t.weight) || 0,
+      "Freight (₹)": Number(t.freight) || 0,
+      "Status": t.status || 'Transit'
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(rows);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Selected Bilties");
+    XLSX.writeFile(wb, `Selected_Bilties_${Date.now()}.xlsx`);
+    AppUI.showToast(`Exported ${trips.length} selected bilties to Excel!`, "success");
+  },
+
+  async bulkMarkSettled() {
+    if (!this.selectedTripIds || this.selectedTripIds.size === 0) {
+      AppUI.showToast("No bilties selected.", "warning");
+      return;
+    }
+    const count = this.selectedTripIds.size;
+    this.allTrips.forEach(t => {
+      if (this.selectedTripIds.has(String(t.id || t.grNo))) {
+        t.status = 'Completed';
+        t.balanceDue = 0;
+        t.partyDue = 0;
+        try { dbService.put('trips', t); } catch (e) {}
+      }
+    });
+
+    this.exitMultiSelect();
+    this.renderAppSheet3Panels();
+    AppUI.showToast(`✓ Marked ${count} bilties as Settled / Completed!`, "success");
+  },
+
+  async syncAllData() {
+    const icon = document.getElementById('icon-sync-data');
+    if (icon) icon.classList.add('appsheet-spinning');
+    try {
+      await this.loadAllData();
+      this.updateKPIs();
+      this.renderAppSheet3Panels();
+      setTimeout(() => {
+        if (icon) icon.classList.remove('appsheet-spinning');
+        AppUI.showToast(`✓ Data synchronized successfully! All ${(this.allTrips || []).length} bilties are up-to-date.`, "success");
+      }, 500);
+    } catch (e) {
+      if (icon) icon.classList.remove('appsheet-spinning');
+      AppUI.showToast("Data refreshed.", "info");
+    }
+  },
+
   renderAppSheet3Panels() {
     const q = (this.searchQuery || '').trim().toLowerCase();
 
@@ -3450,7 +3713,7 @@ const BiltyBookingModule = {
         const text = [
           t.grNo, t.shortGrNo, t.truckNo, t.truckOwner, t.consignor,
           t.consignee, t.origin, t.destination, t.driver, t.billNo,
-          t.reference, t.material, t.status
+          t.reference, t.material, t.status, t.tripStartDate, t.biltyDate
         ].filter(Boolean).join(' ').toLowerCase();
         return text.includes(q);
       });
@@ -3470,16 +3733,14 @@ const BiltyBookingModule = {
       }
     });
 
-    // Sort by date descending, then grSeq descending
-    const sortFn = (a, b) => {
-      const dateA = a.tripStartDate || a.biltyDate || '';
-      const dateB = b.tripStartDate || b.biltyDate || '';
-      if (dateA !== dateB) return dateB.localeCompare(dateA);
-      return (Number(b.grSeq) || 0) - (Number(a.grSeq) || 0);
-    };
+    // Apply active sort comparator
+    const mtcSortFn = this.getSortComparator(this.mtcSortMode || 'date_desc');
+    const ttcSortFn = this.getSortComparator(this.ttcSortMode || 'date_desc');
+    mtcTrips.sort(mtcSortFn);
+    ttcTrips.sort(ttcSortFn);
 
-    mtcTrips.sort(sortFn);
-    ttcTrips.sort(sortFn);
+    this.currentMtcTrips = mtcTrips;
+    this.currentTtcTrips = ttcTrips;
 
     this.renderMtcPanel(mtcTrips);
     this.renderTtcPanel(ttcTrips);
@@ -3505,7 +3766,7 @@ const BiltyBookingModule = {
     const feed = document.getElementById('mtc-panel-feed');
     if (!feed) return;
 
-    if (mtcTrips.length === 0) {
+    if (!mtcTrips || mtcTrips.length === 0) {
       feed.innerHTML = `
         <div class="p-4 text-center text-muted">
           <i class="bi bi-inbox fs-3 d-block mb-1 text-secondary"></i>
@@ -3515,9 +3776,12 @@ const BiltyBookingModule = {
       return;
     }
 
-    // Group by Date
+    const limit = this.mtcRenderLimit || 300;
+    const isMulti = this.multiSelectPanel === 'mtc';
+
+    // Group by Date up to limit
     const dateMap = new Map();
-    mtcTrips.slice(0, 300).forEach(t => {
+    mtcTrips.slice(0, limit).forEach(t => {
       const d = this.formatAppSheetDate(t.tripStartDate || t.biltyDate) || 'Undated';
       if (!dateMap.has(d)) dateMap.set(d, []);
       dateMap.get(d).push(t);
@@ -3555,10 +3819,16 @@ const BiltyBookingModule = {
         const dateStr = this.formatAppSheetDate(t.tripStartDate || t.biltyDate);
         const chevronColor = isSettled ? '#1e8e3e' : '#5f6368';
 
+        const isChecked = this.selectedTripIds && this.selectedTripIds.has(String(id));
+        const checkHtml = isMulti 
+          ? `<input type="checkbox" class="bilty-row-checkbox" ${isChecked ? 'checked' : ''} onclick="event.stopPropagation(); BiltyBookingModule.toggleTripSelection('${id}')">` 
+          : '';
+
         html += `
           <div class="mtc-item-row ${isActive ? 'active-row' : ''} ${isSettled ? 'row-settled' : ''}" data-trip-id="${id}" onclick="BiltyBookingModule.selectBilty('${id}')">
-            <!-- 1. Quick Action Icons -->
+            <!-- 1. Quick Action Icons & Optional Selection Checkbox -->
             <div class="mtc-action-icons">
+              ${checkHtml}
               <i class="bi bi-arrow-repeat" title="Sync / Re-calculate" onclick="event.stopPropagation(); BiltyBookingModule.syncBiltyDirect('${id}')"></i>
               <i class="bi bi-box-arrow-down" title="Download Print A4" onclick="event.stopPropagation(); BiltyBookingModule.printBiltyDirect('${id}')"></i>
               <i class="bi bi-clipboard" title="Duplicate Consignment" onclick="event.stopPropagation(); BiltyBookingModule.duplicateBiltyById('${id}')"></i>
@@ -3608,6 +3878,14 @@ const BiltyBookingModule = {
       html += `</div>`;
     });
 
+    if (limit < mtcTrips.length) {
+      html += `
+        <div class="p-2 text-center text-muted small border-top" style="background: #fafafa; font-size: 11px;">
+          Showing ${Math.min(limit, mtcTrips.length)} of ${mtcTrips.length} MTC bilties (Scroll down for more)
+        </div>
+      `;
+    }
+
     feed.innerHTML = html;
   },
 
@@ -3628,7 +3906,7 @@ const BiltyBookingModule = {
     const tbody = document.getElementById('ttc-table-tbody');
     if (!tbody) return;
 
-    if (ttcTrips.length === 0) {
+    if (!ttcTrips || ttcTrips.length === 0) {
       tbody.innerHTML = `
         <tr>
           <td colspan="5" class="text-center text-muted py-4" style="font-size: 12px;">
@@ -3639,8 +3917,11 @@ const BiltyBookingModule = {
       return;
     }
 
+    const limit = this.ttcRenderLimit || 300;
+    const isMulti = this.multiSelectPanel === 'ttc';
+
     let html = '';
-    ttcTrips.slice(0, 300).forEach(t => {
+    ttcTrips.slice(0, limit).forEach(t => {
       const id = t.id || t.grNo;
       const isActive = this.currentActiveBilty && String(this.currentActiveBilty.id || this.currentActiveBilty.grNo) === String(id);
       const isSettled = String(t.status || '').toLowerCase() === 'settled' || String(t.status || '').toLowerCase() === 'completed';
@@ -3653,9 +3934,15 @@ const BiltyBookingModule = {
       const driver = (t.driver || '-').toUpperCase();
       const dateStr = this.formatAppSheetDate(t.tripStartDate || t.biltyDate);
 
+      const isChecked = this.selectedTripIds && this.selectedTripIds.has(String(id));
+      const checkHtml = isMulti 
+        ? `<input type="checkbox" class="bilty-row-checkbox" ${isChecked ? 'checked' : ''} onclick="event.stopPropagation(); BiltyBookingModule.toggleTripSelection('${id}')">` 
+        : '';
+
       html += `
         <tr class="ttc-row-item ${isActive ? 'active-row' : ''} ${isSettled ? 'row-settled' : ''}" data-trip-id="${id}" onclick="BiltyBookingModule.selectBilty('${id}')">
           <td>
+            ${checkHtml}
             <span style="color: ${dotColor}; font-size: 10px; margin-right: 3px;">●</span>
             <span class="fw-bold" style="color: ${biltyColor};">${displayBiltyNo}</span>
           </td>
@@ -3669,6 +3956,16 @@ const BiltyBookingModule = {
         </tr>
       `;
     });
+
+    if (limit < ttcTrips.length) {
+      html += `
+        <tr>
+          <td colspan="5" class="text-center text-muted py-2 border-top" style="background: #fafafa; font-size: 11px;">
+            Showing ${Math.min(limit, ttcTrips.length)} of ${ttcTrips.length} TTC &amp; SMTC bilties (Scroll down for more)
+          </td>
+        </tr>
+      `;
+    }
 
     tbody.innerHTML = html;
   },
@@ -3707,6 +4004,7 @@ const BiltyBookingModule = {
     if (!table) return;
 
     const shortGr = t.shortGrNo || (t.grNo ? t.grNo.split('-').pop() : '-');
+    const id = t.id || t.grNo;
     const dateStr = this.formatAppSheetDate(t.tripStartDate || t.biltyDate);
     const freightVal = Number(t.freight) || 0;
     const advVal = Number(t.advancePaid || t.partyPaid) || 0;
@@ -3721,12 +4019,19 @@ const BiltyBookingModule = {
         <tr>
           <td class="prop-label">Lock for Edit</td>
           <td class="prop-value">
-            <span class="badge bg-light text-dark border">N</span>
+            <span class="badge" style="background: #e6f4ea; color: #137333; font-weight: 600; padding: 3px 8px; border: 1px solid #ceead6;">
+              <i class="bi bi-unlock me-1"></i>Unlocked
+            </span>
           </td>
         </tr>
         <tr>
           <td class="prop-label">Bilty No.</td>
-          <td class="prop-value ${isSettled ? 'text-success fw-bold' : 'text-primary'}">${shortGr}</td>
+          <td class="prop-value ${isSettled ? 'text-success fw-bold' : 'text-primary fw-bold'}">
+            <span>${shortGr}</span>
+            <button type="button" class="btn btn-sm btn-link text-muted p-0 ms-2" title="Sync / Re-calculate this Bilty" onclick="BiltyBookingModule.syncBiltyDirect('${id}')">
+              <i class="bi bi-arrow-repeat fs-6"></i>
+            </button>
+          </td>
         </tr>
         <tr>
           <td class="prop-label">Bilty Date</td>
@@ -3849,35 +4154,47 @@ const BiltyBookingModule = {
     const mtcCol = document.querySelector('.panel-mtc-col');
     const ttcCol = document.querySelector('.panel-ttc-col');
     const detailsCol = document.getElementById('panel-details-col');
+    const mtcIcon = document.getElementById('icon-mtc-expand');
+    const ttcIcon = document.getElementById('icon-ttc-expand');
 
     if (panelType === 'mtc' && mtcCol) {
       const isExp = mtcCol.classList.contains('panel-expanded');
       document.querySelectorAll('.appsheet-panel-card').forEach(c => c.classList.remove('panel-expanded'));
-      const icon = document.getElementById('icon-mtc-expand');
+      if (ttcIcon) ttcIcon.className = 'bi bi-arrows-angle-expand';
+      
       if (isExp) {
         mtcCol.classList.remove('panel-expanded');
-        if (icon) icon.className = 'bi bi-arrows-angle-expand';
+        if (mtcIcon) mtcIcon.className = 'bi bi-arrows-angle-expand';
         AppUI.showToast("MTC 3-column view restored", "info");
       } else {
         mtcCol.classList.add('panel-expanded');
-        if (icon) icon.className = 'bi bi-arrows-angle-contract';
-        AppUI.showToast("MTC expanded full-screen table view", "info");
+        if (mtcIcon) mtcIcon.className = 'bi bi-arrows-angle-contract';
+        AppUI.showToast("MTC expanded full-screen view (7 Columns)", "info");
       }
     } else if (panelType === 'ttc' && ttcCol) {
-      if (ttcCol.classList.contains('panel-expanded')) {
+      const isExp = ttcCol.classList.contains('panel-expanded');
+      document.querySelectorAll('.appsheet-panel-card').forEach(c => c.classList.remove('panel-expanded'));
+      if (mtcIcon) mtcIcon.className = 'bi bi-arrows-angle-expand';
+
+      if (isExp) {
         ttcCol.classList.remove('panel-expanded');
+        if (ttcIcon) ttcIcon.className = 'bi bi-arrows-angle-expand';
         AppUI.showToast("TTC column restored", "info");
       } else {
-        document.querySelectorAll('.appsheet-panel-card').forEach(c => c.classList.remove('panel-expanded'));
         ttcCol.classList.add('panel-expanded');
+        if (ttcIcon) ttcIcon.className = 'bi bi-arrows-angle-contract';
         AppUI.showToast("TTC column expanded full-screen", "info");
       }
     } else if (panelType === 'details' && detailsCol) {
-      if (detailsCol.classList.contains('panel-expanded')) {
+      const isExp = detailsCol.classList.contains('panel-expanded');
+      document.querySelectorAll('.appsheet-panel-card').forEach(c => c.classList.remove('panel-expanded'));
+      if (mtcIcon) mtcIcon.className = 'bi bi-arrows-angle-expand';
+      if (ttcIcon) ttcIcon.className = 'bi bi-arrows-angle-expand';
+
+      if (isExp) {
         detailsCol.classList.remove('panel-expanded');
         AppUI.showToast("Bilty details restored", "info");
       } else {
-        document.querySelectorAll('.appsheet-panel-card').forEach(c => c.classList.remove('panel-expanded'));
         detailsCol.classList.add('panel-expanded');
         AppUI.showToast("Bilty details expanded full-screen", "info");
       }

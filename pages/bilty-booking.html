@@ -43,10 +43,10 @@
 
       <!-- AppSheet Actions & Profile -->
       <div class="d-flex align-items-center gap-2">
-        <button class="btn btn-sm btn-light border-0 p-1" onclick="location.reload()" title="Sync / Refresh">
-          <i class="bi bi-arrow-repeat fs-5"></i>
+        <button class="btn btn-sm btn-light border-0 p-1" id="btn-sync-data" onclick="BiltyBookingModule.syncAllData()" title="Cloud Sync / Refresh Data">
+          <i class="bi bi-arrow-repeat fs-5" id="icon-sync-data"></i>
         </button>
-        <div class="rounded-circle text-white d-flex align-items-center justify-content-center fw-bold" style="width: 32px; height: 32px; font-size: 0.85rem; background: #795548; cursor: pointer;" title="MTC & TTC Admin">
+        <div class="rounded-circle text-white d-flex align-items-center justify-content-center fw-bold" style="width: 32px; height: 32px; font-size: 0.85rem; background: #795548; cursor: pointer;" title="MTC & TTC Admin" onclick="AppUI.showUserProfile()">
           M
         </div>
       </div>
@@ -56,8 +56,8 @@
     <div class="bg-white border-bottom px-3 py-2 d-flex align-items-center justify-content-between">
       <span class="fw-bold text-dark" style="font-size: 13.5px;">Bilty Booking</span>
       <div>
-        <button class="btn btn-sm text-muted p-1 border-0" title="Toggle Layout" onclick="BiltyBookingModule.toggleLayout()">
-          <i class="bi bi-grid fs-6"></i>
+        <button class="btn btn-sm text-muted p-1 border-0" id="btn-toggle-layout" title="Toggle Layout (3-Column / Stacked)" onclick="BiltyBookingModule.toggleLayout()">
+          <i class="bi bi-grid fs-6" id="icon-toggle-layout"></i>
         </button>
       </div>
     </div>
@@ -92,6 +92,18 @@
       <!-- Exact Match of media_1791365302532.png                              -->
       <!-- ==================================================================== -->
       <div id="bilty-dashboard-view">
+
+        <!-- Floating Bulk Action Bar (Visible when rows are selected) -->
+        <div id="bilty-bulk-bar" class="bilty-bulk-bar shadow" style="display: none;">
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <span class="badge bg-primary rounded-pill px-2 py-1"><span id="bulk-selected-count">0</span> Selected</span>
+            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="BiltyBookingModule.bulkPrintSelected()"><i class="bi bi-printer me-1"></i> Print Selected A4</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="BiltyBookingModule.bulkExportSelected()"><i class="bi bi-file-earmark-excel me-1"></i> Export Selected</button>
+            <button type="button" class="btn btn-sm btn-success text-white" onclick="BiltyBookingModule.bulkMarkSettled()"><i class="bi bi-check-circle me-1"></i> Mark Settled</button>
+          </div>
+          <button type="button" class="btn btn-sm btn-link text-danger p-0 ms-auto" onclick="BiltyBookingModule.exitMultiSelect()">✕ Cancel</button>
+        </div>
+
         <div class="appsheet-3panel-container">
           
           <!-- PANEL 1 (Left): MTC -->
@@ -102,8 +114,8 @@
                 <button type="button" class="btn-appsheet-add" onclick="BiltyBookingModule.openCreateForm('MTC')">
                   <i class="bi bi-plus"></i> Add
                 </button>
-                <button class="btn btn-sm text-muted p-1 border-0" title="Select All"><i class="bi bi-check2-square"></i></button>
-                <button class="btn btn-sm text-muted p-1 border-0" title="Sort"><i class="bi bi-filter-right"></i></button>
+                <button class="btn btn-sm text-muted p-1 border-0" id="btn-mtc-select-all" title="Select All (Multi-Select)" onclick="BiltyBookingModule.toggleSelectAll('mtc')"><i class="bi bi-check2-square" id="icon-mtc-select-all"></i></button>
+                <button class="btn btn-sm text-muted p-1 border-0" id="btn-mtc-sort" title="Sort MTC Bilties" onclick="BiltyBookingModule.toggleSort('mtc')"><i class="bi bi-filter-right" id="icon-mtc-sort"></i></button>
                 <button class="btn btn-sm text-muted p-1 border-0" id="btn-mtc-expand" title="Expand Full View" onclick="BiltyBookingModule.expandPanel('mtc')"><i class="bi bi-arrows-angle-expand" id="icon-mtc-expand"></i></button>
               </div>
             </div>
@@ -120,9 +132,9 @@
                 <button type="button" class="btn-appsheet-add" onclick="BiltyBookingModule.openCreateForm('TTC')">
                   <i class="bi bi-plus"></i> Add
                 </button>
-                <button class="btn btn-sm text-muted p-1 border-0" title="Select All"><i class="bi bi-check2-square"></i></button>
-                <button class="btn btn-sm text-muted p-1 border-0" title="Sort"><i class="bi bi-filter-right"></i></button>
-                <button class="btn btn-sm text-muted p-1 border-0" title="Expand" onclick="BiltyBookingModule.expandPanel('ttc')"><i class="bi bi-arrows-angle-expand"></i></button>
+                <button class="btn btn-sm text-muted p-1 border-0" id="btn-ttc-select-all" title="Select All (Multi-Select)" onclick="BiltyBookingModule.toggleSelectAll('ttc')"><i class="bi bi-check2-square" id="icon-ttc-select-all"></i></button>
+                <button class="btn btn-sm text-muted p-1 border-0" id="btn-ttc-sort" title="Sort TTC Bilties" onclick="BiltyBookingModule.toggleSort('ttc')"><i class="bi bi-filter-right" id="icon-ttc-sort"></i></button>
+                <button class="btn btn-sm text-muted p-1 border-0" id="btn-ttc-expand" title="Expand Full View" onclick="BiltyBookingModule.expandPanel('ttc')"><i class="bi bi-arrows-angle-expand" id="icon-ttc-expand"></i></button>
               </div>
             </div>
             <div class="panel-body-scroll" id="ttc-panel-feed">

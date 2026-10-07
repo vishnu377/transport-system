@@ -2094,12 +2094,16 @@ body {
 }
 
 /* Fullscreen / Expand Panel Mode */
+.appsheet-3panel-container {
+  position: relative !important;
+}
+
 .appsheet-panel-card.panel-expanded {
   position: absolute !important;
-  top: 96px !important;
-  left: 56px !important;
+  top: 10px !important;
+  left: 14px !important;
   right: 14px !important;
-  bottom: 14px !important;
+  bottom: 10px !important;
   width: auto !important;
   height: auto !important;
   min-width: 0 !important;
@@ -2113,10 +2117,10 @@ body {
   display: none !important;
 }
 
-/* In expanded mode, show full 7-column layout matching media_1791368494070.png */
+/* In expanded mode, show full 7-column layout matching media_1791371547683.png */
 .panel-mtc-col.panel-expanded .mtc-item-row {
   display: grid !important;
-  grid-template-columns: 120px 110px 140px 200px 240px 180px 1fr !important;
+  grid-template-columns: 120px 105px 135px 220px 240px 180px 1fr !important;
   align-items: center;
   gap: 12px;
   padding: 8px 16px;
@@ -2133,15 +2137,15 @@ body {
   font-size: 12px;
 }
 
-/* Settled & Completed Trips Styling (Green) */
+/* Settled & Completed Trips Styling (Green Replica of AppSheet) */
 .mtc-item-row.row-settled {
-  background-color: #f6fbf7;
+  background-color: #f7fbf8;
 }
 .mtc-item-row.row-settled:hover {
   background-color: #eaf6ec;
 }
 .ttc-appsheet-table tr.row-settled {
-  background-color: #f6fbf7;
+  background-color: #f7fbf8;
 }
 .ttc-appsheet-table tr.row-settled:hover {
   background-color: #eaf6ec;
@@ -2158,6 +2162,46 @@ body {
 .mtc-group-content {
   display: block;
 }
+
+/* Floating Bulk Action Bar */
+.bilty-bulk-bar {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ffffff;
+  border: 1px solid #dadce0;
+  border-radius: 8px;
+  padding: 8px 18px;
+  z-index: 1060;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.18);
+  animation: slideUpBulk 0.2s ease-out;
+}
+@keyframes slideUpBulk {
+  from { transform: translate(-50%, 20px); opacity: 0; }
+  to { transform: translate(-50%, 0); opacity: 1; }
+}
+
+/* Row Checkbox for Multi-Select */
+.bilty-row-checkbox {
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+  margin-right: 6px;
+  accent-color: #1a73e8;
+  vertical-align: middle;
+}
+
+/* Header Active Button Toggle State */
+.btn-header-active {
+  color: #1a73e8 !important;
+  background: #e8f0fe !important;
+  border-radius: 4px;
+}
+
 
 
 

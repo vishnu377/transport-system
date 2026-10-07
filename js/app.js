@@ -165,8 +165,9 @@ const AppUI = {
     // 4. Inject Modals (About, Feedback, User Profile)
     this.ensureGlobalModals();
 
-    // 5. Connect Topbar Hamburger toggles
+    // 5. Connect Topbar Hamburger toggles & Mobile Floating Grid Button
     this.bindHamburgerToggles();
+    this.injectMobileFloatingNav();
   },
 
   // Toggle AppSheet Navigation Drawer (Works globally on Desktop and Mobile)
@@ -176,6 +177,22 @@ const AppUI = {
       const bsOffcanvas = bootstrap.Offcanvas.getOrCreateInstance(drawerEl);
       bsOffcanvas.toggle();
     }
+  },
+
+  // Inject Mobile Floating Grid Button (Same square icon for mobile screens)
+  injectMobileFloatingNav() {
+    if (document.getElementById('mobile-grid-nav-btn')) return;
+    const btn = document.createElement('button');
+    btn.id = 'mobile-grid-nav-btn';
+    btn.className = 'btn btn-dark shadow rounded-circle d-md-none position-fixed bottom-0 start-0 m-3';
+    btn.style.cssText = 'width: 44px; height: 44px; z-index: 1045; background: #202124; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.2);';
+    btn.title = 'All Modules (Navigation Drawer)';
+    btn.innerHTML = '<i class="bi bi-grid-3x3-gap fs-5 text-white"></i>';
+    btn.onclick = (e) => {
+      e.preventDefault();
+      this.toggleNavDrawer();
+    };
+    document.body.appendChild(btn);
   },
 
   // Focus Search Box or Open Drawer
@@ -343,9 +360,9 @@ const AppUI = {
     }
   },
 
-  // Bind Hamburger Buttons to AppSheet Drawer
+  // Bind Hamburger & Grid Buttons to AppSheet Drawer
   bindHamburgerToggles() {
-    const toggles = document.querySelectorAll('#sidebar-toggle, .btn-hamburger');
+    const toggles = document.querySelectorAll('#sidebar-toggle, .btn-hamburger, #appsheet-rail-grid-btn, #mobile-grid-nav-btn');
     toggles.forEach(btn => {
       btn.onclick = (e) => {
         e.preventDefault();
@@ -476,11 +493,7 @@ const AppUI = {
 
 // Initialize common interactions when DOM loads
 document.addEventListener('DOMContentLoaded', () => {
-  const toggleBtn = document.getElementById('sidebar-toggle');
-  if (toggleBtn) {
-    toggleBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      AppUI.toggleNavDrawer();
-    });
-  }
+  AppUI.bindHamburgerToggles();
+  AppUI.injectMobileFloatingNav();
 });
+
