@@ -3378,18 +3378,13 @@ const BiltyBookingModule = {
   // ----------------------------------------------------
   switchView(viewName) {
     this.currentView = viewName;
-    const dashboardView = document.getElementById('bilty-dashboard-view');
-    const createView = document.getElementById('bilty-create-view');
-    const registerView = document.getElementById('bilty-register-view');
     const btnCreate = document.getElementById('btn-view-create');
     const btnRegister = document.getElementById('btn-view-register');
     const breadcrumb = document.getElementById('bilty-breadcrumb');
     const breadcrumbActive = document.getElementById('bilty-breadcrumb-active');
 
     if (viewName === 'create' || viewName === 'edit') {
-      if (dashboardView) dashboardView.style.display = 'none';
-      if (registerView) registerView.classList.add('d-none');
-      if (createView) createView.style.display = 'block';
+      this.showSideBoxForm(true);
       if (btnCreate) btnCreate.classList.add('active');
       if (btnRegister) btnRegister.classList.remove('active');
       if (breadcrumb) breadcrumb.innerText = 'Home > Bilty Booking > Bilty Form';
@@ -3399,9 +3394,7 @@ const BiltyBookingModule = {
       }
     } else {
       // 'dashboard' or 'register'
-      if (createView) createView.style.display = 'none';
-      if (registerView) registerView.classList.add('d-none');
-      if (dashboardView) dashboardView.style.display = 'block';
+      this.showSideBoxForm(false);
       if (btnRegister) btnRegister.classList.add('active');
       if (btnCreate) btnCreate.classList.remove('active');
       if (breadcrumb) breadcrumb.innerText = 'Home > Bilty Booking > Bilty Register';
@@ -3531,24 +3524,33 @@ const BiltyBookingModule = {
     });
 
     let html = '';
+    let grpIndex = 0;
     dateMap.forEach((group, dStr) => {
+      grpIndex++;
+      const grpId = `mtc-grp-${grpIndex}`;
+
       html += `
-        <div class="mtc-date-ribbon">
-          <span class="d-flex align-items-center gap-1">
+        <div class="mtc-date-ribbon" onclick="BiltyBookingModule.toggleDateGroup('${grpId}')" title="Click to expand/collapse date group">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-chevron-down mtc-arrow-icon" id="arrow-${grpId}" style="font-size: 10px; color: #5f6368; transition: transform 0.2s;"></i>
             <span style="color: #34a853; font-size: 11px;">●</span>
-            <span>${dStr}</span>
-          </span>
+            <span class="fw-bold">${dStr}</span>
+          </div>
           <span class="mtc-badge-count">${group.length}</span>
         </div>
+        <div class="mtc-group-content" id="content-${grpId}">
       `;
 
       group.forEach(t => {
         const id = t.id || t.grNo;
         const shortGr = t.shortGrNo || (t.grNo ? t.grNo.split('-').pop() : 'MTC');
         const isActive = this.currentActiveBilty && String(this.currentActiveBilty.id || this.currentActiveBilty.grNo) === String(id);
+        const isSettled = String(t.status || '').toLowerCase() === 'settled' || String(t.status || '').toLowerCase() === 'completed';
+        const biltyColor = isSettled ? '#2e7d32' : '#1a73e8';
+        const dotColor = isSettled ? '#2e7d32' : '#34a853';
 
         html += `
-          <div class="mtc-item-row ${isActive ? 'active-row' : ''}" data-trip-id="${id}" onclick="BiltyBookingModule.selectBilty('${id}')">
+          <div class="mtc-item-row ${isActive ? 'active-row' : ''} ${isSettled ? 'row-settled' : ''}" data-trip-id="${id}" onclick="BiltyBookingModule.selectBilty('${id}')">
             <div class="mtc-action-icons">
               <i class="bi bi-arrow-repeat" title="Sync / Re-calculate" onclick="event.stopPropagation(); BiltyBookingModule.syncBiltyDirect('${id}')"></i>
               <i class="bi bi-box-arrow-down" title="Download Print A4" onclick="event.stopPropagation(); BiltyBookingModule.printBiltyDirect('${id}')"></i>
@@ -3556,15 +3558,30 @@ const BiltyBookingModule = {
               <i class="bi bi-truck" title="Truck Trips" onclick="event.stopPropagation(); window.location.href='trips.html?truck=${encodeURIComponent(t.truckNo || '')}'"></i>
             </div>
             <div class="d-flex align-items-center gap-1">
-              <span style="color: #34a853; font-size: 10px;">●</span>
-              <span class="fw-bold" style="font-size: 12.5px; color: #1a73e8;">${shortGr}</span>
+              <span style="color: ${dotColor}; font-size: 10px;">●</span>
+              <span class="fw-bold" style="font-size: 12.5px; color: ${biltyColor};">${shortGr}</span>
             </div>
           </div>
         `;
       });
+
+      html += `</div>`;
     });
 
     feed.innerHTML = html;
+  },
+
+  toggleDateGroup(grpId) {
+    const content = document.getElementById(`content-${grpId}`);
+    const arrow = document.getElementById(`arrow-${grpId}`);
+    if (!content) return;
+    if (content.style.display === 'none') {
+      content.style.display = 'block';
+      if (arrow) arrow.style.transform = 'rotate(0deg)';
+    } else {
+      content.style.display = 'none';
+      if (arrow) arrow.style.transform = 'rotate(-90deg)';
+    }
   },
 
   renderTtcPanel(ttcTrips) {
@@ -3586,7 +3603,10 @@ const BiltyBookingModule = {
     ttcTrips.slice(0, 300).forEach(t => {
       const id = t.id || t.grNo;
       const isActive = this.currentActiveBilty && String(this.currentActiveBilty.id || this.currentActiveBilty.grNo) === String(id);
-      
+      const isSettled = String(t.status || '').toLowerCase() === 'settled' || String(t.status || '').toLowerCase() === 'completed';
+      const biltyColor = isSettled ? '#2e7d32' : '#202124';
+      const dotColor = isSettled ? '#2e7d32' : '#34a853';
+
       const displayBiltyNo = t.shortGrNo || (t.truckNo ? t.truckNo.replace(/^RJ52/, '') : (t.grNo ? t.grNo.split('-').pop() : 'TTC'));
       const toDest = (t.destination || '-').toUpperCase();
       const ref = t.reference || t.billNo || '-';
@@ -3594,17 +3614,17 @@ const BiltyBookingModule = {
       const dateStr = this.formatAppSheetDate(t.tripStartDate || t.biltyDate);
 
       html += `
-        <tr class="ttc-row-item ${isActive ? 'active-row' : ''}" data-trip-id="${id}" onclick="BiltyBookingModule.selectBilty('${id}')">
+        <tr class="ttc-row-item ${isActive ? 'active-row' : ''} ${isSettled ? 'row-settled' : ''}" data-trip-id="${id}" onclick="BiltyBookingModule.selectBilty('${id}')">
           <td>
-            <span style="color: #34a853; font-size: 10px; margin-right: 3px;">●</span>
-            <span class="fw-bold text-dark">${displayBiltyNo}</span>
+            <span style="color: ${dotColor}; font-size: 10px; margin-right: 3px;">●</span>
+            <span class="fw-bold" style="color: ${biltyColor};">${displayBiltyNo}</span>
           </td>
           <td>${toDest}</td>
           <td>${ref}</td>
           <td>${driver}</td>
           <td>
-            <span style="color: #34a853; font-size: 10px; margin-right: 3px;">●</span>
-            <span>${dateStr}</span>
+            <span style="color: ${dotColor}; font-size: 10px; margin-right: 3px;">●</span>
+            <span style="${isSettled ? 'color: #2e7d32; font-weight: 600;' : ''}">${dateStr}</span>
           </td>
         </tr>
       `;
@@ -3654,6 +3674,7 @@ const BiltyBookingModule = {
     const ownerDueVal = Number(t.ownerDue) || 0;
     const commVal = Number(t.commission) || 0;
     const otherVal = Number(t.otherExpenses) || 0;
+    const isSettled = String(t.status || '').toLowerCase() === 'settled' || String(t.status || '').toLowerCase() === 'completed';
 
     table.innerHTML = `
       <tbody>
@@ -3665,7 +3686,7 @@ const BiltyBookingModule = {
         </tr>
         <tr>
           <td class="prop-label">Bilty No.</td>
-          <td class="prop-value text-primary">${shortGr}</td>
+          <td class="prop-value ${isSettled ? 'text-success fw-bold' : 'text-primary'}">${shortGr}</td>
         </tr>
         <tr>
           <td class="prop-label">Bilty Date</td>
@@ -3694,7 +3715,10 @@ const BiltyBookingModule = {
         <tr>
           <td class="prop-label">Status</td>
           <td class="prop-value">
-            <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">${t.status || 'Active'}</span>
+            ${isSettled 
+              ? `<span class="badge" style="background: #e6f4ea; color: #137333; border: 1px solid #ceead6; font-weight: 600; padding: 4px 8px;">● ${t.status || 'Completed'}</span>`
+              : `<span class="badge" style="background: #e8f0fe; color: #1a73e8; border: 1px solid #d2e3fc; font-weight: 600; padding: 4px 8px;">● ${t.status || 'In Transit'}</span>`
+            }
           </td>
         </tr>
         <tr>
@@ -3781,6 +3805,57 @@ const BiltyBookingModule = {
     `;
   },
 
+  expandPanel(panelType) {
+    const mtcCol = document.querySelector('.panel-mtc-col');
+    const ttcCol = document.querySelector('.panel-ttc-col');
+    const detailsCol = document.getElementById('panel-details-col');
+
+    if (panelType === 'mtc' && mtcCol) {
+      if (mtcCol.classList.contains('panel-expanded')) {
+        mtcCol.classList.remove('panel-expanded');
+        AppUI.showToast("MTC column restored", "info");
+      } else {
+        document.querySelectorAll('.appsheet-panel-card').forEach(c => c.classList.remove('panel-expanded'));
+        mtcCol.classList.add('panel-expanded');
+        AppUI.showToast("MTC column expanded full-screen", "info");
+      }
+    } else if (panelType === 'ttc' && ttcCol) {
+      if (ttcCol.classList.contains('panel-expanded')) {
+        ttcCol.classList.remove('panel-expanded');
+        AppUI.showToast("TTC column restored", "info");
+      } else {
+        document.querySelectorAll('.appsheet-panel-card').forEach(c => c.classList.remove('panel-expanded'));
+        ttcCol.classList.add('panel-expanded');
+        AppUI.showToast("TTC column expanded full-screen", "info");
+      }
+    } else if (panelType === 'details' && detailsCol) {
+      if (detailsCol.classList.contains('panel-expanded')) {
+        detailsCol.classList.remove('panel-expanded');
+        AppUI.showToast("Bilty details restored", "info");
+      } else {
+        document.querySelectorAll('.appsheet-panel-card').forEach(c => c.classList.remove('panel-expanded'));
+        detailsCol.classList.add('panel-expanded');
+        AppUI.showToast("Bilty details expanded full-screen", "info");
+      }
+    }
+  },
+
+  showSideBoxForm(showForm) {
+    const detailsView = document.getElementById('col3-details-view');
+    const createView = document.getElementById('bilty-create-view');
+    const detailsCol = document.getElementById('panel-details-col');
+
+    if (showForm) {
+      if (detailsView) detailsView.style.display = 'none';
+      if (createView) createView.style.display = 'block';
+      if (detailsCol) detailsCol.classList.add('in-form-mode');
+    } else {
+      if (createView) createView.style.display = 'none';
+      if (detailsView) detailsView.style.display = 'flex';
+      if (detailsCol) detailsCol.classList.remove('in-form-mode');
+    }
+  },
+
   navigateBilty(delta) {
     if (!this.allTrips || this.allTrips.length === 0) return;
     
@@ -3835,7 +3910,7 @@ const BiltyBookingModule = {
     if (grLabel) grLabel.innerText = `${firm} G.R.No. *`;
 
     this.generateBiltyNumber();
-    this.switchView('create');
+    this.showSideBoxForm(true);
   },
 
   editActiveBilty() {
@@ -3844,7 +3919,7 @@ const BiltyBookingModule = {
       return;
     }
     this.loadTripForEditing(this.currentActiveBilty.id || this.currentActiveBilty.grNo);
-    this.switchView('create');
+    this.showSideBoxForm(true);
   },
 
   printActiveBilty() {

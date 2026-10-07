@@ -104,7 +104,7 @@
                 </button>
                 <button class="btn btn-sm text-muted p-1 border-0" title="Select All"><i class="bi bi-check2-square"></i></button>
                 <button class="btn btn-sm text-muted p-1 border-0" title="Sort"><i class="bi bi-filter-right"></i></button>
-                <button class="btn btn-sm text-muted p-1 border-0" title="Expand"><i class="bi bi-arrows-angle-expand"></i></button>
+                <button class="btn btn-sm text-muted p-1 border-0" title="Expand" onclick="BiltyBookingModule.expandPanel('mtc')"><i class="bi bi-arrows-angle-expand"></i></button>
               </div>
             </div>
             <div class="panel-body-scroll" id="mtc-panel-feed">
@@ -122,7 +122,7 @@
                 </button>
                 <button class="btn btn-sm text-muted p-1 border-0" title="Select All"><i class="bi bi-check2-square"></i></button>
                 <button class="btn btn-sm text-muted p-1 border-0" title="Sort"><i class="bi bi-filter-right"></i></button>
-                <button class="btn btn-sm text-muted p-1 border-0" title="Expand"><i class="bi bi-arrows-angle-expand"></i></button>
+                <button class="btn btn-sm text-muted p-1 border-0" title="Expand" onclick="BiltyBookingModule.expandPanel('ttc')"><i class="bi bi-arrows-angle-expand"></i></button>
               </div>
             </div>
             <div class="panel-body-scroll" id="ttc-panel-feed">
@@ -145,63 +145,57 @@
             </div>
           </div>
 
-          <!-- PANEL 3 (Right): Bilty Details -->
-          <div class="appsheet-panel-card panel-details-col">
-            <div class="appsheet-panel-card-header">
-              <span class="panel-header-title">Bilty Details</span>
-              <div class="d-flex align-items-center gap-1">
-                <button type="button" class="btn-appsheet-add" onclick="BiltyBookingModule.openCreateForm()">
-                  <i class="bi bi-plus"></i> Add
-                </button>
-                <button class="btn btn-sm text-muted p-1 border-0" onclick="BiltyBookingModule.navigateBilty(-1)" title="Previous"><i class="bi bi-chevron-left"></i></button>
-                <button class="btn btn-sm text-muted p-1 border-0" onclick="BiltyBookingModule.navigateBilty(1)" title="Next"><i class="bi bi-chevron-right"></i></button>
-                <button class="btn btn-sm text-muted p-1 border-0" onclick="BiltyBookingModule.editActiveBilty()" title="Edit"><i class="bi bi-pencil"></i></button>
-              </div>
-            </div>
+          <!-- PANEL 3 (Right): Bilty Details & Side-Box Form -->
+          <div class="appsheet-panel-card panel-details-col" id="panel-details-col">
             
-            <!-- Top Action Buttons Strip: TTC Income and Debt Record | Edit | Print -->
-            <div class="details-action-strip">
-              <div class="d-flex flex-column align-items-center" style="cursor: pointer;" onclick="BiltyBookingModule.openLedgerForActiveBilty()">
-                <button type="button" class="details-circle-btn">
-                  <i class="bi bi-send-fill"></i>
-                </button>
-                <span class="details-circle-label">TTC Income<br>and Debt Record</span>
+            <!-- SUB-VIEW A: KEY-VALUE DETAILS -->
+            <div id="col3-details-view" style="display: flex; flex-direction: column; height: 100%;">
+              <div class="appsheet-panel-card-header">
+                <span class="panel-header-title">Bilty Details</span>
+                <div class="d-flex align-items-center gap-1">
+                  <button type="button" class="btn-appsheet-add" onclick="BiltyBookingModule.openCreateForm()">
+                    <i class="bi bi-plus"></i> Add
+                  </button>
+                  <button class="btn btn-sm text-muted p-1 border-0" onclick="BiltyBookingModule.navigateBilty(-1)" title="Previous"><i class="bi bi-chevron-left"></i></button>
+                  <button class="btn btn-sm text-muted p-1 border-0" onclick="BiltyBookingModule.navigateBilty(1)" title="Next"><i class="bi bi-chevron-right"></i></button>
+                  <button class="btn btn-sm text-muted p-1 border-0" onclick="BiltyBookingModule.editActiveBilty()" title="Edit"><i class="bi bi-pencil"></i></button>
+                  <button class="btn btn-sm text-muted p-1 border-0" onclick="BiltyBookingModule.expandPanel('details')" title="Expand"><i class="bi bi-arrows-angle-expand"></i></button>
+                </div>
               </div>
-              <div class="d-flex flex-column align-items-center" style="cursor: pointer;" onclick="BiltyBookingModule.editActiveBilty()">
-                <button type="button" class="details-circle-btn">
-                  <i class="bi bi-pencil-square"></i>
-                </button>
-                <span class="details-circle-label">Edit</span>
+              
+              <!-- Top Action Buttons Strip: TTC Income and Debt Record | Edit | Print -->
+              <div class="details-action-strip">
+                <div class="d-flex flex-column align-items-center" style="cursor: pointer;" onclick="BiltyBookingModule.openLedgerForActiveBilty()">
+                  <button type="button" class="details-circle-btn">
+                    <i class="bi bi-send-fill"></i>
+                  </button>
+                  <span class="details-circle-label">TTC Income<br>and Debt Record</span>
+                </div>
+                <div class="d-flex flex-column align-items-center" style="cursor: pointer;" onclick="BiltyBookingModule.editActiveBilty()">
+                  <button type="button" class="details-circle-btn">
+                    <i class="bi bi-pencil-square"></i>
+                  </button>
+                  <span class="details-circle-label">Edit</span>
+                </div>
+                <div class="d-flex flex-column align-items-center" style="cursor: pointer;" onclick="BiltyBookingModule.printActiveBilty()">
+                  <button type="button" class="details-circle-btn">
+                    <i class="bi bi-printer"></i>
+                  </button>
+                  <span class="details-circle-label">Print A4</span>
+                </div>
               </div>
-              <div class="d-flex flex-column align-items-center" style="cursor: pointer;" onclick="BiltyBookingModule.printActiveBilty()">
-                <button type="button" class="details-circle-btn">
-                  <i class="bi bi-printer"></i>
-                </button>
-                <span class="details-circle-label">Print A4</span>
+
+              <!-- Scrollable Key-Value Properties List -->
+              <div class="panel-body-scroll" id="bilty-details-scroll">
+                <table class="details-key-value-table" id="bilty-details-kv-table">
+                  <!-- Dynamically populated properties -->
+                </table>
               </div>
             </div>
 
-            <!-- Scrollable Key-Value Properties List -->
-            <div class="panel-body-scroll" id="bilty-details-scroll">
-              <table class="details-key-value-table" id="bilty-details-kv-table">
-                <!-- Dynamically populated properties -->
-              </table>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- ==================================================================== -->
-      <!-- VIEW 2: CREATE / EDIT BILTY (FULL FORM)                              -->
-      <!-- ==================================================================== -->
-      <div id="bilty-create-view" style="display: none;">
-
-        <!-- ==================================================================== -->
-        <!-- AUTHENTIC GOOGLE APPSHEET BILTY CREATION FORM (100% VISUAL REPLICA) -->
-        <!-- Matching screenshots from C:\Users\HP\Downloads\allcreatebbilitey    -->
-        <!-- ==================================================================== -->
-        <div class="appsheet-form-view-container my-3">
+            <!-- SUB-VIEW B: INLINE CREATE/EDIT FORM (Inside Side Box) -->
+            <div id="bilty-create-view" style="display: none; height: 100%; overflow-y: auto;">
+              <div class="appsheet-form-view-container my-0">
           
           <!-- Top Header Bar: ✕ Bilty Details | Cancel | Save (Gold Pill) -->
           <div class="appsheet-form-header-bar">
@@ -786,6 +780,10 @@
       </div> <!-- End .appsheet-form-view-container -->
 
       </div> <!-- End #bilty-create-view -->
+          </div> <!-- End #panel-details-col -->
+
+        </div> <!-- End .appsheet-3panel-container -->
+      </div> <!-- End #bilty-dashboard-view -->
 
 
       <!-- ==================================================================== -->
