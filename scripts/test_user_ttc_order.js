@@ -77,16 +77,32 @@ async function runTest() {
   }
   console.log(`✓ PASS: Top date ribbon is 07/10/2026!`);
 
-  console.log(`\n2. Verifying Rendered HTML ribbons:`);
+  console.log(`\n2. Verifying Rendered HTML ribbons & Columns (Reference, Driver, Bilty Date):`);
   const hasOct7 = ttcHtml.includes('07/10/2026') && ttcHtml.includes('2377_TTC') && ttcHtml.includes('216_SMTC');
   const hasOct6 = ttcHtml.includes('06/10/2026') && ttcHtml.includes('2376_TTC') && ttcHtml.includes('215_SMTC');
   const hasOct5 = ttcHtml.includes('05/10/2026') && ttcHtml.includes('2362_TTC');
+
+  const hasReference = ttcHtml.includes('Tanuj Kothari Udaipur') && ttcHtml.includes('Mahaveer Minerals 9414312586');
+  const hasDriver = ttcHtml.includes('Hemraj Natwadiya') && ttcHtml.includes('Kushiram Gurjar Tonk');
+  const hasBiltyDate = ttcHtml.includes('07/10/2026') && ttcHtml.includes('06/10/2026');
 
   if (!hasOct7 || !hasOct6 || !hasOct5) {
     console.error(`❌ FAILED: Rendered HTML missing expected ribbons/trips for Oct 2026`);
     process.exit(1);
   }
-  console.log(`✓ PASS: Verified 07/10/2026, 06/10/2026, and 05/10/2026 ribbons in TTC & SMTC feed!`);
+  if (!hasReference) {
+    console.error(`❌ FAILED: Rendered HTML missing Reference column data!`);
+    process.exit(1);
+  }
+  if (!hasDriver) {
+    console.error(`❌ FAILED: Rendered HTML missing Driver column data!`);
+    process.exit(1);
+  }
+  if (!hasBiltyDate) {
+    console.error(`❌ FAILED: Rendered HTML missing Bilty Date column data!`);
+    process.exit(1);
+  }
+  console.log(`✓ PASS: Verified Reference, Driver, and Bilty Date columns rendered with authentic data!`);
 
   console.log(`\n3. Verifying Driver Names:`);
   const assignedCount = ttcTrips.filter(t => (t.driver || '').toLowerCase().includes('assigned driver')).length;

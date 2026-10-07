@@ -4019,7 +4019,7 @@ const BiltyBookingModule = {
 
       html += `
         <tr class="ttc-date-row" onclick="BiltyBookingModule.toggleTtcDateGroup('${grpId}')" title="Click to expand/collapse date group" style="cursor: pointer;">
-          <td colspan="5" class="py-1 px-2 border-top border-bottom" style="background: #eef2f5;">
+          <td colspan="7" class="py-1 px-2 border-top border-bottom" style="background: #eef2f5;">
             <div class="d-flex align-items-center justify-content-between">
               <div class="d-flex align-items-center gap-2">
                 <i class="bi bi-chevron-down ttc-arrow-icon" id="arrow-ttc-${grpId}" style="font-size: 10px; color: #5f6368; transition: transform 0.2s;"></i>
@@ -4042,8 +4042,15 @@ const BiltyBookingModule = {
         const isNegative = shortGr.startsWith('-');
         const biltyColor = isSettled ? '#1e8e3e' : (isNegative ? '#5f6368' : '#202124');
         const dotColor = '#1e8e3e';
+        const dotSpan = isSettled ? `<span style="color: ${dotColor}; font-size: 10px; margin-right: 5px;">●</span>` : '';
         const truckNo = (t.truckNo || '-').toUpperCase();
         const toDest = (t.destination || '-').trim();
+
+        const refDisplay = (t.reference || t.consignor || '-').trim();
+        const driverName = (t.driver || '-').trim();
+        const driverPhone = (t.driverMobile || '').trim();
+        const driverDisplay = (driverPhone && !driverName.includes(driverPhone)) ? `${driverName} ${driverPhone}` : driverName;
+        const dateDisplay = this.formatAppSheetDate(t.tripStartDate || t.biltyDate);
 
         const isChecked = this.selectedTripIds && this.selectedTripIds.has(String(id));
         const checkHtml = isMulti 
@@ -4074,23 +4081,27 @@ const BiltyBookingModule = {
 
         html += `
           <tr class="ttc-row-item ttc-grp-${grpId} ${isActive ? 'active-row' : ''} ${isSettled ? 'row-settled' : ''}" data-trip-id="${id}" onclick="BiltyBookingModule.selectBilty('${id}')">
-            <td style="width: 110px; padding: 6px 6px;">
+            <td style="width: 120px; padding: 6px 6px;">
               ${actionIconsHtml}
             </td>
-            <td class="fw-bold" style="color: ${biltyColor};">
-              ${isSettled ? `<span style="color: ${dotColor}; font-size: 10px; margin-right: 4px;">●</span>` : ''}
-              <span>${shortGr}</span>
+            <td class="fw-bold" style="color: ${biltyColor}; white-space: nowrap;">
+              ${dotSpan}<span>${shortGr}</span>
             </td>
-            <td style="color: ${biltyColor}; font-weight: ${isSettled ? '600' : 'normal'};">
-              ${isSettled ? `<span style="color: ${dotColor}; font-size: 10px; margin-right: 4px;">●</span>` : ''}
-              <span>${truckNo}</span>
+            <td style="color: ${biltyColor}; font-weight: ${isSettled ? '600' : 'normal'}; white-space: nowrap;">
+              ${dotSpan}<span>${truckNo}</span>
             </td>
-            <td style="color: ${biltyColor};">
-              ${isSettled ? `<span style="color: ${dotColor}; font-size: 10px; margin-right: 4px;">●</span>` : ''}
-              <span>${toDest}</span>
+            <td style="color: ${biltyColor}; white-space: nowrap;">
+              ${dotSpan}<span>${toDest}</span>
             </td>
-            <td class="text-end" style="width: 24px; padding-right: 8px;">
-              ${isSettled ? `<span style="color: ${dotColor}; font-size: 10px;">●</span>` : ''}
+            <td style="color: ${biltyColor}; white-space: nowrap;" title="${refDisplay}">
+              ${dotSpan}<span>${refDisplay}</span>
+            </td>
+            <td style="color: ${biltyColor}; white-space: nowrap;" title="${driverDisplay}">
+              ${dotSpan}<span>${driverDisplay}</span>
+            </td>
+            <td class="text-end" style="color: ${biltyColor}; white-space: nowrap; padding-right: 14px;">
+              ${dotSpan}<span>${dateDisplay}</span>
+              <i class="bi bi-chevron-right" style="font-size: 10px; color: #5f6368; margin-left: 6px;"></i>
             </td>
           </tr>
         `;
@@ -4100,7 +4111,7 @@ const BiltyBookingModule = {
     if (limit < ttcTrips.length) {
       html += `
         <tr>
-          <td colspan="5" class="text-center text-muted py-2 border-top" style="background: #fafafa; font-size: 11px;">
+          <td colspan="7" class="text-center text-muted py-2 border-top" style="background: #fafafa; font-size: 11px;">
             Showing ${Math.min(limit, ttcTrips.length)} of ${ttcTrips.length} TTC &amp; SMTC bilties (Scroll down for more)
           </td>
         </tr>
