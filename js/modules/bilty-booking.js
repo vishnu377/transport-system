@@ -58,6 +58,23 @@ const BiltyBookingModule = {
   currentBatchTrips: [],
   activeBatchIndex: 'all',
 
+  AUTHENTIC_MTC_GRS: new Set([
+    '716_MTC', '715_MTC', '714_MTC', '713_MTC', '712_MTC',
+    '711_MTC', '710_MTC', '709_MTC', '708_MTC', '707_MTC',
+    '706_MTC', '705_MTC', '-1_MTC', '704_MTC', '703_MTC',
+    '702_MTC', '701_MTC', '700_MTC', '699_MTC', '698_MTC'
+  ]),
+
+  lookupDriverForTruck(truckNo) {
+    if (!truckNo) return '';
+    const clean = String(truckNo).trim().toUpperCase();
+    if (Array.isArray(this.drivers) && this.drivers.length > 0) {
+      const match = this.drivers.find(d => String(d.truckNo || '').trim().toUpperCase() === clean);
+      if (match && match.name) return match.name;
+    }
+    return '';
+  },
+
   async init() {
     AppUI.renderSidebar('bilty');
     await this.loadAllData();
@@ -158,6 +175,15 @@ const BiltyBookingModule = {
       if (partySet.size > this.parties.length) {
         this.parties = Array.from(partySet.values());
       }
+    }
+
+    // Auto-normalize drivers: Guarantee zero 'Assigned Driver' placeholders
+    if (Array.isArray(this.allTrips)) {
+      this.allTrips.forEach(t => {
+        if (!t.driver || t.driver === 'Assigned Driver') {
+          t.driver = this.lookupDriverForTruck(t.truckNo) || (this.drivers && this.drivers.length ? this.drivers[0].name : '-');
+        }
+      });
     }
   },
 
@@ -2196,7 +2222,7 @@ const BiltyBookingModule = {
     const date = document.getElementById('bilty-date')?.value || new Date().toISOString().split('T')[0];
     const truckOwner = (document.getElementById('bilty-owner')?.value || '').trim() || `${truckNo} Owner`;
     const ownerMobile = (document.getElementById('bilty-owner-mobile')?.value || '').trim();
-    const driver = (document.getElementById('bilty-driver')?.value || '').trim() || 'Assigned Driver';
+    const driver = (document.getElementById('bilty-driver')?.value || '').trim() || this.lookupDriverForTruck(truckNo) || '-';
     const driverMobile = (document.getElementById('bilty-driver-mobile')?.value || '').trim();
     const reference = (document.getElementById('bilty-broker')?.value || '').trim();
     const loadType = document.getElementById('bilty-load-type')?.value || 'Under Load';
@@ -3212,7 +3238,7 @@ const BiltyBookingModule = {
       truckOwner: document.getElementById('bilty-owner').value.trim() || `${truckNo} Owner`,
       ownerMobile: document.getElementById('bilty-owner-mobile').value.trim(),
       loadType: document.getElementById('bilty-load-type').value,
-      driver: document.getElementById('bilty-driver').value.trim() || 'Assigned Driver',
+      driver: document.getElementById('bilty-driver').value.trim() || this.lookupDriverForTruck(truckNo) || '-',
       driverMobile: document.getElementById('bilty-driver-mobile').value.trim(),
       reference: document.getElementById('bilty-broker').value.trim(),
 
@@ -3505,10 +3531,18 @@ const BiltyBookingModule = {
       case 'date_desc':
       default:
         return (a, b) => {
+          const sA = String(a.shortGrNo || (a.grNo ? a.grNo.split('-').pop() : '')).trim();
+          const sB = String(b.shortGrNo || (b.grNo ? b.grNo.split('-').pop() : '')).trim();
+          const isAuthA = !!a.isAuthentic || (BiltyBookingModule.AUTHENTIC_MTC_GRS && BiltyBookingModule.AUTHENTIC_MTC_GRS.has(sA));
+          const isAuthB = !!b.isAuthentic || (BiltyBookingModule.AUTHENTIC_MTC_GRS && BiltyBookingModule.AUTHENTIC_MTC_GRS.has(sB));
+
+          if (isAuthA && !isAuthB) return -1;
+          if (!isAuthA && isAuthB) return 1;
+
           const dA = a.tripStartDate || a.biltyDate || '';
           const dB = b.tripStartDate || b.biltyDate || '';
           if (dA !== dB) return dB.localeCompare(dA);
-          return (Number(b.grSeq) || 0) - (Number(a.grSeq) || 0);
+          return (Number(b.grSeq || parseInt(sB) || 0) - Number(a.grSeq || parseInt(sA) || 0));
         };
     }
   },
@@ -3724,9 +3758,14 @@ const BiltyBookingModule = {
     const ttcTrips = [];
 
     trips.forEach(t => {
-      const firm = String(t.transport || '').toUpperCase();
-      const gr = String(t.grNo || '').toUpperCase();
-      if (firm === 'MTC' || gr.includes('MTC')) {
+      const firm = String(t.transport || '').toUpperCase().trim();
+      const gr = String(t.grNo || '').toUpperCase().trim();
+      const shortGr = String(t.shortGrNo || '').toUpperCase().trim();
+
+      const isMtc = (firm === 'MTC') || 
+        ((shortGr.endsWith('_MTC') || gr.endsWith('_MTC') || gr.includes('-MTC') || gr.includes('/MTC') || (gr.includes('MTC') && !gr.includes('SMTC'))) && firm !== 'TTC' && firm !== 'SMTC');
+
+      if (isMtc) {
         mtcTrips.push(t);
       } else {
         ttcTrips.push(t);

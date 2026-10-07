@@ -1,9 +1,4 @@
-/**
- * Truck Owners Master Directory - MTC & TTC Logistics
- * Extracted directly from AppSheet Screenshots
- * Exactly 586 Trucks & Owners (Header: 'Truck No. Number 586')
- */
-
+// Authentic Truck Owners & Fleet Vehicles Directory
 window.INITIAL_TRUCK_OWNERS = [
   {
     "id": "truck_owner_1",
@@ -80,7 +75,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-229_TTC",
         "tripStartDate": "2025-05-20",
         "destination": "Azamgarh (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 122003.0,
         "ownerDue": 109802.7,
         "status": "Settled"
@@ -89,7 +84,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-206_MTC",
         "tripStartDate": "2025-05-12",
         "destination": "Dehradun (U.K.)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 103950.0,
         "ownerDue": 93555.0,
         "status": "Settled"
@@ -98,7 +93,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-99_MTC",
         "tripStartDate": "2025-04-17",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 111989.0,
         "ownerDue": 100790.1,
         "status": "Settled"
@@ -107,7 +102,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "1557_TTC",
         "tripStartDate": "2025-02-10",
         "destination": "Jhajjar (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 118174.0,
         "ownerDue": 106356.6,
         "status": "Settled"
@@ -116,7 +111,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "1214_MTC",
         "tripStartDate": "2025-01-11",
         "destination": "Mohali (Punjab)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 100270.0,
         "ownerDue": 90243.0,
         "status": "Settled"
@@ -402,7 +397,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "-96_TTC",
         "tripStartDate": "2024-12-11",
         "destination": "Agra (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mahaveer Kumawat",
         "freight": 97024.5,
         "ownerDue": 87322.05,
         "status": "Settled"
@@ -411,7 +406,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "1016_MTC",
         "tripStartDate": "2024-12-07",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Mahaveer Kumawat",
         "freight": 1.0,
         "ownerDue": 0.9,
         "status": "Settled"
@@ -420,7 +415,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "964_MTC",
         "tripStartDate": "2024-11-25",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Mahaveer Kumawat",
         "freight": 0.0,
         "ownerDue": 0.0,
         "status": "Settled"
@@ -429,7 +424,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "1000_TTC",
         "tripStartDate": "2024-11-12",
         "destination": "Roorkee (U.K.)",
-        "driver": "Assigned Driver",
+        "driver": "Mahaveer Kumawat",
         "freight": 135625.0,
         "ownerDue": 122062.5,
         "status": "Settled"
@@ -438,7 +433,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "947_TTC",
         "tripStartDate": "2024-10-28",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Mahaveer Kumawat",
         "freight": 100905.5,
         "ownerDue": 90814.95,
         "status": "Settled"
@@ -447,7 +442,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "901_TTC",
         "tripStartDate": "2024-10-21",
         "destination": "Sonipat (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Mahaveer Kumawat",
         "freight": 95000.0,
         "ownerDue": 85500.0,
         "status": "Settled"
@@ -456,7 +451,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "852_TTC",
         "tripStartDate": "2024-10-14",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Mahaveer Kumawat",
         "freight": 95994.0,
         "ownerDue": 86394.6,
         "status": "Settled"
@@ -2026,7 +2021,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2086_TTC",
         "tripStartDate": "2026-09-15",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 180000.0,
         "ownerDue": 162000.0,
         "status": "Completed"
@@ -2035,7 +2030,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1991_TTC",
         "tripStartDate": "2026-09-07",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 174250.0,
         "ownerDue": 156825.0,
         "status": "Completed"
@@ -2044,7 +2039,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1736_TTC",
         "tripStartDate": "2026-08-15",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 180000.0,
         "ownerDue": 162000.0,
         "status": "Settled"
@@ -2053,7 +2048,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1627_TTC",
         "tripStartDate": "2026-08-06",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 180000.0,
         "ownerDue": 162000.0,
         "status": "Settled"
@@ -2062,7 +2057,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1548_TTC",
         "tripStartDate": "2026-07-29",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 138255.0,
         "ownerDue": 124429.5,
         "status": "Settled"
@@ -2071,7 +2066,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1415_TTC",
         "tripStartDate": "2026-07-19",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 159000.0,
         "ownerDue": 143100.0,
         "status": "Settled"
@@ -2080,7 +2075,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1285_TTC",
         "tripStartDate": "2026-07-09",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 167383.0,
         "ownerDue": 150644.7,
         "status": "Settled"
@@ -2089,7 +2084,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1153_TTC",
         "tripStartDate": "2026-06-28",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 173020.0,
         "ownerDue": 155718.0,
         "status": "Settled"
@@ -2098,7 +2093,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1042_TTC",
         "tripStartDate": "2026-06-17",
         "destination": "Bhadohi (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 225600.0,
         "ownerDue": 203040.0,
         "status": "Settled"
@@ -2107,7 +2102,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-941_TTC",
         "tripStartDate": "2026-06-10",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 160000.0,
         "ownerDue": 144000.0,
         "status": "Settled"
@@ -2116,7 +2111,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-856_TTC",
         "tripStartDate": "2026-06-04",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 139794.0,
         "ownerDue": 125814.6,
         "status": "Settled"
@@ -2125,7 +2120,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-757_TTC",
         "tripStartDate": "2026-05-26",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 172000.0,
         "ownerDue": 154800.0,
         "status": "Settled"
@@ -2134,7 +2129,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-52_SMTC",
         "tripStartDate": "2026-05-14",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 202960.0,
         "ownerDue": 182664.0,
         "status": "Settled"
@@ -2143,7 +2138,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-500_TTC",
         "tripStartDate": "2026-05-07",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 176000.0,
         "ownerDue": 158400.0,
         "status": "Settled"
@@ -2152,7 +2147,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-439_TTC",
         "tripStartDate": "2026-05-03",
         "destination": "Hathras (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 126500.0,
         "ownerDue": 113850.0,
         "status": "Completed"
@@ -2174,7 +2169,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2165_TTC",
         "tripStartDate": "2026-09-20",
         "destination": "Greater Noida (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 88616.0,
         "ownerDue": 79754.40000000001,
         "status": "Completed"
@@ -2183,7 +2178,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2058_TTC",
         "tripStartDate": "2026-09-12",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 106973.0,
         "ownerDue": 96275.7,
         "status": "Transit"
@@ -2192,7 +2187,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1992_TTC",
         "tripStartDate": "2026-09-07",
         "destination": "Baghpat (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 93471.0,
         "ownerDue": 84123.90000000001,
         "status": "Settled"
@@ -2201,7 +2196,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1944_TTC",
         "tripStartDate": "2026-09-02",
         "destination": "Panipat (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 86625.0,
         "ownerDue": 77962.5,
         "status": "Completed"
@@ -2210,7 +2205,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1892_TTC",
         "tripStartDate": "2026-08-27",
         "destination": "Noida (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 92042.0,
         "ownerDue": 82837.8,
         "status": "Settled"
@@ -2219,7 +2214,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1828_TTC",
         "tripStartDate": "2026-08-22",
         "destination": "SAHIBABAD (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 96600.0,
         "ownerDue": 86940.0,
         "status": "Settled"
@@ -2228,7 +2223,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1687_TTC",
         "tripStartDate": "2026-08-12",
         "destination": "Jaunpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 128000.0,
         "ownerDue": 115200.0,
         "status": "Settled"
@@ -2237,7 +2232,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1603_TTC",
         "tripStartDate": "2026-08-03",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 125693.0,
         "ownerDue": 113123.7,
         "status": "Settled"
@@ -2246,7 +2241,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1526_TTC",
         "tripStartDate": "2026-07-27",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 117425.0,
         "ownerDue": 105682.5,
         "status": "Settled"
@@ -2255,7 +2250,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1432_TTC",
         "tripStartDate": "2026-07-20",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 109200.0,
         "ownerDue": 98280.0,
         "status": "Completed"
@@ -2264,7 +2259,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1357_TTC",
         "tripStartDate": "2026-07-15",
         "destination": "Noida (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 91375.0,
         "ownerDue": 82237.5,
         "status": "Settled"
@@ -2273,7 +2268,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1237_TTC",
         "tripStartDate": "2026-07-05",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 125150.0,
         "ownerDue": 112635.0,
         "status": "Settled"
@@ -2282,7 +2277,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1139_TTC",
         "tripStartDate": "2026-06-26",
         "destination": "Sikandrabad (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 96600.0,
         "ownerDue": 86940.0,
         "status": "Settled"
@@ -2291,7 +2286,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1030_TTC",
         "tripStartDate": "2026-06-17",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 109200.0,
         "ownerDue": 98280.0,
         "status": "Settled"
@@ -2300,7 +2295,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-900_TTC",
         "tripStartDate": "2026-06-08",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 109200.0,
         "ownerDue": 98280.0,
         "status": "Settled"
@@ -2322,7 +2317,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-183_SMTC",
         "tripStartDate": "2026-09-18",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 207680.0,
         "ownerDue": 186912.0,
         "status": "Completed"
@@ -2331,7 +2326,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1988_TTC",
         "tripStartDate": "2026-09-07",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 180000.0,
         "ownerDue": 162000.0,
         "status": "Completed"
@@ -2340,7 +2335,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1880_TTC",
         "tripStartDate": "2026-08-26",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 180000.0,
         "ownerDue": 162000.0,
         "status": "Settled"
@@ -2349,7 +2344,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1818_TTC",
         "tripStartDate": "2026-08-21",
         "destination": "Bharatpur (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 109000.0,
         "ownerDue": 98100.0,
         "status": "Settled"
@@ -2358,7 +2353,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1732_TTC",
         "tripStartDate": "2026-08-14",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 144780.0,
         "ownerDue": 130302.0,
         "status": "Settled"
@@ -2367,7 +2362,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1622_TTC",
         "tripStartDate": "2026-08-05",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 171810.0,
         "ownerDue": 154629.0,
         "status": "Settled"
@@ -2376,7 +2371,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-141_SMTC",
         "tripStartDate": "2026-07-25",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 207680.0,
         "ownerDue": 186912.0,
         "status": "Settled"
@@ -2385,7 +2380,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1330_TTC",
         "tripStartDate": "2026-07-13",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 157700.0,
         "ownerDue": 141930.0,
         "status": "Settled"
@@ -2394,7 +2389,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1188_TTC",
         "tripStartDate": "2026-06-30",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 186383.0,
         "ownerDue": 167744.7,
         "status": "Settled"
@@ -2403,7 +2398,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1066_TTC",
         "tripStartDate": "2026-06-20",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 129000.0,
         "ownerDue": 116100.0,
         "status": "Settled"
@@ -2412,7 +2407,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-958_TTC",
         "tripStartDate": "2026-06-11",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 155023.0,
         "ownerDue": 139520.7,
         "status": "Settled"
@@ -2421,7 +2416,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-878_TTC",
         "tripStartDate": "2026-06-05",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 179820.0,
         "ownerDue": 161838.0,
         "status": "Settled"
@@ -2430,7 +2425,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-732_TTC",
         "tripStartDate": "2026-05-25",
         "destination": "Barabanki (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 189420.0,
         "ownerDue": 170478.0,
         "status": "Settled"
@@ -2439,7 +2434,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-598_TTC",
         "tripStartDate": "2026-05-13",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 171763.0,
         "ownerDue": 154586.7,
         "status": "Settled"
@@ -2448,7 +2443,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-436_TTC",
         "tripStartDate": "2026-05-02",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 162645.0,
         "ownerDue": 146380.5,
         "status": "Settled"
@@ -2470,7 +2465,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026--71_TTC",
         "tripStartDate": "2025-05-25",
         "destination": "Bahadurgarh (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 141195.0,
         "ownerDue": 127075.5,
         "status": "Settled"
@@ -2479,7 +2474,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-232_TTC",
         "tripStartDate": "2025-05-21",
         "destination": "Gurugram (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 115292.0,
         "ownerDue": 103762.8,
         "status": "Settled"
@@ -2488,7 +2483,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026--53_TTC",
         "tripStartDate": "2025-05-11",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 62916.0,
         "ownerDue": 56624.4,
         "status": "Settled"
@@ -2497,7 +2492,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-173_TTC",
         "tripStartDate": "2025-05-07",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 88920.0,
         "ownerDue": 80028.0,
         "status": "Settled"
@@ -2506,7 +2501,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-156_TTC",
         "tripStartDate": "2025-05-02",
         "destination": "Loni (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 110550.0,
         "ownerDue": 99495.0,
         "status": "Settled"
@@ -2515,7 +2510,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-126_TTC",
         "tripStartDate": "2025-04-26",
         "destination": "Bahadurgarh (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 135840.0,
         "ownerDue": 122256.0,
         "status": "Settled"
@@ -2524,7 +2519,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-79_TTC",
         "tripStartDate": "2025-04-17",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 176586.0,
         "ownerDue": 158927.4,
         "status": "Settled"
@@ -2533,7 +2528,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-10_TTC",
         "tripStartDate": "2025-04-04",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 176000.0,
         "ownerDue": 158400.0,
         "status": "Settled"
@@ -2542,7 +2537,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "1811_TTC",
         "tripStartDate": "2025-03-30",
         "destination": "Sonipat (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 140522.0,
         "ownerDue": 126469.8,
         "status": "Settled"
@@ -2551,7 +2546,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "1790_TTC",
         "tripStartDate": "2025-03-25",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 120150.0,
         "ownerDue": 108135.0,
         "status": "Settled"
@@ -2560,7 +2555,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "1762_TTC",
         "tripStartDate": "2025-03-20",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 117911.6,
         "ownerDue": 106120.44,
         "status": "Settled"
@@ -2569,7 +2564,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "1729_TTC",
         "tripStartDate": "2025-03-12",
         "destination": "Gurugram (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 112000.0,
         "ownerDue": 100800.0,
         "status": "Settled"
@@ -2578,7 +2573,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "1697_TTC",
         "tripStartDate": "2025-03-06",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 141750.0,
         "ownerDue": 127575.0,
         "status": "Settled"
@@ -2587,7 +2582,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "1663_TTC",
         "tripStartDate": "2025-03-01",
         "destination": "Baraut (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 111215.0,
         "ownerDue": 100093.5,
         "status": "Settled"
@@ -2596,7 +2591,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "-227_TTC",
         "tripStartDate": "2025-02-24",
         "destination": "Shahpura (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 79190.0,
         "ownerDue": 71271.0,
         "status": "Settled"
@@ -2618,7 +2613,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2107_TTC",
         "tripStartDate": "2026-09-16",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 189440.0,
         "ownerDue": 170496.0,
         "status": "Settled"
@@ -2627,7 +2622,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2054_TTC",
         "tripStartDate": "2026-09-12",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 144229.0,
         "ownerDue": 129806.1,
         "status": "Settled"
@@ -2636,7 +2631,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1883_TTC",
         "tripStartDate": "2026-08-26",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 150651.0,
         "ownerDue": 135585.9,
         "status": "Settled"
@@ -2645,7 +2640,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1711_TTC",
         "tripStartDate": "2026-08-13",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 180000.0,
         "ownerDue": 162000.0,
         "status": "Settled"
@@ -2654,7 +2649,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1649_TTC",
         "tripStartDate": "2026-08-07",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 189162.0,
         "ownerDue": 170245.80000000002,
         "status": "Settled"
@@ -2663,7 +2658,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1549_TTC",
         "tripStartDate": "2026-07-29",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 181041.0,
         "ownerDue": 162936.9,
         "status": "Settled"
@@ -2672,7 +2667,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1435_TTC",
         "tripStartDate": "2026-07-20",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 174720.0,
         "ownerDue": 157248.0,
         "status": "Settled"
@@ -2681,7 +2676,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1339_TTC",
         "tripStartDate": "2026-07-13",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 196197.0,
         "ownerDue": 176577.30000000002,
         "status": "Settled"
@@ -2690,7 +2685,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1251_TTC",
         "tripStartDate": "2026-07-06",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 175750.0,
         "ownerDue": 158175.0,
         "status": "Settled"
@@ -2699,7 +2694,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1148_TTC",
         "tripStartDate": "2026-06-27",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 171000.0,
         "ownerDue": 153900.0,
         "status": "Settled"
@@ -2708,7 +2703,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1086_TTC",
         "tripStartDate": "2026-06-22",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 159048.0,
         "ownerDue": 143143.2,
         "status": "Settled"
@@ -2717,7 +2712,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1022_TTC",
         "tripStartDate": "2026-06-17",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 186751.0,
         "ownerDue": 168075.9,
         "status": "Settled"
@@ -2726,7 +2721,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-938_TTC",
         "tripStartDate": "2026-06-11",
         "destination": "Barabanki (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 191100.0,
         "ownerDue": 171990.0,
         "status": "Settled"
@@ -2735,7 +2730,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-845_TTC",
         "tripStartDate": "2026-06-05",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 151620.0,
         "ownerDue": 136458.0,
         "status": "Settled"
@@ -2744,7 +2739,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-789_TTC",
         "tripStartDate": "2026-05-29",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 180500.0,
         "ownerDue": 162450.0,
         "status": "Settled"
@@ -2766,7 +2761,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2093_TTC",
         "tripStartDate": "2026-09-15",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 103989.0,
         "ownerDue": 93590.1,
         "status": "Completed"
@@ -2775,7 +2770,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2003_TTC",
         "tripStartDate": "2026-09-08",
         "destination": "Bhiwadi (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 132835.0,
         "ownerDue": 119551.5,
         "status": "Completed"
@@ -2784,7 +2779,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--204_TTC",
         "tripStartDate": "2026-09-01",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 123840.0,
         "ownerDue": 111456.0,
         "status": "Settled"
@@ -2793,7 +2788,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1848_TTC",
         "tripStartDate": "2026-08-24",
         "destination": "Jhajjar (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 116000.0,
         "ownerDue": 104400.0,
         "status": "Settled"
@@ -2802,7 +2797,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--183_TTC",
         "tripStartDate": "2026-08-18",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 116204.0,
         "ownerDue": 104583.6,
         "status": "Settled"
@@ -2811,7 +2806,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1709_TTC",
         "tripStartDate": "2026-08-13",
         "destination": "Bahadurgarh (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 120750.0,
         "ownerDue": 108675.0,
         "status": "Completed"
@@ -2820,7 +2815,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1636_TTC",
         "tripStartDate": "2026-08-06",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 123750.0,
         "ownerDue": 111375.0,
         "status": "Settled"
@@ -2829,7 +2824,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1551_TTC",
         "tripStartDate": "2026-07-29",
         "destination": "Jhajjar (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 121200.0,
         "ownerDue": 109080.0,
         "status": "Settled"
@@ -2838,7 +2833,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1483_TTC",
         "tripStartDate": "2026-07-24",
         "destination": "Baraut (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 109800.0,
         "ownerDue": 98820.0,
         "status": "Settled"
@@ -2847,7 +2842,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--143_TTC",
         "tripStartDate": "2026-07-20",
         "destination": "Gurugram (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 97662.0,
         "ownerDue": 87895.8,
         "status": "Settled"
@@ -2856,7 +2851,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-133_SMTC",
         "tripStartDate": "2026-07-05",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 120939.0,
         "ownerDue": 108845.1,
         "status": "Settled"
@@ -2865,7 +2860,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1184_TTC",
         "tripStartDate": "2026-06-30",
         "destination": "Bhiwadi (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 123438.0,
         "ownerDue": 111094.2,
         "status": "Settled"
@@ -2874,7 +2869,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1124_TTC",
         "tripStartDate": "2026-06-24",
         "destination": "Jhajjar (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 118175.0,
         "ownerDue": 106357.5,
         "status": "Settled"
@@ -2883,7 +2878,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1034_TTC",
         "tripStartDate": "2026-06-18",
         "destination": "Rohtak (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 132800.0,
         "ownerDue": 119520.0,
         "status": "Settled"
@@ -2892,7 +2887,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-939_TTC",
         "tripStartDate": "2026-06-10",
         "destination": "Jhajjar (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 118175.0,
         "ownerDue": 106357.5,
         "status": "Settled"
@@ -2914,7 +2909,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2168_TTC",
         "tripStartDate": "2026-09-21",
         "destination": "Nagina (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ghewar Gurjar",
         "freight": 80080.0,
         "ownerDue": 72072.0,
         "status": "Completed"
@@ -2923,7 +2918,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2096_TTC",
         "tripStartDate": "2026-09-15",
         "destination": "Panipat (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Ghewar Gurjar",
         "freight": 91518.0,
         "ownerDue": 82366.2,
         "status": "Completed"
@@ -2932,7 +2927,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2016_TTC",
         "tripStartDate": "2026-09-09",
         "destination": "Ghaziabad (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ghewar Gurjar",
         "freight": 145600.0,
         "ownerDue": 131040.0,
         "status": "Settled"
@@ -2941,7 +2936,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1940_TTC",
         "tripStartDate": "2026-09-02",
         "destination": "Dadri (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ghewar Gurjar",
         "freight": 128000.0,
         "ownerDue": 115200.0,
         "status": "Settled"
@@ -2950,7 +2945,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1856_TTC",
         "tripStartDate": "2026-08-23",
         "destination": "Saharanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ghewar Gurjar",
         "freight": 146540.0,
         "ownerDue": 131886.0,
         "status": "Settled"
@@ -2959,7 +2954,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--179_TTC",
         "tripStartDate": "2026-08-17",
         "destination": "Loni (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ghewar Gurjar",
         "freight": 139992.0,
         "ownerDue": 125992.8,
         "status": "Settled"
@@ -2968,7 +2963,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1707_TTC",
         "tripStartDate": "2026-08-12",
         "destination": "Jhajjar (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Ghewar Gurjar",
         "freight": 101472.0,
         "ownerDue": 91324.8,
         "status": "Settled"
@@ -2977,7 +2972,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1638_TTC",
         "tripStartDate": "2026-08-06",
         "destination": "Jhajjar (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Ghewar Gurjar",
         "freight": 100534.0,
         "ownerDue": 90480.6,
         "status": "Settled"
@@ -2986,7 +2981,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1564_TTC",
         "tripStartDate": "2026-07-31",
         "destination": "Karnal (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Ghewar Gurjar",
         "freight": 130900.0,
         "ownerDue": 117810.0,
         "status": "Settled"
@@ -2995,7 +2990,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--148_TTC",
         "tripStartDate": "2026-07-24",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Ghewar Gurjar",
         "freight": 138239.0,
         "ownerDue": 124415.1,
         "status": "Settled"
@@ -3004,7 +2999,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1404_TTC",
         "tripStartDate": "2026-07-18",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Ghewar Gurjar",
         "freight": 139859.0,
         "ownerDue": 125873.1,
         "status": "Settled"
@@ -3013,7 +3008,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--131_TTC",
         "tripStartDate": "2026-07-11",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Ghewar Gurjar",
         "freight": 119040.0,
         "ownerDue": 107136.0,
         "status": "Settled"
@@ -3022,7 +3017,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--125_TTC",
         "tripStartDate": "2026-07-06",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Ghewar Gurjar",
         "freight": 114000.0,
         "ownerDue": 102600.0,
         "status": "Settled"
@@ -3031,7 +3026,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1173_TTC",
         "tripStartDate": "2026-06-28",
         "destination": "Deoband (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ghewar Gurjar",
         "freight": 177276.0,
         "ownerDue": 159548.4,
         "status": "Settled"
@@ -3040,7 +3035,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1058_TTC",
         "tripStartDate": "2026-06-20",
         "destination": "Roorkee (U.K.)",
-        "driver": "Assigned Driver",
+        "driver": "Ghewar Gurjar",
         "freight": 152873.0,
         "ownerDue": 137585.7,
         "status": "Settled"
@@ -3062,7 +3057,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2111_TTC",
         "tripStartDate": "2026-09-16",
         "destination": "Dadri (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 151680.0,
         "ownerDue": 136512.0,
         "status": "Completed"
@@ -3071,7 +3066,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--217_TTC",
         "tripStartDate": "2026-09-10",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 119660.0,
         "ownerDue": 107694.0,
         "status": "Settled"
@@ -3080,7 +3075,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--208_TTC",
         "tripStartDate": "2026-09-02",
         "destination": "Meerut (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 157500.0,
         "ownerDue": 141750.0,
         "status": "Completed"
@@ -3089,7 +3084,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--192_TTC",
         "tripStartDate": "2026-08-24",
         "destination": "Loni (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 131750.0,
         "ownerDue": 118575.0,
         "status": "Settled"
@@ -3098,7 +3093,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1779_TTC",
         "tripStartDate": "2026-08-18",
         "destination": "Purkazi (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 147520.0,
         "ownerDue": 132768.0,
         "status": "Settled"
@@ -3107,7 +3102,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--171_TTC",
         "tripStartDate": "2026-08-13",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 122250.0,
         "ownerDue": 110025.0,
         "status": "Settled"
@@ -3116,7 +3111,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1624_TTC",
         "tripStartDate": "2026-08-05",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 107920.0,
         "ownerDue": 97128.0,
         "status": "Settled"
@@ -3125,7 +3120,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1557_TTC",
         "tripStartDate": "2026-07-31",
         "destination": "Rohtak (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 132000.0,
         "ownerDue": 118800.0,
         "status": "Settled"
@@ -3134,7 +3129,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1480_TTC",
         "tripStartDate": "2026-07-24",
         "destination": "Muzaffarnagar (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 152240.0,
         "ownerDue": 137016.0,
         "status": "Settled"
@@ -3143,7 +3138,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1424_TTC",
         "tripStartDate": "2026-07-19",
         "destination": "Ghaziabad (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 149969.0,
         "ownerDue": 134972.1,
         "status": "Settled"
@@ -3152,7 +3147,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1354_TTC",
         "tripStartDate": "2026-07-14",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 114390.0,
         "ownerDue": 102951.0,
         "status": "Settled"
@@ -3161,7 +3156,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--124_TTC",
         "tripStartDate": "2026-07-05",
         "destination": "Loni (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 128650.0,
         "ownerDue": 115785.0,
         "status": "Settled"
@@ -3170,7 +3165,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1174_TTC",
         "tripStartDate": "2026-06-28",
         "destination": "Karnal (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 155575.0,
         "ownerDue": 140017.5,
         "status": "Settled"
@@ -3179,7 +3174,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1103_TTC",
         "tripStartDate": "2026-06-23",
         "destination": "Bhiwadi (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 101500.0,
         "ownerDue": 91350.0,
         "status": "Settled"
@@ -3188,7 +3183,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1007_TTC",
         "tripStartDate": "2026-06-14",
         "destination": "Jhajjar (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 115275.0,
         "ownerDue": 103747.5,
         "status": "Settled"
@@ -3210,7 +3205,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--227_TTC",
         "tripStartDate": "2026-09-17",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 112500.0,
         "ownerDue": 101250.0,
         "status": "Completed"
@@ -3219,7 +3214,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--213_TTC",
         "tripStartDate": "2026-09-07",
         "destination": "Loni (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 113250.0,
         "ownerDue": 101925.0,
         "status": "Settled"
@@ -3228,7 +3223,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1949_TTC",
         "tripStartDate": "2026-09-02",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 112050.0,
         "ownerDue": 100845.0,
         "status": "Settled"
@@ -3237,7 +3232,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1918_TTC",
         "tripStartDate": "2026-08-30",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 104244.0,
         "ownerDue": 93819.6,
         "status": "Settled"
@@ -3246,7 +3241,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--199_TTC",
         "tripStartDate": "2026-08-26",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 126000.0,
         "ownerDue": 113400.0,
         "status": "Settled"
@@ -3255,7 +3250,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1791_TTC",
         "tripStartDate": "2026-08-19",
         "destination": "Muzaffarnagar (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 140275.0,
         "ownerDue": 126247.5,
         "status": "Settled"
@@ -3264,7 +3259,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1752_TTC",
         "tripStartDate": "2026-08-16",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 105350.0,
         "ownerDue": 94815.0,
         "status": "Settled"
@@ -3273,7 +3268,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--169_TTC",
         "tripStartDate": "2026-08-10",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 127968.0,
         "ownerDue": 115171.2,
         "status": "Settled"
@@ -3282,7 +3277,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--163_TTC",
         "tripStartDate": "2026-08-04",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 122714.0,
         "ownerDue": 110442.6,
         "status": "Settled"
@@ -3291,7 +3286,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1522_TTC",
         "tripStartDate": "2026-07-27",
         "destination": "Meerut (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 123814.0,
         "ownerDue": 111432.6,
         "status": "Settled"
@@ -3300,7 +3295,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1449_TTC",
         "tripStartDate": "2026-07-21",
         "destination": "Baghpat (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 132000.0,
         "ownerDue": 118800.0,
         "status": "Settled"
@@ -3309,7 +3304,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--138_TTC",
         "tripStartDate": "2026-07-15",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 117599.0,
         "ownerDue": 105839.1,
         "status": "Settled"
@@ -3318,7 +3313,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1310_TTC",
         "tripStartDate": "2026-07-10",
         "destination": "Bhiwadi (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 116725.0,
         "ownerDue": 105052.5,
         "status": "Settled"
@@ -3327,7 +3322,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1254_TTC",
         "tripStartDate": "2026-07-05",
         "destination": "Gurugram (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 103850.0,
         "ownerDue": 93465.0,
         "status": "Settled"
@@ -3336,7 +3331,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1207_TTC",
         "tripStartDate": "2026-07-01",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 130650.0,
         "ownerDue": 117585.0,
         "status": "Settled"
@@ -3358,7 +3353,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-188_SMTC",
         "tripStartDate": "2026-09-20",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 207680.0,
         "ownerDue": 186912.0,
         "status": "Completed"
@@ -3367,7 +3362,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2025_TTC",
         "tripStartDate": "2026-09-10",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 162576.0,
         "ownerDue": 146318.4,
         "status": "Settled"
@@ -3376,7 +3371,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1890_TTC",
         "tripStartDate": "2026-08-27",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 180000.0,
         "ownerDue": 162000.0,
         "status": "Settled"
@@ -3385,7 +3380,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1764_TTC",
         "tripStartDate": "2026-08-17",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 150100.0,
         "ownerDue": 135090.0,
         "status": "Settled"
@@ -3394,7 +3389,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1671_TTC",
         "tripStartDate": "2026-08-09",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 165779.0,
         "ownerDue": 149201.1,
         "status": "Settled"
@@ -3403,7 +3398,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1575_TTC",
         "tripStartDate": "2026-07-31",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 169110.0,
         "ownerDue": 152199.0,
         "status": "Settled"
@@ -3412,7 +3407,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1472_TTC",
         "tripStartDate": "2026-07-24",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 181300.0,
         "ownerDue": 163170.0,
         "status": "Settled"
@@ -3421,7 +3416,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--141_TTC",
         "tripStartDate": "2026-07-17",
         "destination": "Agra (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 132160.0,
         "ownerDue": 118944.0,
         "status": "Completed"
@@ -3430,7 +3425,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1300_TTC",
         "tripStartDate": "2026-07-09",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 2.0,
         "ownerDue": 1.8,
         "status": "Settled"
@@ -3439,7 +3434,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1295_TTC",
         "tripStartDate": "2026-07-09",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 182400.0,
         "ownerDue": 164160.0,
         "status": "Settled"
@@ -3448,7 +3443,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1119_TTC",
         "tripStartDate": "2026-06-24",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 180000.0,
         "ownerDue": 162000.0,
         "status": "Settled"
@@ -3457,7 +3452,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1038_TTC",
         "tripStartDate": "2026-06-17",
         "destination": "Barabanki (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 80000.0,
         "ownerDue": 72000.0,
         "status": "Settled"
@@ -3466,7 +3461,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-912_TTC",
         "tripStartDate": "2026-06-08",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 176000.0,
         "ownerDue": 158400.0,
         "status": "Settled"
@@ -3475,7 +3470,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--78_TTC",
         "tripStartDate": "2026-05-30",
         "destination": "Bhadohi (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 238560.0,
         "ownerDue": 214704.0,
         "status": "Settled"
@@ -3484,7 +3479,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-656_TTC",
         "tripStartDate": "2026-05-18",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 176000.0,
         "ownerDue": 158400.0,
         "status": "Settled"
@@ -3506,7 +3501,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1950_TTC",
         "tripStartDate": "2026-09-03",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 180000.0,
         "ownerDue": 162000.0,
         "status": "Completed"
@@ -3515,7 +3510,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1884_TTC",
         "tripStartDate": "2026-08-26",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 180605.0,
         "ownerDue": 162544.5,
         "status": "Completed"
@@ -3524,7 +3519,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1806_TTC",
         "tripStartDate": "2026-08-20",
         "destination": "Jhajjar (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 101472.0,
         "ownerDue": 91324.8,
         "status": "Settled"
@@ -3533,7 +3528,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1758_TTC",
         "tripStartDate": "2026-08-16",
         "destination": "Keshwana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 128180.0,
         "ownerDue": 115362.0,
         "status": "Settled"
@@ -3542,7 +3537,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1697_TTC",
         "tripStartDate": "2026-08-11",
         "destination": "Firozabad (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 119770.0,
         "ownerDue": 107793.0,
         "status": "Settled"
@@ -3551,7 +3546,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1588_TTC",
         "tripStartDate": "2026-08-01",
         "destination": "Kheri Lakhimpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 168000.0,
         "ownerDue": 151200.0,
         "status": "Settled"
@@ -3560,7 +3555,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1469_TTC",
         "tripStartDate": "2026-07-24",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 164000.0,
         "ownerDue": 147600.0,
         "status": "Settled"
@@ -3569,7 +3564,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1362_TTC",
         "tripStartDate": "2026-07-15",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 150100.0,
         "ownerDue": 135090.0,
         "status": "Settled"
@@ -3578,7 +3573,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1291_TTC",
         "tripStartDate": "2026-07-08",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 161100.0,
         "ownerDue": 144990.0,
         "status": "Settled"
@@ -3587,7 +3582,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1118_TTC",
         "tripStartDate": "2026-06-24",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 180000.0,
         "ownerDue": 162000.0,
         "status": "Settled"
@@ -3596,7 +3591,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-968_TTC",
         "tripStartDate": "2026-06-12",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 176000.0,
         "ownerDue": 158400.0,
         "status": "Settled"
@@ -3605,7 +3600,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-90_SMTC",
         "tripStartDate": "2026-06-03",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 207680.0,
         "ownerDue": 186912.0,
         "status": "Settled"
@@ -3614,7 +3609,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-739_TTC",
         "tripStartDate": "2026-05-25",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 170385.0,
         "ownerDue": 153346.5,
         "status": "Settled"
@@ -3623,7 +3618,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-606_TTC",
         "tripStartDate": "2026-05-13",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 156048.0,
         "ownerDue": 140443.2,
         "status": "Settled"
@@ -3632,7 +3627,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-458_TTC",
         "tripStartDate": "2026-05-03",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 170519.0,
         "ownerDue": 153467.1,
         "status": "Settled"
@@ -3654,7 +3649,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1623_TTC",
         "tripStartDate": "2026-08-05",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 186042.0,
         "ownerDue": 167437.80000000002,
         "status": "Settled"
@@ -3663,7 +3658,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1535_TTC",
         "tripStartDate": "2026-07-28",
         "destination": "Agra (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 108920.0,
         "ownerDue": 98028.0,
         "status": "Settled"
@@ -3672,7 +3667,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1343_TTC",
         "tripStartDate": "2026-07-14",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 159480.0,
         "ownerDue": 143532.0,
         "status": "Settled"
@@ -3681,7 +3676,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1202_TTC",
         "tripStartDate": "2026-07-01",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 175194.0,
         "ownerDue": 157674.6,
         "status": "Settled"
@@ -3690,7 +3685,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1080_TTC",
         "tripStartDate": "2026-06-22",
         "destination": "Barabanki (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 194250.0,
         "ownerDue": 174825.0,
         "status": "Settled"
@@ -3699,7 +3694,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-972_TTC",
         "tripStartDate": "2026-06-13",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 170200.0,
         "ownerDue": 153180.0,
         "status": "Settled"
@@ -3708,7 +3703,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-93_SMTC",
         "tripStartDate": "2026-06-04",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 207680.0,
         "ownerDue": 186912.0,
         "status": "Settled"
@@ -3717,7 +3712,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-733_TTC",
         "tripStartDate": "2026-05-25",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 131414.0,
         "ownerDue": 118272.6,
         "status": "Settled"
@@ -3726,7 +3721,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-47_SMTC",
         "tripStartDate": "2026-05-12",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 202960.0,
         "ownerDue": 182664.0,
         "status": "Settled"
@@ -3735,7 +3730,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-492_TTC",
         "tripStartDate": "2026-05-06",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 146300.0,
         "ownerDue": 131670.0,
         "status": "Settled"
@@ -3744,7 +3739,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-356_TTC",
         "tripStartDate": "2026-04-25",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 133176.0,
         "ownerDue": 119858.40000000001,
         "status": "Settled"
@@ -3753,7 +3748,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-250_TTC",
         "tripStartDate": "2026-04-19",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 174000.0,
         "ownerDue": 156600.0,
         "status": "Settled"
@@ -3762,7 +3757,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-86_TTC",
         "tripStartDate": "2026-04-06",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 159758.0,
         "ownerDue": 143782.2,
         "status": "Settled"
@@ -3771,7 +3766,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-2739_TTC",
         "tripStartDate": "2026-03-26",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 176000.0,
         "ownerDue": 158400.0,
         "status": "Completed"
@@ -3780,7 +3775,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-2667_TTC",
         "tripStartDate": "2026-03-22",
         "destination": "Bhiwadi (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 114800.0,
         "ownerDue": 103320.0,
         "status": "Settled"
@@ -3802,7 +3797,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2133_TTC",
         "tripStartDate": "2026-09-19",
         "destination": "Rohtak (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Shishram Meena",
         "freight": 136950.0,
         "ownerDue": 123255.0,
         "status": "Completed"
@@ -3811,7 +3806,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2024_TTC",
         "tripStartDate": "2026-09-10",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Shishram Meena",
         "freight": 180000.0,
         "ownerDue": 162000.0,
         "status": "Completed"
@@ -3820,7 +3815,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1905_TTC",
         "tripStartDate": "2026-08-29",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Shishram Meena",
         "freight": 180000.0,
         "ownerDue": 162000.0,
         "status": "Settled"
@@ -3829,7 +3824,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1797_TTC",
         "tripStartDate": "2026-08-20",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Shishram Meena",
         "freight": 180000.0,
         "ownerDue": 162000.0,
         "status": "Settled"
@@ -3838,7 +3833,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1688_TTC",
         "tripStartDate": "2026-08-11",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Shishram Meena",
         "freight": 180000.0,
         "ownerDue": 162000.0,
         "status": "Settled"
@@ -3847,7 +3842,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1632_TTC",
         "tripStartDate": "2026-08-06",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Shishram Meena",
         "freight": 172339.0,
         "ownerDue": 155105.1,
         "status": "Settled"
@@ -3856,7 +3851,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1471_TTC",
         "tripStartDate": "2026-07-24",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Shishram Meena",
         "freight": 238728.0,
         "ownerDue": 214855.2,
         "status": "Settled"
@@ -3865,7 +3860,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1383_TTC",
         "tripStartDate": "2026-07-16",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Shishram Meena",
         "freight": 172050.0,
         "ownerDue": 154845.0,
         "status": "Settled"
@@ -3874,7 +3869,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1206_TTC",
         "tripStartDate": "2026-07-01",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Shishram Meena",
         "freight": 177210.0,
         "ownerDue": 159489.0,
         "status": "Settled"
@@ -3883,7 +3878,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1085_TTC",
         "tripStartDate": "2026-06-21",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Shishram Meena",
         "freight": 175912.0,
         "ownerDue": 158320.80000000002,
         "status": "Settled"
@@ -3892,7 +3887,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-957_TTC",
         "tripStartDate": "2026-06-12",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Shishram Meena",
         "freight": 170550.0,
         "ownerDue": 153495.0,
         "status": "Settled"
@@ -3901,7 +3896,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-834_TTC",
         "tripStartDate": "2026-06-02",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Shishram Meena",
         "freight": 169275.0,
         "ownerDue": 152347.5,
         "status": "Settled"
@@ -3910,7 +3905,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-775_TTC",
         "tripStartDate": "2026-05-28",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Shishram Meena",
         "freight": 167740.0,
         "ownerDue": 150966.0,
         "status": "Settled"
@@ -3919,7 +3914,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-696_TTC",
         "tripStartDate": "2026-05-22",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Shishram Meena",
         "freight": 167000.0,
         "ownerDue": 150300.0,
         "status": "Settled"
@@ -3928,7 +3923,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-633_TTC",
         "tripStartDate": "2026-05-16",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Shishram Meena",
         "freight": 165802.0,
         "ownerDue": 149221.80000000002,
         "status": "Settled"
@@ -3950,7 +3945,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-279_TTC",
         "tripStartDate": "2025-05-29",
         "destination": "Jhajjar (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 115098.0,
         "ownerDue": 103588.2,
         "status": "Settled"
@@ -3959,7 +3954,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-245_TTC",
         "tripStartDate": "2025-05-23",
         "destination": "Bahadurgarh (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 135000.0,
         "ownerDue": 121500.0,
         "status": "Settled"
@@ -3968,7 +3963,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-217_TTC",
         "tripStartDate": "2025-05-17",
         "destination": "Faridabad (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 86734.0,
         "ownerDue": 78060.6,
         "status": "Settled"
@@ -3977,7 +3972,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-184_TTC",
         "tripStartDate": "2025-05-10",
         "destination": "Gurugram (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 98311.0,
         "ownerDue": 88479.90000000001,
         "status": "Settled"
@@ -3986,7 +3981,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-142_TTC",
         "tripStartDate": "2025-04-29",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 176000.0,
         "ownerDue": 158400.0,
         "status": "Settled"
@@ -3995,7 +3990,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-86_TTC",
         "tripStartDate": "2025-04-19",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 176000.0,
         "ownerDue": 158400.0,
         "status": "Settled"
@@ -4004,7 +3999,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-5_TTC",
         "tripStartDate": "2025-04-02",
         "destination": "Shamli (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 137010.0,
         "ownerDue": 123309.0,
         "status": "Settled"
@@ -4013,7 +4008,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "1593_MTC",
         "tripStartDate": "2025-03-29",
         "destination": "Meerut (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 73500.0,
         "ownerDue": 66150.0,
         "status": "Settled"
@@ -4022,7 +4017,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "-270_TTC",
         "tripStartDate": "2025-03-26",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 66769.0,
         "ownerDue": 60092.1,
         "status": "Settled"
@@ -4031,7 +4026,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "-256_TTC",
         "tripStartDate": "2025-03-23",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 73255.0,
         "ownerDue": 65929.5,
         "status": "Settled"
@@ -4040,7 +4035,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "1753_TTC",
         "tripStartDate": "2025-03-19",
         "destination": "Gurugram (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 86742.0,
         "ownerDue": 78067.8,
         "status": "Settled"
@@ -4049,7 +4044,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "1711_TTC",
         "tripStartDate": "2025-03-08",
         "destination": "Ghaziabad (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 142383.0,
         "ownerDue": 128144.7,
         "status": "Settled"
@@ -4058,7 +4053,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "-230_TTC",
         "tripStartDate": "2025-03-02",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 106000.0,
         "ownerDue": 95400.0,
         "status": "Settled"
@@ -4067,7 +4062,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "1640_TTC",
         "tripStartDate": "2025-02-25",
         "destination": "Meerut (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 74400.0,
         "ownerDue": 66960.0,
         "status": "Settled"
@@ -4076,7 +4071,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "-222_TTC",
         "tripStartDate": "2025-02-21",
         "destination": "Meerut (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 73560.0,
         "ownerDue": 66204.0,
         "status": "Settled"
@@ -4098,7 +4093,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2145_TTC",
         "tripStartDate": "2026-09-19",
         "destination": "Meerut (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kaluram Jat Shrinagar",
         "freight": 91410.0,
         "ownerDue": 82269.0,
         "status": "Completed"
@@ -4107,7 +4102,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2029_TTC",
         "tripStartDate": "2026-09-10",
         "destination": "Gorakhpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kaluram Jat Shrinagar",
         "freight": 119159.0,
         "ownerDue": 107243.1,
         "status": "Completed"
@@ -4116,7 +4111,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1975_TTC",
         "tripStartDate": "2026-09-05",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Kaluram Jat Shrinagar",
         "freight": 94500.0,
         "ownerDue": 85050.0,
         "status": "Settled"
@@ -4125,7 +4120,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-164_SMTC",
         "tripStartDate": "2026-08-31",
         "destination": "Sikandrabad (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kaluram Jat Shrinagar",
         "freight": 106554.0,
         "ownerDue": 95898.6,
         "status": "Settled"
@@ -4134,7 +4129,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1782_TTC",
         "tripStartDate": "2026-08-18",
         "destination": "Ayodhya (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kaluram Jat Shrinagar",
         "freight": 115170.0,
         "ownerDue": 103653.0,
         "status": "Settled"
@@ -4143,7 +4138,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1737_TTC",
         "tripStartDate": "2026-08-15",
         "destination": "Noida (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kaluram Jat Shrinagar",
         "freight": 91203.0,
         "ownerDue": 82082.7,
         "status": "Settled"
@@ -4152,7 +4147,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1645_TTC",
         "tripStartDate": "2026-08-07",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kaluram Jat Shrinagar",
         "freight": 94050.0,
         "ownerDue": 84645.0,
         "status": "Settled"
@@ -4161,7 +4156,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1502_TTC",
         "tripStartDate": "2026-07-26",
         "destination": "Noida (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kaluram Jat Shrinagar",
         "freight": 91203.0,
         "ownerDue": 82082.7,
         "status": "Settled"
@@ -4170,7 +4165,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1400_TTC",
         "tripStartDate": "2026-07-18",
         "destination": "Ayodhya (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kaluram Jat Shrinagar",
         "freight": 122728.0,
         "ownerDue": 110455.2,
         "status": "Settled"
@@ -4179,7 +4174,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1283_TTC",
         "tripStartDate": "2026-07-08",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kaluram Jat Shrinagar",
         "freight": 111240.0,
         "ownerDue": 100116.0,
         "status": "Settled"
@@ -4188,7 +4183,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1091_TTC",
         "tripStartDate": "2026-06-22",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kaluram Jat Shrinagar",
         "freight": 109200.0,
         "ownerDue": 98280.0,
         "status": "Settled"
@@ -4197,7 +4192,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-107_SMTC",
         "tripStartDate": "2026-06-11",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kaluram Jat Shrinagar",
         "freight": 127369.0,
         "ownerDue": 114632.1,
         "status": "Settled"
@@ -4206,7 +4201,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-841_TTC",
         "tripStartDate": "2026-06-03",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kaluram Jat Shrinagar",
         "freight": 116920.0,
         "ownerDue": 105228.0,
         "status": "Settled"
@@ -4215,7 +4210,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-742_TTC",
         "tripStartDate": "2026-05-25",
         "destination": "Ayodhya (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kaluram Jat Shrinagar",
         "freight": 114750.0,
         "ownerDue": 103275.0,
         "status": "Settled"
@@ -4224,7 +4219,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-666_TTC",
         "tripStartDate": "2026-05-19",
         "destination": "Noida (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kaluram Jat Shrinagar",
         "freight": 88620.0,
         "ownerDue": 79758.0,
         "status": "Settled"
@@ -4246,7 +4241,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2037_TTC",
         "tripStartDate": "2026-09-11",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 180000.0,
         "ownerDue": 162000.0,
         "status": "Transit"
@@ -4255,7 +4250,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1921_TTC",
         "tripStartDate": "2026-08-31",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 180000.0,
         "ownerDue": 162000.0,
         "status": "Settled"
@@ -4264,7 +4259,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1795_TTC",
         "tripStartDate": "2026-08-20",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 180000.0,
         "ownerDue": 162000.0,
         "status": "Settled"
@@ -4273,7 +4268,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1678_TTC",
         "tripStartDate": "2026-08-10",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 180000.0,
         "ownerDue": 162000.0,
         "status": "Settled"
@@ -4282,7 +4277,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1605_TTC",
         "tripStartDate": "2026-08-04",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 180000.0,
         "ownerDue": 162000.0,
         "status": "Completed"
@@ -4291,7 +4286,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1412_TTC",
         "tripStartDate": "2026-07-20",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 180000.0,
         "ownerDue": 162000.0,
         "status": "Settled"
@@ -4300,7 +4295,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1281_TTC",
         "tripStartDate": "2026-07-08",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 180000.0,
         "ownerDue": 162000.0,
         "status": "Settled"
@@ -4309,7 +4304,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1097_TTC",
         "tripStartDate": "2026-06-22",
         "destination": "Akbarpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 118871.0,
         "ownerDue": 106983.90000000001,
         "status": "Settled"
@@ -4318,7 +4313,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-110_SMTC",
         "tripStartDate": "2026-06-12",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 207680.0,
         "ownerDue": 186912.0,
         "status": "Settled"
@@ -4327,7 +4322,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-87_SMTC",
         "tripStartDate": "2026-06-01",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 207680.0,
         "ownerDue": 186912.0,
         "status": "Settled"
@@ -4336,7 +4331,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-66_SMTC",
         "tripStartDate": "2026-05-20",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 202960.0,
         "ownerDue": 182664.0,
         "status": "Settled"
@@ -4345,7 +4340,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-45_SMTC",
         "tripStartDate": "2026-05-10",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 202960.0,
         "ownerDue": 182664.0,
         "status": "Settled"
@@ -4354,7 +4349,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-31_SMTC",
         "tripStartDate": "2026-05-02",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 202960.0,
         "ownerDue": 182664.0,
         "status": "Settled"
@@ -4363,7 +4358,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-18_SMTC",
         "tripStartDate": "2026-04-25",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 202960.0,
         "ownerDue": 182664.0,
         "status": "Settled"
@@ -4372,7 +4367,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-2666_TTC",
         "tripStartDate": "2026-03-21",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 172000.0,
         "ownerDue": 154800.0,
         "status": "Settled"
@@ -4394,7 +4389,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2089_TTC",
         "tripStartDate": "2026-09-15",
         "destination": "Bhanda (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Nand Singh",
         "freight": 139200.0,
         "ownerDue": 125280.0,
         "status": "Completed"
@@ -4403,7 +4398,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2034_TTC",
         "tripStartDate": "2026-09-11",
         "destination": "Gurugram (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Nand Singh",
         "freight": 80000.0,
         "ownerDue": 72000.0,
         "status": "Transit"
@@ -4412,7 +4407,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1985_TTC",
         "tripStartDate": "2026-09-06",
         "destination": "Faridabad (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Nand Singh",
         "freight": 84341.0,
         "ownerDue": 75906.90000000001,
         "status": "Settled"
@@ -4421,7 +4416,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1907_TTC",
         "tripStartDate": "2026-08-29",
         "destination": "Kichha (U.K.)",
-        "driver": "Assigned Driver",
+        "driver": "Nand Singh",
         "freight": 115036.0,
         "ownerDue": 103532.40000000001,
         "status": "Settled"
@@ -4430,7 +4425,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1816_TTC",
         "tripStartDate": "2026-08-21",
         "destination": "Bijnor (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Nand Singh",
         "freight": 98000.0,
         "ownerDue": 88200.0,
         "status": "Settled"
@@ -4439,7 +4434,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1738_TTC",
         "tripStartDate": "2026-08-15",
         "destination": "Panipat (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Nand Singh",
         "freight": 89502.0,
         "ownerDue": 80551.8,
         "status": "Settled"
@@ -4448,7 +4443,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1667_TTC",
         "tripStartDate": "2026-08-09",
         "destination": "Rewari (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Nand Singh",
         "freight": 82680.0,
         "ownerDue": 74412.0,
         "status": "Settled"
@@ -4457,7 +4452,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1586_TTC",
         "tripStartDate": "2026-07-31",
         "destination": "Amethi (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Nand Singh",
         "freight": 115938.0,
         "ownerDue": 104344.2,
         "status": "Settled"
@@ -4466,7 +4461,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1417_TTC",
         "tripStartDate": "2026-07-20",
         "destination": "Patna (Bihar )",
-        "driver": "Assigned Driver",
+        "driver": "Nand Singh",
         "freight": 151200.0,
         "ownerDue": 136080.0,
         "status": "Settled"
@@ -4475,7 +4470,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1320_TTC",
         "tripStartDate": "2026-07-11",
         "destination": "Hathras (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Nand Singh",
         "freight": 91655.0,
         "ownerDue": 82489.5,
         "status": "Settled"
@@ -4484,7 +4479,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1200_TTC",
         "tripStartDate": "2026-07-02",
         "destination": "Agra (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Nand Singh",
         "freight": 83150.0,
         "ownerDue": 74835.0,
         "status": "Settled"
@@ -4493,7 +4488,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1131_TTC",
         "tripStartDate": "2026-06-25",
         "destination": "Rohtak (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Nand Singh",
         "freight": 84000.0,
         "ownerDue": 75600.0,
         "status": "Settled"
@@ -4502,7 +4497,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1009_TTC",
         "tripStartDate": "2026-06-14",
         "destination": "Basti (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Nand Singh",
         "freight": 124560.0,
         "ownerDue": 112104.0,
         "status": "Settled"
@@ -4511,7 +4506,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-905_TTC",
         "tripStartDate": "2026-06-07",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Nand Singh",
         "freight": 94950.0,
         "ownerDue": 85455.0,
         "status": "Settled"
@@ -4520,7 +4515,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-810_TTC",
         "tripStartDate": "2026-05-31",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Nand Singh",
         "freight": 109200.0,
         "ownerDue": 98280.0,
         "status": "Settled"
@@ -4542,7 +4537,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1558_TTC",
         "tripStartDate": "2026-07-29",
         "destination": "Gopalganj (Bihar)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 115600.0,
         "ownerDue": 104040.0,
         "status": "Settled"
@@ -4551,7 +4546,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1450_TTC",
         "tripStartDate": "2026-07-21",
         "destination": "Agra (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 76570.0,
         "ownerDue": 68913.0,
         "status": "Settled"
@@ -4560,7 +4555,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1445_TTC",
         "tripStartDate": "2026-07-21",
         "destination": "Agra (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 9500.0,
         "ownerDue": 8550.0,
         "status": "Settled"
@@ -4569,7 +4564,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1325_TTC",
         "tripStartDate": "2026-07-12",
         "destination": "Jhajjar (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 90841.0,
         "ownerDue": 81756.90000000001,
         "status": "Settled"
@@ -4578,7 +4573,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1121_TTC",
         "tripStartDate": "2026-06-24",
         "destination": "Gurugram (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 64658.0,
         "ownerDue": 58192.200000000004,
         "status": "Settled"
@@ -4587,7 +4582,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1008_TTC",
         "tripStartDate": "2026-06-14",
         "destination": "Dehradun (U.K.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 109815.0,
         "ownerDue": 98833.5,
         "status": "Settled"
@@ -4596,7 +4591,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-874_TTC",
         "tripStartDate": "2026-06-05",
         "destination": "Kashipur (U.K.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 91000.0,
         "ownerDue": 81900.0,
         "status": "Settled"
@@ -4605,7 +4600,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-736_TTC",
         "tripStartDate": "2026-05-25",
         "destination": "Gorakhpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 126330.0,
         "ownerDue": 113697.0,
         "status": "Settled"
@@ -4614,7 +4609,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-350_TTC",
         "tripStartDate": "2026-04-26",
         "destination": "Sikandrabad (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 78750.0,
         "ownerDue": 70875.0,
         "status": "Settled"
@@ -4623,7 +4618,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-244_TTC",
         "tripStartDate": "2026-04-17",
         "destination": "Alwar (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 95094.0,
         "ownerDue": 85584.6,
         "status": "Settled"
@@ -4632,7 +4627,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-153_TTC",
         "tripStartDate": "2026-04-11",
         "destination": "Meerut (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 95300.0,
         "ownerDue": 85770.0,
         "status": "Settled"
@@ -4641,7 +4636,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-2748_TTC",
         "tripStartDate": "2026-03-27",
         "destination": "Prayagraj (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 145667.0,
         "ownerDue": 131100.30000000002,
         "status": "Settled"
@@ -4650,7 +4645,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-2520_TTC",
         "tripStartDate": "2026-03-12",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 105000.0,
         "ownerDue": 94500.0,
         "status": "Settled"
@@ -4659,7 +4654,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-2409_TTC",
         "tripStartDate": "2026-03-01",
         "destination": "Sikandrabad (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 94500.0,
         "ownerDue": 85050.0,
         "status": "Settled"
@@ -4668,7 +4663,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-2332_TTC",
         "tripStartDate": "2026-02-24",
         "destination": "Gurugram (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 63631.0,
         "ownerDue": 57267.9,
         "status": "Settled"
@@ -4690,7 +4685,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-270_TTC",
         "tripStartDate": "2025-05-27",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Prakash Saini",
         "freight": 176000.0,
         "ownerDue": 158400.0,
         "status": "Settled"
@@ -4699,7 +4694,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-41_SMTC",
         "tripStartDate": "2025-05-17",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Prakash Saini",
         "freight": 197120.0,
         "ownerDue": 177408.0,
         "status": "Settled"
@@ -4708,7 +4703,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026--37_TTC",
         "tripStartDate": "2025-04-23",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Prakash Saini",
         "freight": 82215.0,
         "ownerDue": 73993.5,
         "status": "Settled"
@@ -4717,7 +4712,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-63_TTC",
         "tripStartDate": "2025-04-14",
         "destination": "Bhiwadi (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Prakash Saini",
         "freight": 96000.0,
         "ownerDue": 86400.0,
         "status": "Settled"
@@ -4726,7 +4721,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-36_TTC",
         "tripStartDate": "2025-04-08",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Prakash Saini",
         "freight": 123000.0,
         "ownerDue": 110700.0,
         "status": "Settled"
@@ -4735,7 +4730,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "1781_TTC",
         "tripStartDate": "2025-03-24",
         "destination": "Hathras (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Prakash Saini",
         "freight": 118900.0,
         "ownerDue": 107010.0,
         "status": "Settled"
@@ -4744,7 +4739,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "1705_TTC",
         "tripStartDate": "2025-03-08",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Prakash Saini",
         "freight": 146196.0,
         "ownerDue": 131576.4,
         "status": "Settled"
@@ -4753,7 +4748,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "1670_TTC",
         "tripStartDate": "2025-03-02",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Prakash Saini",
         "freight": 164574.0,
         "ownerDue": 148116.6,
         "status": "Settled"
@@ -4762,7 +4757,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "1617_TTC",
         "tripStartDate": "2025-02-22",
         "destination": "Dadri (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Prakash Saini",
         "freight": 112075.7,
         "ownerDue": 100868.13,
         "status": "Settled"
@@ -4771,7 +4766,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "1596_TTC",
         "tripStartDate": "2025-02-17",
         "destination": "Gurugram (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Prakash Saini",
         "freight": 112800.0,
         "ownerDue": 101520.0,
         "status": "Settled"
@@ -4780,7 +4775,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "1537_TTC",
         "tripStartDate": "2025-02-07",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Prakash Saini",
         "freight": 161449.5,
         "ownerDue": 145304.55000000002,
         "status": "Settled"
@@ -4789,7 +4784,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "1482_TTC",
         "tripStartDate": "2025-01-28",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Prakash Saini",
         "freight": 158230.5,
         "ownerDue": 142407.45,
         "status": "Settled"
@@ -4798,7 +4793,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "1454_TTC",
         "tripStartDate": "2025-01-23",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Prakash Saini",
         "freight": 151811.0,
         "ownerDue": 136629.9,
         "status": "Settled"
@@ -4807,7 +4802,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "1410_TTC",
         "tripStartDate": "2025-01-17",
         "destination": "Hathras (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Prakash Saini",
         "freight": 121539.0,
         "ownerDue": 109385.1,
         "status": "Settled"
@@ -4816,7 +4811,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "1375_TTC",
         "tripStartDate": "2025-01-12",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Prakash Saini",
         "freight": 161875.0,
         "ownerDue": 145687.5,
         "status": "Settled"
@@ -4838,7 +4833,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-185_SMTC",
         "tripStartDate": "2026-09-18",
         "destination": "Sikandrabad (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 106554.0,
         "ownerDue": 95898.6,
         "status": "Completed"
@@ -4847,7 +4842,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2079_TTC",
         "tripStartDate": "2026-09-14",
         "destination": "Noida (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 91074.0,
         "ownerDue": 81966.6,
         "status": "Settled"
@@ -4856,7 +4851,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-176_SMTC",
         "tripStartDate": "2026-09-11",
         "destination": "Sikandrabad (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 106554.0,
         "ownerDue": 95898.6,
         "status": "Transit"
@@ -4865,7 +4860,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2000_TTC",
         "tripStartDate": "2026-09-08",
         "destination": "Noida (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 91784.0,
         "ownerDue": 82605.6,
         "status": "Settled"
@@ -4874,7 +4869,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1859_TTC",
         "tripStartDate": "2026-08-25",
         "destination": "Sikandrabad (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 96600.0,
         "ownerDue": 86940.0,
         "status": "Settled"
@@ -4883,7 +4878,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1702_TTC",
         "tripStartDate": "2026-08-14",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 109200.0,
         "ownerDue": 98280.0,
         "status": "Settled"
@@ -4892,7 +4887,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1607_TTC",
         "tripStartDate": "2026-08-04",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 104000.0,
         "ownerDue": 93600.0,
         "status": "Settled"
@@ -4901,7 +4896,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1574_TTC",
         "tripStartDate": "2026-07-31",
         "destination": "Noida (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 90300.0,
         "ownerDue": 81270.0,
         "status": "Settled"
@@ -4910,7 +4905,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1488_TTC",
         "tripStartDate": "2026-07-25",
         "destination": "Sikandrabad (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 100800.0,
         "ownerDue": 90720.0,
         "status": "Settled"
@@ -4919,7 +4914,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1346_TTC",
         "tripStartDate": "2026-07-14",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 109200.0,
         "ownerDue": 98280.0,
         "status": "Settled"
@@ -4928,7 +4923,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1229_TTC",
         "tripStartDate": "2026-07-03",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 109200.0,
         "ownerDue": 98280.0,
         "status": "Settled"
@@ -4937,7 +4932,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1094_TTC",
         "tripStartDate": "2026-06-22",
         "destination": "Jaunpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 117404.0,
         "ownerDue": 105663.6,
         "status": "Settled"
@@ -4946,7 +4941,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-955_TTC",
         "tripStartDate": "2026-06-11",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 109200.0,
         "ownerDue": 98280.0,
         "status": "Settled"
@@ -4955,7 +4950,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-857_TTC",
         "tripStartDate": "2026-06-04",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 125700.0,
         "ownerDue": 113130.0,
         "status": "Settled"
@@ -4964,7 +4959,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-746_TTC",
         "tripStartDate": "2026-05-26",
         "destination": "Barabanki (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 111300.0,
         "ownerDue": 100170.0,
         "status": "Settled"
@@ -4986,7 +4981,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--226_TTC",
         "tripStartDate": "2026-09-17",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 119205.0,
         "ownerDue": 107284.5,
         "status": "Completed"
@@ -4995,7 +4990,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2048_TTC",
         "tripStartDate": "2026-09-12",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 153000.0,
         "ownerDue": 137700.0,
         "status": "Transit"
@@ -5004,7 +4999,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1976_TTC",
         "tripStartDate": "2026-09-06",
         "destination": "Jhajjar (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 116000.0,
         "ownerDue": 104400.0,
         "status": "Settled"
@@ -5013,7 +5008,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--201_TTC",
         "tripStartDate": "2026-08-30",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 130975.0,
         "ownerDue": 117877.5,
         "status": "Completed"
@@ -5022,7 +5017,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1850_TTC",
         "tripStartDate": "2026-08-23",
         "destination": "Roorkee (U.K.)",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 162311.0,
         "ownerDue": 146079.9,
         "status": "Settled"
@@ -5031,7 +5026,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1778_TTC",
         "tripStartDate": "2026-08-18",
         "destination": "Baghpat (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 135280.0,
         "ownerDue": 121752.0,
         "status": "Settled"
@@ -5040,7 +5035,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1712_TTC",
         "tripStartDate": "2026-08-13",
         "destination": "Baraut (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 123000.0,
         "ownerDue": 110700.0,
         "status": "Settled"
@@ -5049,7 +5044,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1635_TTC",
         "tripStartDate": "2026-08-07",
         "destination": "Bahadurgarh (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 122740.0,
         "ownerDue": 110466.0,
         "status": "Completed"
@@ -5058,7 +5053,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1581_TTC",
         "tripStartDate": "2026-07-31",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 149804.0,
         "ownerDue": 134823.6,
         "status": "Settled"
@@ -5067,7 +5062,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1510_TTC",
         "tripStartDate": "2026-07-26",
         "destination": "Muzaffarnagar (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 154400.0,
         "ownerDue": 138960.0,
         "status": "Settled"
@@ -5076,7 +5071,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1427_TTC",
         "tripStartDate": "2026-07-19",
         "destination": "Meerut (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 130234.0,
         "ownerDue": 117210.6,
         "status": "Settled"
@@ -5085,7 +5080,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1352_TTC",
         "tripStartDate": "2026-07-14",
         "destination": "Meerut (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 128275.0,
         "ownerDue": 115447.5,
         "status": "Settled"
@@ -5094,7 +5089,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1287_TTC",
         "tripStartDate": "2026-07-08",
         "destination": "Meerut (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 137950.0,
         "ownerDue": 124155.0,
         "status": "Settled"
@@ -5103,7 +5098,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--119_TTC",
         "tripStartDate": "2026-07-01",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 126790.0,
         "ownerDue": 114111.0,
         "status": "Settled"
@@ -5112,7 +5107,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1145_TTC",
         "tripStartDate": "2026-06-26",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 118839.0,
         "ownerDue": 106955.1,
         "status": "Settled"
@@ -5134,7 +5129,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-177_SMTC",
         "tripStartDate": "2026-09-13",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 127369.0,
         "ownerDue": 114632.1,
         "status": "Completed"
@@ -5143,7 +5138,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1986_TTC",
         "tripStartDate": "2026-09-08",
         "destination": "Gurugram (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 83600.0,
         "ownerDue": 75240.0,
         "status": "Settled"
@@ -5152,7 +5147,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1914_TTC",
         "tripStartDate": "2026-08-30",
         "destination": "Lakhiampur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 122670.0,
         "ownerDue": 110403.0,
         "status": "Settled"
@@ -5161,7 +5156,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1878_TTC",
         "tripStartDate": "2026-08-25",
         "destination": "Panipat (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 88200.0,
         "ownerDue": 79380.0,
         "status": "Completed"
@@ -5170,7 +5165,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1790_TTC",
         "tripStartDate": "2026-08-19",
         "destination": "Gurugram (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 89851.0,
         "ownerDue": 80865.90000000001,
         "status": "Settled"
@@ -5179,7 +5174,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1704_TTC",
         "tripStartDate": "2026-08-12",
         "destination": "Ayodhya (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 118745.0,
         "ownerDue": 106870.5,
         "status": "Settled"
@@ -5188,7 +5183,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1601_TTC",
         "tripStartDate": "2026-08-03",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 109392.0,
         "ownerDue": 98452.8,
         "status": "Settled"
@@ -5197,7 +5192,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1545_TTC",
         "tripStartDate": "2026-07-27",
         "destination": "Gurugram (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 78994.0,
         "ownerDue": 71094.6,
         "status": "Settled"
@@ -5206,7 +5201,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1468_TTC",
         "tripStartDate": "2026-07-23",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 94500.0,
         "ownerDue": 85050.0,
         "status": "Settled"
@@ -5215,7 +5210,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1355_TTC",
         "tripStartDate": "2026-07-15",
         "destination": "Kashipur (U.K.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 110880.0,
         "ownerDue": 99792.0,
         "status": "Settled"
@@ -5224,7 +5219,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1306_TTC",
         "tripStartDate": "2026-07-10",
         "destination": "Noida (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 90300.0,
         "ownerDue": 81270.0,
         "status": "Settled"
@@ -5233,7 +5228,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1199_TTC",
         "tripStartDate": "2026-07-01",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 109200.0,
         "ownerDue": 98280.0,
         "status": "Settled"
@@ -5242,7 +5237,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1053_TTC",
         "tripStartDate": "2026-06-19",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 109200.0,
         "ownerDue": 98280.0,
         "status": "Settled"
@@ -5251,7 +5246,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-936_TTC",
         "tripStartDate": "2026-06-10",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 127166.0,
         "ownerDue": 114449.40000000001,
         "status": "Completed"
@@ -5260,7 +5255,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-819_TTC",
         "tripStartDate": "2026-05-31",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 111150.0,
         "ownerDue": 100035.0,
         "status": "Settled"
@@ -5282,7 +5277,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2094_TTC",
         "tripStartDate": "2026-09-16",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 167868.0,
         "ownerDue": 151081.2,
         "status": "Completed"
@@ -5291,7 +5286,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2027_TTC",
         "tripStartDate": "2026-09-10",
         "destination": "Meerut (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 127545.0,
         "ownerDue": 114790.5,
         "status": "Settled"
@@ -5300,7 +5295,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1965_TTC",
         "tripStartDate": "2026-09-05",
         "destination": "Jhajjar (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 116000.0,
         "ownerDue": 104400.0,
         "status": "Completed"
@@ -5309,7 +5304,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1910_TTC",
         "tripStartDate": "2026-08-29",
         "destination": "Jhajjar (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 118320.0,
         "ownerDue": 106488.0,
         "status": "Settled"
@@ -5318,7 +5313,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1825_TTC",
         "tripStartDate": "2026-08-22",
         "destination": "Ghaziabad (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 166690.0,
         "ownerDue": 150021.0,
         "status": "Completed"
@@ -5327,7 +5322,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1744_TTC",
         "tripStartDate": "2026-08-15",
         "destination": "Ghaziabad (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 114592.0,
         "ownerDue": 103132.8,
         "status": "Settled"
@@ -5336,7 +5331,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1682_TTC",
         "tripStartDate": "2026-08-10",
         "destination": "Saharanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 136000.0,
         "ownerDue": 122400.0,
         "status": "Settled"
@@ -5345,7 +5340,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1620_TTC",
         "tripStartDate": "2026-08-05",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 95865.0,
         "ownerDue": 86278.5,
         "status": "Settled"
@@ -5354,7 +5349,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1525_TTC",
         "tripStartDate": "2026-07-27",
         "destination": "Muzaffarnagar (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 157250.0,
         "ownerDue": 141525.0,
         "status": "Settled"
@@ -5363,7 +5358,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1442_TTC",
         "tripStartDate": "2026-07-21",
         "destination": "Khatauli (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 133650.0,
         "ownerDue": 120285.0,
         "status": "Settled"
@@ -5372,7 +5367,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1364_TTC",
         "tripStartDate": "2026-07-15",
         "destination": "Baraut (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 126870.0,
         "ownerDue": 114183.0,
         "status": "Settled"
@@ -5381,7 +5376,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1277_TTC",
         "tripStartDate": "2026-07-08",
         "destination": "Muzaffarnagar (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 137940.0,
         "ownerDue": 124146.0,
         "status": "Settled"
@@ -5390,7 +5385,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1221_TTC",
         "tripStartDate": "2026-07-02",
         "destination": "Agra (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 124082.0,
         "ownerDue": 111673.8,
         "status": "Settled"
@@ -5399,7 +5394,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1161_TTC",
         "tripStartDate": "2026-06-27",
         "destination": "Shamli (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 150256.0,
         "ownerDue": 135230.4,
         "status": "Settled"
@@ -5408,7 +5403,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1082_TTC",
         "tripStartDate": "2026-06-21",
         "destination": "Garh (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 131564.0,
         "ownerDue": 118407.6,
         "status": "Settled"
@@ -5430,7 +5425,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-184_SMTC",
         "tripStartDate": "2026-09-17",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Gordhan Choudhary",
         "freight": 138460.0,
         "ownerDue": 124614.0,
         "status": "Completed"
@@ -5439,7 +5434,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2059_TTC",
         "tripStartDate": "2026-09-12",
         "destination": "Shahjahanpur (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Gordhan Choudhary",
         "freight": 112000.0,
         "ownerDue": 100800.0,
         "status": "Settled"
@@ -5448,7 +5443,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2006_TTC",
         "tripStartDate": "2026-09-08",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Gordhan Choudhary",
         "freight": 155440.0,
         "ownerDue": 139896.0,
         "status": "Settled"
@@ -5457,7 +5452,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1943_TTC",
         "tripStartDate": "2026-09-03",
         "destination": "Baraut (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Gordhan Choudhary",
         "freight": 138270.0,
         "ownerDue": 124443.0,
         "status": "Settled"
@@ -5466,7 +5461,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1837_TTC",
         "tripStartDate": "2026-08-22",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Gordhan Choudhary",
         "freight": 123535.0,
         "ownerDue": 111181.5,
         "status": "Settled"
@@ -5475,7 +5470,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--177_TTC",
         "tripStartDate": "2026-08-16",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Gordhan Choudhary",
         "freight": 124775.0,
         "ownerDue": 112297.5,
         "status": "Settled"
@@ -5484,7 +5479,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1693_TTC",
         "tripStartDate": "2026-08-11",
         "destination": "Baraut (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Gordhan Choudhary",
         "freight": 123000.0,
         "ownerDue": 110700.0,
         "status": "Settled"
@@ -5493,7 +5488,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1597_TTC",
         "tripStartDate": "2026-08-02",
         "destination": "Sonipat (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Gordhan Choudhary",
         "freight": 137700.0,
         "ownerDue": 123930.0,
         "status": "Settled"
@@ -5502,7 +5497,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1524_TTC",
         "tripStartDate": "2026-07-27",
         "destination": "Jhajjar (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Gordhan Choudhary",
         "freight": 96258.0,
         "ownerDue": 86632.2,
         "status": "Completed"
@@ -5511,7 +5506,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1447_TTC",
         "tripStartDate": "2026-07-21",
         "destination": "Ghaziabad (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Gordhan Choudhary",
         "freight": 145600.0,
         "ownerDue": 131040.0,
         "status": "Settled"
@@ -5520,7 +5515,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1372_TTC",
         "tripStartDate": "2026-07-15",
         "destination": "Ghaziabad (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Gordhan Choudhary",
         "freight": 157352.0,
         "ownerDue": 141616.80000000002,
         "status": "Settled"
@@ -5529,7 +5524,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1303_TTC",
         "tripStartDate": "2026-07-09",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Gordhan Choudhary",
         "freight": 104895.0,
         "ownerDue": 94405.5,
         "status": "Settled"
@@ -5538,7 +5533,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1239_TTC",
         "tripStartDate": "2026-07-04",
         "destination": "Shamli (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Gordhan Choudhary",
         "freight": 150133.0,
         "ownerDue": 135119.7,
         "status": "Settled"
@@ -5547,7 +5542,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1133_TTC",
         "tripStartDate": "2026-06-25",
         "destination": "Haridwar (U.K.)",
-        "driver": "Assigned Driver",
+        "driver": "Gordhan Choudhary",
         "freight": 157573.0,
         "ownerDue": 141815.7,
         "status": "Settled"
@@ -5556,7 +5551,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1057_TTC",
         "tripStartDate": "2026-06-19",
         "destination": "Bhiwadi (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Gordhan Choudhary",
         "freight": 123250.0,
         "ownerDue": 110925.0,
         "status": "Settled"
@@ -5578,7 +5573,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2066_TTC",
         "tripStartDate": "2026-09-14",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 181872.0,
         "ownerDue": 163684.80000000002,
         "status": "Completed"
@@ -5587,7 +5582,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1990_TTC",
         "tripStartDate": "2026-09-08",
         "destination": "Agra (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 121500.0,
         "ownerDue": 109350.0,
         "status": "Completed"
@@ -5596,7 +5591,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1886_TTC",
         "tripStartDate": "2026-08-26",
         "destination": "Ayodhya (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 201912.0,
         "ownerDue": 181720.80000000002,
         "status": "Settled"
@@ -5605,7 +5600,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1800_TTC",
         "tripStartDate": "2026-08-20",
         "destination": "Nakur (U P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 155890.0,
         "ownerDue": 140301.0,
         "status": "Settled"
@@ -5614,7 +5609,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1672_TTC",
         "tripStartDate": "2026-08-09",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 172170.0,
         "ownerDue": 154953.0,
         "status": "Settled"
@@ -5623,7 +5618,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1598_TTC",
         "tripStartDate": "2026-08-03",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 162564.0,
         "ownerDue": 146307.6,
         "status": "Settled"
@@ -5632,7 +5627,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1508_TTC",
         "tripStartDate": "2026-07-26",
         "destination": "Keshwana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 96656.0,
         "ownerDue": 86990.40000000001,
         "status": "Settled"
@@ -5641,7 +5636,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1402_TTC",
         "tripStartDate": "2026-07-18",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 181218.0,
         "ownerDue": 163096.2,
         "status": "Settled"
@@ -5650,7 +5645,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1218_TTC",
         "tripStartDate": "2026-07-02",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 175500.0,
         "ownerDue": 157950.0,
         "status": "Settled"
@@ -5659,7 +5654,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1130_TTC",
         "tripStartDate": "2026-06-25",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 173840.0,
         "ownerDue": 156456.0,
         "status": "Settled"
@@ -5668,7 +5663,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1026_TTC",
         "tripStartDate": "2026-06-16",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 180108.0,
         "ownerDue": 162097.2,
         "status": "Settled"
@@ -5677,7 +5672,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-946_TTC",
         "tripStartDate": "2026-06-10",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 185958.0,
         "ownerDue": 167362.2,
         "status": "Settled"
@@ -5686,7 +5681,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-880_TTC",
         "tripStartDate": "2026-06-05",
         "destination": "Shahjahanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 197232.0,
         "ownerDue": 177508.80000000002,
         "status": "Completed"
@@ -5695,7 +5690,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-674_TTC",
         "tripStartDate": "2026-05-20",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 176155.0,
         "ownerDue": 158539.5,
         "status": "Settled"
@@ -5704,7 +5699,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-558_TTC",
         "tripStartDate": "2026-05-10",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 205646.0,
         "ownerDue": 185081.4,
         "status": "Settled"
@@ -5726,7 +5721,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-187_SMTC",
         "tripStartDate": "2026-09-20",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 212400.0,
         "ownerDue": 191160.0,
         "status": "Completed"
@@ -5735,7 +5730,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2026_TTC",
         "tripStartDate": "2026-09-10",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 180000.0,
         "ownerDue": 162000.0,
         "status": "Completed"
@@ -5744,7 +5739,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1906_TTC",
         "tripStartDate": "2026-08-31",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 180000.0,
         "ownerDue": 162000.0,
         "status": "Completed"
@@ -5753,7 +5748,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1864_TTC",
         "tripStartDate": "2026-08-24",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 171150.0,
         "ownerDue": 154035.0,
         "status": "Completed"
@@ -5762,7 +5757,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1755_TTC",
         "tripStartDate": "2026-08-16",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 176463.0,
         "ownerDue": 158816.7,
         "status": "Completed"
@@ -5771,7 +5766,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1652_TTC",
         "tripStartDate": "2026-08-08",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 174660.0,
         "ownerDue": 157194.0,
         "status": "Settled"
@@ -5780,7 +5775,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1543_TTC",
         "tripStartDate": "2026-07-30",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 142960.0,
         "ownerDue": 128664.0,
         "status": "Settled"
@@ -5789,7 +5784,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--147_TTC",
         "tripStartDate": "2026-07-23",
         "destination": "Agra (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 113400.0,
         "ownerDue": 102060.0,
         "status": "Settled"
@@ -5798,7 +5793,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1382_TTC",
         "tripStartDate": "2026-07-16",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 141550.0,
         "ownerDue": 127395.0,
         "status": "Settled"
@@ -5807,7 +5802,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1307_TTC",
         "tripStartDate": "2026-07-10",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 147440.0,
         "ownerDue": 132696.0,
         "status": "Settled"
@@ -5816,7 +5811,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1189_TTC",
         "tripStartDate": "2026-06-30",
         "destination": "Agra (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 120400.0,
         "ownerDue": 108360.0,
         "status": "Settled"
@@ -5825,7 +5820,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1092_TTC",
         "tripStartDate": "2026-06-24",
         "destination": "Barabanki (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 168840.0,
         "ownerDue": 151956.0,
         "status": "Settled"
@@ -5834,7 +5829,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1017_TTC",
         "tripStartDate": "2026-06-16",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 172200.0,
         "ownerDue": 154980.0,
         "status": "Settled"
@@ -5843,7 +5838,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-896_TTC",
         "tripStartDate": "2026-06-07",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 176000.0,
         "ownerDue": 158400.0,
         "status": "Settled"
@@ -5852,7 +5847,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-809_TTC",
         "tripStartDate": "2026-05-30",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 175685.0,
         "ownerDue": 158116.5,
         "status": "Settled"
@@ -5874,7 +5869,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-928_TTC",
         "tripStartDate": "2026-06-09",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 157343.0,
         "ownerDue": 141608.7,
         "status": "Settled"
@@ -5883,7 +5878,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-827_TTC",
         "tripStartDate": "2026-06-02",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 176000.0,
         "ownerDue": 158400.0,
         "status": "Settled"
@@ -5892,7 +5887,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-81_SMTC",
         "tripStartDate": "2026-05-29",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 138807.0,
         "ownerDue": 124926.3,
         "status": "Settled"
@@ -5901,7 +5896,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-686_TTC",
         "tripStartDate": "2026-05-20",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 176000.0,
         "ownerDue": 158400.0,
         "status": "Settled"
@@ -5910,7 +5905,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-622_TTC",
         "tripStartDate": "2026-05-14",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 182837.0,
         "ownerDue": 164553.30000000002,
         "status": "Settled"
@@ -5919,7 +5914,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-501_TTC",
         "tripStartDate": "2026-05-07",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 176000.0,
         "ownerDue": 158400.0,
         "status": "Settled"
@@ -5928,7 +5923,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-388_TTC",
         "tripStartDate": "2026-04-29",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 170300.0,
         "ownerDue": 153270.0,
         "status": "Settled"
@@ -5937,7 +5932,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-271_TTC",
         "tripStartDate": "2026-04-20",
         "destination": "Barabanki (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 168000.0,
         "ownerDue": 151200.0,
         "status": "Settled"
@@ -5946,7 +5941,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-164_TTC",
         "tripStartDate": "2026-04-11",
         "destination": "Kosi (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 110814.0,
         "ownerDue": 99732.6,
         "status": "Settled"
@@ -5955,7 +5950,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-23_TTC",
         "tripStartDate": "2026-04-02",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 158288.0,
         "ownerDue": 142459.2,
         "status": "Settled"
@@ -5964,7 +5959,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-2742_TTC",
         "tripStartDate": "2026-03-26",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 142200.0,
         "ownerDue": 127980.0,
         "status": "Settled"
@@ -5973,7 +5968,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-2664_TTC",
         "tripStartDate": "2026-03-21",
         "destination": "Jhajjar (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 112000.0,
         "ownerDue": 100800.0,
         "status": "Settled"
@@ -5982,7 +5977,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-2485_TTC",
         "tripStartDate": "2026-03-09",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 147906.0,
         "ownerDue": 133115.4,
         "status": "Settled"
@@ -5991,7 +5986,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-528_SMTC",
         "tripStartDate": "2026-02-21",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 201070.0,
         "ownerDue": 180963.0,
         "status": "Settled"
@@ -6000,7 +5995,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-2170_TTC",
         "tripStartDate": "2026-02-13",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 176000.0,
         "ownerDue": 158400.0,
         "status": "Settled"
@@ -6022,7 +6017,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-186_SMTC",
         "tripStartDate": "2026-09-18",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Ghewar Gurjar",
         "freight": 131740.0,
         "ownerDue": 118566.0,
         "status": "Completed"
@@ -6031,7 +6026,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2043_TTC",
         "tripStartDate": "2026-09-11",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ghewar Gurjar",
         "freight": 175464.0,
         "ownerDue": 157917.6,
         "status": "Transit"
@@ -6040,7 +6035,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1958_TTC",
         "tripStartDate": "2026-09-04",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ghewar Gurjar",
         "freight": 181220.0,
         "ownerDue": 163098.0,
         "status": "Completed"
@@ -6049,7 +6044,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1812_TTC",
         "tripStartDate": "2026-08-21",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ghewar Gurjar",
         "freight": 168510.0,
         "ownerDue": 151659.0,
         "status": "Settled"
@@ -6058,7 +6053,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1648_TTC",
         "tripStartDate": "2026-08-08",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ghewar Gurjar",
         "freight": 180234.0,
         "ownerDue": 162210.6,
         "status": "Settled"
@@ -6067,7 +6062,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1448_TTC",
         "tripStartDate": "2026-07-21",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ghewar Gurjar",
         "freight": 178220.0,
         "ownerDue": 160398.0,
         "status": "Settled"
@@ -6076,7 +6071,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1326_TTC",
         "tripStartDate": "2026-07-13",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ghewar Gurjar",
         "freight": 161700.0,
         "ownerDue": 145530.0,
         "status": "Settled"
@@ -6085,7 +6080,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1183_TTC",
         "tripStartDate": "2026-06-30",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ghewar Gurjar",
         "freight": 176994.0,
         "ownerDue": 159294.6,
         "status": "Settled"
@@ -6094,7 +6089,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1113_TTC",
         "tripStartDate": "2026-06-23",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ghewar Gurjar",
         "freight": 173718.0,
         "ownerDue": 156346.2,
         "status": "Settled"
@@ -6103,7 +6098,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-993_TTC",
         "tripStartDate": "2026-06-14",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ghewar Gurjar",
         "freight": 174270.0,
         "ownerDue": 156843.0,
         "status": "Settled"
@@ -6112,7 +6107,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-885_TTC",
         "tripStartDate": "2026-06-07",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ghewar Gurjar",
         "freight": 173356.0,
         "ownerDue": 156020.4,
         "status": "Settled"
@@ -6121,7 +6116,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-816_TTC",
         "tripStartDate": "2026-05-31",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ghewar Gurjar",
         "freight": 175750.0,
         "ownerDue": 158175.0,
         "status": "Settled"
@@ -6130,7 +6125,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-75_SMTC",
         "tripStartDate": "2026-05-27",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Ghewar Gurjar",
         "freight": 120766.0,
         "ownerDue": 108689.40000000001,
         "status": "Settled"
@@ -6139,7 +6134,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-50_SMTC",
         "tripStartDate": "2026-05-13",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ghewar Gurjar",
         "freight": 202960.0,
         "ownerDue": 182664.0,
         "status": "Settled"
@@ -6148,7 +6143,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-475_TTC",
         "tripStartDate": "2026-05-06",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ghewar Gurjar",
         "freight": 176000.0,
         "ownerDue": 158400.0,
         "status": "Settled"
@@ -6170,7 +6165,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2101_TTC",
         "tripStartDate": "2026-09-16",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Bhagchand 0729",
         "freight": 166500.0,
         "ownerDue": 149850.0,
         "status": "Completed"
@@ -6179,7 +6174,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2090_TTC",
         "tripStartDate": "2026-09-16",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Bhagchand 0729",
         "freight": 1.0,
         "ownerDue": 0.9,
         "status": "Settled"
@@ -6188,7 +6183,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1996_TTC",
         "tripStartDate": "2026-09-07",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Bhagchand 0729",
         "freight": 122780.0,
         "ownerDue": 110502.0,
         "status": "Settled"
@@ -6197,7 +6192,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1917_TTC",
         "tripStartDate": "2026-08-31",
         "destination": "Muzaffarnagar (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Bhagchand 0729",
         "freight": 135880.0,
         "ownerDue": 122292.0,
         "status": "Settled"
@@ -6206,7 +6201,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--191_TTC",
         "tripStartDate": "2026-08-23",
         "destination": "Meerut (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Bhagchand 0729",
         "freight": 127800.0,
         "ownerDue": 115020.0,
         "status": "Completed"
@@ -6215,7 +6210,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1742_TTC",
         "tripStartDate": "2026-08-17",
         "destination": "Kishangarh (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Bhagchand 0729",
         "freight": 137104.0,
         "ownerDue": 123393.6,
         "status": "Settled"
@@ -6224,7 +6219,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1683_TTC",
         "tripStartDate": "2026-08-10",
         "destination": "Bahadurgarh (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Bhagchand 0729",
         "freight": 118900.0,
         "ownerDue": 107010.0,
         "status": "Settled"
@@ -6233,7 +6228,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1610_TTC",
         "tripStartDate": "2026-08-04",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Bhagchand 0729",
         "freight": 150750.0,
         "ownerDue": 135675.0,
         "status": "Settled"
@@ -6242,7 +6237,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1542_TTC",
         "tripStartDate": "2026-07-29",
         "destination": "Gurugram (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Bhagchand 0729",
         "freight": 139298.0,
         "ownerDue": 125368.2,
         "status": "Settled"
@@ -6251,7 +6246,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1477_TTC",
         "tripStartDate": "2026-07-23",
         "destination": "Baraut (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Bhagchand 0729",
         "freight": 127500.0,
         "ownerDue": 114750.0,
         "status": "Settled"
@@ -6260,7 +6255,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1407_TTC",
         "tripStartDate": "2026-07-18",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Bhagchand 0729",
         "freight": 155250.0,
         "ownerDue": 139725.0,
         "status": "Settled"
@@ -6269,7 +6264,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1333_TTC",
         "tripStartDate": "2026-07-13",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Bhagchand 0729",
         "freight": 148363.0,
         "ownerDue": 133526.7,
         "status": "Settled"
@@ -6278,7 +6273,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1294_TTC",
         "tripStartDate": "2026-07-08",
         "destination": "Jhajjar (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Bhagchand 0729",
         "freight": 116000.0,
         "ownerDue": 104400.0,
         "status": "Settled"
@@ -6287,7 +6282,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1196_TTC",
         "tripStartDate": "2026-06-30",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Bhagchand 0729",
         "freight": 133595.0,
         "ownerDue": 120235.5,
         "status": "Settled"
@@ -6296,7 +6291,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1125_TTC",
         "tripStartDate": "2026-06-24",
         "destination": "Ghaziabad (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Bhagchand 0729",
         "freight": 151680.0,
         "ownerDue": 136512.0,
         "status": "Settled"
@@ -6318,7 +6313,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2067_TTC",
         "tripStartDate": "2026-09-14",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 182160.0,
         "ownerDue": 163944.0,
         "status": "Completed"
@@ -6327,7 +6322,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1987_TTC",
         "tripStartDate": "2026-09-08",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 173660.0,
         "ownerDue": 156294.0,
         "status": "Settled"
@@ -6336,7 +6331,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1840_TTC",
         "tripStartDate": "2026-08-23",
         "destination": "Bhairahawa Border (Nepal)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 360100.0,
         "ownerDue": 324090.0,
         "status": "Completed"
@@ -6345,7 +6340,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1708_TTC",
         "tripStartDate": "2026-08-12",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 176850.0,
         "ownerDue": 159165.0,
         "status": "Settled"
@@ -6354,7 +6349,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1630_TTC",
         "tripStartDate": "2026-08-06",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 182232.0,
         "ownerDue": 164008.80000000002,
         "status": "Settled"
@@ -6363,7 +6358,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1503_TTC",
         "tripStartDate": "2026-07-27",
         "destination": "Barabanki (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 166950.0,
         "ownerDue": 150255.0,
         "status": "Completed"
@@ -6372,7 +6367,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1386_TTC",
         "tripStartDate": "2026-07-17",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 162450.0,
         "ownerDue": 146205.0,
         "status": "Settled"
@@ -6381,7 +6376,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1305_TTC",
         "tripStartDate": "2026-07-09",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 173345.0,
         "ownerDue": 156010.5,
         "status": "Settled"
@@ -6390,7 +6385,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1211_TTC",
         "tripStartDate": "2026-07-01",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 162338.0,
         "ownerDue": 146104.2,
         "status": "Settled"
@@ -6399,7 +6394,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1100_TTC",
         "tripStartDate": "2026-06-23",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 166820.0,
         "ownerDue": 150138.0,
         "status": "Settled"
@@ -6408,7 +6403,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-971_TTC",
         "tripStartDate": "2026-06-13",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 171000.0,
         "ownerDue": 153900.0,
         "status": "Settled"
@@ -6417,7 +6412,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-906_TTC",
         "tripStartDate": "2026-06-07",
         "destination": "Jhajjar (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 118175.0,
         "ownerDue": 106357.5,
         "status": "Settled"
@@ -6426,7 +6421,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-813_TTC",
         "tripStartDate": "2026-06-01",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 164000.0,
         "ownerDue": 147600.0,
         "status": "Settled"
@@ -6435,7 +6430,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-750_TTC",
         "tripStartDate": "2026-05-26",
         "destination": "Aligarh (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 126450.0,
         "ownerDue": 113805.0,
         "status": "Completed"
@@ -6444,7 +6439,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-651_TTC",
         "tripStartDate": "2026-05-17",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 151700.0,
         "ownerDue": 136530.0,
         "status": "Settled"
@@ -6466,7 +6461,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "881_TTC",
         "tripStartDate": "2024-10-18",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 60900.0,
         "ownerDue": 54810.0,
         "status": "Settled"
@@ -6536,7 +6531,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-189_SMTC",
         "tripStartDate": "2026-09-20",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 141300.0,
         "ownerDue": 127170.0,
         "status": "Completed"
@@ -6545,7 +6540,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2099_TTC",
         "tripStartDate": "2026-09-15",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 187035.0,
         "ownerDue": 168331.5,
         "status": "Settled"
@@ -6554,7 +6549,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2019_TTC",
         "tripStartDate": "2026-09-09",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 180126.0,
         "ownerDue": 162113.4,
         "status": "Settled"
@@ -6563,7 +6558,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1941_TTC",
         "tripStartDate": "2026-09-02",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 187960.0,
         "ownerDue": 169164.0,
         "status": "Settled"
@@ -6572,7 +6567,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1845_TTC",
         "tripStartDate": "2026-08-23",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 182567.0,
         "ownerDue": 164310.30000000002,
         "status": "Settled"
@@ -6581,7 +6576,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1781_TTC",
         "tripStartDate": "2026-08-18",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 200763.0,
         "ownerDue": 180686.7,
         "status": "Settled"
@@ -6590,7 +6585,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1669_TTC",
         "tripStartDate": "2026-08-09",
         "destination": "Gorakhpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 209248.0,
         "ownerDue": 188323.2,
         "status": "Settled"
@@ -6599,7 +6594,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1547_TTC",
         "tripStartDate": "2026-07-30",
         "destination": "Barabanki (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 194250.0,
         "ownerDue": 174825.0,
         "status": "Completed"
@@ -6608,7 +6603,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1416_TTC",
         "tripStartDate": "2026-07-20",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 204520.0,
         "ownerDue": 184068.0,
         "status": "Settled"
@@ -6617,7 +6612,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1264_TTC",
         "tripStartDate": "2026-07-06",
         "destination": "Bhairahawa Border (Nepal)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 281925.0,
         "ownerDue": 253732.5,
         "status": "Settled"
@@ -6626,7 +6621,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1101_TTC",
         "tripStartDate": "2026-06-23",
         "destination": "Bhairahawa Border (Nepal)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 290903.0,
         "ownerDue": 261812.7,
         "status": "Settled"
@@ -6635,7 +6630,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-987_TTC",
         "tripStartDate": "2026-06-13",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 191675.0,
         "ownerDue": 172507.5,
         "status": "Settled"
@@ -6644,7 +6639,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-919_TTC",
         "tripStartDate": "2026-06-09",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 184445.0,
         "ownerDue": 166000.5,
         "status": "Settled"
@@ -6653,7 +6648,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-835_TTC",
         "tripStartDate": "2026-06-02",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 159840.0,
         "ownerDue": 143856.0,
         "status": "Completed"
@@ -6662,7 +6657,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-788_TTC",
         "tripStartDate": "2026-05-29",
         "destination": "Agra (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 124684.0,
         "ownerDue": 112215.6,
         "status": "Settled"
@@ -6792,7 +6787,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "-240_TTC",
         "tripStartDate": "2025-03-09",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 111000.0,
         "ownerDue": 99900.0,
         "status": "Settled"
@@ -6801,7 +6796,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "1667_TTC",
         "tripStartDate": "2025-03-01",
         "destination": "Jhajjar (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 112140.0,
         "ownerDue": 100926.0,
         "status": "Settled"
@@ -6810,7 +6805,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "1605_TTC",
         "tripStartDate": "2025-02-17",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 176000.0,
         "ownerDue": 158400.0,
         "status": "Settled"
@@ -6819,7 +6814,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "1552_TTC",
         "tripStartDate": "2025-02-09",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 157250.0,
         "ownerDue": 141525.0,
         "status": "Settled"
@@ -6828,7 +6823,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "1513_TTC",
         "tripStartDate": "2025-02-01",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 101776.0,
         "ownerDue": 91598.40000000001,
         "status": "Settled"
@@ -6837,7 +6832,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "-165_TTC",
         "tripStartDate": "2025-01-27",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 126450.0,
         "ownerDue": 113805.0,
         "status": "Settled"
@@ -6846,7 +6841,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "1443_TTC",
         "tripStartDate": "2025-01-22",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 113812.0,
         "ownerDue": 102430.8,
         "status": "Settled"
@@ -6855,7 +6850,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "1366_TTC",
         "tripStartDate": "2025-01-11",
         "destination": "Dadri (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 113535.2,
         "ownerDue": 102181.68,
         "status": "Settled"
@@ -6864,7 +6859,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "1328_TTC",
         "tripStartDate": "2025-01-05",
         "destination": "Dadri (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 111895.0,
         "ownerDue": 100705.5,
         "status": "Settled"
@@ -6873,7 +6868,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "1291_TTC",
         "tripStartDate": "2024-12-31",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 101898.0,
         "ownerDue": 91708.2,
         "status": "Settled"
@@ -6882,7 +6877,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "1272_TTC",
         "tripStartDate": "2024-12-27",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 101441.0,
         "ownerDue": 91296.90000000001,
         "status": "Settled"
@@ -6891,7 +6886,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "1237_TTC",
         "tripStartDate": "2024-12-20",
         "destination": "Chopanki (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 120000.0,
         "ownerDue": 108000.0,
         "status": "Settled"
@@ -6900,7 +6895,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "1188_TTC",
         "tripStartDate": "2024-12-10",
         "destination": "Dadri (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 111339.0,
         "ownerDue": 100205.1,
         "status": "Settled"
@@ -6909,7 +6904,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "1161_TTC",
         "tripStartDate": "2024-12-06",
         "destination": "Bahadurgarh (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 105000.0,
         "ownerDue": 94500.0,
         "status": "Settled"
@@ -6918,7 +6913,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "1138_TTC",
         "tripStartDate": "2024-12-03",
         "destination": "Alwar (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 112700.0,
         "ownerDue": 101430.0,
         "status": "Settled"
@@ -8164,7 +8159,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2103_TTC",
         "tripStartDate": "2026-09-16",
         "destination": "Bhiwadi (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 116725.0,
         "ownerDue": 105052.5,
         "status": "Completed"
@@ -8173,7 +8168,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--216_TTC",
         "tripStartDate": "2026-09-08",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 134591.0,
         "ownerDue": 121131.90000000001,
         "status": "Completed"
@@ -8182,7 +8177,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1939_TTC",
         "tripStartDate": "2026-09-02",
         "destination": "Jhajjar (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 120205.0,
         "ownerDue": 108184.5,
         "status": "Settled"
@@ -8191,7 +8186,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1857_TTC",
         "tripStartDate": "2026-08-23",
         "destination": "Ghaziabad (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 144800.0,
         "ownerDue": 130320.0,
         "status": "Settled"
@@ -8200,7 +8195,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--182_TTC",
         "tripStartDate": "2026-08-18",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 116359.0,
         "ownerDue": 104723.1,
         "status": "Settled"
@@ -8209,7 +8204,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1729_TTC",
         "tripStartDate": "2026-08-14",
         "destination": "Bhiwadi (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 119350.0,
         "ownerDue": 107415.0,
         "status": "Settled"
@@ -8218,7 +8213,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1651_TTC",
         "tripStartDate": "2026-08-07",
         "destination": "Noida (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 42000.0,
         "ownerDue": 37800.0,
         "status": "Settled"
@@ -8227,7 +8222,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-150_SMTC",
         "tripStartDate": "2026-08-05",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 137141.0,
         "ownerDue": 123426.90000000001,
         "status": "Settled"
@@ -8236,7 +8231,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-148_SMTC",
         "tripStartDate": "2026-07-31",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 132140.0,
         "ownerDue": 118926.0,
         "status": "Settled"
@@ -8245,7 +8240,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1494_TTC",
         "tripStartDate": "2026-07-25",
         "destination": "Bhagwadi (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 109350.0,
         "ownerDue": 98415.0,
         "status": "Settled"
@@ -8254,7 +8249,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1440_TTC",
         "tripStartDate": "2026-07-21",
         "destination": "Bhiwadi (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 139580.0,
         "ownerDue": 125622.0,
         "status": "Settled"
@@ -8263,7 +8258,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1356_TTC",
         "tripStartDate": "2026-07-14",
         "destination": "Sonipat (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 153000.0,
         "ownerDue": 137700.0,
         "status": "Settled"
@@ -8272,7 +8267,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1274_TTC",
         "tripStartDate": "2026-07-08",
         "destination": "Meerapur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 128960.0,
         "ownerDue": 116064.0,
         "status": "Settled"
@@ -8281,7 +8276,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--123_TTC",
         "tripStartDate": "2026-07-03",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 87622.0,
         "ownerDue": 78859.8,
         "status": "Settled"
@@ -8290,7 +8285,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1197_TTC",
         "tripStartDate": "2026-06-30",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 10000.0,
         "ownerDue": 9000.0,
         "status": "Settled"
@@ -8312,7 +8307,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2075_TTC",
         "tripStartDate": "2026-09-15",
         "destination": "Moradabad (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 113292.0,
         "ownerDue": 101962.8,
         "status": "Completed"
@@ -8321,7 +8316,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1881_TTC",
         "tripStartDate": "2026-08-26",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 109200.0,
         "ownerDue": 98280.0,
         "status": "Settled"
@@ -8330,7 +8325,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1728_TTC",
         "tripStartDate": "2026-08-14",
         "destination": "Ayodhya (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 113905.0,
         "ownerDue": 102514.5,
         "status": "Settled"
@@ -8339,7 +8334,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1562_TTC",
         "tripStartDate": "2026-07-31",
         "destination": "Gorakhpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 115696.0,
         "ownerDue": 104126.40000000001,
         "status": "Settled"
@@ -8348,7 +8343,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1401_TTC",
         "tripStartDate": "2026-07-18",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 109200.0,
         "ownerDue": 98280.0,
         "status": "Completed"
@@ -8357,7 +8352,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1280_TTC",
         "tripStartDate": "2026-07-08",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 104000.0,
         "ownerDue": 93600.0,
         "status": "Settled"
@@ -8366,7 +8361,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1156_TTC",
         "tripStartDate": "2026-06-28",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 127080.0,
         "ownerDue": 114372.0,
         "status": "Settled"
@@ -8375,7 +8370,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-999_TTC",
         "tripStartDate": "2026-06-14",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 113400.0,
         "ownerDue": 102060.0,
         "status": "Settled"
@@ -8384,7 +8379,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-882_TTC",
         "tripStartDate": "2026-06-06",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 109200.0,
         "ownerDue": 98280.0,
         "status": "Settled"
@@ -8393,7 +8388,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-782_TTC",
         "tripStartDate": "2026-05-29",
         "destination": "Basti (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 118560.0,
         "ownerDue": 106704.0,
         "status": "Settled"
@@ -8402,7 +8397,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-706_TTC",
         "tripStartDate": "2026-05-22",
         "destination": "Sikandrabad (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 94500.0,
         "ownerDue": 85050.0,
         "status": "Settled"
@@ -8411,7 +8406,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-582_TTC",
         "tripStartDate": "2026-05-12",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 109200.0,
         "ownerDue": 98280.0,
         "status": "Settled"
@@ -8420,7 +8415,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-432_TTC",
         "tripStartDate": "2026-05-02",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 105000.0,
         "ownerDue": 94500.0,
         "status": "Settled"
@@ -8429,7 +8424,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-276_TTC",
         "tripStartDate": "2026-04-20",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 108150.0,
         "ownerDue": 97335.0,
         "status": "Settled"
@@ -8438,7 +8433,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-100_TTC",
         "tripStartDate": "2026-04-07",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 107120.0,
         "ownerDue": 96408.0,
         "status": "Settled"
@@ -8460,7 +8455,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2139_TTC",
         "tripStartDate": "2026-09-18",
         "destination": "Bahadurgarh (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Mahendra Jat 2585",
         "freight": 113600.0,
         "ownerDue": 102240.0,
         "status": "Completed"
@@ -8469,7 +8464,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-179_SMTC",
         "tripStartDate": "2026-09-13",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Mahendra Jat 2585",
         "freight": 146007.0,
         "ownerDue": 131406.30000000002,
         "status": "Completed"
@@ -8478,7 +8473,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1974_TTC",
         "tripStartDate": "2026-09-05",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Mahendra Jat 2585",
         "freight": 116281.0,
         "ownerDue": 104652.90000000001,
         "status": "Settled"
@@ -8487,7 +8482,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--206_TTC",
         "tripStartDate": "2026-09-01",
         "destination": "Meerut (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mahendra Jat 2585",
         "freight": 78361.0,
         "ownerDue": 70524.90000000001,
         "status": "Settled"
@@ -8496,7 +8491,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1899_TTC",
         "tripStartDate": "2026-08-27",
         "destination": "Gurugram (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Mahendra Jat 2585",
         "freight": 170544.0,
         "ownerDue": 153489.6,
         "status": "Completed"
@@ -8505,7 +8500,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1846_TTC",
         "tripStartDate": "2026-08-23",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Mahendra Jat 2585",
         "freight": 163703.0,
         "ownerDue": 147332.7,
         "status": "Settled"
@@ -8514,7 +8509,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--172_TTC",
         "tripStartDate": "2026-08-13",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Mahendra Jat 2585",
         "freight": 181650.0,
         "ownerDue": 163485.0,
         "status": "Settled"
@@ -8523,7 +8518,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--165_TTC",
         "tripStartDate": "2026-08-06",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Mahendra Jat 2585",
         "freight": 175266.0,
         "ownerDue": 157739.4,
         "status": "Settled"
@@ -8532,7 +8527,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--157_TTC",
         "tripStartDate": "2026-08-01",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Mahendra Jat 2585",
         "freight": 198258.0,
         "ownerDue": 178432.2,
         "status": "Settled"
@@ -8541,7 +8536,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--153_TTC",
         "tripStartDate": "2026-07-26",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Mahendra Jat 2585",
         "freight": 191303.0,
         "ownerDue": 172172.7,
         "status": "Settled"
@@ -8550,7 +8545,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--144_TTC",
         "tripStartDate": "2026-07-21",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Mahendra Jat 2585",
         "freight": 194487.0,
         "ownerDue": 175038.30000000002,
         "status": "Settled"
@@ -8559,7 +8554,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--140_TTC",
         "tripStartDate": "2026-07-15",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Mahendra Jat 2585",
         "freight": 197220.0,
         "ownerDue": 177498.0,
         "status": "Settled"
@@ -8568,7 +8563,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--129_TTC",
         "tripStartDate": "2026-07-09",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Mahendra Jat 2585",
         "freight": 187947.0,
         "ownerDue": 169152.30000000002,
         "status": "Settled"
@@ -8577,7 +8572,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--120_TTC",
         "tripStartDate": "2026-07-02",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Mahendra Jat 2585",
         "freight": 179038.0,
         "ownerDue": 161134.2,
         "status": "Settled"
@@ -8586,7 +8581,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--113_TTC",
         "tripStartDate": "2026-06-26",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Mahendra Jat 2585",
         "freight": 185491.0,
         "ownerDue": 166941.9,
         "status": "Settled"
@@ -8608,7 +8603,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2127_TTC",
         "tripStartDate": "2026-09-17",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 10000.0,
         "ownerDue": 9000.0,
         "status": "Settled"
@@ -8617,7 +8612,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2122_TTC",
         "tripStartDate": "2026-09-17",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 159106.0,
         "ownerDue": 143195.4,
         "status": "Completed"
@@ -8626,7 +8621,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2061_TTC",
         "tripStartDate": "2026-09-12",
         "destination": "Shahjahanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 187288.0,
         "ownerDue": 168559.2,
         "status": "Settled"
@@ -8635,7 +8630,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1915_TTC",
         "tripStartDate": "2026-08-30",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 185742.0,
         "ownerDue": 167167.80000000002,
         "status": "Settled"
@@ -8644,7 +8639,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-159_SMTC",
         "tripStartDate": "2026-08-23",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 129073.0,
         "ownerDue": 116165.7,
         "status": "Settled"
@@ -8653,7 +8648,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1703_TTC",
         "tripStartDate": "2026-08-12",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 192400.0,
         "ownerDue": 173160.0,
         "status": "Settled"
@@ -8662,7 +8657,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1612_TTC",
         "tripStartDate": "2026-08-04",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 150366.0,
         "ownerDue": 135329.4,
         "status": "Settled"
@@ -8671,7 +8666,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1461_TTC",
         "tripStartDate": "2026-07-23",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 172044.0,
         "ownerDue": 154839.6,
         "status": "Settled"
@@ -8680,7 +8675,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1361_TTC",
         "tripStartDate": "2026-07-15",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 167800.0,
         "ownerDue": 151020.0,
         "status": "Settled"
@@ -8689,7 +8684,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1271_TTC",
         "tripStartDate": "2026-07-08",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 173160.0,
         "ownerDue": 155844.0,
         "status": "Settled"
@@ -8698,7 +8693,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1149_TTC",
         "tripStartDate": "2026-06-26",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 205124.0,
         "ownerDue": 184611.6,
         "status": "Settled"
@@ -8707,7 +8702,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1055_TTC",
         "tripStartDate": "2026-06-19",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 174250.0,
         "ownerDue": 156825.0,
         "status": "Settled"
@@ -8716,7 +8711,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-108_SMTC",
         "tripStartDate": "2026-06-11",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 123340.0,
         "ownerDue": 111006.0,
         "status": "Settled"
@@ -8725,7 +8720,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-825_TTC",
         "tripStartDate": "2026-06-02",
         "destination": "Barabanki (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 166908.0,
         "ownerDue": 150217.2,
         "status": "Settled"
@@ -8734,7 +8729,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-756_TTC",
         "tripStartDate": "2026-05-26",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 175565.0,
         "ownerDue": 158008.5,
         "status": "Settled"
@@ -8756,7 +8751,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027_RJ52GA8617_TTC",
         "tripStartDate": "2026-09-08",
         "destination": "DELHI",
-        "driver": "Assigned Driver",
+        "driver": "Sheru Meena",
         "freight": 42000.0,
         "ownerDue": 37800.0,
         "status": "Completed"
@@ -8765,7 +8760,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-147_TTC",
         "tripStartDate": "2026-04-10",
         "destination": "Karnal (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Sheru Meena",
         "freight": 151533.0,
         "ownerDue": 136379.7,
         "status": "Settled"
@@ -8774,7 +8769,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-43_TTC",
         "tripStartDate": "2026-04-04",
         "destination": "Baraut (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Sheru Meena",
         "freight": 128430.0,
         "ownerDue": 115587.0,
         "status": "Settled"
@@ -8783,7 +8778,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-2750_TTC",
         "tripStartDate": "2026-03-28",
         "destination": "Jhajjar (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Sheru Meena",
         "freight": 112658.0,
         "ownerDue": 101392.2,
         "status": "Settled"
@@ -8792,7 +8787,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-2633_TTC",
         "tripStartDate": "2026-03-20",
         "destination": "Budhana (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Sheru Meena",
         "freight": 137400.0,
         "ownerDue": 123660.0,
         "status": "Settled"
@@ -8801,7 +8796,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-2540_TTC",
         "tripStartDate": "2026-03-13",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Sheru Meena",
         "freight": 117000.0,
         "ownerDue": 105300.0,
         "status": "Settled"
@@ -8810,7 +8805,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-2462_TTC",
         "tripStartDate": "2026-03-07",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Sheru Meena",
         "freight": 96691.0,
         "ownerDue": 87021.90000000001,
         "status": "Settled"
@@ -8819,7 +8814,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-2384_TTC",
         "tripStartDate": "2026-02-27",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Sheru Meena",
         "freight": 137115.0,
         "ownerDue": 123403.5,
         "status": "Settled"
@@ -8828,7 +8823,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-2301_TTC",
         "tripStartDate": "2026-02-22",
         "destination": "Jhajjar (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Sheru Meena",
         "freight": 110600.0,
         "ownerDue": 99540.0,
         "status": "Settled"
@@ -8837,7 +8832,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-2220_TTC",
         "tripStartDate": "2026-02-16",
         "destination": "Jhajjar (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Sheru Meena",
         "freight": 85000.0,
         "ownerDue": 76500.0,
         "status": "Settled"
@@ -8846,7 +8841,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-2146_TTC",
         "tripStartDate": "2026-02-11",
         "destination": "Gurugram (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Sheru Meena",
         "freight": 120000.0,
         "ownerDue": 108000.0,
         "status": "Settled"
@@ -8855,7 +8850,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-2070_TTC",
         "tripStartDate": "2026-02-04",
         "destination": "Ghaziabad (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Sheru Meena",
         "freight": 141050.0,
         "ownerDue": 126945.0,
         "status": "Settled"
@@ -8864,7 +8859,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-1989_TTC",
         "tripStartDate": "2026-01-30",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Sheru Meena",
         "freight": 137115.0,
         "ownerDue": 123403.5,
         "status": "Settled"
@@ -8873,7 +8868,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-1903_TTC",
         "tripStartDate": "2026-01-25",
         "destination": "Bhiwadi (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Sheru Meena",
         "freight": 115724.0,
         "ownerDue": 104151.6,
         "status": "Settled"
@@ -8882,7 +8877,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-1825_TTC",
         "tripStartDate": "2026-01-19",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Sheru Meena",
         "freight": 136000.0,
         "ownerDue": 122400.0,
         "status": "Settled"
@@ -8904,7 +8899,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-182_SMTC",
         "tripStartDate": "2026-09-17",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 207680.0,
         "ownerDue": 186912.0,
         "status": "Completed"
@@ -8913,7 +8908,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2042_TTC",
         "tripStartDate": "2026-09-11",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 167700.0,
         "ownerDue": 150930.0,
         "status": "Transit"
@@ -8922,7 +8917,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1922_TTC",
         "tripStartDate": "2026-08-31",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 180000.0,
         "ownerDue": 162000.0,
         "status": "Completed"
@@ -8931,7 +8926,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1796_TTC",
         "tripStartDate": "2026-08-20",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 180000.0,
         "ownerDue": 162000.0,
         "status": "Completed"
@@ -8940,7 +8935,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1666_TTC",
         "tripStartDate": "2026-08-09",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 180000.0,
         "ownerDue": 162000.0,
         "status": "Settled"
@@ -8949,7 +8944,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1596_TTC",
         "tripStartDate": "2026-08-02",
         "destination": "Raibreli (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 161964.0,
         "ownerDue": 145767.6,
         "status": "Settled"
@@ -8958,7 +8953,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1509_TTC",
         "tripStartDate": "2026-07-26",
         "destination": "Bhiwadi (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 118900.0,
         "ownerDue": 107010.0,
         "status": "Settled"
@@ -8967,7 +8962,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1422_TTC",
         "tripStartDate": "2026-07-19",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 174640.0,
         "ownerDue": 157176.0,
         "status": "Settled"
@@ -8976,7 +8971,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1284_TTC",
         "tripStartDate": "2026-07-09",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 153520.0,
         "ownerDue": 138168.0,
         "status": "Settled"
@@ -8985,7 +8980,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1108_TTC",
         "tripStartDate": "2026-06-23",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 180000.0,
         "ownerDue": 162000.0,
         "status": "Settled"
@@ -8994,7 +8989,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-104_SMTC",
         "tripStartDate": "2026-06-10",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 207680.0,
         "ownerDue": 186912.0,
         "status": "Settled"
@@ -9003,7 +8998,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-840_TTC",
         "tripStartDate": "2026-06-04",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 171600.0,
         "ownerDue": 154440.0,
         "status": "Settled"
@@ -9012,7 +9007,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-763_TTC",
         "tripStartDate": "2026-05-26",
         "destination": "Tanda (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 156000.0,
         "ownerDue": 140400.0,
         "status": "Settled"
@@ -9021,7 +9016,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-617_TTC",
         "tripStartDate": "2026-05-15",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 174900.0,
         "ownerDue": 157410.0,
         "status": "Settled"
@@ -9030,7 +9025,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-35_SMTC",
         "tripStartDate": "2026-05-04",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 202960.0,
         "ownerDue": 182664.0,
         "status": "Settled"
@@ -9052,7 +9047,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-80_SMTC",
         "tripStartDate": "2026-05-29",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 207680.0,
         "ownerDue": 186912.0,
         "status": "Settled"
@@ -9061,7 +9056,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-17_SMTC",
         "tripStartDate": "2026-04-25",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 127713.0,
         "ownerDue": 114941.7,
         "status": "Settled"
@@ -9070,7 +9065,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-138_TTC",
         "tripStartDate": "2026-04-10",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 176000.0,
         "ownerDue": 158400.0,
         "status": "Completed"
@@ -9079,7 +9074,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-30_TTC",
         "tripStartDate": "2026-04-03",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 176000.0,
         "ownerDue": 158400.0,
         "status": "Settled"
@@ -9088,7 +9083,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-2475_TTC",
         "tripStartDate": "2026-03-08",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 165384.0,
         "ownerDue": 148845.6,
         "status": "Settled"
@@ -9097,7 +9092,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-2287_TTC",
         "tripStartDate": "2026-02-21",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 176000.0,
         "ownerDue": 158400.0,
         "status": "Settled"
@@ -9106,7 +9101,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-2159_TTC",
         "tripStartDate": "2026-02-12",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 176000.0,
         "ownerDue": 158400.0,
         "status": "Settled"
@@ -9115,7 +9110,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-498_SMTC",
         "tripStartDate": "2026-02-05",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 200987.0,
         "ownerDue": 180888.30000000002,
         "status": "Settled"
@@ -9124,7 +9119,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-1993_TTC",
         "tripStartDate": "2026-01-30",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 177397.0,
         "ownerDue": 159657.30000000002,
         "status": "Settled"
@@ -9133,7 +9128,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-1877_TTC",
         "tripStartDate": "2026-01-22",
         "destination": "DAUSA (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 161320.0,
         "ownerDue": 145188.0,
         "status": "Settled"
@@ -9142,7 +9137,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-1781_TTC",
         "tripStartDate": "2026-01-15",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 105000.0,
         "ownerDue": 94500.0,
         "status": "Settled"
@@ -9151,7 +9146,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-1678_TTC",
         "tripStartDate": "2026-01-07",
         "destination": "Jhajjar (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 112000.0,
         "ownerDue": 100800.0,
         "status": "Settled"
@@ -9160,7 +9155,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-1606_TTC",
         "tripStartDate": "2026-01-02",
         "destination": "Jhajjar (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 112000.0,
         "ownerDue": 100800.0,
         "status": "Settled"
@@ -9169,7 +9164,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-1527_TTC",
         "tripStartDate": "2025-12-26",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 143105.0,
         "ownerDue": 128794.5,
         "status": "Settled"
@@ -9178,7 +9173,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-1493_TTC",
         "tripStartDate": "2025-12-22",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Dinesh Sharma",
         "freight": 156510.0,
         "ownerDue": 140859.0,
         "status": "Settled"
@@ -9200,7 +9195,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2169_TTC",
         "tripStartDate": "2026-09-21",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Radhey Shyam Gurjar",
         "freight": 2400.0,
         "ownerDue": 2160.0,
         "status": "Transit"
@@ -9209,7 +9204,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2036_TTC",
         "tripStartDate": "2026-09-11",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Radhey Shyam Gurjar",
         "freight": 109200.0,
         "ownerDue": 98280.0,
         "status": "Transit"
@@ -9218,7 +9213,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1919_TTC",
         "tripStartDate": "2026-08-30",
         "destination": "Ballia (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Radhey Shyam Gurjar",
         "freight": 124544.0,
         "ownerDue": 112089.6,
         "status": "Settled"
@@ -9227,7 +9222,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1787_TTC",
         "tripStartDate": "2026-08-19",
         "destination": "Noida (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Radhey Shyam Gurjar",
         "freight": 91590.0,
         "ownerDue": 82431.0,
         "status": "Settled"
@@ -9236,7 +9231,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1629_TTC",
         "tripStartDate": "2026-08-06",
         "destination": "Gorakhpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Radhey Shyam Gurjar",
         "freight": 125375.0,
         "ownerDue": 112837.5,
         "status": "Settled"
@@ -9245,7 +9240,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1493_TTC",
         "tripStartDate": "2026-07-25",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Radhey Shyam Gurjar",
         "freight": 93600.0,
         "ownerDue": 84240.0,
         "status": "Settled"
@@ -9254,7 +9249,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1455_TTC",
         "tripStartDate": "2026-07-22",
         "destination": "Noida (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Radhey Shyam Gurjar",
         "freight": 91633.0,
         "ownerDue": 82469.7,
         "status": "Settled"
@@ -9263,7 +9258,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1319_TTC",
         "tripStartDate": "2026-07-11",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Radhey Shyam Gurjar",
         "freight": 115805.0,
         "ownerDue": 104224.5,
         "status": "Settled"
@@ -9272,7 +9267,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1141_TTC",
         "tripStartDate": "2026-06-26",
         "destination": "Jhajjar (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Radhey Shyam Gurjar",
         "freight": 76860.0,
         "ownerDue": 69174.0,
         "status": "Settled"
@@ -9281,7 +9276,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1031_TTC",
         "tripStartDate": "2026-06-17",
         "destination": "Gida (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Radhey Shyam Gurjar",
         "freight": 126510.0,
         "ownerDue": 113859.0,
         "status": "Settled"
@@ -9290,7 +9285,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-868_TTC",
         "tripStartDate": "2026-06-05",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Radhey Shyam Gurjar",
         "freight": 109200.0,
         "ownerDue": 98280.0,
         "status": "Settled"
@@ -9299,7 +9294,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-765_TTC",
         "tripStartDate": "2026-05-27",
         "destination": "Varanasi (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Radhey Shyam Gurjar",
         "freight": 120400.0,
         "ownerDue": 108360.0,
         "status": "Settled"
@@ -9308,7 +9303,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-632_TTC",
         "tripStartDate": "2026-05-15",
         "destination": "Ikauna (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Radhey Shyam Gurjar",
         "freight": 118076.0,
         "ownerDue": 106268.40000000001,
         "status": "Settled"
@@ -9317,7 +9312,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-466_TTC",
         "tripStartDate": "2026-05-04",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Radhey Shyam Gurjar",
         "freight": 109200.0,
         "ownerDue": 98280.0,
         "status": "Settled"
@@ -9326,7 +9321,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-295_TTC",
         "tripStartDate": "2026-04-21",
         "destination": "khushinagar (u.p.)",
-        "driver": "Assigned Driver",
+        "driver": "Radhey Shyam Gurjar",
         "freight": 131200.0,
         "ownerDue": 118080.0,
         "status": "Settled"
@@ -9348,7 +9343,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2153_TTC",
         "tripStartDate": "2026-09-19",
         "destination": "Gohana (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 119625.0,
         "ownerDue": 107662.5,
         "status": "Completed"
@@ -9357,7 +9352,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2076_TTC",
         "tripStartDate": "2026-09-14",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 179780.0,
         "ownerDue": 161802.0,
         "status": "Completed"
@@ -9366,7 +9361,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-171_SMTC",
         "tripStartDate": "2026-09-07",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 128620.0,
         "ownerDue": 115758.0,
         "status": "Settled"
@@ -9375,7 +9370,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1849_TTC",
         "tripStartDate": "2026-08-23",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 187380.0,
         "ownerDue": 168642.0,
         "status": "Settled"
@@ -9384,7 +9379,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--186_TTC",
         "tripStartDate": "2026-08-19",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 111941.0,
         "ownerDue": 100746.90000000001,
         "status": "Settled"
@@ -9393,7 +9388,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1726_TTC",
         "tripStartDate": "2026-08-14",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 124558.0,
         "ownerDue": 112102.2,
         "status": "Settled"
@@ -9402,7 +9397,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1625_TTC",
         "tripStartDate": "2026-08-05",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 107172.0,
         "ownerDue": 96454.8,
         "status": "Settled"
@@ -9411,7 +9406,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1571_TTC",
         "tripStartDate": "2026-07-30",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 172121.0,
         "ownerDue": 154908.9,
         "status": "Settled"
@@ -9420,7 +9415,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1516_TTC",
         "tripStartDate": "2026-07-26",
         "destination": "Pataudi (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 110400.0,
         "ownerDue": 99360.0,
         "status": "Settled"
@@ -9429,7 +9424,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1434_TTC",
         "tripStartDate": "2026-07-20",
         "destination": "Saharanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 187239.0,
         "ownerDue": 168515.1,
         "status": "Settled"
@@ -9438,7 +9433,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1373_TTC",
         "tripStartDate": "2026-07-15",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 1.0,
         "ownerDue": 0.9,
         "status": "Settled"
@@ -9447,7 +9442,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1363_TTC",
         "tripStartDate": "2026-07-15",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 111888.0,
         "ownerDue": 100699.2,
         "status": "Settled"
@@ -9456,7 +9451,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1323_TTC",
         "tripStartDate": "2026-07-12",
         "destination": "Kotputli (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 94412.0,
         "ownerDue": 84970.8,
         "status": "Settled"
@@ -9465,7 +9460,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1261_TTC",
         "tripStartDate": "2026-07-06",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 116280.0,
         "ownerDue": 104652.0,
         "status": "Settled"
@@ -9474,7 +9469,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-129_SMTC",
         "tripStartDate": "2026-07-01",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 135247.0,
         "ownerDue": 121722.3,
         "status": "Settled"
@@ -9496,7 +9491,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-1339_TTC",
         "tripStartDate": "2025-11-26",
         "destination": "Bhiwadi (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 112532.0,
         "ownerDue": 101278.8,
         "status": "Settled"
@@ -9505,7 +9500,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-308_SMTC",
         "tripStartDate": "2025-11-21",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 118767.0,
         "ownerDue": 106890.3,
         "status": "Settled"
@@ -9514,7 +9509,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-295_SMTC",
         "tripStartDate": "2025-11-19",
         "destination": "Jhajjar (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 56994.0,
         "ownerDue": 51294.6,
         "status": "Settled"
@@ -9523,7 +9518,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-283_SMTC",
         "tripStartDate": "2025-11-17",
         "destination": "Alwar (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 75992.0,
         "ownerDue": 68392.8,
         "status": "Settled"
@@ -9532,7 +9527,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-1245_TTC",
         "tripStartDate": "2025-11-11",
         "destination": "Gurugram (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 121600.0,
         "ownerDue": 109440.0,
         "status": "Settled"
@@ -9541,7 +9536,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-1206_TTC",
         "tripStartDate": "2025-11-05",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 134938.0,
         "ownerDue": 121444.2,
         "status": "Settled"
@@ -9550,7 +9545,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-1188_TTC",
         "tripStartDate": "2025-10-31",
         "destination": "Bhiwadi (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 112000.0,
         "ownerDue": 100800.0,
         "status": "Settled"
@@ -9559,7 +9554,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-1157_TTC",
         "tripStartDate": "2025-10-26",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 90750.0,
         "ownerDue": 81675.0,
         "status": "Settled"
@@ -9568,7 +9563,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-1134_TTC",
         "tripStartDate": "2025-10-16",
         "destination": "Sonipat (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 134046.0,
         "ownerDue": 120641.40000000001,
         "status": "Settled"
@@ -9577,7 +9572,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-1062_TTC",
         "tripStartDate": "2025-10-11",
         "destination": "Bhiwadi (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 116606.0,
         "ownerDue": 104945.40000000001,
         "status": "Settled"
@@ -9586,7 +9581,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-1007_TTC",
         "tripStartDate": "2025-10-01",
         "destination": "Jhajjar (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 110922.0,
         "ownerDue": 99829.8,
         "status": "Settled"
@@ -9595,7 +9590,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-181_SMTC",
         "tripStartDate": "2025-09-27",
         "destination": "Jhajjar (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 134803.2,
         "ownerDue": 121322.88000000002,
         "status": "Settled"
@@ -9604,7 +9599,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-749_MTC",
         "tripStartDate": "2025-09-22",
         "destination": "Jhajjar (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 113007.0,
         "ownerDue": 101706.3,
         "status": "Settled"
@@ -9613,7 +9608,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-876_TTC",
         "tripStartDate": "2025-09-11",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 127395.0,
         "ownerDue": 114655.5,
         "status": "Settled"
@@ -9622,7 +9617,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-839_TTC",
         "tripStartDate": "2025-09-05",
         "destination": "Muzaffarnagar (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 128250.0,
         "ownerDue": 115425.0,
         "status": "Settled"
@@ -9644,7 +9639,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-2492_TTC",
         "tripStartDate": "2026-03-10",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 178200.0,
         "ownerDue": 160380.0,
         "status": "Settled"
@@ -9653,7 +9648,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-2412_TTC",
         "tripStartDate": "2026-03-01",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 165474.0,
         "ownerDue": 148926.6,
         "status": "Settled"
@@ -9662,7 +9657,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-2318_TTC",
         "tripStartDate": "2026-02-23",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 174085.0,
         "ownerDue": 156676.5,
         "status": "Settled"
@@ -9671,7 +9666,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-2208_TTC",
         "tripStartDate": "2026-02-16",
         "destination": "DAUSA (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 152000.0,
         "ownerDue": 136800.0,
         "status": "Settled"
@@ -9680,7 +9675,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-2091_TTC",
         "tripStartDate": "2026-02-06",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 176046.0,
         "ownerDue": 158441.4,
         "status": "Settled"
@@ -9689,7 +9684,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-1919_TTC",
         "tripStartDate": "2026-01-25",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 181596.0,
         "ownerDue": 163436.4,
         "status": "Settled"
@@ -9698,7 +9693,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-1868_TTC",
         "tripStartDate": "2026-01-21",
         "destination": "Firozabad (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 134596.0,
         "ownerDue": 121136.40000000001,
         "status": "Settled"
@@ -9707,7 +9702,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-1789_TTC",
         "tripStartDate": "2026-01-16",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 159156.0,
         "ownerDue": 143240.4,
         "status": "Settled"
@@ -9716,7 +9711,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-1723_TTC",
         "tripStartDate": "2026-01-11",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 173160.0,
         "ownerDue": 155844.0,
         "status": "Settled"
@@ -9725,7 +9720,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-1649_TTC",
         "tripStartDate": "2026-01-06",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 151515.0,
         "ownerDue": 136363.5,
         "status": "Settled"
@@ -9734,7 +9729,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-433_SMTC",
         "tripStartDate": "2025-12-30",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 235042.0,
         "ownerDue": 211537.80000000002,
         "status": "Settled"
@@ -9743,7 +9738,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-406_SMTC",
         "tripStartDate": "2025-12-19",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 202960.0,
         "ownerDue": 182664.0,
         "status": "Settled"
@@ -9752,7 +9747,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-1439_TTC",
         "tripStartDate": "2025-12-14",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 177693.0,
         "ownerDue": 159923.7,
         "status": "Settled"
@@ -9761,7 +9756,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-1404_TTC",
         "tripStartDate": "2025-12-08",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 175584.0,
         "ownerDue": 158025.6,
         "status": "Settled"
@@ -9770,7 +9765,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-343_SMTC",
         "tripStartDate": "2025-11-30",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 202960.0,
         "ownerDue": 182664.0,
         "status": "Settled"
@@ -9792,7 +9787,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-209_SMTC",
         "tripStartDate": "2025-10-10",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 202960.0,
         "ownerDue": 182664.0,
         "status": "Settled"
@@ -9801,7 +9796,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-189_SMTC",
         "tripStartDate": "2025-10-01",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 202960.0,
         "ownerDue": 182664.0,
         "status": "Settled"
@@ -9810,7 +9805,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-174_SMTC",
         "tripStartDate": "2025-09-23",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 196531.0,
         "ownerDue": 176877.9,
         "status": "Settled"
@@ -9819,7 +9814,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-161_SMTC",
         "tripStartDate": "2025-09-16",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 187303.0,
         "ownerDue": 168572.7,
         "status": "Settled"
@@ -9828,7 +9823,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-151_SMTC",
         "tripStartDate": "2025-09-08",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 192640.0,
         "ownerDue": 173376.0,
         "status": "Settled"
@@ -9837,7 +9832,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-134_SMTC",
         "tripStartDate": "2025-08-27",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 192640.0,
         "ownerDue": 173376.0,
         "status": "Settled"
@@ -9846,7 +9841,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-126_SMTC",
         "tripStartDate": "2025-08-21",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 185773.0,
         "ownerDue": 167195.7,
         "status": "Settled"
@@ -9855,7 +9850,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-117_SMTC",
         "tripStartDate": "2025-08-11",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 192640.0,
         "ownerDue": 173376.0,
         "status": "Settled"
@@ -9864,7 +9859,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-106_SMTC",
         "tripStartDate": "2025-07-30",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 192640.0,
         "ownerDue": 173376.0,
         "status": "Settled"
@@ -9873,7 +9868,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-617_TTC",
         "tripStartDate": "2025-07-20",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 169460.0,
         "ownerDue": 152514.0,
         "status": "Settled"
@@ -9882,7 +9877,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-567_TTC",
         "tripStartDate": "2025-07-11",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 159821.5,
         "ownerDue": 143839.35,
         "status": "Settled"
@@ -9891,7 +9886,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-83_SMTC",
         "tripStartDate": "2025-07-03",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 185426.0,
         "ownerDue": 166883.4,
         "status": "Settled"
@@ -9900,7 +9895,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026--124_TTC",
         "tripStartDate": "2025-06-28",
         "destination": "Agra (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 109018.8,
         "ownerDue": 98116.92,
         "status": "Settled"
@@ -9909,7 +9904,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-365_TTC",
         "tripStartDate": "2025-06-10",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 176000.0,
         "ownerDue": 158400.0,
         "status": "Settled"
@@ -9918,7 +9913,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2025-2026-58_SMTC",
         "tripStartDate": "2025-06-03",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 187790.0,
         "ownerDue": 169011.0,
         "status": "Settled"
@@ -9940,7 +9935,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2051_TTC",
         "tripStartDate": "2026-09-12",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 180000.0,
         "ownerDue": 162000.0,
         "status": "Transit"
@@ -9949,7 +9944,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1960_TTC",
         "tripStartDate": "2026-09-04",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 185760.0,
         "ownerDue": 167184.0,
         "status": "Completed"
@@ -9958,7 +9953,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1829_TTC",
         "tripStartDate": "2026-08-23",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 164939.0,
         "ownerDue": 148445.1,
         "status": "Settled"
@@ -9967,7 +9962,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1761_TTC",
         "tripStartDate": "2026-08-16",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 183150.0,
         "ownerDue": 164835.0,
         "status": "Settled"
@@ -9976,7 +9971,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1642_TTC",
         "tripStartDate": "2026-08-07",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 180000.0,
         "ownerDue": 162000.0,
         "status": "Completed"
@@ -9985,7 +9980,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1560_TTC",
         "tripStartDate": "2026-07-30",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 174825.0,
         "ownerDue": 157342.5,
         "status": "Settled"
@@ -9994,7 +9989,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1405_TTC",
         "tripStartDate": "2026-07-18",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 168350.0,
         "ownerDue": 151515.0,
         "status": "Settled"
@@ -10003,7 +9998,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1322_TTC",
         "tripStartDate": "2026-07-11",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 20000.0,
         "ownerDue": 18000.0,
         "status": "Settled"
@@ -10012,7 +10007,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1321_TTC",
         "tripStartDate": "2026-07-11",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 173768.0,
         "ownerDue": 156391.2,
         "status": "Settled"
@@ -10021,7 +10016,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1232_TTC",
         "tripStartDate": "2026-07-03",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 173940.0,
         "ownerDue": 156546.0,
         "status": "Settled"
@@ -10030,7 +10025,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1159_TTC",
         "tripStartDate": "2026-06-27",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 170766.0,
         "ownerDue": 153689.4,
         "status": "Settled"
@@ -10039,7 +10034,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1081_TTC",
         "tripStartDate": "2026-06-21",
         "destination": "Bahraich (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 187554.0,
         "ownerDue": 168798.6,
         "status": "Settled"
@@ -10048,7 +10043,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1018_TTC",
         "tripStartDate": "2026-06-15",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 173053.0,
         "ownerDue": 155747.7,
         "status": "Settled"
@@ -10057,7 +10052,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-891_TTC",
         "tripStartDate": "2026-06-07",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 156047.0,
         "ownerDue": 140442.30000000002,
         "status": "Settled"
@@ -10066,7 +10061,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-807_TTC",
         "tripStartDate": "2026-05-31",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 196040.0,
         "ownerDue": 176436.0,
         "status": "Settled"
@@ -10088,7 +10083,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2109_TTC",
         "tripStartDate": "2026-09-16",
         "destination": "Muzaffarnagar (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 136400.0,
         "ownerDue": 122760.0,
         "status": "Completed"
@@ -10097,7 +10092,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--219_TTC",
         "tripStartDate": "2026-09-10",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 129900.0,
         "ownerDue": 116910.0,
         "status": "Settled"
@@ -10106,7 +10101,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1956_TTC",
         "tripStartDate": "2026-09-04",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 129308.0,
         "ownerDue": 116377.2,
         "status": "Settled"
@@ -10115,7 +10110,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1888_TTC",
         "tripStartDate": "2026-08-26",
         "destination": "Saharanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 120925.0,
         "ownerDue": 108832.5,
         "status": "Settled"
@@ -10124,7 +10119,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1820_TTC",
         "tripStartDate": "2026-08-21",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 115940.0,
         "ownerDue": 104346.0,
         "status": "Settled"
@@ -10133,7 +10128,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-158_SMTC",
         "tripStartDate": "2026-08-17",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 133340.0,
         "ownerDue": 120006.0,
         "status": "Settled"
@@ -10142,7 +10137,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1689_TTC",
         "tripStartDate": "2026-08-11",
         "destination": "Gohana (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 114623.0,
         "ownerDue": 103160.7,
         "status": "Settled"
@@ -10151,7 +10146,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--161_TTC",
         "tripStartDate": "2026-08-03",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 128546.0,
         "ownerDue": 115691.40000000001,
         "status": "Settled"
@@ -10160,7 +10155,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1540_TTC",
         "tripStartDate": "2026-07-28",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 118885.0,
         "ownerDue": 106996.5,
         "status": "Settled"
@@ -10169,7 +10164,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1462_TTC",
         "tripStartDate": "2026-07-22",
         "destination": "Kairana (u.p.)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 143306.0,
         "ownerDue": 128975.40000000001,
         "status": "Settled"
@@ -10178,7 +10173,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1389_TTC",
         "tripStartDate": "2026-07-18",
         "destination": "Jhajjar (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 116000.0,
         "ownerDue": 104400.0,
         "status": "Settled"
@@ -10187,7 +10182,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--132_TTC",
         "tripStartDate": "2026-07-11",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 119350.0,
         "ownerDue": 107415.0,
         "status": "Settled"
@@ -10196,7 +10191,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--126_TTC",
         "tripStartDate": "2026-07-07",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 116250.0,
         "ownerDue": 104625.0,
         "status": "Settled"
@@ -10205,7 +10200,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--118_TTC",
         "tripStartDate": "2026-07-01",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 123225.0,
         "ownerDue": 110902.5,
         "status": "Settled"
@@ -10214,7 +10209,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1127_TTC",
         "tripStartDate": "2026-06-25",
         "destination": "Saharanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 144500.0,
         "ownerDue": 130050.0,
         "status": "Settled"
@@ -10236,7 +10231,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2044_TTC",
         "tripStartDate": "2026-09-11",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 171162.0,
         "ownerDue": 154045.80000000002,
         "status": "Transit"
@@ -10245,7 +10240,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1961_TTC",
         "tripStartDate": "2026-09-04",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 182040.0,
         "ownerDue": 163836.0,
         "status": "Settled"
@@ -10254,7 +10249,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-162_SMTC",
         "tripStartDate": "2026-08-27",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 126673.0,
         "ownerDue": 114005.7,
         "status": "Settled"
@@ -10263,7 +10258,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1799_TTC",
         "tripStartDate": "2026-08-20",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 159296.0,
         "ownerDue": 143366.4,
         "status": "Settled"
@@ -10272,7 +10267,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1653_TTC",
         "tripStartDate": "2026-08-08",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 180000.0,
         "ownerDue": 162000.0,
         "status": "Settled"
@@ -10281,7 +10276,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1572_TTC",
         "tripStartDate": "2026-07-31",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 167409.0,
         "ownerDue": 150668.1,
         "status": "Settled"
@@ -10290,7 +10285,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1470_TTC",
         "tripStartDate": "2026-07-24",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 175740.0,
         "ownerDue": 158166.0,
         "status": "Settled"
@@ -10299,7 +10294,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1297_TTC",
         "tripStartDate": "2026-07-09",
         "destination": "Bhairahawa Border (Nepal)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 287595.0,
         "ownerDue": 258835.5,
         "status": "Settled"
@@ -10308,7 +10303,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1106_TTC",
         "tripStartDate": "2026-06-23",
         "destination": "Bhairahawa Border (Nepal)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 298305.0,
         "ownerDue": 268474.5,
         "status": "Settled"
@@ -10317,7 +10312,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-109_SMTC",
         "tripStartDate": "2026-06-11",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 292847.0,
         "ownerDue": 263562.3,
         "status": "Settled"
@@ -10326,7 +10321,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-867_TTC",
         "tripStartDate": "2026-06-05",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 188143.0,
         "ownerDue": 169328.7,
         "status": "Settled"
@@ -10335,7 +10330,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-688_TTC",
         "tripStartDate": "2026-05-21",
         "destination": "Bhairahawa Border (Nepal)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 283550.0,
         "ownerDue": 255195.0,
         "status": "Settled"
@@ -10344,7 +10339,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-583_TTC",
         "tripStartDate": "2026-05-12",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 169701.0,
         "ownerDue": 152730.9,
         "status": "Settled"
@@ -10353,7 +10348,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-37_SMTC",
         "tripStartDate": "2026-05-06",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 202960.0,
         "ownerDue": 182664.0,
         "status": "Settled"
@@ -10362,7 +10357,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-377_TTC",
         "tripStartDate": "2026-04-27",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 169978.0,
         "ownerDue": 152980.2,
         "status": "Settled"
@@ -10384,7 +10379,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2049_TTC",
         "tripStartDate": "2026-09-12",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 180000.0,
         "ownerDue": 162000.0,
         "status": "Transit"
@@ -10393,7 +10388,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1970_TTC",
         "tripStartDate": "2026-09-05",
         "destination": "Barabanki (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 179970.0,
         "ownerDue": 161973.0,
         "status": "Completed"
@@ -10402,7 +10397,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1740_TTC",
         "tripStartDate": "2026-08-15",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 161640.0,
         "ownerDue": 145476.0,
         "status": "Settled"
@@ -10411,7 +10406,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1619_TTC",
         "tripStartDate": "2026-08-05",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 180000.0,
         "ownerDue": 162000.0,
         "status": "Completed"
@@ -10420,7 +10415,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1501_TTC",
         "tripStartDate": "2026-07-27",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 166500.0,
         "ownerDue": 149850.0,
         "status": "Settled"
@@ -10429,7 +10424,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1345_TTC",
         "tripStartDate": "2026-07-14",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 180000.0,
         "ownerDue": 162000.0,
         "status": "Completed"
@@ -10438,7 +10433,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1231_TTC",
         "tripStartDate": "2026-07-03",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 166530.0,
         "ownerDue": 149877.0,
         "status": "Settled"
@@ -10447,7 +10442,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-122_SMTC",
         "tripStartDate": "2026-06-22",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 215468.0,
         "ownerDue": 193921.2,
         "status": "Settled"
@@ -10456,7 +10451,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1004_TTC",
         "tripStartDate": "2026-06-14",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 193132.0,
         "ownerDue": 173818.80000000002,
         "status": "Settled"
@@ -10465,7 +10460,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-881_TTC",
         "tripStartDate": "2026-06-06",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 176000.0,
         "ownerDue": 158400.0,
         "status": "Settled"
@@ -10474,7 +10469,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-811_TTC",
         "tripStartDate": "2026-05-31",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 176000.0,
         "ownerDue": 158400.0,
         "status": "Settled"
@@ -10483,7 +10478,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-662_TTC",
         "tripStartDate": "2026-05-19",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 176000.0,
         "ownerDue": 158400.0,
         "status": "Settled"
@@ -10492,7 +10487,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-545_TTC",
         "tripStartDate": "2026-05-12",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 176000.0,
         "ownerDue": 158400.0,
         "status": "Settled"
@@ -10501,7 +10496,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-28_SMTC",
         "tripStartDate": "2026-04-30",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 217120.0,
         "ownerDue": 195408.0,
         "status": "Settled"
@@ -10510,7 +10505,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-305_TTC",
         "tripStartDate": "2026-04-22",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 147600.0,
         "ownerDue": 132840.0,
         "status": "Settled"
@@ -10532,7 +10527,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-174_SMTC",
         "tripStartDate": "2026-09-10",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Shishram Meena",
         "freight": 127369.0,
         "ownerDue": 114632.1,
         "status": "Completed"
@@ -10541,7 +10536,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1951_TTC",
         "tripStartDate": "2026-09-03",
         "destination": "Gurugram (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Shishram Meena",
         "freight": 78812.0,
         "ownerDue": 70930.8,
         "status": "Settled"
@@ -10550,7 +10545,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1860_TTC",
         "tripStartDate": "2026-08-24",
         "destination": "Bhadohi (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Shishram Meena",
         "freight": 119336.0,
         "ownerDue": 107402.40000000001,
         "status": "Settled"
@@ -10559,7 +10554,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1753_TTC",
         "tripStartDate": "2026-08-16",
         "destination": "Gorakhpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Shishram Meena",
         "freight": 121800.0,
         "ownerDue": 109620.0,
         "status": "Settled"
@@ -10568,7 +10563,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-153_SMTC",
         "tripStartDate": "2026-08-08",
         "destination": "Sikandrabad (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Shishram Meena",
         "freight": 104076.0,
         "ownerDue": 93668.40000000001,
         "status": "Settled"
@@ -10577,7 +10572,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1591_TTC",
         "tripStartDate": "2026-08-01",
         "destination": "Chandigarh",
-        "driver": "Assigned Driver",
+        "driver": "Shishram Meena",
         "freight": 87500.0,
         "ownerDue": 78750.0,
         "status": "Settled"
@@ -10586,7 +10581,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1523_TTC",
         "tripStartDate": "2026-07-27",
         "destination": "Gurugram (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Shishram Meena",
         "freight": 80000.0,
         "ownerDue": 72000.0,
         "status": "Settled"
@@ -10595,7 +10590,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1459_TTC",
         "tripStartDate": "2026-07-22",
         "destination": "Jhajjar (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Shishram Meena",
         "freight": 76860.0,
         "ownerDue": 69174.0,
         "status": "Settled"
@@ -10604,7 +10599,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1282_TTC",
         "tripStartDate": "2026-07-08",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Shishram Meena",
         "freight": 109200.0,
         "ownerDue": 98280.0,
         "status": "Settled"
@@ -10613,7 +10608,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1181_TTC",
         "tripStartDate": "2026-06-30",
         "destination": "Dehradun (U.K.)",
-        "driver": "Assigned Driver",
+        "driver": "Shishram Meena",
         "freight": 108800.0,
         "ownerDue": 97920.0,
         "status": "Settled"
@@ -10622,7 +10617,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1050_TTC",
         "tripStartDate": "2026-06-18",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Shishram Meena",
         "freight": 113400.0,
         "ownerDue": 102060.0,
         "status": "Settled"
@@ -10631,7 +10626,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-794_TTC",
         "tripStartDate": "2026-05-30",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Shishram Meena",
         "freight": 113400.0,
         "ownerDue": 102060.0,
         "status": "Completed"
@@ -10640,7 +10635,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-670_TTC",
         "tripStartDate": "2026-05-19",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Shishram Meena",
         "freight": 146473.0,
         "ownerDue": 131825.7,
         "status": "Settled"
@@ -10649,7 +10644,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-520_TTC",
         "tripStartDate": "2026-05-08",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Shishram Meena",
         "freight": 105000.0,
         "ownerDue": 94500.0,
         "status": "Settled"
@@ -10658,7 +10653,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-467_TTC",
         "tripStartDate": "2026-05-04",
         "destination": "Sikandrabad (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Shishram Meena",
         "freight": 94500.0,
         "ownerDue": 85050.0,
         "status": "Settled"
@@ -11112,7 +11107,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--223_TTC",
         "tripStartDate": "2026-09-16",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 120761.0,
         "ownerDue": 108684.90000000001,
         "status": "Completed"
@@ -11121,7 +11116,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--218_TTC",
         "tripStartDate": "2026-09-10",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 121200.0,
         "ownerDue": 109080.0,
         "status": "Completed"
@@ -11130,7 +11125,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--212_TTC",
         "tripStartDate": "2026-09-06",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 118250.0,
         "ownerDue": 106425.0,
         "status": "Settled"
@@ -11139,7 +11134,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1876_TTC",
         "tripStartDate": "2026-08-25",
         "destination": "Keshwana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 108075.0,
         "ownerDue": 97267.5,
         "status": "Settled"
@@ -11148,7 +11143,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1831_TTC",
         "tripStartDate": "2026-08-22",
         "destination": "Gurugram (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 67362.0,
         "ownerDue": 60625.8,
         "status": "Settled"
@@ -11157,7 +11152,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1763_TTC",
         "tripStartDate": "2026-08-16",
         "destination": "Meerut (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 145440.0,
         "ownerDue": 130896.0,
         "status": "Settled"
@@ -11166,7 +11161,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1681_TTC",
         "tripStartDate": "2026-08-10",
         "destination": "Haridwar (U.K.)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 151300.0,
         "ownerDue": 136170.0,
         "status": "Settled"
@@ -11175,7 +11170,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--160_TTC",
         "tripStartDate": "2026-08-03",
         "destination": "Gurugram (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 124265.0,
         "ownerDue": 111838.5,
         "status": "Settled"
@@ -11184,7 +11179,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1554_TTC",
         "tripStartDate": "2026-07-30",
         "destination": "Bhiwadi (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 119406.0,
         "ownerDue": 107465.40000000001,
         "status": "Settled"
@@ -11193,7 +11188,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--151_TTC",
         "tripStartDate": "2026-07-26",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 93215.0,
         "ownerDue": 83893.5,
         "status": "Settled"
@@ -11202,7 +11197,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1446_TTC",
         "tripStartDate": "2026-07-21",
         "destination": "Meerut (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 128185.0,
         "ownerDue": 115366.5,
         "status": "Settled"
@@ -11211,7 +11206,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--139_TTC",
         "tripStartDate": "2026-07-15",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 136481.0,
         "ownerDue": 122832.90000000001,
         "status": "Settled"
@@ -11220,7 +11215,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1311_TTC",
         "tripStartDate": "2026-07-10",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 125550.0,
         "ownerDue": 112995.0,
         "status": "Settled"
@@ -11229,7 +11224,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-131_SMTC",
         "tripStartDate": "2026-07-03",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 123046.0,
         "ownerDue": 110741.40000000001,
         "status": "Settled"
@@ -11238,7 +11233,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1134_TTC",
         "tripStartDate": "2026-06-25",
         "destination": "Haridwar (U.K.)",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 158134.0,
         "ownerDue": 142320.6,
         "status": "Settled"
@@ -11260,7 +11255,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2136_TTC",
         "tripStartDate": "2026-09-18",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 133500.0,
         "ownerDue": 120150.0,
         "status": "Completed"
@@ -11269,7 +11264,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-180_SMTC",
         "tripStartDate": "2026-09-15",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 136807.0,
         "ownerDue": 123126.3,
         "status": "Completed"
@@ -11278,7 +11273,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1993_TTC",
         "tripStartDate": "2026-09-07",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 119085.0,
         "ownerDue": 107176.5,
         "status": "Settled"
@@ -11287,7 +11282,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1929_TTC",
         "tripStartDate": "2026-09-01",
         "destination": "Purkazi (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 129635.0,
         "ownerDue": 116671.5,
         "status": "Settled"
@@ -11296,7 +11291,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1873_TTC",
         "tripStartDate": "2026-08-25",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 132138.0,
         "ownerDue": 118924.2,
         "status": "Settled"
@@ -11305,7 +11300,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--189_TTC",
         "tripStartDate": "2026-08-21",
         "destination": "Meerut (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 86423.0,
         "ownerDue": 77780.7,
         "status": "Settled"
@@ -11314,7 +11309,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1747_TTC",
         "tripStartDate": "2026-08-15",
         "destination": "Dadri (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 144000.0,
         "ownerDue": 129600.0,
         "status": "Settled"
@@ -11323,7 +11318,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-155_SMTC",
         "tripStartDate": "2026-08-11",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 136593.0,
         "ownerDue": 122933.7,
         "status": "Settled"
@@ -11332,7 +11327,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1611_TTC",
         "tripStartDate": "2026-08-04",
         "destination": "Dharuheda (H.R.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 127600.0,
         "ownerDue": 114840.0,
         "status": "Completed"
@@ -11341,7 +11336,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1569_TTC",
         "tripStartDate": "2026-07-30",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 132587.0,
         "ownerDue": 119328.3,
         "status": "Settled"
@@ -11350,7 +11345,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1492_TTC",
         "tripStartDate": "2026-07-25",
         "destination": "Muzaffarnagar (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 137600.0,
         "ownerDue": 123840.0,
         "status": "Settled"
@@ -11359,7 +11354,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1410_TTC",
         "tripStartDate": "2026-07-18",
         "destination": "Meerut (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 122293.0,
         "ownerDue": 110063.7,
         "status": "Settled"
@@ -11368,7 +11363,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--135_TTC",
         "tripStartDate": "2026-07-12",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 137950.0,
         "ownerDue": 124155.0,
         "status": "Settled"
@@ -11377,7 +11372,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1246_TTC",
         "tripStartDate": "2026-07-05",
         "destination": "Nanauta (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 140679.0,
         "ownerDue": 126611.1,
         "status": "Completed"
@@ -11386,7 +11381,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1185_TTC",
         "tripStartDate": "2026-06-29",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 118343.0,
         "ownerDue": 106508.7,
         "status": "Settled"
@@ -11408,7 +11403,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2055_TTC",
         "tripStartDate": "2026-09-12",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 176868.0,
         "ownerDue": 159181.2,
         "status": "Transit"
@@ -11417,7 +11412,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1971_TTC",
         "tripStartDate": "2026-09-05",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 174825.0,
         "ownerDue": 157342.5,
         "status": "Settled"
@@ -11426,7 +11421,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1887_TTC",
         "tripStartDate": "2026-08-26",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 183150.0,
         "ownerDue": 164835.0,
         "status": "Settled"
@@ -11435,7 +11430,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1809_TTC",
         "tripStartDate": "2026-08-20",
         "destination": "Gurugram (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 132530.0,
         "ownerDue": 119277.0,
         "status": "Completed"
@@ -11444,7 +11439,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1748_TTC",
         "tripStartDate": "2026-08-15",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 142680.0,
         "ownerDue": 128412.0,
         "status": "Completed"
@@ -11453,7 +11448,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1668_TTC",
         "tripStartDate": "2026-08-09",
         "destination": "Gonda (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 212060.0,
         "ownerDue": 190854.0,
         "status": "Settled"
@@ -11462,7 +11457,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1576_TTC",
         "tripStartDate": "2026-07-31",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 180745.0,
         "ownerDue": 162670.5,
         "status": "Settled"
@@ -11471,7 +11466,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1506_TTC",
         "tripStartDate": "2026-07-26",
         "destination": "Manesar (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 100100.0,
         "ownerDue": 90090.0,
         "status": "Settled"
@@ -11480,7 +11475,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-139_SMTC",
         "tripStartDate": "2026-07-22",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 129340.0,
         "ownerDue": 116406.0,
         "status": "Settled"
@@ -11489,7 +11484,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1309_TTC",
         "tripStartDate": "2026-07-10",
         "destination": "Bhairahawa Border (Nepal)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 312000.0,
         "ownerDue": 280800.0,
         "status": "Settled"
@@ -11498,7 +11493,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1191_TTC",
         "tripStartDate": "2026-07-01",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 168360.0,
         "ownerDue": 151524.0,
         "status": "Settled"
@@ -11507,7 +11502,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1075_TTC",
         "tripStartDate": "2026-06-20",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 172602.0,
         "ownerDue": 155341.80000000002,
         "status": "Settled"
@@ -11516,7 +11511,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-940_TTC",
         "tripStartDate": "2026-06-10",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 176490.0,
         "ownerDue": 158841.0,
         "status": "Settled"
@@ -11525,7 +11520,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-98_SMTC",
         "tripStartDate": "2026-06-05",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 108672.0,
         "ownerDue": 97804.8,
         "status": "Settled"
@@ -11534,7 +11529,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-764_TTC",
         "tripStartDate": "2026-05-27",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 179100.0,
         "ownerDue": 161190.0,
         "status": "Settled"
@@ -11556,7 +11551,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2084_TTC",
         "tripStartDate": "2026-09-15",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 176258.0,
         "ownerDue": 158632.2,
         "status": "Completed"
@@ -11565,7 +11560,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--215_TTC",
         "tripStartDate": "2026-09-08",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 128520.0,
         "ownerDue": 115668.0,
         "status": "Settled"
@@ -11574,7 +11569,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--209_TTC",
         "tripStartDate": "2026-09-02",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 121970.0,
         "ownerDue": 109773.0,
         "status": "Settled"
@@ -11583,7 +11578,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1853_TTC",
         "tripStartDate": "2026-08-24",
         "destination": "Baraut (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 157728.0,
         "ownerDue": 141955.2,
         "status": "Settled"
@@ -11592,7 +11587,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1785_TTC",
         "tripStartDate": "2026-08-19",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 143819.0,
         "ownerDue": 129437.1,
         "status": "Settled"
@@ -11601,7 +11596,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1710_TTC",
         "tripStartDate": "2026-08-12",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 177325.0,
         "ownerDue": 159592.5,
         "status": "Settled"
@@ -11610,7 +11605,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1674_TTC",
         "tripStartDate": "2026-08-09",
         "destination": "Panipat (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 29400.0,
         "ownerDue": 26460.0,
         "status": "Settled"
@@ -11619,7 +11614,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-151_SMTC",
         "tripStartDate": "2026-08-07",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 125340.0,
         "ownerDue": 112806.0,
         "status": "Settled"
@@ -11628,7 +11623,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1577_TTC",
         "tripStartDate": "2026-07-31",
         "destination": "Gurugram (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 133650.0,
         "ownerDue": 120285.0,
         "status": "Settled"
@@ -11637,7 +11632,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1476_TTC",
         "tripStartDate": "2026-07-26",
         "destination": "Gurugram (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 166880.0,
         "ownerDue": 150192.0,
         "status": "Settled"
@@ -11646,7 +11641,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1411_TTC",
         "tripStartDate": "2026-07-18",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 122714.0,
         "ownerDue": 110442.6,
         "status": "Settled"
@@ -11655,7 +11650,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1331_TTC",
         "tripStartDate": "2026-07-12",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 150216.0,
         "ownerDue": 135194.4,
         "status": "Settled"
@@ -11664,7 +11659,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-135_SMTC",
         "tripStartDate": "2026-07-07",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 141340.0,
         "ownerDue": 127206.0,
         "status": "Settled"
@@ -11673,7 +11668,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1216_TTC",
         "tripStartDate": "2026-07-03",
         "destination": "Behror (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 103725.0,
         "ownerDue": 93352.5,
         "status": "Settled"
@@ -11682,7 +11677,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1135_TTC",
         "tripStartDate": "2026-06-25",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 197960.0,
         "ownerDue": 178164.0,
         "status": "Settled"
@@ -11704,7 +11699,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2092_TTC",
         "tripStartDate": "2026-09-15",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 178668.0,
         "ownerDue": 160801.2,
         "status": "Completed"
@@ -11713,7 +11708,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2005_TTC",
         "tripStartDate": "2026-09-08",
         "destination": "Meerapur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 137807.0,
         "ownerDue": 124026.3,
         "status": "Settled"
@@ -11722,7 +11717,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--203_TTC",
         "tripStartDate": "2026-08-31",
         "destination": "Khatauli (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 139562.0,
         "ownerDue": 125605.8,
         "status": "Completed"
@@ -11731,7 +11726,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1824_TTC",
         "tripStartDate": "2026-08-22",
         "destination": "Muzaffarnagar (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 139500.0,
         "ownerDue": 125550.0,
         "status": "Settled"
@@ -11740,7 +11735,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1759_TTC",
         "tripStartDate": "2026-08-16",
         "destination": "Muzaffarnagar (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 146400.0,
         "ownerDue": 131760.0,
         "status": "Settled"
@@ -11749,7 +11744,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1685_TTC",
         "tripStartDate": "2026-08-10",
         "destination": "Muzaffarnagar (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 137175.0,
         "ownerDue": 123457.5,
         "status": "Settled"
@@ -11758,7 +11753,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1604_TTC",
         "tripStartDate": "2026-08-03",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 133258.0,
         "ownerDue": 119932.2,
         "status": "Settled"
@@ -11767,7 +11762,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-145_SMTC",
         "tripStartDate": "2026-07-27",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 136007.0,
         "ownerDue": 122406.3,
         "status": "Settled"
@@ -11776,7 +11771,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1428_TTC",
         "tripStartDate": "2026-07-20",
         "destination": "Hapur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 155595.0,
         "ownerDue": 140035.5,
         "status": "Settled"
@@ -11785,7 +11780,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1332_TTC",
         "tripStartDate": "2026-07-13",
         "destination": "Karnal (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 186086.0,
         "ownerDue": 167477.4,
         "status": "Settled"
@@ -11794,7 +11789,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1266_TTC",
         "tripStartDate": "2026-07-06",
         "destination": "Saharanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 128750.0,
         "ownerDue": 115875.0,
         "status": "Settled"
@@ -11803,7 +11798,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--117_TTC",
         "tripStartDate": "2026-06-29",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 116560.0,
         "ownerDue": 104904.0,
         "status": "Settled"
@@ -11812,7 +11807,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1112_TTC",
         "tripStartDate": "2026-06-23",
         "destination": "Meerut (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 127193.0,
         "ownerDue": 114473.7,
         "status": "Settled"
@@ -11821,7 +11816,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1037_TTC",
         "tripStartDate": "2026-06-17",
         "destination": "Ghaziabad (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 105030.0,
         "ownerDue": 94527.0,
         "status": "Settled"
@@ -11830,7 +11825,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-976_TTC",
         "tripStartDate": "2026-06-13",
         "destination": "Faridabad (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 128000.0,
         "ownerDue": 115200.0,
         "status": "Settled"
@@ -11852,7 +11847,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2120_TTC",
         "tripStartDate": "2026-09-17",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 183236.0,
         "ownerDue": 164912.4,
         "status": "Completed"
@@ -11861,7 +11856,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2028_TTC",
         "tripStartDate": "2026-09-10",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 175338.0,
         "ownerDue": 157804.2,
         "status": "Completed"
@@ -11870,7 +11865,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1903_TTC",
         "tripStartDate": "2026-08-28",
         "destination": "Bahraich (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 187680.0,
         "ownerDue": 168912.0,
         "status": "Settled"
@@ -11879,7 +11874,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1826_TTC",
         "tripStartDate": "2026-08-22",
         "destination": "Bhiwadi (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 137025.0,
         "ownerDue": 123322.5,
         "status": "Settled"
@@ -11888,7 +11883,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1730_TTC",
         "tripStartDate": "2026-08-14",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 198235.0,
         "ownerDue": 178411.5,
         "status": "Settled"
@@ -11897,7 +11892,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1626_TTC",
         "tripStartDate": "2026-08-06",
         "destination": "Barabanki (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 197400.0,
         "ownerDue": 177660.0,
         "status": "Completed"
@@ -11906,7 +11901,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1490_TTC",
         "tripStartDate": "2026-07-26",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 187150.0,
         "ownerDue": 168435.0,
         "status": "Settled"
@@ -11915,7 +11910,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1387_TTC",
         "tripStartDate": "2026-07-17",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 188600.0,
         "ownerDue": 169740.0,
         "status": "Settled"
@@ -11924,7 +11919,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1225_TTC",
         "tripStartDate": "2026-07-02",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 162630.0,
         "ownerDue": 146367.0,
         "status": "Settled"
@@ -11933,7 +11928,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1155_TTC",
         "tripStartDate": "2026-06-27",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 176860.0,
         "ownerDue": 159174.0,
         "status": "Settled"
@@ -11942,7 +11937,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-113_SMTC",
         "tripStartDate": "2026-06-14",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 207680.0,
         "ownerDue": 186912.0,
         "status": "Settled"
@@ -11951,7 +11946,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-852_TTC",
         "tripStartDate": "2026-06-05",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 176000.0,
         "ownerDue": 158400.0,
         "status": "Settled"
@@ -11960,7 +11955,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-738_TTC",
         "tripStartDate": "2026-05-25",
         "destination": "Gorakhpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 176378.0,
         "ownerDue": 158740.2,
         "status": "Settled"
@@ -11969,7 +11964,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--56_TTC",
         "tripStartDate": "2026-05-20",
         "destination": "Shahjahanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 177450.0,
         "ownerDue": 159705.0,
         "status": "Settled"
@@ -11978,7 +11973,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--45_TTC",
         "tripStartDate": "2026-05-08",
         "destination": "Manjhanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Mukesh Jat",
         "freight": 169905.0,
         "ownerDue": 152914.5,
         "status": "Settled"
@@ -12012,7 +12007,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "1179_TTC",
         "tripStartDate": "2024-12-09",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 148277.5,
         "ownerDue": 133449.75,
         "status": "Settled"
@@ -12021,7 +12016,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "1114_TTC",
         "tripStartDate": "2024-11-29",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 176000.0,
         "ownerDue": 158400.0,
         "status": "Settled"
@@ -12883,7 +12878,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--225_TTC",
         "tripStartDate": "2026-09-16",
         "destination": "Meerut (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 76475.0,
         "ownerDue": 68827.5,
         "status": "Settled"
@@ -12892,7 +12887,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2033_TTC",
         "tripStartDate": "2026-09-10",
         "destination": "Sonipat (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 139400.0,
         "ownerDue": 125460.0,
         "status": "Settled"
@@ -12901,7 +12896,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--211_TTC",
         "tripStartDate": "2026-09-06",
         "destination": "Meerut (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 79230.0,
         "ownerDue": 71307.0,
         "status": "Settled"
@@ -12910,7 +12905,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1936_TTC",
         "tripStartDate": "2026-09-01",
         "destination": "Meerut (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 20000.0,
         "ownerDue": 18000.0,
         "status": "Settled"
@@ -12919,7 +12914,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1930_TTC",
         "tripStartDate": "2026-09-01",
         "destination": "Meerut (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 125700.0,
         "ownerDue": 113130.0,
         "status": "Settled"
@@ -12928,7 +12923,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--193_TTC",
         "tripStartDate": "2026-08-24",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 128650.0,
         "ownerDue": 115785.0,
         "status": "Settled"
@@ -12937,7 +12932,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1767_TTC",
         "tripStartDate": "2026-08-17",
         "destination": "Sahibabad (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 140250.0,
         "ownerDue": 126225.0,
         "status": "Settled"
@@ -12946,7 +12941,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-156_SMTC",
         "tripStartDate": "2026-08-13",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 139474.0,
         "ownerDue": 125526.6,
         "status": "Settled"
@@ -12955,7 +12950,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1665_TTC",
         "tripStartDate": "2026-08-08",
         "destination": "Gurugram (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 109350.0,
         "ownerDue": 98415.0,
         "status": "Settled"
@@ -12964,7 +12959,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1582_TTC",
         "tripStartDate": "2026-08-01",
         "destination": "Bhiwadi (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 117015.0,
         "ownerDue": 105313.5,
         "status": "Settled"
@@ -12973,7 +12968,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1514_TTC",
         "tripStartDate": "2026-07-26",
         "destination": "Sahibabad (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 136918.0,
         "ownerDue": 123226.2,
         "status": "Settled"
@@ -12982,7 +12977,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1429_TTC",
         "tripStartDate": "2026-07-20",
         "destination": "Keshwana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 116625.0,
         "ownerDue": 104962.5,
         "status": "Settled"
@@ -12991,7 +12986,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1341_TTC",
         "tripStartDate": "2026-07-13",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 175140.0,
         "ownerDue": 157626.0,
         "status": "Settled"
@@ -13000,7 +12995,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-130_SMTC",
         "tripStartDate": "2026-07-03",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 137607.0,
         "ownerDue": 123846.3,
         "status": "Settled"
@@ -13009,7 +13004,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1132_TTC",
         "tripStartDate": "2026-06-25",
         "destination": "Muzaffarnagar (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Pawan Meena",
         "freight": 156192.0,
         "ownerDue": 140572.80000000002,
         "status": "Settled"
@@ -13031,7 +13026,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2091_TTC",
         "tripStartDate": "2026-09-16",
         "destination": "Ghaziabad (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 164257.0,
         "ownerDue": 147831.30000000002,
         "status": "Completed"
@@ -13040,7 +13035,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1998_TTC",
         "tripStartDate": "2026-09-07",
         "destination": "Meerut (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 138600.0,
         "ownerDue": 124740.0,
         "status": "Completed"
@@ -13049,7 +13044,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1938_TTC",
         "tripStartDate": "2026-09-02",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 127674.0,
         "ownerDue": 114906.6,
         "status": "Settled"
@@ -13058,7 +13053,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--194_TTC",
         "tripStartDate": "2026-08-25",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 124310.0,
         "ownerDue": 111879.0,
         "status": "Settled"
@@ -13067,7 +13062,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--184_TTC",
         "tripStartDate": "2026-08-18",
         "destination": "Meerut (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 156315.0,
         "ownerDue": 140683.5,
         "status": "Settled"
@@ -13076,7 +13071,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1722_TTC",
         "tripStartDate": "2026-08-13",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 127798.0,
         "ownerDue": 115018.2,
         "status": "Settled"
@@ -13085,7 +13080,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-154_SMTC",
         "tripStartDate": "2026-08-09",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 132540.0,
         "ownerDue": 119286.0,
         "status": "Settled"
@@ -13094,7 +13089,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1544_TTC",
         "tripStartDate": "2026-07-28",
         "destination": "Gurugram (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 145000.0,
         "ownerDue": 130500.0,
         "status": "Settled"
@@ -13103,7 +13098,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1466_TTC",
         "tripStartDate": "2026-07-22",
         "destination": "Meerut (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 2.0,
         "ownerDue": 1.8,
         "status": "Settled"
@@ -13112,7 +13107,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1465_TTC",
         "tripStartDate": "2026-07-22",
         "destination": "Meerut (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 134946.0,
         "ownerDue": 121451.40000000001,
         "status": "Settled"
@@ -13121,7 +13116,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1392_TTC",
         "tripStartDate": "2026-07-17",
         "destination": "Sonipat (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 168000.0,
         "ownerDue": 151200.0,
         "status": "Settled"
@@ -13130,7 +13125,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1312_TTC",
         "tripStartDate": "2026-07-10",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 140250.0,
         "ownerDue": 126225.0,
         "status": "Settled"
@@ -13139,7 +13134,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1230_TTC",
         "tripStartDate": "2026-07-04",
         "destination": "Mawana (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 159650.0,
         "ownerDue": 143685.0,
         "status": "Settled"
@@ -13148,7 +13143,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1152_TTC",
         "tripStartDate": "2026-06-27",
         "destination": "Saharanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 143990.0,
         "ownerDue": 129591.0,
         "status": "Settled"
@@ -13157,7 +13152,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--107_TTC",
         "tripStartDate": "2026-06-20",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Narayan Rajpurohit",
         "freight": 122249.0,
         "ownerDue": 110024.1,
         "status": "Settled"
@@ -13191,7 +13186,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2144_TTC",
         "tripStartDate": "2026-09-19",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Chhotu Sharma",
         "freight": 180000.0,
         "ownerDue": 162000.0,
         "status": "Completed"
@@ -13200,7 +13195,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2064_TTC",
         "tripStartDate": "2026-09-13",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Chhotu Sharma",
         "freight": 182774.0,
         "ownerDue": 164496.6,
         "status": "Settled"
@@ -13209,7 +13204,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1923_TTC",
         "tripStartDate": "2026-08-31",
         "destination": "Sandila (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Chhotu Sharma",
         "freight": 180000.0,
         "ownerDue": 162000.0,
         "status": "Settled"
@@ -13218,7 +13213,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1819_TTC",
         "tripStartDate": "2026-08-22",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Chhotu Sharma",
         "freight": 178092.0,
         "ownerDue": 160282.80000000002,
         "status": "Settled"
@@ -13227,7 +13222,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1684_TTC",
         "tripStartDate": "2026-08-11",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Chhotu Sharma",
         "freight": 173988.0,
         "ownerDue": 156589.2,
         "status": "Settled"
@@ -13236,7 +13231,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1580_TTC",
         "tripStartDate": "2026-08-01",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Chhotu Sharma",
         "freight": 169128.0,
         "ownerDue": 152215.2,
         "status": "Settled"
@@ -13245,7 +13240,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1457_TTC",
         "tripStartDate": "2026-07-23",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Chhotu Sharma",
         "freight": 164000.0,
         "ownerDue": 147600.0,
         "status": "Settled"
@@ -13254,7 +13249,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1349_TTC",
         "tripStartDate": "2026-07-14",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Chhotu Sharma",
         "freight": 148000.0,
         "ownerDue": 133200.0,
         "status": "Settled"
@@ -13263,7 +13258,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1233_TTC",
         "tripStartDate": "2026-07-04",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Chhotu Sharma",
         "freight": 156560.0,
         "ownerDue": 140904.0,
         "status": "Settled"
@@ -13272,7 +13267,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1170_TTC",
         "tripStartDate": "2026-06-28",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Chhotu Sharma",
         "freight": 185740.0,
         "ownerDue": 167166.0,
         "status": "Settled"
@@ -13281,7 +13276,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1025_TTC",
         "tripStartDate": "2026-06-17",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Chhotu Sharma",
         "freight": 175050.0,
         "ownerDue": 157545.0,
         "status": "Settled"
@@ -13290,7 +13285,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-960_TTC",
         "tripStartDate": "2026-06-11",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Chhotu Sharma",
         "freight": 120947.0,
         "ownerDue": 108852.3,
         "status": "Settled"
@@ -13299,7 +13294,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-99_SMTC",
         "tripStartDate": "2026-06-06",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Chhotu Sharma",
         "freight": 113872.0,
         "ownerDue": 102484.8,
         "status": "Settled"
@@ -13308,7 +13303,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-776_TTC",
         "tripStartDate": "2026-05-28",
         "destination": "Azamgarh (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Chhotu Sharma",
         "freight": 196350.0,
         "ownerDue": 176715.0,
         "status": "Settled"
@@ -13317,7 +13312,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-704_TTC",
         "tripStartDate": "2026-05-22",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Chhotu Sharma",
         "freight": 179000.0,
         "ownerDue": 161100.0,
         "status": "Settled"
@@ -13339,7 +13334,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-190_SMTC",
         "tripStartDate": "2026-09-20",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 133607.0,
         "ownerDue": 120246.3,
         "status": "Completed"
@@ -13348,7 +13343,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-181_SMTC",
         "tripStartDate": "2026-09-16",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 135607.0,
         "ownerDue": 122046.3,
         "status": "Completed"
@@ -13357,7 +13352,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2023_TTC",
         "tripStartDate": "2026-09-10",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 127038.0,
         "ownerDue": 114334.2,
         "status": "Settled"
@@ -13366,7 +13361,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1948_TTC",
         "tripStartDate": "2026-09-03",
         "destination": "Meerut (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 130050.0,
         "ownerDue": 117045.0,
         "status": "Settled"
@@ -13375,7 +13370,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1871_TTC",
         "tripStartDate": "2026-08-25",
         "destination": "Shamli (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 174189.0,
         "ownerDue": 156770.1,
         "status": "Settled"
@@ -13384,7 +13379,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1789_TTC",
         "tripStartDate": "2026-08-19",
         "destination": "Shamli (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 148440.0,
         "ownerDue": 133596.0,
         "status": "Settled"
@@ -13393,7 +13388,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1719_TTC",
         "tripStartDate": "2026-08-13",
         "destination": "Loni (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 111872.0,
         "ownerDue": 100684.8,
         "status": "Settled"
@@ -13402,7 +13397,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--166_TTC",
         "tripStartDate": "2026-08-06",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 131084.0,
         "ownerDue": 117975.6,
         "status": "Settled"
@@ -13411,7 +13406,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1585_TTC",
         "tripStartDate": "2026-07-31",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 40000.0,
         "ownerDue": 36000.0,
         "status": "Settled"
@@ -13420,7 +13415,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-147_SMTC",
         "tripStartDate": "2026-07-29",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 129566.0,
         "ownerDue": 116609.40000000001,
         "status": "Settled"
@@ -13429,7 +13424,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-143_SMTC",
         "tripStartDate": "2026-07-25",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 136007.0,
         "ownerDue": 122406.3,
         "status": "Settled"
@@ -13438,7 +13433,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1419_TTC",
         "tripStartDate": "2026-07-20",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 130975.0,
         "ownerDue": 117877.5,
         "status": "Settled"
@@ -13447,7 +13442,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1342_TTC",
         "tripStartDate": "2026-07-14",
         "destination": "Sonipat (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 163659.0,
         "ownerDue": 147293.1,
         "status": "Settled"
@@ -13456,7 +13451,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1241_TTC",
         "tripStartDate": "2026-07-04",
         "destination": "Hapur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 132680.0,
         "ownerDue": 119412.0,
         "status": "Settled"
@@ -13465,7 +13460,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-127_SMTC",
         "tripStartDate": "2026-06-29",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Ashok Choudhary",
         "freight": 135207.0,
         "ownerDue": 121686.3,
         "status": "Settled"
@@ -13487,7 +13482,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2126_TTC",
         "tripStartDate": "2026-09-17",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 10000.0,
         "ownerDue": 9000.0,
         "status": "Completed"
@@ -13496,7 +13491,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2125_TTC",
         "tripStartDate": "2026-09-17",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 72640.0,
         "ownerDue": 65376.0,
         "status": "Settled"
@@ -13505,7 +13500,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2063_TTC",
         "tripStartDate": "2026-09-12",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 118755.0,
         "ownerDue": 106879.5,
         "status": "Settled"
@@ -13514,7 +13509,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2010_TTC",
         "tripStartDate": "2026-09-08",
         "destination": "Dadri (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 144672.0,
         "ownerDue": 130204.8,
         "status": "Settled"
@@ -13523,7 +13518,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1953_TTC",
         "tripStartDate": "2026-09-03",
         "destination": "Ghaziabad (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 146103.0,
         "ownerDue": 131492.7,
         "status": "Completed"
@@ -13532,7 +13527,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1885_TTC",
         "tripStartDate": "2026-08-26",
         "destination": "Ghaziabad (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 153600.0,
         "ownerDue": 138240.0,
         "status": "Settled"
@@ -13541,7 +13536,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--190_TTC",
         "tripStartDate": "2026-08-21",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 91917.0,
         "ownerDue": 82725.3,
         "status": "Settled"
@@ -13550,7 +13545,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--176_TTC",
         "tripStartDate": "2026-08-15",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 138502.0,
         "ownerDue": 124651.8,
         "status": "Settled"
@@ -13559,7 +13554,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1659_TTC",
         "tripStartDate": "2026-08-08",
         "destination": "Meerut (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 141236.0,
         "ownerDue": 127112.40000000001,
         "status": "Settled"
@@ -13568,7 +13563,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--159_TTC",
         "tripStartDate": "2026-08-02",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 117769.0,
         "ownerDue": 105992.1,
         "status": "Settled"
@@ -13577,7 +13572,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--150_TTC",
         "tripStartDate": "2026-07-25",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 139500.0,
         "ownerDue": 125550.0,
         "status": "Settled"
@@ -13586,7 +13581,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1441_TTC",
         "tripStartDate": "2026-07-20",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 125163.0,
         "ownerDue": 112646.7,
         "status": "Settled"
@@ -13595,7 +13590,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1370_TTC",
         "tripStartDate": "2026-07-16",
         "destination": "Ateli (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 108000.0,
         "ownerDue": 97200.0,
         "status": "Settled"
@@ -13604,7 +13599,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1292_TTC",
         "tripStartDate": "2026-07-08",
         "destination": "Sahibabad (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 116348.0,
         "ownerDue": 104713.2,
         "status": "Settled"
@@ -13613,7 +13608,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1204_TTC",
         "tripStartDate": "2026-07-01",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 149490.0,
         "ownerDue": 134541.0,
         "status": "Settled"
@@ -14043,7 +14038,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2140_TTC",
         "tripStartDate": "2026-09-18",
         "destination": "Sonipat (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 158375.0,
         "ownerDue": 142537.5,
         "status": "Completed"
@@ -14052,7 +14047,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2031_TTC",
         "tripStartDate": "2026-09-11",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 183960.0,
         "ownerDue": 165564.0,
         "status": "Transit"
@@ -14061,7 +14056,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--207_TTC",
         "tripStartDate": "2026-09-01",
         "destination": "Manjhanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 191664.0,
         "ownerDue": 172497.6,
         "status": "Completed"
@@ -14070,7 +14065,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1827_TTC",
         "tripStartDate": "2026-08-22",
         "destination": "Muzaffarnagar (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 167232.0,
         "ownerDue": 150508.80000000002,
         "status": "Settled"
@@ -14079,7 +14074,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1817_TTC",
         "tripStartDate": "2026-08-21",
         "destination": "Muzaffarnagar (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 2.0,
         "ownerDue": 1.8,
         "status": "Settled"
@@ -14088,7 +14083,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1733_TTC",
         "tripStartDate": "2026-08-14",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 188700.0,
         "ownerDue": 169830.0,
         "status": "Settled"
@@ -14097,7 +14092,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--175_TTC",
         "tripStartDate": "2026-08-07",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 138989.0,
         "ownerDue": 125090.1,
         "status": "Settled"
@@ -14106,7 +14101,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1594_TTC",
         "tripStartDate": "2026-08-01",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 163800.0,
         "ownerDue": 147420.0,
         "status": "Settled"
@@ -14115,7 +14110,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1458_TTC",
         "tripStartDate": "2026-07-22",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 171990.0,
         "ownerDue": 154791.0,
         "status": "Settled"
@@ -14124,7 +14119,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1327_TTC",
         "tripStartDate": "2026-07-13",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 167980.0,
         "ownerDue": 151182.0,
         "status": "Settled"
@@ -14133,7 +14128,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1182_TTC",
         "tripStartDate": "2026-06-30",
         "destination": "Bhairahawa Border (Nepal)",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 289170.0,
         "ownerDue": 260253.0,
         "status": "Settled"
@@ -14142,7 +14137,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1109_TTC",
         "tripStartDate": "2026-06-23",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 180745.0,
         "ownerDue": 162670.5,
         "status": "Settled"
@@ -14151,7 +14146,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1012_TTC",
         "tripStartDate": "2026-06-14",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 179532.0,
         "ownerDue": 161578.80000000002,
         "status": "Settled"
@@ -14160,7 +14155,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-863_TTC",
         "tripStartDate": "2026-06-05",
         "destination": "Azamgarh (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 212925.0,
         "ownerDue": 191632.5,
         "status": "Settled"
@@ -14169,7 +14164,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-773_TTC",
         "tripStartDate": "2026-05-28",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Ramesh Yadav",
         "freight": 181670.0,
         "ownerDue": 163503.0,
         "status": "Settled"
@@ -14191,7 +14186,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1997_TTC",
         "tripStartDate": "2026-09-09",
         "destination": "Bhairahawa Border (Nepal)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 306023.0,
         "ownerDue": 275420.7,
         "status": "Settled"
@@ -14200,7 +14195,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1895_TTC",
         "tripStartDate": "2026-08-27",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 185925.0,
         "ownerDue": 167332.5,
         "status": "Settled"
@@ -14209,7 +14204,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1706_TTC",
         "tripStartDate": "2026-08-13",
         "destination": "Bhairahawa Border (Nepal)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 313625.0,
         "ownerDue": 282262.5,
         "status": "Settled"
@@ -14218,7 +14213,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1631_TTC",
         "tripStartDate": "2026-08-07",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 218016.0,
         "ownerDue": 196214.4,
         "status": "Settled"
@@ -14227,7 +14222,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1566_TTC",
         "tripStartDate": "2026-07-30",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 190670.0,
         "ownerDue": 171603.0,
         "status": "Settled"
@@ -14236,7 +14231,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1519_TTC",
         "tripStartDate": "2026-07-26",
         "destination": "Sonipat (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 52500.0,
         "ownerDue": 47250.0,
         "status": "Settled"
@@ -14245,7 +14240,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-142_SMTC",
         "tripStartDate": "2026-07-25",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 144007.0,
         "ownerDue": 129606.3,
         "status": "Settled"
@@ -14254,7 +14249,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1385_TTC",
         "tripStartDate": "2026-07-17",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 187590.0,
         "ownerDue": 168831.0,
         "status": "Settled"
@@ -14263,7 +14258,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1244_TTC",
         "tripStartDate": "2026-07-06",
         "destination": "Bhairahawa Border (Nepal)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 304605.0,
         "ownerDue": 274144.5,
         "status": "Settled"
@@ -14272,7 +14267,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1107_TTC",
         "tripStartDate": "2026-06-22",
         "destination": "Bhairahawa Border (Nepal)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 7875.0,
         "ownerDue": 7087.5,
         "status": "Settled"
@@ -14281,7 +14276,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1035_TTC",
         "tripStartDate": "2026-06-18",
         "destination": "Bhairahawa Border (Nepal)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 294525.0,
         "ownerDue": 265072.5,
         "status": "Settled"
@@ -14290,7 +14285,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-846_TTC",
         "tripStartDate": "2026-06-04",
         "destination": "Bhairahawa Border (Nepal)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 307755.0,
         "ownerDue": 276979.5,
         "status": "Settled"
@@ -14299,7 +14294,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-730_TTC",
         "tripStartDate": "2026-05-25",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 198000.0,
         "ownerDue": 178200.0,
         "status": "Settled"
@@ -14308,7 +14303,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-642_TTC",
         "tripStartDate": "2026-05-17",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 162450.0,
         "ownerDue": 146205.0,
         "status": "Settled"
@@ -14317,7 +14312,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-554_TTC",
         "tripStartDate": "2026-05-11",
         "destination": "Barabanki (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Suresh Gurjar",
         "freight": 182963.0,
         "ownerDue": 164666.7,
         "status": "Settled"
@@ -14555,7 +14550,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--229_TTC",
         "tripStartDate": "2026-09-19",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 97788.0,
         "ownerDue": 88009.2,
         "status": "Completed"
@@ -14564,7 +14559,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2115_TTC",
         "tripStartDate": "2026-09-16",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 10000.0,
         "ownerDue": 9000.0,
         "status": "Settled"
@@ -14573,7 +14568,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2114_TTC",
         "tripStartDate": "2026-09-16",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 82585.0,
         "ownerDue": 74326.5,
         "status": "Settled"
@@ -14582,7 +14577,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2062_TTC",
         "tripStartDate": "2026-09-12",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 114505.0,
         "ownerDue": 103054.5,
         "status": "Settled"
@@ -14591,7 +14586,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2012_TTC",
         "tripStartDate": "2026-09-08",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 77684.0,
         "ownerDue": 69915.6,
         "status": "Settled"
@@ -14600,7 +14595,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2011_TTC",
         "tripStartDate": "2026-09-08",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 10000.0,
         "ownerDue": 9000.0,
         "status": "Settled"
@@ -14609,7 +14604,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1979_TTC",
         "tripStartDate": "2026-09-05",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 94472.0,
         "ownerDue": 85024.8,
         "status": "Completed"
@@ -14618,7 +14613,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1937_TTC",
         "tripStartDate": "2026-09-01",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 100477.0,
         "ownerDue": 90429.3,
         "status": "Settled"
@@ -14627,7 +14622,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--200_TTC",
         "tripStartDate": "2026-08-29",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 94482.0,
         "ownerDue": 85033.8,
         "status": "Settled"
@@ -14636,7 +14631,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--198_TTC",
         "tripStartDate": "2026-08-26",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 94101.0,
         "ownerDue": 84690.90000000001,
         "status": "Settled"
@@ -14645,7 +14640,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1855_TTC",
         "tripStartDate": "2026-08-23",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 10000.0,
         "ownerDue": 9000.0,
         "status": "Settled"
@@ -14654,7 +14649,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1854_TTC",
         "tripStartDate": "2026-08-23",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 69413.0,
         "ownerDue": 62471.700000000004,
         "status": "Settled"
@@ -14663,7 +14658,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1811_TTC",
         "tripStartDate": "2026-08-20",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 10073.0,
         "ownerDue": 9065.7,
         "status": "Settled"
@@ -14672,7 +14667,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1810_TTC",
         "tripStartDate": "2026-08-20",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 72718.0,
         "ownerDue": 65446.200000000004,
         "status": "Settled"
@@ -14681,7 +14676,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--180_TTC",
         "tripStartDate": "2026-08-17",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Sanjay Kumawat",
         "freight": 103505.0,
         "ownerDue": 93154.5,
         "status": "Settled"
@@ -14715,7 +14710,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2148_TTC",
         "tripStartDate": "2026-09-19",
         "destination": "Karnal (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 161175.0,
         "ownerDue": 145057.5,
         "status": "Completed"
@@ -14724,7 +14719,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2105_TTC",
         "tripStartDate": "2026-09-16",
         "destination": "Ghaziabad (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 154400.0,
         "ownerDue": 138960.0,
         "status": "Completed"
@@ -14733,7 +14728,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2041_TTC",
         "tripStartDate": "2026-09-11",
         "destination": "Kairana (u.p.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 145700.0,
         "ownerDue": 131130.0,
         "status": "Settled"
@@ -14742,7 +14737,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-170_SMTC",
         "tripStartDate": "2026-09-07",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 127340.0,
         "ownerDue": 114606.0,
         "status": "Settled"
@@ -14751,7 +14746,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-166_SMTC",
         "tripStartDate": "2026-09-03",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 127340.0,
         "ownerDue": 114606.0,
         "status": "Settled"
@@ -14760,7 +14755,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1835_TTC",
         "tripStartDate": "2026-08-22",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 238253.0,
         "ownerDue": 214427.7,
         "status": "Settled"
@@ -14769,7 +14764,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1769_TTC",
         "tripStartDate": "2026-08-17",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 160200.0,
         "ownerDue": 144180.0,
         "status": "Settled"
@@ -14778,7 +14773,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1633_TTC",
         "tripStartDate": "2026-08-06",
         "destination": "Gonda (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 231875.0,
         "ownerDue": 208687.5,
         "status": "Settled"
@@ -14787,7 +14782,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1563_TTC",
         "tripStartDate": "2026-07-30",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 190650.0,
         "ownerDue": 171585.0,
         "status": "Settled"
@@ -14796,7 +14791,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1381_TTC",
         "tripStartDate": "2026-07-16",
         "destination": "Amethi (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 189984.0,
         "ownerDue": 170985.6,
         "status": "Settled"
@@ -14805,7 +14800,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1245_TTC",
         "tripStartDate": "2026-07-06",
         "destination": "Bhairahawa Border (Nepal)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 266175.0,
         "ownerDue": 239557.5,
         "status": "Completed"
@@ -14814,7 +14809,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1179_TTC",
         "tripStartDate": "2026-06-29",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 195294.0,
         "ownerDue": 175764.6,
         "status": "Settled"
@@ -14823,7 +14818,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1062_TTC",
         "tripStartDate": "2026-06-20",
         "destination": "Gorakhpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 240120.0,
         "ownerDue": 216108.0,
         "status": "Settled"
@@ -14832,7 +14827,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-920_TTC",
         "tripStartDate": "2026-06-08",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 175464.0,
         "ownerDue": 157917.6,
         "status": "Settled"
@@ -14841,7 +14836,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-893_TTC",
         "tripStartDate": "2026-06-06",
         "destination": "Bharatpur (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Hemraj Prajapat",
         "freight": 105750.0,
         "ownerDue": 95175.0,
         "status": "Settled"
@@ -14935,7 +14930,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2147_TTC",
         "tripStartDate": "2026-09-19",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 158176.0,
         "ownerDue": 142358.4,
         "status": "Completed"
@@ -14944,7 +14939,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--222_TTC",
         "tripStartDate": "2026-09-15",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 81690.0,
         "ownerDue": 73521.0,
         "status": "Settled"
@@ -14953,7 +14948,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-175_SMTC",
         "tripStartDate": "2026-09-09",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 135846.0,
         "ownerDue": 122261.40000000001,
         "status": "Completed"
@@ -14962,7 +14957,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-165_SMTC",
         "tripStartDate": "2026-08-30",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 131020.0,
         "ownerDue": 117918.0,
         "status": "Settled"
@@ -14971,7 +14966,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1838_TTC",
         "tripStartDate": "2026-08-22",
         "destination": "Muzaffarnagar (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 145216.0,
         "ownerDue": 130694.40000000001,
         "status": "Settled"
@@ -14980,7 +14975,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1768_TTC",
         "tripStartDate": "2026-08-17",
         "destination": "Gurugram (Haryana)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 131621.0,
         "ownerDue": 118458.90000000001,
         "status": "Settled"
@@ -14989,7 +14984,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1694_TTC",
         "tripStartDate": "2026-08-11",
         "destination": "Rishikesh (U.K.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 153000.0,
         "ownerDue": 137700.0,
         "status": "Settled"
@@ -14998,7 +14993,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1634_TTC",
         "tripStartDate": "2026-08-06",
         "destination": "Behror (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 96000.0,
         "ownerDue": 86400.0,
         "status": "Settled"
@@ -15007,7 +15002,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1579_TTC",
         "tripStartDate": "2026-07-31",
         "destination": "Hodel (H.R.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 99792.0,
         "ownerDue": 89812.8,
         "status": "Settled"
@@ -15016,7 +15011,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1512_TTC",
         "tripStartDate": "2026-07-26",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 136400.0,
         "ownerDue": 122760.0,
         "status": "Settled"
@@ -15025,7 +15020,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1518_TTC",
         "tripStartDate": "2026-07-20",
         "destination": "Noida (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 42000.0,
         "ownerDue": 37800.0,
         "status": "Settled"
@@ -15034,7 +15029,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-137_SMTC",
         "tripStartDate": "2026-07-19",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 141501.0,
         "ownerDue": 127350.90000000001,
         "status": "Settled"
@@ -15043,7 +15038,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1368_TTC",
         "tripStartDate": "2026-07-15",
         "destination": "Khairthal (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 108000.0,
         "ownerDue": 97200.0,
         "status": "Settled"
@@ -15052,7 +15047,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-132_SMTC",
         "tripStartDate": "2026-07-04",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 140674.0,
         "ownerDue": 126606.6,
         "status": "Settled"
@@ -15061,7 +15056,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-128_SMTC",
         "tripStartDate": "2026-06-30",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Vijay Rawat",
         "freight": 133740.0,
         "ownerDue": 120366.0,
         "status": "Settled"
@@ -15683,7 +15678,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--228_TTC",
         "tripStartDate": "2026-09-18",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 83433.0,
         "ownerDue": 75089.7,
         "status": "Settled"
@@ -15692,7 +15687,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2081_TTC",
         "tripStartDate": "2026-09-14",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 123000.0,
         "ownerDue": 110700.0,
         "status": "Settled"
@@ -15701,7 +15696,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-173_SMTC",
         "tripStartDate": "2026-09-08",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 136354.0,
         "ownerDue": 122718.6,
         "status": "Completed"
@@ -15710,7 +15705,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-169_SMTC",
         "tripStartDate": "2026-09-04",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 128540.0,
         "ownerDue": 115686.0,
         "status": "Settled"
@@ -15719,7 +15714,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1913_TTC",
         "tripStartDate": "2026-08-30",
         "destination": "Bikaner (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 128800.0,
         "ownerDue": 115920.0,
         "status": "Settled"
@@ -15728,7 +15723,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-161_SMTC",
         "tripStartDate": "2026-08-24",
         "destination": "Neemrana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 133687.0,
         "ownerDue": 120318.3,
         "status": "Settled"
@@ -15737,7 +15732,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1808_TTC",
         "tripStartDate": "2026-08-20",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 116064.0,
         "ownerDue": 104457.6,
         "status": "Settled"
@@ -15746,7 +15741,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1699_TTC",
         "tripStartDate": "2026-08-11",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Kailash Rajpurohit",
         "freight": 198000.0,
         "ownerDue": 178200.0,
         "status": "Settled"
@@ -15792,7 +15787,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2108_TTC",
         "tripStartDate": "2026-09-16",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Bajrang Meena",
         "freight": 193500.0,
         "ownerDue": 174150.0,
         "status": "Completed"
@@ -15801,7 +15796,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2032_TTC",
         "tripStartDate": "2026-09-11",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Bajrang Meena",
         "freight": 182124.0,
         "ownerDue": 163911.6,
         "status": "Completed"
@@ -15810,7 +15805,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1893_TTC",
         "tripStartDate": "2026-08-27",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Bajrang Meena",
         "freight": 197550.0,
         "ownerDue": 177795.0,
         "status": "Settled"
@@ -15819,7 +15814,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1788_TTC",
         "tripStartDate": "2026-08-19",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Bajrang Meena",
         "freight": 159562.0,
         "ownerDue": 143605.80000000002,
         "status": "Settled"
@@ -15828,7 +15823,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1716_TTC",
         "tripStartDate": "2026-08-13",
         "destination": "Lucknow (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Bajrang Meena",
         "freight": 184830.0,
         "ownerDue": 166347.0,
         "status": "Settled"
@@ -15850,7 +15845,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2135_TTC",
         "tripStartDate": "2026-09-18",
         "destination": "Keshwana (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Prakash Saini",
         "freight": 118818.0,
         "ownerDue": 106936.2,
         "status": "Completed"
@@ -15859,7 +15854,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2065_TTC",
         "tripStartDate": "2026-09-13",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Prakash Saini",
         "freight": 186295.0,
         "ownerDue": 167665.5,
         "status": "Settled"
@@ -15868,7 +15863,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1980_TTC",
         "tripStartDate": "2026-09-06",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Prakash Saini",
         "freight": 192510.0,
         "ownerDue": 173259.0,
         "status": "Settled"
@@ -15877,7 +15872,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1877_TTC",
         "tripStartDate": "2026-08-26",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Prakash Saini",
         "freight": 154793.0,
         "ownerDue": 139313.7,
         "status": "Settled"
@@ -15886,7 +15881,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1717_TTC",
         "tripStartDate": "2026-08-13",
         "destination": "Kanpur (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Prakash Saini",
         "freight": 183204.0,
         "ownerDue": 164883.6,
         "status": "Settled"
@@ -15908,7 +15903,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--230_TTC",
         "tripStartDate": "2026-09-20",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Debu Rawat",
         "freight": 178709.0,
         "ownerDue": 160838.1,
         "status": "Completed"
@@ -15917,7 +15912,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--221_TTC",
         "tripStartDate": "2026-09-15",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Debu Rawat",
         "freight": 180872.0,
         "ownerDue": 162784.80000000002,
         "status": "Settled"
@@ -15926,7 +15921,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--214_TTC",
         "tripStartDate": "2026-09-07",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Debu Rawat",
         "freight": 183968.0,
         "ownerDue": 165571.2,
         "status": "Settled"
@@ -15935,7 +15930,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--205_TTC",
         "tripStartDate": "2026-09-01",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Debu Rawat",
         "freight": 180733.0,
         "ownerDue": 162659.7,
         "status": "Settled"
@@ -15944,7 +15939,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--195_TTC",
         "tripStartDate": "2026-08-25",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Debu Rawat",
         "freight": 194608.0,
         "ownerDue": 175147.2,
         "status": "Settled"
@@ -15953,7 +15948,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027--188_TTC",
         "tripStartDate": "2026-08-20",
         "destination": "Delhi",
-        "driver": "Assigned Driver",
+        "driver": "Debu Rawat",
         "freight": 175266.0,
         "ownerDue": 157739.4,
         "status": "Settled"
@@ -15975,7 +15970,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2162_TTC",
         "tripStartDate": "2026-09-20",
         "destination": "Dadri (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 155200.0,
         "ownerDue": 139680.0,
         "status": "Completed"
@@ -15984,7 +15979,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-2078_TTC",
         "tripStartDate": "2026-09-15",
         "destination": "Muzaffarnagar (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 171200.0,
         "ownerDue": 154080.0,
         "status": "Completed"
@@ -15993,7 +15988,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1994_TTC",
         "tripStartDate": "2026-09-07",
         "destination": "Gangoh (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 169950.0,
         "ownerDue": 152955.0,
         "status": "Settled"
@@ -16002,7 +15997,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1896_TTC",
         "tripStartDate": "2026-08-27",
         "destination": "Muzaffarnagar (U.P.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 160224.0,
         "ownerDue": 144201.6,
         "status": "Settled"
@@ -16011,7 +16006,7 @@ window.INITIAL_TRUCK_OWNERS = [
         "grNo": "2026-2027-1821_TTC",
         "tripStartDate": "2026-08-21",
         "destination": "Bhiwadi (Raj.)",
-        "driver": "Assigned Driver",
+        "driver": "Rajesh Meena",
         "freight": 155512.0,
         "ownerDue": 139960.80000000002,
         "status": "Settled"

@@ -708,7 +708,7 @@ const TripsModule = {
     setText('d-material', t.material || 'Marble Powder / Goods');
     setText('d-reference', t.reference || '-');
     setText('d-ref-mobile', t.referenceMobile || t.driverMobile || '-');
-    setText('d-driver', t.driver || 'Assigned Driver');
+    setText('d-driver', t.driver || '-');
     setText('d-driver-mobile', t.driverMobile || '-');
 
     const firmBadge = document.getElementById('detail-firm-badge');

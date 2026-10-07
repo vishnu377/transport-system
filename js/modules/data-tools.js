@@ -236,7 +236,7 @@ const DataToolsModule = {
           tripStartDate: String(r['Start Date'] || r.tripStartDate || new Date().toISOString().split('T')[0]),
           truckNo: String(r['Truck No.'] || r.truckNo || '').toUpperCase().replace(/\s+/g, ''),
           truckOwner: String(r['Truck No.'] || r.truckNo || '') + ' Owner',
-          driver: "Assigned Driver",
+          driver: (typeof window !== 'undefined' && Array.isArray(window.INITIAL_DRIVERS)) ? ((window.INITIAL_DRIVERS.find(d => d.truckNo === String(r['Truck No.'] || r.truckNo || '').toUpperCase().replace(/\s+/g, '')) || {}).name || 'Prakash Saini') : 'Prakash Saini',
           driverMobile: "",
           origin: "Rajsamand (Raj.)",
           destination: String(r.Destination || r.destination || ''),

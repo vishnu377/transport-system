@@ -483,5 +483,157 @@ window.INITIAL_DRIVERS = [
     "ownerName": "Dinesh Yadav",
     "truckNo": "RJ01GD0421",
     "licenseNo": "RJ-01-2019-00060"
+  },
+  {
+    "id": "driver_61",
+    "name": "Debu Rawat",
+    "mobile": "9828230101",
+    "ownerName": "Chel singh Charan",
+    "truckNo": "RJ01GC0951",
+    "licenseNo": "RJ-52-2022-00061"
+  },
+  {
+    "id": "driver_62",
+    "name": "Bajrang Meena",
+    "mobile": "9828230102",
+    "ownerName": "Tulsaram Rad/Vinod Dadhich",
+    "truckNo": "RJ52GA3498",
+    "licenseNo": "RJ-52-2022-00062"
+  },
+  {
+    "id": "driver_63",
+    "name": "Prakash Saini",
+    "mobile": "9828230103",
+    "ownerName": "Ashok Madhusudan Morbi",
+    "truckNo": "RJ32GB5897",
+    "licenseNo": "RJ-52-2022-00063"
+  },
+  {
+    "id": "driver_64",
+    "name": "Radhey Shyam Gurjar",
+    "mobile": "9828230104",
+    "ownerName": "Radheyshyam Sharma",
+    "truckNo": "RJ47GA2817",
+    "licenseNo": "RJ-52-2022-00064"
+  },
+  {
+    "id": "driver_65",
+    "name": "Shishram Meena",
+    "mobile": "9828230105",
+    "ownerName": "Mahaveer Tholiya",
+    "truckNo": "RJ52GB0964",
+    "licenseNo": "RJ-52-2022-00065"
+  },
+  {
+    "id": "driver_66",
+    "name": "Sahkin Prajapat",
+    "mobile": "9828230106",
+    "ownerName": "Manoj Vikara Marmo",
+    "truckNo": "RJ01GD6056",
+    "licenseNo": "RJ-52-2022-00066"
+  },
+  {
+    "id": "driver_67",
+    "name": "Gopal Rawat",
+    "mobile": "9828230107",
+    "ownerName": "Karan Sharin Paonta",
+    "truckNo": "RJ01GD0709",
+    "licenseNo": "RJ-52-2022-00067"
+  },
+  {
+    "id": "driver_68",
+    "name": "Ramdev Singh Shrinagar",
+    "mobile": "9828230108",
+    "ownerName": "Rahul Sisodiya Chittorgarh",
+    "truckNo": "RJ01GD0621",
+    "licenseNo": "RJ-52-2022-00068"
+  },
+  {
+    "id": "driver_69",
+    "name": "Mahendra Rawat Shrinagar",
+    "mobile": "9828230109",
+    "ownerName": "Aakash Sharma",
+    "truckNo": "RJ01GD2469",
+    "licenseNo": "RJ-52-2022-00069"
+  },
+  {
+    "id": "driver_70",
+    "name": "Man Singh Vijaynagar",
+    "mobile": "9828230110",
+    "ownerName": "Chel singh Charan",
+    "truckNo": "RJ01GC4211",
+    "licenseNo": "RJ-52-2022-00070"
+  },
+  {
+    "id": "driver_71",
+    "name": "Hansraj Gurjar",
+    "mobile": "9828230111",
+    "ownerName": "Vipin Kishangarh",
+    "truckNo": "RJ52GB4737",
+    "licenseNo": "RJ-52-2022-00071"
+  },
+  {
+    "id": "driver_72",
+    "name": "Nand Singh",
+    "mobile": "9828230112",
+    "ownerName": "Balaji Transport",
+    "truckNo": "RJ32GD3696",
+    "licenseNo": "RJ-52-2022-00072"
+  },
+  {
+    "id": "driver_73",
+    "name": "Sheru Meena",
+    "mobile": "9828230113",
+    "ownerName": "Anil Sharda",
+    "truckNo": "RJ52GA8617",
+    "licenseNo": "RJ-52-2022-00073"
+  },
+  {
+    "id": "driver_74",
+    "name": "Satish Gurjar",
+    "mobile": "9828230114",
+    "ownerName": "Laxmi Narayan Kumawat Bhana",
+    "truckNo": "RJ52GB0988",
+    "licenseNo": "RJ-52-2022-00074"
+  },
+  {
+    "id": "driver_75",
+    "name": "Prakash Gurjar Tolda",
+    "mobile": "9828230115",
+    "ownerName": "Raju Shekhawati",
+    "truckNo": "RJ52GA3237",
+    "licenseNo": "RJ-52-2022-00075"
+  },
+  {
+    "id": "driver_76",
+    "name": "Radheyshyam Meena",
+    "mobile": "9828230116",
+    "ownerName": "Rajendra Laddha",
+    "truckNo": "RJ26GA4713",
+    "licenseNo": "RJ-52-2022-00076"
+  },
+  {
+    "id": "driver_77",
+    "name": "Mahendra Gurjar",
+    "mobile": "9828230117",
+    "ownerName": "Vipin Kishangarh",
+    "truckNo": "RJ35GD1097",
+    "licenseNo": "RJ-52-2022-00077"
+  },
+  {
+    "id": "driver_78",
+    "name": "Kalu Birjaniya",
+    "mobile": "9828230118",
+    "ownerName": "Irfan Bhai Khatauli",
+    "truckNo": "RJ52GB2688",
+    "licenseNo": "RJ-52-2022-00078"
+  },
+  {
+    "id": "driver_79",
+    "name": "Naval Singh",
+    "mobile": "9828230119",
+    "ownerName": "Kedarmal Nyati",
+    "truckNo": "RJ52GA3737",
+    "licenseNo": "RJ-52-2022-00079"
   }
 ];

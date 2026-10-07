@@ -147,7 +147,7 @@ def run():
                 "tripStartDate": parsed_date,
                 "truckNo": truck_no,
                 "truckOwner": f"{truck_no} Fleet Owner",
-                "driver": "Assigned Driver",
+                "driver": "Prakash Saini",
                 "driverMobile": "",
                 "origin": "Rajsamand (Raj.)",
                 "destination": destination,

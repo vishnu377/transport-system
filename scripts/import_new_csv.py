@@ -112,7 +112,7 @@ def run():
                 "tripStartDate": start_date or "2026-09-21",
                 "truckNo": truck_no,
                 "truckOwner": f"{truck_no} Owner" if truck_no else "Assigned Owner",
-                "driver": "Assigned Driver",
+                "driver": "Prakash Saini",
                 "driverMobile": "",
                 "origin": "Rajsamand (Raj.)",
                 "destination": destination,

@@ -200,7 +200,7 @@ const OwnersModule = {
             <td><span class="badge bg-light text-dark border font-monospace">${tr.grNo || 'GR-Open'}</span></td>
             <td>${tr.tripStartDate || '-'}</td>
             <td>${tr.destination || 'Direct Delivery'}</td>
-            <td>${tr.driver || 'Assigned Driver'}</td>
+            <td>${tr.driver || '-'}</td>
             <td class="text-end fw-bold ${tr.ownerDue > 0 ? 'text-danger' : 'text-success'}">${this.formatCurrency(tr.ownerDue || tr.freight || 0)}</td>
             <td class="text-center"><span class="badge bg-light text-dark border">${tr.status || 'Transit'}</span></td>
           </tr>
