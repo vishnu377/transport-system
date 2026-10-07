@@ -1932,19 +1932,50 @@ body {
   border-left: 3px solid #1a73e8;
 }
 
-.mtc-action-icons {
+.mtc-action-icons,
+.ttc-action-icons {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 7px;
   color: #5f6368;
-  font-size: 13px;
+  font-size: 13.5px;
 }
-.mtc-action-icons i {
+.mtc-action-icons i,
+.ttc-action-icons i {
   cursor: pointer;
-  transition: color 0.15s;
+  transition: all 0.15s ease-in-out;
 }
-.mtc-action-icons i:hover {
-  color: #1a73e8;
+.mtc-action-icons i:hover,
+.ttc-action-icons i:hover {
+  transform: scale(1.15);
+}
+
+.icon-whatsapp-driver {
+  color: #1e8e3e !important;
+}
+.icon-whatsapp-driver:hover {
+  color: #25d366 !important;
+}
+
+.icon-whatsapp-truck {
+  color: #1e8e3e !important;
+}
+.icon-whatsapp-truck:hover {
+  color: #1a73e8 !important;
+}
+
+.icon-download-bilty {
+  color: #1e8e3e !important;
+}
+.icon-download-bilty:hover {
+  color: #0b8043 !important;
+}
+
+.icon-sync {
+  color: #5f6368 !important;
+}
+.icon-sync:hover {
+  color: #1a73e8 !important;
 }
 
 /* TTC and SMTC Table */
@@ -1965,21 +1996,32 @@ body {
   white-space: nowrap;
 }
 .ttc-appsheet-table td {
-  padding: 7px 10px;
+  padding: 7px 8px;
   border-bottom: 1px solid #f1f3f4;
   white-space: nowrap;
   vertical-align: middle;
 }
-.ttc-appsheet-table tr {
+.ttc-appsheet-table tr.ttc-row-item {
   cursor: pointer;
   transition: background 0.1s;
 }
-.ttc-appsheet-table tr:hover {
+.ttc-appsheet-table tr.ttc-row-item:hover {
   background: #f8f9fa;
 }
-.ttc-appsheet-table tr.active-row {
+.ttc-appsheet-table tr.ttc-row-item.active-row {
   background: #edf2fc !important;
   font-weight: 600;
+}
+.ttc-date-row {
+  cursor: pointer;
+  user-select: none;
+}
+.ttc-date-row td {
+  background: #eef2f5 !important;
+  padding: 4px 8px !important;
+}
+.ttc-date-row:hover td {
+  background: #e4e9ee !important;
 }
 
 /* Bilty Details Panel */

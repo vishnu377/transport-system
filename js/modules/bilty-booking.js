@@ -3829,10 +3829,14 @@ const BiltyBookingModule = {
             <!-- 1. Quick Action Icons & Optional Selection Checkbox -->
             <div class="mtc-action-icons">
               ${checkHtml}
-              <i class="bi bi-arrow-repeat" title="Sync / Re-calculate" onclick="event.stopPropagation(); BiltyBookingModule.syncBiltyDirect('${id}')"></i>
-              <i class="bi bi-box-arrow-down" title="Download Print A4" onclick="event.stopPropagation(); BiltyBookingModule.printBiltyDirect('${id}')"></i>
-              <i class="bi bi-clipboard" title="Duplicate Consignment" onclick="event.stopPropagation(); BiltyBookingModule.duplicateBiltyById('${id}')"></i>
-              <i class="bi bi-truck" title="Truck Trips" onclick="event.stopPropagation(); window.location.href='trips.html?truck=${encodeURIComponent(truckNo)}'"></i>
+              ${isSettled ? `
+                <i class="bi bi-arrow-repeat icon-sync" title="Sync / Re-calculate" onclick="event.stopPropagation(); BiltyBookingModule.syncBiltyDirect('${id}')"></i>
+                <i class="bi bi-box-arrow-down icon-download-bilty" title="Download Print A4 Consignment Note" onclick="event.stopPropagation(); BiltyBookingModule.printBiltyDirect('${id}')"></i>
+                <i class="bi bi-whatsapp icon-whatsapp-driver" title="WhatsApp to Driver" onclick="event.stopPropagation(); BiltyBookingModule.shareDriverWhatsApp('${id}')"></i>
+                <i class="bi bi-truck icon-whatsapp-truck" title="WhatsApp to Truck Owner / Transporter" onclick="event.stopPropagation(); BiltyBookingModule.shareTransportWhatsApp('${id}')"></i>
+              ` : `
+                <i class="bi bi-arrow-repeat icon-sync" title="Sync / Re-calculate" onclick="event.stopPropagation(); BiltyBookingModule.syncBiltyDirect('${id}')"></i>
+              `}
             </div>
 
             <!-- 2. Bilty Number (Always visible in compact and expanded) -->
@@ -3902,6 +3906,19 @@ const BiltyBookingModule = {
     }
   },
 
+  toggleTtcDateGroup(grpId) {
+    const rows = document.querySelectorAll(`.ttc-grp-${grpId}`);
+    const arrow = document.getElementById(`arrow-ttc-${grpId}`);
+    if (!rows || rows.length === 0) return;
+    const isHidden = rows[0].style.display === 'none';
+    rows.forEach(r => {
+      r.style.display = isHidden ? '' : 'none';
+    });
+    if (arrow) {
+      arrow.style.transform = isHidden ? 'rotate(0deg)' : 'rotate(-90deg)';
+    }
+  },
+
   renderTtcPanel(ttcTrips) {
     const tbody = document.getElementById('ttc-table-tbody');
     if (!tbody) return;
@@ -3920,41 +3937,99 @@ const BiltyBookingModule = {
     const limit = this.ttcRenderLimit || 300;
     const isMulti = this.multiSelectPanel === 'ttc';
 
-    let html = '';
+    // Group by Date up to limit (matching AppSheet media_1791394373815.jpg)
+    const dateMap = new Map();
     ttcTrips.slice(0, limit).forEach(t => {
-      const id = t.id || t.grNo;
-      const isActive = this.currentActiveBilty && String(this.currentActiveBilty.id || this.currentActiveBilty.grNo) === String(id);
-      const isSettled = String(t.status || '').toLowerCase() === 'settled' || String(t.status || '').toLowerCase() === 'completed';
-      const biltyColor = isSettled ? '#2e7d32' : '#202124';
-      const dotColor = isSettled ? '#2e7d32' : '#34a853';
+      const d = this.formatAppSheetDate(t.tripStartDate || t.biltyDate) || 'Undated';
+      if (!dateMap.has(d)) dateMap.set(d, []);
+      dateMap.get(d).push(t);
+    });
 
-      const displayBiltyNo = t.shortGrNo || (t.truckNo ? t.truckNo.replace(/^RJ52/, '') : (t.grNo ? t.grNo.split('-').pop() : 'TTC'));
-      const toDest = (t.destination || '-').toUpperCase();
-      const ref = t.reference || t.billNo || '-';
-      const driver = (t.driver || '-').toUpperCase();
-      const dateStr = this.formatAppSheetDate(t.tripStartDate || t.biltyDate);
+    let html = '';
+    let grpIndex = 0;
 
-      const isChecked = this.selectedTripIds && this.selectedTripIds.has(String(id));
-      const checkHtml = isMulti 
-        ? `<input type="checkbox" class="bilty-row-checkbox" ${isChecked ? 'checked' : ''} onclick="event.stopPropagation(); BiltyBookingModule.toggleTripSelection('${id}')">` 
-        : '';
+    dateMap.forEach((group, dStr) => {
+      grpIndex++;
+      const grpId = `ttc-grp-${grpIndex}`;
 
       html += `
-        <tr class="ttc-row-item ${isActive ? 'active-row' : ''} ${isSettled ? 'row-settled' : ''}" data-trip-id="${id}" onclick="BiltyBookingModule.selectBilty('${id}')">
-          <td>
-            ${checkHtml}
-            <span style="color: ${dotColor}; font-size: 10px; margin-right: 3px;">●</span>
-            <span class="fw-bold" style="color: ${biltyColor};">${displayBiltyNo}</span>
-          </td>
-          <td>${toDest}</td>
-          <td>${ref}</td>
-          <td>${driver}</td>
-          <td>
-            <span style="color: ${dotColor}; font-size: 10px; margin-right: 3px;">●</span>
-            <span style="${isSettled ? 'color: #2e7d32; font-weight: 600;' : ''}">${dateStr}</span>
+        <tr class="ttc-date-row" onclick="BiltyBookingModule.toggleTtcDateGroup('${grpId}')" title="Click to expand/collapse date group" style="cursor: pointer;">
+          <td colspan="5" class="py-1 px-2 border-top border-bottom" style="background: #eef2f5;">
+            <div class="d-flex align-items-center justify-content-between">
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-chevron-down ttc-arrow-icon" id="arrow-ttc-${grpId}" style="font-size: 10px; color: #5f6368; transition: transform 0.2s;"></i>
+                <span style="color: #34a853; font-size: 11px;">●</span>
+                <span class="fw-bold" style="color: #202124; font-size: 11.5px;">${dStr}</span>
+              </div>
+              <span class="badge" style="background: #d2e3fc; color: #174ea6; font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px;">${group.length}</span>
+            </div>
           </td>
         </tr>
       `;
+
+      group.forEach(t => {
+        const id = t.id || t.grNo;
+        const isActive = this.currentActiveBilty && String(this.currentActiveBilty.id || this.currentActiveBilty.grNo) === String(id);
+        const statusLower = String(t.status || '').toLowerCase();
+        const isSettled = statusLower === 'settled' || statusLower === 'completed' || (t.balanceDue !== undefined && Number(t.balanceDue) === 0 && Number(t.freight) > 0);
+        
+        const shortGr = String(t.shortGrNo || (t.grNo ? t.grNo.split('-').pop() : 'TTC')).trim();
+        const isNegative = shortGr.startsWith('-');
+        const biltyColor = isSettled ? '#1e8e3e' : (isNegative ? '#5f6368' : '#202124');
+        const dotColor = '#1e8e3e';
+        const truckNo = (t.truckNo || '-').toUpperCase();
+        const toDest = (t.destination || '-').trim();
+
+        const isChecked = this.selectedTripIds && this.selectedTripIds.has(String(id));
+        const checkHtml = isMulti 
+          ? `<input type="checkbox" class="bilty-row-checkbox" ${isChecked ? 'checked' : ''} onclick="event.stopPropagation(); BiltyBookingModule.toggleTripSelection('${id}')">` 
+          : '';
+
+        let actionIconsHtml = '';
+        if (isSettled) {
+          actionIconsHtml = `
+            <div class="d-flex align-items-center gap-2 justify-content-start ttc-action-icons">
+              ${checkHtml}
+              <i class="bi bi-arrow-repeat icon-sync" title="Sync / Re-calculate" onclick="event.stopPropagation(); BiltyBookingModule.syncBiltyDirect('${id}')"></i>
+              <i class="bi bi-box-arrow-down icon-download-bilty" title="Download Print A4 Consignment Note" onclick="event.stopPropagation(); BiltyBookingModule.printBiltyDirect('${id}')"></i>
+              <i class="bi bi-whatsapp icon-whatsapp-driver" title="WhatsApp to Driver" onclick="event.stopPropagation(); BiltyBookingModule.shareDriverWhatsApp('${id}')"></i>
+              <i class="bi bi-truck icon-whatsapp-truck" title="WhatsApp to Truck Owner / Transporter" onclick="event.stopPropagation(); BiltyBookingModule.shareTransportWhatsApp('${id}')"></i>
+            </div>
+          `;
+        } else if (!isNegative) {
+          actionIconsHtml = `
+            <div class="d-flex align-items-center gap-2 justify-content-start ttc-action-icons">
+              ${checkHtml}
+              <i class="bi bi-arrow-repeat icon-sync" title="Sync / Re-calculate" onclick="event.stopPropagation(); BiltyBookingModule.syncBiltyDirect('${id}')"></i>
+            </div>
+          `;
+        } else {
+          actionIconsHtml = checkHtml;
+        }
+
+        html += `
+          <tr class="ttc-row-item ttc-grp-${grpId} ${isActive ? 'active-row' : ''} ${isSettled ? 'row-settled' : ''}" data-trip-id="${id}" onclick="BiltyBookingModule.selectBilty('${id}')">
+            <td style="width: 110px; padding: 6px 6px;">
+              ${actionIconsHtml}
+            </td>
+            <td class="fw-bold" style="color: ${biltyColor};">
+              ${isSettled ? `<span style="color: ${dotColor}; font-size: 10px; margin-right: 4px;">●</span>` : ''}
+              <span>${shortGr}</span>
+            </td>
+            <td style="color: ${biltyColor}; font-weight: ${isSettled ? '600' : 'normal'};">
+              ${isSettled ? `<span style="color: ${dotColor}; font-size: 10px; margin-right: 4px;">●</span>` : ''}
+              <span>${truckNo}</span>
+            </td>
+            <td style="color: ${biltyColor};">
+              ${isSettled ? `<span style="color: ${dotColor}; font-size: 10px; margin-right: 4px;">●</span>` : ''}
+              <span>${toDest}</span>
+            </td>
+            <td class="text-end" style="width: 24px; padding-right: 8px;">
+              ${isSettled ? `<span style="color: ${dotColor}; font-size: 10px;">●</span>` : ''}
+            </td>
+          </tr>
+        `;
+      });
     });
 
     if (limit < ttcTrips.length) {
@@ -4091,16 +4166,36 @@ const BiltyBookingModule = {
           <td class="prop-value fw-bold text-dark">${t.destination || '-'}</td>
         </tr>
         <tr>
+          <td class="prop-label">Sender Type</td>
+          <td class="prop-value">${t.senderType || (t.reference ? 'Reference' : 'Consignor')}</td>
+        </tr>
+        <tr>
+          <td class="prop-label">Sender Name</td>
+          <td class="prop-value">${t.senderName || t.consignor || t.reference || '-'}</td>
+        </tr>
+        <tr>
+          <td class="prop-label">Material</td>
+          <td class="prop-value">${t.material || 'Marble Powder / Goods'}</td>
+        </tr>
+        <tr>
+          <td class="prop-label">Receiver Type</td>
+          <td class="prop-value">${t.receiverType || (t.reference ? 'Reference' : 'Consignee')}</td>
+        </tr>
+        <tr>
+          <td class="prop-label">Receiver Name</td>
+          <td class="prop-value">${t.receiverName || t.consignee || t.reference || '-'}</td>
+        </tr>
+        <tr>
+          <td class="prop-label">Actual Weight</td>
+          <td class="prop-value">${t.weight ? (t.weight + ' MT') : (t.actualWeight ? (t.actualWeight + ' MT') : '-')}</td>
+        </tr>
+        <tr>
           <td class="prop-label">Consignor</td>
           <td class="prop-value">${t.consignor || '-'}</td>
         </tr>
         <tr>
           <td class="prop-label">Consignee</td>
           <td class="prop-value">${t.consignee || '-'}</td>
-        </tr>
-        <tr>
-          <td class="prop-label">Material</td>
-          <td class="prop-value">${t.material || 'Marble Powder / Goods'}</td>
         </tr>
         <tr>
           <td class="prop-label">Billing Type</td>
@@ -5742,6 +5837,123 @@ const BiltyBookingModule = {
   shareDirectWhatsApp(id) {
     const trip = this.allTrips.find(t => String(t.id) === String(id) || String(t.grNo) === String(id));
     if (trip) this.shareOnWhatsApp(trip);
+  },
+
+  shareDriverWhatsApp(id) {
+    const trip = (id ? this.allTrips.find(t => String(t.id) === String(id) || String(t.grNo) === String(id)) : null) || this.currentActiveBilty;
+    if (!trip) {
+      AppUI.showToast("No active bilty to share with driver!", "warning");
+      return;
+    }
+    const t = trip;
+    const firm = t.transport || 'TTC';
+    const firmName = (firm === 'MTC') ? 'MAHAVEER TRANSPORT COMPANY' : 'THE TRANSPORT CORPORATION';
+    
+    let displayDate = t.tripStartDate || t.biltyDate || '';
+    if (displayDate.includes('-')) {
+      const [y, m, d] = displayDate.split('-');
+      displayDate = `${d}/${m}/${y}`;
+    }
+
+    const shortGr = t.shortGrNo || (t.grNo ? t.grNo.split('-').pop() : 'LR');
+    const driverName = t.driver || 'Driver';
+    const dest = t.destination || '-';
+    const origin = t.origin || 'Rajsamand (Raj.)';
+    const weight = t.weight ? `${t.weight} MT` : '-';
+    const mat = t.material || 'Goods';
+    const adv = Number(t.advancePaid || t.partyPaid || 0);
+    const bal = Number(t.balanceDue || 0);
+
+    const msg = `🚚 *${firmName}*
+📋 *DRIVER DISPATCH SLIP / LORRY RECEIPT*
+━━━━━━━━━━━━━━━━━━━━
+📄 *Bilty / G.R. No:* ${shortGr} (${t.grNo || ''})
+📅 *Date:* ${displayDate}
+🚛 *Truck No:* ${t.truckNo || '-'}
+📍 *Route:* ${origin} ➔ *${dest}*
+📦 *Material:* ${mat} (${weight})
+🏢 *Consignor:* ${t.consignor || '-'}
+🏬 *Consignee:* ${t.consignee || '-'}
+📍 *Delivery Address:* ${t.deliveryAddress || '-'}
+💵 *Driver Advance Paid:* ₹${adv.toLocaleString('en-IN')}
+💰 *Driver Balance Due:* ₹${bal.toLocaleString('en-IN')}
+👤 *Driver:* ${driverName}
+━━━━━━━━━━━━━━━━━━━━
+_Safe Journey! Generated via MTC & TTC Logistics ERP_`;
+
+    const encoded = encodeURIComponent(msg);
+    let mobile = (t.driverMobile || '').replace(/[^0-9]/g, '');
+    if (mobile.length !== 10) {
+      const match = String(t.driver || '').match(/(?:[+]91[\s-]*)?([6-9]\d{9})/);
+      if (match) mobile = match[1];
+    }
+
+    let url = `https://wa.me/?text=${encoded}`;
+    if (mobile && mobile.length === 10) {
+      url = `https://wa.me/91${mobile}?text=${encoded}`;
+    }
+
+    window.open(url, '_blank');
+    AppUI.showToast(`Opening WhatsApp for Driver (${driverName})...`, "success");
+  },
+
+  shareTransportWhatsApp(id) {
+    const trip = (id ? this.allTrips.find(t => String(t.id) === String(id) || String(t.grNo) === String(id)) : null) || this.currentActiveBilty;
+    if (!trip) {
+      AppUI.showToast("No active bilty to share with transporter!", "warning");
+      return;
+    }
+    const t = trip;
+    const firm = t.transport || 'TTC';
+    const firmName = (firm === 'MTC') ? 'MAHAVEER TRANSPORT COMPANY' : 'THE TRANSPORT CORPORATION';
+    
+    let displayDate = t.tripStartDate || t.biltyDate || '';
+    if (displayDate.includes('-')) {
+      const [y, m, d] = displayDate.split('-');
+      displayDate = `${d}/${m}/${y}`;
+    }
+
+    const shortGr = t.shortGrNo || (t.grNo ? t.grNo.split('-').pop() : 'LR');
+    const ownerName = t.truckOwner || t.reference || 'Truck Transport / Owner';
+    const dest = t.destination || '-';
+    const origin = t.origin || 'Rajsamand (Raj.)';
+    const weight = t.weight ? `${t.weight} MT` : '-';
+    const freight = Number(t.freight || 0);
+    const adv = Number(t.advancePaid || t.partyPaid || 0);
+    const comm = Number(t.commission || 0);
+    const ownerDue = Number(t.ownerDue || (freight - adv)) || 0;
+
+    const msg = `🚛 *${firmName}*
+📋 *TRUCK TRANSPORT / FLEET DISPATCH CONFIRMATION*
+━━━━━━━━━━━━━━━━━━━━
+📄 *G.R. No:* ${shortGr} (${t.grNo || ''})
+📅 *Date:* ${displayDate}
+🚛 *Truck No:* ${t.truckNo || '-'} (${t.loadType || 'Under Load'})
+👤 *Transporter / Owner:* ${ownerName}
+📍 *Route:* ${origin} ➔ *${dest}*
+📦 *Material:* ${t.material || 'Goods'} (${weight})
+💰 *Truck Hire Freight:* ₹${freight.toLocaleString('en-IN')}
+💵 *Advance Paid:* ₹${adv.toLocaleString('en-IN')}
+⚖️ *Commission:* ₹${comm.toLocaleString('en-IN')}
+💳 *Net Owner Balance Due:* ₹${ownerDue.toLocaleString('en-IN')}
+👤 *Driver Assigned:* ${t.driver || '-'}
+━━━━━━━━━━━━━━━━━━━━
+_Issued via MTC & TTC Enterprise Logistics ERP_`;
+
+    const encoded = encodeURIComponent(msg);
+    let mobile = (t.ownerMobile || t.truckOwnerMobile || '').replace(/[^0-9]/g, '');
+    if (mobile.length !== 10) {
+      const match = String(t.truckOwner || t.reference || '').match(/(?:[+]91[\s-]*)?([6-9]\d{9})/);
+      if (match) mobile = match[1];
+    }
+
+    let url = `https://wa.me/?text=${encoded}`;
+    if (mobile && mobile.length === 10) {
+      url = `https://wa.me/91${mobile}?text=${encoded}`;
+    }
+
+    window.open(url, '_blank');
+    AppUI.showToast(`Opening WhatsApp for Transporter (${ownerName})...`, "success");
   },
 
   shareCurrentOnWhatsApp() {
