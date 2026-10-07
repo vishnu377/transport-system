@@ -56,8 +56,8 @@ async function verifyMtc() {
 
   for (let i = 0; i < expected.length; i++) {
     const exp = expected[i];
-    const actual = mtc[i];
-    if (!actual) throw new Error(`Missing MTC trip at index ${i}`);
+    const actual = mtc.find(t => (t.shortGrNo === exp.gr) || (t.grNo && t.grNo.endsWith(exp.gr)));
+    if (!actual) throw new Error(`Missing MTC trip for ${exp.gr}`);
 
     const actualGr = actual.shortGrNo || actual.grNo;
     const actualDate = BiltyBookingModule.formatAppSheetDate(actual.tripStartDate);

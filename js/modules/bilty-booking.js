@@ -3548,17 +3548,11 @@ const BiltyBookingModule = {
       case 'date_desc':
       default:
         return (a, b) => {
-          const sA = String(a.shortGrNo || (a.grNo ? a.grNo.split('-').pop() : '')).trim();
-          const sB = String(b.shortGrNo || (b.grNo ? b.grNo.split('-').pop() : '')).trim();
-          const isAuthA = !!a.isAuthentic || (BiltyBookingModule.AUTHENTIC_MTC_GRS && BiltyBookingModule.AUTHENTIC_MTC_GRS.has(sA));
-          const isAuthB = !!b.isAuthentic || (BiltyBookingModule.AUTHENTIC_MTC_GRS && BiltyBookingModule.AUTHENTIC_MTC_GRS.has(sB));
-
-          if (isAuthA && !isAuthB) return -1;
-          if (!isAuthA && isAuthB) return 1;
-
           const dA = a.tripStartDate || a.biltyDate || '';
           const dB = b.tripStartDate || b.biltyDate || '';
           if (dA !== dB) return dB.localeCompare(dA);
+          const sA = String(a.shortGrNo || (a.grNo ? a.grNo.split('-').pop() : '')).trim();
+          const sB = String(b.shortGrNo || (b.grNo ? b.grNo.split('-').pop() : '')).trim();
           return (Number(b.grSeq || parseInt(sB) || 0) - Number(a.grSeq || parseInt(sA) || 0));
         };
     }
@@ -3834,7 +3828,7 @@ const BiltyBookingModule = {
       return;
     }
 
-    const limit = this.mtcRenderLimit || 300;
+    const limit = Math.max(this.mtcRenderLimit || 500, mtcTrips.length);
     const isMulti = this.multiSelectPanel === 'mtc';
 
     // Group by Date up to limit
