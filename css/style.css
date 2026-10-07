@@ -2158,15 +2158,36 @@ body {
 .panel-mtc-col:not(.panel-expanded) .mtc-col-expanded {
   display: none !important;
 }
+.panel-mtc-col:not(.panel-expanded) .mtc-expanded-header-row {
+  display: none !important;
+}
+.panel-mtc-col.panel-expanded .mtc-compact-header {
+  display: none !important;
+}
 
-/* In expanded mode, show full 7-column layout matching media_1791371547683.png */
-.panel-mtc-col.panel-expanded .mtc-item-row {
+/* In expanded mode, show full 7-column layout matching media_1791397164407.png */
+.panel-mtc-col.panel-expanded .mtc-expanded-header-row {
   display: grid !important;
-  grid-template-columns: 120px 105px 135px 220px 240px 180px 1fr !important;
+  grid-template-columns: 105px 110px 140px 180px 220px 180px 1fr !important;
   align-items: center;
   gap: 12px;
   padding: 8px 16px;
-  font-size: 12px;
+  font-size: 11.5px;
+  background: #ffffff;
+  border-bottom: 1px solid #e0e0e0;
+  color: #5f6368;
+  font-weight: 700;
+}
+
+.panel-mtc-col.panel-expanded .mtc-item-row {
+  display: grid !important;
+  grid-template-columns: 105px 110px 140px 180px 220px 180px 1fr !important;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 16px !important;
+  font-size: 11.5px;
+  min-height: 38px;
+  border-bottom: 1px solid #f1f3f4;
 }
 
 .panel-mtc-col.panel-expanded .mtc-col-expanded {
@@ -2176,7 +2197,7 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 12px;
+  font-size: 11.5px;
 }
 
 /* Settled & Completed Trips Styling (Green Replica of AppSheet) */

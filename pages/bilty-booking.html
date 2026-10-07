@@ -113,17 +113,31 @@
           <!-- PANEL 1 (Left): MTC -->
           <div class="appsheet-panel-card panel-mtc-col">
             <div class="appsheet-panel-card-header">
-              <span class="panel-header-title">MTC</span>
+              <div class="d-flex align-items-center gap-2">
+                <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 d-none" id="btn-mtc-back" onclick="BiltyBookingModule.expandPanel('mtc')" title="Back to 3-Column View" style="font-size: 11px;">
+                  <i class="bi bi-chevron-left"></i> Back
+                </button>
+                <span class="panel-header-title" style="cursor: pointer;" onclick="BiltyBookingModule.expandPanel('mtc')" title="Click to Expand MTC View">MTC</span>
+              </div>
               <div class="d-flex align-items-center gap-1">
                 <button type="button" class="btn-appsheet-add" onclick="BiltyBookingModule.openCreateForm('MTC')">
                   <i class="bi bi-plus"></i> Add
                 </button>
-                <button class="btn btn-sm text-muted p-1 border-0" id="btn-mtc-select-all" title="Select All (Multi-Select)" onclick="BiltyBookingModule.toggleSelectAll('mtc')"><i class="bi bi-check2-square" id="icon-mtc-select-all"></i></button>
                 <button class="btn btn-sm text-muted p-1 border-0" id="btn-mtc-sort" title="Sort MTC Bilties" onclick="BiltyBookingModule.toggleSort('mtc')"><i class="bi bi-filter-right" id="icon-mtc-sort"></i></button>
-                <button class="btn btn-sm text-muted p-1 border-0" id="btn-mtc-expand" title="Expand Full View" onclick="BiltyBookingModule.expandPanel('mtc')"><i class="bi bi-arrows-angle-expand" id="icon-mtc-expand"></i></button>
+                <button class="btn btn-sm text-muted p-1 border-0" id="btn-mtc-select-all" title="Select All (Multi-Select)" onclick="BiltyBookingModule.toggleSelectAll('mtc')"><i class="bi bi-check2-square" id="icon-mtc-select-all"></i></button>
+                <button class="btn btn-sm text-muted p-1 border-0" id="btn-mtc-expand" title="Expand Full View (7 Columns)" onclick="BiltyBookingModule.expandPanel('mtc')"><i class="bi bi-arrows-angle-expand" id="icon-mtc-expand"></i></button>
               </div>
             </div>
-            <div class="d-flex justify-content-end px-3 py-1 bg-white border-bottom text-muted fw-bold" style="font-size: 11px;">G.R.No.</div>
+            <div class="mtc-compact-header d-flex justify-content-end px-3 py-1 bg-white border-bottom text-muted fw-bold" id="mtc-compact-header" style="font-size: 11px;">G.R.No.</div>
+            <div class="mtc-expanded-header-row px-3 py-1 bg-white border-bottom text-muted fw-bold" id="mtc-expanded-header-row" style="font-size: 11px; display: none;">
+              <div style="width: 105px;"></div>
+              <div style="width: 110px;">G.R.No.</div>
+              <div style="width: 140px;">Truck No.</div>
+              <div style="width: 180px;">To</div>
+              <div style="width: 220px;">Consignor / Party</div>
+              <div style="width: 180px;">Driver</div>
+              <div style="flex: 1; text-align: right; padding-right: 14px;">Date</div>
+            </div>
             <div class="panel-body-scroll" id="mtc-panel-feed">
               <div class="p-3 text-center text-muted small">Loading MTC bilties...</div>
             </div>

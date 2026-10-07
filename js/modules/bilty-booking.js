@@ -3807,12 +3807,15 @@ const BiltyBookingModule = {
 
       group.forEach(t => {
         const id = t.id || t.grNo;
-        const shortGr = t.shortGrNo || (t.grNo ? t.grNo.split('-').pop() : 'MTC');
+        const shortGr = String(t.shortGrNo || (t.grNo ? t.grNo.split('-').pop() : 'MTC')).trim();
+        const isNegative = shortGr.startsWith('-');
         const isActive = this.currentActiveBilty && String(this.currentActiveBilty.id || this.currentActiveBilty.grNo) === String(id);
-        const isSettled = String(t.status || '').toLowerCase() === 'settled' || String(t.status || '').toLowerCase() === 'completed';
-        const biltyColor = isSettled ? '#1e8e3e' : '#202124';
-        const dotHtml = isSettled ? `<span style="color: #1e8e3e; font-size: 10px;">●</span>` : ``;
-        const truckNo = t.truckNo || '-';
+        const statusLower = String(t.status || '').toLowerCase();
+        const isSettled = !isNegative && (statusLower === 'settled' || statusLower === 'completed' || (t.balanceDue !== undefined && Number(t.balanceDue) === 0 && Number(t.freight) > 0));
+        
+        const biltyColor = isSettled ? '#1e8e3e' : (isNegative ? '#5f6368' : '#202124');
+        const dotHtml = isSettled ? `<span style="color: #1e8e3e; font-size: 9.5px; margin-right: 5px;">●</span>` : '';
+        const truckNo = (t.truckNo || '-').toUpperCase();
         const destination = t.destination || '-';
         const party = t.consignor || t.truckOwner || t.reference || '-';
         const driver = t.driver || '-';
@@ -3824,25 +3827,35 @@ const BiltyBookingModule = {
           ? `<input type="checkbox" class="bilty-row-checkbox" ${isChecked ? 'checked' : ''} onclick="event.stopPropagation(); BiltyBookingModule.toggleTripSelection('${id}')">` 
           : '';
 
+        let actionIconsHtml = '';
+        if (isSettled) {
+          actionIconsHtml = `
+            ${checkHtml}
+            <i class="bi bi-arrow-repeat icon-sync" title="Sync / Re-calculate" onclick="event.stopPropagation(); BiltyBookingModule.syncBiltyDirect('${id}')"></i>
+            <i class="bi bi-box-arrow-down icon-download-bilty" title="Download Print A4 Consignment Note" onclick="event.stopPropagation(); BiltyBookingModule.printBiltyDirect('${id}')"></i>
+            <i class="bi bi-whatsapp icon-whatsapp-driver" title="WhatsApp to Driver" onclick="event.stopPropagation(); BiltyBookingModule.shareDriverWhatsApp('${id}')"></i>
+            <i class="bi bi-truck icon-whatsapp-truck" title="WhatsApp to Truck Owner / Transporter" onclick="event.stopPropagation(); BiltyBookingModule.shareTransportWhatsApp('${id}')"></i>
+          `;
+        } else if (!isNegative) {
+          actionIconsHtml = `
+            ${checkHtml}
+            <i class="bi bi-arrow-repeat icon-sync" title="Sync / Re-calculate" onclick="event.stopPropagation(); BiltyBookingModule.syncBiltyDirect('${id}')"></i>
+          `;
+        } else {
+          actionIconsHtml = checkHtml;
+        }
+
         html += `
           <div class="mtc-item-row ${isActive ? 'active-row' : ''} ${isSettled ? 'row-settled' : ''}" data-trip-id="${id}" onclick="BiltyBookingModule.selectBilty('${id}')">
             <!-- 1. Quick Action Icons & Optional Selection Checkbox -->
             <div class="mtc-action-icons">
-              ${checkHtml}
-              ${isSettled ? `
-                <i class="bi bi-arrow-repeat icon-sync" title="Sync / Re-calculate" onclick="event.stopPropagation(); BiltyBookingModule.syncBiltyDirect('${id}')"></i>
-                <i class="bi bi-box-arrow-down icon-download-bilty" title="Download Print A4 Consignment Note" onclick="event.stopPropagation(); BiltyBookingModule.printBiltyDirect('${id}')"></i>
-                <i class="bi bi-whatsapp icon-whatsapp-driver" title="WhatsApp to Driver" onclick="event.stopPropagation(); BiltyBookingModule.shareDriverWhatsApp('${id}')"></i>
-                <i class="bi bi-truck icon-whatsapp-truck" title="WhatsApp to Truck Owner / Transporter" onclick="event.stopPropagation(); BiltyBookingModule.shareTransportWhatsApp('${id}')"></i>
-              ` : `
-                <i class="bi bi-arrow-repeat icon-sync" title="Sync / Re-calculate" onclick="event.stopPropagation(); BiltyBookingModule.syncBiltyDirect('${id}')"></i>
-              `}
+              ${actionIconsHtml}
             </div>
 
             <!-- 2. Bilty Number (Always visible in compact and expanded) -->
-            <div class="d-flex align-items-center gap-1 mtc-col-gr">
+            <div class="d-flex align-items-center mtc-col-gr">
               ${dotHtml}
-              <span class="fw-bold" style="font-size: 12.5px; color: ${biltyColor};">${shortGr}</span>
+              <span class="fw-bold" style="font-size: 11.5px; color: ${biltyColor};">${shortGr}</span>
             </div>
 
             <!-- 3. Truck Number (Visible in expanded) -->
