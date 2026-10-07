@@ -2096,7 +2096,7 @@ body {
 /* Fullscreen / Expand Panel Mode */
 .appsheet-panel-card.panel-expanded {
   position: absolute !important;
-  top: 60px !important;
+  top: 96px !important;
   left: 56px !important;
   right: 14px !important;
   bottom: 14px !important;
@@ -2105,7 +2105,32 @@ body {
   min-width: 0 !important;
   max-height: none !important;
   z-index: 1050 !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.16) !important;
+}
+
+/* In compact mode (default 3-column), hide expanded columns in MTC */
+.panel-mtc-col:not(.panel-expanded) .mtc-col-expanded {
+  display: none !important;
+}
+
+/* In expanded mode, show full 7-column layout matching media_1791368494070.png */
+.panel-mtc-col.panel-expanded .mtc-item-row {
+  display: grid !important;
+  grid-template-columns: 120px 110px 140px 200px 240px 180px 1fr !important;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  font-size: 12px;
+}
+
+.panel-mtc-col.panel-expanded .mtc-col-expanded {
+  display: flex !important;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 12px;
 }
 
 /* Settled & Completed Trips Styling (Green) */

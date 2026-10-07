@@ -3546,20 +3546,60 @@ const BiltyBookingModule = {
         const shortGr = t.shortGrNo || (t.grNo ? t.grNo.split('-').pop() : 'MTC');
         const isActive = this.currentActiveBilty && String(this.currentActiveBilty.id || this.currentActiveBilty.grNo) === String(id);
         const isSettled = String(t.status || '').toLowerCase() === 'settled' || String(t.status || '').toLowerCase() === 'completed';
-        const biltyColor = isSettled ? '#2e7d32' : '#1a73e8';
-        const dotColor = isSettled ? '#2e7d32' : '#34a853';
+        const biltyColor = isSettled ? '#1e8e3e' : '#202124';
+        const dotHtml = isSettled ? `<span style="color: #1e8e3e; font-size: 10px;">●</span>` : ``;
+        const truckNo = t.truckNo || '-';
+        const destination = t.destination || '-';
+        const party = t.consignor || t.truckOwner || t.reference || '-';
+        const driver = t.driver || '-';
+        const dateStr = this.formatAppSheetDate(t.tripStartDate || t.biltyDate);
+        const chevronColor = isSettled ? '#1e8e3e' : '#5f6368';
 
         html += `
           <div class="mtc-item-row ${isActive ? 'active-row' : ''} ${isSettled ? 'row-settled' : ''}" data-trip-id="${id}" onclick="BiltyBookingModule.selectBilty('${id}')">
+            <!-- 1. Quick Action Icons -->
             <div class="mtc-action-icons">
               <i class="bi bi-arrow-repeat" title="Sync / Re-calculate" onclick="event.stopPropagation(); BiltyBookingModule.syncBiltyDirect('${id}')"></i>
               <i class="bi bi-box-arrow-down" title="Download Print A4" onclick="event.stopPropagation(); BiltyBookingModule.printBiltyDirect('${id}')"></i>
               <i class="bi bi-clipboard" title="Duplicate Consignment" onclick="event.stopPropagation(); BiltyBookingModule.duplicateBiltyById('${id}')"></i>
-              <i class="bi bi-truck" title="Truck Trips" onclick="event.stopPropagation(); window.location.href='trips.html?truck=${encodeURIComponent(t.truckNo || '')}'"></i>
+              <i class="bi bi-truck" title="Truck Trips" onclick="event.stopPropagation(); window.location.href='trips.html?truck=${encodeURIComponent(truckNo)}'"></i>
             </div>
-            <div class="d-flex align-items-center gap-1">
-              <span style="color: ${dotColor}; font-size: 10px;">●</span>
+
+            <!-- 2. Bilty Number (Always visible in compact and expanded) -->
+            <div class="d-flex align-items-center gap-1 mtc-col-gr">
+              ${dotHtml}
               <span class="fw-bold" style="font-size: 12.5px; color: ${biltyColor};">${shortGr}</span>
+            </div>
+
+            <!-- 3. Truck Number (Visible in expanded) -->
+            <div class="mtc-col-expanded mtc-col-truck">
+              ${dotHtml}
+              <span class="fw-semibold" style="color: ${biltyColor};">${truckNo}</span>
+            </div>
+
+            <!-- 4. Destination (Visible in expanded) -->
+            <div class="mtc-col-expanded mtc-col-dest" title="${destination}">
+              ${dotHtml}
+              <span style="color: ${biltyColor};">${destination}</span>
+            </div>
+
+            <!-- 5. Consignor / Party (Visible in expanded) -->
+            <div class="mtc-col-expanded mtc-col-party" title="${party}">
+              ${dotHtml}
+              <span style="color: ${biltyColor};">${party}</span>
+            </div>
+
+            <!-- 6. Driver (Visible in expanded) -->
+            <div class="mtc-col-expanded mtc-col-driver" title="${driver}">
+              ${dotHtml}
+              <span style="color: ${biltyColor};">${driver}</span>
+            </div>
+
+            <!-- 7. Date & Chevron (Visible in expanded) -->
+            <div class="mtc-col-expanded mtc-col-date justify-content-end">
+              ${dotHtml}
+              <span style="color: ${biltyColor}; font-weight: 500;">${dateStr}</span>
+              <span style="color: ${chevronColor}; font-weight: bold; margin-left: 6px;">&gt;</span>
             </div>
           </div>
         `;
@@ -3811,13 +3851,17 @@ const BiltyBookingModule = {
     const detailsCol = document.getElementById('panel-details-col');
 
     if (panelType === 'mtc' && mtcCol) {
-      if (mtcCol.classList.contains('panel-expanded')) {
+      const isExp = mtcCol.classList.contains('panel-expanded');
+      document.querySelectorAll('.appsheet-panel-card').forEach(c => c.classList.remove('panel-expanded'));
+      const icon = document.getElementById('icon-mtc-expand');
+      if (isExp) {
         mtcCol.classList.remove('panel-expanded');
-        AppUI.showToast("MTC column restored", "info");
+        if (icon) icon.className = 'bi bi-arrows-angle-expand';
+        AppUI.showToast("MTC 3-column view restored", "info");
       } else {
-        document.querySelectorAll('.appsheet-panel-card').forEach(c => c.classList.remove('panel-expanded'));
         mtcCol.classList.add('panel-expanded');
-        AppUI.showToast("MTC column expanded full-screen", "info");
+        if (icon) icon.className = 'bi bi-arrows-angle-contract';
+        AppUI.showToast("MTC expanded full-screen table view", "info");
       }
     } else if (panelType === 'ttc' && ttcCol) {
       if (ttcCol.classList.contains('panel-expanded')) {
