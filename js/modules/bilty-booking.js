@@ -24,7 +24,7 @@ const BiltyBookingModule = {
 
   currentView: 'dashboard', // 'dashboard' | 'create' | 'register'
   selectedFirm: 'ALL',
-  selectedFY: '2026-2027',
+  selectedFY: 'ALL',
   selectedMonth: 'ALL',
   selectedLoadType: 'ALL',
   searchQuery: '',
@@ -107,6 +107,23 @@ const BiltyBookingModule = {
     this.renderMonthBar();
     this.renderAppSheet3Panels();
     this.updateLivePreview();
+
+    // Check URL parameters for direct search or specific GR targeting
+    const targetQuery = urlParams.get('gr') || urlParams.get('search') || urlParams.get('q');
+    if (targetQuery) {
+      const searchBox = document.getElementById('bilty-search-input');
+      if (searchBox) searchBox.value = targetQuery;
+      this.handleSearch(targetQuery);
+      const cleanTarget = targetQuery.trim().toLowerCase();
+      const match = this.allTrips.find(t => 
+        String(t.shortGrNo || '').toLowerCase() === cleanTarget || 
+        String(t.grNo || '').toLowerCase() === cleanTarget ||
+        String(t.id || '').toLowerCase() === cleanTarget
+      );
+      if (match) {
+        setTimeout(() => this.selectBilty(match.id || match.grNo, true), 100);
+      }
+    }
   },
 
   // ----------------------------------------------------
@@ -3740,16 +3757,18 @@ const BiltyBookingModule = {
   renderAppSheet3Panels() {
     const q = (this.searchQuery || '').trim().toLowerCase();
 
-    // Filter trips if search is entered
+    // Filter trips if search is entered (Smart multi-separator & token search)
     let trips = this.allTrips || [];
     if (q) {
+      const tokens = q.replace(/[-_/\\]+/g, ' ').split(/\s+/).filter(Boolean);
       trips = trips.filter(t => {
-        const text = [
+        const rawText = [
           t.grNo, t.shortGrNo, t.truckNo, t.truckOwner, t.consignor,
           t.consignee, t.origin, t.destination, t.driver, t.billNo,
           t.reference, t.material, t.status, t.tripStartDate, t.biltyDate
         ].filter(Boolean).join(' ').toLowerCase();
-        return text.includes(q);
+        const normText = rawText.replace(/[-_/\\]+/g, ' ');
+        return tokens.every(tok => rawText.includes(tok) || normText.includes(tok));
       });
     }
 
@@ -4637,8 +4656,8 @@ const BiltyBookingModule = {
       const tFirm = t.transport || (t.grNo && t.grNo.includes('MTC') ? 'MTC' : 'TTC');
       if (this.selectedFirm !== 'ALL' && tFirm !== this.selectedFirm) return false;
 
-      // FY filter
-      if (this.selectedFY !== 'ALL') {
+      // FY filter (only when not searching by text query)
+      if (this.selectedFY !== 'ALL' && !query) {
         const hasFY = (t.financialYear === this.selectedFY) || (t.grNo && t.grNo.includes(this.selectedFY));
         if (!hasFY) return false;
       }
@@ -4649,7 +4668,7 @@ const BiltyBookingModule = {
       }
 
       // Month filter
-      if (this.selectedMonth !== 'ALL' && t.tripStartDate) {
+      if (this.selectedMonth !== 'ALL' && t.tripStartDate && !query) {
         const parts = t.tripStartDate.split('-');
         if (parts.length === 3) {
           const m = parseInt(parts[1], 10);
@@ -4658,9 +4677,10 @@ const BiltyBookingModule = {
         }
       }
 
-      // Text query search
+      // Text query search (Smart multi-separator token search)
       if (query) {
-        const target = [
+        const tokens = query.replace(/[-_/\\]+/g, ' ').split(/\s+/).filter(Boolean);
+        const rawText = [
           t.grNo || '',
           t.shortGrNo || '',
           t.truckNo || '',
@@ -4674,8 +4694,9 @@ const BiltyBookingModule = {
           t.ewayBillNo || '',
           t.reference || ''
         ].join(' ').toLowerCase();
+        const normText = rawText.replace(/[-_/\\]+/g, ' ');
 
-        if (!target.includes(query)) return false;
+        if (!tokens.every(tok => rawText.includes(tok) || normText.includes(tok))) return false;
       }
 
       return true;
