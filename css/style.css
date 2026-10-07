@@ -1829,6 +1829,251 @@ body {
   color: #94a3b8;
 }
 
+/* ==========================================================================
+   Google AppSheet 3-Panel Bilty Booking Layout (Exact match of media_1791365302532.png)
+   ========================================================================== */
+.appsheet-3panel-container {
+  display: flex;
+  gap: 12px;
+  height: calc(100vh - 105px);
+  overflow: hidden;
+  padding: 10px 14px;
+  background: #f8f9fa;
+}
+
+.appsheet-panel-card {
+  background: #ffffff;
+  border: 1px solid #dadce0;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(60, 64, 67, 0.08);
+}
+
+.appsheet-panel-card-header {
+  padding: 8px 14px;
+  border-bottom: 1px solid #ebebeb;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  min-height: 42px;
+}
+
+.panel-header-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #202124;
+  margin: 0;
+}
+
+.panel-body-scroll {
+  flex-grow: 1;
+  overflow-y: auto;
+  overflow-x: auto;
+  background: #ffffff;
+}
+
+/* Panel 1: MTC (25% width) */
+.panel-mtc-col {
+  width: 25%;
+  min-width: 240px;
+}
+
+/* Panel 2: TTC and SMTC (40% width) */
+.panel-ttc-col {
+  flex: 1;
+  min-width: 380px;
+}
+
+/* Panel 3: Bilty Details (35% width) */
+.panel-details-col {
+  width: 35%;
+  min-width: 320px;
+}
+
+/* MTC Date Group Ribbon */
+.mtc-date-ribbon {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  background: #ffffff;
+  border-bottom: 1px solid #ebebeb;
+  border-top: 1px solid #f1f3f4;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #202124;
+}
+.mtc-badge-count {
+  background: #e8eaed;
+  color: #3c4043;
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 10px;
+}
+
+.mtc-item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-bottom: 1px solid #f8f9fa;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+.mtc-item-row:hover {
+  background: #f8f9fa;
+}
+.mtc-item-row.active-row {
+  background: #edf2fc !important;
+  border-left: 3px solid #1a73e8;
+}
+
+.mtc-action-icons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #5f6368;
+  font-size: 13px;
+}
+.mtc-action-icons i {
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.mtc-action-icons i:hover {
+  color: #1a73e8;
+}
+
+/* TTC and SMTC Table */
+.ttc-appsheet-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11.5px;
+}
+.ttc-appsheet-table th {
+  position: sticky;
+  top: 0;
+  background: #ffffff;
+  z-index: 2;
+  padding: 8px 10px;
+  border-bottom: 1px solid #dadce0;
+  color: #5f6368;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.ttc-appsheet-table td {
+  padding: 7px 10px;
+  border-bottom: 1px solid #f1f3f4;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+.ttc-appsheet-table tr {
+  cursor: pointer;
+  transition: background 0.1s;
+}
+.ttc-appsheet-table tr:hover {
+  background: #f8f9fa;
+}
+.ttc-appsheet-table tr.active-row {
+  background: #edf2fc !important;
+  font-weight: 600;
+}
+
+/* Bilty Details Panel */
+.details-action-strip {
+  padding: 14px 16px;
+  border-bottom: 1px solid #ebebeb;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: #ffffff;
+}
+
+.details-circle-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #dfcfab;
+  color: #7a5f1e;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.details-circle-btn:hover {
+  background: #bfa15f;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.details-circle-label {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #5f6368;
+  text-align: center;
+  margin-top: 4px;
+  line-height: 1.15;
+}
+
+.details-key-value-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.details-key-value-table tr {
+  border-bottom: 1px solid #f4f4f4;
+}
+.details-key-value-table td {
+  padding: 8px 16px;
+  vertical-align: middle;
+}
+.details-key-value-table .prop-label {
+  width: 150px;
+  color: #5f6368;
+  font-weight: 500;
+}
+.details-key-value-table .prop-value {
+  color: #202124;
+  font-weight: 600;
+}
+
+/* Responsive adjustment for Mobile/Tablet */
+@media (max-width: 992px) {
+  .appsheet-3panel-container {
+    flex-direction: column;
+    height: auto;
+    overflow: visible;
+  }
+  .panel-mtc-col,
+  .panel-ttc-col,
+  .panel-details-col {
+    width: 100% !important;
+    min-width: 100% !important;
+    height: auto;
+    max-height: 450px;
+  }
+}
+
+/* Stacked layout toggle support */
+.appsheet-3panel-container.layout-stacked {
+  flex-direction: column !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+.appsheet-3panel-container.layout-stacked .panel-mtc-col,
+.appsheet-3panel-container.layout-stacked .panel-ttc-col,
+.appsheet-3panel-container.layout-stacked .panel-details-col {
+  width: 100% !important;
+  min-width: 100% !important;
+  max-height: 480px;
+}
+
 
 
 

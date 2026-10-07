@@ -22,7 +22,7 @@ const BiltyBookingModule = {
   brokers: [],
   debts: [],
 
-  currentView: 'create', // 'create' | 'register'
+  currentView: 'dashboard', // 'dashboard' | 'create' | 'register'
   selectedFirm: 'ALL',
   selectedFY: '2026-2027',
   selectedMonth: 'ALL',
@@ -61,13 +61,15 @@ const BiltyBookingModule = {
     if (editId) {
       this.editTripId = editId;
       await this.loadTripForEditing(editId);
+      this.switchView('create');
+    } else if (viewParam === 'create') {
+      this.initNewFormDefaults();
+      await this.generateBiltyNumber();
+      this.switchView('create');
     } else {
       this.initNewFormDefaults();
       await this.generateBiltyNumber();
-    }
-
-    if (viewParam === 'register') {
-      this.switchView('register');
+      this.switchView('dashboard');
     }
 
     this.bindFormEvents();
@@ -75,7 +77,7 @@ const BiltyBookingModule = {
     this.setFormMode('stepper');
     this.updateKPIs();
     this.renderMonthBar();
-    this.applyRegisterFilters();
+    this.renderAppSheet3Panels();
     this.updateLivePreview();
   },
 
@@ -2625,7 +2627,7 @@ const BiltyBookingModule = {
         return;
       }
       await this.saveBilty('print');
-      this.switchView('register');
+      this.switchView('dashboard');
       return;
     }
 
@@ -3310,6 +3312,7 @@ const BiltyBookingModule = {
     this.allTrips = await dbService.getAll('trips');
     this.updateKPIs();
     this.applyRegisterFilters();
+    this.renderAppSheet3Panels();
 
     this.currentActiveBilty = biltyData;
 
@@ -3371,10 +3374,11 @@ const BiltyBookingModule = {
   },
 
   // ----------------------------------------------------
-  // VIEW SWITCHER (Create Form <-> Bilty Register)
+  // VIEW SWITCHER (Dashboard 3-Panel <-> Bilty Create/Edit Form)
   // ----------------------------------------------------
   switchView(viewName) {
     this.currentView = viewName;
+    const dashboardView = document.getElementById('bilty-dashboard-view');
     const createView = document.getElementById('bilty-create-view');
     const registerView = document.getElementById('bilty-register-view');
     const btnCreate = document.getElementById('btn-view-create');
@@ -3382,43 +3386,514 @@ const BiltyBookingModule = {
     const breadcrumb = document.getElementById('bilty-breadcrumb');
     const breadcrumbActive = document.getElementById('bilty-breadcrumb-active');
 
-    if (viewName === 'register') {
-      if (createView) createView.classList.add('d-none');
-      if (registerView) registerView.classList.remove('d-none');
-      if (btnRegister) {
-        btnRegister.classList.add('active');
-        btnRegister.classList.remove('btn-outline-primary');
-      }
-      if (btnCreate) {
-        btnCreate.classList.remove('active');
-      }
-      if (breadcrumb) breadcrumb.innerText = 'Home > Bilty Booking > Bilty Register';
-      if (breadcrumbActive) breadcrumbActive.innerText = 'Bilty Register';
-      this.applyRegisterFilters();
-    } else {
+    if (viewName === 'create' || viewName === 'edit') {
+      if (dashboardView) dashboardView.style.display = 'none';
       if (registerView) registerView.classList.add('d-none');
-      if (createView) createView.classList.remove('d-none');
-      if (btnCreate) {
-        btnCreate.classList.add('active');
-        btnCreate.classList.remove('btn-outline-primary');
-      }
-      if (btnRegister) {
-        btnRegister.classList.remove('active');
-      }
+      if (createView) createView.style.display = 'block';
+      if (btnCreate) btnCreate.classList.add('active');
+      if (btnRegister) btnRegister.classList.remove('active');
       if (breadcrumb) breadcrumb.innerText = 'Home > Bilty Booking > Bilty Form';
       if (breadcrumbActive) breadcrumbActive.innerText = 'Bilty Form';
       if (!this.editTripId && this.bookingMode !== 'single') {
         this.setConsignmentMode('single', document.getElementById('btn-mode-single'));
       }
+    } else {
+      // 'dashboard' or 'register'
+      if (createView) createView.style.display = 'none';
+      if (registerView) registerView.classList.add('d-none');
+      if (dashboardView) dashboardView.style.display = 'block';
+      if (btnRegister) btnRegister.classList.add('active');
+      if (btnCreate) btnCreate.classList.remove('active');
+      if (breadcrumb) breadcrumb.innerText = 'Home > Bilty Booking > Bilty Register';
+      if (breadcrumbActive) breadcrumbActive.innerText = 'Bilty Register';
+      this.renderAppSheet3Panels();
     }
   },
 
   handleSearch(val) {
-    this.onSearchInput(val);
+    this.searchQuery = (val || '').trim();
+    const clearBtn = document.getElementById('bilty-search-clear');
+    if (clearBtn) {
+      clearBtn.style.display = (this.searchQuery.length > 0) ? 'block' : 'none';
+    }
     const regInput = document.getElementById('reg-search-input');
     if (regInput && regInput.value !== val) regInput.value = val;
-    if (this.currentView !== 'register') {
-      this.switchView('register');
+    const biltyInput = document.getElementById('bilty-search-input');
+    if (biltyInput && biltyInput.value !== val) biltyInput.value = val;
+
+    if (this.currentView !== 'dashboard') {
+      this.switchView('dashboard');
+    } else {
+      this.renderAppSheet3Panels();
+    }
+  },
+
+  // ==========================================================================
+  // GOOGLE APPSHEET 3-PANEL MASTER-DETAIL DASHBOARD ENGINE
+  // Exact Replica of media_1791365302532.png
+  // ==========================================================================
+  formatAppSheetDate(dateStr) {
+    if (!dateStr) return '';
+    if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateStr)) return dateStr;
+    if (/^\d{4}-\d{2}-\d{2}/.test(dateStr)) {
+      const parts = dateStr.split('T')[0].split('-');
+      return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    }
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return String(dateStr);
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+    return `${day}/${month}/${year}`;
+  },
+
+  renderAppSheet3Panels() {
+    const q = (this.searchQuery || '').trim().toLowerCase();
+
+    // Filter trips if search is entered
+    let trips = this.allTrips || [];
+    if (q) {
+      trips = trips.filter(t => {
+        const text = [
+          t.grNo, t.shortGrNo, t.truckNo, t.truckOwner, t.consignor,
+          t.consignee, t.origin, t.destination, t.driver, t.billNo,
+          t.reference, t.material, t.status
+        ].filter(Boolean).join(' ').toLowerCase();
+        return text.includes(q);
+      });
+    }
+
+    // Split into MTC and TTC/SMTC
+    const mtcTrips = [];
+    const ttcTrips = [];
+
+    trips.forEach(t => {
+      const firm = String(t.transport || '').toUpperCase();
+      const gr = String(t.grNo || '').toUpperCase();
+      if (firm === 'MTC' || gr.includes('MTC')) {
+        mtcTrips.push(t);
+      } else {
+        ttcTrips.push(t);
+      }
+    });
+
+    // Sort by date descending, then grSeq descending
+    const sortFn = (a, b) => {
+      const dateA = a.tripStartDate || a.biltyDate || '';
+      const dateB = b.tripStartDate || b.biltyDate || '';
+      if (dateA !== dateB) return dateB.localeCompare(dateA);
+      return (Number(b.grSeq) || 0) - (Number(a.grSeq) || 0);
+    };
+
+    mtcTrips.sort(sortFn);
+    ttcTrips.sort(sortFn);
+
+    this.renderMtcPanel(mtcTrips);
+    this.renderTtcPanel(ttcTrips);
+
+    // If no active bilty or active bilty is not in the filtered trips, default to the latest bilty
+    if (!this.currentActiveBilty || !trips.some(t => String(t.id || t.grNo) === String(this.currentActiveBilty.id || this.currentActiveBilty.grNo))) {
+      const defaultBilty = mtcTrips[0] || ttcTrips[0] || null;
+      if (defaultBilty) {
+        this.selectBilty(defaultBilty.id || defaultBilty.grNo, false);
+      } else {
+        this.currentActiveBilty = null;
+        const kvTable = document.getElementById('bilty-details-kv-table');
+        if (kvTable) {
+          kvTable.innerHTML = `<tr><td class="text-center text-muted py-4">No bilty consignments found</td></tr>`;
+        }
+      }
+    } else {
+      this.selectBilty(this.currentActiveBilty.id || this.currentActiveBilty.grNo, false);
+    }
+  },
+
+  renderMtcPanel(mtcTrips) {
+    const feed = document.getElementById('mtc-panel-feed');
+    if (!feed) return;
+
+    if (mtcTrips.length === 0) {
+      feed.innerHTML = `
+        <div class="p-4 text-center text-muted">
+          <i class="bi bi-inbox fs-3 d-block mb-1 text-secondary"></i>
+          <span style="font-size: 12px;">No MTC bilties found</span>
+        </div>
+      `;
+      return;
+    }
+
+    // Group by Date
+    const dateMap = new Map();
+    mtcTrips.slice(0, 300).forEach(t => {
+      const d = this.formatAppSheetDate(t.tripStartDate || t.biltyDate) || 'Undated';
+      if (!dateMap.has(d)) dateMap.set(d, []);
+      dateMap.get(d).push(t);
+    });
+
+    let html = '';
+    dateMap.forEach((group, dStr) => {
+      html += `
+        <div class="mtc-date-ribbon">
+          <span class="d-flex align-items-center gap-1">
+            <span style="color: #34a853; font-size: 11px;">●</span>
+            <span>${dStr}</span>
+          </span>
+          <span class="mtc-badge-count">${group.length}</span>
+        </div>
+      `;
+
+      group.forEach(t => {
+        const id = t.id || t.grNo;
+        const shortGr = t.shortGrNo || (t.grNo ? t.grNo.split('-').pop() : 'MTC');
+        const isActive = this.currentActiveBilty && String(this.currentActiveBilty.id || this.currentActiveBilty.grNo) === String(id);
+
+        html += `
+          <div class="mtc-item-row ${isActive ? 'active-row' : ''}" data-trip-id="${id}" onclick="BiltyBookingModule.selectBilty('${id}')">
+            <div class="mtc-action-icons">
+              <i class="bi bi-arrow-repeat" title="Sync / Re-calculate" onclick="event.stopPropagation(); BiltyBookingModule.syncBiltyDirect('${id}')"></i>
+              <i class="bi bi-box-arrow-down" title="Download Print A4" onclick="event.stopPropagation(); BiltyBookingModule.printBiltyDirect('${id}')"></i>
+              <i class="bi bi-clipboard" title="Duplicate Consignment" onclick="event.stopPropagation(); BiltyBookingModule.duplicateBiltyById('${id}')"></i>
+              <i class="bi bi-truck" title="Truck Trips" onclick="event.stopPropagation(); window.location.href='trips.html?truck=${encodeURIComponent(t.truckNo || '')}'"></i>
+            </div>
+            <div class="d-flex align-items-center gap-1">
+              <span style="color: #34a853; font-size: 10px;">●</span>
+              <span class="fw-bold" style="font-size: 12.5px; color: #1a73e8;">${shortGr}</span>
+            </div>
+          </div>
+        `;
+      });
+    });
+
+    feed.innerHTML = html;
+  },
+
+  renderTtcPanel(ttcTrips) {
+    const tbody = document.getElementById('ttc-table-tbody');
+    if (!tbody) return;
+
+    if (ttcTrips.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="5" class="text-center text-muted py-4" style="font-size: 12px;">
+            No TTC or SMTC bilties found
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    let html = '';
+    ttcTrips.slice(0, 300).forEach(t => {
+      const id = t.id || t.grNo;
+      const isActive = this.currentActiveBilty && String(this.currentActiveBilty.id || this.currentActiveBilty.grNo) === String(id);
+      
+      const displayBiltyNo = t.shortGrNo || (t.truckNo ? t.truckNo.replace(/^RJ52/, '') : (t.grNo ? t.grNo.split('-').pop() : 'TTC'));
+      const toDest = (t.destination || '-').toUpperCase();
+      const ref = t.reference || t.billNo || '-';
+      const driver = (t.driver || '-').toUpperCase();
+      const dateStr = this.formatAppSheetDate(t.tripStartDate || t.biltyDate);
+
+      html += `
+        <tr class="ttc-row-item ${isActive ? 'active-row' : ''}" data-trip-id="${id}" onclick="BiltyBookingModule.selectBilty('${id}')">
+          <td>
+            <span style="color: #34a853; font-size: 10px; margin-right: 3px;">●</span>
+            <span class="fw-bold text-dark">${displayBiltyNo}</span>
+          </td>
+          <td>${toDest}</td>
+          <td>${ref}</td>
+          <td>${driver}</td>
+          <td>
+            <span style="color: #34a853; font-size: 10px; margin-right: 3px;">●</span>
+            <span>${dateStr}</span>
+          </td>
+        </tr>
+      `;
+    });
+
+    tbody.innerHTML = html;
+  },
+
+  selectBilty(tripId, scroll = true) {
+    const trip = this.allTrips.find(t => String(t.id) === String(tripId) || String(t.grNo) === String(tripId));
+    if (!trip) return;
+
+    this.currentActiveBilty = trip;
+
+    // Highlight row in MTC feed
+    document.querySelectorAll('.mtc-item-row').forEach(row => {
+      if (row.getAttribute('data-trip-id') === String(tripId)) {
+        row.classList.add('active-row');
+        if (scroll) row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      } else {
+        row.classList.remove('active-row');
+      }
+    });
+
+    // Highlight row in TTC feed
+    document.querySelectorAll('.ttc-row-item').forEach(row => {
+      if (row.getAttribute('data-trip-id') === String(tripId)) {
+        row.classList.add('active-row');
+        if (scroll) row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      } else {
+        row.classList.remove('active-row');
+      }
+    });
+
+    this.renderBiltyDetails(trip);
+  },
+
+  renderBiltyDetails(t) {
+    const table = document.getElementById('bilty-details-kv-table');
+    if (!table) return;
+
+    const shortGr = t.shortGrNo || (t.grNo ? t.grNo.split('-').pop() : '-');
+    const dateStr = this.formatAppSheetDate(t.tripStartDate || t.biltyDate);
+    const freightVal = Number(t.freight) || 0;
+    const advVal = Number(t.advancePaid || t.partyPaid) || 0;
+    const balVal = Number(t.balanceDue || t.partyDue) || (freightVal - advVal);
+    const ownerDueVal = Number(t.ownerDue) || 0;
+    const commVal = Number(t.commission) || 0;
+    const otherVal = Number(t.otherExpenses) || 0;
+
+    table.innerHTML = `
+      <tbody>
+        <tr>
+          <td class="prop-label">Lock for Edit</td>
+          <td class="prop-value">
+            <span class="badge bg-light text-dark border">N</span>
+          </td>
+        </tr>
+        <tr>
+          <td class="prop-label">Bilty No.</td>
+          <td class="prop-value text-primary">${shortGr}</td>
+        </tr>
+        <tr>
+          <td class="prop-label">Bilty Date</td>
+          <td class="prop-value">${dateStr}</td>
+        </tr>
+        <tr>
+          <td class="prop-label">Bilty Type</td>
+          <td class="prop-value">${t.biltyType || 'Regular'}</td>
+        </tr>
+        <tr>
+          <td class="prop-label">Truck No.</td>
+          <td class="prop-value text-dark fw-bold">${t.truckNo || '-'}</td>
+        </tr>
+        <tr>
+          <td class="prop-label">Truck Owner Name</td>
+          <td class="prop-value">${t.truckOwner || '-'}</td>
+        </tr>
+        <tr>
+          <td class="prop-label">Load Type</td>
+          <td class="prop-value">${t.loadType || 'Under Load'}</td>
+        </tr>
+        <tr>
+          <td class="prop-label">Commission</td>
+          <td class="prop-value">${commVal > 0 ? ('₹ ' + commVal.toLocaleString('en-IN')) : '₹ 0'}</td>
+        </tr>
+        <tr>
+          <td class="prop-label">Status</td>
+          <td class="prop-value">
+            <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">${t.status || 'Active'}</span>
+          </td>
+        </tr>
+        <tr>
+          <td class="prop-label">Mode</td>
+          <td class="prop-value">${t.billingType || t.bookingMode || 'Single'}</td>
+        </tr>
+        <tr>
+          <td class="prop-label">Other</td>
+          <td class="prop-value">${otherVal > 0 ? ('₹ ' + otherVal.toLocaleString('en-IN')) : '0'}</td>
+        </tr>
+        <tr>
+          <td class="prop-label">Reference</td>
+          <td class="prop-value">${t.reference || t.billNo || '-'}</td>
+        </tr>
+        <tr>
+          <td class="prop-label">Driver</td>
+          <td class="prop-value">${t.driver || '-'}</td>
+        </tr>
+        <tr>
+          <td class="prop-label">From</td>
+          <td class="prop-value">${t.origin || 'Rajsamand (Raj.)'}</td>
+        </tr>
+        <tr>
+          <td class="prop-label">To</td>
+          <td class="prop-value fw-bold text-dark">${t.destination || '-'}</td>
+        </tr>
+        <tr>
+          <td class="prop-label">Consignor</td>
+          <td class="prop-value">${t.consignor || '-'}</td>
+        </tr>
+        <tr>
+          <td class="prop-label">Consignee</td>
+          <td class="prop-value">${t.consignee || '-'}</td>
+        </tr>
+        <tr>
+          <td class="prop-label">Material</td>
+          <td class="prop-value">${t.material || 'Marble Powder / Goods'}</td>
+        </tr>
+        <tr>
+          <td class="prop-label">Billing Type</td>
+          <td class="prop-value">${t.billingType || 'Per Tonne'}</td>
+        </tr>
+        <tr>
+          <td class="prop-label">Weight</td>
+          <td class="prop-value">${t.weight ? (t.weight + ' MT') : '-'}</td>
+        </tr>
+        <tr>
+          <td class="prop-label">Rate</td>
+          <td class="prop-value">${t.rate ? ('₹ ' + Number(t.rate).toLocaleString('en-IN')) : '-'}</td>
+        </tr>
+        <tr>
+          <td class="prop-label">Freight</td>
+          <td class="prop-value text-success fw-bold">${AppUI.formatCurrency(freightVal)}</td>
+        </tr>
+        <tr>
+          <td class="prop-label">Advance Paid</td>
+          <td class="prop-value">${AppUI.formatCurrency(advVal)}</td>
+        </tr>
+        <tr>
+          <td class="prop-label">Balance Due</td>
+          <td class="prop-value text-danger fw-bold">${AppUI.formatCurrency(balVal)}</td>
+        </tr>
+        <tr>
+          <td class="prop-label">Owner Due</td>
+          <td class="prop-value text-secondary">${AppUI.formatCurrency(ownerDueVal)}</td>
+        </tr>
+        <tr>
+          <td class="prop-label">GST By Party</td>
+          <td class="prop-value">${t.isGstPaidByParty || 'No'}</td>
+        </tr>
+        <tr>
+          <td class="prop-label">GST Amount</td>
+          <td class="prop-value">${AppUI.formatCurrency(Number(t.gstAmount) || 0)}</td>
+        </tr>
+        <tr>
+          <td class="prop-label">Delivery Address</td>
+          <td class="prop-value" style="word-break: break-word;">${t.deliveryAddress || '-'}</td>
+        </tr>
+        <tr>
+          <td class="prop-label">Full G.R. Number</td>
+          <td class="prop-value font-monospace">${t.grNo || '-'}</td>
+        </tr>
+      </tbody>
+    `;
+  },
+
+  navigateBilty(delta) {
+    if (!this.allTrips || this.allTrips.length === 0) return;
+    
+    // Determine active list (MTC or TTC)
+    let list = this.allTrips;
+    if (this.currentActiveBilty) {
+      const firm = String(this.currentActiveBilty.transport || '').toUpperCase();
+      const isMtc = firm === 'MTC' || String(this.currentActiveBilty.grNo || '').includes('MTC');
+      list = this.allTrips.filter(t => {
+        const tFirm = String(t.transport || '').toUpperCase();
+        const tMtc = tFirm === 'MTC' || String(t.grNo || '').includes('MTC');
+        return isMtc ? tMtc : !tMtc;
+      });
+    }
+
+    if (list.length === 0) list = this.allTrips;
+
+    const currId = this.currentActiveBilty ? String(this.currentActiveBilty.id || this.currentActiveBilty.grNo) : null;
+    let idx = list.findIndex(t => String(t.id || t.grNo) === currId);
+    if (idx === -1) idx = 0;
+
+    let nextIdx = idx + delta;
+    if (nextIdx < 0) nextIdx = list.length - 1;
+    if (nextIdx >= list.length) nextIdx = 0;
+
+    const target = list[nextIdx];
+    if (target) {
+      this.selectBilty(target.id || target.grNo, true);
+    }
+  },
+
+  openCreateForm(firm = 'TTC') {
+    this.editTripId = null;
+    this.initNewFormDefaults();
+    
+    // Set firm
+    const firmEl = document.getElementById('bilty-firm');
+    if (firmEl) firmEl.value = firm;
+    
+    // Set segmented button
+    const mtcBtn = document.getElementById('btn-seg-mtc');
+    const ttcBtn = document.getElementById('btn-seg-ttc');
+    if (firm === 'MTC') {
+      if (mtcBtn) mtcBtn.classList.add('active');
+      if (ttcBtn) ttcBtn.classList.remove('active');
+    } else {
+      if (ttcBtn) ttcBtn.classList.add('active');
+      if (mtcBtn) mtcBtn.classList.remove('active');
+    }
+
+    const grLabel = document.getElementById('appsheet-gr-label');
+    if (grLabel) grLabel.innerText = `${firm} G.R.No. *`;
+
+    this.generateBiltyNumber();
+    this.switchView('create');
+  },
+
+  editActiveBilty() {
+    if (!this.currentActiveBilty) {
+      AppUI.showToast("Please select a bilty first to edit.", "warning");
+      return;
+    }
+    this.loadTripForEditing(this.currentActiveBilty.id || this.currentActiveBilty.grNo);
+    this.switchView('create');
+  },
+
+  printActiveBilty() {
+    if (!this.currentActiveBilty) {
+      AppUI.showToast("Please select a bilty to print.", "warning");
+      return;
+    }
+    this.openPrintModal(this.currentActiveBilty);
+  },
+
+  openLedgerForActiveBilty() {
+    if (!this.currentActiveBilty) {
+      window.location.href = 'ledger.html';
+      return;
+    }
+    const t = this.currentActiveBilty;
+    const biltyParam = encodeURIComponent(t.shortGrNo || t.grNo || '');
+    const partyParam = encodeURIComponent(t.consignor || t.consignee || '');
+    window.location.href = `ledger.html?bilty=${biltyParam}&party=${partyParam}`;
+  },
+
+  syncBiltyDirect(id) {
+    this.selectBilty(id, false);
+    AppUI.showToast("Bilty records synchronized and up-to-date.", "info");
+  },
+
+  printBiltyDirect(id) {
+    const trip = this.allTrips.find(t => String(t.id) === String(id) || String(t.grNo) === String(id));
+    if (trip) {
+      this.openPrintModal(trip);
+    }
+  },
+
+  duplicateBiltyById(id) {
+    const trip = this.allTrips.find(t => String(t.id) === String(id) || String(t.grNo) === String(id));
+    if (trip) {
+      this.duplicateBilty(trip);
+    }
+  },
+
+  toggleLayout() {
+    const container = document.querySelector('.appsheet-3panel-container');
+    if (!container) return;
+    if (container.classList.contains('layout-stacked')) {
+      container.classList.remove('layout-stacked');
+      AppUI.showToast("Switched to 3-Column Master View", "info");
+    } else {
+      container.classList.add('layout-stacked');
+      AppUI.showToast("Switched to Stacked View", "info");
     }
   },
 

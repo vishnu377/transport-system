@@ -22,103 +22,180 @@
   <!-- Main Workspace -->
   <div id="main-content">
     
-    <!-- AppSheet Top Bar (100% Authentic Replica) -->
-    <header class="appsheet-top-bar d-flex align-items-center justify-content-between flex-wrap gap-2">
+    <!-- AppSheet Top Bar (100% Authentic Replica of media_1791365302532.png) -->
+    <header class="appsheet-top-bar d-flex align-items-center justify-content-between px-3 py-2 bg-white border-bottom">
       <div class="d-flex align-items-center gap-3">
-        <button id="sidebar-toggle" class="btn btn-sm btn-light border d-lg-none">
+        <button id="sidebar-toggle" class="btn btn-sm btn-light border-0 p-1" onclick="AppUI.toggleNavDrawer()" title="Open Navigation Menu">
           <i class="bi bi-list fs-5"></i>
         </button>
-        <div>
-          <h5 class="mb-0 fw-bold" style="color: var(--appsheet-text);" id="bilty-page-title">TTC - Bilty</h5>
-          <div class="appsheet-breadcrumb mt-1">
-            <span class="text-muted">Home</span>
-            <span>&gt;</span>
-            <span class="text-muted">Bilty Booking</span>
-            <span>&gt;</span>
-            <span class="active" id="bilty-breadcrumb-active">Bilty Register</span>
-          </div>
-          <!-- Hidden compatibility element for test scripts -->
-          <small class="d-none" id="bilty-breadcrumb">Home &gt; Bilty Booking &gt; Bilty Register</small>
+        <div class="d-flex align-items-center gap-2">
+          <span class="fs-5">🚛</span>
+          <h5 class="mb-0 fw-bold" style="color: var(--appsheet-text); font-size: 14.5px;">MTC And TTC - Bilty</h5>
         </div>
       </div>
 
       <!-- AppSheet Centered Search Box -->
-      <div class="appsheet-search-box d-none d-md-flex">
-        <i class="bi bi-search text-muted"></i>
-        <input type="text" id="bilty-search-input" placeholder="Search Bilty (G.R. No, Truck, Party, City)..." oninput="BiltyBookingModule.handleSearch(this.value)">
-        <i class="bi bi-x-circle text-muted" style="cursor: pointer;" onclick="document.getElementById('bilty-search-input').value=''; BiltyBookingModule.handleSearch('');" title="Clear"></i>
+      <div class="appsheet-search-box d-flex align-items-center gap-2 px-3 py-1 rounded" style="background: #f1f3f4; max-width: 480px; width: 100%;">
+        <i class="bi bi-search text-muted" style="font-size: 13px;"></i>
+        <input type="text" id="bilty-search-input" placeholder="Search Bilty Booking" style="border: none; background: transparent; outline: none; width: 100%; font-size: 13px;" oninput="BiltyBookingModule.handleSearch(this.value)">
+        <i class="bi bi-x-circle text-muted" style="cursor: pointer; display: none;" id="bilty-search-clear" onclick="document.getElementById('bilty-search-input').value=''; BiltyBookingModule.handleSearch(''); this.style.display='none';" title="Clear"></i>
       </div>
 
       <!-- AppSheet Actions & Profile -->
       <div class="d-flex align-items-center gap-2">
-        <button class="btn btn-sm btn-outline-secondary" onclick="location.reload()" title="Sync / Refresh">
-          <i class="bi bi-arrow-clockwise"></i>
+        <button class="btn btn-sm btn-light border-0 p-1" onclick="location.reload()" title="Sync / Refresh">
+          <i class="bi bi-arrow-repeat fs-5"></i>
         </button>
-        <button type="button" class="btn-appsheet-add" onclick="BiltyBookingModule.switchView('create')">
-          <i class="bi bi-plus-lg"></i> + Add Bilty
-        </button>
-        <button class="btn btn-outline-success btn-sm d-none d-sm-inline-flex" onclick="BiltyBookingModule.exportRegisterToExcel()" title="Export Excel">
-          <i class="bi bi-file-earmark-excel me-1"></i> Excel
-        </button>
-        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold" style="width: 32px; height: 32px; font-size: 0.8rem;">
-          TT
+        <div class="rounded-circle text-white d-flex align-items-center justify-content-center fw-bold" style="width: 32px; height: 32px; font-size: 0.85rem; background: #795548; cursor: pointer;" title="MTC & TTC Admin">
+          M
         </div>
       </div>
     </header>
 
-    <!-- Sub-Header Filter Pills & View Switcher Strip -->
-    <div class="bg-white border-bottom px-3 py-2">
-      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-        
-        <!-- AppSheet Category Pills -->
-        <div class="appsheet-pills-container">
-          <button type="button" class="appsheet-pill active" id="filter-firm-all" onclick="BiltyBookingModule.filterRegisterFirm('ALL')">
-            All Bilties <span class="badge bg-secondary rounded-pill ms-1" id="header-total-count">0</span>
-          </button>
-          <button type="button" class="appsheet-pill" id="filter-firm-ttc" onclick="BiltyBookingModule.filterRegisterFirm('TTC')">
-            TTC <span class="badge bg-primary-subtle text-primary rounded-pill ms-1" id="kpi-ttc-bilties">0</span>
-          </button>
-          <button type="button" class="appsheet-pill" id="filter-firm-mtc" onclick="BiltyBookingModule.filterRegisterFirm('MTC')">
-            MTC <span class="badge bg-success-subtle text-success rounded-pill ms-1" id="kpi-mtc-bilties">0</span>
-          </button>
-          <button type="button" class="appsheet-pill" id="filter-firm-smtc" onclick="BiltyBookingModule.filterRegisterFirm('SMTC')">
-            SMTC <span class="badge bg-secondary-subtle text-dark rounded-pill ms-1" id="kpi-smtc-bilties">0</span>
-          </button>
-          <button type="button" class="appsheet-pill" onclick="BiltyBookingModule.filterRegisterLoad('Over Load')">
-            Over Load
-          </button>
-          <button type="button" class="appsheet-pill" onclick="BiltyBookingModule.filterRegisterLoad('Under Load')">
-            Under Load
-          </button>
-        </div>
-
-        <!-- View Switcher Pills -->
-        <div class="d-flex align-items-center gap-1">
-          <button type="button" class="appsheet-pill active" id="btn-view-register" onclick="BiltyBookingModule.switchView('register')">
-            <i class="bi bi-table me-1"></i> Bilty Register
-          </button>
-          <button type="button" class="appsheet-pill" id="btn-view-create" onclick="BiltyBookingModule.switchView('create')">
-            <i class="bi bi-pencil-square me-1"></i> + Create Form
-          </button>
-        </div>
-
+    <!-- Sub-Header (Bilty Booking + Layout Grid Toggle) -->
+    <div class="bg-white border-bottom px-3 py-2 d-flex align-items-center justify-content-between">
+      <span class="fw-bold text-dark" style="font-size: 13.5px;">Bilty Booking</span>
+      <div>
+        <button class="btn btn-sm text-muted p-1 border-0" title="Toggle Layout" onclick="BiltyBookingModule.toggleLayout()">
+          <i class="bi bi-grid fs-6"></i>
+        </button>
       </div>
     </div>
 
     <!-- Hidden compatibility elements for background scripts / tests -->
     <div class="d-none">
+      <span id="bilty-page-title">MTC And TTC - Bilty</span>
+      <span id="bilty-breadcrumb">Home &gt; Bilty Booking &gt; Bilty Register</span>
+      <span id="bilty-breadcrumb-active">Bilty Register</span>
       <span id="kpi-total-bilties">0</span>
       <span id="kpi-today-bilties">0</span>
       <span id="kpi-total-freight">₹ 0.00</span>
+      <span id="header-total-count">0</span>
+      <span id="kpi-ttc-bilties">0</span>
+      <span id="kpi-mtc-bilties">0</span>
+      <span id="kpi-smtc-bilties">0</span>
+      <div class="appsheet-pills-container">
+        <button type="button" class="appsheet-pill active" id="filter-firm-all">All</button>
+        <button type="button" class="appsheet-pill" id="filter-firm-ttc">TTC</button>
+        <button type="button" class="appsheet-pill" id="filter-firm-mtc">MTC</button>
+        <button type="button" class="appsheet-pill" id="filter-firm-smtc">SMTC</button>
+      </div>
+      <button type="button" class="appsheet-pill active" id="btn-view-register"></button>
+      <button type="button" class="appsheet-pill" id="btn-view-create"></button>
     </div>
 
-    <!-- Page Content Container -->
-    <main class="page-container p-3 p-md-4">
+    <!-- Main Workspace Container -->
+    <main class="page-container p-0" style="background: #f8f9fa;">
 
       <!-- ==================================================================== -->
-      <!-- VIEW 1: CREATE / EDIT BILTY (WIZARD, EXPRESS & ALL-IN-ONE MODES)     -->
+      <!-- VIEW 1: AUTHENTIC 3-PANEL APPSHEET DASHBOARD (DEFAULT PRIMARY VIEW)  -->
+      <!-- Exact Match of media_1791365302532.png                              -->
       <!-- ==================================================================== -->
-      <div id="bilty-create-view">
+      <div id="bilty-dashboard-view">
+        <div class="appsheet-3panel-container">
+          
+          <!-- PANEL 1 (Left): MTC -->
+          <div class="appsheet-panel-card panel-mtc-col">
+            <div class="appsheet-panel-card-header">
+              <span class="panel-header-title">MTC</span>
+              <div class="d-flex align-items-center gap-1">
+                <button type="button" class="btn-appsheet-add" onclick="BiltyBookingModule.openCreateForm('MTC')">
+                  <i class="bi bi-plus"></i> Add
+                </button>
+                <button class="btn btn-sm text-muted p-1 border-0" title="Select All"><i class="bi bi-check2-square"></i></button>
+                <button class="btn btn-sm text-muted p-1 border-0" title="Sort"><i class="bi bi-filter-right"></i></button>
+                <button class="btn btn-sm text-muted p-1 border-0" title="Expand"><i class="bi bi-arrows-angle-expand"></i></button>
+              </div>
+            </div>
+            <div class="panel-body-scroll" id="mtc-panel-feed">
+              <div class="p-3 text-center text-muted small">Loading MTC bilties...</div>
+            </div>
+          </div>
+
+          <!-- PANEL 2 (Middle): TTC and SMTC -->
+          <div class="appsheet-panel-card panel-ttc-col">
+            <div class="appsheet-panel-card-header">
+              <span class="panel-header-title">TTC and SMTC</span>
+              <div class="d-flex align-items-center gap-1">
+                <button type="button" class="btn-appsheet-add" onclick="BiltyBookingModule.openCreateForm('TTC')">
+                  <i class="bi bi-plus"></i> Add
+                </button>
+                <button class="btn btn-sm text-muted p-1 border-0" title="Select All"><i class="bi bi-check2-square"></i></button>
+                <button class="btn btn-sm text-muted p-1 border-0" title="Sort"><i class="bi bi-filter-right"></i></button>
+                <button class="btn btn-sm text-muted p-1 border-0" title="Expand"><i class="bi bi-arrows-angle-expand"></i></button>
+              </div>
+            </div>
+            <div class="panel-body-scroll" id="ttc-panel-feed">
+              <table class="ttc-appsheet-table">
+                <thead>
+                  <tr>
+                    <th>Bilty No.</th>
+                    <th>To</th>
+                    <th>Reference</th>
+                    <th>Driver</th>
+                    <th>Bilty Date</th>
+                  </tr>
+                </thead>
+                <tbody id="ttc-table-tbody">
+                  <tr>
+                    <td colspan="5" class="text-center text-muted py-4">Loading TTC and SMTC bilties...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- PANEL 3 (Right): Bilty Details -->
+          <div class="appsheet-panel-card panel-details-col">
+            <div class="appsheet-panel-card-header">
+              <span class="panel-header-title">Bilty Details</span>
+              <div class="d-flex align-items-center gap-1">
+                <button type="button" class="btn-appsheet-add" onclick="BiltyBookingModule.openCreateForm()">
+                  <i class="bi bi-plus"></i> Add
+                </button>
+                <button class="btn btn-sm text-muted p-1 border-0" onclick="BiltyBookingModule.navigateBilty(-1)" title="Previous"><i class="bi bi-chevron-left"></i></button>
+                <button class="btn btn-sm text-muted p-1 border-0" onclick="BiltyBookingModule.navigateBilty(1)" title="Next"><i class="bi bi-chevron-right"></i></button>
+                <button class="btn btn-sm text-muted p-1 border-0" onclick="BiltyBookingModule.editActiveBilty()" title="Edit"><i class="bi bi-pencil"></i></button>
+              </div>
+            </div>
+            
+            <!-- Top Action Buttons Strip: TTC Income and Debt Record | Edit | Print -->
+            <div class="details-action-strip">
+              <div class="d-flex flex-column align-items-center" style="cursor: pointer;" onclick="BiltyBookingModule.openLedgerForActiveBilty()">
+                <button type="button" class="details-circle-btn">
+                  <i class="bi bi-send-fill"></i>
+                </button>
+                <span class="details-circle-label">TTC Income<br>and Debt Record</span>
+              </div>
+              <div class="d-flex flex-column align-items-center" style="cursor: pointer;" onclick="BiltyBookingModule.editActiveBilty()">
+                <button type="button" class="details-circle-btn">
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+                <span class="details-circle-label">Edit</span>
+              </div>
+              <div class="d-flex flex-column align-items-center" style="cursor: pointer;" onclick="BiltyBookingModule.printActiveBilty()">
+                <button type="button" class="details-circle-btn">
+                  <i class="bi bi-printer"></i>
+                </button>
+                <span class="details-circle-label">Print A4</span>
+              </div>
+            </div>
+
+            <!-- Scrollable Key-Value Properties List -->
+            <div class="panel-body-scroll" id="bilty-details-scroll">
+              <table class="details-key-value-table" id="bilty-details-kv-table">
+                <!-- Dynamically populated properties -->
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ==================================================================== -->
+      <!-- VIEW 2: CREATE / EDIT BILTY (FULL FORM)                              -->
+      <!-- ==================================================================== -->
+      <div id="bilty-create-view" style="display: none;">
 
         <!-- ==================================================================== -->
         <!-- AUTHENTIC GOOGLE APPSHEET BILTY CREATION FORM (100% VISUAL REPLICA) -->
@@ -129,13 +206,13 @@
           <!-- Top Header Bar: ✕ Bilty Details | Cancel | Save (Gold Pill) -->
           <div class="appsheet-form-header-bar">
             <div class="d-flex align-items-center gap-2">
-              <button type="button" class="appsheet-form-close-btn" onclick="BiltyBookingModule.switchView('register')" title="Cancel & Return">
+              <button type="button" class="appsheet-form-close-btn" onclick="BiltyBookingModule.switchView('dashboard')" title="Cancel & Return">
                 <i class="bi bi-x-lg"></i>
               </button>
               <h5 class="appsheet-form-title mb-0">Bilty Details</h5>
             </div>
             <div class="d-flex align-items-center gap-2">
-              <button type="button" class="btn-appsheet-cancel" onclick="BiltyBookingModule.switchView('register')">
+              <button type="button" class="btn-appsheet-cancel" onclick="BiltyBookingModule.switchView('dashboard')">
                 Cancel
               </button>
               <button type="button" class="btn-appsheet-gold-save" onclick="BiltyBookingModule.saveAppSheetBilty()">
@@ -658,7 +735,7 @@
 
           <!-- Bottom Footer Bar: Cancel | Save (Gold Pill) -->
           <div class="appsheet-form-footer">
-            <button type="button" class="btn-appsheet-cancel" onclick="BiltyBookingModule.switchView('register')">
+            <button type="button" class="btn-appsheet-cancel" onclick="BiltyBookingModule.switchView('dashboard')">
               Cancel
             </button>
             <button type="button" class="btn-appsheet-gold-save" onclick="BiltyBookingModule.saveAppSheetBilty()">
