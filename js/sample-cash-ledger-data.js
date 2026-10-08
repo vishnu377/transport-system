@@ -6,11 +6,23 @@
 
 const SAMPLE_CASH_LEDGER_DATA = [
   {
+    "date": "08/10/2026",
+    "amountReceived": 169300.0,
+    "expense": 9445.0,
+    "debt": 251900.0,
+    "availableCash": 2033995.0,
+    "previousDayAvailableCash": 2126040.0,
+    "fy": "2026-2027",
+    "monthKey": "2026-10",
+    "displayDate": "08 Oct 2026"
+  },
+  {
     "date": "07/10/2026",
     "amountReceived": 84100.0,
     "expense": 100310.0,
     "debt": 30800.0,
     "availableCash": 2126040.0,
+    "previousDayAvailableCash": 2173050.0,
     "fy": "2026-2027",
     "monthKey": "2026-10",
     "displayDate": "07 Oct 2026"

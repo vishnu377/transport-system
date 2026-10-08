@@ -643,6 +643,149 @@
       border-top: 1px solid #eeeeee;
       border-bottom: 1px solid #eeeeee;
     }
+
+    /* Expandable FY & Month Tree Navigation */
+    .cash-tree-header {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #5f6368;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 4px 12px;
+      margin-bottom: 6px;
+    }
+    .cash-tree-sublist {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-bottom: 6px;
+    }
+    .cash-tree-subitem {
+      padding-left: 28px !important;
+      font-size: 12.5px;
+    }
+    .cash-tree-caret {
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      font-size: 11px;
+      color: #5f6368;
+      user-select: none;
+      transition: color 0.15s ease;
+    }
+    .cash-tree-caret:hover {
+      color: #202124;
+    }
+
+    /* Authentic Cash Ledger Details Modal (media_1791479872225.jpg) */
+    #modal-cash-ledger-details .modal-content {
+      border-radius: 4px;
+      border: 1px solid #dadce0;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      background: #ffffff;
+    }
+    #modal-cash-ledger-details .modal-header {
+      padding: 12px 20px;
+      border-bottom: 1px solid #eeeeee;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #ffffff;
+    }
+    #modal-cash-ledger-details .modal-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #202124;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .cash-modal-close-icon {
+      cursor: pointer;
+      font-size: 16px;
+      color: #5f6368;
+      font-weight: 600;
+      padding: 2px 4px;
+      line-height: 1;
+    }
+    .cash-modal-close-icon:hover {
+      color: #202124;
+    }
+    .btn-cash-cancel {
+      border: 1px solid #dadce0;
+      background: #ffffff;
+      color: #3c4043;
+      font-size: 13.5px;
+      font-weight: 500;
+      padding: 4px 14px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-cash-cancel:hover {
+      background: #f1f3f4;
+    }
+    .btn-cash-save {
+      background-color: #8d6e32;
+      color: #ffffff;
+      font-size: 13.5px;
+      font-weight: 500;
+      padding: 4px 18px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.15s;
+    }
+    .btn-cash-save:hover {
+      background-color: #7b5f29;
+    }
+    .cash-detail-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    @media (max-width: 576px) {
+      .cash-detail-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+      }
+    }
+    .cash-detail-label {
+      width: 210px;
+      flex-shrink: 0;
+      font-size: 13.5px;
+      color: #3c4043;
+      font-weight: 500;
+    }
+    .cash-detail-input-wrap {
+      flex: 1;
+      width: 100%;
+      position: relative;
+    }
+    .cash-detail-field {
+      width: 100%;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      padding: 7px 12px;
+      font-size: 14px;
+      color: #202124;
+      outline: none;
+      background: #ffffff;
+      transition: border-color 0.15s;
+    }
+    .cash-detail-field:focus {
+      border-color: #8d6e32;
+      box-shadow: 0 0 0 1px #8d6e32;
+    }
+    .cash-detail-field.readonly {
+      background: #fafafa;
+      color: #3c4043;
+      cursor: default;
+    }
   </style>
 </head>
 <body>
@@ -740,8 +883,8 @@
         <button class="btn btn-outline-secondary btn-sm py-1 px-2" onclick="LedgerModule.openImportModal()" title="Import Excel">
           <i class="bi bi-file-earmark-arrow-up me-1"></i> Import
         </button>
-        <button type="button" class="btn-appsheet-add" onclick="LedgerModule.openAddDebtModal()">
-          <i class="bi bi-plus-lg"></i> + Add Debt
+        <button type="button" class="btn-appsheet-add" id="btn-top-add-action" onclick="LedgerModule.handleTopAddAction()">
+          <i class="bi bi-plus-lg"></i> <span id="btn-top-add-text">+ Add Debt</span>
         </button>
       </div>
     </div>
@@ -799,7 +942,7 @@
           <div class="appsheet-dash-card-header">
             <span class="appsheet-dash-card-title" onclick="LedgerModule.goToCashLedgerView()">Cash Ledger</span>
             <div class="appsheet-dash-card-tools">
-              <button type="button" class="btn-appsheet-add py-0 px-2" style="font-size: 0.76rem;" onclick="LedgerModule.openAddCashModal()">+ Add</button>
+              <button type="button" class="btn-appsheet-add py-0 px-2" style="font-size: 0.76rem;" onclick="LedgerModule.openCashDetailsModal()">+ Add</button>
               <span class="appsheet-tool-icon" onclick="LedgerModule.toggleFilterDropdown()" title="Filter">🔻</span>
               <span class="appsheet-tool-icon" onclick="LedgerModule.goToCashLedgerView()" title="Expand Cash Ledger">↗</span>
             </div>
@@ -1268,26 +1411,70 @@
     <!-- ========================================== -->
     <div id="ledger-view-cash-register" class="d-none">
       <div class="cash-ledger-container">
-        <!-- Left Sidebar: Year Tree -->
-        <div class="cash-ledger-tree-sidebar">
-          <div class="cash-tree-item active" id="cash-tree-all" onclick="LedgerModule.filterCashFY('ALL')">
+        <!-- Left Sidebar: Expandable Date & FY Month Tree (media_1791479872194.png) -->
+        <div class="cash-ledger-tree-sidebar" id="cash-ledger-tree-sidebar">
+          <div class="cash-tree-header">Date</div>
+          <div class="cash-tree-item" id="cash-tree-all" onclick="LedgerModule.selectCashAll()">
             <span>All</span>
           </div>
-          <div class="cash-tree-item" id="cash-tree-2026-2027" onclick="LedgerModule.filterCashFY('2026-2027')">
-            <i class="bi bi-caret-right-fill text-muted" style="font-size: 11px;"></i>
-            <span>2026-2027</span>
+
+          <!-- FY 2026-2027 (Expanded by default) -->
+          <div class="cash-tree-item" id="cash-tree-2026-2027">
+            <span class="cash-tree-caret" onclick="LedgerModule.toggleCashFYTree('2026-2027')"><i class="bi bi-caret-down-fill"></i></span>
+            <span class="appsheet-bullet gold-bullet">●</span>
+            <span class="fw-semibold" onclick="LedgerModule.selectCashFY('2026-2027')">2026-2027</span>
           </div>
-          <div class="cash-tree-item" id="cash-tree-2025-2026" onclick="LedgerModule.filterCashFY('2025-2026')">
-            <i class="bi bi-caret-right-fill text-muted" style="font-size: 11px;"></i>
-            <span>2025-2026</span>
+          <div class="cash-tree-sublist" id="cash-sublist-2026-2027">
+            <div class="cash-tree-item cash-tree-subitem active" id="cash-tree-month-2026-2027-7-oct" onclick="LedgerModule.selectCashMonth('2026-2027', '7 Oct')">
+              <span class="appsheet-bullet text-muted" style="font-size: 11px;">●</span>
+              <span>7 Oct</span>
+            </div>
+            <div class="cash-tree-item cash-tree-subitem" id="cash-tree-month-2026-2027-6-sep" onclick="LedgerModule.selectCashMonth('2026-2027', '6 Sep')">
+              <span class="appsheet-bullet text-muted" style="font-size: 11px;">●</span>
+              <span>6 Sep</span>
+            </div>
+            <div class="cash-tree-item cash-tree-subitem" id="cash-tree-month-2026-2027-5-aug" onclick="LedgerModule.selectCashMonth('2026-2027', '5 Aug')">
+              <span class="appsheet-bullet text-muted" style="font-size: 11px;">●</span>
+              <span>5 Aug</span>
+            </div>
+            <div class="cash-tree-item cash-tree-subitem" id="cash-tree-month-2026-2027-4-jul" onclick="LedgerModule.selectCashMonth('2026-2027', '4 Jul')">
+              <span class="appsheet-bullet text-muted" style="font-size: 11px;">●</span>
+              <span>4 Jul</span>
+            </div>
+            <div class="cash-tree-item cash-tree-subitem" id="cash-tree-month-2026-2027-3-jun" onclick="LedgerModule.selectCashMonth('2026-2027', '3 Jun')">
+              <span class="appsheet-bullet text-muted" style="font-size: 11px;">●</span>
+              <span>3 Jun</span>
+            </div>
+            <div class="cash-tree-item cash-tree-subitem" id="cash-tree-month-2026-2027-2-may" onclick="LedgerModule.selectCashMonth('2026-2027', '2 May')">
+              <span class="appsheet-bullet text-muted" style="font-size: 11px;">●</span>
+              <span>2 May</span>
+            </div>
+            <div class="cash-tree-item cash-tree-subitem" id="cash-tree-month-2026-2027-1-apr" onclick="LedgerModule.selectCashMonth('2026-2027', '1 Apr')">
+              <span class="appsheet-bullet text-muted" style="font-size: 11px;">●</span>
+              <span>1 Apr</span>
+            </div>
           </div>
-          <div class="cash-tree-item" id="cash-tree-2024-2025" onclick="LedgerModule.filterCashFY('2024-2025')">
-            <i class="bi bi-caret-right-fill text-muted" style="font-size: 11px;"></i>
-            <span>2024-2025</span>
+
+          <!-- FY 2025-2026 (Expandable) -->
+          <div class="cash-tree-item" id="cash-tree-2025-2026">
+            <span class="cash-tree-caret" onclick="LedgerModule.toggleCashFYTree('2025-2026')"><i class="bi bi-caret-right-fill"></i></span>
+            <span class="appsheet-bullet gold-bullet">●</span>
+            <span class="fw-semibold" onclick="LedgerModule.selectCashFY('2025-2026')">2025-2026</span>
           </div>
-          <div class="cash-tree-item" id="cash-tree-empty" onclick="LedgerModule.filterCashFY('empty')">
-            <i class="bi bi-caret-right-fill text-muted" style="font-size: 11px;"></i>
-            <span class="text-muted">(empty)</span>
+          <div class="cash-tree-sublist d-none" id="cash-sublist-2025-2026"></div>
+
+          <!-- FY 2024-2025 (Expandable) -->
+          <div class="cash-tree-item" id="cash-tree-2024-2025">
+            <span class="cash-tree-caret" onclick="LedgerModule.toggleCashFYTree('2024-2025')"><i class="bi bi-caret-right-fill"></i></span>
+            <span class="appsheet-bullet gold-bullet">●</span>
+            <span class="fw-semibold" onclick="LedgerModule.selectCashFY('2024-2025')">2024-2025</span>
+          </div>
+          <div class="cash-tree-sublist d-none" id="cash-sublist-2024-2025"></div>
+
+          <!-- (empty) -->
+          <div class="cash-tree-item" id="cash-tree-empty">
+            <span class="cash-tree-caret" onclick="LedgerModule.toggleCashFYTree('empty')"><i class="bi bi-caret-right-fill"></i></span>
+            <span class="text-muted small" onclick="LedgerModule.selectCashFY('empty')">(empty)</span>
           </div>
         </div>
 
@@ -1881,6 +2068,85 @@
             </button>
           </div>
         </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: CASH LEDGER DETAILS (media_1791479872225.jpg) -->
+  <!-- ========================================== -->
+  <div class="modal fade" id="modal-cash-ledger-details" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 620px;">
+      <div class="modal-content">
+        <!-- Header: ✕ Cash Ledger Details ... Cancel Save -->
+        <div class="modal-header">
+          <div class="modal-title">
+            <span class="cash-modal-close-icon" onclick="LedgerModule.closeCashDetailsModal()" title="Close">✕</span>
+            <span>Cash Ledger Details</span>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <button type="button" class="btn-cash-cancel" onclick="LedgerModule.closeCashDetailsModal()">Cancel</button>
+            <button type="button" class="btn-cash-save" onclick="LedgerModule.saveCashDetailsForm()">Save</button>
+          </div>
+        </div>
+
+        <!-- Body: 6 Fields Exactly Matching media_1791479872225.jpg -->
+        <div class="modal-body">
+          <form id="form-cash-ledger-details" onsubmit="event.preventDefault(); LedgerModule.saveCashDetailsForm();">
+            <input type="hidden" id="cash-details-orig-date">
+
+            <!-- 1. Date* -->
+            <div class="cash-detail-row">
+              <label class="cash-detail-label" for="cash-details-date">Date*</label>
+              <div class="cash-detail-input-wrap position-relative">
+                <input type="text" id="cash-details-date" class="cash-detail-field" placeholder="DD-MM-YYYY" required onchange="LedgerModule.onCashDateChange(this.value)">
+                <input type="date" id="cash-details-date-picker" style="position: absolute; right: 8px; top: 8px; opacity: 0; width: 26px; height: 26px; cursor: pointer;" onchange="LedgerModule.onCashDatePickerChange(this.value)">
+                <i class="bi bi-calendar3 text-muted position-absolute" style="right: 12px; top: 11px; pointer-events: none; font-size: 14px;"></i>
+              </div>
+            </div>
+
+            <!-- 2. Previous Day Available Cash -->
+            <div class="cash-detail-row">
+              <label class="cash-detail-label" for="cash-details-prev-cash">Previous Day Available Cash</label>
+              <div class="cash-detail-input-wrap">
+                <input type="text" id="cash-details-prev-cash" class="cash-detail-field readonly" readonly placeholder="₹ 0.00">
+              </div>
+            </div>
+
+            <!-- 3. Amount Received* -->
+            <div class="cash-detail-row">
+              <label class="cash-detail-label" for="cash-details-received">Amount Received*</label>
+              <div class="cash-detail-input-wrap">
+                <input type="text" id="cash-details-received" class="cash-detail-field" placeholder="₹ 0.00" oninput="LedgerModule.onCashFieldInput()" onblur="LedgerModule.formatCashFieldOnBlur(this)" onfocus="LedgerModule.cleanCashFieldOnFocus(this)">
+              </div>
+            </div>
+
+            <!-- 4. Debt -->
+            <div class="cash-detail-row">
+              <label class="cash-detail-label" for="cash-details-debt">Debt</label>
+              <div class="cash-detail-input-wrap">
+                <input type="text" id="cash-details-debt" class="cash-detail-field" placeholder="₹ 0.00" oninput="LedgerModule.onCashFieldInput()" onblur="LedgerModule.formatCashFieldOnBlur(this)" onfocus="LedgerModule.cleanCashFieldOnFocus(this)">
+              </div>
+            </div>
+
+            <!-- 5. Expense -->
+            <div class="cash-detail-row">
+              <label class="cash-detail-label" for="cash-details-expense">Expense</label>
+              <div class="cash-detail-input-wrap">
+                <input type="text" id="cash-details-expense" class="cash-detail-field" placeholder="₹ 0.00" oninput="LedgerModule.onCashFieldInput()" onblur="LedgerModule.formatCashFieldOnBlur(this)" onfocus="LedgerModule.cleanCashFieldOnFocus(this)">
+              </div>
+            </div>
+
+            <!-- 6. Available Cash -->
+            <div class="cash-detail-row">
+              <label class="cash-detail-label" for="cash-details-avail-cash">Available Cash</label>
+              <div class="cash-detail-input-wrap">
+                <input type="text" id="cash-details-avail-cash" class="cash-detail-field readonly" readonly placeholder="₹ 0.00">
+              </div>
+            </div>
+
+          </form>
+        </div>
       </div>
     </div>
   </div>

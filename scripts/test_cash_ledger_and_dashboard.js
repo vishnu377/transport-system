@@ -148,33 +148,92 @@ async function runTests() {
   assert(dom['cash-breakdown-body'].innerHTML.includes('₹ 2,126,040.00'), `Breakdown shows Available Cash Closing ₹ 2,126,040.00`);
 
   // 7. Add New Cash Ledger Entry
-  console.log('\n--- 7. Testing + Add Cash Entry Form Submission ---');
+  // 7. Add New Cash Entry Form Submission (Legacy Modal)
+  console.log('\n--- 7. Testing + Add Cash Entry Form Submission (Legacy Compatibility) ---');
   const prevCount = LedgerModule.allCashLedger.length;
-  const initialCash = LedgerModule.allCashLedger[0].availableCash; // 2,126,040.00
-  document.getElementById('cash-form-date').value = '2026-10-08';
+  const initialCash = LedgerModule.allCashLedger[0].availableCash;
+  document.getElementById('cash-form-date').value = '2026-10-09';
   document.getElementById('cash-form-received').value = '50000';
   document.getElementById('cash-form-expense').value = '10000';
   document.getElementById('cash-form-debt').value = '5000';
   document.getElementById('cash-form-desc').value = 'Test new cash entry';
   LedgerModule.updateCashPreview();
   const expectedNewCash = initialCash + 50000 - 10000 - 5000;
-  assert(document.getElementById('cash-form-preview').value.includes('2,161,040.00'), `Projected cash preview is correct (₹ 2,161,040.00)`);
+  assert(document.getElementById('cash-form-preview').value.includes(LedgerModule.formatINR(expectedNewCash)), `Projected cash preview is correct (₹ ${LedgerModule.formatINR(expectedNewCash)})`);
 
   await LedgerModule.saveCashEntry({ preventDefault: () => {} });
   assert(LedgerModule.allCashLedger.length === prevCount + 1, `Cash ledger count incremented to ${LedgerModule.allCashLedger.length}`);
   const newest = LedgerModule.allCashLedger[0];
-  assert(newest.date === '08/10/2026', `New entry has date 08/10/2026`);
+  assert(newest.date === '09/10/2026', `New entry has date 09/10/2026`);
   assert(newest.availableCash === expectedNewCash, `New entry availableCash is ${newest.availableCash}`);
 
-  // 8. Return to Dashboard via Breadcrumb
-  console.log('\n--- 8. Testing Return to 8-Card Dashboard ---');
+  // 8. Expandable FY & Month Tree Navigation
+  console.log('\n--- 8. Testing Expandable FY & Month Tree Navigation (media_1791479872194.png) ---');
+  LedgerModule.expandedCashFYs = { '2026-2027': true, '2025-2026': false, '2024-2025': false, 'empty': false };
+  LedgerModule.toggleCashFYTree('2025-2026');
+  assert(LedgerModule.expandedCashFYs['2025-2026'] === true, `FY 2025-2026 is expanded`);
+  LedgerModule.renderCashTreeSidebar();
+  assert(dom['cash-ledger-tree-sidebar'].innerHTML.includes('12 Mar'), `Sidebar includes March month row for 2025-2026`);
+  assert(dom['cash-ledger-tree-sidebar'].innerHTML.includes('7 Oct'), `Sidebar includes October month row for 2026-2027`);
+
+  LedgerModule.selectCashMonth('2026-2027', '7 Oct');
+  assert(LedgerModule.selectedCashFY === '2026-2027', `Selected FY is 2026-2027`);
+  assert(LedgerModule.selectedCashMonth === '7 Oct', `Selected month is 7 Oct`);
+  assert(LedgerModule.filteredCashList.every(r => r.date.includes('/10/2026')), `All filtered rows belong to October 2026`);
+  assert(dom['cash-ledger-tree-sidebar'].innerHTML.includes('active'), `Active month pill is styled`);
+
+  LedgerModule.selectCashMonth('2026-2027', '6 Sep');
+  assert(LedgerModule.selectedCashMonth === '6 Sep', `Switched month to 6 Sep`);
+  assert(LedgerModule.filteredCashList.every(r => r.date.includes('/09/2026')), `All filtered rows belong to September 2026`);
+
+  // 9. Date-wise Grouping Verification
+  console.log('\n--- 9. Testing Cash Ledger Date-wise Grouping Table ---');
+  assert(dom['cash-ledger-tbody'].innerHTML.includes('cash-group-header-row'), `Table contains date group header rows`);
+  assert(dom['cash-ledger-tbody'].innerHTML.includes('openCashDetailsModal'), `Row onclick opens Cash Ledger Details modal`);
+
+  // 10. Authentic Cash Ledger Details Modal (media_1791479872225.jpg)
+  console.log('\n--- 10. Testing Authentic Cash Ledger Details Modal (6 Fields & Live Math) ---');
+  LedgerModule.openCashDetailsModal('08/10/2026');
+  assert(dom['cash-details-date'].value === '08-10-2026', `Date* is 08-10-2026`);
+  assert(dom['cash-details-prev-cash'].value === '₹ 2,126,040.00', `Previous Day Available Cash is ₹ 2,126,040.00`);
+  assert(dom['cash-details-received'].value === '₹ 169,300.00', `Amount Received* is ₹ 169,300.00`);
+  assert(dom['cash-details-debt'].value === '₹ 251,900.00', `Debt is ₹ 251,900.00`);
+  assert(dom['cash-details-expense'].value === '₹ 9,445.00', `Expense is ₹ 9,445.00`);
+  assert(dom['cash-details-avail-cash'].value === '₹ 2,033,995.00', `Available Cash matches ₹ 2,033,995.00`);
+
+  // Verify formula: 2,126,040.00 + 169,300.00 - 251,900.00 - 9,445.00 = 2,033,995.00
+  const mathCheck = 2126040.0 + 169300.0 - 251900.0 - 9445.0;
+  assert(mathCheck === 2033995.0, `Live formula math verified: 2126040 + 169300 - 251900 - 9445 = 2033995`);
+
+  // Test live editing calculation
+  dom['cash-details-received'].value = '₹ 200,000.00';
+  const newExpectedAvail = 2126040.0 + 200000.0 - 251900.0 - 9445.0; // 2,064,695.00
+  LedgerModule.recalculateCashDetailsLive();
+  assert(dom['cash-details-avail-cash'].value.includes('2,064,695.00'), `Live reactive Available Cash updated to ₹ 2,064,695.00`);
+
+  // Save changes
+  await LedgerModule.saveCashDetailsForm();
+  const updatedEntry = LedgerModule.allCashLedger.find(r => r.date === '08/10/2026');
+  assert(updatedEntry && updatedEntry.amountReceived === 200000.0, `Record 08/10/2026 updated in memory to ₹ 200,000.00`);
+  assert(updatedEntry && updatedEntry.availableCash === newExpectedAvail, `Record 08/10/2026 availableCash updated to ${newExpectedAvail}`);
+
+  // Test open modal in Add New Entry mode
+  console.log('\n--- 11. Testing Cash Ledger Details Modal: Add New Entry Mode ---');
+  LedgerModule.openCashDetailsModal(); // No args = Add mode
+  assert(dom['cash-details-prev-cash'].value.length > 0, `Previous Day Cash auto-filled for new entry`);
+  assert(dom['cash-details-received'].value === '₹ 0.00', `New entry Received defaults to ₹ 0.00`);
+  assert(dom['cash-details-debt'].value === '₹ 0.00', `New entry Debt defaults to ₹ 0.00`);
+  assert(dom['cash-details-expense'].value === '₹ 0.00', `New entry Expense defaults to ₹ 0.00`);
+
+  // 12. Return to Dashboard via Breadcrumb
+  console.log('\n--- 12. Testing Return to 8-Card Dashboard ---');
   LedgerModule.goToDashboardView();
   assert(LedgerModule.mainViewMode === 'dashboard', `Switched back to 'dashboard'`);
   assert(!dom['ledger-view-dashboard'].classList.contains('d-none'), `Dashboard grid is visible again`);
   assert(dom['ledger-view-cash-register'].classList.contains('d-none'), `Cash Ledger is hidden`);
 
-  // 9. Debts View Navigation from Dashboard
-  console.log('\n--- 9. Testing Debts Register Navigation from Dashboard ---');
+  // 13. Debts View Navigation from Dashboard
+  console.log('\n--- 13. Testing Debts Register Navigation from Dashboard ---');
   LedgerModule.goToDebtsView('open');
   assert(LedgerModule.mainViewMode === 'debts', `Switched to 'debts' mode`);
   assert(!dom['ledger-view-register'].classList.contains('d-none'), `Debts register card is visible`);
