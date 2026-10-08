@@ -4046,7 +4046,13 @@ const BiltyBookingModule = {
         const truckNo = (t.truckNo || '-').toUpperCase();
         const toDest = (t.destination || '-').trim();
 
-        const refDisplay = (t.reference || t.consignor || '-').trim();
+        let refDisplay = (t.reference || '').trim();
+        if (!refDisplay || refDisplay.includes('MTC & TTC') || refDisplay === '-') {
+          refDisplay = (t.broker || (t.consignor && !t.consignor.includes('MTC & TTC') ? t.consignor : '')).trim();
+        }
+        if (!refDisplay || refDisplay.includes('MTC & TTC')) {
+          refDisplay = '-';
+        }
         const driverName = (t.driver || '-').trim();
         const driverPhone = (t.driverMobile || '').trim();
         const driverDisplay = (driverPhone && !driverName.includes(driverPhone)) ? `${driverName} ${driverPhone}` : driverName;
