@@ -186,6 +186,29 @@ async function runTests() {
   assert(LedgerModule.selectedCashMonth === '6 Sep', `Switched month to 6 Sep`);
   assert(LedgerModule.filteredCashList.every(r => r.date.includes('/09/2026')), `All filtered rows belong to September 2026`);
 
+  // Dynamic FY Month Discovery Test
+  const dynamicTree = LedgerModule.getDynamicFYMonths();
+  assert(dynamicTree.sortedFYs.includes('2026-2027'), `Dynamic discovery found FY 2026-2027`);
+  assert(dynamicTree.sortedFYs.includes('2025-2026'), `Dynamic discovery found FY 2025-2026`);
+  assert(dynamicTree.sortedFYs.includes('2024-2025'), `Dynamic discovery found FY 2024-2025`);
+  assert(dynamicTree.fyMonths['2026-2027'].includes('7 Oct'), `Dynamic discovery found 7 Oct in 2026-2027`);
+
+  // Date Sidebar Hide / Show Toggle Test
+  console.log('\n--- 8b. Testing Date Sidebar Hide/Show (Collapsible) ---');
+  assert(LedgerModule.isDateSidebarHidden === false, `Date sidebar is visible initially`);
+  LedgerModule.toggleDateSidebar();
+  assert(LedgerModule.isDateSidebarHidden === true, `Date sidebar is now hidden (collapsed)`);
+  assert(dom['cash-ledger-tree-sidebar'].classList.contains('collapsed'), `Sidebar element has 'collapsed' class`);
+  assert(dom['btn-toggle-date-text'].innerText === 'Show Date Filter', `Toggle button text updated to 'Show Date Filter'`);
+
+  LedgerModule.toggleDateSidebar();
+  assert(LedgerModule.isDateSidebarHidden === false, `Date sidebar is shown again`);
+  assert(!dom['cash-ledger-tree-sidebar'].classList.contains('collapsed'), `Sidebar element 'collapsed' class removed`);
+  assert(dom['btn-toggle-date-text'].innerText === 'Hide Date Filter', `Toggle button text updated to 'Hide Date Filter'`);
+
+  // Filter badge test
+  assert(dom['cash-current-filter-badge'].innerHTML.includes('6 Sep'), `Filter badge displays current filter (6 Sep)`);
+
   // 9. Date-wise Grouping Verification
   console.log('\n--- 9. Testing Cash Ledger Date-wise Grouping Table ---');
   assert(dom['cash-ledger-tbody'].innerHTML.includes('cash-group-header-row'), `Table contains date group header rows`);

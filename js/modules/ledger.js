@@ -27,6 +27,7 @@ const LedgerModule = {
   selectedCashFY: '2026-2027',
   selectedCashMonth: '7 Oct',
   expandedCashFYs: { '2026-2027': true, '2025-2026': false, '2024-2025': false, 'empty': false },
+  isDateSidebarHidden: false,
   cashPageSize: 100,
   cashCurrentPage: 1,
   filteredCashList: [],
@@ -203,6 +204,74 @@ const LedgerModule = {
     this.filteredCashList = list;
   },
 
+  toggleDateSidebar() {
+    this.isDateSidebarHidden = !this.isDateSidebarHidden;
+    const sidebar = document.getElementById('cash-ledger-tree-sidebar');
+    const toggleBtnText = document.getElementById('btn-toggle-date-text');
+    const toggleBtnIcon = document.getElementById('btn-toggle-date-icon');
+
+    if (sidebar) {
+      if (this.isDateSidebarHidden) {
+        sidebar.classList.add('collapsed');
+      } else {
+        sidebar.classList.remove('collapsed');
+      }
+    }
+
+    if (toggleBtnText) {
+      toggleBtnText.innerText = this.isDateSidebarHidden ? 'Show Date Filter' : 'Hide Date Filter';
+    }
+    if (toggleBtnIcon) {
+      toggleBtnIcon.className = this.isDateSidebarHidden ? 'bi bi-layout-sidebar' : 'bi bi-layout-sidebar-inset';
+    }
+  },
+
+  getDynamicFYMonths() {
+    const fyMap = {};
+    const monthNumToLabel = {
+      '04': '1 Apr', '05': '2 May', '06': '3 Jun',
+      '07': '4 Jul', '08': '5 Aug', '09': '6 Sep',
+      '10': '7 Oct', '11': '8 Nov', '12': '9 Dec',
+      '01': '10 Jan', '02': '11 Feb', '03': '12 Mar'
+    };
+    const monthOrder = [
+      '12 Mar', '11 Feb', '10 Jan', '9 Dec', '8 Nov', '7 Oct',
+      '6 Sep', '5 Aug', '4 Jul', '3 Jun', '2 May', '1 Apr'
+    ];
+
+    (this.allCashLedger || []).forEach(r => {
+      if (!r.date) return;
+      const parts = r.date.split('/');
+      if (parts.length < 3) return;
+      const [d, m, y] = parts;
+      const fy = r.fy || ((Number(m) >= 4) ? `${y}-${Number(y) + 1}` : `${Number(y) - 1}-${y}`);
+      const mLabel = monthNumToLabel[m.padStart(2, '0')];
+      if (!fyMap[fy]) fyMap[fy] = new Set();
+      if (mLabel) fyMap[fy].add(mLabel);
+    });
+
+    const sortedFYs = Object.keys(fyMap).sort().reverse();
+    const result = {};
+    sortedFYs.forEach(fy => {
+      const set = fyMap[fy];
+      result[fy] = monthOrder.filter(m => set.has(m));
+    });
+
+    return { sortedFYs, fyMonths: result };
+  },
+
+  updateCashFilterBadge() {
+    const badge = document.getElementById('cash-current-filter-badge');
+    if (!badge) return;
+    if (this.selectedCashFY === 'ALL' && this.selectedCashMonth === 'ALL') {
+      badge.innerHTML = `<i class="bi bi-funnel me-1 text-muted"></i>All Dates`;
+    } else if (this.selectedCashMonth !== 'ALL') {
+      badge.innerHTML = `<i class="bi bi-funnel me-1 text-muted"></i>${this.selectedCashFY} &gt; <strong>${this.selectedCashMonth}</strong>`;
+    } else {
+      badge.innerHTML = `<i class="bi bi-funnel me-1 text-muted"></i><strong>${this.selectedCashFY}</strong> (All Months)`;
+    }
+  },
+
   toggleCashFYTree(fy) {
     this.expandedCashFYs[fy] = !this.expandedCashFYs[fy];
     this.renderCashTreeSidebar();
@@ -218,6 +287,7 @@ const LedgerModule = {
     this.applyCashFilters();
     this.renderCashTreeSidebar();
     this.renderCashLedgerTable();
+    this.updateCashFilterBadge();
   },
 
   selectCashMonth(fy, month) {
@@ -230,6 +300,7 @@ const LedgerModule = {
     this.applyCashFilters();
     this.renderCashTreeSidebar();
     this.renderCashLedgerTable();
+    this.updateCashFilterBadge();
   },
 
   selectCashAll() {
@@ -239,6 +310,7 @@ const LedgerModule = {
     this.applyCashFilters();
     this.renderCashTreeSidebar();
     this.renderCashLedgerTable();
+    this.updateCashFilterBadge();
   },
 
   filterCashFY(fy) {
@@ -250,20 +322,21 @@ const LedgerModule = {
     const sidebar = document.getElementById('cash-ledger-tree-sidebar');
     if (!sidebar) return;
 
-    const fyMonths = {
-      '2026-2027': ['7 Oct', '6 Sep', '5 Aug', '4 Jul', '3 Jun', '2 May', '1 Apr'],
-      '2025-2026': ['12 Mar', '11 Feb', '10 Jan', '9 Dec', '8 Nov', '7 Oct', '6 Sep', '5 Aug', '4 Jul', '3 Jun', '2 May', '1 Apr'],
-      '2024-2025': ['12 Mar', '11 Feb', '10 Jan', '9 Dec', '8 Nov', '7 Oct', '6 Sep']
-    };
+    const { sortedFYs, fyMonths } = this.getDynamicFYMonths();
 
     let html = `
-      <div class="cash-tree-header">Date</div>
+      <div class="cash-tree-header d-flex align-items-center justify-content-between">
+        <span>Date</span>
+        <button type="button" class="btn btn-sm btn-link text-muted p-0 border-0" onclick="LedgerModule.toggleDateSidebar()" title="Hide Date Sidebar">
+          <i class="bi bi-chevron-bar-left fs-6"></i>
+        </button>
+      </div>
       <div class="cash-tree-item ${this.selectedCashFY === 'ALL' && this.selectedCashMonth === 'ALL' ? 'active' : ''}" id="cash-tree-all" onclick="LedgerModule.selectCashAll()">
         <span>All</span>
       </div>
     `;
 
-    ['2026-2027', '2025-2026', '2024-2025'].forEach(fy => {
+    sortedFYs.forEach(fy => {
       const isExpanded = !!this.expandedCashFYs[fy];
       const isFYActive = this.selectedCashFY === fy && this.selectedCashMonth === 'ALL';
       const months = fyMonths[fy] || [];
@@ -296,16 +369,20 @@ const LedgerModule = {
       }
     });
 
-    // (empty) item
-    const isEmptyActive = this.selectedCashFY === 'empty';
-    html += `
-      <div class="cash-tree-item ${isEmptyActive ? 'active' : ''}" id="cash-tree-empty" onclick="LedgerModule.selectCashFY('empty')">
-        <span class="cash-tree-caret"><i class="bi bi-caret-right-fill"></i></span>
-        <span class="text-muted small">(empty)</span>
-      </div>
-    `;
+    // (empty) item for any uncategorized records
+    const hasEmpty = (this.allCashLedger || []).some(r => !r.fy);
+    if (hasEmpty) {
+      const isEmptyActive = this.selectedCashFY === 'empty';
+      html += `
+        <div class="cash-tree-item ${isEmptyActive ? 'active' : ''}" id="cash-tree-empty" onclick="LedgerModule.selectCashFY('empty')">
+          <span class="cash-tree-caret"><i class="bi bi-caret-right-fill"></i></span>
+          <span class="text-muted small">(empty)</span>
+        </div>
+      `;
+    }
 
     sidebar.innerHTML = html;
+    this.updateCashFilterBadge();
   },
 
   formatINR(val) {
