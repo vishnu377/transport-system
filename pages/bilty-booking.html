@@ -273,13 +273,14 @@
               </div>
             </div>
 
-            <!-- 2. Transport * (MTC / TTC) -->
+            <!-- 2. Transport * (MTC / TTC / SMTC) -->
             <div class="appsheet-form-row">
               <label class="appsheet-form-label">Transport *</label>
               <div class="appsheet-form-control-wrap">
                 <div class="appsheet-segmented-gold" id="seg-transport">
                   <button type="button" class="seg-btn" id="btn-seg-mtc" onclick="BiltyBookingModule.setAppSheetTransport('MTC', this)">MTC</button>
                   <button type="button" class="seg-btn active" id="btn-seg-ttc" onclick="BiltyBookingModule.setAppSheetTransport('TTC', this)">TTC</button>
+                  <button type="button" class="seg-btn" id="btn-seg-smtc" onclick="BiltyBookingModule.setAppSheetTransport('SMTC', this)">SMTC</button>
                 </div>
                 <input type="hidden" id="bilty-firm" value="TTC">
                 <input type="hidden" id="bilty-year" value="2026-2027">
@@ -320,12 +321,17 @@
               </div>
             </div>
 
-            <!-- 6. Truck No. * (Searchable fleet selector) -->
+            <!-- 6. Truck No. * (Searchable fleet selector + Quick Add) -->
             <div class="appsheet-form-row">
               <label class="appsheet-form-label">Truck No. *</label>
               <div class="appsheet-form-control-wrap">
-                <div class="w-100" style="max-width: 380px;">
-                  <input type="text" id="bilty-truck-no" list="fleetTrucksList" class="appsheet-input-box font-monospace text-uppercase fw-bold" placeholder="Select or type Truck No. (e.g. RJ52GB5964)" oninput="BiltyBookingModule.onTruckSelect(this.value)" autocomplete="off" required>
+                <div class="d-flex align-items-center gap-2 w-100" style="max-width: 440px;">
+                  <div class="position-relative flex-grow-1">
+                    <input type="text" id="bilty-truck-no" list="fleetTrucksList" class="appsheet-input-box font-monospace text-uppercase fw-bold" placeholder="Select or type Truck No. (e.g. RJ52GB5964)" oninput="BiltyBookingModule.onTruckSelect(this.value)" autocomplete="off" required>
+                  </div>
+                  <button type="button" class="btn-appsheet-quick-add" onclick="BiltyBookingModule.quickAddModal('truck')" title="Add New Truck (नया ट्रक जोड़ें)">
+                    <i class="bi bi-plus-circle-fill text-warning"></i> + New
+                  </button>
                 </div>
               </div>
             </div>
@@ -351,12 +357,17 @@
               </div>
             </div>
 
-            <!-- 9. Reference * (Broker / Dallal) -->
+            <!-- 9. Reference * (Broker / Dallal + Quick Add) -->
             <div class="appsheet-form-row">
               <label class="appsheet-form-label">Reference *</label>
               <div class="appsheet-form-control-wrap">
-                <div class="w-100" style="max-width: 380px;">
-                  <input type="text" id="bilty-broker" list="brokersList" class="appsheet-input-box" placeholder="Select or type broker name" oninput="BiltyBookingModule.onReferenceSelect(this.value)">
+                <div class="d-flex align-items-center gap-2 w-100" style="max-width: 440px;">
+                  <div class="position-relative flex-grow-1">
+                    <input type="text" id="bilty-broker" list="brokersList" class="appsheet-input-box" placeholder="Select or type broker name" oninput="BiltyBookingModule.onReferenceSelect(this.value)">
+                  </div>
+                  <button type="button" class="btn-appsheet-quick-add" onclick="BiltyBookingModule.quickAddModal('broker')" title="Add New Reference / Broker (नया दलाल / रेफरेंस जोड़ें)">
+                    <i class="bi bi-plus-circle-fill text-warning"></i> + New
+                  </button>
                 </div>
               </div>
             </div>
@@ -366,6 +377,7 @@
               <label class="appsheet-form-label">Reference Mobile No. *</label>
               <div class="appsheet-form-control-wrap">
                 <span class="appsheet-text-value font-monospace" id="appsheet-broker-mobile-text">7976808636</span>
+                <input type="hidden" id="bilty-broker-mobile" value="7976808636">
               </div>
             </div>
 
@@ -505,12 +517,17 @@
               </div>
             </div>
 
-            <!-- 21. Driver * -->
+            <!-- 21. Driver * (Searchable driver selector + Quick Add) -->
             <div class="appsheet-form-row">
               <label class="appsheet-form-label">Driver *</label>
               <div class="appsheet-form-control-wrap">
-                <div class="w-100" style="max-width: 380px;">
-                  <input type="text" id="bilty-driver" list="driversList" class="appsheet-input-box" placeholder="Select or type driver name" oninput="BiltyBookingModule.onDriverSelect(this.value)">
+                <div class="d-flex align-items-center gap-2 w-100" style="max-width: 440px;">
+                  <div class="position-relative flex-grow-1">
+                    <input type="text" id="bilty-driver" list="driversList" class="appsheet-input-box" placeholder="Select or type driver name" oninput="BiltyBookingModule.onDriverSelect(this.value)">
+                  </div>
+                  <button type="button" class="btn-appsheet-quick-add" onclick="BiltyBookingModule.quickAddModal('driver')" title="Add New Driver (नया ड्राइवर जोड़ें)">
+                    <i class="bi bi-plus-circle-fill text-warning"></i> + New
+                  </button>
                 </div>
               </div>
             </div>
@@ -547,14 +564,25 @@
             </div>
 
             <!-- 25. GSTIN Consignor -->
-            <div class="appsheet-form-row">
-              <label class="appsheet-form-label">GSTIN Consignor</label>
-              <div class="appsheet-form-control-wrap">
-                <div class="w-100" style="max-width: 440px;">
-                  <select id="bilty-consignor" class="appsheet-input-box" onchange="BiltyBookingModule.onConsignorSelect(this.value)">
-                    <option value="">-- Select Consignor / Party --</option>
-                  </select>
-                  <input type="hidden" id="bilty-consignor-gstin">
+            <div class="appsheet-form-row align-start">
+              <label class="appsheet-form-label pt-2">GSTIN Consignor</label>
+              <div class="appsheet-form-control-wrap flex-column align-items-start">
+                <div class="d-flex align-items-center gap-2 w-100" style="max-width: 480px;">
+                  <div class="position-relative flex-grow-1">
+                    <input type="text" id="bilty-consignor" list="consignorsGstinList" class="appsheet-input-box" placeholder="Select or type GSTIN / Party Name" oninput="BiltyBookingModule.onConsignorSelect(this.value)" onchange="BiltyBookingModule.onConsignorSelect(this.value)" autocomplete="off">
+                    <input type="hidden" id="bilty-consignor-gstin">
+                  </div>
+                  <button type="button" class="btn-appsheet-quick-add" onclick="BiltyBookingModule.quickAddModal('consignor')" title="Add New Consignor / Party (नया सेलर / पार्टी जोड़ें)">
+                    <i class="bi bi-plus-circle-fill text-warning"></i> + New
+                  </button>
+                </div>
+                <!-- Auto-Address Preview Box for Consignor -->
+                <div id="appsheet-consignor-address-box" class="w-100 mt-2 p-2 px-3 bg-light rounded border border-secondary-subtle small d-flex align-items-center justify-content-between" style="max-width: 480px; min-height: 38px;">
+                  <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-geo-alt-fill text-danger"></i>
+                    <span id="appsheet-consignor-address-text" class="text-muted fst-italic">Select Consignor / GSTIN to view loading address</span>
+                  </div>
+                  <span class="badge bg-secondary-subtle text-secondary" id="appsheet-consignor-gstin-badge">GST: ---</span>
                 </div>
               </div>
             </div>
@@ -625,15 +653,26 @@
             </div>
 
             <!-- 31. GSTIN Consignee -->
-            <div class="appsheet-form-row">
-              <label class="appsheet-form-label">GSTIN Consignee</label>
-              <div class="appsheet-form-control-wrap">
-                <div class="w-100" style="max-width: 440px;">
-                  <select id="bilty-consignee" class="appsheet-input-box" onchange="BiltyBookingModule.onConsigneeSelect(this.value)">
-                    <option value="">-- Select Consignee / Party --</option>
-                  </select>
-                  <input type="hidden" id="bilty-consignee-gstin">
-                  <input type="hidden" id="bilty-delivery-address">
+            <div class="appsheet-form-row align-start">
+              <label class="appsheet-form-label pt-2">GSTIN Consignee</label>
+              <div class="appsheet-form-control-wrap flex-column align-items-start">
+                <div class="d-flex align-items-center gap-2 w-100" style="max-width: 480px;">
+                  <div class="position-relative flex-grow-1">
+                    <input type="text" id="bilty-consignee" list="consigneesGstinList" class="appsheet-input-box" placeholder="Select or type GSTIN / Party Name" oninput="BiltyBookingModule.onConsigneeSelect(this.value)" onchange="BiltyBookingModule.onConsigneeSelect(this.value)" autocomplete="off">
+                    <input type="hidden" id="bilty-consignee-gstin">
+                    <input type="hidden" id="bilty-delivery-address">
+                  </div>
+                  <button type="button" class="btn-appsheet-quick-add" onclick="BiltyBookingModule.quickAddModal('consignee')" title="Add New Consignee / Party (नया खरीदार / पार्टी जोड़ें)">
+                    <i class="bi bi-plus-circle-fill text-warning"></i> + New
+                  </button>
+                </div>
+                <!-- Auto-Address Preview Box for Consignee -->
+                <div id="appsheet-consignee-address-box" class="w-100 mt-2 p-2 px-3 bg-light rounded border border-secondary-subtle small d-flex align-items-center justify-content-between" style="max-width: 480px; min-height: 38px;">
+                  <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-geo-alt-fill text-success"></i>
+                    <span id="appsheet-consignee-address-text" class="text-muted fst-italic">Select Consignee / GSTIN to view delivery address</span>
+                  </div>
+                  <span class="badge bg-secondary-subtle text-secondary" id="appsheet-consignee-gstin-badge">GST: ---</span>
                 </div>
               </div>
             </div>
@@ -789,6 +828,8 @@
         <datalist id="truckOwnersList"></datalist>
         <datalist id="driversList"></datalist>
         <datalist id="brokersList"></datalist>
+        <datalist id="consignorsGstinList"></datalist>
+        <datalist id="consigneesGstinList"></datalist>
         <datalist id="destinationsList"></datalist>
         <datalist id="materialsList"></datalist>
 
@@ -1112,6 +1153,37 @@
     </div>
   </div>
 
+  <!-- ==================================================================== -->
+  <!-- APPSHEET QUICK ADD MODAL (Truck / Reference / Driver / GSTIN Party)   -->
+  <!-- ==================================================================== -->
+  <div class="modal fade" id="appsheet-quick-add-modal" tabindex="-1" aria-labelledby="appsheetQuickAddTitle" aria-hidden="true" style="z-index: 1060;">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden;">
+        
+        <div class="modal-header text-white" style="background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%); border-bottom: 3px solid #bfa15f;">
+          <h6 class="modal-title fw-bold d-flex align-items-center gap-2 mb-0" id="appsheetQuickAddTitle">
+            <i class="bi bi-plus-circle-fill text-warning"></i> Quick Add New
+          </h6>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" onclick="BiltyBookingModule.closeQuickAddModal()" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body p-4" id="appsheet-quick-add-body" style="background: #fdfdfd;">
+          <!-- Dynamically populated by quickAddModal(type) -->
+        </div>
+
+        <div class="modal-footer bg-light border-top d-flex justify-content-between p-3">
+          <button type="button" class="btn btn-outline-secondary btn-sm px-3" data-bs-dismiss="modal" onclick="BiltyBookingModule.closeQuickAddModal()">
+            Cancel (रद्द करें)
+          </button>
+          <button type="button" class="btn btn-warning fw-bold px-4 shadow-sm text-dark d-flex align-items-center gap-1" style="background-color: #bfa15f; border-color: #bfa15f;" onclick="BiltyBookingModule.saveQuickAdd()">
+            <i class="bi bi-check-circle-fill"></i> Save &amp; Select (+ जोड़ें)
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Container -->
   <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999;">
     <div id="live-toast" class="toast align-items-center text-bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
@@ -1134,17 +1206,17 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
   <!-- Core App Scripts -->
-  <script src="../js/config.js?v=20261008_mtc_reference_v4"></script>
+  <script src="../js/config.js?v=20261008_bilty_quick_add_v5"></script>
   <!-- Universal Master Data Assets (Guaranteed 100% Offline & Fresh Git Deploy Resilience) -->
-  <script src="../js/sample-parties-data.js?v=20261008_mtc_reference_v4"></script>
-  <script src="../js/sample-truck-owners-data.js?v=20261008_mtc_reference_v4"></script>
-  <script src="../js/sample-drivers-data.js?v=20261008_mtc_reference_v4"></script>
-  <script src="../js/sample-trips-data.js?v=20261008_mtc_reference_v4"></script>
-  <script src="../js/sample-debts-data.js?v=20261008_mtc_reference_v4"></script>
-  <script src="../js/sample-cheques-data.js?v=20261008_mtc_reference_v4"></script>
-  <script src="../js/db-service.js?v=20261008_mtc_reference_v4"></script>
-  <script src="../js/app.js?v=20261008_mtc_reference_v4"></script>
-  <script src="../assets/bilty_template/bilty_assets.js?v=20261008_mtc_reference_v4"></script>
-  <script src="../js/modules/bilty-booking.js?v=20261008_mtc_reference_v4"></script>
+  <script src="../js/sample-parties-data.js?v=20261008_bilty_quick_add_v5"></script>
+  <script src="../js/sample-truck-owners-data.js?v=20261008_bilty_quick_add_v5"></script>
+  <script src="../js/sample-drivers-data.js?v=20261008_bilty_quick_add_v5"></script>
+  <script src="../js/sample-trips-data.js?v=20261008_bilty_quick_add_v5"></script>
+  <script src="../js/sample-debts-data.js?v=20261008_bilty_quick_add_v5"></script>
+  <script src="../js/sample-cheques-data.js?v=20261008_bilty_quick_add_v5"></script>
+  <script src="../js/db-service.js?v=20261008_bilty_quick_add_v5"></script>
+  <script src="../js/app.js?v=20261008_bilty_quick_add_v5"></script>
+  <script src="../assets/bilty_template/bilty_assets.js?v=20261008_bilty_quick_add_v5"></script>
+  <script src="../js/modules/bilty-booking.js?v=20261008_bilty_quick_add_v5"></script>
 </body>
 </html>

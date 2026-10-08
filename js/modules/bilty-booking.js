@@ -213,10 +213,10 @@ const BiltyBookingModule = {
         : [];
       
       const truckSet = new Set(trucks.map(t => t.truckNo));
-      this.truckOwners.forEach(o => {
+      (this.truckOwners || []).forEach(o => {
         if (o.truckNo) truckSet.add(o.truckNo);
       });
-      this.allTrips.slice(0, 500).forEach(t => {
+      (this.allTrips || []).forEach(t => {
         if (t.truckNo) truckSet.add(t.truckNo);
       });
 
@@ -226,8 +226,8 @@ const BiltyBookingModule = {
     // 2. Truck Owners Datalist
     const ownersDatalist = document.getElementById('truckOwnersList');
     if (ownersDatalist) {
-      const ownerNames = new Set(this.truckOwners.map(o => o.name || o.ownerName).filter(Boolean));
-      this.allTrips.slice(0, 500).forEach(t => {
+      const ownerNames = new Set((this.truckOwners || []).map(o => o.name || o.ownerName).filter(Boolean));
+      (this.allTrips || []).forEach(t => {
         if (t.truckOwner) ownerNames.add(t.truckOwner);
       });
       ownersDatalist.innerHTML = Array.from(ownerNames).sort().map(name => `<option value="${name}">`).join('');
@@ -236,44 +236,71 @@ const BiltyBookingModule = {
     // 3. Drivers Datalist
     const driversDatalist = document.getElementById('driversList');
     if (driversDatalist) {
-      const driverNames = new Set(this.drivers.map(d => d.name).filter(Boolean));
-      this.allTrips.slice(0, 500).forEach(t => {
-        if (t.driver) driverNames.add(t.driver);
+      const driverNames = new Set((this.drivers || []).map(d => d.name).filter(Boolean));
+      (this.allTrips || []).forEach(t => {
+        if (t.driver && t.driver !== '-' && !t.driver.toLowerCase().includes('assigned driver')) {
+          driverNames.add(t.driver);
+        }
       });
       driversDatalist.innerHTML = Array.from(driverNames).sort().map(name => `<option value="${name}">`).join('');
     }
 
-    // 4. Brokers Datalist
+    // 4. Brokers / Reference Datalist
     const brokersDatalist = document.getElementById('brokersList');
     if (brokersDatalist) {
-      const brokerNames = new Set(this.brokers.map(b => b.name).filter(Boolean));
-      // Add real AppSheet brokers
+      const brokerNames = new Set((this.brokers || []).map(b => b.name).filter(Boolean));
+      // Add authentic brokers from trips
+      (this.allTrips || []).forEach(t => {
+        if (t.reference && !t.reference.includes('Consignor') && !t.reference.includes('MTC & TTC')) {
+          brokerNames.add(t.reference);
+        }
+      });
+      // Add real AppSheet brokers baseline
       ['Ramniwas Ji Nilkant Marble 7976808636', 'Dilip Singh Patodi 9604260008', 'Tanuj Kothari Udaipur 8209727398', 'Dinesh Sharma Kishangarh 7733069670', 'Rajesh Rao Udaipur 7023678976', 'Pavan Bansal Dadri 9311320045'].forEach(b => brokerNames.add(b));
       brokersDatalist.innerHTML = Array.from(brokerNames).sort().map(name => `<option value="${name}">`).join('');
     }
 
-    // 5. Consignor & Consignee Selects (Main & Express Modes)
+    // 5. Consignors & Consignees GSTIN Datalists & Selects
+    const consignorsGstinDatalist = document.getElementById('consignorsGstinList');
+    const consigneesGstinDatalist = document.getElementById('consigneesGstinList');
     const consignorSelect = document.getElementById('bilty-consignor');
     const consigneeSelect = document.getElementById('bilty-consignee');
     const expressConsignor = document.getElementById('express-consignor');
     const expressConsignee = document.getElementById('express-consignee');
+    const mbConsignor = document.getElementById('mb-consignor');
+    const msConsignee = document.getElementById('ms-consignee');
 
-    if (consignorSelect || consigneeSelect) {
-      let optionsHTML = '<option value="">-- Select Party / Enter Name --</option>';
-      (this.parties || []).forEach(p => {
-        if (!p || !p.name) return;
-        optionsHTML += `<option value="${p.name}" data-gstin="${p.gstin || ''}" data-address="${p.address || ''}">${p.name}</option>`;
-      });
-      if (consignorSelect) consignorSelect.innerHTML = optionsHTML;
-      if (consigneeSelect) consigneeSelect.innerHTML = optionsHTML;
-      if (expressConsignor) expressConsignor.innerHTML = optionsHTML;
-      if (expressConsignee) expressConsignee.innerHTML = optionsHTML;
+    const partyOptionsSet = new Set();
+    let optionsHTML = '<option value="">-- Select Party / Enter Name --</option>';
 
-      const mbConsignor = document.getElementById('mb-consignor');
-      if (mbConsignor) mbConsignor.innerHTML = optionsHTML;
-      const msConsignee = document.getElementById('ms-consignee');
-      if (msConsignee) msConsignee.innerHTML = optionsHTML;
-    }
+    (this.parties || []).forEach(p => {
+      if (!p || !p.name) return;
+      optionsHTML += `<option value="${p.name}" data-gstin="${p.gstin || ''}" data-address="${p.address || ''}">${p.name}</option>`;
+      
+      if (p.gstin) {
+        partyOptionsSet.add(`${p.gstin} - ${p.name}`);
+        partyOptionsSet.add(p.gstin);
+      }
+      partyOptionsSet.add(p.name);
+    });
+
+    (this.allTrips || []).slice(0, 1000).forEach(t => {
+      if (t.consignor) partyOptionsSet.add(t.consignor);
+      if (t.consignee) partyOptionsSet.add(t.consignee);
+      if (t.consignorGstin) partyOptionsSet.add(t.consignorGstin);
+      if (t.consigneeGstin) partyOptionsSet.add(t.consigneeGstin);
+    });
+
+    const datalistOptionsHTML = Array.from(partyOptionsSet).sort().map(val => `<option value="${val}">`).join('');
+    if (consignorsGstinDatalist) consignorsGstinDatalist.innerHTML = datalistOptionsHTML;
+    if (consigneesGstinDatalist) consigneesGstinDatalist.innerHTML = datalistOptionsHTML;
+
+    if (consignorSelect && consignorSelect.tagName === 'SELECT') consignorSelect.innerHTML = optionsHTML;
+    if (consigneeSelect && consigneeSelect.tagName === 'SELECT') consigneeSelect.innerHTML = optionsHTML;
+    if (expressConsignor && expressConsignor.tagName === 'SELECT') expressConsignor.innerHTML = optionsHTML;
+    if (expressConsignee && expressConsignee.tagName === 'SELECT') expressConsignee.innerHTML = optionsHTML;
+    if (mbConsignor && mbConsignor.tagName === 'SELECT') mbConsignor.innerHTML = optionsHTML;
+    if (msConsignee && msConsignee.tagName === 'SELECT') msConsignee.innerHTML = optionsHTML;
 
     // 6. Destinations Datalist (Matching authentic AppSheet video options)
     const destDatalist = document.getElementById('destinationsList');
@@ -284,7 +311,7 @@ const BiltyBookingModule = {
         'Muzaffarnagar (U.P.)', 'Greater Noida (U.P.)', 'Karnal (Haryana)', 
         'Meerut (U.P.)', 'Hardoi (U.P.)', 'Faridabad (Haryana)', 'Jaipur (Raj.)', 'Bhiwadi (Raj.)'
       ]);      
-      this.allTrips.slice(0, 500).forEach(t => {
+      (this.allTrips || []).forEach(t => {
         if (t.destination) destinations.add(t.destination);
       });
       destDatalist.innerHTML = Array.from(destinations).sort().map(d => `<option value="${d}">`).join('');
@@ -297,7 +324,7 @@ const BiltyBookingModule = {
         'Marble Cut Size', 'Marble Powder', 'Putty Grade Dolomite', 'Marble Blocks', 
         'Lime Stone', 'Tiles / Ceramic', 'White Cement', 'Granite Tiles', 'Quartz Grain'
       ]);
-      this.allTrips.slice(0, 500).forEach(t => {
+      (this.allTrips || []).forEach(t => {
         if (t.material) materials.add(t.material);
       });
       matDatalist.innerHTML = Array.from(materials).sort().map(m => `<option value="${m}">`).join('');
@@ -327,7 +354,12 @@ const BiltyBookingModule = {
   getNextGrSequences(firm = 'TTC', year = '2026-2027', count = 1) {
     let maxSeq = 0;
     (this.allTrips || []).forEach(t => {
-      const tFirm = t.transport || (t.grNo && t.grNo.includes('MTC') ? 'MTC' : 'TTC');
+      let tFirm = t.transport;
+      if (!tFirm && t.grNo) {
+        if (t.grNo.includes('SMTC')) tFirm = 'SMTC';
+        else if (t.grNo.includes('MTC')) tFirm = 'MTC';
+        else tFirm = 'TTC';
+      }
       const tYear = t.financialYear || (t.grNo && t.grNo.startsWith('2026-2027') ? '2026-2027' : '');
       
       if (tFirm === firm && (tYear === year || !tYear)) {
@@ -341,8 +373,8 @@ const BiltyBookingModule = {
     // Fallback baseline if starting fresh
     if (maxSeq === 0) {
       if (firm === 'TTC') maxSeq = 2207;
-      else if (firm === 'SMTC') maxSeq = 193;
-      else if (firm === 'MTC') maxSeq = 1317;
+      else if (firm === 'SMTC') maxSeq = 217;
+      else if (firm === 'MTC') maxSeq = 1406;
       else maxSeq = 100;
     }
 
@@ -1146,20 +1178,48 @@ const BiltyBookingModule = {
 
   onReferenceSelect(val) {
     if (!val) return;
+    val = val.trim();
     const brokerInput = document.getElementById('bilty-broker');
     if (brokerInput && brokerInput.value !== val) brokerInput.value = val;
+    let phone = '';
     const phoneMatch = val.match(/\b\d{10}\b/);
-    const phone = phoneMatch ? phoneMatch[0] : (this.brokers.find(b => b.name === val)?.phone || '7976808636');
+    if (phoneMatch) {
+      phone = phoneMatch[0];
+    } else {
+      const bObj = (this.brokers || []).find(b => b.name === val || (b.name && b.name.includes(val)));
+      if (bObj && (bObj.phone || bObj.mobile)) {
+        phone = bObj.phone || bObj.mobile;
+      } else {
+        const tripMatch = (this.allTrips || []).find(t => t.reference && t.reference.includes(val) && t.referenceMobile);
+        if (tripMatch) phone = tripMatch.referenceMobile;
+      }
+    }
+    if (!phone) phone = '7976808636';
     const phoneText = document.getElementById('appsheet-broker-mobile-text');
     if (phoneText) phoneText.innerText = phone;
+    const phoneInput = document.getElementById('bilty-broker-mobile');
+    if (phoneInput) phoneInput.value = phone;
   },
 
   onDriverSelect(val) {
     if (!val) return;
+    val = val.trim();
     const driverInput = document.getElementById('bilty-driver');
     if (driverInput && driverInput.value !== val) driverInput.value = val;
+    let phone = '';
     const phoneMatch = val.match(/\b\d{10}\b/);
-    const phone = phoneMatch ? phoneMatch[0] : (this.drivers.find(d => d.name === val)?.mobile || '6377445099');
+    if (phoneMatch) {
+      phone = phoneMatch[0];
+    } else {
+      const dObj = (this.drivers || []).find(d => d.name === val || (d.name && d.name.includes(val)));
+      if (dObj && (dObj.mobile || dObj.phone)) {
+        phone = dObj.mobile || dObj.phone;
+      } else {
+        const tripMatch = (this.allTrips || []).find(t => t.driver && t.driver.includes(val) && t.driverMobile);
+        if (tripMatch) phone = tripMatch.driverMobile;
+      }
+    }
+    if (!phone) phone = '6377445099';
     const phoneText = document.getElementById('appsheet-driver-mobile-text');
     if (phoneText) phoneText.innerText = phone;
     const mobileInput = document.getElementById('bilty-driver-mobile');
@@ -1168,32 +1228,465 @@ const BiltyBookingModule = {
 
   onConsignorSelect(val) {
     if (!val) return;
+    val = val.trim();
     const consignorInput = document.getElementById('bilty-consignor');
     if (consignorInput && consignorInput.value !== val) consignorInput.value = val;
-    const party = this.parties.find(p => p.name === val);
-    if (party && party.gstin) {
-      const gstinInput = document.getElementById('bilty-consignor-gstin');
-      if (gstinInput) gstinInput.value = party.gstin;
+
+    let party = null;
+    const partiesList = this.parties || [];
+    // A. Search by GSTIN match
+    party = partiesList.find(p => p.gstin && p.gstin.toUpperCase() === val.toUpperCase());
+    // B. Search by exact Name match
+    if (!party) {
+      party = partiesList.find(p => p.name && p.name.toLowerCase() === val.toLowerCase());
+    }
+    // C. Search by partial or "GSTIN - Name" combined string
+    if (!party) {
+      party = partiesList.find(p => {
+        if (p.gstin && val.toUpperCase().includes(p.gstin.toUpperCase())) return true;
+        if (p.name && val.toLowerCase().includes(p.name.toLowerCase())) return true;
+        return false;
+      });
+    }
+    // D. Search in past trips
+    if (!party) {
+      const tripMatch = (this.allTrips || []).find(t => t.consignor && (t.consignor === val || (t.consignorGstin && t.consignorGstin === val)));
+      if (tripMatch) {
+        party = {
+          name: tripMatch.consignor,
+          gstin: tripMatch.consignorGstin || '',
+          address: tripMatch.origin || 'Rajsamand (Raj.)',
+          city: tripMatch.origin || 'Rajsamand'
+        };
+      }
+    }
+
+    const gstinInput = document.getElementById('bilty-consignor-gstin');
+    const addressText = document.getElementById('appsheet-consignor-address-text');
+    const gstinBadge = document.getElementById('appsheet-consignor-gstin-badge');
+
+    if (party) {
+      if (gstinInput) gstinInput.value = party.gstin || '';
+      if (gstinBadge) gstinBadge.innerText = party.gstin ? `GST: ${party.gstin}` : 'GST: URP';
+      
+      const fullAddr = [party.address, party.city, party.state].filter(Boolean).join(', ') || party.address || 'Address on record';
+      if (addressText) {
+        addressText.innerHTML = `<strong>${party.name}:</strong> ${fullAddr}`;
+        addressText.classList.remove('text-muted', 'fst-italic');
+      }
+    } else {
+      // Check if raw 15-digit GSTIN was entered
+      if (/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/i.test(val)) {
+        if (gstinInput) gstinInput.value = val.toUpperCase();
+        if (gstinBadge) gstinBadge.innerText = `GST: ${val.toUpperCase()}`;
+        if (addressText) {
+          addressText.innerText = `GSTIN: ${val.toUpperCase()}`;
+          addressText.classList.remove('text-muted', 'fst-italic');
+        }
+      }
     }
     this.updateLivePreview();
   },
 
   onConsigneeSelect(val) {
     if (!val) return;
+    val = val.trim();
     const consigneeInput = document.getElementById('bilty-consignee');
     if (consigneeInput && consigneeInput.value !== val) consigneeInput.value = val;
-    const party = this.parties.find(p => p.name === val);
-    if (party) {
-      if (party.gstin) {
-        const gstinInput = document.getElementById('bilty-consignee-gstin');
-        if (gstinInput) gstinInput.value = party.gstin;
+
+    let party = null;
+    const partiesList = this.parties || [];
+    // A. Search by GSTIN match
+    party = partiesList.find(p => p.gstin && p.gstin.toUpperCase() === val.toUpperCase());
+    // B. Search by exact Name match
+    if (!party) {
+      party = partiesList.find(p => p.name && p.name.toLowerCase() === val.toLowerCase());
+    }
+    // C. Search by partial or "GSTIN - Name" combined string
+    if (!party) {
+      party = partiesList.find(p => {
+        if (p.gstin && val.toUpperCase().includes(p.gstin.toUpperCase())) return true;
+        if (p.name && val.toLowerCase().includes(p.name.toLowerCase())) return true;
+        return false;
+      });
+    }
+    // D. Search in past trips
+    if (!party) {
+      const tripMatch = (this.allTrips || []).find(t => t.consignee && (t.consignee === val || (t.consigneeGstin && t.consigneeGstin === val)));
+      if (tripMatch) {
+        party = {
+          name: tripMatch.consignee,
+          gstin: tripMatch.consigneeGstin || '',
+          address: tripMatch.deliveryAddress || tripMatch.destination || '',
+          city: tripMatch.destination || ''
+        };
       }
-      if (party.address) {
-        const addrInput = document.getElementById('bilty-delivery-address');
-        if (addrInput) addrInput.value = party.address;
+    }
+
+    const gstinInput = document.getElementById('bilty-consignee-gstin');
+    const addrInput = document.getElementById('bilty-delivery-address');
+    const addressText = document.getElementById('appsheet-consignee-address-text');
+    const gstinBadge = document.getElementById('appsheet-consignee-gstin-badge');
+    const destInput = document.getElementById('bilty-destination');
+
+    if (party) {
+      if (gstinInput) gstinInput.value = party.gstin || '';
+      if (gstinBadge) gstinBadge.innerText = party.gstin ? `GST: ${party.gstin}` : 'GST: URP';
+      
+      const fullAddr = [party.address, party.city, party.state].filter(Boolean).join(', ') || party.address || '';
+      if (addrInput) addrInput.value = fullAddr;
+      if (addressText) {
+        addressText.innerHTML = `<strong>${party.name}:</strong> ${fullAddr || 'Address on record'}`;
+        addressText.classList.remove('text-muted', 'fst-italic');
+      }
+      if (party.city && destInput && (!destInput.value || destInput.value.length < 3)) {
+        destInput.value = party.city;
+      }
+    } else {
+      if (/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/i.test(val)) {
+        if (gstinInput) gstinInput.value = val.toUpperCase();
+        if (gstinBadge) gstinBadge.innerText = `GST: ${val.toUpperCase()}`;
+        if (addressText) {
+          addressText.innerText = `GSTIN: ${val.toUpperCase()}`;
+          addressText.classList.remove('text-muted', 'fst-italic');
+        }
       }
     }
     this.updateLivePreview();
+  },
+
+  // ----------------------------------------------------
+  // QUICK ADD MODAL CONTROLLER (Truck, Reference, Driver, GSTIN Party)
+  // ----------------------------------------------------
+  quickAddModal(entityType) {
+    this.currentQuickAddType = entityType;
+    const modalTitle = document.getElementById('appsheetQuickAddTitle');
+    const modalBody = document.getElementById('appsheet-quick-add-body');
+    const modalEl = document.getElementById('appsheet-quick-add-modal');
+    if (!modalBody || !modalEl) return;
+
+    let titleText = 'Quick Add New';
+    let bodyHtml = '';
+
+    if (entityType === 'truck') {
+      titleText = '<i class="bi bi-truck text-warning"></i> Add New Truck (नया ट्रक जोड़ें)';
+      bodyHtml = `
+        <div class="mb-3">
+          <label class="form-label small fw-bold text-dark">Truck Registration No. * (गाड़ी नंबर)</label>
+          <input type="text" id="qa-truck-no" class="form-control font-monospace text-uppercase fw-bold" placeholder="e.g. RJ52GB9988" autofocus required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-bold text-dark">Truck Owner Name * (गाड़ी मालिक का नाम)</label>
+          <input type="text" id="qa-truck-owner" class="form-control" placeholder="e.g. Shree Balaji Roadlines" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-bold text-dark">Owner Mobile No. * (मालिक का मोबाइल नंबर)</label>
+          <input type="tel" id="qa-truck-mobile" class="form-control font-monospace" placeholder="e.g. 9414659401" maxlength="10" required>
+        </div>
+        <div class="row g-2">
+          <div class="col-md-6 mb-2">
+            <label class="form-label small fw-semibold text-muted">Driver Name (ड्राइवर नाम - ऐच्छिक)</label>
+            <input type="text" id="qa-truck-driver" class="form-control" placeholder="e.g. Ramesh Gurjar">
+          </div>
+          <div class="col-md-6 mb-2">
+            <label class="form-label small fw-semibold text-muted">Driver Mobile (ड्राइवर मोबाइल)</label>
+            <input type="tel" id="qa-truck-driver-mobile" class="form-control font-monospace" placeholder="e.g. 9828230105" maxlength="10">
+          </div>
+        </div>
+      `;
+    } else if (entityType === 'broker') {
+      titleText = '<i class="bi bi-person-badge text-warning"></i> Add New Reference / Broker (नया दलाल / रेफरेंस जोड़ें)';
+      bodyHtml = `
+        <div class="mb-3">
+          <label class="form-label small fw-bold text-dark">Broker / Dalal / Reference Name * (दलाल / रेफरेंस नाम)</label>
+          <input type="text" id="qa-broker-name" class="form-control fw-bold" placeholder="e.g. Dilip Singh Patodi" autofocus required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-bold text-dark">Mobile No. * (मोबाइल नंबर)</label>
+          <input type="tel" id="qa-broker-mobile" class="form-control font-monospace" placeholder="e.g. 9604260008" maxlength="10" required>
+        </div>
+        <div class="mb-2">
+          <label class="form-label small fw-semibold text-muted">Location / Mandi / Station (स्थान / मंडी)</label>
+          <input type="text" id="qa-broker-city" class="form-control" placeholder="e.g. Kishangarh / Udaipur">
+        </div>
+      `;
+    } else if (entityType === 'driver') {
+      titleText = '<i class="bi bi-person-vcard text-warning"></i> Add New Driver (नया ड्राइवर जोड़ें)';
+      bodyHtml = `
+        <div class="mb-3">
+          <label class="form-label small fw-bold text-dark">Driver Name * (ड्राइवर का नाम)</label>
+          <input type="text" id="qa-driver-name" class="form-control fw-bold" placeholder="e.g. Mukesh Kumar Meena" autofocus required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-bold text-dark">Driver Mobile No. * (ड्राइवर मोबाइल नंबर)</label>
+          <input type="tel" id="qa-driver-mobile" class="form-control font-monospace" placeholder="e.g. 6377445099" maxlength="10" required>
+        </div>
+        <div class="mb-2">
+          <label class="form-label small fw-semibold text-muted">Assigned Truck No. (गाड़ी नंबर - यदि तय हो)</label>
+          <input type="text" id="qa-driver-truck" class="form-control font-monospace text-uppercase" placeholder="e.g. RJ52GB2503">
+        </div>
+      `;
+    } else if (entityType === 'consignor' || entityType === 'consignee') {
+      const isConsignor = (entityType === 'consignor');
+      titleText = isConsignor
+        ? '<i class="bi bi-building text-warning"></i> Add New Consignor (नया सेलर / कन्साइनर पार्टी जोड़ें)'
+        : '<i class="bi bi-shop text-warning"></i> Add New Consignee (नया खरीदार / कन्साइनी पार्टी जोड़ें)';
+      bodyHtml = `
+        <div class="mb-3">
+          <label class="form-label small fw-bold text-dark">Party / Firm Name * (फर्म / पार्टी का नाम)</label>
+          <input type="text" id="qa-party-name" class="form-control fw-bold" placeholder="e.g. Shree Ram Marble & Granites" autofocus required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-bold text-dark">GSTIN (15 अंकों का GST नंबर)</label>
+          <input type="text" id="qa-party-gstin" class="form-control font-monospace text-uppercase" placeholder="e.g. 08AAACS1234F1Z5" maxlength="15">
+          <div class="form-text small text-muted">बिना GST वाली (URP) पार्टी के लिए खाली छोड़ सकते हैं।</div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-bold text-dark">Address * (${isConsignor ? 'फैक्ट्री / लोडिंग' : 'डिलीवरी / अनलोडिंग'} का पूरा पता)</label>
+          <textarea id="qa-party-address" class="form-control" rows="2" placeholder="e.g. RIICO Industrial Area, NH-8" required></textarea>
+        </div>
+        <div class="row g-2 mb-3">
+          <div class="col-6">
+            <label class="form-label small fw-semibold text-muted">City (शहर)</label>
+            <input type="text" id="qa-party-city" class="form-control" placeholder="e.g. Rajsamand">
+          </div>
+          <div class="col-6">
+            <label class="form-label small fw-semibold text-muted">State (राज्य)</label>
+            <input type="text" id="qa-party-state" class="form-control" placeholder="e.g. Rajasthan" value="Rajasthan">
+          </div>
+        </div>
+        <div class="mb-2">
+          <label class="form-label small fw-semibold text-muted">Contact Mobile (मोबाइल नंबर)</label>
+          <input type="tel" id="qa-party-mobile" class="form-control font-monospace" placeholder="e.g. 9829023298" maxlength="10">
+        </div>
+      `;
+    }
+
+    if (modalTitle) modalTitle.innerHTML = titleText;
+    modalBody.innerHTML = bodyHtml;
+
+    if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+      const bsModal = bootstrap.Modal.getOrCreateInstance(modalEl);
+      bsModal.show();
+      if (modalEl.classList) modalEl.classList.add('show');
+      if (modalEl.style) modalEl.style.display = 'block';
+    }
+  },
+
+  closeQuickAddModal() {
+    const modalEl = document.getElementById('appsheet-quick-add-modal');
+    if (!modalEl) return;
+    if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+      const bsModal = bootstrap.Modal.getInstance(modalEl);
+      if (bsModal) bsModal.hide();
+    }
+    if (modalEl.classList) modalEl.classList.remove('show');
+    if (modalEl.style) modalEl.style.display = 'none';
+    const backdrop = document.querySelector ? document.querySelector('.modal-backdrop') : null;
+    if (backdrop && backdrop.remove) backdrop.remove();
+  },
+
+  async saveQuickAdd() {
+    const type = this.currentQuickAddType;
+    if (!type) return;
+
+    if (type === 'truck') {
+      const truckNo = (document.getElementById('qa-truck-no')?.value || '').trim().toUpperCase();
+      const ownerName = (document.getElementById('qa-truck-owner')?.value || '').trim();
+      const ownerMobile = (document.getElementById('qa-truck-mobile')?.value || '').trim();
+      const driverName = (document.getElementById('qa-truck-driver')?.value || '').trim();
+      const driverMobile = (document.getElementById('qa-truck-driver-mobile')?.value || '').trim();
+
+      if (!truckNo || truckNo.length < 4) {
+        AppUI.showToast("Please enter a valid Truck Number (गाड़ी नंबर)!", "danger");
+        document.getElementById('qa-truck-no')?.focus();
+        return;
+      }
+      if (!ownerName) {
+        AppUI.showToast("Please enter Truck Owner Name (मालिक का नाम)!", "danger");
+        document.getElementById('qa-truck-owner')?.focus();
+        return;
+      }
+
+      const newOwner = {
+        id: `OWN_${Date.now()}`,
+        truckNo: truckNo,
+        name: ownerName,
+        ownerName: ownerName,
+        mobile: ownerMobile || '9414659401',
+        phone: ownerMobile || '9414659401'
+      };
+      this.truckOwners.unshift(newOwner);
+      if (typeof window !== 'undefined' && Array.isArray(window.INITIAL_EXCEL_TRUCKS)) {
+        window.INITIAL_EXCEL_TRUCKS.unshift({ truckNo, name: ownerName, mobile: ownerMobile });
+      }
+
+      // Add to fleetTrucksList datalist
+      const trucksDatalist = document.getElementById('fleetTrucksList');
+      if (trucksDatalist) {
+        trucksDatalist.insertAdjacentHTML('afterbegin', `<option value="${truckNo}">`);
+      }
+
+      // Auto-select into form and trigger onTruckSelect
+      const truckInput = document.getElementById('bilty-truck-no');
+      if (truckInput) truckInput.value = truckNo;
+      this.onTruckSelect(truckNo);
+
+      if (driverName) {
+        const driverInput = document.getElementById('bilty-driver');
+        if (driverInput) driverInput.value = driverName;
+        const driverMobileInput = document.getElementById('bilty-driver-mobile');
+        if (driverMobileInput) driverMobileInput.value = driverMobile || '6377445099';
+        const driverMobileText = document.getElementById('appsheet-driver-mobile-text');
+        if (driverMobileText) driverMobileText.innerText = driverMobile || '6377445099';
+      }
+
+      if (typeof dbService !== 'undefined' && dbService.add) {
+        try { await dbService.add('truckOwners', newOwner); } catch (e) { /* local fallback */ }
+      }
+
+      this.closeQuickAddModal();
+      AppUI.showToast(`✅ Truck ${truckNo} added & selected! Owner: ${ownerName}`, "success");
+
+    } else if (type === 'broker') {
+      const brokerName = (document.getElementById('qa-broker-name')?.value || '').trim();
+      const brokerMobile = (document.getElementById('qa-broker-mobile')?.value || '').trim();
+      const brokerCity = (document.getElementById('qa-broker-city')?.value || '').trim();
+
+      if (!brokerName) {
+        AppUI.showToast("Please enter Broker / Reference Name!", "danger");
+        document.getElementById('qa-broker-name')?.focus();
+        return;
+      }
+      const fullRef = brokerMobile ? `${brokerName} ${brokerMobile}` : brokerName;
+      const newBroker = {
+        id: `BRK_${Date.now()}`,
+        name: fullRef,
+        mobile: brokerMobile,
+        phone: brokerMobile,
+        city: brokerCity
+      };
+      this.brokers.unshift(newBroker);
+
+      // Add to datalist
+      const brokersDatalist = document.getElementById('brokersList');
+      if (brokersDatalist) {
+        brokersDatalist.insertAdjacentHTML('afterbegin', `<option value="${fullRef}">`);
+      }
+
+      // Auto-select into form and trigger onReferenceSelect
+      const brokerInput = document.getElementById('bilty-broker');
+      if (brokerInput) brokerInput.value = fullRef;
+      this.onReferenceSelect(fullRef);
+
+      if (typeof dbService !== 'undefined' && dbService.add) {
+        try { await dbService.add('brokers', newBroker); } catch (e) { /* local fallback */ }
+      }
+
+      this.closeQuickAddModal();
+      AppUI.showToast(`✅ Reference ${fullRef} added & selected!`, "success");
+
+    } else if (type === 'driver') {
+      const driverName = (document.getElementById('qa-driver-name')?.value || '').trim();
+      const driverMobile = (document.getElementById('qa-driver-mobile')?.value || '').trim();
+      const assignedTruck = (document.getElementById('qa-driver-truck')?.value || '').trim().toUpperCase();
+
+      if (!driverName) {
+        AppUI.showToast("Please enter Driver Name!", "danger");
+        document.getElementById('qa-driver-name')?.focus();
+        return;
+      }
+
+      const newDriver = {
+        id: `DRV_${Date.now()}`,
+        name: driverName,
+        mobile: driverMobile || '6377445099',
+        phone: driverMobile || '6377445099',
+        truckNo: assignedTruck
+      };
+      this.drivers.unshift(newDriver);
+
+      // Add to datalist
+      const driversDatalist = document.getElementById('driversList');
+      if (driversDatalist) {
+        driversDatalist.insertAdjacentHTML('afterbegin', `<option value="${driverName}">`);
+      }
+
+      // Auto-select into form and trigger onDriverSelect
+      const driverInput = document.getElementById('bilty-driver');
+      if (driverInput) driverInput.value = driverName;
+      this.onDriverSelect(driverName);
+
+      if (typeof dbService !== 'undefined' && dbService.add) {
+        try { await dbService.add('drivers', newDriver); } catch (e) { /* local fallback */ }
+      }
+
+      this.closeQuickAddModal();
+      AppUI.showToast(`✅ Driver ${driverName} added & selected! Mobile: ${newDriver.mobile}`, "success");
+
+    } else if (type === 'consignor' || type === 'consignee') {
+      const partyName = (document.getElementById('qa-party-name')?.value || '').trim();
+      const partyGstin = (document.getElementById('qa-party-gstin')?.value || '').trim().toUpperCase();
+      const partyAddress = (document.getElementById('qa-party-address')?.value || '').trim();
+      const partyCity = (document.getElementById('qa-party-city')?.value || '').trim();
+      const partyState = (document.getElementById('qa-party-state')?.value || '').trim() || 'Rajasthan';
+      const partyMobile = (document.getElementById('qa-party-mobile')?.value || '').trim();
+
+      if (!partyName) {
+        AppUI.showToast("Please enter Party / Firm Name!", "danger");
+        document.getElementById('qa-party-name')?.focus();
+        return;
+      }
+
+      const newParty = {
+        id: `PTY_${Date.now()}`,
+        name: partyName,
+        gstin: partyGstin,
+        address: partyAddress,
+        city: partyCity,
+        state: partyState,
+        mobile: partyMobile
+      };
+      this.parties.unshift(newParty);
+      if (typeof window !== 'undefined' && Array.isArray(window.INITIAL_EXCEL_PARTIES)) {
+        window.INITIAL_EXCEL_PARTIES.unshift(newParty);
+      }
+
+      // Update both datalists
+      const cDatalist = document.getElementById('consignorsGstinList');
+      const eDatalist = document.getElementById('consigneesGstinList');
+      const optHtml = partyGstin
+        ? `<option value="${partyGstin} - ${partyName}"><option value="${partyName}"><option value="${partyGstin}">`
+        : `<option value="${partyName}">`;
+      if (cDatalist) cDatalist.insertAdjacentHTML('afterbegin', optHtml);
+      if (eDatalist) eDatalist.insertAdjacentHTML('afterbegin', optHtml);
+
+      // Select into form based on entityType
+      if (type === 'consignor') {
+        const cInput = document.getElementById('bilty-consignor');
+        if (cInput) cInput.value = partyName;
+        this.onConsignorSelect(partyName);
+        if (partyCity) {
+          const originInput = document.getElementById('bilty-origin');
+          if (originInput && !originInput.value) originInput.value = `${partyCity} (Raj.)`;
+        }
+      } else {
+        const eInput = document.getElementById('bilty-consignee');
+        if (eInput) eInput.value = partyName;
+        this.onConsigneeSelect(partyName);
+        if (partyCity) {
+          const destInput = document.getElementById('bilty-destination');
+          if (destInput && (!destInput.value || destInput.value.length < 3)) destInput.value = partyCity;
+        }
+      }
+
+      if (typeof dbService !== 'undefined' && dbService.add) {
+        try { await dbService.add('parties', newParty); } catch (e) { /* local fallback */ }
+      }
+
+      this.closeQuickAddModal();
+      AppUI.showToast(`✅ Party ${partyName} added & selected!`, "success");
+    }
   },
 
   // ----------------------------------------------------
