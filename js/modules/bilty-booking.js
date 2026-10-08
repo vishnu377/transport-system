@@ -3869,7 +3869,12 @@ const BiltyBookingModule = {
         const dotHtml = isSettled ? `<span style="color: #1e8e3e; font-size: 9.5px; margin-right: 5px;">●</span>` : '';
         const truckNo = (t.truckNo || '-').toUpperCase();
         const destination = t.destination || '-';
-        const party = t.consignor || t.truckOwner || t.reference || '-';
+        let refDisplay = (t.reference || t.broker || '').trim();
+        if (!refDisplay || refDisplay.includes('MTC & TTC') || refDisplay === '-') {
+          refDisplay = (t.consignor && !t.consignor.includes('MTC & TTC') ? t.consignor : (t.truckOwner || '-')).trim();
+        }
+        if (!refDisplay || refDisplay.includes('MTC & TTC')) refDisplay = '-';
+        const party = refDisplay;
         const driver = t.driver || '-';
         const dateStr = this.formatAppSheetDate(t.tripStartDate || t.biltyDate);
         const chevronColor = isSettled ? '#1e8e3e' : '#5f6368';

@@ -1,6 +1,8 @@
 scripts/ttc_slices/
+scripts/mtc_slices/
 scripts/crops_overview/
 scripts/test_crop_ttc_top.*
+scripts/mtc_header_crop.*
 scripts/__pycache__/
 __pycache__/
 *.pyc
