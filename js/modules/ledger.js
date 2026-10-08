@@ -18,6 +18,17 @@ const LedgerModule = {
   allOwners: [],
   allTrips: [],
   allPayments: [],
+  allCashLedger: [],
+
+  // Main Mode State: 'dashboard' | 'cash-ledger' | 'debts' | 'details' | 'statements'
+  mainViewMode: 'dashboard',
+
+  // Cash Ledger State
+  selectedCashFY: 'ALL',
+  cashPageSize: 100,
+  cashCurrentPage: 1,
+  filteredCashList: [],
+  activeCashBreakdownDate: null,
 
   // View Hierarchy State: 'year' | 'month' | 'table' | 'details'
   viewLevel: 'year',
@@ -47,6 +58,7 @@ const LedgerModule = {
     }
     await this.loadData();
     this.applyFilters();
+    this.applyCashFilters();
     this.renderRegisterTable();
     this.renderFYSidebar();
     this.renderMonthBar();
@@ -59,12 +71,369 @@ const LedgerModule = {
     this.allOwners = await dbService.getAll('truckOwners');
     this.allTrips = await dbService.getAll('trips');
     this.allPayments = await dbService.getAll('payments');
+    this.allCashLedger = await dbService.getAll('cashLedger');
   },
 
   // ----------------------------------------------------
-  // DRILLDOWN ROUTING & NAVIGATION
+  // DASHBOARD & MULTI-VIEW NAVIGATION
+  // ----------------------------------------------------
+  goToDashboardView() {
+    this.mainViewMode = 'dashboard';
+    this.searchQuery = '';
+    const sInput = document.getElementById('ledger-search-input');
+    if (sInput) {
+      sInput.value = '';
+      sInput.placeholder = 'Search Ledger';
+    }
+    this.renderCurrentView();
+  },
+
+  goToCashLedgerView(fy = 'ALL') {
+    this.mainViewMode = 'cash-ledger';
+    this.selectedCashFY = fy;
+    this.cashCurrentPage = 1;
+    this.searchQuery = '';
+    const sInput = document.getElementById('ledger-search-input');
+    if (sInput) {
+      sInput.value = '';
+      sInput.placeholder = 'Search Cash Ledger';
+    }
+    this.applyCashFilters();
+    this.renderCurrentView();
+  },
+
+  goToDebtsView(tab = 'open', fy = 'ALL') {
+    this.mainViewMode = 'debts';
+    this.currentTab = tab;
+    this.selectedFY = fy;
+    this.viewLevel = fy === 'ALL' ? 'year' : 'month';
+    this.currentPage = 1;
+    this.searchQuery = '';
+    const sInput = document.getElementById('ledger-search-input');
+    if (sInput) {
+      sInput.value = '';
+      sInput.placeholder = 'Search Ledger';
+    }
+    this.applyFilters();
+    this.renderCurrentView();
+  },
+
+  goToCompanyExpenseView(fy = 'ALL') {
+    if (typeof AppUI !== 'undefined') AppUI.showToast(`Company Expenses for ${fy} opening...`, 'info');
+    this.goToDebtsView('all', fy);
+  },
+
+  goToReceivedView(fy = 'ALL') {
+    if (typeof AppUI !== 'undefined') AppUI.showToast(`Received payments for ${fy} opening...`, 'info');
+    this.goToDebtsView('settled', fy);
+  },
+
+  goToOwnerExpenseView(fy = 'ALL') {
+    if (typeof AppUI !== 'undefined') AppUI.showToast(`Owner Expenses for ${fy} opening...`, 'info');
+    this.goToDebtsView('all', fy);
+  },
+
+  // ----------------------------------------------------
+  // CASH LEDGER FILTERING, RENDERING & ACTIONS
+  // ----------------------------------------------------
+  applyCashFilters() {
+    let list = Array.isArray(this.allCashLedger) ? [...this.allCashLedger] : [];
+    
+    // 1. FY Filter
+    if (this.selectedCashFY && this.selectedCashFY !== 'ALL') {
+      if (this.selectedCashFY === 'empty') {
+        list = list.filter(r => !r.fy);
+      } else {
+        list = list.filter(r => r.fy === this.selectedCashFY);
+      }
+    }
+
+    // 2. Search Query
+    if (this.searchQuery) {
+      const q = this.searchQuery.toLowerCase();
+      list = list.filter(r => 
+        (r.date && r.date.toLowerCase().includes(q)) ||
+        (r.displayDate && r.displayDate.toLowerCase().includes(q)) ||
+        (r.fy && r.fy.toLowerCase().includes(q)) ||
+        String(r.amountReceived || '').includes(q) ||
+        String(r.expense || '').includes(q) ||
+        String(r.debt || '').includes(q) ||
+        String(r.availableCash || '').includes(q)
+      );
+    }
+
+    this.filteredCashList = list;
+  },
+
+  filterCashFY(fy) {
+    this.selectedCashFY = fy;
+    this.cashCurrentPage = 1;
+    this.applyCashFilters();
+    this.renderCashLedgerTable();
+
+    // Update active class on tree items
+    document.querySelectorAll('.cash-tree-item').forEach(el => el.classList.remove('active'));
+    const targetEl = document.getElementById(`cash-tree-${fy.toLowerCase().replace(/[^a-z0-9]/g, '-')}`) ||
+                     (fy === 'ALL' ? document.getElementById('cash-tree-all') : null);
+    if (targetEl) targetEl.classList.add('active');
+  },
+
+  formatINR(val) {
+    if (val === null || val === undefined || isNaN(val)) return '0.00';
+    return Number(val).toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  },
+
+  renderCashLedgerTable() {
+    const tbody = document.getElementById('cash-ledger-tbody');
+    const pInfo = document.getElementById('cash-pagination-info');
+    const pBtns = document.getElementById('cash-pagination-buttons');
+    if (!tbody) return;
+
+    const total = this.filteredCashList.length;
+    let paged = this.filteredCashList;
+    let startIdx = 0;
+    let endIdx = total;
+
+    if (this.cashPageSize !== 'ALL') {
+      const size = Number(this.cashPageSize);
+      const totalPages = Math.ceil(total / size) || 1;
+      if (this.cashCurrentPage > totalPages) this.cashCurrentPage = totalPages;
+      if (this.cashCurrentPage < 1) this.cashCurrentPage = 1;
+      startIdx = (this.cashCurrentPage - 1) * size;
+      endIdx = Math.min(startIdx + size, total);
+      paged = this.filteredCashList.slice(startIdx, endIdx);
+    }
+
+    if (pInfo) {
+      pInfo.innerText = total === 0 ? 'No cash ledger entries found' : `Showing ${startIdx + 1}-${endIdx} of ${total} entries`;
+    }
+
+    // Pagination buttons
+    if (pBtns) {
+      if (this.cashPageSize === 'ALL' || total <= Number(this.cashPageSize)) {
+        pBtns.innerHTML = '';
+      } else {
+        const size = Number(this.cashPageSize);
+        const totalPages = Math.ceil(total / size);
+        pBtns.innerHTML = `
+          <button class="btn btn-outline-secondary btn-sm ${this.cashCurrentPage <= 1 ? 'disabled' : ''}" onclick="LedgerModule.changeCashPage(${this.cashCurrentPage - 1})"><i class="bi bi-chevron-left"></i></button>
+          <button class="btn btn-outline-secondary btn-sm active">${this.cashCurrentPage} / ${totalPages}</button>
+          <button class="btn btn-outline-secondary btn-sm ${this.cashCurrentPage >= totalPages ? 'disabled' : ''}" onclick="LedgerModule.changeCashPage(${this.cashCurrentPage + 1})"><i class="bi bi-chevron-right"></i></button>
+        `;
+      }
+    }
+
+    if (paged.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">No records match your filter</td></tr>`;
+      return;
+    }
+
+    let html = '';
+    for (const r of paged) {
+      const recAmt = Number(r.amountReceived) || 0;
+      const expAmt = Number(r.expense) || 0;
+      const dbtAmt = Number(r.debt) || 0;
+      const cashAmt = Number(r.availableCash) || 0;
+
+      html += `
+        <tr class="cash-group-header-row">
+          <td colspan="6"><span class="appsheet-bullet gray-bullet me-2">●</span><strong>${r.date}</strong></td>
+        </tr>
+        <tr class="appsheet-row" onclick="LedgerModule.openCashDayBreakdown('${r.date}')" style="cursor: pointer;">
+          <td><span class="appsheet-bullet gray-bullet me-1">●</span> ₹ ${this.formatINR(recAmt)}</td>
+          <td><span class="appsheet-bullet gray-bullet me-1">●</span> ₹ ${this.formatINR(expAmt)}</td>
+          <td><span class="appsheet-bullet gray-bullet me-1">●</span> ₹ ${this.formatINR(dbtAmt)}</td>
+          <td class="fw-bold"><span class="appsheet-bullet gray-bullet me-1">●</span> ₹ ${this.formatINR(cashAmt)}</td>
+          <td><span class="appsheet-bullet gray-bullet me-1">●</span> ${r.date}</td>
+          <td class="text-end text-muted"><i class="bi bi-chevron-right" style="font-size: 11px;"></i></td>
+        </tr>
+      `;
+    }
+    tbody.innerHTML = html;
+  },
+
+  changeCashPageSize(sz) {
+    this.cashPageSize = sz;
+    this.cashCurrentPage = 1;
+    this.renderCashLedgerTable();
+  },
+
+  changeCashPage(pg) {
+    this.cashCurrentPage = pg;
+    this.renderCashLedgerTable();
+  },
+
+  openAddCashModal() {
+    const dateInput = document.getElementById('cash-form-date');
+    const recInput = document.getElementById('cash-form-received');
+    const expInput = document.getElementById('cash-form-expense');
+    const debtInput = document.getElementById('cash-form-debt');
+    const descInput = document.getElementById('cash-form-desc');
+    const prevInput = document.getElementById('cash-form-preview');
+
+    if (dateInput) {
+      const today = new Date();
+      dateInput.value = today.toISOString().split('T')[0];
+    }
+    if (recInput) recInput.value = '';
+    if (expInput) expInput.value = '';
+    if (debtInput) debtInput.value = '';
+    if (descInput) descInput.value = '';
+    this.updateCashPreview();
+
+    const modalEl = document.getElementById('modal-add-cash');
+    if (modalEl && typeof bootstrap !== 'undefined') {
+      bootstrap.Modal.getOrCreateInstance(modalEl).show();
+    }
+  },
+
+  updateCashPreview() {
+    const rec = Number(document.getElementById('cash-form-received')?.value) || 0;
+    const exp = Number(document.getElementById('cash-form-expense')?.value) || 0;
+    const dbt = Number(document.getElementById('cash-form-debt')?.value) || 0;
+    const prevInput = document.getElementById('cash-form-preview');
+
+    const latestCash = (this.allCashLedger && this.allCashLedger.length > 0)
+      ? Number(this.allCashLedger[0].availableCash) || 0
+      : 0;
+    const projected = latestCash + rec - exp - dbt;
+    if (prevInput) {
+      prevInput.value = `₹ ${this.formatINR(projected)}`;
+    }
+  },
+
+  async saveCashEntry(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    const dateVal = document.getElementById('cash-form-date')?.value;
+    if (!dateVal) {
+      if (typeof AppUI !== 'undefined') AppUI.showToast('Please select a date', 'danger');
+      return;
+    }
+    const [y, m, d] = dateVal.split('-');
+    const formattedDate = `${d}/${m}/${y}`;
+    const rec = Number(document.getElementById('cash-form-received')?.value) || 0;
+    const exp = Number(document.getElementById('cash-form-expense')?.value) || 0;
+    const dbt = Number(document.getElementById('cash-form-debt')?.value) || 0;
+    const desc = document.getElementById('cash-form-desc')?.value || '';
+
+    const latestCash = (this.allCashLedger && this.allCashLedger.length > 0)
+      ? Number(this.allCashLedger[0].availableCash) || 0
+      : 0;
+    const newCash = latestCash + rec - exp - dbt;
+    const fy = (Number(m) >= 4) ? `${y}-${Number(y)+1}` : `${Number(y)-1}-${y}`;
+    const months_abbr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const displayDate = `${d} ${months_abbr[Number(m)-1]} ${y}`;
+
+    const newEntry = {
+      date: formattedDate,
+      amountReceived: rec,
+      expense: exp,
+      debt: dbt,
+      availableCash: newCash,
+      fy,
+      monthKey: `${y}-${m}`,
+      displayDate,
+      description: desc
+    };
+
+    await dbService.add('cashLedger', newEntry);
+    this.allCashLedger.unshift(newEntry);
+    this.applyCashFilters();
+    this.renderCashLedgerTable();
+
+    const modalEl = document.getElementById('modal-add-cash');
+    if (modalEl && typeof bootstrap !== 'undefined') {
+      bootstrap.Modal.getOrCreateInstance(modalEl).hide();
+    }
+    if (typeof AppUI !== 'undefined') AppUI.showToast(`Cash entry saved for ${formattedDate}`, 'success');
+  },
+
+  openCashDayBreakdown(date) {
+    this.activeCashBreakdownDate = date;
+    const record = this.allCashLedger.find(r => r.date === date);
+    if (!record) return;
+
+    const titleEl = document.getElementById('cash-breakdown-title');
+    const bodyEl = document.getElementById('cash-breakdown-body');
+
+    if (titleEl) {
+      titleEl.innerHTML = `<i class="bi bi-calendar3 me-2"></i> Cash Summary: ${record.date}`;
+    }
+
+    const rec = Number(record.amountReceived) || 0;
+    const exp = Number(record.expense) || 0;
+    const dbt = Number(record.debt) || 0;
+    const cash = Number(record.availableCash) || 0;
+    const net = rec - exp - dbt;
+
+    if (bodyEl) {
+      bodyEl.innerHTML = `
+        <div class="p-3 bg-light rounded border mb-3">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="text-muted small fw-semibold">Financial Year:</span>
+            <span class="badge bg-secondary">${record.fy || 'N/A'}</span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <span class="text-muted small">Date:</span>
+            <span class="fw-bold text-dark">${record.date} (${record.displayDate || ''})</span>
+          </div>
+        </div>
+
+        <div class="list-group list-group-flush mb-3">
+          <div class="list-group-item d-flex justify-content-between align-items-center px-2 py-2">
+            <span><span class="appsheet-bullet green-bullet me-2">●</span>(+) Amount Received</span>
+            <span class="font-monospace fw-bold text-success">₹ ${this.formatINR(rec)}</span>
+          </div>
+          <div class="list-group-item d-flex justify-content-between align-items-center px-2 py-2">
+            <span><span class="appsheet-bullet gold-bullet me-2">●</span>(-) Expense</span>
+            <span class="font-monospace fw-bold text-danger">₹ ${this.formatINR(exp)}</span>
+          </div>
+          <div class="list-group-item d-flex justify-content-between align-items-center px-2 py-2">
+            <span><span class="appsheet-bullet gold-bullet me-2">●</span>(-) Debt (Advances/Payouts)</span>
+            <span class="font-monospace fw-bold text-dark">₹ ${this.formatINR(dbt)}</span>
+          </div>
+          <div class="list-group-item d-flex justify-content-between align-items-center px-2 py-2 bg-light">
+            <span class="fw-semibold">Net Day Flow</span>
+            <span class="font-monospace fw-bold ${net >= 0 ? 'text-success' : 'text-danger'}">${net >= 0 ? '+' : ''}₹ ${this.formatINR(net)}</span>
+          </div>
+          <div class="list-group-item d-flex justify-content-between align-items-center px-2 py-2 mt-2 border rounded" style="background: #fbf2dc;">
+            <span class="fw-bold" style="color: #7a5f1e;">Available Cash Closing Balance</span>
+            <span class="font-monospace fw-bold fs-6" style="color: #7a5f1e;">₹ ${this.formatINR(cash)}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    const modalEl = document.getElementById('modal-cash-day-breakdown');
+    if (modalEl && typeof bootstrap !== 'undefined') {
+      bootstrap.Modal.getOrCreateInstance(modalEl).show();
+    }
+  },
+
+  shareCashDayWhatsApp() {
+    if (!this.activeCashBreakdownDate) return;
+    const r = this.allCashLedger.find(item => item.date === this.activeCashBreakdownDate);
+    if (!r) return;
+
+    const msg = `*MTC & TTC Cash Register Summary*\n` +
+      `Date: ${r.date}\n` +
+      `FY: ${r.fy}\n` +
+      `Received: ₹ ${this.formatINR(r.amountReceived)}\n` +
+      `Expense: ₹ ${this.formatINR(r.expense)}\n` +
+      `Debt: ₹ ${this.formatINR(r.debt)}\n` +
+      `Available Cash: ₹ ${this.formatINR(r.availableCash)}`;
+    const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+    window.open(url, '_blank');
+  },
+
+  // ----------------------------------------------------
+  // DRILLDOWN ROUTING & NAVIGATION (Debts Register)
   // ----------------------------------------------------
   goToYearView() {
+    this.mainViewMode = 'debts';
     this.viewLevel = 'year';
     this.selectedFY = 'ALL';
     this.selectedMonth = 'ALL';
@@ -76,6 +445,7 @@ const LedgerModule = {
   },
 
   goToMonthView(fy) {
+    this.mainViewMode = 'debts';
     this.viewLevel = 'month';
     this.selectedFY = fy;
     this.selectedMonth = 'ALL';
@@ -84,6 +454,7 @@ const LedgerModule = {
   },
 
   goToTableView(monthKey) {
+    this.mainViewMode = 'debts';
     this.viewLevel = 'table';
     this.selectedMonth = monthKey;
     this.currentPage = 1;
@@ -104,17 +475,11 @@ const LedgerModule = {
   },
 
   toggleViewMode() {
-    // ⊞ icon clicked: toggles between drilldown (Year/Month) and direct Table view
-    if (this.viewLevel === 'table') {
-      if (this.selectedMonth && this.selectedMonth !== 'ALL' && this.selectedFY && this.selectedFY !== 'ALL') {
-        this.goToMonthView(this.selectedFY);
-      } else {
-        this.goToYearView();
-      }
+    // ⊞ icon clicked: toggles between 8-Card Dashboard and Table/Register view
+    if (this.mainViewMode === 'dashboard') {
+      this.goToCashLedgerView();
     } else {
-      this.viewLevel = 'table';
-      this.currentPage = 1;
-      this.renderCurrentView();
+      this.goToDashboardView();
     }
   },
 
@@ -145,9 +510,11 @@ const LedgerModule = {
   },
 
   // ----------------------------------------------------
-  // MAIN VIEW RENDERER (AppSheet Single Card & Details)
+  // MAIN VIEW RENDERER (AppSheet Dashboard, Cash Ledger, Debts & Details)
   // ----------------------------------------------------
   renderCurrentView() {
+    const dashView = document.getElementById('ledger-view-dashboard');
+    const cashRegView = document.getElementById('ledger-view-cash-register');
     const regView = document.getElementById('ledger-view-register');
     const detView = document.getElementById('ledger-view-details');
     const stmtView = document.getElementById('ledger-view-statements');
@@ -159,13 +526,24 @@ const LedgerModule = {
     const drillList = document.getElementById('appsheet-drilldown-list');
     const tableContainer = document.getElementById('appsheet-table-container');
     const crumbTail = document.getElementById('appsheet-crumb-tail');
+    const breadcrumbRoot = document.getElementById('appsheet-breadcrumb');
 
     // 1. STATEMENTS TAB
     if (this.currentTab === 'statements') {
+      dashView?.classList.add('d-none');
+      cashRegView?.classList.add('d-none');
       regView?.classList.add('d-none');
       detView?.classList.add('d-none');
       stmtView?.classList.remove('d-none');
-      if (crumbTail) crumbTail.innerHTML = `<span class="sep">&gt;</span> <span class="active">Statements</span>`;
+      if (breadcrumbRoot) {
+        breadcrumbRoot.innerHTML = `
+          <a href="javascript:void(0)" onclick="LedgerModule.goToDashboardView()">Home</a>
+          <span class="sep">&gt;</span>
+          <a href="javascript:void(0)" onclick="LedgerModule.goToDashboardView()">Ledger</a>
+          <span class="sep">&gt;</span>
+          <span class="active">Statements</span>
+        `;
+      }
       this.onCategoryChange();
       return;
     }
@@ -174,22 +552,79 @@ const LedgerModule = {
 
     // 2. 3-CARD DETAILS VIEW
     if (this.viewLevel === 'details') {
+      dashView?.classList.add('d-none');
+      cashRegView?.classList.add('d-none');
       regView?.classList.add('d-none');
       detView?.classList.remove('d-none');
-      if (crumbTail) crumbTail.innerHTML = `<span class="sep">&gt;</span> <span class="active">Open Debt Details</span>`;
+      if (breadcrumbRoot) {
+        breadcrumbRoot.innerHTML = `
+          <a href="javascript:void(0)" onclick="LedgerModule.goToDashboardView()">Home</a>
+          <span class="sep">&gt;</span>
+          <a href="javascript:void(0)" onclick="LedgerModule.goToDashboardView()">Ledger</a>
+          <span class="sep">&gt;</span>
+          <span class="active">Open Debt Details</span>
+        `;
+      }
       if (this.currentDebtId) {
         this.populateDebtDetailsCard(this.currentDebtId);
       }
       return;
     }
 
-    // 3. REGISTER VIEWS (Level 1 Year, Level 2 Month, Level 3 Table)
     detView?.classList.add('d-none');
+
+    // 3. LEVEL 0: 8-CARD MULTI-DASHBOARD GRID
+    if (this.mainViewMode === 'dashboard') {
+      dashView?.classList.remove('d-none');
+      cashRegView?.classList.add('d-none');
+      regView?.classList.add('d-none');
+      if (breadcrumbRoot) {
+        breadcrumbRoot.innerHTML = `
+          <a href="javascript:void(0)" onclick="LedgerModule.goToDashboardView()">Home</a>
+          <span class="sep">&gt;</span>
+          <span class="active">Ledger</span>
+        `;
+      }
+      return;
+    }
+
+    // 4. LEVEL 1: CASH LEDGER REGISTER VIEW
+    if (this.mainViewMode === 'cash-ledger') {
+      dashView?.classList.add('d-none');
+      cashRegView?.classList.remove('d-none');
+      regView?.classList.add('d-none');
+      if (breadcrumbRoot) {
+        breadcrumbRoot.innerHTML = `
+          <a href="javascript:void(0)" onclick="LedgerModule.goToDashboardView()">Home</a>
+          <span class="sep">&gt;</span>
+          <a href="javascript:void(0)" onclick="LedgerModule.goToDashboardView()">Ledger</a>
+          <span class="sep">&gt;</span>
+          <span class="active">Cash Ledger</span>
+        `;
+      }
+      this.renderCashLedgerTable();
+      return;
+    }
+
+    // 5. LEVEL 1-3: DEBTS REGISTER VIEWS
+    dashView?.classList.add('d-none');
+    cashRegView?.classList.add('d-none');
     regView?.classList.remove('d-none');
+
+    const tabName = this.currentTab === 'open' ? 'Open' : this.currentTab === 'all' ? 'All' : 'Settled';
+    if (breadcrumbRoot) {
+      breadcrumbRoot.innerHTML = `
+        <a href="javascript:void(0)" onclick="LedgerModule.goToDashboardView()">Home</a>
+        <span class="sep">&gt;</span>
+        <a href="javascript:void(0)" onclick="LedgerModule.goToDashboardView()">Ledger</a>
+        <span class="sep">&gt;</span>
+        <span class="active">${tabName}</span>
+      `;
+    }
 
     // Update Card Header Title
     if (cardTitle) {
-      cardTitle.innerText = this.currentTab === 'open' ? 'Open' : this.currentTab === 'all' ? 'All' : 'Settled';
+      cardTitle.innerText = tabName;
     }
 
     // --- LEVEL 1: YEAR VIEW (Matching WhatsApp Image 2026-09-23 at 4.10.05 PM.jpeg) ---
@@ -441,6 +876,12 @@ const LedgerModule = {
 
   onSearchInput(val) {
     this.searchQuery = (val || '').toLowerCase().trim();
+    if (this.mainViewMode === 'cash-ledger') {
+      this.cashCurrentPage = 1;
+      this.applyCashFilters();
+      this.renderCashLedgerTable();
+      return;
+    }
     if (this.searchQuery) {
       this.viewLevel = 'table';
       this.selectedFY = 'ALL';
@@ -455,6 +896,12 @@ const LedgerModule = {
     const sInput = document.getElementById('ledger-search-input');
     if (sInput) sInput.value = '';
     this.searchQuery = '';
+    if (this.mainViewMode === 'cash-ledger') {
+      this.cashCurrentPage = 1;
+      this.applyCashFilters();
+      this.renderCashLedgerTable();
+      return;
+    }
     this.applyFilters();
     this.renderCurrentView();
   },
@@ -1465,6 +1912,13 @@ const LedgerModule = {
   // ----------------------------------------------------
   switchTab(tabName) {
     this.currentTab = tabName;
+    if (tabName === 'statements') {
+      this.mainViewMode = 'statements';
+    } else {
+      this.mainViewMode = 'debts';
+      this.viewLevel = 'year';
+      this.selectedFY = 'ALL';
+    }
 
     document.getElementById('tab-btn-open')?.classList.toggle('active', tabName === 'open');
     document.getElementById('tab-btn-all')?.classList.toggle('active', tabName === 'all');

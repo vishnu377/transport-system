@@ -170,6 +170,10 @@ class DBService {
       return this.getAllDrivers(cloudItems);
     }
 
+    if (collectionName === 'cashLedger') {
+      return this.getAllCashLedger(cloudItems);
+    }
+
     // LocalStorage Fallback for other collections
     const localData = localStorage.getItem(`tms_${collectionName}`);
     return localData ? JSON.parse(localData) : [];
@@ -342,6 +346,50 @@ class DBService {
       totalReturned,
       dueAmount
     });
+  }
+
+  // --- Authentic Google AppSheet Cash Ledger Engine ---
+  getAllCashLedger(cloudItems = []) {
+    const baseCash = (typeof window !== 'undefined' && Array.isArray(window.SAMPLE_CASH_LEDGER_DATA))
+      ? window.SAMPLE_CASH_LEDGER_DATA
+      : (typeof SAMPLE_CASH_LEDGER_DATA !== 'undefined' ? SAMPLE_CASH_LEDGER_DATA : []);
+
+    const customEntries = JSON.parse(localStorage.getItem('tms_custom_cash_ledger') || '[]');
+    const editedMap = JSON.parse(localStorage.getItem('tms_edited_cash_ledger') || '{}');
+    const deletedList = JSON.parse(localStorage.getItem('tms_deleted_cash_ledger') || '[]');
+    const deletedSet = new Set(deletedList.map(String));
+
+    const entryMap = new Map();
+    for (const item of baseCash) {
+      const id = item.date;
+      if (!deletedSet.has(String(id))) {
+        entryMap.set(id, editedMap[id] ? { ...item, ...editedMap[id] } : item);
+      }
+    }
+    for (const item of customEntries) {
+      const id = item.date;
+      if (!deletedSet.has(String(id))) {
+        entryMap.set(id, editedMap[id] ? { ...item, ...editedMap[id] } : item);
+      }
+    }
+    if (Array.isArray(cloudItems)) {
+      for (const item of cloudItems) {
+        const id = item.date;
+        if (!deletedSet.has(String(id))) {
+          entryMap.set(id, { ...(entryMap.get(id) || {}), ...item });
+        }
+      }
+    }
+
+    const all = Array.from(entryMap.values());
+    all.sort((a, b) => {
+      const pA = (a.date || '').split('/');
+      const pB = (b.date || '').split('/');
+      const keyA = pA.length === 3 ? `${pA[2]}-${pA[1]}-${pA[0]}` : a.date;
+      const keyB = pB.length === 3 ? `${pB[2]}-${pB[1]}-${pB[0]}` : b.date;
+      return keyB.localeCompare(keyA);
+    });
+    return all;
   }
 
   getAllParties(cloudItems = []) {
@@ -734,6 +782,28 @@ class DBService {
           console.log(` Cloud Synced: drivers/${newItem.id}`);
         } catch (err) {
           console.warn('Firestore sync error for drivers:', err.message);
+        }
+      }
+      return newItem;
+    }
+
+    if (collectionName === 'cashLedger') {
+      const newItem = {
+        ...itemData,
+        id: itemData.id || itemData.date || `CASH_${Date.now()}`,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      const customCash = JSON.parse(localStorage.getItem('tms_custom_cash_ledger') || '[]');
+      customCash.unshift(newItem);
+      this.safeSetItem('tms_custom_cash_ledger', JSON.stringify(customCash));
+
+      if (this.isFirebaseReady) {
+        try {
+          await this.db.collection('cashLedger').doc(newItem.id).set(newItem);
+          console.log(` Cloud Synced: cashLedger/${newItem.id}`);
+        } catch (err) {
+          console.warn('Firestore sync error for cashLedger:', err.message);
         }
       }
       return newItem;

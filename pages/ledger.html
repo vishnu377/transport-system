@@ -496,6 +496,153 @@
       z-index: 1060;
       padding: 14px;
     }
+
+    /* AppSheet 8-Card Dashboard Grid */
+    .appsheet-dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      padding: 16px 24px;
+    }
+    @media (max-width: 1400px) {
+      .appsheet-dashboard-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 768px) {
+      .appsheet-dashboard-grid {
+        grid-template-columns: 1fr;
+        padding: 12px;
+      }
+    }
+
+    .appsheet-dash-card {
+      background: #ffffff;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      min-height: 280px;
+      transition: box-shadow 0.15s;
+    }
+    .appsheet-dash-card:hover {
+      box-shadow: 0 2px 6px rgba(0,0,0,0.07);
+    }
+    .appsheet-dash-card-header {
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #eeeeee;
+      gap: 8px;
+    }
+    .appsheet-dash-card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #202124;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      cursor: pointer;
+    }
+    .appsheet-dash-card-title:hover {
+      text-decoration: underline;
+    }
+    .appsheet-dash-card-tools {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #5f6368;
+      font-size: 13px;
+    }
+    .appsheet-dash-card-body {
+      padding: 0;
+      flex: 1;
+      overflow-y: auto;
+      max-height: 380px;
+    }
+
+    .pink-bullet {
+      color: #e91e63;
+    }
+    .green-bullet {
+      color: #2e7d32;
+    }
+    .gray-bullet {
+      color: #5f6368;
+    }
+
+    /* Cash Ledger Split Layout */
+    .cash-ledger-container {
+      display: flex;
+      min-height: calc(100vh - 110px);
+      background: #ffffff;
+    }
+    .cash-ledger-tree-sidebar {
+      width: 220px;
+      border-right: 1px solid #eeeeee;
+      padding: 14px 12px;
+      flex-shrink: 0;
+      background: #ffffff;
+    }
+    .cash-tree-item {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #202124;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+      transition: background 0.1s;
+      user-select: none;
+    }
+    .cash-tree-item:hover {
+      background: #f1f3f4;
+    }
+    .cash-tree-item.active {
+      background: #fbf2dc;
+      color: #7a5f1e;
+      font-weight: 600;
+    }
+    .cash-ledger-main-area {
+      flex: 1;
+      overflow-x: auto;
+      background: #ffffff;
+    }
+    .cash-ledger-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+    }
+    .cash-ledger-table th {
+      padding: 8px 14px;
+      font-weight: 600;
+      color: #5f6368;
+      font-size: 11.5px;
+      border-bottom: 1px solid #e0e0e0;
+      background: #ffffff;
+      white-space: nowrap;
+    }
+    .cash-ledger-table td {
+      padding: 7px 14px;
+      border-bottom: 1px solid #f2f2f2;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .cash-group-header-row td {
+      background: #fafafa;
+      color: #202124;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 8px 14px;
+      border-top: 1px solid #eeeeee;
+      border-bottom: 1px solid #eeeeee;
+    }
   </style>
 </head>
 <body>
@@ -515,7 +662,7 @@
         <button class="btn btn-sm btn-light border-0 d-md-none" onclick="LedgerModule.toggleNavDrawer()">
           <i class="bi bi-list fs-5"></i>
         </button>
-        <a href="javascript:void(0)" onclick="LedgerModule.goToYearView()" class="appsheet-brand">
+        <a href="javascript:void(0)" onclick="LedgerModule.goToDashboardView()" class="appsheet-brand">
           <i class="bi bi-journal-text fs-5 text-secondary"></i>
           <span>MTC And TTC - Ledger</span>
         </a>
@@ -537,7 +684,7 @@
           <button class="btn btn-outline-secondary btn-sm py-1 px-2 border" onclick="location.reload()" title="Sync / Refresh">
             <i class="bi bi-arrow-clockwise"></i>
           </button>
-          <button type="button" class="btn btn-outline-secondary btn-sm py-1 px-1 border dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+          <button type="button" class="btn-outline-secondary btn-sm py-1 px-1 border dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
             <span class="visually-hidden">Toggle Dropdown</span>
           </button>
           <ul class="dropdown-menu dropdown-menu-end shadow-sm" style="font-size: 0.85rem;">
@@ -557,10 +704,9 @@
     <!-- Subheader with Breadcrumbs and Controls -->
     <div class="appsheet-subheader">
       <div class="appsheet-breadcrumb" id="appsheet-breadcrumb">
-        <a href="javascript:void(0)" onclick="LedgerModule.goToYearView()">Home</a>
+        <a href="javascript:void(0)" onclick="LedgerModule.goToDashboardView()">Home</a>
         <span class="sep">&gt;</span>
-        <a href="javascript:void(0)" onclick="LedgerModule.goToYearView()">Ledger</a>
-        <span id="appsheet-crumb-tail"></span>
+        <span class="active">Ledger</span>
       </div>
 
       <div class="d-flex align-items-center gap-2 flex-wrap">
@@ -643,9 +789,551 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- 4. APPSHEET MAIN CARD (Level 1, 2, 3) -->
+    <!-- 4. APPSHEET 8-CARD MULTI-DASHBOARD (Level 0) -->
     <!-- ========================================== -->
-    <div id="ledger-view-register">
+    <div id="ledger-view-dashboard">
+      <div class="appsheet-dashboard-grid">
+        
+        <!-- CARD 1: Cash Ledger -->
+        <div class="appsheet-dash-card" id="card-dash-cash-ledger">
+          <div class="appsheet-dash-card-header">
+            <span class="appsheet-dash-card-title" onclick="LedgerModule.goToCashLedgerView()">Cash Ledger</span>
+            <div class="appsheet-dash-card-tools">
+              <button type="button" class="btn-appsheet-add py-0 px-2" style="font-size: 0.76rem;" onclick="LedgerModule.openAddCashModal()">+ Add</button>
+              <span class="appsheet-tool-icon" onclick="LedgerModule.toggleFilterDropdown()" title="Filter">🔻</span>
+              <span class="appsheet-tool-icon" onclick="LedgerModule.goToCashLedgerView()" title="Expand Cash Ledger">↗</span>
+            </div>
+          </div>
+          <div class="appsheet-dash-card-body">
+            <div class="appsheet-drill-section-label">Year</div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToCashLedgerView('ALL')">
+              <span class="appsheet-drill-label-all">All</span>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToCashLedgerView('2026-2027')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet gray-bullet">●</span>
+                <span class="appsheet-drill-label-gold">2026-2027</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToCashLedgerView('2025-2026')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet gray-bullet">●</span>
+                <span class="appsheet-drill-label-gold">2025-2026</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToCashLedgerView('2024-2025')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet gray-bullet">●</span>
+                <span class="appsheet-drill-label-gold">2024-2025</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToCashLedgerView('empty')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet gray-bullet">●</span>
+                <span class="text-muted small">(empty)</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 2: Returned Amount -->
+        <div class="appsheet-dash-card" id="card-dash-returned">
+          <div class="appsheet-dash-card-header">
+            <span class="appsheet-dash-card-title" onclick="LedgerModule.goToDebtsView('settled')">Returned Amount</span>
+            <div class="appsheet-dash-card-tools">
+              <span class="appsheet-tool-icon" onclick="LedgerModule.toggleFilterDropdown()" title="Filter">🔻</span>
+              <span class="appsheet-tool-icon" onclick="LedgerModule.goToDebtsView('settled')" title="Expand Returned Amount">↗</span>
+            </div>
+          </div>
+          <div class="appsheet-dash-card-body">
+            <div class="appsheet-drill-section-label">Year</div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('settled', 'ALL')">
+              <span class="appsheet-drill-label-all">All</span>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('settled', '2026-2027')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet green-bullet">●</span>
+                <span class="appsheet-drill-label-gold">2026-2027</span>
+                <span class="appsheet-drill-badge">₹ 12,912,180.00</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('settled', '2025-2026')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet green-bullet">●</span>
+                <span class="appsheet-drill-label-gold">2025-2026</span>
+                <span class="appsheet-drill-badge">₹ 29,619,314.00</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('settled', '2024-2025')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet green-bullet">●</span>
+                <span class="appsheet-drill-label-gold">2024-2025</span>
+                <span class="appsheet-drill-badge">₹ 16,291,034.00</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 3: Company -->
+        <div class="appsheet-dash-card" id="card-dash-company">
+          <div class="appsheet-dash-card-header">
+            <span class="appsheet-dash-card-title" onclick="LedgerModule.goToCompanyExpenseView()">Company</span>
+            <div class="appsheet-dash-card-tools">
+              <button type="button" class="btn-appsheet-add py-0 px-2" style="font-size: 0.76rem;" onclick="AppUI.showToast('Company Expense form ready', 'info')">+ Add Expen...</button>
+              <span class="appsheet-tool-icon" onclick="LedgerModule.toggleFilterDropdown()" title="Filter">🔻</span>
+              <span class="appsheet-tool-icon" onclick="LedgerModule.goToCompanyExpenseView()" title="Expand Company">↗</span>
+            </div>
+          </div>
+          <div class="appsheet-dash-card-body">
+            <div class="appsheet-drill-section-label">Year</div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToCompanyExpenseView('ALL')">
+              <span class="appsheet-drill-label-all">All</span>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToCompanyExpenseView('2026-2027')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet gold-bullet">●</span>
+                <span class="appsheet-drill-label-gold">2026-2027</span>
+                <span class="appsheet-drill-badge">₹ 683,636.370</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToCompanyExpenseView('2025-2026')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet gold-bullet">●</span>
+                <span class="appsheet-drill-label-gold">2025-2026</span>
+                <span class="appsheet-drill-badge">₹ 1,964,934.530</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToCompanyExpenseView('2024-2025')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet gold-bullet">●</span>
+                <span class="appsheet-drill-label-gold">2024-2025</span>
+                <span class="appsheet-drill-badge">₹ 602,393.000</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 4: Received -->
+        <div class="appsheet-dash-card" id="card-dash-received">
+          <div class="appsheet-dash-card-header">
+            <span class="appsheet-dash-card-title" onclick="LedgerModule.goToReceivedView()">Received</span>
+            <div class="appsheet-dash-card-tools">
+              <button type="button" class="btn-appsheet-add py-0 px-2" style="font-size: 0.76rem;" onclick="AppUI.showToast('New Received payment ready', 'info')">+ New Recei...</button>
+              <span class="appsheet-tool-icon" onclick="LedgerModule.toggleFilterDropdown()" title="Filter">🔻</span>
+              <span class="appsheet-tool-icon" onclick="LedgerModule.goToReceivedView()" title="Expand Received">↗</span>
+            </div>
+          </div>
+          <div class="appsheet-dash-card-body">
+            <div class="appsheet-drill-section-label">Year</div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToReceivedView('ALL')">
+              <span class="appsheet-drill-label-all">All</span>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToReceivedView('2026-2027')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet green-bullet">●</span>
+                <span class="appsheet-drill-label-gold">2026-2027</span>
+                <span class="appsheet-drill-badge">₹ 42,922,365.00</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToReceivedView('2025-2026')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet green-bullet">●</span>
+                <span class="appsheet-drill-label-gold">2025-2026</span>
+                <span class="appsheet-drill-badge">₹ 59,470,903.00</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToReceivedView('2024-2025')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet green-bullet">●</span>
+                <span class="appsheet-drill-label-gold">2024-2025</span>
+                <span class="appsheet-drill-badge">₹ 27,980,085.00</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 5: Open -->
+        <div class="appsheet-dash-card" id="card-dash-open">
+          <div class="appsheet-dash-card-header">
+            <span class="appsheet-dash-card-title" onclick="LedgerModule.goToDebtsView('open')">Open</span>
+            <div class="appsheet-dash-card-tools">
+              <span class="text-secondary small cursor-pointer" title="Info">ⓘ</span>
+              <button type="button" class="btn-appsheet-add py-0 px-2" style="font-size: 0.76rem;" onclick="LedgerModule.openAddDebtModal()">+ Add Debt</button>
+              <span class="appsheet-tool-icon" onclick="LedgerModule.toggleFilterDropdown()" title="Filter">🔻</span>
+              <span class="appsheet-tool-icon" onclick="LedgerModule.goToDebtsView('open')" title="Expand Open Debts">↗</span>
+            </div>
+          </div>
+          <div class="appsheet-dash-card-body">
+            <div class="appsheet-drill-section-label">Year</div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('open', 'ALL')">
+              <span class="appsheet-drill-label-all">All</span>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('open', '2026-2027')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet gold-bullet">●</span>
+                <span class="appsheet-drill-label-gold">2026-2027</span>
+                <span class="appsheet-drill-badge">₹ 2,024,104.00</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('open', '2025-2026')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet gold-bullet">●</span>
+                <span class="appsheet-drill-label-gold">2025-2026</span>
+                <span class="appsheet-drill-badge">₹ 1,191,950.00</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('open', '2024-2025')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet gold-bullet">●</span>
+                <span class="appsheet-drill-label-gold">2024-2025</span>
+                <span class="appsheet-drill-badge">₹ 899,600.00</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('open', '2023-2024')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet gold-bullet">●</span>
+                <span class="appsheet-drill-label-gold">2023-2024</span>
+                <span class="appsheet-drill-badge">₹ 277,215.00</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('open', '2022-2023')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet gold-bullet">●</span>
+                <span class="appsheet-drill-label-gold">2022-2023</span>
+                <span class="appsheet-drill-badge">₹ 57,500.00</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('open', '2021-2022')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet gold-bullet">●</span>
+                <span class="appsheet-drill-label-gold">2021-2022</span>
+                <span class="appsheet-drill-badge">₹ 111,050.00</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('open', '2020-2021')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet gold-bullet">●</span>
+                <span class="appsheet-drill-label-gold">2020-2021</span>
+                <span class="appsheet-drill-badge">₹ 68,100.00</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('open', '2019-2020')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet gold-bullet">●</span>
+                <span class="appsheet-drill-label-gold">2019-2020</span>
+                <span class="appsheet-drill-badge">₹ 229,300.00</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 6: All Debts -->
+        <div class="appsheet-dash-card" id="card-dash-all-debts">
+          <div class="appsheet-dash-card-header">
+            <span class="appsheet-dash-card-title" onclick="LedgerModule.goToDebtsView('all')">All Debts</span>
+            <div class="appsheet-dash-card-tools">
+              <span class="appsheet-tool-icon" onclick="LedgerModule.toggleFilterDropdown()" title="Filter">🔻</span>
+              <span class="appsheet-tool-icon" onclick="LedgerModule.goToDebtsView('all')" title="Expand All Debts">↗</span>
+            </div>
+          </div>
+          <div class="appsheet-dash-card-body">
+            <div class="appsheet-drill-section-label">Year</div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('all', 'ALL')">
+              <span class="appsheet-drill-label-all">All</span>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('all', '2026-2027')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet gold-bullet">●</span>
+                <span class="appsheet-drill-label-gold">2026-2027</span>
+                <span class="appsheet-drill-badge">₹ 15,760,198.00</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('all', '2025-2026')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet green-bullet">●</span>
+                <span class="appsheet-drill-label-gold">2025-2026</span>
+                <span class="appsheet-drill-badge">₹ 27,735,468.00</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('all', '2024-2025')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet green-bullet">●</span>
+                <span class="appsheet-drill-label-gold">2024-2025</span>
+                <span class="appsheet-drill-badge">₹ 19,049,831.00</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('all', '2023-2024')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet gold-bullet">●</span>
+                <span class="appsheet-drill-label-gold">2023-2024</span>
+                <span class="appsheet-drill-badge">₹ 388,200.00</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('all', '2022-2023')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet gold-bullet">●</span>
+                <span class="appsheet-drill-label-gold">2022-2023</span>
+                <span class="appsheet-drill-badge">₹ 143,300.00</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('all', '2021-2022')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet green-bullet">●</span>
+                <span class="appsheet-drill-label-gold">2021-2022</span>
+                <span class="appsheet-drill-badge">₹ 185,050.00</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('all', '2020-2021')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet gold-bullet">●</span>
+                <span class="appsheet-drill-label-gold">2020-2021</span>
+                <span class="appsheet-drill-badge">₹ 138,100.00</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('all', '2019-2020')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet gold-bullet">●</span>
+                <span class="appsheet-drill-label-gold">2019-2020</span>
+                <span class="appsheet-drill-badge">₹ 268,300.00</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 7: Owner -->
+        <div class="appsheet-dash-card" id="card-dash-owner">
+          <div class="appsheet-dash-card-header">
+            <span class="appsheet-dash-card-title" onclick="LedgerModule.goToOwnerExpenseView()">Owner</span>
+            <div class="appsheet-dash-card-tools">
+              <button type="button" class="btn-appsheet-add py-0 px-2" style="font-size: 0.76rem;" onclick="AppUI.showToast('Owner Expense form ready', 'info')">+ Add Expen...</button>
+              <span class="appsheet-tool-icon" onclick="LedgerModule.toggleFilterDropdown()" title="Filter">🔻</span>
+              <span class="appsheet-tool-icon" onclick="LedgerModule.goToOwnerExpenseView()" title="Expand Owner">↗</span>
+            </div>
+          </div>
+          <div class="appsheet-dash-card-body">
+            <div class="appsheet-drill-section-label">Year</div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToOwnerExpenseView('ALL')">
+              <span class="appsheet-drill-label-all">All</span>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToOwnerExpenseView('2026-2027')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet pink-bullet">●</span>
+                <span class="appsheet-drill-label-gold">2026-2027</span>
+                <span class="appsheet-drill-badge">₹ 30,396,992.000</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToOwnerExpenseView('2025-2026')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet pink-bullet">●</span>
+                <span class="appsheet-drill-label-gold">2025-2026</span>
+                <span class="appsheet-drill-badge">₹ 26,620,921.000</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToOwnerExpenseView('2024-2025')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet pink-bullet">●</span>
+                <span class="appsheet-drill-label-gold">2024-2025</span>
+                <span class="appsheet-drill-badge">₹ 6,164,020.000</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 8: Settled -->
+        <div class="appsheet-dash-card" id="card-dash-settled">
+          <div class="appsheet-dash-card-header">
+            <span class="appsheet-dash-card-title" onclick="LedgerModule.goToDebtsView('settled')">Settled</span>
+            <div class="appsheet-dash-card-tools">
+              <span class="appsheet-tool-icon" onclick="LedgerModule.toggleFilterDropdown()" title="Filter">🔻</span>
+              <span class="appsheet-tool-icon" onclick="LedgerModule.goToDebtsView('settled')" title="Expand Settled">↗</span>
+            </div>
+          </div>
+          <div class="appsheet-dash-card-body">
+            <div class="appsheet-drill-section-label">Year</div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('settled', 'ALL')">
+              <span class="appsheet-drill-label-all">All</span>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('settled', '2026-2027')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet green-bullet">●</span>
+                <span class="appsheet-drill-label-gold">2026-2027</span>
+                <span class="appsheet-drill-badge">₹ 13,540,243.00</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('settled', '2025-2026')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet green-bullet">●</span>
+                <span class="appsheet-drill-label-gold">2025-2026</span>
+                <span class="appsheet-drill-badge">₹ 25,999,868.00</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('settled', '2024-2025')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet green-bullet">●</span>
+                <span class="appsheet-drill-label-gold">2024-2025</span>
+                <span class="appsheet-drill-badge">₹ 18,059,731.00</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('settled', '2023-2024')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet green-bullet">●</span>
+                <span class="appsheet-drill-label-gold">2023-2024</span>
+                <span class="appsheet-drill-badge">₹ 10,500.00</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('settled', '2022-2023')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet green-bullet">●</span>
+                <span class="appsheet-drill-label-gold">2022-2023</span>
+                <span class="appsheet-drill-badge">₹ 85,800.00</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('settled', '2021-2022')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet green-bullet">●</span>
+                <span class="appsheet-drill-label-gold">2021-2022</span>
+                <span class="appsheet-drill-badge">₹ 74,000.00</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('settled', '2020-2021')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet green-bullet">●</span>
+                <span class="appsheet-drill-label-gold">2020-2021</span>
+                <span class="appsheet-drill-badge">₹ 70,000.00</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('settled', '2019-2020')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet green-bullet">●</span>
+                <span class="appsheet-drill-label-gold">2019-2020</span>
+                <span class="appsheet-drill-badge">₹ 39,000.00</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 5. CASH LEDGER REGISTER (Level 1) -->
+    <!-- ========================================== -->
+    <div id="ledger-view-cash-register" class="d-none">
+      <div class="cash-ledger-container">
+        <!-- Left Sidebar: Year Tree -->
+        <div class="cash-ledger-tree-sidebar">
+          <div class="cash-tree-item active" id="cash-tree-all" onclick="LedgerModule.filterCashFY('ALL')">
+            <span>All</span>
+          </div>
+          <div class="cash-tree-item" id="cash-tree-2026-2027" onclick="LedgerModule.filterCashFY('2026-2027')">
+            <i class="bi bi-caret-right-fill text-muted" style="font-size: 11px;"></i>
+            <span>2026-2027</span>
+          </div>
+          <div class="cash-tree-item" id="cash-tree-2025-2026" onclick="LedgerModule.filterCashFY('2025-2026')">
+            <i class="bi bi-caret-right-fill text-muted" style="font-size: 11px;"></i>
+            <span>2025-2026</span>
+          </div>
+          <div class="cash-tree-item" id="cash-tree-2024-2025" onclick="LedgerModule.filterCashFY('2024-2025')">
+            <i class="bi bi-caret-right-fill text-muted" style="font-size: 11px;"></i>
+            <span>2024-2025</span>
+          </div>
+          <div class="cash-tree-item" id="cash-tree-empty" onclick="LedgerModule.filterCashFY('empty')">
+            <i class="bi bi-caret-right-fill text-muted" style="font-size: 11px;"></i>
+            <span class="text-muted">(empty)</span>
+          </div>
+        </div>
+
+        <!-- Main Area: Daily Cash Table -->
+        <div class="cash-ledger-main-area">
+          <div class="table-responsive" style="max-height: calc(100vh - 150px); overflow-y: auto;">
+            <table class="cash-ledger-table" id="cash-ledger-table">
+              <thead class="sticky-top" style="z-index: 5;">
+                <tr>
+                  <th style="min-width: 140px;">Amount Received</th>
+                  <th style="min-width: 130px;">Expense</th>
+                  <th style="min-width: 130px;">Debt</th>
+                  <th style="min-width: 150px;">Available Cash</th>
+                  <th style="min-width: 120px;">Date</th>
+                  <th style="width: 30px;"></th>
+                </tr>
+              </thead>
+              <tbody id="cash-ledger-tbody">
+                <!-- Dynamically populated with date group headers and daily rows -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Cash Ledger Pagination Footer -->
+          <div class="p-2 bg-white border-top d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <small class="text-muted" id="cash-pagination-info">Showing 1-100 entries</small>
+            <div class="d-flex align-items-center gap-2">
+              <select id="cash-page-size" class="form-select form-select-sm" style="width: auto; font-size: 0.8rem;" onchange="LedgerModule.changeCashPageSize(this.value)">
+                <option value="50">50 rows</option>
+                <option value="100" selected>100 rows</option>
+                <option value="250">250 rows</option>
+                <option value="ALL">All rows</option>
+              </select>
+              <div class="btn-group btn-group-sm" id="cash-pagination-buttons">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 6. APPSHEET MAIN CARD (Debts Register) -->
+    <!-- ========================================== -->
+    <div id="ledger-view-register" class="d-none">
       <div class="appsheet-main-card" id="appsheet-main-card">
         
         <!-- Card Header (Open, 🔻, ☑, ⤢) -->
@@ -1198,6 +1886,83 @@
   </div>
 
   <!-- ========================================== -->
+  <!-- MODAL: ADD CASH LEDGER ENTRY -->
+  <!-- ========================================== -->
+  <div class="modal fade" id="modal-add-cash" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-centered">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header bg-dark text-white py-2 px-3">
+          <h6 class="modal-title fw-bold" style="color: #bfa15f;">
+            <i class="bi bi-cash-stack me-2"></i> + Add Cash Ledger Entry
+          </h6>
+          <button type="button" class="btn-close btn-close-white btn-sm" data-bs-dismiss="modal"></button>
+        </div>
+        <form id="form-add-cash" onsubmit="LedgerModule.saveCashEntry(event)">
+          <div class="modal-body p-3">
+            <div class="row g-3">
+              <div class="col-12">
+                <label class="form-label small fw-semibold">Date *</label>
+                <input type="date" id="cash-form-date" class="form-control form-control-sm" required>
+              </div>
+              <div class="col-6">
+                <label class="form-label small fw-semibold">Amount Received (₹)</label>
+                <input type="number" id="cash-form-received" class="form-control form-control-sm font-monospace fw-bold" step="any" placeholder="0.00" oninput="LedgerModule.updateCashPreview()">
+              </div>
+              <div class="col-6">
+                <label class="form-label small fw-semibold">Expense (₹)</label>
+                <input type="number" id="cash-form-expense" class="form-control form-control-sm font-monospace fw-bold" step="any" placeholder="0.00" oninput="LedgerModule.updateCashPreview()">
+              </div>
+              <div class="col-6">
+                <label class="form-label small fw-semibold">Debt (₹)</label>
+                <input type="number" id="cash-form-debt" class="form-control form-control-sm font-monospace fw-bold" step="any" placeholder="0.00" oninput="LedgerModule.updateCashPreview()">
+              </div>
+              <div class="col-6">
+                <label class="form-label small fw-semibold text-muted">Closing Cash (Est.)</label>
+                <input type="text" id="cash-form-preview" class="form-control form-control-sm font-monospace text-muted" readonly placeholder="Auto-calculated">
+              </div>
+              <div class="col-12">
+                <label class="form-label small fw-semibold">Description / Narration</label>
+                <input type="text" id="cash-form-desc" class="form-control form-control-sm" placeholder="e.g. Daily cash receipt / expense notes">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer py-2">
+            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn-appsheet-add">
+              <i class="bi bi-check2-circle me-1"></i> Save Cash Entry
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: CASH DAY BREAKDOWN -->
+  <!-- ========================================== -->
+  <div class="modal fade" id="modal-cash-day-breakdown" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header bg-dark text-white py-2 px-3">
+          <h6 class="modal-title fw-bold" style="color: #bfa15f;" id="cash-breakdown-title">
+            <i class="bi bi-calendar3 me-2"></i> Cash Summary: DD/MM/YYYY
+          </h6>
+          <button type="button" class="btn-close btn-close-white btn-sm" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-3" id="cash-breakdown-body">
+          <!-- Populated dynamically -->
+        </div>
+        <div class="modal-footer py-2">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-outline-success btn-sm" onclick="LedgerModule.shareCashDayWhatsApp()">
+            <i class="bi bi-whatsapp me-1"></i> WhatsApp
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
   <!-- MODAL: BULK EXCEL / CSV IMPORTER -->
   <!-- ========================================== -->
   <div class="modal fade" id="modal-import-debts" tabindex="-1" aria-hidden="true">
@@ -1349,6 +2114,7 @@
   <script src="../js/sample-trips-data.js"></script>
   <script src="../js/sample-debts-data.js"></script>
   <script src="../js/sample-cheques-data.js"></script>
+  <script src="../js/sample-cash-ledger-data.js"></script>
   <script src="../js/db-service.js"></script>
   <script src="../js/app.js"></script>
   <script src="../js/modules/ledger.js"></script>
