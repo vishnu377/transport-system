@@ -1227,34 +1227,64 @@ const LedgerModule = {
         <tr class="returned-date-group-row">
           <td colspan="12">
             <span class="appsheet-bullet green-bullet">●</span>
-            <span class="fw-bold me-3" style="color: #202124;">${dateKey}</span>
-            <span class="fw-bold text-success" style="font-size: 13px;">₹ ${this.formatINR(groupSum)}</span>
+            <span class="fw-bold me-2 group-header-date" style="color: #0b8043; font-size: 13px;">${dateKey}</span>
+            <span class="appsheet-drill-badge" style="background: #e8eaed; color: #3c4043; border-radius: 12px; padding: 2px 10px; font-size: 11.5px; font-weight: 500;">₹ ${this.formatINR(groupSum)}</span>
           </td>
         </tr>
       `;
 
-      // Data Rows
+      // Data Rows - Authentic AppSheet all-green cells with bullet on every column
       items.forEach(r => {
         const isSelected = this.activeReturnedRecordId === r.id;
         html += `
           <tr class="returned-data-row ${isSelected ? 'active' : ''}" id="ret-row-${r.id}" onclick="LedgerModule.openSettledDebtDetails('${r.id}')">
             <td>
               <span class="appsheet-bullet green-bullet">●</span>
-              <span>${r.returnMode || '-'}</span>
+              <span>${r.returnMode || ''}</span>
             </td>
-            <td class="fw-semibold">${r.truckNo || '-'}</td>
-            <td>${r.displayReturnDate || r.returnDate || '-'}</td>
-            <td class="text-end fw-bold text-success">₹ ${this.formatINR(r.returnedAmount)}</td>
-            <td>${r.displayDebtDate || r.debtDate || '-'}</td>
-            <td class="text-end fw-semibold">₹ ${this.formatINR(r.debtAmount)}</td>
+            <td>
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span class="fw-semibold">${r.truckNo || ''}</span>
+            </td>
+            <td>
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span>${r.displayReturnDate || r.returnDate || ''}</span>
+            </td>
+            <td class="text-end">
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span class="fw-bold">₹ ${this.formatINR(r.returnedAmount)}</span>
+            </td>
+            <td>
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span>${r.displayDebtDate || r.debtDate || ''}</span>
+            </td>
+            <td class="text-end">
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span class="fw-semibold">₹ ${this.formatINR(r.debtAmount)}</span>
+            </td>
             
             <!-- Full table columns (hidden in split view) -->
-            <td class="col-ext">${r.debtType || '-'}</td>
-            <td class="col-ext">${r.grNo || '-'}</td>
-            <td class="col-ext">${r.company || '-'}</td>
-            <td class="col-ext text-truncate" style="max-width: 170px;" title="${r.depositorName || ''}">${r.depositorName || '-'}</td>
-            <td class="col-ext text-truncate" style="max-width: 190px;" title="${r.description || ''}">${r.description || '-'}</td>
-            <td class="text-center text-muted" style="font-size: 11px;"><i class="bi bi-chevron-right"></i></td>
+            <td class="col-ext">
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span>${r.debtType || ''}</span>
+            </td>
+            <td class="col-ext">
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span>${r.grNo ? this.formatINR(Number(r.grNo)) : ''}</span>
+            </td>
+            <td class="col-ext">
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span>${r.company || ''}</span>
+            </td>
+            <td class="col-ext text-truncate" style="max-width: 175px;" title="${r.depositorName || ''}">
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span>${r.depositorName || ''}</span>
+            </td>
+            <td class="col-ext text-truncate" style="max-width: 195px;" title="${r.description || ''}">
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span>${r.description || ''}</span>
+            </td>
+            <td class="text-center" style="font-size: 11px; color: #5f6368;"><i class="bi bi-chevron-right"></i></td>
           </tr>
         `;
       });

@@ -945,38 +945,57 @@
       font-size: 12.5px;
     }
     .returned-amount-table th {
-      padding: 8px 12px;
+      padding: 9px 12px;
       font-weight: 600;
-      color: #5f6368;
+      color: #3c4043;
       font-size: 11.5px;
-      border-bottom: 1px solid #e0e0e0;
+      border-bottom: 1px solid #dadce0;
       background: #ffffff;
       white-space: nowrap;
+      position: sticky;
+      top: 0;
+      z-index: 5;
     }
     .returned-amount-table td {
-      padding: 6px 12px;
-      border-bottom: 1px solid #f2f2f2;
+      padding: 7px 12px;
+      border-bottom: 1px solid #f1f3f4;
       font-weight: 500;
       white-space: nowrap;
-      color: #202124;
+      color: #0b8043 !important; /* Authentic Google AppSheet All-Green cell text */
+      font-size: 12.5px;
+      vertical-align: middle;
+    }
+    .returned-amount-table td span {
+      color: inherit;
+    }
+    .returned-amount-table td .green-bullet {
+      color: #00b11f !important;
+      font-size: 11px;
+      margin-right: 4px;
+      display: inline-block;
+      vertical-align: middle;
     }
     .returned-amount-table tbody tr.returned-data-row {
       cursor: pointer;
-      transition: background 0.12s;
+      transition: background-color 0.1s ease;
     }
     .returned-amount-table tbody tr.returned-data-row:hover {
-      background-color: #f8f9fa;
+      background-color: #f1f8f3 !important;
     }
     .returned-amount-table tbody tr.returned-data-row.active {
-      background-color: #e8f0fe !important;
+      background-color: #e6f4ea !important;
+    }
+    .returned-amount-table tbody tr.returned-data-row.active td {
+      color: #086131 !important;
+      font-weight: 600;
     }
     .returned-date-group-row td {
-      background: #fafafa;
-      color: #202124;
-      font-size: 12px;
+      background: #ffffff;
+      color: #0b8043;
+      font-size: 13px;
       font-weight: 700;
-      padding: 7px 12px;
-      border-top: 1px solid #eeeeee;
+      padding: 8px 12px;
+      border-top: 1px solid #e0e0e0;
       border-bottom: 1px solid #eeeeee;
     }
     .returned-split-wrapper.split-open .col-ext {
@@ -991,9 +1010,25 @@
       display: flex;
       flex-direction: column;
       flex-shrink: 0;
-      transition: width 0.22s ease;
+      transition: width 0.22s ease, transform 0.22s ease;
       overflow-y: auto;
       max-height: calc(100vh - 190px);
+    }
+    @media (max-width: 991.98px) {
+      .settled-debt-panel {
+        position: fixed !important;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 100% !important;
+        max-width: 520px;
+        max-height: 100vh !important;
+        z-index: 1050;
+        box-shadow: -4px 0 24px rgba(0,0,0,0.2);
+      }
+      .settled-debt-panel-body {
+        grid-template-columns: 1fr !important;
+      }
     }
     .settled-debt-panel.fullscreen {
       position: absolute;
@@ -1003,7 +1038,7 @@
       bottom: 0;
       width: 100% !important;
       max-height: 100% !important;
-      z-index: 100;
+      z-index: 1060;
     }
     .settled-debt-panel-header {
       padding: 8px 16px;
