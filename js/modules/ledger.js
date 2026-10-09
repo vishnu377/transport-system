@@ -2223,12 +2223,14 @@ const LedgerModule = {
       // Search Query Filter
       if (query) {
         const match =
+          (item.receivedDate && item.receivedDate.toLowerCase().includes(query)) ||
           (item.displayDate && item.displayDate.toLowerCase().includes(query)) ||
           (item.date && item.date.toLowerCase().includes(query)) ||
           (item.depositor && item.depositor.toLowerCase().includes(query)) ||
           (item.depositorType && item.depositorType.toLowerCase().includes(query)) ||
           (item.truckNo && item.truckNo.toLowerCase().includes(query)) ||
           (item.owner && item.owner.toLowerCase().includes(query)) ||
+          (item.referenceName && item.referenceName.toLowerCase().includes(query)) ||
           (item.refName && item.refName.toLowerCase().includes(query)) ||
           (item.from && item.from.toLowerCase().includes(query)) ||
           (item.to && item.to.toLowerCase().includes(query)) ||
@@ -2427,7 +2429,7 @@ const LedgerModule = {
     if (!this.filteredReceivedList || this.filteredReceivedList.length === 0) {
       tbody.innerHTML = `
         <tr>
-          <td colspan="9" class="text-center py-5 text-muted">
+          <td colspan="11" class="text-center py-5 text-muted">
             <i class="bi bi-inbox fs-2 d-block mb-2 text-secondary"></i>
             No received payment records match the selected filter or search criteria.
             <div class="mt-2">
@@ -2490,7 +2492,7 @@ const LedgerModule = {
       }
     }
 
-    // Grouping by Type (AppSheet structure)
+    // Grouping by Type (AppSheet screenshot structure)
     const grouped = new Map();
     recordsToDisplay.forEach(item => {
       const tKey = item.type || 'Other';
@@ -2504,41 +2506,39 @@ const LedgerModule = {
     grouped.forEach((items, typeKey) => {
       const groupSum = items.reduce((acc, x) => acc + (Number(x.amount) || 0), 0);
 
-      // Authentic AppSheet Group Header (● Type ₹ Total)
+      // Authentic AppSheet Group Header (● Type ₹Total with light gray pill badge)
       html += `
         <tr class="received-type-group-row">
-          <td colspan="9">
-            <span class="appsheet-bullet green-bullet">●</span>
+          <td colspan="11" style="background: #ffffff; padding: 10px 14px; border-bottom: 1px solid #e0e0e0;">
+            <span class="appsheet-bullet green-bullet" style="color: #00b11f; font-size: 13px;">●</span>
             <span class="fw-bold me-2 group-header-type" style="color: #0b8043; font-size: 13px;">${typeKey}</span>
-            <span class="appsheet-drill-badge green-badge">₹ ${this.formatINR(groupSum)}</span>
+            <span class="received-tree-badge" style="background: #f1f3f4; color: #5f6368; border: 1px solid #dadce0; border-radius: 12px; padding: 2px 10px; font-size: 11.5px; font-weight: 500;">₹${this.formatINR(groupSum)}</span>
           </td>
         </tr>
       `;
 
-      // Data Rows - Authentic AppSheet green cells with green bullet on every column
+      // Data Rows - Authentic AppSheet Columns matching original crop:
+      // G.R.No. | Truck No. | To | Amount | Mode | Type | Owner | Depositor | Description | Received Date | >
       items.forEach(r => {
         const isSelected = this.activeReceivedPaymentId === r.id;
+        const recDate = r.receivedDate || r.displayDate || r.date || '';
         html += `
           <tr class="received-data-row ${isSelected ? 'active' : ''}" id="rec-row-${r.id}" onclick="LedgerModule.openReceivedPaymentDetails('${r.id}')">
             <td>
               <span class="appsheet-bullet green-bullet">●</span>
-              <span>${r.displayDate || r.date || ''}</span>
+              <span>${r.grNo || ''}</span>
             </td>
             <td>
               <span class="appsheet-bullet green-bullet">●</span>
-              <span class="fw-bold" style="color: #0b8043;">₹ ${this.formatINR(r.amount)}</span>
-            </td>
-            <td class="text-truncate" style="max-width: 170px;" title="${r.depositor || ''}">
-              <span class="appsheet-bullet green-bullet">●</span>
-              <span>${r.depositor || ''}</span>
+              <span>${r.truckNo || ''}</span>
             </td>
             <td>
               <span class="appsheet-bullet green-bullet">●</span>
-              <span>${r.depositorType || ''}</span>
+              <span>${r.to || ''}</span>
             </td>
             <td>
               <span class="appsheet-bullet green-bullet">●</span>
-              <span class="fw-medium">${r.truckNo || ''}</span>
+              <span class="fw-bold">₹ ${this.formatINR(r.amount)}</span>
             </td>
             <td>
               <span class="appsheet-bullet green-bullet">●</span>
@@ -2546,13 +2546,24 @@ const LedgerModule = {
             </td>
             <td>
               <span class="appsheet-bullet green-bullet">●</span>
-              <span>${r.status || 'Paid'}</span>
+              <span>${r.type || ''}</span>
             </td>
-            <td class="text-truncate" style="max-width: 190px;" title="${r.description || ''}">
+            <td class="text-truncate" style="max-width: 150px;" title="${r.owner || ''}">
               <span class="appsheet-bullet green-bullet">●</span>
-              <span>${r.description || ''}</span>
+              <span>${r.owner || ''}</span>
             </td>
-            <td class="text-center" style="font-size: 11px; color: #0b8043;"><i class="bi bi-chevron-right"></i></td>
+            <td class="text-truncate" style="max-width: 170px;" title="${r.depositor || ''}">
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span>${r.depositor || ''}</span>
+            </td>
+            <td class="text-truncate" style="max-width: 170px;" title="${r.description || ''}">
+              ${r.description ? `<span class="appsheet-bullet green-bullet">●</span><span>${r.description}</span>` : ''}
+            </td>
+            <td>
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span class="fw-medium">${recDate}</span>
+            </td>
+            <td class="text-center" style="font-size: 11px; color: #5f6368;"><i class="bi bi-chevron-right"></i></td>
           </tr>
         `;
       });
@@ -2581,66 +2592,120 @@ const LedgerModule = {
     const content = document.getElementById('received-panel-content');
     if (!content) return;
 
+    const recDate = r.receivedDate || r.displayDate || r.date || '-';
+    const ownerName = r.owner || '-';
+    const refName = r.referenceName || r.refName || (ownerName !== '-' ? ownerName : '-');
+    const depositorName = r.depositor || '-';
+    const grNo = r.grNo || '-';
+    const transport = r.transport || 'TTC';
+    const fromCity = r.from || '-';
+    const toCity = r.to || '-';
+    const recType = r.type || '-';
+    const status = r.status || 'Paid';
+    const amountStr = `₹${this.formatINR(r.amount)}`;
+    const mode = r.mode || '-';
+    const desc = r.description || '-';
+
     content.innerHTML = `
-      <div class="received-detail-card shadow-sm">
-        <div class="received-field-row">
-          <span class="received-field-label">Received Date</span>
-          <span class="received-field-value text-dark" style="font-weight: 500;">${r.displayDate || r.date || '-'}</span>
-        </div>
-        <div class="received-field-row">
-          <span class="received-field-label">Truck No.</span>
-          <span class="received-field-value" style="color: #202124;">${r.truckNo || '-'}</span>
-        </div>
-        <div class="received-field-row">
-          <span class="received-field-label">Owner</span>
-          <span class="received-field-value" style="color: #202124;">${r.owner || '-'}</span>
-        </div>
-        <div class="received-field-row">
-          <span class="received-field-label">Reference Name</span>
-          <span class="received-field-value" style="color: #202124;">${r.refName || '-'}</span>
-        </div>
-        <div class="received-field-row">
-          <span class="received-field-label">Depositor</span>
-          <span class="received-field-value" style="color: #202124;">${r.depositor || '-'}</span>
-        </div>
-        <div class="received-field-row">
-          <span class="received-field-label">G.R.No.</span>
-          <span class="received-field-value" style="color: #202124;">${r.grNo || '-'}</span>
-        </div>
-        <div class="received-field-row">
-          <span class="received-field-label">Transport</span>
-          <span class="received-field-value" style="color: #202124;">${r.transport || 'TTC'}</span>
-        </div>
-        <div class="received-field-row">
-          <span class="received-field-label">From</span>
-          <span class="received-field-value" style="color: #202124;">${r.from || '-'}</span>
-        </div>
-        <div class="received-field-row">
-          <span class="received-field-label">To</span>
-          <span class="received-field-value" style="color: #202124;">${r.to || '-'}</span>
-        </div>
-        <div class="received-field-row">
-          <span class="received-field-label">Type</span>
-          <span class="received-field-value" style="color: #202124;">${r.type || '-'}</span>
-        </div>
-        <div class="received-field-row">
-          <span class="received-field-label">Status</span>
-          <span class="received-field-value">
-            <span class="appsheet-bullet green-bullet">●</span>
-            <span>${r.status || 'Paid'}</span>
-          </span>
-        </div>
-        <div class="received-field-row">
-          <span class="received-field-label">Amount</span>
-          <span class="received-field-value fs-6 fw-bold" style="color: #0b8043;">₹ ${this.formatINR(r.amount)}</span>
-        </div>
-        <div class="received-field-row">
-          <span class="received-field-label">Mode</span>
-          <span class="received-field-value" style="color: #202124;">${r.mode || 'Cash'}</span>
-        </div>
-        <div class="received-field-row mb-0">
-          <span class="received-field-label">Description</span>
-          <span class="received-field-value" style="color: #5f6368; font-weight: normal;">${r.description || '-'}</span>
+      <div class="p-3">
+        <div class="received-detail-card shadow-sm" style="border: 1px solid #dadce0; border-radius: 4px; padding: 22px 20px; background: #ffffff;">
+          <div class="received-field-row">
+            <span class="received-field-label">Received Date</span>
+            <span class="received-field-value">
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span>${recDate}</span>
+            </span>
+          </div>
+          <div class="received-field-row">
+            <span class="received-field-label">Truck No.</span>
+            <span class="received-field-value">
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span>${r.truckNo || '-'}</span>
+            </span>
+          </div>
+          <div class="received-field-row">
+            <span class="received-field-label">Owner</span>
+            <span class="received-field-value">
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span>${ownerName}</span>
+            </span>
+          </div>
+          <div class="received-field-row">
+            <span class="received-field-label">Reference Name</span>
+            <span class="received-field-value">
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span>${refName}</span>
+            </span>
+          </div>
+          <div class="received-field-row">
+            <span class="received-field-label">Depositor</span>
+            <span class="received-field-value">
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span>${depositorName}</span>
+            </span>
+          </div>
+          <div class="received-field-row">
+            <span class="received-field-label">G.R.No.</span>
+            <span class="received-field-value">
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span>${grNo}</span>
+            </span>
+          </div>
+          <div class="received-field-row">
+            <span class="received-field-label">Transport</span>
+            <span class="received-field-value">
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span>${transport}</span>
+            </span>
+          </div>
+          <div class="received-field-row">
+            <span class="received-field-label">From</span>
+            <span class="received-field-value">
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span>${fromCity}</span>
+            </span>
+          </div>
+          <div class="received-field-row">
+            <span class="received-field-label">To</span>
+            <span class="received-field-value">
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span>${toCity}</span>
+            </span>
+          </div>
+          <div class="received-field-row">
+            <span class="received-field-label">Type</span>
+            <span class="received-field-value">
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span>${recType}</span>
+            </span>
+          </div>
+          <div class="received-field-row">
+            <span class="received-field-label">Status</span>
+            <span class="received-field-value">
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span>${status}</span>
+            </span>
+          </div>
+          <div class="received-field-row">
+            <span class="received-field-label">Amount</span>
+            <span class="received-field-value fs-6 fw-bold">
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span>${amountStr}</span>
+            </span>
+          </div>
+          <div class="received-field-row">
+            <span class="received-field-label">Mode</span>
+            <span class="received-field-value">
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span>${mode}</span>
+            </span>
+          </div>
+          <div class="received-field-row mb-0">
+            <span class="received-field-label">Description</span>
+            <span class="received-field-value">
+              ${desc !== '-' ? `<span class="appsheet-bullet green-bullet">●</span><span>${desc}</span>` : '-'}
+            </span>
+          </div>
         </div>
       </div>
     `;
@@ -2817,12 +2882,14 @@ const LedgerModule = {
       id: `REC_MANUAL_${Date.now()}`,
       date: dateVal,
       displayDate,
+      receivedDate: displayDate,
       amount: amountVal,
       type: typeVal,
       depositor: depositorVal,
       depositorType: depositorTypeVal,
       truckNo: truckNoVal,
-      owner: depositorTypeVal === 'Truck Owner' ? depositorVal : '',
+      owner: depositorTypeVal === 'Truck Owner' ? depositorVal : (depositorVal || '-'),
+      referenceName: depositorTypeVal === 'Reference' ? depositorVal : '',
       refName: depositorTypeVal === 'Reference' ? depositorVal : '',
       grNo: '',
       transport: 'TTC',

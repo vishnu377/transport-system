@@ -2802,23 +2802,24 @@
           <div class="received-tree-sublist d-none" id="received-sublist-2024-2025"></div>
         </div>
 
-        <!-- Main Area: Toolbar + Split Layout -->
-        <div class="received-main-area">
+          <!-- Authentic AppSheet Toolbar (Ledger > Received, + New Recei..., 🔻, ☑, ⤢) -->
           <div class="d-flex align-items-center justify-content-between px-3 py-2 border-bottom bg-white flex-wrap gap-2">
-            <div class="d-flex align-items-center gap-2 flex-wrap">
-              <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2 d-inline-flex align-items-center gap-1" id="btn-toggle-received-sidebar" onclick="LedgerModule.toggleReceivedDateSidebar()" style="font-size: 0.8rem;">
+            <div class="d-flex align-items-center gap-2">
+              <button type="button" class="btn btn-sm btn-light border py-1 px-2 d-inline-flex align-items-center gap-1" id="btn-toggle-received-sidebar" onclick="LedgerModule.toggleReceivedDateSidebar()" title="Toggle Sidebar">
                 <i class="bi bi-layout-sidebar-inset" id="btn-toggle-received-icon"></i>
-                <span id="btn-toggle-received-text">Hide Date Filter</span>
               </button>
-              <span class="badge bg-light text-dark border fw-normal" id="received-current-filter-badge" style="font-size: 0.78rem;">
-                <i class="bi bi-funnel me-1 text-muted"></i>2026-2027 &gt; <strong>All Types</strong>
-              </span>
+              <div class="appsheet-breadcrumb mb-0" style="font-size: 13px;">
+                <span class="text-secondary">Ledger</span>
+                <span class="text-muted mx-1">&gt;</span>
+                <span class="fw-semibold text-dark">Received</span>
+              </div>
             </div>
             <div class="d-flex align-items-center gap-2">
               <button type="button" class="btn btn-sm text-white py-1 px-3 fw-medium d-inline-flex align-items-center gap-1" style="background-color: #8d6e32; font-size: 0.8rem; border-radius: 4px;" onclick="LedgerModule.openAddIncomeRecordModal()">
                 <i class="bi bi-plus-lg"></i> + New Recei...
               </button>
               <span class="appsheet-tool-icon" onclick="LedgerModule.toggleFilterDropdown()" title="Filter">🔻</span>
+              <span class="appsheet-tool-icon" onclick="AppUI.showToast('Multi-select mode ready', 'info')" title="Select">☑</span>
               <span class="appsheet-tool-icon" onclick="LedgerModule.toggleReceivedFullscreen()" title="Full screen">⤢</span>
             </div>
           </div>
@@ -2829,14 +2830,16 @@
               <table class="received-table" id="received-table">
                 <thead class="sticky-top" style="z-index: 5;">
                   <tr>
-                    <th style="min-width: 105px;">Date</th>
-                    <th style="min-width: 125px;">Amount</th>
-                    <th style="min-width: 160px;">Depositor</th>
-                    <th style="min-width: 130px;">Depositor Type</th>
-                    <th style="min-width: 125px;">Truck No.</th>
-                    <th style="min-width: 115px;">Mode</th>
-                    <th style="min-width: 95px;">Status</th>
+                    <th style="min-width: 100px;">G.R.No.</th>
+                    <th style="min-width: 110px;">Truck No.</th>
+                    <th style="min-width: 130px;">To</th>
+                    <th style="min-width: 115px;">Amount</th>
+                    <th style="min-width: 120px;">Mode</th>
+                    <th style="min-width: 130px;">Type</th>
+                    <th style="min-width: 150px;">Owner</th>
+                    <th style="min-width: 170px;">Depositor</th>
                     <th style="min-width: 170px;">Description</th>
+                    <th style="min-width: 115px;">Received Date</th>
                     <th style="width: 25px;"></th>
                   </tr>
                 </thead>
@@ -2848,10 +2851,12 @@
             <div class="received-panel d-none" id="panel-received-details">
               <div class="received-panel-header">
                 <div class="d-flex align-items-center gap-2">
+                  <span class="appsheet-tool-icon cursor-pointer" onclick="AppUI.showToast('Select mode', 'info')" title="Select">☑</span>
                   <span class="appsheet-tool-icon cursor-pointer" onclick="LedgerModule.toggleReceivedDetailFullscreen()" title="Expand / Shrink">↗</span>
-                  <span class="fw-bold" style="font-size: 14px; color: #202124;">Income Slice</span>
+                  <span class="fw-bold ms-1" style="font-size: 14px; color: #202124;">Income Slice</span>
                 </div>
                 <div class="d-flex align-items-center gap-2">
+                  <button type="button" class="btn btn-sm text-white py-0 px-2 fw-medium" style="background-color: #8d6e32; font-size: 0.76rem; border-radius: 4px;" onclick="LedgerModule.openAddIncomeRecordModal()">+ New Recei...</button>
                   <span class="appsheet-tool-icon cursor-pointer" onclick="LedgerModule.prevReceivedPaymentRecord()" title="Previous">&lt;</span>
                   <span class="appsheet-tool-icon cursor-pointer" onclick="LedgerModule.nextReceivedPaymentRecord()" title="Next">&gt;</span>
                   <span class="appsheet-tool-icon cursor-pointer" onclick="LedgerModule.toggleReceivedDetailFullscreen()" title="Full screen" id="btn-expand-received-panel">↗</span>
