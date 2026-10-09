@@ -577,12 +577,16 @@
     /* Cash Ledger Split Layout */
     .cash-ledger-container {
       display: flex;
-      min-height: calc(100vh - 110px);
+      height: calc(100vh - 100px);
+      max-height: calc(100vh - 100px);
       background: #ffffff;
       position: relative;
+      overflow: hidden;
     }
     .cash-ledger-tree-sidebar {
       width: 220px;
+      height: 100%;
+      max-height: 100%;
       border-right: 1px solid #eeeeee;
       padding: 14px 12px;
       flex-shrink: 0;
@@ -593,10 +597,12 @@
     }
     .cash-ledger-tree-sidebar.collapsed {
       width: 0 !important;
+      max-width: 0 !important;
       padding: 0 !important;
       opacity: 0;
       border-right: none !important;
       pointer-events: none;
+      display: none !important;
     }
     @media (max-width: 768px) {
       .cash-ledger-tree-sidebar {
@@ -606,9 +612,13 @@
         left: 0;
         z-index: 100;
         box-shadow: 2px 0 8px rgba(0,0,0,0.15);
+        display: block !important;
       }
       .cash-ledger-tree-sidebar.collapsed {
         transform: translateX(-100%);
+        width: 220px !important;
+        max-width: 220px !important;
+        display: block !important;
       }
     }
     .cash-tree-item {
@@ -634,8 +644,14 @@
       font-weight: 600;
     }
     .cash-ledger-main-area {
-      flex: 1;
-      overflow-x: auto;
+      flex: 1 1 0;
+      min-width: 0;
+      min-height: 0;
+      height: 100%;
+      max-height: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
       background: #ffffff;
     }
     .cash-ledger-table {
@@ -816,12 +832,16 @@
     /* ==================================================== */
     .returned-amount-container {
       display: flex;
-      min-height: calc(100vh - 110px);
+      height: calc(100vh - 100px);
+      max-height: calc(100vh - 100px);
       background: #ffffff;
       position: relative;
+      overflow: hidden;
     }
     .returned-amount-tree-sidebar {
       width: 230px;
+      height: 100%;
+      max-height: 100%;
       border-right: 1px solid #eeeeee;
       padding: 14px 10px;
       flex-shrink: 0;
@@ -832,10 +852,12 @@
     }
     .returned-amount-tree-sidebar.collapsed {
       width: 0 !important;
+      max-width: 0 !important;
       padding: 0 !important;
       opacity: 0;
       border-right: none !important;
       pointer-events: none;
+      display: none !important;
     }
     @media (max-width: 768px) {
       .returned-amount-tree-sidebar {
@@ -845,9 +867,13 @@
         left: 0;
         z-index: 100;
         box-shadow: 2px 0 8px rgba(0,0,0,0.15);
+        display: block !important;
       }
       .returned-amount-tree-sidebar.collapsed {
         transform: translateX(-100%);
+        width: 230px !important;
+        max-width: 230px !important;
+        display: block !important;
       }
     }
     .returned-tree-header {
@@ -920,24 +946,31 @@
       color: #202124;
     }
     .returned-amount-main-area {
-      flex: 1;
+      flex: 1 1 0;
+      min-width: 0;
+      min-height: 0;
+      height: 100%;
+      max-height: 100%;
       display: flex;
       flex-direction: column;
-      min-width: 0;
+      overflow: hidden;
       background: #ffffff;
     }
     .returned-split-wrapper {
       display: flex;
-      flex: 1;
+      flex: 1 1 0;
+      min-height: 0;
+      height: 100%;
       overflow: hidden;
       position: relative;
     }
     .returned-table-wrapper {
-      flex: 1;
+      flex: 1 1 0;
+      min-width: 0;
+      min-height: 0;
+      height: 100%;
       overflow-x: auto;
       overflow-y: auto;
-      max-height: calc(100vh - 190px);
-      min-width: 0;
     }
     .returned-amount-table {
       width: 100%;
@@ -1005,6 +1038,8 @@
     /* Master-Detail Side Panel (Settled Debt Details) */
     .settled-debt-panel {
       width: 530px;
+      height: 100%;
+      max-height: 100%;
       border-left: 1px solid #dadce0;
       background: #f8f9fa;
       display: flex;
@@ -1012,7 +1047,6 @@
       flex-shrink: 0;
       transition: width 0.22s ease, transform 0.22s ease;
       overflow-y: auto;
-      max-height: calc(100vh - 190px);
     }
     @media (max-width: 991.98px) {
       .settled-debt-panel {
@@ -1119,12 +1153,16 @@
     /* ==================================================== */
     .company-expense-container {
       display: flex;
-      min-height: calc(100vh - 110px);
+      height: calc(100vh - 100px);
+      max-height: calc(100vh - 100px);
       background: #ffffff;
       position: relative;
+      overflow: hidden;
     }
     .company-tree-sidebar {
       width: 230px;
+      height: 100%;
+      max-height: 100%;
       border-right: 1px solid #eeeeee;
       padding: 14px 10px;
       flex-shrink: 0;
@@ -1135,10 +1173,12 @@
     }
     .company-tree-sidebar.collapsed {
       width: 0 !important;
+      max-width: 0 !important;
       padding: 0 !important;
       opacity: 0;
       border-right: none !important;
       pointer-events: none;
+      display: none !important;
     }
     @media (max-width: 991.98px) {
       .company-tree-sidebar {
@@ -1150,9 +1190,13 @@
         width: 260px;
         box-shadow: 4px 0 20px rgba(0,0,0,0.18);
         background: #ffffff;
+        display: block !important;
       }
       .company-tree-sidebar.collapsed {
         transform: translateX(-100%);
+        width: 260px !important;
+        max-width: 260px !important;
+        display: block !important;
       }
     }
     .company-tree-header {
@@ -1222,24 +1266,31 @@
     }
 
     .company-expense-main-area {
-      flex: 1;
+      flex: 1 1 0;
+      min-width: 0;
+      min-height: 0;
+      height: 100%;
+      max-height: 100%;
       display: flex;
       flex-direction: column;
-      min-width: 0;
+      overflow: hidden;
       background: #ffffff;
     }
     .company-split-wrapper {
       display: flex;
-      flex: 1;
+      flex: 1 1 0;
+      min-height: 0;
+      height: 100%;
       overflow: hidden;
       position: relative;
     }
     .company-table-wrapper {
-      flex: 1;
+      flex: 1 1 0;
+      min-width: 0;
+      min-height: 0;
+      height: 100%;
       overflow-x: auto;
       overflow-y: auto;
-      max-height: calc(100vh - 190px);
-      min-width: 0;
       -webkit-overflow-scrolling: touch;
     }
     .company-expense-table {
@@ -1305,6 +1356,8 @@
     /* Master-Detail Side Panel (Company Expense Details) */
     .company-expense-panel {
       width: 480px;
+      height: 100%;
+      max-height: 100%;
       border-left: 1px solid #dadce0;
       background: #f8f9fa;
       display: flex;
@@ -1312,7 +1365,6 @@
       flex-shrink: 0;
       transition: width 0.22s ease, transform 0.22s ease;
       overflow-y: auto;
-      max-height: calc(100vh - 190px);
     }
     @media (max-width: 991.98px) {
       .company-expense-panel {
@@ -1403,12 +1455,16 @@
     .received-main-container {
       display: flex;
       flex-direction: row;
-      min-height: calc(100vh - 110px);
+      height: calc(100vh - 100px);
+      max-height: calc(100vh - 100px);
       background: #ffffff;
       position: relative;
+      overflow: hidden;
     }
     .received-tree-sidebar {
       width: 250px;
+      height: 100%;
+      max-height: 100%;
       border-right: 1px solid #eeeeee;
       padding: 14px 10px;
       flex-shrink: 0;
@@ -1419,10 +1475,12 @@
     }
     .received-tree-sidebar.collapsed {
       width: 0 !important;
+      max-width: 0 !important;
       padding: 0 !important;
       opacity: 0;
       border-right: none !important;
       pointer-events: none;
+      display: none !important;
     }
     @media (max-width: 991.98px) {
       .received-tree-sidebar {
@@ -1434,12 +1492,15 @@
         width: 270px;
         box-shadow: 4px 0 20px rgba(0,0,0,0.18);
         background: #ffffff;
+        display: block !important;
       }
       .received-tree-sidebar.collapsed {
         transform: translateX(-100%);
         width: 270px !important;
+        max-width: 270px !important;
         opacity: 1 !important;
         pointer-events: auto;
+        display: block !important;
       }
     }
     .received-tree-header {
@@ -1508,25 +1569,31 @@
       font-size: 12px;
     }
     .received-main-area {
-      flex: 1;
+      flex: 1 1 0;
+      min-width: 0;
+      min-height: 0;
+      height: 100%;
+      max-height: 100%;
       display: flex;
       flex-direction: column;
-      min-width: 0;
       overflow: hidden;
       background: #ffffff;
     }
     .received-split-wrapper {
       display: flex;
-      flex: 1;
+      flex: 1 1 0;
+      min-height: 0;
+      height: 100%;
       overflow: hidden;
       position: relative;
     }
     .received-table-wrapper {
-      flex: 1;
+      flex: 1 1 0;
+      min-width: 0;
+      min-height: 0;
+      height: 100%;
       overflow-y: auto;
       overflow-x: auto;
-      max-height: calc(100vh - 190px);
-      min-width: 0;
       transition: all 0.25s ease;
       -webkit-overflow-scrolling: touch;
     }
@@ -1596,12 +1663,13 @@
     /* Master-Detail Side Panel (Income Slice) */
     .received-panel {
       width: 440px;
+      height: 100%;
+      max-height: 100%;
       border-left: 1px solid #dadce0;
       background: #f8f9fa;
       display: flex;
       flex-direction: column;
       overflow-y: auto;
-      max-height: calc(100vh - 190px);
       flex-shrink: 0;
       transition: all 0.25s ease;
       z-index: 10;
@@ -1695,12 +1763,16 @@
     .open-debts-container {
       display: flex;
       flex-direction: row;
-      min-height: calc(100vh - 110px);
+      height: calc(100vh - 100px);
+      max-height: calc(100vh - 100px);
       background: #ffffff;
       position: relative;
+      overflow: hidden;
     }
     .open-debts-tree-sidebar {
       width: 250px;
+      height: 100%;
+      max-height: 100%;
       border-right: 1px solid #eeeeee;
       padding: 14px 10px;
       flex-shrink: 0;
@@ -1711,10 +1783,12 @@
     }
     .open-debts-tree-sidebar.collapsed {
       width: 0 !important;
+      max-width: 0 !important;
       padding: 0 !important;
       opacity: 0;
       border-right: none !important;
       pointer-events: none;
+      display: none !important;
     }
     @media (max-width: 991.98px) {
       .open-debts-tree-sidebar {
@@ -1726,12 +1800,15 @@
         width: 270px;
         box-shadow: 4px 0 20px rgba(0,0,0,0.18);
         background: #ffffff;
+        display: block !important;
       }
       .open-debts-tree-sidebar.collapsed {
         transform: translateX(-100%);
         width: 270px !important;
+        max-width: 270px !important;
         opacity: 1 !important;
         pointer-events: auto;
+        display: block !important;
       }
     }
     .open-debts-tree-header {
@@ -1815,25 +1892,31 @@
       font-weight: 600;
     }
     .open-debts-main-area {
-      flex: 1;
+      flex: 1 1 0;
+      min-width: 0;
+      min-height: 0;
+      height: 100%;
+      max-height: 100%;
       display: flex;
       flex-direction: column;
-      min-width: 0;
       overflow: hidden;
       background: #ffffff;
     }
     .open-debts-split-wrapper {
       display: flex;
-      flex: 1;
+      flex: 1 1 0;
+      min-height: 0;
+      height: 100%;
       overflow: hidden;
       position: relative;
     }
     .open-debts-table-wrapper {
-      flex: 1;
+      flex: 1 1 0;
+      min-width: 0;
+      min-height: 0;
+      height: 100%;
       overflow-y: auto;
       overflow-x: auto;
-      max-height: calc(100vh - 190px);
-      min-width: 0;
       transition: all 0.25s ease;
       -webkit-overflow-scrolling: touch;
     }
@@ -1918,12 +2001,13 @@
     /* Master-Detail Side Panel */
     .open-debts-panel {
       width: 480px;
+      height: 100%;
+      max-height: 100%;
       border-left: 1px solid #dadce0;
       background: #f8f9fa;
       display: flex;
       flex-direction: column;
       overflow-y: auto;
-      max-height: calc(100vh - 190px);
       flex-shrink: 0;
       transition: all 0.25s ease;
       z-index: 10;
@@ -2712,7 +2796,7 @@
             </div>
           </div>
 
-          <div class="table-responsive" style="max-height: calc(100vh - 190px); overflow-y: auto;">
+          <div class="table-responsive flex-grow-1" style="height: 100%; min-height: 0; overflow-y: auto;">
             <table class="cash-ledger-table" id="cash-ledger-table">
               <thead class="sticky-top" style="z-index: 5;">
                 <tr>

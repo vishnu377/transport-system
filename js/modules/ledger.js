@@ -5663,6 +5663,8 @@ const LedgerModule = {
   }
 };
 
+window.LedgerModule = LedgerModule;
+
 // Auto-initialize when DOM is ready
 if (typeof document !== 'undefined' && document.addEventListener) {
   document.addEventListener('DOMContentLoaded', () => {
