@@ -263,7 +263,7 @@ class DBService {
   // --- Authentic AppSheet Ledger Debts Engine ---
   getAllDebts(cloudItems = []) {
     // Ensure dataset version consistency
-    const CURRENT_DEBTS_VERSION = '2026_09_24_V3';
+    const CURRENT_DEBTS_VERSION = '2026_10_10_V1';
     if (localStorage.getItem('tms_debts_data_version') !== CURRENT_DEBTS_VERSION) {
       localStorage.removeItem('tms_base_debts_cleared');
       localStorage.removeItem('tms_custom_debts');
@@ -343,9 +343,12 @@ class DBService {
       date: paymentData.date || new Date().toISOString().split('T')[0],
       displayDate: paymentData.displayDate || (typeof AppUI !== 'undefined' && AppUI.formatDate ? AppUI.formatDate(paymentData.date) : paymentData.date),
       amount: Number(paymentData.amount) || 0,
-      mode: paymentData.mode || 'Cash',
-      receivedBy: paymentData.receivedBy || '',
-      remarks: paymentData.remarks || '',
+      mode: paymentData.mode || paymentData.returnMode || 'Cash',
+      depositorType: paymentData.depositorType || '',
+      depositorName: paymentData.depositorName || paymentData.receivedBy || '',
+      description: paymentData.description || paymentData.remarks || '',
+      receivedBy: paymentData.receivedBy || paymentData.depositorName || '',
+      remarks: paymentData.remarks || paymentData.description || '',
       createdAt: new Date().toISOString()
     };
 

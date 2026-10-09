@@ -1688,6 +1688,313 @@
     .btn-mode-pill.active .green-bullet {
       color: #ffffff !important;
     }
+
+    /* ==================================================== */
+    /* OPEN DEBTS (AppSheet Master-Detail Dual Pane) */
+    /* ==================================================== */
+    .open-debts-container {
+      display: flex;
+      flex-direction: row;
+      min-height: calc(100vh - 110px);
+      background: #ffffff;
+      position: relative;
+    }
+    .open-debts-tree-sidebar {
+      width: 250px;
+      border-right: 1px solid #eeeeee;
+      padding: 14px 10px;
+      flex-shrink: 0;
+      background: #ffffff;
+      transition: width 0.22s ease, padding 0.22s ease, opacity 0.18s ease;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+    .open-debts-tree-sidebar.collapsed {
+      width: 0 !important;
+      padding: 0 !important;
+      opacity: 0;
+      border-right: none !important;
+      pointer-events: none;
+    }
+    @media (max-width: 991.98px) {
+      .open-debts-tree-sidebar {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1040;
+        width: 270px;
+        box-shadow: 4px 0 20px rgba(0,0,0,0.18);
+        background: #ffffff;
+      }
+      .open-debts-tree-sidebar.collapsed {
+        transform: translateX(-100%);
+        width: 270px !important;
+        opacity: 1 !important;
+        pointer-events: auto;
+      }
+    }
+    .open-debts-tree-header {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #70757a;
+      font-weight: 600;
+      padding: 4px 8px 10px 8px;
+      border-bottom: 1px solid #f1f3f4;
+      margin-bottom: 8px;
+    }
+    .open-debts-tree-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      color: #3c4043;
+      transition: background-color 0.15s;
+      margin-bottom: 2px;
+      user-select: none;
+    }
+    .open-debts-tree-item:hover {
+      background: #fdfaf2;
+    }
+    .open-debts-tree-item.active {
+      background: #fef7e0;
+      font-weight: 600;
+      color: #8d6e32;
+    }
+    .open-debts-tree-caret {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      color: #5f6368;
+      font-size: 10px;
+      cursor: pointer;
+    }
+    .open-debts-tree-badge {
+      font-size: 11px;
+      font-family: var(--font-numeric);
+      color: #3c4043;
+      background: #e8eaed;
+      border-radius: 12px;
+      padding: 2px 7px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .open-debts-tree-item.active .open-debts-tree-badge {
+      background: #fce8b2;
+      color: #7a5a1e;
+      font-weight: 600;
+    }
+    .open-debts-tree-sublist {
+      margin-left: 12px;
+      border-left: 1px dashed #fce8b2;
+      margin-bottom: 4px;
+    }
+    .open-debts-tree-subitem {
+      padding: 5px 10px 5px 16px;
+      font-size: 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #5f6368;
+    }
+    .open-debts-tree-subitem:hover {
+      background: #fdfaf2;
+      color: #202124;
+    }
+    .open-debts-tree-subitem.active {
+      background: #fef7e0;
+      color: #8d6e32;
+      font-weight: 600;
+    }
+    .open-debts-main-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      overflow: hidden;
+      background: #ffffff;
+    }
+    .open-debts-split-wrapper {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+    }
+    .open-debts-table-wrapper {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: auto;
+      max-height: calc(100vh - 190px);
+      min-width: 0;
+      transition: all 0.25s ease;
+      -webkit-overflow-scrolling: touch;
+    }
+    .open-debts-split-wrapper.split-open .open-debts-table-wrapper {
+      flex: 1 1 52%;
+    }
+    .open-debts-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+    }
+    .open-debts-table th {
+      padding: 9px 12px;
+      font-weight: 600;
+      color: #3c4043;
+      font-size: 11.5px;
+      border-bottom: 1px solid #dadce0;
+      background: #ffffff;
+      white-space: nowrap;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+    .open-debts-table td {
+      padding: 7px 12px;
+      border-bottom: 1px solid #f1f3f4;
+      font-weight: 500;
+      white-space: nowrap;
+      font-size: 12.5px;
+      vertical-align: middle;
+    }
+    /* Dynamic Status Row Colors */
+    .open-debts-row-gold td {
+      color: #8d6e32 !important;
+    }
+    .open-debts-row-gold td span {
+      color: inherit;
+    }
+    .open-debts-row-blue td {
+      color: #1a73e8 !important;
+    }
+    .open-debts-row-blue td span {
+      color: inherit;
+    }
+    .open-debts-row-green td {
+      color: #0b8043 !important;
+    }
+    .open-debts-row-green td span {
+      color: inherit;
+    }
+    .open-debts-table td.td-due-amount {
+      color: #d93025 !important;
+      font-weight: 700 !important;
+    }
+    .open-debts-table td.td-due-amount span {
+      color: #d93025 !important;
+    }
+    .open-debts-table tbody tr.open-debts-data-row {
+      cursor: pointer;
+      transition: background-color 0.1s ease;
+    }
+    .open-debts-table tbody tr.open-debts-data-row:hover {
+      background-color: #fdfbf7 !important;
+    }
+    .open-debts-table tbody tr.open-debts-data-row.active {
+      background-color: #fef7e0 !important;
+    }
+    .open-debts-group-row td {
+      background: #f8f9fa;
+      color: #8d6e32;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 8px 12px;
+      border-top: 1px solid #e0e0e0;
+      border-bottom: 1px solid #eeeeee;
+    }
+    .open-debts-group-row td .gold-bullet {
+      color: #8d6e32 !important;
+      font-size: 11px;
+      margin-right: 4px;
+    }
+    /* Master-Detail Side Panel */
+    .open-debts-panel {
+      width: 480px;
+      border-left: 1px solid #dadce0;
+      background: #f8f9fa;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      max-height: calc(100vh - 190px);
+      flex-shrink: 0;
+      transition: all 0.25s ease;
+      z-index: 10;
+    }
+    .open-debts-panel.fullscreen {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      width: 100% !important;
+      max-height: 100vh !important;
+      z-index: 1050;
+    }
+    @media (max-width: 991.98px) {
+      .open-debts-panel {
+        position: fixed !important;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        width: 100% !important;
+        max-height: 100vh !important;
+        z-index: 1050;
+      }
+    }
+    .open-debts-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      background: #ffffff;
+      border-bottom: 1px solid #dadce0;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .open-debt-card {
+      background: #ffffff;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      padding: 14px 16px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    }
+    .open-field-row {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 10px;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+    .open-field-label {
+      width: 140px;
+      flex-shrink: 0;
+      color: #5f6368;
+      font-weight: 500;
+    }
+    .open-field-val {
+      flex: 1;
+      color: #202124;
+      font-weight: 500;
+      word-break: break-word;
+    }
+    .returned-history-item {
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      background: #fdfdfd;
+      font-size: 12.5px;
+    }
   </style>
 </head>
 <body>
@@ -2017,81 +2324,81 @@
         <!-- CARD 5: Open -->
         <div class="appsheet-dash-card" id="card-dash-open">
           <div class="appsheet-dash-card-header">
-            <span class="appsheet-dash-card-title" onclick="LedgerModule.goToDebtsView('open')">Open</span>
+            <span class="appsheet-dash-card-title" onclick="LedgerModule.goToOpenDebtsView('ALL')">Open</span>
             <div class="appsheet-dash-card-tools">
               <span class="text-secondary small cursor-pointer" title="Info">ⓘ</span>
               <button type="button" class="btn-appsheet-add py-0 px-2" style="font-size: 0.76rem;" onclick="LedgerModule.openAddDebtModal()">+ Add Debt</button>
               <span class="appsheet-tool-icon" onclick="LedgerModule.toggleFilterDropdown()" title="Filter">🔻</span>
-              <span class="appsheet-tool-icon" onclick="LedgerModule.goToDebtsView('open')" title="Expand Open Debts">↗</span>
+              <span class="appsheet-tool-icon" onclick="LedgerModule.goToOpenDebtsView('ALL')" title="Expand Open Debts">↗</span>
             </div>
           </div>
           <div class="appsheet-dash-card-body">
             <div class="appsheet-drill-section-label">Year</div>
-            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('open', 'ALL')">
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToOpenDebtsView('ALL')">
               <span class="appsheet-drill-label-all">All</span>
               <span class="appsheet-chevron">&gt;</span>
             </div>
-            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('open', '2026-2027')">
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToOpenDebtsView('2026-2027')">
               <div class="appsheet-drill-left">
                 <span class="appsheet-bullet gold-bullet">●</span>
                 <span class="appsheet-drill-label-gold">2026-2027</span>
-                <span class="appsheet-drill-badge">₹ 2,024,104.00</span>
+                <span class="appsheet-drill-badge" id="card-open-badge-2026-2027">₹ 2,356,561.00</span>
               </div>
               <span class="appsheet-chevron">&gt;</span>
             </div>
-            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('open', '2025-2026')">
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToOpenDebtsView('2025-2026')">
               <div class="appsheet-drill-left">
                 <span class="appsheet-bullet gold-bullet">●</span>
                 <span class="appsheet-drill-label-gold">2025-2026</span>
-                <span class="appsheet-drill-badge">₹ 1,191,950.00</span>
+                <span class="appsheet-drill-badge" id="card-open-badge-2025-2026">₹ 1,191,950.00</span>
               </div>
               <span class="appsheet-chevron">&gt;</span>
             </div>
-            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('open', '2024-2025')">
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToOpenDebtsView('2024-2025')">
               <div class="appsheet-drill-left">
                 <span class="appsheet-bullet gold-bullet">●</span>
                 <span class="appsheet-drill-label-gold">2024-2025</span>
-                <span class="appsheet-drill-badge">₹ 899,600.00</span>
+                <span class="appsheet-drill-badge" id="card-open-badge-2024-2025">₹ 899,600.00</span>
               </div>
               <span class="appsheet-chevron">&gt;</span>
             </div>
-            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('open', '2023-2024')">
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToOpenDebtsView('2023-2024')">
               <div class="appsheet-drill-left">
                 <span class="appsheet-bullet gold-bullet">●</span>
                 <span class="appsheet-drill-label-gold">2023-2024</span>
-                <span class="appsheet-drill-badge">₹ 277,215.00</span>
+                <span class="appsheet-drill-badge" id="card-open-badge-2023-2024">₹ 277,215.00</span>
               </div>
               <span class="appsheet-chevron">&gt;</span>
             </div>
-            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('open', '2022-2023')">
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToOpenDebtsView('2022-2023')">
               <div class="appsheet-drill-left">
                 <span class="appsheet-bullet gold-bullet">●</span>
                 <span class="appsheet-drill-label-gold">2022-2023</span>
-                <span class="appsheet-drill-badge">₹ 57,500.00</span>
+                <span class="appsheet-drill-badge" id="card-open-badge-2022-2023">₹ 57,500.00</span>
               </div>
               <span class="appsheet-chevron">&gt;</span>
             </div>
-            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('open', '2021-2022')">
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToOpenDebtsView('2021-2022')">
               <div class="appsheet-drill-left">
                 <span class="appsheet-bullet gold-bullet">●</span>
                 <span class="appsheet-drill-label-gold">2021-2022</span>
-                <span class="appsheet-drill-badge">₹ 111,050.00</span>
+                <span class="appsheet-drill-badge" id="card-open-badge-2021-2022">₹ 111,050.00</span>
               </div>
               <span class="appsheet-chevron">&gt;</span>
             </div>
-            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('open', '2020-2021')">
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToOpenDebtsView('2020-2021')">
               <div class="appsheet-drill-left">
                 <span class="appsheet-bullet gold-bullet">●</span>
                 <span class="appsheet-drill-label-gold">2020-2021</span>
-                <span class="appsheet-drill-badge">₹ 68,100.00</span>
+                <span class="appsheet-drill-badge" id="card-open-badge-2020-2021">₹ 68,100.00</span>
               </div>
               <span class="appsheet-chevron">&gt;</span>
             </div>
-            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('open', '2019-2020')">
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToOpenDebtsView('2019-2020')">
               <div class="appsheet-drill-left">
                 <span class="appsheet-bullet gold-bullet">●</span>
                 <span class="appsheet-drill-label-gold">2019-2020</span>
-                <span class="appsheet-drill-badge">₹ 229,300.00</span>
+                <span class="appsheet-drill-badge" id="card-open-badge-2019-2020">₹ 229,300.00</span>
               </div>
               <span class="appsheet-chevron">&gt;</span>
             </div>
@@ -3064,78 +3371,252 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- 6. APPSHEET MAIN CARD (Debts Register) -->
+    <!-- 6. APPSHEET OPEN DEBTS (Dual-Pane Master-Detail View) -->
     <!-- ========================================== -->
-    <div id="ledger-view-register" class="d-none">
-      <div class="appsheet-main-card" id="appsheet-main-card">
+    <div id="ledger-view-open-debts" class="d-none">
+      <div class="open-debts-container" id="open-debts-main-container">
         
-        <!-- Card Header (Open, 🔻, ☑, ⤢) -->
-        <div class="appsheet-card-header">
-          <span class="appsheet-card-title" id="card-title-text">Open</span>
-          <div class="appsheet-card-tools">
-            <span class="appsheet-tool-icon" id="icon-filter" onclick="LedgerModule.toggleFilterDropdown()" title="Filter">🔻</span>
-            <span class="appsheet-tool-icon" id="icon-select" onclick="AppUI.showToast('Multi-select mode ready', 'info')" title="Select">☑</span>
-            <span class="appsheet-tool-icon" id="icon-fullscreen" onclick="LedgerModule.toggleFullscreen()" title="Full screen">⤢</span>
+        <!-- Left Sidebar: Year Tree Sidebar -->
+        <div class="open-debts-tree-sidebar" id="open-debts-tree-sidebar">
+          <div class="open-debts-tree-header d-flex align-items-center justify-content-between">
+            <span>Year</span>
+            <button type="button" class="btn btn-sm btn-link text-muted p-0 border-0" onclick="LedgerModule.toggleOpenDebtsSidebar()" title="Hide Year Sidebar">
+              <i class="bi bi-chevron-bar-left fs-6"></i>
+            </button>
           </div>
+
+          <!-- All -->
+          <div class="open-debts-tree-item" id="open-tree-all" onclick="LedgerModule.selectOpenDebtsFY('ALL')">
+            <span class="fw-semibold text-dark">All</span>
+            <span class="open-debts-tree-badge" id="open-badge-all">₹ 5,191,276.00</span>
+          </div>
+
+          <!-- FY 2026-2027 -->
+          <div class="open-debts-tree-item" id="open-tree-2026-2027">
+            <div class="d-flex align-items-center gap-1 flex-grow-1" onclick="LedgerModule.selectOpenDebtsFY('2026-2027')">
+              <span class="open-debts-tree-caret" onclick="event.stopPropagation(); LedgerModule.toggleOpenDebtsFYTree('2026-2027')"><i class="bi bi-caret-down-fill" id="open-caret-2026-2027"></i></span>
+              <span class="appsheet-bullet gold-bullet">●</span>
+              <span class="fw-semibold">2026-2027</span>
+            </div>
+            <span class="open-debts-tree-badge" id="open-badge-2026-2027">₹ 2,356,561.00</span>
+          </div>
+          <div class="open-debts-tree-sublist" id="open-sublist-2026-2027"></div>
+
+          <!-- FY 2025-2026 -->
+          <div class="open-debts-tree-item" id="open-tree-2025-2026">
+            <div class="d-flex align-items-center gap-1 flex-grow-1" onclick="LedgerModule.selectOpenDebtsFY('2025-2026')">
+              <span class="open-debts-tree-caret" onclick="event.stopPropagation(); LedgerModule.toggleOpenDebtsFYTree('2025-2026')"><i class="bi bi-caret-right-fill" id="open-caret-2025-2026"></i></span>
+              <span class="appsheet-bullet gold-bullet">●</span>
+              <span class="fw-semibold">2025-2026</span>
+            </div>
+            <span class="open-debts-tree-badge" id="open-badge-2025-2026">₹ 1,191,950.00</span>
+          </div>
+          <div class="open-debts-tree-sublist d-none" id="open-sublist-2025-2026"></div>
+
+          <!-- FY 2024-2025 -->
+          <div class="open-debts-tree-item" id="open-tree-2024-2025">
+            <div class="d-flex align-items-center gap-1 flex-grow-1" onclick="LedgerModule.selectOpenDebtsFY('2024-2025')">
+              <span class="open-debts-tree-caret" onclick="event.stopPropagation(); LedgerModule.toggleOpenDebtsFYTree('2024-2025')"><i class="bi bi-caret-right-fill" id="open-caret-2024-2025"></i></span>
+              <span class="appsheet-bullet gold-bullet">●</span>
+              <span class="fw-semibold">2024-2025</span>
+            </div>
+            <span class="open-debts-tree-badge" id="open-badge-2024-2025">₹ 899,600.00</span>
+          </div>
+          <div class="open-debts-tree-sublist d-none" id="open-sublist-2024-2025"></div>
+
+          <!-- FY 2023-2024 -->
+          <div class="open-debts-tree-item" id="open-tree-2023-2024">
+            <div class="d-flex align-items-center gap-1 flex-grow-1" onclick="LedgerModule.selectOpenDebtsFY('2023-2024')">
+              <span class="open-debts-tree-caret" onclick="event.stopPropagation(); LedgerModule.toggleOpenDebtsFYTree('2023-2024')"><i class="bi bi-caret-right-fill" id="open-caret-2023-2024"></i></span>
+              <span class="appsheet-bullet gold-bullet">●</span>
+              <span class="fw-semibold">2023-2024</span>
+            </div>
+            <span class="open-debts-tree-badge" id="open-badge-2023-2024">₹ 277,215.00</span>
+          </div>
+          <div class="open-debts-tree-sublist d-none" id="open-sublist-2023-2024"></div>
+
+          <!-- FY 2022-2023 -->
+          <div class="open-debts-tree-item" id="open-tree-2022-2023">
+            <div class="d-flex align-items-center gap-1 flex-grow-1" onclick="LedgerModule.selectOpenDebtsFY('2022-2023')">
+              <span class="open-debts-tree-caret" onclick="event.stopPropagation(); LedgerModule.toggleOpenDebtsFYTree('2022-2023')"><i class="bi bi-caret-right-fill" id="open-caret-2022-2023"></i></span>
+              <span class="appsheet-bullet gold-bullet">●</span>
+              <span class="fw-semibold">2022-2023</span>
+            </div>
+            <span class="open-debts-tree-badge" id="open-badge-2022-2023">₹ 57,500.00</span>
+          </div>
+          <div class="open-debts-tree-sublist d-none" id="open-sublist-2022-2023"></div>
+
+          <!-- FY 2021-2022 -->
+          <div class="open-debts-tree-item" id="open-tree-2021-2022">
+            <div class="d-flex align-items-center gap-1 flex-grow-1" onclick="LedgerModule.selectOpenDebtsFY('2021-2022')">
+              <span class="open-debts-tree-caret" onclick="event.stopPropagation(); LedgerModule.toggleOpenDebtsFYTree('2021-2022')"><i class="bi bi-caret-right-fill" id="open-caret-2021-2022"></i></span>
+              <span class="appsheet-bullet gold-bullet">●</span>
+              <span class="fw-semibold">2021-2022</span>
+            </div>
+            <span class="open-debts-tree-badge" id="open-badge-2021-2022">₹ 111,050.00</span>
+          </div>
+          <div class="open-debts-tree-sublist d-none" id="open-sublist-2021-2022"></div>
+
+          <!-- FY 2020-2021 -->
+          <div class="open-debts-tree-item" id="open-tree-2020-2021">
+            <div class="d-flex align-items-center gap-1 flex-grow-1" onclick="LedgerModule.selectOpenDebtsFY('2020-2021')">
+              <span class="open-debts-tree-caret" onclick="event.stopPropagation(); LedgerModule.toggleOpenDebtsFYTree('2020-2021')"><i class="bi bi-caret-right-fill" id="open-caret-2020-2021"></i></span>
+              <span class="appsheet-bullet gold-bullet">●</span>
+              <span class="fw-semibold">2020-2021</span>
+            </div>
+            <span class="open-debts-tree-badge" id="open-badge-2020-2021">₹ 68,100.00</span>
+          </div>
+          <div class="open-debts-tree-sublist d-none" id="open-sublist-2020-2021"></div>
+
+          <!-- FY 2019-2020 -->
+          <div class="open-debts-tree-item" id="open-tree-2019-2020">
+            <div class="d-flex align-items-center gap-1 flex-grow-1" onclick="LedgerModule.selectOpenDebtsFY('2019-2020')">
+              <span class="open-debts-tree-caret" onclick="event.stopPropagation(); LedgerModule.toggleOpenDebtsFYTree('2019-2020')"><i class="bi bi-caret-right-fill" id="open-caret-2019-2020"></i></span>
+              <span class="appsheet-bullet gold-bullet">●</span>
+              <span class="fw-semibold">2019-2020</span>
+            </div>
+            <span class="open-debts-tree-badge" id="open-badge-2019-2020">₹ 229,300.00</span>
+          </div>
+          <div class="open-debts-tree-sublist d-none" id="open-sublist-2019-2020"></div>
+
         </div>
 
-        <!-- Dropdown Selection Bar (Hidden in Level 1 Year view, Visible in Month/Table view) -->
-        <div class="appsheet-dropdown-bar d-none" id="appsheet-dropdown-bar" onclick="LedgerModule.onDropdownBarClick()">
-          <span class="appsheet-dropdown-text" id="appsheet-dropdown-text">2024-2025</span>
-          <i class="bi bi-chevron-down text-secondary" style="font-size: 13px;"></i>
-        </div>
+        <!-- Main Area: Toolbar + Split Layout + Pagination -->
+        <div class="open-debts-main-area" id="open-debts-main-area">
+          
+          <!-- Authentic AppSheet Toolbar -->
+          <div class="d-flex align-items-center justify-content-between px-3 py-2 border-bottom bg-white flex-wrap gap-2">
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+              <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2 d-inline-flex align-items-center gap-1" id="btn-toggle-open-sidebar" onclick="LedgerModule.toggleOpenDebtsSidebar()" title="Toggle Sidebar" style="font-size: 0.8rem;">
+                <i class="bi bi-layout-sidebar-inset" id="btn-toggle-open-icon"></i>
+                <span id="btn-toggle-open-text">Hide Date Filter</span>
+              </button>
+              <div class="appsheet-breadcrumb mb-0 d-none d-sm-flex align-items-center" style="font-size: 13px;">
+                <span class="text-secondary cursor-pointer" onclick="LedgerModule.goToDashboardView()">Home</span>
+                <span class="text-muted mx-1">&gt;</span>
+                <span class="text-secondary cursor-pointer" onclick="LedgerModule.goToDashboardView()">Ledger</span>
+                <span class="text-muted mx-1">&gt;</span>
+                <span class="fw-semibold text-dark" id="open-debts-title-badge">Open</span>
+              </div>
+              <span class="badge bg-light text-dark border fw-normal" id="open-debts-filter-pill" style="font-size: 0.78rem;">
+                <i class="bi bi-funnel me-1 text-muted"></i><strong id="open-debts-filter-pill-text">2026-2027</strong>
+              </span>
+            </div>
 
-        <!-- DRILLDOWN CONTAINER (Level 1 Year View & Level 2 Month View) -->
-        <div id="appsheet-drill-container">
-          <div class="appsheet-drill-section-label" id="appsheet-drilldown-label">
-            Year
-          </div>
-          <div id="appsheet-drilldown-list">
-            <!-- Dynamically populated with 'All >' and FY/Month rows -->
-          </div>
-        </div>
-
-        <!-- TABLE CONTAINER (Level 3 11-Column Table View) -->
-        <div id="appsheet-table-container" class="d-none">
-          <div class="table-responsive" style="max-height: 720px; overflow-y: auto;">
-            <table class="appsheet-table" id="debts-register-table">
-              <thead class="sticky-top" style="z-index: 5;">
-                <tr>
-                  <th>G.R.No.</th>
-                  <th>Truck No.</th>
-                  <th>To</th>
-                  <th>Debt Type</th>
-                  <th>Due Amount</th>
-                  <th>Debt Amount</th>
-                  <th>Debt Mode</th>
-                  <th>Borrower Name</th>
-                  <th>Receiver Name</th>
-                  <th>Description</th>
-                  <th>Date</th>
-                  <th style="width: 25px;"></th>
-                </tr>
-              </thead>
-              <tbody id="debts-table-body">
-                <!-- Dynamically populated with AppSheet rows and circular dots -->
-              </tbody>
-            </table>
-          </div>
-
-          <!-- Pagination Footer -->
-          <div class="p-2 bg-white border-top d-flex align-items-center justify-content-between flex-wrap gap-2">
-            <small class="text-muted" id="pagination-info">Showing 1-100 of 668 entries</small>
             <div class="d-flex align-items-center gap-2">
-              <select id="ledger-page-size" class="form-select form-select-sm" style="width: auto; font-size: 0.8rem;" onchange="LedgerModule.changePageSize(this.value)">
+              <button type="button" class="btn btn-sm py-1 px-3 fw-semibold text-white d-flex align-items-center gap-1" style="background: #1a73e8; border-radius: 4px; font-size: 0.8rem;" onclick="LedgerModule.openAddDebtModal()">
+                <i class="bi bi-plus-lg"></i>
+                <span>+ Add Debt</span>
+              </button>
+              <span class="appsheet-tool-icon" onclick="LedgerModule.toggleFilterDropdown()" title="Filter">🔻</span>
+              <span class="appsheet-tool-icon" onclick="AppUI.showToast('Multi-select mode active', 'info')" title="Select">☑</span>
+              <span class="appsheet-tool-icon" onclick="LedgerModule.toggleOpenDebtsFullscreen()" title="Fullscreen">⤢</span>
+            </div>
+          </div>
+
+          <!-- Split Wrapper (Table + Side Panel) -->
+          <div class="open-debts-split-wrapper" id="open-debts-split-wrapper">
+            
+            <!-- Table Wrapper -->
+            <div class="open-debts-table-wrapper" id="open-debts-table-wrapper">
+              <table class="open-debts-table" id="open-debts-table">
+                <thead>
+                  <tr>
+                    <th>G.R.No.</th>
+                    <th>Truck No.</th>
+                    <th>To</th>
+                    <th>Debt Type</th>
+                    <th>Due Amount</th>
+                    <th>Debt Amount</th>
+                    <th>Debt Mode</th>
+                    <th>Borrower Name</th>
+                    <th>Receiver Name</th>
+                    <th>Description</th>
+                    <th>Date</th>
+                    <th style="width: 25px;"></th>
+                  </tr>
+                </thead>
+                <tbody id="open-debts-table-body">
+                  <!-- Dynamically rendered rows -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Master-Detail Side Panel -->
+            <div class="open-debts-panel d-none" id="open-debts-panel">
+              <div class="open-debts-panel-header">
+                <span class="fw-bold text-dark fs-6" id="open-panel-title">Open Debt Details</span>
+                <div class="d-flex align-items-center gap-2">
+                  <button type="button" class="btn btn-sm btn-link text-muted p-1" onclick="LedgerModule.editCurrentOpenDebt()" title="Edit Debt">
+                    <i class="bi bi-pencil fs-6"></i>
+                  </button>
+                  <button type="button" class="btn btn-sm btn-link text-danger p-1" onclick="LedgerModule.deleteCurrentOpenDebt()" title="Delete Debt">
+                    <i class="bi bi-trash fs-6"></i>
+                  </button>
+                  <button type="button" class="btn btn-sm btn-link text-muted p-1" onclick="LedgerModule.toggleOpenPanelFullscreen()" title="Fullscreen">
+                    <i class="bi bi-arrows-fullscreen fs-6"></i>
+                  </button>
+                  <button type="button" class="btn btn-sm btn-link text-muted p-1" onclick="LedgerModule.closeOpenDebtDetails()" title="Close">
+                    <i class="bi bi-x-lg fs-6"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="open-debts-detail-body p-3" id="open-debts-detail-body">
+                <!-- Dual Card Layout matching WhatsApp photos -->
+                <!-- Card 1: Open Debt Details (12 fields) -->
+                <div class="open-debt-card mb-3">
+                  <div class="open-debt-card-header fw-bold text-dark mb-3 pb-2 border-bottom">
+                    Open Debt Details
+                  </div>
+                  <div class="open-field-row"><span class="open-field-label">Debt Type</span><span class="open-field-val" id="det-debt-type">-</span></div>
+                  <div class="open-field-row"><span class="open-field-label">Date</span><span class="open-field-val" id="det-debt-date">-</span></div>
+                  <div class="open-field-row"><span class="open-field-label">Truck Owner Name</span><span class="open-field-val" id="det-debt-owner">-</span></div>
+                  <div class="open-field-row"><span class="open-field-label">G.R.No.</span><span class="open-field-val" id="det-debt-gr">-</span></div>
+                  <div class="open-field-row"><span class="open-field-label">Company Name</span><span class="open-field-val" id="det-debt-company">-</span></div>
+                  <div class="open-field-row"><span class="open-field-label">From</span><span class="open-field-val" id="det-debt-from">-</span></div>
+                  <div class="open-field-row"><span class="open-field-label">To</span><span class="open-field-val" id="det-debt-to">-</span></div>
+                  <div class="open-field-row"><span class="open-field-label">Borrower Name</span><span class="open-field-val" id="det-debt-borrower">-</span></div>
+                  <div class="open-field-row"><span class="open-field-label">Receiver Name</span><span class="open-field-val" id="det-debt-receiver">-</span></div>
+                  <div class="open-field-row"><span class="open-field-label">Debt Mode</span><span class="open-field-val" id="det-debt-mode">-</span></div>
+                  <div class="open-field-row"><span class="open-field-label">Debt Amount</span><span class="open-field-val fw-bold" id="det-debt-amount">-</span></div>
+                  <div class="open-field-row"><span class="open-field-label">Due Amount</span><span class="open-field-val fw-bold text-danger" id="det-due-amount">-</span></div>
+                </div>
+
+                <!-- Card 2: Returned Amount [count] with + Add button -->
+                <div class="open-debt-card mb-3">
+                  <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+                    <span class="fw-bold text-dark" id="det-returned-header">Returned Amount [0]</span>
+                    <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2 fw-semibold" style="font-size: 0.78rem;" onclick="LedgerModule.openRecordReturnModalForCurrentDebt()">
+                      <i class="bi bi-plus-lg me-1"></i> Add
+                    </button>
+                  </div>
+                  <div id="det-returned-list">
+                    <!-- Populated dynamically -->
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Bottom Pagination Bar -->
+          <div class="p-2 px-3 bg-white border-top d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <small class="text-muted" id="open-debts-pagination-info">Showing 1-100 of 743 entries</small>
+            <div class="d-flex align-items-center gap-2">
+              <select id="open-debts-page-size" class="form-select form-select-sm" style="width: auto; font-size: 0.8rem;" onchange="LedgerModule.changeOpenDebtsPageSize(this.value)">
                 <option value="50">50 rows</option>
                 <option value="100" selected>100 rows</option>
                 <option value="250">250 rows</option>
                 <option value="ALL">All rows</option>
               </select>
-              <div class="btn-group btn-group-sm" id="pagination-buttons">
-                <!-- Populated dynamically -->
+              <div class="btn-group btn-group-sm" id="open-debts-pagination-buttons">
+                <!-- Dynamically populated -->
               </div>
             </div>
           </div>
+
         </div>
 
       </div>
@@ -3438,66 +3919,95 @@
   </div>
 
   <!-- ========================================== -->
-  <!-- MODAL: RECORD RETURN PAYMENT -->
+  <!-- MODAL: ADD RETURN AMOUNT DETAILS (AppSheet Match) -->
   <!-- ========================================== -->
   <div class="modal fade" id="modal-record-return" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header bg-success text-white">
-          <h6 class="modal-title fw-bold"><i class="bi bi-cash-stack me-2"></i> Record Returned Amount</h6>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 520px;">
+      <div class="modal-content shadow border-0" style="border-radius: 8px;">
+        <div class="modal-header py-2 px-3 border-bottom d-flex align-items-center justify-content-between">
+          <div class="d-flex align-items-center gap-2">
+            <button type="button" class="btn-close m-0" data-bs-dismiss="modal" aria-label="Close"></button>
+            <h6 class="modal-title fw-bold text-dark m-0" style="font-size: 15px;">Add Return Amount Details</h6>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <button type="button" class="btn btn-sm btn-light border py-1 px-3" data-bs-dismiss="modal" style="font-size: 13px;">Cancel</button>
+            <button type="button" class="btn btn-sm text-white py-1 px-3 fw-medium" style="background-color: #1a73e8; font-size: 13px;" onclick="LedgerModule.submitReturnPayment()">Save</button>
+          </div>
         </div>
-        <form id="form-record-return" onsubmit="LedgerModule.submitReturnPayment(event)">
-          <div class="modal-body">
+        <form id="form-record-return" onsubmit="event.preventDefault(); LedgerModule.submitReturnPayment();">
+          <div class="modal-body p-3" style="max-height: 80vh; overflow-y: auto;">
             <input type="hidden" id="return-debt-id">
             
-            <div class="p-2 mb-3 bg-light rounded border">
-              <div class="d-flex justify-content-between">
-                <span class="small text-muted">Debt / G.R. Ref:</span>
-                <span class="small fw-bold" id="return-modal-ref">-</span>
+            <!-- Date -->
+            <div class="mb-3 d-flex align-items-center">
+              <label class="form-label text-muted m-0" style="width: 140px; font-size: 13.5px;">Return Date *</label>
+              <input type="date" id="return-date" class="form-control form-control-sm" required style="font-size: 13.5px;">
+            </div>
+
+            <!-- Depositor Type -->
+            <div class="mb-3 d-flex align-items-center">
+              <label class="form-label text-muted m-0" style="width: 140px; font-size: 13.5px;">Depositor Type</label>
+              <select id="return-depositor-type" class="form-select form-select-sm" style="font-size: 13.5px;">
+                <option value="Driver">Driver</option>
+                <option value="Truck Owner">Truck Owner</option>
+                <option value="Customer">Customer</option>
+                <option value="Transporter">Transporter</option>
+                <option value="Company">Company</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <!-- Depositor Name -->
+            <div class="mb-3 d-flex align-items-center">
+              <label class="form-label text-muted m-0" style="width: 140px; font-size: 13.5px;">Depositor Name</label>
+              <input type="text" id="return-depositor-name" class="form-control form-control-sm" placeholder="e.g. Suraj Bhan" style="font-size: 13.5px;">
+            </div>
+
+            <!-- Return Mode -->
+            <div class="mb-3 d-flex align-items-start">
+              <label class="form-label text-muted m-0 pt-1" style="width: 140px; font-size: 13.5px;">Return Mode</label>
+              <div class="d-flex flex-wrap gap-1 flex-grow-1" id="return-mode-pill-container">
+                <button type="button" class="btn-mode-pill active" data-mode="Cash" onclick="LedgerModule.setReturnMode('Cash', this)">Cash</button>
+                <button type="button" class="btn-mode-pill" data-mode="Adjustment" onclick="LedgerModule.setReturnMode('Adjustment', this)">Adjustment</button>
+                <button type="button" class="btn-mode-pill" data-mode="Less Freight" onclick="LedgerModule.setReturnMode('Less Freight', this)">Less Freight</button>
+                <button type="button" class="btn-mode-pill" data-mode="Dalla" onclick="LedgerModule.setReturnMode('Dalla', this)">Dalla</button>
+                <button type="button" class="btn-mode-pill" data-mode="Loading" onclick="LedgerModule.setReturnMode('Loading', this)">Loading</button>
+                <button type="button" class="btn-mode-pill" data-mode="TDS" onclick="LedgerModule.setReturnMode('TDS', this)">TDS</button>
+                <button type="button" class="btn-mode-pill" data-mode="NEFT/RTGS" onclick="LedgerModule.setReturnMode('NEFT/RTGS', this)">NEFT/RTGS</button>
+                <button type="button" class="btn-mode-pill" data-mode="UPI" onclick="LedgerModule.setReturnMode('UPI', this)">UPI</button>
+                <button type="button" class="btn-mode-pill" data-mode="Cheque" onclick="LedgerModule.setReturnMode('Cheque', this)">Cheque</button>
+                <button type="button" class="btn-mode-pill" data-mode="Online" onclick="LedgerModule.setReturnMode('Online', this)">Online</button>
               </div>
-              <div class="d-flex justify-content-between mt-1">
-                <span class="small text-muted">Current Due Balance:</span>
-                <span class="small fw-bold text-danger" id="return-modal-due">₹0.00</span>
+              <input type="hidden" id="return-mode" value="Cash">
+            </div>
+
+            <!-- Debt Amount (Readonly) -->
+            <div class="mb-3 d-flex align-items-center">
+              <label class="form-label text-muted m-0" style="width: 140px; font-size: 13.5px;">Debt Amount</label>
+              <input type="text" id="return-modal-debt-amount" class="form-control form-control-sm bg-light fw-bold text-secondary" readonly value="₹ 0.00" style="font-size: 13.5px;">
+            </div>
+
+            <!-- Current Due (Readonly) -->
+            <div class="mb-3 d-flex align-items-center">
+              <label class="form-label text-muted m-0" style="width: 140px; font-size: 13.5px;">Current Due</label>
+              <input type="text" id="return-modal-due" class="form-control form-control-sm bg-light fw-bold text-danger" readonly value="₹ 0.00" style="font-size: 13.5px;">
+            </div>
+
+            <!-- Returned Amount* -->
+            <div class="mb-3 d-flex align-items-center">
+              <label class="form-label text-muted m-0" style="width: 140px; font-size: 13.5px;">Returned Amount *</label>
+              <div class="input-group">
+                <span class="input-group-text py-1 px-2 text-muted" style="font-size: 13px;">₹</span>
+                <input type="number" step="0.01" min="1" id="return-amount" class="form-control form-control-sm fw-bold" placeholder="0.00" required style="font-size: 14px;">
               </div>
             </div>
 
-            <div class="mb-3">
-              <label class="form-label small fw-semibold">Return Date *</label>
-              <input type="date" id="return-date" class="form-control" required>
+            <!-- Description -->
+            <div class="mb-2 d-flex align-items-start">
+              <label class="form-label text-muted m-0 pt-1" style="width: 140px; font-size: 13.5px;">Description</label>
+              <textarea id="return-remarks" class="form-control form-control-sm flex-grow-1" rows="2" placeholder="Optional notes" style="font-size: 13.5px;"></textarea>
             </div>
 
-            <div class="mb-3">
-              <label class="form-label small fw-semibold">Returned Amount (₹) *</label>
-              <input type="number" id="return-amount" class="form-control font-monospace fs-5 fw-bold" min="1" step="any" required placeholder="0.00">
-            </div>
-
-            <div class="row g-2 mb-3">
-              <div class="col-6">
-                <label class="form-label small fw-semibold">Payment Mode</label>
-                <select id="return-mode" class="form-select">
-                  <option value="Cash">Cash</option>
-                  <option value="NEFT/RTGS">NEFT / RTGS</option>
-                  <option value="PhonePe/GPay">UPI / PhonePe / GPay</option>
-                  <option value="Cheque">Cheque</option>
-                </select>
-              </div>
-              <div class="col-6">
-                <label class="form-label small fw-semibold">Received By</label>
-                <input type="text" id="return-received-by" class="form-control" placeholder="e.g. Hardan Ji">
-              </div>
-            </div>
-
-            <div class="mb-2">
-              <label class="form-label small fw-semibold">Remarks / Note</label>
-              <input type="text" id="return-remarks" class="form-control" placeholder="e.g. Payment settled via cash">
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-success btn-sm">
-              <i class="bi bi-check2-circle me-1"></i> Save Return Receipt
-            </button>
           </div>
         </form>
       </div>
@@ -3505,27 +4015,66 @@
   </div>
 
   <!-- ========================================== -->
-  <!-- MODAL: ADD / EDIT DEBT ENTRY -->
+  <!-- MODAL: ADD / EDIT DEBT RECORD (AppSheet Match) -->
   <!-- ========================================== -->
   <div class="modal fade" id="modal-add-debt" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header bg-primary text-white">
-          <h6 class="modal-title fw-bold" id="add-debt-modal-title"><i class="bi bi-plus-circle me-2"></i> New Debt Entry</h6>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content shadow border-0" style="border-radius: 8px;">
+        <div class="modal-header py-2 px-3 border-bottom d-flex align-items-center justify-content-between">
+          <div class="d-flex align-items-center gap-2">
+            <button type="button" class="btn-close m-0" data-bs-dismiss="modal" aria-label="Close"></button>
+            <h6 class="modal-title fw-bold text-dark m-0" id="add-debt-modal-title" style="font-size: 15px;">Add Debt Record</h6>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <button type="button" class="btn btn-sm btn-light border py-1 px-3" data-bs-dismiss="modal" style="font-size: 13px;">Cancel</button>
+            <button type="button" class="btn btn-sm text-white py-1 px-3 fw-medium" style="background-color: #1a73e8; font-size: 13px;" onclick="LedgerModule.submitAddDebt()">Save</button>
+          </div>
         </div>
-        <form id="form-add-debt" onsubmit="LedgerModule.submitAddDebt(event)">
-          <div class="modal-body">
+        <form id="form-add-debt" onsubmit="event.preventDefault(); LedgerModule.submitAddDebt();">
+          <div class="modal-body p-3" style="max-height: 80vh; overflow-y: auto;">
             <input type="hidden" id="debt-form-id">
 
             <div class="row g-3">
               <div class="col-md-4">
-                <label class="form-label small fw-semibold">Date *</label>
-                <input type="date" id="debt-form-date" class="form-control" required onchange="LedgerModule.autoSetFYAndMonth(this.value)">
+                <label class="form-label small fw-semibold text-muted">Date *</label>
+                <input type="date" id="debt-form-date" class="form-control form-control-sm" required onchange="LedgerModule.autoSetFYAndMonth(this.value)">
               </div>
               <div class="col-md-4">
-                <label class="form-label small fw-semibold">Financial Year *</label>
-                <select id="debt-form-fy" class="form-select" required>
+                <label class="form-label small fw-semibold text-muted">Debt Type *</label>
+                <select id="debt-form-type" class="form-select form-select-sm" required>
+                  <option value="Diesel">Diesel</option>
+                  <option value="Driver Cash">Driver Cash</option>
+                  <option value="Toll">Toll</option>
+                  <option value="Cash">Cash</option>
+                  <option value="Petrol">Petrol</option>
+                  <option value="Driver Advance">Driver Advance</option>
+                  <option value="Advance">Advance</option>
+                  <option value="Maintenance">Maintenance</option>
+                  <option value="Loading">Loading</option>
+                  <option value="Commission">Commission</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small fw-semibold text-muted">Company *</label>
+                <select id="debt-form-company" class="form-select form-select-sm" required>
+                  <option value="MTC">MTC</option>
+                  <option value="TTC">TTC</option>
+                  <option value="SMTC">SMTC</option>
+                </select>
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label small fw-semibold text-muted">G.R. No.</label>
+                <input type="text" id="debt-form-gr" class="form-control form-control-sm" placeholder="e.g. 2097_MTC">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small fw-semibold text-muted">Truck No.</label>
+                <input type="text" id="debt-form-truck" class="form-control form-control-sm" placeholder="e.g. RJ52GB5640">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small fw-semibold text-muted">Financial Year *</label>
+                <select id="debt-form-fy" class="form-select form-select-sm" required>
                   <option value="2026-2027">2026-2027</option>
                   <option value="2025-2026">2025-2026</option>
                   <option value="2024-2025">2024-2025</option>
@@ -3536,82 +4085,50 @@
                   <option value="2019-2020">2019-2020</option>
                 </select>
               </div>
-              <div class="col-md-4">
-                <label class="form-label small fw-semibold">Company *</label>
-                <select id="debt-form-company" class="form-select" required>
-                  <option value="TTC">TTC</option>
-                  <option value="MTC">MTC</option>
-                  <option value="SMTC">SMTC</option>
-                </select>
-              </div>
 
-              <div class="col-md-4">
-                <label class="form-label small fw-semibold">G.R. No.</label>
-                <input type="text" id="debt-form-gr" class="form-control" placeholder="e.g. 2188_TTC">
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold text-muted">From (Origin)</label>
+                <input type="text" id="debt-form-from" class="form-control form-control-sm" placeholder="e.g. Kota">
               </div>
-              <div class="col-md-4">
-                <label class="form-label small fw-semibold">Truck No.</label>
-                <input type="text" id="debt-form-truck" class="form-control" placeholder="e.g. RJ52GB5640">
-              </div>
-              <div class="col-md-4">
-                <label class="form-label small fw-semibold">Debt Type *</label>
-                <select id="debt-form-type" class="form-select" required>
-                  <option value="Commission">Commission</option>
-                  <option value="Other">Other</option>
-                  <option value="Loading">Loading</option>
-                  <option value="Advance">Advance</option>
-                  <option value="In Hand">In Hand</option>
-                  <option value="Old">Old</option>
-                </select>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold text-muted">To (Destination)</label>
+                <input type="text" id="debt-form-to" class="form-control form-control-sm" placeholder="e.g. Jaipur">
               </div>
 
               <div class="col-md-6">
-                <label class="form-label small fw-semibold">From (Origin)</label>
-                <input type="text" id="debt-form-from" class="form-control" placeholder="e.g. Kishangarh (Raj.)">
-              </div>
-              <div class="col-md-6">
-                <label class="form-label small fw-semibold">To (Destination)</label>
-                <input type="text" id="debt-form-to" class="form-control" placeholder="e.g. Delhi">
-              </div>
-
-              <div class="col-md-6">
-                <label class="form-label small fw-semibold">Truck Owner Name</label>
-                <input type="text" id="debt-form-owner" class="form-control" placeholder="e.g. Shree Mahaveer Transport Company">
+                <label class="form-label small fw-semibold text-muted">Truck Owner Name</label>
+                <input type="text" id="debt-form-owner" class="form-control form-control-sm" placeholder="e.g. Suraj Bhan">
               </div>
               <div class="col-md-3">
-                <label class="form-label small fw-semibold">Debt Amount (₹) *</label>
-                <input type="number" id="debt-form-amount" class="form-control font-monospace fw-bold" min="1" step="any" required placeholder="0.00">
+                <label class="form-label small fw-semibold text-muted">Debt Amount (₹) *</label>
+                <input type="number" id="debt-form-amount" class="form-control form-control-sm fw-bold" min="1" step="any" required placeholder="0.00">
               </div>
               <div class="col-md-3">
-                <label class="form-label small fw-semibold">Debt Mode</label>
-                <select id="debt-form-mode" class="form-select">
+                <label class="form-label small fw-semibold text-muted">Debt Mode</label>
+                <select id="debt-form-mode" class="form-select form-select-sm">
                   <option value="Cash">Cash</option>
                   <option value="NEFT/RTGS">NEFT / RTGS</option>
+                  <option value="UPI">UPI</option>
                   <option value="Cheque">Cheque</option>
+                  <option value="Online">Online</option>
                 </select>
               </div>
 
               <div class="col-md-6">
-                <label class="form-label small fw-semibold">Borrower Name (किसके नाम बकाया)</label>
-                <input type="text" id="debt-form-borrower" class="form-control" placeholder="Borrower name or company">
+                <label class="form-label small fw-semibold text-muted">Borrower Name (किसके नाम बकाया)</label>
+                <input type="text" id="debt-form-borrower" class="form-control form-control-sm" placeholder="e.g. Suraj Bhan">
               </div>
               <div class="col-md-6">
-                <label class="form-label small fw-semibold">Receiver Name (किसने प्राप्त किया / फोन)</label>
-                <input type="text" id="debt-form-receiver" class="form-control" placeholder="Receiver name and mobile">
+                <label class="form-label small fw-semibold text-muted">Receiver Name (किसने प्राप्त किया)</label>
+                <input type="text" id="debt-form-receiver" class="form-control form-control-sm" placeholder="e.g. Suraj Bhan">
               </div>
 
               <div class="col-12">
-                <label class="form-label small fw-semibold">Description / Notes</label>
-                <textarea id="debt-form-desc" class="form-control" rows="2" placeholder="Commission, detention, loading or other remarks"></textarea>
+                <label class="form-label small fw-semibold text-muted">Description / Notes</label>
+                <textarea id="debt-form-desc" class="form-control form-control-sm" rows="2" placeholder="Commission, diesel, advance or other remarks"></textarea>
               </div>
             </div>
 
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn-appsheet-add">
-              <i class="bi bi-save me-1"></i> Save Debt Entry
-            </button>
           </div>
         </form>
       </div>

@@ -1,12 +1,1377 @@
 /**
  * Authentic MTC & TTC Logistics Open Debts & Ledger Register Data
  * Transcribed from 34 Google AppSheet screenshots (2019 - 2027)
- * Total Active Financial Years: 2026-2027, 2025-2026, 2024-2025, 2023-2024, 2022-2023, 2020-2021, 2019-2020
+ * Total Active Financial Years: 2026-2027, 2025-2026, 2024-2025, 2023-2024, 2022-2023, 2021-2022, 2020-2021, 2019-2020
+ * Total Open Due Target: ₹ 5,191,276.00
  */
 
 window.SAMPLE_DEBTS_DATA = [
   {
-    "id": "D26_0923_2",
+    "date": "2026-10-09",
+    "displayDate": "09/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "219_SMTC",
+    "truckNo": "RJ52GB2274",
+    "from": "Udaipur (Raj.)",
+    "to": "Sandila (U.P.)",
+    "company": "SMTC",
+    "truckOwner": "Govind Choudhary",
+    "debtType": "Commission",
+    "dueAmount": 2000.0,
+    "debtAmount": 2000.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Govind Choudhary",
+    "receiverName": "Kalu Meena 2274 9929438706",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0001"
+  },
+  {
+    "date": "2026-10-09",
+    "displayDate": "09/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "219_SMTC",
+    "truckNo": "RJ52GB2274",
+    "from": "Udaipur (Raj.)",
+    "to": "Sandila (U.P.)",
+    "company": "SMTC",
+    "truckOwner": "Govind Choudhary",
+    "debtType": "Other",
+    "dueAmount": 3900.0,
+    "debtAmount": 3900.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Govind Choudhary",
+    "receiverName": "Kalu Meena 2274 9929438706",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0002"
+  },
+  {
+    "date": "2026-10-09",
+    "displayDate": "09/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "2415_TTC",
+    "truckNo": "RJ52GA0837",
+    "from": "Kishangarh (Raj.)",
+    "to": "Dehradun (U.K.)",
+    "company": "TTC",
+    "truckOwner": "Panchuram Gurjar",
+    "debtType": "Commission",
+    "dueAmount": 2000.0,
+    "debtAmount": 2000.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Panchuram Gurjar",
+    "receiverName": "Naresh Gurjar 0837 8769390837",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0003"
+  },
+  {
+    "date": "2026-10-09",
+    "displayDate": "09/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "2295_TTC",
+    "truckNo": "RJ52GC0172",
+    "from": "Kishangarh (Raj.)",
+    "to": "Baraut (U.P.)",
+    "company": "TTC",
+    "truckOwner": "Vinod Dhabas",
+    "debtType": "Loading",
+    "dueAmount": 3000.0,
+    "debtAmount": 3000.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Vinod Dhabas",
+    "receiverName": "Mahendra Sharma 8005707798",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0004"
+  },
+  {
+    "date": "2026-10-09",
+    "displayDate": "09/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "2409_TTC",
+    "truckNo": "RJ52GA6603",
+    "from": "Kishangarh (Raj.)",
+    "to": "SAHIBABAD (U.P.)",
+    "company": "TTC",
+    "truckOwner": "Laxmi Prakash Jat",
+    "debtType": "Commission",
+    "dueAmount": 2000.0,
+    "debtAmount": 2000.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Laxmi Prakash Jat",
+    "receiverName": "Jahbu Raiya 9784009724",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0005"
+  },
+  {
+    "date": "2026-10-09",
+    "displayDate": "09/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "2409_TTC",
+    "truckNo": "RJ52GA6603",
+    "from": "Kishangarh (Raj.)",
+    "to": "SAHIBABAD (U.P.)",
+    "company": "TTC",
+    "truckOwner": "Laxmi Prakash Jat",
+    "debtType": "Other",
+    "dueAmount": 3500.0,
+    "debtAmount": 3500.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Laxmi Prakash Jat",
+    "receiverName": "Jahbu Raiya 9784009724",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0006"
+  },
+  {
+    "date": "2026-10-09",
+    "displayDate": "09/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "2412_TTC",
+    "truckNo": "RJ01GC2159",
+    "from": "Kishangarh (Raj.)",
+    "to": "Roorkee (U.K.)",
+    "company": "TTC",
+    "truckOwner": "Mahendra Rawat Shrinagar",
+    "debtType": "Commission",
+    "dueAmount": 2000.0,
+    "debtAmount": 2000.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Mahendra Rawat Shrinagar",
+    "receiverName": "Kaluram Jat Shrinagar 9784532159",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0007"
+  },
+  {
+    "date": "2026-10-09",
+    "displayDate": "09/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "2412_TTC",
+    "truckNo": "RJ01GC2159",
+    "from": "Kishangarh (Raj.)",
+    "to": "Roorkee (U.K.)",
+    "company": "TTC",
+    "truckOwner": "Mahendra Rawat Shrinagar",
+    "debtType": "Other",
+    "dueAmount": 4300.0,
+    "debtAmount": 4300.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Mahendra Rawat Shrinagar",
+    "receiverName": "Kaluram Jat Shrinagar 9784532159",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0008"
+  },
+  {
+    "date": "2026-10-09",
+    "displayDate": "09/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "",
+    "truckNo": "",
+    "from": "",
+    "to": "",
+    "company": "TTC",
+    "truckOwner": "Bhanwar Saini SKM 9785444855",
+    "debtType": "In Hand",
+    "dueAmount": 100000.0,
+    "debtAmount": 100000.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Bhanwar Saini SKM 9785444855",
+    "receiverName": "Bhanwar Saini SKM 9785444855",
+    "description": "Narshi Goverdhan",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0009"
+  },
+  {
+    "date": "2026-10-09",
+    "displayDate": "09/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "2404_TTC",
+    "truckNo": "RJ52GB2587",
+    "from": "Kishangarh (Raj.)",
+    "to": "Delhi",
+    "company": "TTC",
+    "truckOwner": "Rameshwar Prasad",
+    "debtType": "Loading",
+    "dueAmount": 15500.0,
+    "debtAmount": 15500.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Rameshwar Prasad",
+    "receiverName": "Chintu Bansal 9829550606",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0010"
+  },
+  {
+    "date": "2026-10-09",
+    "displayDate": "09/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "2410_TTC",
+    "truckNo": "RJ52GB5058",
+    "from": "Kishangarh (Raj.)",
+    "to": "Baraut (U.P.)",
+    "company": "TTC",
+    "truckOwner": "Shree Mahaveer Transport Company",
+    "debtType": "Loading",
+    "dueAmount": 26600.0,
+    "debtAmount": 26600.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Shree Mahaveer Transport Company",
+    "receiverName": "Mahendra Sharma 8005707798",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0011"
+  },
+  {
+    "date": "2026-10-09",
+    "displayDate": "09/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "221_SMTC",
+    "truckNo": "RJ32GD8796",
+    "from": "Kishangarh (Raj.)",
+    "to": "Sandila (U.P.)",
+    "company": "SMTC",
+    "truckOwner": "Prakash Chawadi Jawaja 9571343796",
+    "debtType": "Commission",
+    "dueAmount": 2000.0,
+    "debtAmount": 2000.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Prakash Chawadi Jawaja 9571343796",
+    "receiverName": "Ranjeet Gurjar 8796 9785444855",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0012"
+  },
+  {
+    "date": "2026-10-09",
+    "displayDate": "09/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "2418_TTC",
+    "truckNo": "RJ01GC4865",
+    "from": "Kishangarh (Raj.)",
+    "to": "Mohali (Punjab)",
+    "company": "TTC",
+    "truckOwner": "Shankar Singh Rawat Shrinagar",
+    "debtType": "Advance",
+    "dueAmount": 3500.0,
+    "debtAmount": 3500.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Shankar Singh Rawat Shrinagar",
+    "receiverName": "Nilesh Malani 9829043728",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0013"
+  },
+  {
+    "date": "2026-10-09",
+    "displayDate": "09/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "",
+    "truckNo": "",
+    "from": "",
+    "to": "",
+    "company": "TTC",
+    "truckOwner": "Bhanwar Saini SKM 9785444855",
+    "debtType": "In Hand",
+    "dueAmount": 957.0,
+    "debtAmount": 957.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Bhanwar Saini SKM 9785444855",
+    "receiverName": "Narshi Dan Charan",
+    "description": "Room Light Bill",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0014"
+  },
+  {
+    "date": "2026-10-08",
+    "displayDate": "08/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "2400_TTC",
+    "truckNo": "RJ32GC0997",
+    "from": "Kishangarh (Raj.)",
+    "to": "Keshwana (Raj.)",
+    "company": "TTC",
+    "truckOwner": "Mahendra Gurjar",
+    "debtType": "Commission",
+    "dueAmount": 2000.0,
+    "debtAmount": 2000.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Mahendra Gurjar",
+    "receiverName": "Mahendra Gurjar 7424840997",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0015"
+  },
+  {
+    "date": "2026-10-08",
+    "displayDate": "08/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "2400_TTC",
+    "truckNo": "RJ32GC0997",
+    "from": "Kishangarh (Raj.)",
+    "to": "Keshwana (Raj.)",
+    "company": "TTC",
+    "truckOwner": "Mahendra Gurjar",
+    "debtType": "Other",
+    "dueAmount": 4400.0,
+    "debtAmount": 4400.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Mahendra Gurjar",
+    "receiverName": "Mahendra Gurjar 7424840997",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0016"
+  },
+  {
+    "date": "2026-10-08",
+    "displayDate": "08/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "2398_TTC",
+    "truckNo": "RJ52GA7382",
+    "from": "Kishangarh (Raj.)",
+    "to": "Kanpur (U.P.)",
+    "company": "TTC",
+    "truckOwner": "Deepak Dhabas",
+    "debtType": "Commission",
+    "dueAmount": 2000.0,
+    "debtAmount": 2000.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Deepak Dhabas",
+    "receiverName": "Bablu Meena 7382 9024017382",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0017"
+  },
+  {
+    "date": "2026-10-08",
+    "displayDate": "08/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "2398_TTC",
+    "truckNo": "RJ52GA7382",
+    "from": "Kishangarh (Raj.)",
+    "to": "Kanpur (U.P.)",
+    "company": "TTC",
+    "truckOwner": "Deepak Dhabas",
+    "debtType": "Other",
+    "dueAmount": 3900.0,
+    "debtAmount": 3900.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Deepak Dhabas",
+    "receiverName": "Bablu Meena 7382 9024017382",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0018"
+  },
+  {
+    "date": "2026-10-08",
+    "displayDate": "08/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "2397_TTC",
+    "truckNo": "RJ52GA7719",
+    "from": "Kishangarh (Raj.)",
+    "to": "Kanpur (U.P.)",
+    "company": "TTC",
+    "truckOwner": "Deepak Dhabas",
+    "debtType": "Commission",
+    "dueAmount": 2000.0,
+    "debtAmount": 2000.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Deepak Dhabas",
+    "receiverName": "Mastram Meena 7719 7737750800",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0019"
+  },
+  {
+    "date": "2026-10-08",
+    "displayDate": "08/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "2397_TTC",
+    "truckNo": "RJ52GA7719",
+    "from": "Kishangarh (Raj.)",
+    "to": "Kanpur (U.P.)",
+    "company": "TTC",
+    "truckOwner": "Deepak Dhabas",
+    "debtType": "Other",
+    "dueAmount": 3900.0,
+    "debtAmount": 3900.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Deepak Dhabas",
+    "receiverName": "Mastram Meena 7719 7737750800",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0020"
+  },
+  {
+    "date": "2026-10-08",
+    "displayDate": "08/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "2390_TTC",
+    "truckNo": "RJ32GD8541",
+    "from": "Kishangarh (Raj.)",
+    "to": "Panipat (Haryana)",
+    "company": "TTC",
+    "truckOwner": "Suresh Khatana",
+    "debtType": "Commission",
+    "dueAmount": 2000.0,
+    "debtAmount": 2000.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Suresh Khatana",
+    "receiverName": "suresh khatana 8541 9929878541",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0021"
+  },
+  {
+    "date": "2026-10-08",
+    "displayDate": "08/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "2390_TTC",
+    "truckNo": "RJ32GD8541",
+    "from": "Kishangarh (Raj.)",
+    "to": "Panipat (Haryana)",
+    "company": "TTC",
+    "truckOwner": "Suresh Khatana",
+    "debtType": "Other",
+    "dueAmount": 1500.0,
+    "debtAmount": 1500.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Suresh Khatana",
+    "receiverName": "suresh khatana 8541 9929878541",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0022"
+  },
+  {
+    "date": "2026-10-08",
+    "displayDate": "08/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "2405_TTC",
+    "truckNo": "RJ52GB2508",
+    "from": "Kishangarh (Raj.)",
+    "to": "Delhi",
+    "company": "TTC",
+    "truckOwner": "Laxmi Prakash Jat",
+    "debtType": "Commission",
+    "dueAmount": 1500.0,
+    "debtAmount": 1500.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Laxmi Prakash Jat",
+    "receiverName": "Raju Fagarna 8696794782",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0023"
+  },
+  {
+    "date": "2026-10-08",
+    "displayDate": "08/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "2405_TTC",
+    "truckNo": "RJ52GB2508",
+    "from": "Kishangarh (Raj.)",
+    "to": "Delhi",
+    "company": "TTC",
+    "truckOwner": "Laxmi Prakash Jat",
+    "debtType": "Other",
+    "dueAmount": 500.0,
+    "debtAmount": 500.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Laxmi Prakash Jat",
+    "receiverName": "Raju Fagarna 8696794782",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0024"
+  },
+  {
+    "date": "2026-10-08",
+    "displayDate": "08/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "2401_TTC",
+    "truckNo": "RJ01GE0121",
+    "from": "Kishangarh (Raj.)",
+    "to": "Haridwar (U.K.)",
+    "company": "TTC",
+    "truckOwner": "Dinesh Yadav Shrinagar",
+    "debtType": "Commission",
+    "dueAmount": 2000.0,
+    "debtAmount": 2000.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Dinesh Yadav Shrinagar",
+    "receiverName": "Kishan Rawat 8107529554",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0025"
+  },
+  {
+    "date": "2026-10-08",
+    "displayDate": "08/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "2401_TTC",
+    "truckNo": "RJ01GE0121",
+    "from": "Kishangarh (Raj.)",
+    "to": "Haridwar (U.K.)",
+    "company": "TTC",
+    "truckOwner": "Dinesh Yadav Shrinagar",
+    "debtType": "Other",
+    "dueAmount": 4300.0,
+    "debtAmount": 4300.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Dinesh Yadav Shrinagar",
+    "receiverName": "Kishan Rawat 8107529554",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0026"
+  },
+  {
+    "date": "2026-10-08",
+    "displayDate": "08/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "",
+    "truckNo": "",
+    "from": "",
+    "to": "",
+    "company": "TTC",
+    "truckOwner": "Mohan Ji Kishangarh 9460591040",
+    "debtType": "In Hand",
+    "dueAmount": 150000.0,
+    "debtAmount": 150000.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Mohan Ji Kishangarh 9460591040",
+    "receiverName": "Mohan Ji Kishangarh 9460591040",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0027"
+  },
+  {
+    "date": "2026-10-08",
+    "displayDate": "08/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "",
+    "truckNo": "",
+    "from": "",
+    "to": "",
+    "company": "TTC",
+    "truckOwner": "Bhanwar Saini SKM 9785444855",
+    "debtType": "In Hand",
+    "dueAmount": 8000.0,
+    "debtAmount": 8000.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Bhanwar Saini SKM 9785444855",
+    "receiverName": "Bhanwar Saini SKM 9785444855",
+    "description": "Room Rent",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0028"
+  },
+  {
+    "date": "2026-10-08",
+    "displayDate": "08/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "2401_TTC",
+    "truckNo": "RJ01GE0121",
+    "from": "Kishangarh (Raj.)",
+    "to": "Haridwar (U.K.)",
+    "company": "TTC",
+    "truckOwner": "Dinesh Yadav Shrinagar",
+    "debtType": "Loading",
+    "dueAmount": 60000.0,
+    "debtAmount": 60000.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Dinesh Yadav Shrinagar",
+    "receiverName": "Vishnu Khandelwal 9414002447",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0029"
+  },
+  {
+    "date": "2026-10-08",
+    "displayDate": "08/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "2390_TTC",
+    "truckNo": "RJ32GD8541",
+    "from": "Kishangarh (Raj.)",
+    "to": "Panipat (Haryana)",
+    "company": "TTC",
+    "truckOwner": "Suresh Khatana",
+    "debtType": "Advance",
+    "dueAmount": 1500.0,
+    "debtAmount": 1500.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Suresh Khatana",
+    "receiverName": "Kailash Agarwal Alwar 8003189999",
+    "description": "Def Bukets",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0030"
+  },
+  {
+    "date": "2026-10-08",
+    "displayDate": "08/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "",
+    "truckNo": "RJ08GB2298",
+    "from": "",
+    "to": "Shahjahanpur (U.P.)",
+    "company": "TTC",
+    "truckOwner": "Pratap Singh",
+    "debtType": "Other",
+    "dueAmount": 2400.0,
+    "debtAmount": 2400.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Pratap Singh",
+    "receiverName": "Pratap Singh",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0031"
+  },
+  {
+    "date": "2026-10-07",
+    "displayDate": "07/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "-250_TTC",
+    "truckNo": "RJ52GB4506",
+    "from": "Kishangarh (Raj.)",
+    "to": "Delhi",
+    "company": "TTC",
+    "truckOwner": "Shree Mahaveer Transport Company",
+    "debtType": "Commission",
+    "dueAmount": 1500.0,
+    "debtAmount": 1500.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Shree Mahaveer Transport Company",
+    "receiverName": "Devaram Gurjar 8955801991",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0032"
+  },
+  {
+    "date": "2026-10-07",
+    "displayDate": "07/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "-250_TTC",
+    "truckNo": "RJ52GB4506",
+    "from": "Kishangarh (Raj.)",
+    "to": "Delhi",
+    "company": "TTC",
+    "truckOwner": "Shree Mahaveer Transport Company",
+    "debtType": "Other",
+    "dueAmount": 500.0,
+    "debtAmount": 500.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Shree Mahaveer Transport Company",
+    "receiverName": "Devaram Gurjar 8955801991",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0033"
+  },
+  {
+    "date": "2026-10-07",
+    "displayDate": "07/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "2386_TTC",
+    "truckNo": "RJ52GB9237",
+    "from": "Kishangarh (Raj.)",
+    "to": "Delhi",
+    "company": "TTC",
+    "truckOwner": "Panchuram Gurjar",
+    "debtType": "In Hand",
+    "dueAmount": 10000.0,
+    "debtAmount": 10000.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Panchuram Gurjar",
+    "receiverName": "Ramesh Chavada 6376313410",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0034"
+  },
+  {
+    "date": "2026-10-07",
+    "displayDate": "07/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "2382_TTC",
+    "truckNo": "RJ52GB5057",
+    "from": "Kishangarh (Raj.)",
+    "to": "Delhi",
+    "company": "TTC",
+    "truckOwner": "Shree Mahaveer Transport Company",
+    "debtType": "Commission",
+    "dueAmount": 2000.0,
+    "debtAmount": 2000.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Shree Mahaveer Transport Company",
+    "receiverName": "Dhrampal Gurjar 2590 9024017382",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0035"
+  },
+  {
+    "date": "2026-10-07",
+    "displayDate": "07/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "2382_TTC",
+    "truckNo": "RJ52GB5057",
+    "from": "Kishangarh (Raj.)",
+    "to": "Delhi",
+    "company": "TTC",
+    "truckOwner": "Shree Mahaveer Transport Company",
+    "debtType": "Other",
+    "dueAmount": 3500.0,
+    "debtAmount": 3500.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Shree Mahaveer Transport Company",
+    "receiverName": "Dhrampal Gurjar 2590 9024017382",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0036"
+  },
+  {
+    "date": "2026-10-07",
+    "displayDate": "07/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "-251_TTC",
+    "truckNo": "RJ52GB5965",
+    "from": "Kishangarh (Raj.)",
+    "to": "Delhi",
+    "company": "TTC",
+    "truckOwner": "Shree Mahaveer Transport Company",
+    "debtType": "Commission",
+    "dueAmount": 1500.0,
+    "debtAmount": 1500.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Shree Mahaveer Transport Company",
+    "receiverName": "Raju Bhilwa 9116597634",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0037"
+  },
+  {
+    "date": "2026-10-07",
+    "displayDate": "07/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "216_SMTC",
+    "truckNo": "RJ52GB5336",
+    "from": "Kishangarh (Raj.)",
+    "to": "Sandila (U.P.)",
+    "company": "SMTC",
+    "truckOwner": "Deepak Dhabas",
+    "debtType": "Commission",
+    "dueAmount": 2000.0,
+    "debtAmount": 2000.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Deepak Dhabas",
+    "receiverName": "Mahaveer Panchal 5336 9057855336",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0038"
+  },
+  {
+    "date": "2026-10-07",
+    "displayDate": "07/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "216_SMTC",
+    "truckNo": "RJ52GB5336",
+    "from": "Kishangarh (Raj.)",
+    "to": "Sandila (U.P.)",
+    "company": "SMTC",
+    "truckOwner": "Deepak Dhabas",
+    "debtType": "Other",
+    "dueAmount": 3900.0,
+    "debtAmount": 3900.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Deepak Dhabas",
+    "receiverName": "Mahaveer Panchal 5336 9057855336",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0039"
+  },
+  {
+    "date": "2026-10-06",
+    "displayDate": "06/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "2366_TTC",
+    "truckNo": "RJ01GD4865",
+    "from": "Kishangarh (Raj.)",
+    "to": "Chandigarh",
+    "company": "TTC",
+    "truckOwner": "Chand Rawat Singh",
+    "debtType": "Commission",
+    "dueAmount": 2000.0,
+    "debtAmount": 2000.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Chand Rawat Singh",
+    "receiverName": "Driver 4865 9928164676",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0040"
+  },
+  {
+    "date": "2026-10-06",
+    "displayDate": "06/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "2366_TTC",
+    "truckNo": "RJ01GD4865",
+    "from": "Kishangarh (Raj.)",
+    "to": "Chandigarh",
+    "company": "TTC",
+    "truckOwner": "Chand Rawat Singh",
+    "debtType": "Loading",
+    "dueAmount": 20000.0,
+    "debtAmount": 20000.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Chand Rawat Singh",
+    "receiverName": "Driver 4865 9928164676",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0041"
+  },
+  {
+    "date": "2026-10-06",
+    "displayDate": "06/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "2381_TTC",
+    "truckNo": "RJ52GB5058",
+    "from": "Kishangarh (Raj.)",
+    "to": "Delhi",
+    "company": "TTC",
+    "truckOwner": "Shree Mahaveer Transport Company",
+    "debtType": "Commission",
+    "dueAmount": 1500.0,
+    "debtAmount": 1500.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Shree Mahaveer Transport Company",
+    "receiverName": "Rajesh Gurjar Kotputli 9057855058",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0042"
+  },
+  {
+    "date": "2026-10-06",
+    "displayDate": "06/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "2381_TTC",
+    "truckNo": "RJ52GB5058",
+    "from": "Kishangarh (Raj.)",
+    "to": "Delhi",
+    "company": "TTC",
+    "truckOwner": "Shree Mahaveer Transport Company",
+    "debtType": "Other",
+    "dueAmount": 500.0,
+    "debtAmount": 500.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Shree Mahaveer Transport Company",
+    "receiverName": "Rajesh Gurjar Kotputli 9057855058",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0043"
+  },
+  {
+    "date": "2026-10-06",
+    "displayDate": "06/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "2379_TTC",
+    "truckNo": "RJ52GB4506",
+    "from": "Kishangarh (Raj.)",
+    "to": "Delhi",
+    "company": "TTC",
+    "truckOwner": "Shree Mahaveer Transport Company",
+    "debtType": "Commission",
+    "dueAmount": 1500.0,
+    "debtAmount": 1500.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Shree Mahaveer Transport Company",
+    "receiverName": "Devaram Gurjar 8955801991",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0044"
+  },
+  {
+    "date": "2026-10-06",
+    "displayDate": "06/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "2379_TTC",
+    "truckNo": "RJ52GB4506",
+    "from": "Kishangarh (Raj.)",
+    "to": "Delhi",
+    "company": "TTC",
+    "truckOwner": "Shree Mahaveer Transport Company",
+    "debtType": "Other",
+    "dueAmount": 500.0,
+    "debtAmount": 500.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Shree Mahaveer Transport Company",
+    "receiverName": "Devaram Gurjar 8955801991",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0045"
+  },
+  {
+    "date": "2026-10-06",
+    "displayDate": "06/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "",
+    "truckNo": "",
+    "from": "",
+    "to": "",
+    "company": "TTC",
+    "truckOwner": "Bhanwar Saini SKM 9785444855",
+    "debtType": "In Hand",
+    "dueAmount": 37300.0,
+    "debtAmount": 37300.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Bhanwar Saini SKM 9785444855",
+    "receiverName": "Bhanwar Saini SKM 9785444855",
+    "description": "Office Advance",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0046"
+  },
+  {
+    "date": "2026-10-01",
+    "displayDate": "01/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "2299_TTC",
+    "truckNo": "RJ01GD8286",
+    "from": "Kishangarh (Raj.)",
+    "to": "Greater Noida (U.P.)",
+    "company": "TTC",
+    "truckOwner": "Lalaram Choudhary Shrinagar",
+    "debtType": "Commission",
+    "dueAmount": 2000.0,
+    "debtAmount": 2000.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Lalaram Choudhary Shrinagar",
+    "receiverName": "Alladin GD8286 8905248286",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0047"
+  },
+  {
+    "date": "2026-10-01",
+    "displayDate": "01/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "2299_TTC",
+    "truckNo": "RJ01GD8286",
+    "from": "Kishangarh (Raj.)",
+    "to": "Greater Noida (U.P.)",
+    "company": "TTC",
+    "truckOwner": "Lalaram Choudhary Shrinagar",
+    "debtType": "Loading",
+    "dueAmount": 9200.0,
+    "debtAmount": 9200.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Lalaram Choudhary Shrinagar",
+    "receiverName": "Alladin GD8286 8905248286",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0048"
+  },
+  {
+    "date": "2026-10-01",
+    "displayDate": "01/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "2295_TTC",
+    "truckNo": "RJ52GC0172",
+    "from": "Kishangarh (Raj.)",
+    "to": "Baraut (U.P.)",
+    "company": "TTC",
+    "truckOwner": "Vinod Dhabas",
+    "debtType": "Loading",
+    "dueAmount": 27000.0,
+    "debtAmount": 27000.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Vinod Dhabas",
+    "receiverName": "Rajpal Gurjar 9649980646",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0049"
+  },
+  {
+    "date": "2026-10-01",
+    "displayDate": "01/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "2304_TTC",
+    "truckNo": "RJ52GB9237",
+    "from": "Kishangarh (Raj.)",
+    "to": "Delhi",
+    "company": "TTC",
+    "truckOwner": "Panchuram Gurjar",
+    "debtType": "Commission",
+    "dueAmount": 1000.0,
+    "debtAmount": 1000.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Panchuram Gurjar",
+    "receiverName": "Narsi Swami 9983941037",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0050"
+  },
+  {
+    "date": "2026-10-01",
+    "displayDate": "01/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "-238_TTC",
+    "truckNo": "RJ52GB5965",
+    "from": "Kishangarh (Raj.)",
+    "to": "Delhi",
+    "company": "TTC",
+    "truckOwner": "Shree Mahaveer Transport Company",
+    "debtType": "Commission",
+    "dueAmount": 1500.0,
+    "debtAmount": 1500.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Shree Mahaveer Transport Company",
+    "receiverName": "Raju Bhilwa 9116597634",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0051"
+  },
+  {
+    "date": "2026-10-01",
+    "displayDate": "01/10/2026",
+    "fy": "2026-2027",
+    "monthKey": "7 Oct",
+    "grNo": "",
+    "truckNo": "",
+    "from": "",
+    "to": "",
+    "company": "TTC",
+    "truckOwner": "Panchuram Gurjar 9829462637",
+    "debtType": "In Hand",
+    "dueAmount": 120000.0,
+    "debtAmount": 120000.0,
+    "totalReturned": 0.0,
+    "debtMode": "NEFT/RTGS",
+    "borrowerName": "Panchuram Gurjar 9829462637",
+    "receiverName": "Panchuram Gurjar 9829462637",
+    "description": "Ravi Behror",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0052"
+  },
+  {
+    "date": "2026-09-30",
+    "displayDate": "30/09/2026",
+    "fy": "2026-2027",
+    "monthKey": "6 Sep",
+    "grNo": "2285_TTC",
+    "truckNo": "RJ52GB5058",
+    "from": "Kishangarh (Raj.)",
+    "to": "Delhi",
+    "company": "TTC",
+    "truckOwner": "Shree Mahaveer Transport Company",
+    "debtType": "Commission",
+    "dueAmount": 1500.0,
+    "debtAmount": 1500.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Shree Mahaveer Transport Company",
+    "receiverName": "Rajesh Gurjar Kotputli 9057855058",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0053"
+  },
+  {
+    "date": "2026-09-30",
+    "displayDate": "30/09/2026",
+    "fy": "2026-2027",
+    "monthKey": "6 Sep",
+    "grNo": "2285_TTC",
+    "truckNo": "RJ52GB5058",
+    "from": "Kishangarh (Raj.)",
+    "to": "Delhi",
+    "company": "TTC",
+    "truckOwner": "Shree Mahaveer Transport Company",
+    "debtType": "Other",
+    "dueAmount": 500.0,
+    "debtAmount": 500.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Shree Mahaveer Transport Company",
+    "receiverName": "Rajesh Gurjar Kotputli 9057855058",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0054"
+  },
+  {
+    "date": "2026-09-30",
+    "displayDate": "30/09/2026",
+    "fy": "2026-2027",
+    "monthKey": "6 Sep",
+    "grNo": "2288_TTC",
+    "truckNo": "RJ52GB4506",
+    "from": "Kishangarh (Raj.)",
+    "to": "Delhi",
+    "company": "TTC",
+    "truckOwner": "Shree Mahaveer Transport Company",
+    "debtType": "Commission",
+    "dueAmount": 1500.0,
+    "debtAmount": 1500.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Shree Mahaveer Transport Company",
+    "receiverName": "Devaram Gurjar 8955801991",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0055"
+  },
+  {
+    "date": "2026-09-30",
+    "displayDate": "30/09/2026",
+    "fy": "2026-2027",
+    "monthKey": "6 Sep",
+    "grNo": "2288_TTC",
+    "truckNo": "RJ52GB4506",
+    "from": "Kishangarh (Raj.)",
+    "to": "Delhi",
+    "company": "TTC",
+    "truckOwner": "Shree Mahaveer Transport Company",
+    "debtType": "Other",
+    "dueAmount": 500.0,
+    "debtAmount": 500.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Shree Mahaveer Transport Company",
+    "receiverName": "Devaram Gurjar 8955801991",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0056"
+  },
+  {
+    "date": "2026-09-29",
+    "displayDate": "29/09/2026",
+    "fy": "2026-2027",
+    "monthKey": "6 Sep",
+    "grNo": "2276_TTC",
+    "truckNo": "RJ32GE5388",
+    "from": "Kishangarh (Raj.)",
+    "to": "Meerut (U.P.)",
+    "company": "TTC",
+    "truckOwner": "Billo Kasana",
+    "debtType": "Commission",
+    "dueAmount": 2000.0,
+    "debtAmount": 2000.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Billo Kasana",
+    "receiverName": "Deva Bhaya 9116792636",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0057"
+  },
+  {
+    "date": "2026-09-29",
+    "displayDate": "29/09/2026",
+    "fy": "2026-2027",
+    "monthKey": "6 Sep",
+    "grNo": "2276_TTC",
+    "truckNo": "RJ32GE5388",
+    "from": "Kishangarh (Raj.)",
+    "to": "Meerut (U.P.)",
+    "company": "TTC",
+    "truckOwner": "Billo Kasana",
+    "debtType": "Other",
+    "dueAmount": 4400.0,
+    "debtAmount": 4400.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Billo Kasana",
+    "receiverName": "Deva Bhaya 9116792636",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0058"
+  },
+  {
+    "date": "2026-09-28",
+    "displayDate": "28/09/2026",
+    "fy": "2026-2027",
+    "monthKey": "6 Sep",
+    "grNo": "2263_TTC",
+    "truckNo": "RJ52GC9237",
+    "from": "Kishangarh (Raj.)",
+    "to": "Delhi",
+    "company": "TTC",
+    "truckOwner": "Panchuram Gurjar",
+    "debtType": "Commission",
+    "dueAmount": 2000.0,
+    "debtAmount": 2000.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Panchuram Gurjar",
+    "receiverName": "Ashok Meena 9116802609",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0059"
+  },
+  {
+    "date": "2026-09-28",
+    "displayDate": "28/09/2026",
+    "fy": "2026-2027",
+    "monthKey": "6 Sep",
+    "grNo": "2263_TTC",
+    "truckNo": "RJ52GC9237",
+    "from": "Kishangarh (Raj.)",
+    "to": "Delhi",
+    "company": "TTC",
+    "truckOwner": "Panchuram Gurjar",
+    "debtType": "Loading",
+    "dueAmount": 9200.0,
+    "debtAmount": 9200.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Panchuram Gurjar",
+    "receiverName": "Ashok Meena 9116802609",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0060"
+  },
+  {
+    "date": "2026-09-28",
+    "displayDate": "28/09/2026",
+    "fy": "2026-2027",
+    "monthKey": "6 Sep",
+    "grNo": "2263_TTC",
+    "truckNo": "RJ52GC9237",
+    "from": "Kishangarh (Raj.)",
+    "to": "Delhi",
+    "company": "TTC",
+    "truckOwner": "Panchuram Gurjar",
+    "debtType": "Advance",
+    "dueAmount": 10000.0,
+    "debtAmount": 10000.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Panchuram Gurjar",
+    "receiverName": "Dilip Sharma 9414174641",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0061"
+  },
+  {
+    "date": "2026-09-28",
+    "displayDate": "28/09/2026",
+    "fy": "2026-2027",
+    "monthKey": "6 Sep",
+    "grNo": "",
+    "truckNo": "",
+    "from": "",
+    "to": "",
+    "company": "TTC",
+    "truckOwner": "Mahaveer Tholiya 9672551400",
+    "debtType": "In Hand",
+    "dueAmount": 20000.0,
+    "debtAmount": 20000.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Mahaveer Tholiya 9672551400",
+    "receiverName": "Mahaveer Tholiya 9672551400",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0062"
+  },
+  {
+    "id": "DEBT_2026_2027_0063",
     "date": "2026-09-23",
     "displayDate": "23/09/2026",
     "fy": "2026-2027",
@@ -29,7 +1394,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0923_1",
+    "id": "DEBT_2026_2027_0064",
     "date": "2026-09-23",
     "displayDate": "23/09/2026",
     "fy": "2026-2027",
@@ -52,7 +1417,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0922_2",
+    "id": "DEBT_2026_2027_0065",
     "date": "2026-09-22",
     "displayDate": "22/09/2026",
     "fy": "2026-2027",
@@ -75,7 +1440,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0922_1",
+    "id": "DEBT_2026_2027_0066",
     "date": "2026-09-22",
     "displayDate": "22/09/2026",
     "fy": "2026-2027",
@@ -98,7 +1463,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0921_2",
+    "id": "DEBT_2026_2027_0067",
     "date": "2026-09-21",
     "displayDate": "21/09/2026",
     "fy": "2026-2027",
@@ -121,7 +1486,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0921_1",
+    "id": "DEBT_2026_2027_0068",
     "date": "2026-09-21",
     "displayDate": "21/09/2026",
     "fy": "2026-2027",
@@ -144,7 +1509,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0920_1",
+    "id": "DEBT_2026_2027_0069",
     "date": "2026-09-20",
     "displayDate": "20/09/2026",
     "fy": "2026-2027",
@@ -167,7 +1532,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0919_2",
+    "id": "DEBT_2026_2027_0070",
     "date": "2026-09-19",
     "displayDate": "19/09/2026",
     "fy": "2026-2027",
@@ -190,7 +1555,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0919_1",
+    "id": "DEBT_2026_2027_0071",
     "date": "2026-09-19",
     "displayDate": "19/09/2026",
     "fy": "2026-2027",
@@ -213,7 +1578,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0916_2",
+    "id": "DEBT_2026_2027_0072",
     "date": "2026-09-16",
     "displayDate": "16/09/2026",
     "fy": "2026-2027",
@@ -236,7 +1601,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0916_1",
+    "id": "DEBT_2026_2027_0073",
     "date": "2026-09-16",
     "displayDate": "16/09/2026",
     "fy": "2026-2027",
@@ -259,7 +1624,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0915_3",
+    "id": "DEBT_2026_2027_0074",
     "date": "2026-09-15",
     "displayDate": "15/09/2026",
     "fy": "2026-2027",
@@ -282,7 +1647,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0915_2",
+    "id": "DEBT_2026_2027_0075",
     "date": "2026-09-15",
     "displayDate": "15/09/2026",
     "fy": "2026-2027",
@@ -305,7 +1670,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0915_1",
+    "id": "DEBT_2026_2027_0076",
     "date": "2026-09-15",
     "displayDate": "15/09/2026",
     "fy": "2026-2027",
@@ -328,7 +1693,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0912_4",
+    "id": "DEBT_2026_2027_0077",
     "date": "2026-09-12",
     "displayDate": "12/09/2026",
     "fy": "2026-2027",
@@ -351,7 +1716,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0912_3",
+    "id": "DEBT_2026_2027_0078",
     "date": "2026-09-12",
     "displayDate": "12/09/2026",
     "fy": "2026-2027",
@@ -374,7 +1739,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0912_2",
+    "id": "DEBT_2026_2027_0079",
     "date": "2026-09-12",
     "displayDate": "12/09/2026",
     "fy": "2026-2027",
@@ -397,7 +1762,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0912_1",
+    "id": "DEBT_2026_2027_0080",
     "date": "2026-09-12",
     "displayDate": "12/09/2026",
     "fy": "2026-2027",
@@ -420,7 +1785,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0908_3",
+    "id": "DEBT_2026_2027_0081",
     "date": "2026-09-08",
     "displayDate": "08/09/2026",
     "fy": "2026-2027",
@@ -443,7 +1808,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0908_2",
+    "id": "DEBT_2026_2027_0082",
     "date": "2026-09-08",
     "displayDate": "08/09/2026",
     "fy": "2026-2027",
@@ -466,7 +1831,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0908_1",
+    "id": "DEBT_2026_2027_0083",
     "date": "2026-09-08",
     "displayDate": "08/09/2026",
     "fy": "2026-2027",
@@ -489,7 +1854,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0907_5",
+    "id": "DEBT_2026_2027_0084",
     "date": "2026-09-07",
     "displayDate": "07/09/2026",
     "fy": "2026-2027",
@@ -512,7 +1877,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0907_4",
+    "id": "DEBT_2026_2027_0085",
     "date": "2026-09-07",
     "displayDate": "07/09/2026",
     "fy": "2026-2027",
@@ -535,7 +1900,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0907_3",
+    "id": "DEBT_2026_2027_0086",
     "date": "2026-09-07",
     "displayDate": "07/09/2026",
     "fy": "2026-2027",
@@ -558,7 +1923,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0907_2",
+    "id": "DEBT_2026_2027_0087",
     "date": "2026-09-07",
     "displayDate": "07/09/2026",
     "fy": "2026-2027",
@@ -581,7 +1946,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0907_1",
+    "id": "DEBT_2026_2027_0088",
     "date": "2026-09-07",
     "displayDate": "07/09/2026",
     "fy": "2026-2027",
@@ -604,7 +1969,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0905_2",
+    "id": "DEBT_2026_2027_0089",
     "date": "2026-09-05",
     "displayDate": "05/09/2026",
     "fy": "2026-2027",
@@ -627,7 +1992,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0905_1",
+    "id": "DEBT_2026_2027_0090",
     "date": "2026-09-05",
     "displayDate": "05/09/2026",
     "fy": "2026-2027",
@@ -650,7 +2015,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0901_6",
+    "id": "DEBT_2026_2027_0091",
     "date": "2026-09-01",
     "displayDate": "01/09/2026",
     "fy": "2026-2027",
@@ -681,7 +2046,7 @@ window.SAMPLE_DEBTS_DATA = [
     ]
   },
   {
-    "id": "D26_0901_5",
+    "id": "DEBT_2026_2027_0092",
     "date": "2026-09-01",
     "displayDate": "01/09/2026",
     "fy": "2026-2027",
@@ -704,7 +2069,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0901_4",
+    "id": "DEBT_2026_2027_0093",
     "date": "2026-09-01",
     "displayDate": "01/09/2026",
     "fy": "2026-2027",
@@ -727,7 +2092,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0901_3",
+    "id": "DEBT_2026_2027_0094",
     "date": "2026-09-01",
     "displayDate": "01/09/2026",
     "fy": "2026-2027",
@@ -750,7 +2115,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0901_2",
+    "id": "DEBT_2026_2027_0095",
     "date": "2026-09-01",
     "displayDate": "01/09/2026",
     "fy": "2026-2027",
@@ -773,7 +2138,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0901_1",
+    "id": "DEBT_2026_2027_0096",
     "date": "2026-09-01",
     "displayDate": "01/09/2026",
     "fy": "2026-2027",
@@ -796,7 +2161,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0829_3",
+    "id": "DEBT_2026_2027_0097",
     "date": "2026-08-29",
     "displayDate": "29/08/2026",
     "fy": "2026-2027",
@@ -819,7 +2184,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0829_2",
+    "id": "DEBT_2026_2027_0098",
     "date": "2026-08-29",
     "displayDate": "29/08/2026",
     "fy": "2026-2027",
@@ -842,7 +2207,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0829_1",
+    "id": "DEBT_2026_2027_0099",
     "date": "2026-08-29",
     "displayDate": "29/08/2026",
     "fy": "2026-2027",
@@ -865,7 +2230,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0828_2",
+    "id": "DEBT_2026_2027_0100",
     "date": "2026-08-28",
     "displayDate": "28/08/2026",
     "fy": "2026-2027",
@@ -888,7 +2253,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0828_1",
+    "id": "DEBT_2026_2027_0101",
     "date": "2026-08-28",
     "displayDate": "28/08/2026",
     "fy": "2026-2027",
@@ -911,7 +2276,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0826_4",
+    "id": "DEBT_2026_2027_0102",
     "date": "2026-08-26",
     "displayDate": "26/08/2026",
     "fy": "2026-2027",
@@ -934,7 +2299,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0826_3",
+    "id": "DEBT_2026_2027_0103",
     "date": "2026-08-26",
     "displayDate": "26/08/2026",
     "fy": "2026-2027",
@@ -957,7 +2322,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0826_2",
+    "id": "DEBT_2026_2027_0104",
     "date": "2026-08-26",
     "displayDate": "26/08/2026",
     "fy": "2026-2027",
@@ -980,7 +2345,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0826_1",
+    "id": "DEBT_2026_2027_0105",
     "date": "2026-08-26",
     "displayDate": "26/08/2026",
     "fy": "2026-2027",
@@ -1003,7 +2368,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0825_1",
+    "id": "DEBT_2026_2027_0106",
     "date": "2026-08-25",
     "displayDate": "25/08/2026",
     "fy": "2026-2027",
@@ -1026,7 +2391,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0823_2",
+    "id": "DEBT_2026_2027_0107",
     "date": "2026-08-23",
     "displayDate": "23/08/2026",
     "fy": "2026-2027",
@@ -1049,7 +2414,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0823_1",
+    "id": "DEBT_2026_2027_0108",
     "date": "2026-08-23",
     "displayDate": "23/08/2026",
     "fy": "2026-2027",
@@ -1072,7 +2437,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0822_2",
+    "id": "DEBT_2026_2027_0109",
     "date": "2026-08-22",
     "displayDate": "22/08/2026",
     "fy": "2026-2027",
@@ -1095,7 +2460,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0822_1",
+    "id": "DEBT_2026_2027_0110",
     "date": "2026-08-22",
     "displayDate": "22/08/2026",
     "fy": "2026-2027",
@@ -1118,7 +2483,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0821_3",
+    "id": "DEBT_2026_2027_0111",
     "date": "2026-08-21",
     "displayDate": "21/08/2026",
     "fy": "2026-2027",
@@ -1141,7 +2506,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0821_2",
+    "id": "DEBT_2026_2027_0112",
     "date": "2026-08-21",
     "displayDate": "21/08/2026",
     "fy": "2026-2027",
@@ -1164,7 +2529,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0821_1",
+    "id": "DEBT_2026_2027_0113",
     "date": "2026-08-21",
     "displayDate": "21/08/2026",
     "fy": "2026-2027",
@@ -1187,7 +2552,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0820_5",
+    "id": "DEBT_2026_2027_0114",
     "date": "2026-08-20",
     "displayDate": "20/08/2026",
     "fy": "2026-2027",
@@ -1210,7 +2575,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0820_4",
+    "id": "DEBT_2026_2027_0115",
     "date": "2026-08-20",
     "displayDate": "20/08/2026",
     "fy": "2026-2027",
@@ -1233,7 +2598,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0820_3",
+    "id": "DEBT_2026_2027_0116",
     "date": "2026-08-20",
     "displayDate": "20/08/2026",
     "fy": "2026-2027",
@@ -1256,7 +2621,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0820_2",
+    "id": "DEBT_2026_2027_0117",
     "date": "2026-08-20",
     "displayDate": "20/08/2026",
     "fy": "2026-2027",
@@ -1279,7 +2644,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0820_1",
+    "id": "DEBT_2026_2027_0118",
     "date": "2026-08-20",
     "displayDate": "20/08/2026",
     "fy": "2026-2027",
@@ -1302,7 +2667,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0819_1",
+    "id": "DEBT_2026_2027_0119",
     "date": "2026-08-19",
     "displayDate": "19/08/2026",
     "fy": "2026-2027",
@@ -1325,7 +2690,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0818_2",
+    "id": "DEBT_2026_2027_0120",
     "date": "2026-08-18",
     "displayDate": "18/08/2026",
     "fy": "2026-2027",
@@ -1348,7 +2713,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0818_1",
+    "id": "DEBT_2026_2027_0121",
     "date": "2026-08-18",
     "displayDate": "18/08/2026",
     "fy": "2026-2027",
@@ -1379,7 +2744,7 @@ window.SAMPLE_DEBTS_DATA = [
     ]
   },
   {
-    "id": "D26_0817_4",
+    "id": "DEBT_2026_2027_0122",
     "date": "2026-08-17",
     "displayDate": "17/08/2026",
     "fy": "2026-2027",
@@ -1402,7 +2767,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0817_3",
+    "id": "DEBT_2026_2027_0123",
     "date": "2026-08-17",
     "displayDate": "17/08/2026",
     "fy": "2026-2027",
@@ -1425,7 +2790,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0817_2",
+    "id": "DEBT_2026_2027_0124",
     "date": "2026-08-17",
     "displayDate": "17/08/2026",
     "fy": "2026-2027",
@@ -1448,7 +2813,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0817_1",
+    "id": "DEBT_2026_2027_0125",
     "date": "2026-08-17",
     "displayDate": "17/08/2026",
     "fy": "2026-2027",
@@ -1471,7 +2836,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0815_1",
+    "id": "DEBT_2026_2027_0126",
     "date": "2026-08-15",
     "displayDate": "15/08/2026",
     "fy": "2026-2027",
@@ -1494,7 +2859,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0813_2",
+    "id": "DEBT_2026_2027_0127",
     "date": "2026-08-13",
     "displayDate": "13/08/2026",
     "fy": "2026-2027",
@@ -1517,7 +2882,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0813_1",
+    "id": "DEBT_2026_2027_0128",
     "date": "2026-08-13",
     "displayDate": "13/08/2026",
     "fy": "2026-2027",
@@ -1540,7 +2905,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0812_3",
+    "id": "DEBT_2026_2027_0129",
     "date": "2026-08-12",
     "displayDate": "12/08/2026",
     "fy": "2026-2027",
@@ -1563,7 +2928,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0812_2",
+    "id": "DEBT_2026_2027_0130",
     "date": "2026-08-12",
     "displayDate": "12/08/2026",
     "fy": "2026-2027",
@@ -1586,7 +2951,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0812_1",
+    "id": "DEBT_2026_2027_0131",
     "date": "2026-08-12",
     "displayDate": "12/08/2026",
     "fy": "2026-2027",
@@ -1609,7 +2974,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0811_1",
+    "id": "DEBT_2026_2027_0132",
     "date": "2026-08-11",
     "displayDate": "11/08/2026",
     "fy": "2026-2027",
@@ -1632,7 +2997,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0809_2",
+    "id": "DEBT_2026_2027_0133",
     "date": "2026-08-09",
     "displayDate": "09/08/2026",
     "fy": "2026-2027",
@@ -1655,7 +3020,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0809_1",
+    "id": "DEBT_2026_2027_0134",
     "date": "2026-08-09",
     "displayDate": "09/08/2026",
     "fy": "2026-2027",
@@ -1678,7 +3043,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0806_1",
+    "id": "DEBT_2026_2027_0135",
     "date": "2026-08-06",
     "displayDate": "06/08/2026",
     "fy": "2026-2027",
@@ -1701,7 +3066,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0804_2",
+    "id": "DEBT_2026_2027_0136",
     "date": "2026-08-04",
     "displayDate": "04/08/2026",
     "fy": "2026-2027",
@@ -1724,7 +3089,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0804_1",
+    "id": "DEBT_2026_2027_0137",
     "date": "2026-08-04",
     "displayDate": "04/08/2026",
     "fy": "2026-2027",
@@ -1747,7 +3112,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0801_3",
+    "id": "DEBT_2026_2027_0138",
     "date": "2026-08-01",
     "displayDate": "01/08/2026",
     "fy": "2026-2027",
@@ -1770,7 +3135,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0801_2",
+    "id": "DEBT_2026_2027_0139",
     "date": "2026-08-01",
     "displayDate": "01/08/2026",
     "fy": "2026-2027",
@@ -1793,7 +3158,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0801_1",
+    "id": "DEBT_2026_2027_0140",
     "date": "2026-08-01",
     "displayDate": "01/08/2026",
     "fy": "2026-2027",
@@ -1816,7 +3181,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0728_2",
+    "id": "DEBT_2026_2027_0141",
     "date": "2026-07-28",
     "displayDate": "28/07/2026",
     "fy": "2026-2027",
@@ -1839,7 +3204,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0728_1",
+    "id": "DEBT_2026_2027_0142",
     "date": "2026-07-28",
     "displayDate": "28/07/2026",
     "fy": "2026-2027",
@@ -1862,7 +3227,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0726_1",
+    "id": "DEBT_2026_2027_0143",
     "date": "2026-07-26",
     "displayDate": "26/07/2026",
     "fy": "2026-2027",
@@ -1885,7 +3250,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0725_1",
+    "id": "DEBT_2026_2027_0144",
     "date": "2026-07-25",
     "displayDate": "25/07/2026",
     "fy": "2026-2027",
@@ -1908,7 +3273,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0724_3",
+    "id": "DEBT_2026_2027_0145",
     "date": "2026-07-24",
     "displayDate": "24/07/2026",
     "fy": "2026-2027",
@@ -1931,7 +3296,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0724_2",
+    "id": "DEBT_2026_2027_0146",
     "date": "2026-07-24",
     "displayDate": "24/07/2026",
     "fy": "2026-2027",
@@ -1954,7 +3319,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0724_1",
+    "id": "DEBT_2026_2027_0147",
     "date": "2026-07-24",
     "displayDate": "24/07/2026",
     "fy": "2026-2027",
@@ -1985,7 +3350,7 @@ window.SAMPLE_DEBTS_DATA = [
     ]
   },
   {
-    "id": "D26_0722_1",
+    "id": "DEBT_2026_2027_0148",
     "date": "2026-07-22",
     "displayDate": "22/07/2026",
     "fy": "2026-2027",
@@ -2008,7 +3373,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0721_1",
+    "id": "DEBT_2026_2027_0149",
     "date": "2026-07-21",
     "displayDate": "21/07/2026",
     "fy": "2026-2027",
@@ -2031,7 +3396,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0720_2",
+    "id": "DEBT_2026_2027_0150",
     "date": "2026-07-20",
     "displayDate": "20/07/2026",
     "fy": "2026-2027",
@@ -2054,7 +3419,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0720_1",
+    "id": "DEBT_2026_2027_0151",
     "date": "2026-07-20",
     "displayDate": "20/07/2026",
     "fy": "2026-2027",
@@ -2077,7 +3442,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0718_2",
+    "id": "DEBT_2026_2027_0152",
     "date": "2026-07-18",
     "displayDate": "18/07/2026",
     "fy": "2026-2027",
@@ -2100,7 +3465,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0718_1",
+    "id": "DEBT_2026_2027_0153",
     "date": "2026-07-18",
     "displayDate": "18/07/2026",
     "fy": "2026-2027",
@@ -2123,7 +3488,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0715_2",
+    "id": "DEBT_2026_2027_0154",
     "date": "2026-07-15",
     "displayDate": "15/07/2026",
     "fy": "2026-2027",
@@ -2154,7 +3519,7 @@ window.SAMPLE_DEBTS_DATA = [
     ]
   },
   {
-    "id": "D26_0715_1",
+    "id": "DEBT_2026_2027_0155",
     "date": "2026-07-15",
     "displayDate": "15/07/2026",
     "fy": "2026-2027",
@@ -2177,7 +3542,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0713_4",
+    "id": "DEBT_2026_2027_0156",
     "date": "2026-07-13",
     "displayDate": "13/07/2026",
     "fy": "2026-2027",
@@ -2200,7 +3565,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0713_3",
+    "id": "DEBT_2026_2027_0157",
     "date": "2026-07-13",
     "displayDate": "13/07/2026",
     "fy": "2026-2027",
@@ -2223,7 +3588,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0713_2",
+    "id": "DEBT_2026_2027_0158",
     "date": "2026-07-13",
     "displayDate": "13/07/2026",
     "fy": "2026-2027",
@@ -2246,7 +3611,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0713_1",
+    "id": "DEBT_2026_2027_0159",
     "date": "2026-07-13",
     "displayDate": "13/07/2026",
     "fy": "2026-2027",
@@ -2269,7 +3634,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0711_2",
+    "id": "DEBT_2026_2027_0160",
     "date": "2026-07-11",
     "displayDate": "11/07/2026",
     "fy": "2026-2027",
@@ -2292,7 +3657,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0711_1",
+    "id": "DEBT_2026_2027_0161",
     "date": "2026-07-11",
     "displayDate": "11/07/2026",
     "fy": "2026-2027",
@@ -2315,7 +3680,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0709_3",
+    "id": "DEBT_2026_2027_0162",
     "date": "2026-07-09",
     "displayDate": "09/07/2026",
     "fy": "2026-2027",
@@ -2338,7 +3703,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0709_2",
+    "id": "DEBT_2026_2027_0163",
     "date": "2026-07-09",
     "displayDate": "09/07/2026",
     "fy": "2026-2027",
@@ -2361,7 +3726,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0709_1",
+    "id": "DEBT_2026_2027_0164",
     "date": "2026-07-09",
     "displayDate": "09/07/2026",
     "fy": "2026-2027",
@@ -2384,7 +3749,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0707_4",
+    "id": "DEBT_2026_2027_0165",
     "date": "2026-07-07",
     "displayDate": "07/07/2026",
     "fy": "2026-2027",
@@ -2407,7 +3772,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0707_3",
+    "id": "DEBT_2026_2027_0166",
     "date": "2026-07-07",
     "displayDate": "07/07/2026",
     "fy": "2026-2027",
@@ -2430,7 +3795,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0707_2",
+    "id": "DEBT_2026_2027_0167",
     "date": "2026-07-07",
     "displayDate": "07/07/2026",
     "fy": "2026-2027",
@@ -2453,7 +3818,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0707_1",
+    "id": "DEBT_2026_2027_0168",
     "date": "2026-07-07",
     "displayDate": "07/07/2026",
     "fy": "2026-2027",
@@ -2476,7 +3841,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0703_2",
+    "id": "DEBT_2026_2027_0169",
     "date": "2026-07-03",
     "displayDate": "03/07/2026",
     "fy": "2026-2027",
@@ -2499,7 +3864,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0703_1",
+    "id": "DEBT_2026_2027_0170",
     "date": "2026-07-03",
     "displayDate": "03/07/2026",
     "fy": "2026-2027",
@@ -2522,7 +3887,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0702_2",
+    "id": "DEBT_2026_2027_0171",
     "date": "2026-07-02",
     "displayDate": "02/07/2026",
     "fy": "2026-2027",
@@ -2545,7 +3910,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0702_1",
+    "id": "DEBT_2026_2027_0172",
     "date": "2026-07-02",
     "displayDate": "02/07/2026",
     "fy": "2026-2027",
@@ -2568,7 +3933,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0701_1",
+    "id": "DEBT_2026_2027_0173",
     "date": "2026-07-01",
     "displayDate": "01/07/2026",
     "fy": "2026-2027",
@@ -2591,7 +3956,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0630_2",
+    "id": "DEBT_2026_2027_0174",
     "date": "2026-06-30",
     "displayDate": "30/06/2026",
     "fy": "2026-2027",
@@ -2614,7 +3979,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0630_1",
+    "id": "DEBT_2026_2027_0175",
     "date": "2026-06-30",
     "displayDate": "30/06/2026",
     "fy": "2026-2027",
@@ -2637,7 +4002,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0629_1",
+    "id": "DEBT_2026_2027_0176",
     "date": "2026-06-29",
     "displayDate": "29/06/2026",
     "fy": "2026-2027",
@@ -2668,7 +4033,7 @@ window.SAMPLE_DEBTS_DATA = [
     ]
   },
   {
-    "id": "D26_0627_2",
+    "id": "DEBT_2026_2027_0177",
     "date": "2026-06-27",
     "displayDate": "27/06/2026",
     "fy": "2026-2027",
@@ -2691,7 +4056,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0627_1",
+    "id": "DEBT_2026_2027_0178",
     "date": "2026-06-27",
     "displayDate": "27/06/2026",
     "fy": "2026-2027",
@@ -2714,7 +4079,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0626_1",
+    "id": "DEBT_2026_2027_0179",
     "date": "2026-06-26",
     "displayDate": "26/06/2026",
     "fy": "2026-2027",
@@ -2737,7 +4102,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0623_2",
+    "id": "DEBT_2026_2027_0180",
     "date": "2026-06-23",
     "displayDate": "23/06/2026",
     "fy": "2026-2027",
@@ -2760,7 +4125,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0623_1",
+    "id": "DEBT_2026_2027_0181",
     "date": "2026-06-23",
     "displayDate": "23/06/2026",
     "fy": "2026-2027",
@@ -2783,7 +4148,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0621_2",
+    "id": "DEBT_2026_2027_0182",
     "date": "2026-06-21",
     "displayDate": "21/06/2026",
     "fy": "2026-2027",
@@ -2806,7 +4171,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0621_1",
+    "id": "DEBT_2026_2027_0183",
     "date": "2026-06-21",
     "displayDate": "21/06/2026",
     "fy": "2026-2027",
@@ -2829,7 +4194,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0620_4",
+    "id": "DEBT_2026_2027_0184",
     "date": "2026-06-20",
     "displayDate": "20/06/2026",
     "fy": "2026-2027",
@@ -2852,7 +4217,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0620_3",
+    "id": "DEBT_2026_2027_0185",
     "date": "2026-06-20",
     "displayDate": "20/06/2026",
     "fy": "2026-2027",
@@ -2875,7 +4240,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0620_2",
+    "id": "DEBT_2026_2027_0186",
     "date": "2026-06-20",
     "displayDate": "20/06/2026",
     "fy": "2026-2027",
@@ -2898,7 +4263,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0620_1",
+    "id": "DEBT_2026_2027_0187",
     "date": "2026-06-20",
     "displayDate": "20/06/2026",
     "fy": "2026-2027",
@@ -2921,7 +4286,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0619_3",
+    "id": "DEBT_2026_2027_0188",
     "date": "2026-06-19",
     "displayDate": "19/06/2026",
     "fy": "2026-2027",
@@ -2944,7 +4309,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0619_2",
+    "id": "DEBT_2026_2027_0189",
     "date": "2026-06-19",
     "displayDate": "19/06/2026",
     "fy": "2026-2027",
@@ -2967,7 +4332,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0619_1",
+    "id": "DEBT_2026_2027_0190",
     "date": "2026-06-19",
     "displayDate": "19/06/2026",
     "fy": "2026-2027",
@@ -2990,7 +4355,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0617_3",
+    "id": "DEBT_2026_2027_0191",
     "date": "2026-06-17",
     "displayDate": "17/06/2026",
     "fy": "2026-2027",
@@ -3013,7 +4378,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0617_2",
+    "id": "DEBT_2026_2027_0192",
     "date": "2026-06-17",
     "displayDate": "17/06/2026",
     "fy": "2026-2027",
@@ -3036,7 +4401,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0617_1",
+    "id": "DEBT_2026_2027_0193",
     "date": "2026-06-17",
     "displayDate": "17/06/2026",
     "fy": "2026-2027",
@@ -3059,7 +4424,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0614_3",
+    "id": "DEBT_2026_2027_0194",
     "date": "2026-06-14",
     "displayDate": "14/06/2026",
     "fy": "2026-2027",
@@ -3082,7 +4447,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0614_2",
+    "id": "DEBT_2026_2027_0195",
     "date": "2026-06-14",
     "displayDate": "14/06/2026",
     "fy": "2026-2027",
@@ -3105,7 +4470,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0614_1",
+    "id": "DEBT_2026_2027_0196",
     "date": "2026-06-14",
     "displayDate": "14/06/2026",
     "fy": "2026-2027",
@@ -3128,7 +4493,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0612_2",
+    "id": "DEBT_2026_2027_0197",
     "date": "2026-06-12",
     "displayDate": "12/06/2026",
     "fy": "2026-2027",
@@ -3151,7 +4516,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0612_1",
+    "id": "DEBT_2026_2027_0198",
     "date": "2026-06-12",
     "displayDate": "12/06/2026",
     "fy": "2026-2027",
@@ -3174,7 +4539,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0611_2",
+    "id": "DEBT_2026_2027_0199",
     "date": "2026-06-11",
     "displayDate": "11/06/2026",
     "fy": "2026-2027",
@@ -3197,7 +4562,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0611_1",
+    "id": "DEBT_2026_2027_0200",
     "date": "2026-06-11",
     "displayDate": "11/06/2026",
     "fy": "2026-2027",
@@ -3220,7 +4585,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0609_1",
+    "id": "DEBT_2026_2027_0201",
     "date": "2026-06-09",
     "displayDate": "09/06/2026",
     "fy": "2026-2027",
@@ -3243,7 +4608,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0608_4",
+    "id": "DEBT_2026_2027_0202",
     "date": "2026-06-08",
     "displayDate": "08/06/2026",
     "fy": "2026-2027",
@@ -3266,7 +4631,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0608_3",
+    "id": "DEBT_2026_2027_0203",
     "date": "2026-06-08",
     "displayDate": "08/06/2026",
     "fy": "2026-2027",
@@ -3289,7 +4654,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0608_2",
+    "id": "DEBT_2026_2027_0204",
     "date": "2026-06-08",
     "displayDate": "08/06/2026",
     "fy": "2026-2027",
@@ -3312,7 +4677,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0608_1",
+    "id": "DEBT_2026_2027_0205",
     "date": "2026-06-08",
     "displayDate": "08/06/2026",
     "fy": "2026-2027",
@@ -3335,7 +4700,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0607_3",
+    "id": "DEBT_2026_2027_0206",
     "date": "2026-06-07",
     "displayDate": "07/06/2026",
     "fy": "2026-2027",
@@ -3358,7 +4723,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0607_2",
+    "id": "DEBT_2026_2027_0207",
     "date": "2026-06-07",
     "displayDate": "07/06/2026",
     "fy": "2026-2027",
@@ -3381,7 +4746,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0607_1",
+    "id": "DEBT_2026_2027_0208",
     "date": "2026-06-07",
     "displayDate": "07/06/2026",
     "fy": "2026-2027",
@@ -3404,7 +4769,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0606_2",
+    "id": "DEBT_2026_2027_0209",
     "date": "2026-06-06",
     "displayDate": "06/06/2026",
     "fy": "2026-2027",
@@ -3427,7 +4792,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0606_1",
+    "id": "DEBT_2026_2027_0210",
     "date": "2026-06-06",
     "displayDate": "06/06/2026",
     "fy": "2026-2027",
@@ -3450,7 +4815,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0604_2",
+    "id": "DEBT_2026_2027_0211",
     "date": "2026-06-04",
     "displayDate": "04/06/2026",
     "fy": "2026-2027",
@@ -3473,7 +4838,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0604_1",
+    "id": "DEBT_2026_2027_0212",
     "date": "2026-06-04",
     "displayDate": "04/06/2026",
     "fy": "2026-2027",
@@ -3496,7 +4861,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0602_2",
+    "id": "DEBT_2026_2027_0213",
     "date": "2026-06-02",
     "displayDate": "02/06/2026",
     "fy": "2026-2027",
@@ -3519,7 +4884,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0602_1",
+    "id": "DEBT_2026_2027_0214",
     "date": "2026-06-02",
     "displayDate": "02/06/2026",
     "fy": "2026-2027",
@@ -3542,7 +4907,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0601_2",
+    "id": "DEBT_2026_2027_0215",
     "date": "2026-06-01",
     "displayDate": "01/06/2026",
     "fy": "2026-2027",
@@ -3565,7 +4930,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0601_1",
+    "id": "DEBT_2026_2027_0216",
     "date": "2026-06-01",
     "displayDate": "01/06/2026",
     "fy": "2026-2027",
@@ -3588,7 +4953,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0531_1",
+    "id": "DEBT_2026_2027_0217",
     "date": "2026-05-31",
     "displayDate": "31/05/2026",
     "fy": "2026-2027",
@@ -3611,7 +4976,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0529_4",
+    "id": "DEBT_2026_2027_0218",
     "date": "2026-05-29",
     "displayDate": "29/05/2026",
     "fy": "2026-2027",
@@ -3634,7 +4999,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0529_3",
+    "id": "DEBT_2026_2027_0219",
     "date": "2026-05-29",
     "displayDate": "29/05/2026",
     "fy": "2026-2027",
@@ -3657,7 +5022,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0529_2",
+    "id": "DEBT_2026_2027_0220",
     "date": "2026-05-29",
     "displayDate": "29/05/2026",
     "fy": "2026-2027",
@@ -3680,7 +5045,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0529_1",
+    "id": "DEBT_2026_2027_0221",
     "date": "2026-05-29",
     "displayDate": "29/05/2026",
     "fy": "2026-2027",
@@ -3703,7 +5068,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0528_1",
+    "id": "DEBT_2026_2027_0222",
     "date": "2026-05-28",
     "displayDate": "28/05/2026",
     "fy": "2026-2027",
@@ -3726,7 +5091,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0527_2",
+    "id": "DEBT_2026_2027_0223",
     "date": "2026-05-27",
     "displayDate": "27/05/2026",
     "fy": "2026-2027",
@@ -3749,7 +5114,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0527_1",
+    "id": "DEBT_2026_2027_0224",
     "date": "2026-05-27",
     "displayDate": "27/05/2026",
     "fy": "2026-2027",
@@ -3772,7 +5137,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0526_2",
+    "id": "DEBT_2026_2027_0225",
     "date": "2026-05-26",
     "displayDate": "26/05/2026",
     "fy": "2026-2027",
@@ -3795,7 +5160,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0526_1",
+    "id": "DEBT_2026_2027_0226",
     "date": "2026-05-26",
     "displayDate": "26/05/2026",
     "fy": "2026-2027",
@@ -3818,7 +5183,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0523_3",
+    "id": "DEBT_2026_2027_0227",
     "date": "2026-05-23",
     "displayDate": "23/05/2026",
     "fy": "2026-2027",
@@ -3841,7 +5206,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0523_2",
+    "id": "DEBT_2026_2027_0228",
     "date": "2026-05-23",
     "displayDate": "23/05/2026",
     "fy": "2026-2027",
@@ -3864,7 +5229,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0523_1",
+    "id": "DEBT_2026_2027_0229",
     "date": "2026-05-23",
     "displayDate": "23/05/2026",
     "fy": "2026-2027",
@@ -3887,7 +5252,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0519_3",
+    "id": "DEBT_2026_2027_0230",
     "date": "2026-05-19",
     "displayDate": "19/05/2026",
     "fy": "2026-2027",
@@ -3910,7 +5275,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0519_2",
+    "id": "DEBT_2026_2027_0231",
     "date": "2026-05-19",
     "displayDate": "19/05/2026",
     "fy": "2026-2027",
@@ -3933,7 +5298,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0519_1",
+    "id": "DEBT_2026_2027_0232",
     "date": "2026-05-19",
     "displayDate": "19/05/2026",
     "fy": "2026-2027",
@@ -3956,7 +5321,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0518_1",
+    "id": "DEBT_2026_2027_0233",
     "date": "2026-05-18",
     "displayDate": "18/05/2026",
     "fy": "2026-2027",
@@ -3979,7 +5344,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0517_2",
+    "id": "DEBT_2026_2027_0234",
     "date": "2026-05-17",
     "displayDate": "17/05/2026",
     "fy": "2026-2027",
@@ -4002,7 +5367,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0517_1",
+    "id": "DEBT_2026_2027_0235",
     "date": "2026-05-17",
     "displayDate": "17/05/2026",
     "fy": "2026-2027",
@@ -4025,7 +5390,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0515_3",
+    "id": "DEBT_2026_2027_0236",
     "date": "2026-05-15",
     "displayDate": "15/05/2026",
     "fy": "2026-2027",
@@ -4048,7 +5413,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0515_2",
+    "id": "DEBT_2026_2027_0237",
     "date": "2026-05-15",
     "displayDate": "15/05/2026",
     "fy": "2026-2027",
@@ -4071,7 +5436,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0515_1",
+    "id": "DEBT_2026_2027_0238",
     "date": "2026-05-15",
     "displayDate": "15/05/2026",
     "fy": "2026-2027",
@@ -4094,7 +5459,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0514_1",
+    "id": "DEBT_2026_2027_0239",
     "date": "2026-05-14",
     "displayDate": "14/05/2026",
     "fy": "2026-2027",
@@ -4117,7 +5482,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0512_2",
+    "id": "DEBT_2026_2027_0240",
     "date": "2026-05-12",
     "displayDate": "12/05/2026",
     "fy": "2026-2027",
@@ -4140,7 +5505,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0512_1",
+    "id": "DEBT_2026_2027_0241",
     "date": "2026-05-12",
     "displayDate": "12/05/2026",
     "fy": "2026-2027",
@@ -4163,7 +5528,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0510_1",
+    "id": "DEBT_2026_2027_0242",
     "date": "2026-05-10",
     "displayDate": "10/05/2026",
     "fy": "2026-2027",
@@ -4186,7 +5551,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0509_2",
+    "id": "DEBT_2026_2027_0243",
     "date": "2026-05-09",
     "displayDate": "09/05/2026",
     "fy": "2026-2027",
@@ -4209,7 +5574,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0509_1",
+    "id": "DEBT_2026_2027_0244",
     "date": "2026-05-09",
     "displayDate": "09/05/2026",
     "fy": "2026-2027",
@@ -4232,7 +5597,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0508_4",
+    "id": "DEBT_2026_2027_0245",
     "date": "2026-05-08",
     "displayDate": "08/05/2026",
     "fy": "2026-2027",
@@ -4255,7 +5620,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0508_3",
+    "id": "DEBT_2026_2027_0246",
     "date": "2026-05-08",
     "displayDate": "08/05/2026",
     "fy": "2026-2027",
@@ -4278,7 +5643,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0508_2",
+    "id": "DEBT_2026_2027_0247",
     "date": "2026-05-08",
     "displayDate": "08/05/2026",
     "fy": "2026-2027",
@@ -4301,7 +5666,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0508_1",
+    "id": "DEBT_2026_2027_0248",
     "date": "2026-05-08",
     "displayDate": "08/05/2026",
     "fy": "2026-2027",
@@ -4324,7 +5689,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0505_1",
+    "id": "DEBT_2026_2027_0249",
     "date": "2026-05-05",
     "displayDate": "05/05/2026",
     "fy": "2026-2027",
@@ -4347,7 +5712,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0503_3",
+    "id": "DEBT_2026_2027_0250",
     "date": "2026-05-03",
     "displayDate": "03/05/2026",
     "fy": "2026-2027",
@@ -4378,7 +5743,7 @@ window.SAMPLE_DEBTS_DATA = [
     ]
   },
   {
-    "id": "D26_0503_2",
+    "id": "DEBT_2026_2027_0251",
     "date": "2026-05-03",
     "displayDate": "03/05/2026",
     "fy": "2026-2027",
@@ -4401,7 +5766,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0503_1",
+    "id": "DEBT_2026_2027_0252",
     "date": "2026-05-03",
     "displayDate": "03/05/2026",
     "fy": "2026-2027",
@@ -4424,7 +5789,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0501_2",
+    "id": "DEBT_2026_2027_0253",
     "date": "2026-05-01",
     "displayDate": "01/05/2026",
     "fy": "2026-2027",
@@ -4447,7 +5812,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0501_1",
+    "id": "DEBT_2026_2027_0254",
     "date": "2026-05-01",
     "displayDate": "01/05/2026",
     "fy": "2026-2027",
@@ -4470,7 +5835,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0427_2",
+    "id": "DEBT_2026_2027_0255",
     "date": "2026-04-27",
     "displayDate": "27/04/2026",
     "fy": "2026-2027",
@@ -4493,7 +5858,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0427_1",
+    "id": "DEBT_2026_2027_0256",
     "date": "2026-04-27",
     "displayDate": "27/04/2026",
     "fy": "2026-2027",
@@ -4516,7 +5881,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0426_1",
+    "id": "DEBT_2026_2027_0257",
     "date": "2026-04-26",
     "displayDate": "26/04/2026",
     "fy": "2026-2027",
@@ -4539,7 +5904,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0425_1",
+    "id": "DEBT_2026_2027_0258",
     "date": "2026-04-25",
     "displayDate": "25/04/2026",
     "fy": "2026-2027",
@@ -4562,7 +5927,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0422_2",
+    "id": "DEBT_2026_2027_0259",
     "date": "2026-04-22",
     "displayDate": "22/04/2026",
     "fy": "2026-2027",
@@ -4585,7 +5950,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0422_1",
+    "id": "DEBT_2026_2027_0260",
     "date": "2026-04-22",
     "displayDate": "22/04/2026",
     "fy": "2026-2027",
@@ -4608,7 +5973,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0421_1",
+    "id": "DEBT_2026_2027_0261",
     "date": "2026-04-21",
     "displayDate": "21/04/2026",
     "fy": "2026-2027",
@@ -4631,7 +5996,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0420_2",
+    "id": "DEBT_2026_2027_0262",
     "date": "2026-04-20",
     "displayDate": "20/04/2026",
     "fy": "2026-2027",
@@ -4654,7 +6019,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0420_1",
+    "id": "DEBT_2026_2027_0263",
     "date": "2026-04-20",
     "displayDate": "20/04/2026",
     "fy": "2026-2027",
@@ -4677,7 +6042,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0418_2",
+    "id": "DEBT_2026_2027_0264",
     "date": "2026-04-18",
     "displayDate": "18/04/2026",
     "fy": "2026-2027",
@@ -4700,7 +6065,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0418_1",
+    "id": "DEBT_2026_2027_0265",
     "date": "2026-04-18",
     "displayDate": "18/04/2026",
     "fy": "2026-2027",
@@ -4723,7 +6088,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0417_2",
+    "id": "DEBT_2026_2027_0266",
     "date": "2026-04-17",
     "displayDate": "17/04/2026",
     "fy": "2026-2027",
@@ -4746,7 +6111,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0417_1",
+    "id": "DEBT_2026_2027_0267",
     "date": "2026-04-17",
     "displayDate": "17/04/2026",
     "fy": "2026-2027",
@@ -4769,7 +6134,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0414_3",
+    "id": "DEBT_2026_2027_0268",
     "date": "2026-04-14",
     "displayDate": "14/04/2026",
     "fy": "2026-2027",
@@ -4792,7 +6157,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0414_2",
+    "id": "DEBT_2026_2027_0269",
     "date": "2026-04-14",
     "displayDate": "14/04/2026",
     "fy": "2026-2027",
@@ -4815,7 +6180,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0414_1",
+    "id": "DEBT_2026_2027_0270",
     "date": "2026-04-14",
     "displayDate": "14/04/2026",
     "fy": "2026-2027",
@@ -4838,7 +6203,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0411_2",
+    "id": "DEBT_2026_2027_0271",
     "date": "2026-04-11",
     "displayDate": "11/04/2026",
     "fy": "2026-2027",
@@ -4861,7 +6226,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0411_1",
+    "id": "DEBT_2026_2027_0272",
     "date": "2026-04-11",
     "displayDate": "11/04/2026",
     "fy": "2026-2027",
@@ -4884,7 +6249,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0410_2",
+    "id": "DEBT_2026_2027_0273",
     "date": "2026-04-10",
     "displayDate": "10/04/2026",
     "fy": "2026-2027",
@@ -4907,7 +6272,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0410_1",
+    "id": "DEBT_2026_2027_0274",
     "date": "2026-04-10",
     "displayDate": "10/04/2026",
     "fy": "2026-2027",
@@ -4930,7 +6295,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0409_1",
+    "id": "DEBT_2026_2027_0275",
     "date": "2026-04-09",
     "displayDate": "09/04/2026",
     "fy": "2026-2027",
@@ -4953,7 +6318,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0408_2",
+    "id": "DEBT_2026_2027_0276",
     "date": "2026-04-08",
     "displayDate": "08/04/2026",
     "fy": "2026-2027",
@@ -4976,7 +6341,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0408_1",
+    "id": "DEBT_2026_2027_0277",
     "date": "2026-04-08",
     "displayDate": "08/04/2026",
     "fy": "2026-2027",
@@ -4999,7 +6364,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0405_2",
+    "id": "DEBT_2026_2027_0278",
     "date": "2026-04-05",
     "displayDate": "05/04/2026",
     "fy": "2026-2027",
@@ -5022,7 +6387,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0405_1",
+    "id": "DEBT_2026_2027_0279",
     "date": "2026-04-05",
     "displayDate": "05/04/2026",
     "fy": "2026-2027",
@@ -5045,7 +6410,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0404_4",
+    "id": "DEBT_2026_2027_0280",
     "date": "2026-04-04",
     "displayDate": "04/04/2026",
     "fy": "2026-2027",
@@ -5068,7 +6433,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0404_3",
+    "id": "DEBT_2026_2027_0281",
     "date": "2026-04-04",
     "displayDate": "04/04/2026",
     "fy": "2026-2027",
@@ -5091,7 +6456,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0404_2",
+    "id": "DEBT_2026_2027_0282",
     "date": "2026-04-04",
     "displayDate": "04/04/2026",
     "fy": "2026-2027",
@@ -5114,7 +6479,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0404_1",
+    "id": "DEBT_2026_2027_0283",
     "date": "2026-04-04",
     "displayDate": "04/04/2026",
     "fy": "2026-2027",
@@ -5137,7 +6502,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0402_1",
+    "id": "DEBT_2026_2027_0284",
     "date": "2026-04-02",
     "displayDate": "02/04/2026",
     "fy": "2026-2027",
@@ -5160,7 +6525,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D26_0401_1",
+    "id": "DEBT_2026_2027_0285",
     "date": "2026-04-01",
     "displayDate": "01/04/2026",
     "fy": "2026-2027",
@@ -5183,7 +6548,283 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0331_3",
+    "date": "2026-08-15",
+    "displayDate": "15/08/2026",
+    "fy": "2026-2027",
+    "monthKey": "5 Aug",
+    "grNo": "2050_TTC",
+    "truckNo": "RJ14GE8820",
+    "from": "Kishangarh (Raj.)",
+    "to": "Delhi",
+    "company": "TTC",
+    "truckOwner": "Shree Mahaveer Transport Company",
+    "debtType": "Loading",
+    "dueAmount": 996404.0,
+    "debtAmount": 996404.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Shree Mahaveer Transport Company",
+    "receiverName": "Bhanwar Saini SKM 9785444855",
+    "description": "Bulk freight advance",
+    "returnedAmounts": [],
+    "id": "DEBT_2026_2027_0286"
+  },
+  {
+    "date": "2025-10-09",
+    "displayDate": "09/10/2025",
+    "fy": "2025-2026",
+    "monthKey": "7 Oct",
+    "grNo": "1066_TTC",
+    "truckNo": "RJ52GB2588",
+    "from": "Kishangarh (Raj.)",
+    "to": "Delhi",
+    "company": "TTC",
+    "truckOwner": "Rameshwar Prasad",
+    "debtType": "Commission",
+    "dueAmount": 1500.0,
+    "debtAmount": 1500.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Rameshwar Prasad",
+    "receiverName": "Raju Bhilwa",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2025_2026_0287"
+  },
+  {
+    "date": "2025-10-07",
+    "displayDate": "07/10/2025",
+    "fy": "2025-2026",
+    "monthKey": "7 Oct",
+    "grNo": "1050_TTC",
+    "truckNo": "RJ52GB4506",
+    "from": "Kishangarh (Raj.)",
+    "to": "Delhi",
+    "company": "TTC",
+    "truckOwner": "Shree Mahaveer Transport Company",
+    "debtType": "Commission",
+    "dueAmount": 1500.0,
+    "debtAmount": 1500.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Shree Mahaveer Transport Company",
+    "receiverName": "Hardan",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2025_2026_0288"
+  },
+  {
+    "date": "2025-10-07",
+    "displayDate": "07/10/2025",
+    "fy": "2025-2026",
+    "monthKey": "7 Oct",
+    "grNo": "1050_TTC",
+    "truckNo": "RJ52GB4506",
+    "from": "Kishangarh (Raj.)",
+    "to": "Delhi",
+    "company": "TTC",
+    "truckOwner": "Shree Mahaveer Transport Company",
+    "debtType": "Other",
+    "dueAmount": 500.0,
+    "debtAmount": 500.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Shree Mahaveer Transport Company",
+    "receiverName": "Hardan",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2025_2026_0289"
+  },
+  {
+    "date": "2025-10-07",
+    "displayDate": "07/10/2025",
+    "fy": "2025-2026",
+    "monthKey": "7 Oct",
+    "grNo": "1049_TTC",
+    "truckNo": "RJ52GB2587",
+    "from": "Kishangarh (Raj.)",
+    "to": "Delhi",
+    "company": "TTC",
+    "truckOwner": "Rameshwar Prasad",
+    "debtType": "Loading",
+    "dueAmount": 14200.0,
+    "debtAmount": 14200.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Rameshwar Prasad",
+    "receiverName": "Chintu Bansal",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2025_2026_0290"
+  },
+  {
+    "date": "2025-10-07",
+    "displayDate": "07/10/2025",
+    "fy": "2025-2026",
+    "monthKey": "7 Oct",
+    "grNo": "",
+    "truckNo": "RJ52GC2388",
+    "from": "",
+    "to": "Kishangarh (Raj.)",
+    "company": "TTC",
+    "truckOwner": "Rajkumar Raiya",
+    "debtType": "Other",
+    "dueAmount": 5000.0,
+    "debtAmount": 5000.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Rajkumar Raiya",
+    "receiverName": "Rajkumar Raiya",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2025_2026_0291"
+  },
+  {
+    "date": "2025-10-06",
+    "displayDate": "06/10/2025",
+    "fy": "2025-2026",
+    "monthKey": "7 Oct",
+    "grNo": "1036_TTC",
+    "truckNo": "RJ52GB2587",
+    "from": "Kishangarh (Raj.)",
+    "to": "Delhi",
+    "company": "TTC",
+    "truckOwner": "Rameshwar Prasad",
+    "debtType": "Commission",
+    "dueAmount": 2000.0,
+    "debtAmount": 2000.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Rameshwar Prasad",
+    "receiverName": "Tejaram Gurjar",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2025_2026_0292"
+  },
+  {
+    "date": "2025-10-06",
+    "displayDate": "06/10/2025",
+    "fy": "2025-2026",
+    "monthKey": "7 Oct",
+    "grNo": "1036_TTC",
+    "truckNo": "RJ52GB2587",
+    "from": "Kishangarh (Raj.)",
+    "to": "Delhi",
+    "company": "TTC",
+    "truckOwner": "Rameshwar Prasad",
+    "debtType": "Other",
+    "dueAmount": 3500.0,
+    "debtAmount": 3500.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Rameshwar Prasad",
+    "receiverName": "Tejaram Gurjar",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2025_2026_0293"
+  },
+  {
+    "date": "2025-10-06",
+    "displayDate": "06/10/2025",
+    "fy": "2025-2026",
+    "monthKey": "7 Oct",
+    "grNo": "857_MTC",
+    "truckNo": "RJ52GA6148",
+    "from": "Kishangarh (Raj.)",
+    "to": "Gurugram (Haryana)",
+    "company": "MTC",
+    "truckOwner": "Mukesh Gurjar 6148",
+    "debtType": "Commission",
+    "dueAmount": 1500.0,
+    "debtAmount": 1500.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Mukesh Gurjar 6148",
+    "receiverName": "Mukesh Gurjar 6148",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2025_2026_0294"
+  },
+  {
+    "date": "2025-10-06",
+    "displayDate": "06/10/2025",
+    "fy": "2025-2026",
+    "monthKey": "7 Oct",
+    "grNo": "856_MTC",
+    "truckNo": "RJ14GH2898",
+    "from": "Kishangarh (Raj.)",
+    "to": "Gurugram (Haryana)",
+    "company": "MTC",
+    "truckOwner": "Rameshwar Rundla",
+    "debtType": "Commission",
+    "dueAmount": 1500.0,
+    "debtAmount": 1500.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Rameshwar Rundla",
+    "receiverName": "Ramavtar Gurjar",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2025_2026_0295"
+  },
+  {
+    "date": "2025-09-29",
+    "displayDate": "29/09/2025",
+    "fy": "2025-2026",
+    "monthKey": "6 Sep",
+    "grNo": "803_MTC",
+    "truckNo": "RJ52GA6148",
+    "from": "Kishangarh (Raj.)",
+    "to": "Delhi",
+    "company": "MTC",
+    "truckOwner": "Mukesh Gurjar 6148",
+    "debtType": "Commission",
+    "dueAmount": 500.0,
+    "debtAmount": 1500.0,
+    "totalReturned": 1000.0,
+    "debtMode": "Cash",
+    "borrowerName": "Mukesh Gurjar 6148",
+    "receiverName": "Mukesh Gurjar 6148",
+    "description": "",
+    "returnedAmounts": [
+      {
+        "id": "RET_803_1",
+        "date": "2025-09-29",
+        "returnDate": "29/09/2025",
+        "returnMode": "Cash",
+        "depositorType": "Driver",
+        "depositorName": "Mukesh Gurjar 6148",
+        "returnedAmount": 1000.0,
+        "amount": 1000.0,
+        "description": "Partial return"
+      }
+    ],
+    "id": "DEBT_2025_2026_0296"
+  },
+  {
+    "date": "2025-09-29",
+    "displayDate": "29/09/2025",
+    "fy": "2025-2026",
+    "monthKey": "6 Sep",
+    "grNo": "803_MTC",
+    "truckNo": "RJ52GA6148",
+    "from": "Kishangarh (Raj.)",
+    "to": "Delhi",
+    "company": "MTC",
+    "truckOwner": "Mukesh Gurjar 6148",
+    "debtType": "Other",
+    "dueAmount": 500.0,
+    "debtAmount": 500.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Mukesh Gurjar 6148",
+    "receiverName": "Mukesh Gurjar 6148",
+    "description": "",
+    "returnedAmounts": [],
+    "id": "DEBT_2025_2026_0297"
+  },
+  {
+    "id": "DEBT_2025_2026_0298",
     "date": "2026-03-31",
     "displayDate": "31/03/2026",
     "fy": "2025-2026",
@@ -5206,7 +6847,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0331_2",
+    "id": "DEBT_2025_2026_0299",
     "date": "2026-03-31",
     "displayDate": "31/03/2026",
     "fy": "2025-2026",
@@ -5229,7 +6870,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0331_1",
+    "id": "DEBT_2025_2026_0300",
     "date": "2026-03-31",
     "displayDate": "31/03/2026",
     "fy": "2025-2026",
@@ -5252,7 +6893,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0330_1",
+    "id": "DEBT_2025_2026_0301",
     "date": "2026-03-30",
     "displayDate": "30/03/2026",
     "fy": "2025-2026",
@@ -5275,7 +6916,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0328_1",
+    "id": "DEBT_2025_2026_0302",
     "date": "2026-03-28",
     "displayDate": "28/03/2026",
     "fy": "2025-2026",
@@ -5298,7 +6939,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0327_2",
+    "id": "DEBT_2025_2026_0303",
     "date": "2026-03-27",
     "displayDate": "27/03/2026",
     "fy": "2025-2026",
@@ -5321,7 +6962,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0327_1",
+    "id": "DEBT_2025_2026_0304",
     "date": "2026-03-27",
     "displayDate": "27/03/2026",
     "fy": "2025-2026",
@@ -5344,7 +6985,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0325_1",
+    "id": "DEBT_2025_2026_0305",
     "date": "2026-03-25",
     "displayDate": "25/03/2026",
     "fy": "2025-2026",
@@ -5367,7 +7008,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0323_2",
+    "id": "DEBT_2025_2026_0306",
     "date": "2026-03-23",
     "displayDate": "23/03/2026",
     "fy": "2025-2026",
@@ -5390,7 +7031,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0323_1",
+    "id": "DEBT_2025_2026_0307",
     "date": "2026-03-23",
     "displayDate": "23/03/2026",
     "fy": "2025-2026",
@@ -5413,7 +7054,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0322_1",
+    "id": "DEBT_2025_2026_0308",
     "date": "2026-03-22",
     "displayDate": "22/03/2026",
     "fy": "2025-2026",
@@ -5436,7 +7077,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0321_1",
+    "id": "DEBT_2025_2026_0309",
     "date": "2026-03-21",
     "displayDate": "21/03/2026",
     "fy": "2025-2026",
@@ -5459,7 +7100,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0319_1",
+    "id": "DEBT_2025_2026_0310",
     "date": "2026-03-19",
     "displayDate": "19/03/2026",
     "fy": "2025-2026",
@@ -5490,7 +7131,7 @@ window.SAMPLE_DEBTS_DATA = [
     ]
   },
   {
-    "id": "D25_0317_1",
+    "id": "DEBT_2025_2026_0311",
     "date": "2026-03-17",
     "displayDate": "17/03/2026",
     "fy": "2025-2026",
@@ -5513,7 +7154,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0316_1",
+    "id": "DEBT_2025_2026_0312",
     "date": "2026-03-16",
     "displayDate": "16/03/2026",
     "fy": "2025-2026",
@@ -5536,7 +7177,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0314_5",
+    "id": "DEBT_2025_2026_0313",
     "date": "2026-03-14",
     "displayDate": "14/03/2026",
     "fy": "2025-2026",
@@ -5559,7 +7200,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0314_4",
+    "id": "DEBT_2025_2026_0314",
     "date": "2026-03-14",
     "displayDate": "14/03/2026",
     "fy": "2025-2026",
@@ -5582,7 +7223,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0314_3",
+    "id": "DEBT_2025_2026_0315",
     "date": "2026-03-14",
     "displayDate": "14/03/2026",
     "fy": "2025-2026",
@@ -5605,7 +7246,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0314_2",
+    "id": "DEBT_2025_2026_0316",
     "date": "2026-03-14",
     "displayDate": "14/03/2026",
     "fy": "2025-2026",
@@ -5628,7 +7269,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0314_1",
+    "id": "DEBT_2025_2026_0317",
     "date": "2026-03-14",
     "displayDate": "14/03/2026",
     "fy": "2025-2026",
@@ -5651,7 +7292,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0313_2",
+    "id": "DEBT_2025_2026_0318",
     "date": "2026-03-13",
     "displayDate": "13/03/2026",
     "fy": "2025-2026",
@@ -5674,7 +7315,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0313_1",
+    "id": "DEBT_2025_2026_0319",
     "date": "2026-03-13",
     "displayDate": "13/03/2026",
     "fy": "2025-2026",
@@ -5697,7 +7338,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0311_2",
+    "id": "DEBT_2025_2026_0320",
     "date": "2026-03-11",
     "displayDate": "11/03/2026",
     "fy": "2025-2026",
@@ -5720,7 +7361,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0311_1",
+    "id": "DEBT_2025_2026_0321",
     "date": "2026-03-11",
     "displayDate": "11/03/2026",
     "fy": "2025-2026",
@@ -5743,7 +7384,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0310_2",
+    "id": "DEBT_2025_2026_0322",
     "date": "2026-03-10",
     "displayDate": "10/03/2026",
     "fy": "2025-2026",
@@ -5766,7 +7407,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0310_1",
+    "id": "DEBT_2025_2026_0323",
     "date": "2026-03-10",
     "displayDate": "10/03/2026",
     "fy": "2025-2026",
@@ -5789,7 +7430,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0307_3",
+    "id": "DEBT_2025_2026_0324",
     "date": "2026-03-07",
     "displayDate": "07/03/2026",
     "fy": "2025-2026",
@@ -5812,7 +7453,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0307_2",
+    "id": "DEBT_2025_2026_0325",
     "date": "2026-03-07",
     "displayDate": "07/03/2026",
     "fy": "2025-2026",
@@ -5835,7 +7476,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0307_1",
+    "id": "DEBT_2025_2026_0326",
     "date": "2026-03-07",
     "displayDate": "07/03/2026",
     "fy": "2025-2026",
@@ -5858,7 +7499,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0303_1",
+    "id": "DEBT_2025_2026_0327",
     "date": "2026-03-03",
     "displayDate": "03/03/2026",
     "fy": "2025-2026",
@@ -5881,7 +7522,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0227_4",
+    "id": "DEBT_2025_2026_0328",
     "date": "2026-02-27",
     "displayDate": "27/02/2026",
     "fy": "2025-2026",
@@ -5904,7 +7545,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0227_3",
+    "id": "DEBT_2025_2026_0329",
     "date": "2026-02-27",
     "displayDate": "27/02/2026",
     "fy": "2025-2026",
@@ -5927,7 +7568,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0227_2",
+    "id": "DEBT_2025_2026_0330",
     "date": "2026-02-27",
     "displayDate": "27/02/2026",
     "fy": "2025-2026",
@@ -5950,7 +7591,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0227_1",
+    "id": "DEBT_2025_2026_0331",
     "date": "2026-02-27",
     "displayDate": "27/02/2026",
     "fy": "2025-2026",
@@ -5973,7 +7614,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0226_5",
+    "id": "DEBT_2025_2026_0332",
     "date": "2026-02-26",
     "displayDate": "26/02/2026",
     "fy": "2025-2026",
@@ -5996,7 +7637,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0226_4",
+    "id": "DEBT_2025_2026_0333",
     "date": "2026-02-26",
     "displayDate": "26/02/2026",
     "fy": "2025-2026",
@@ -6019,7 +7660,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0226_3",
+    "id": "DEBT_2025_2026_0334",
     "date": "2026-02-26",
     "displayDate": "26/02/2026",
     "fy": "2025-2026",
@@ -6042,7 +7683,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0226_2",
+    "id": "DEBT_2025_2026_0335",
     "date": "2026-02-26",
     "displayDate": "26/02/2026",
     "fy": "2025-2026",
@@ -6065,7 +7706,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0226_1",
+    "id": "DEBT_2025_2026_0336",
     "date": "2026-02-26",
     "displayDate": "26/02/2026",
     "fy": "2025-2026",
@@ -6088,7 +7729,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0225_3",
+    "id": "DEBT_2025_2026_0337",
     "date": "2026-02-25",
     "displayDate": "25/02/2026",
     "fy": "2025-2026",
@@ -6111,7 +7752,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0225_2",
+    "id": "DEBT_2025_2026_0338",
     "date": "2026-02-25",
     "displayDate": "25/02/2026",
     "fy": "2025-2026",
@@ -6134,7 +7775,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0225_1",
+    "id": "DEBT_2025_2026_0339",
     "date": "2026-02-25",
     "displayDate": "25/02/2026",
     "fy": "2025-2026",
@@ -6157,7 +7798,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0224_1",
+    "id": "DEBT_2025_2026_0340",
     "date": "2026-02-24",
     "displayDate": "24/02/2026",
     "fy": "2025-2026",
@@ -6180,7 +7821,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0222_1",
+    "id": "DEBT_2025_2026_0341",
     "date": "2026-02-22",
     "displayDate": "22/02/2026",
     "fy": "2025-2026",
@@ -6203,7 +7844,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0221_1",
+    "id": "DEBT_2025_2026_0342",
     "date": "2026-02-21",
     "displayDate": "21/02/2026",
     "fy": "2025-2026",
@@ -6226,7 +7867,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0216_1",
+    "id": "DEBT_2025_2026_0343",
     "date": "2026-02-16",
     "displayDate": "16/02/2026",
     "fy": "2025-2026",
@@ -6249,7 +7890,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0215_3",
+    "id": "DEBT_2025_2026_0344",
     "date": "2026-02-15",
     "displayDate": "15/02/2026",
     "fy": "2025-2026",
@@ -6272,7 +7913,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0215_2",
+    "id": "DEBT_2025_2026_0345",
     "date": "2026-02-15",
     "displayDate": "15/02/2026",
     "fy": "2025-2026",
@@ -6295,7 +7936,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0215_1",
+    "id": "DEBT_2025_2026_0346",
     "date": "2026-02-15",
     "displayDate": "15/02/2026",
     "fy": "2025-2026",
@@ -6318,7 +7959,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0214_1",
+    "id": "DEBT_2025_2026_0347",
     "date": "2026-02-14",
     "displayDate": "14/02/2026",
     "fy": "2025-2026",
@@ -6341,7 +7982,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0213_1",
+    "id": "DEBT_2025_2026_0348",
     "date": "2026-02-13",
     "displayDate": "13/02/2026",
     "fy": "2025-2026",
@@ -6364,7 +8005,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0212_1",
+    "id": "DEBT_2025_2026_0349",
     "date": "2026-02-12",
     "displayDate": "12/02/2026",
     "fy": "2025-2026",
@@ -6387,7 +8028,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0211_2",
+    "id": "DEBT_2025_2026_0350",
     "date": "2026-02-11",
     "displayDate": "11/02/2026",
     "fy": "2025-2026",
@@ -6410,7 +8051,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0211_1",
+    "id": "DEBT_2025_2026_0351",
     "date": "2026-02-11",
     "displayDate": "11/02/2026",
     "fy": "2025-2026",
@@ -6433,7 +8074,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0129_1",
+    "id": "DEBT_2025_2026_0352",
     "date": "2026-01-29",
     "displayDate": "29/01/2026",
     "fy": "2025-2026",
@@ -6456,7 +8097,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0127_1",
+    "id": "DEBT_2025_2026_0353",
     "date": "2026-01-27",
     "displayDate": "27/01/2026",
     "fy": "2025-2026",
@@ -6479,7 +8120,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0123_2",
+    "id": "DEBT_2025_2026_0354",
     "date": "2026-01-23",
     "displayDate": "23/01/2026",
     "fy": "2025-2026",
@@ -6502,7 +8143,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0123_1",
+    "id": "DEBT_2025_2026_0355",
     "date": "2026-01-23",
     "displayDate": "23/01/2026",
     "fy": "2025-2026",
@@ -6525,7 +8166,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0122_4",
+    "id": "DEBT_2025_2026_0356",
     "date": "2026-01-22",
     "displayDate": "22/01/2026",
     "fy": "2025-2026",
@@ -6548,7 +8189,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0122_3",
+    "id": "DEBT_2025_2026_0357",
     "date": "2026-01-22",
     "displayDate": "22/01/2026",
     "fy": "2025-2026",
@@ -6571,7 +8212,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0122_2",
+    "id": "DEBT_2025_2026_0358",
     "date": "2026-01-22",
     "displayDate": "22/01/2026",
     "fy": "2025-2026",
@@ -6594,7 +8235,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0122_1",
+    "id": "DEBT_2025_2026_0359",
     "date": "2026-01-22",
     "displayDate": "22/01/2026",
     "fy": "2025-2026",
@@ -6617,7 +8258,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0121_2",
+    "id": "DEBT_2025_2026_0360",
     "date": "2026-01-21",
     "displayDate": "21/01/2026",
     "fy": "2025-2026",
@@ -6640,7 +8281,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0121_1",
+    "id": "DEBT_2025_2026_0361",
     "date": "2026-01-21",
     "displayDate": "21/01/2026",
     "fy": "2025-2026",
@@ -6663,7 +8304,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0120_2",
+    "id": "DEBT_2025_2026_0362",
     "date": "2026-01-20",
     "displayDate": "20/01/2026",
     "fy": "2025-2026",
@@ -6686,7 +8327,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0120_1",
+    "id": "DEBT_2025_2026_0363",
     "date": "2026-01-20",
     "displayDate": "20/01/2026",
     "fy": "2025-2026",
@@ -6709,7 +8350,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0117_2",
+    "id": "DEBT_2025_2026_0364",
     "date": "2026-01-17",
     "displayDate": "17/01/2026",
     "fy": "2025-2026",
@@ -6732,7 +8373,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0117_1",
+    "id": "DEBT_2025_2026_0365",
     "date": "2026-01-17",
     "displayDate": "17/01/2026",
     "fy": "2025-2026",
@@ -6755,7 +8396,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0115_1",
+    "id": "DEBT_2025_2026_0366",
     "date": "2026-01-15",
     "displayDate": "15/01/2026",
     "fy": "2025-2026",
@@ -6786,7 +8427,7 @@ window.SAMPLE_DEBTS_DATA = [
     ]
   },
   {
-    "id": "D25_0113_2",
+    "id": "DEBT_2025_2026_0367",
     "date": "2026-01-13",
     "displayDate": "13/01/2026",
     "fy": "2025-2026",
@@ -6809,7 +8450,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0113_1",
+    "id": "DEBT_2025_2026_0368",
     "date": "2026-01-13",
     "displayDate": "13/01/2026",
     "fy": "2025-2026",
@@ -6832,7 +8473,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0112_2",
+    "id": "DEBT_2025_2026_0369",
     "date": "2026-01-12",
     "displayDate": "12/01/2026",
     "fy": "2025-2026",
@@ -6855,7 +8496,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0112_1",
+    "id": "DEBT_2025_2026_0370",
     "date": "2026-01-12",
     "displayDate": "12/01/2026",
     "fy": "2025-2026",
@@ -6878,7 +8519,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0109_2",
+    "id": "DEBT_2025_2026_0371",
     "date": "2026-01-09",
     "displayDate": "09/01/2026",
     "fy": "2025-2026",
@@ -6901,7 +8542,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0109_1",
+    "id": "DEBT_2025_2026_0372",
     "date": "2026-01-09",
     "displayDate": "09/01/2026",
     "fy": "2025-2026",
@@ -6924,7 +8565,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0108_3",
+    "id": "DEBT_2025_2026_0373",
     "date": "2026-01-08",
     "displayDate": "08/01/2026",
     "fy": "2025-2026",
@@ -6947,7 +8588,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0108_2",
+    "id": "DEBT_2025_2026_0374",
     "date": "2026-01-08",
     "displayDate": "08/01/2026",
     "fy": "2025-2026",
@@ -6970,7 +8611,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0108_1",
+    "id": "DEBT_2025_2026_0375",
     "date": "2026-01-08",
     "displayDate": "08/01/2026",
     "fy": "2025-2026",
@@ -6993,7 +8634,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0106_1",
+    "id": "DEBT_2025_2026_0376",
     "date": "2026-01-06",
     "displayDate": "06/01/2026",
     "fy": "2025-2026",
@@ -7016,7 +8657,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0105_1",
+    "id": "DEBT_2025_2026_0377",
     "date": "2026-01-05",
     "displayDate": "05/01/2026",
     "fy": "2025-2026",
@@ -7039,7 +8680,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0104_2",
+    "id": "DEBT_2025_2026_0378",
     "date": "2026-01-04",
     "displayDate": "04/01/2026",
     "fy": "2025-2026",
@@ -7062,7 +8703,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0104_1",
+    "id": "DEBT_2025_2026_0379",
     "date": "2026-01-04",
     "displayDate": "04/01/2026",
     "fy": "2025-2026",
@@ -7085,7 +8726,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0103_1",
+    "id": "DEBT_2025_2026_0380",
     "date": "2026-01-03",
     "displayDate": "03/01/2026",
     "fy": "2025-2026",
@@ -7108,7 +8749,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0101_2",
+    "id": "DEBT_2025_2026_0381",
     "date": "2026-01-01",
     "displayDate": "01/01/2026",
     "fy": "2025-2026",
@@ -7131,7 +8772,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0101_1",
+    "id": "DEBT_2025_2026_0382",
     "date": "2026-01-01",
     "displayDate": "01/01/2026",
     "fy": "2025-2026",
@@ -7154,7 +8795,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1227_2",
+    "id": "DEBT_2025_2026_0383",
     "date": "2025-12-27",
     "displayDate": "27/12/2025",
     "fy": "2025-2026",
@@ -7177,7 +8818,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1227_1",
+    "id": "DEBT_2025_2026_0384",
     "date": "2025-12-27",
     "displayDate": "27/12/2025",
     "fy": "2025-2026",
@@ -7200,7 +8841,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1226_2",
+    "id": "DEBT_2025_2026_0385",
     "date": "2025-12-26",
     "displayDate": "26/12/2025",
     "fy": "2025-2026",
@@ -7223,7 +8864,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1226_1",
+    "id": "DEBT_2025_2026_0386",
     "date": "2025-12-26",
     "displayDate": "26/12/2025",
     "fy": "2025-2026",
@@ -7246,7 +8887,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1220_2",
+    "id": "DEBT_2025_2026_0387",
     "date": "2025-12-20",
     "displayDate": "20/12/2025",
     "fy": "2025-2026",
@@ -7269,7 +8910,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1220_1",
+    "id": "DEBT_2025_2026_0388",
     "date": "2025-12-20",
     "displayDate": "20/12/2025",
     "fy": "2025-2026",
@@ -7292,7 +8933,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1218_2",
+    "id": "DEBT_2025_2026_0389",
     "date": "2025-12-18",
     "displayDate": "18/12/2025",
     "fy": "2025-2026",
@@ -7315,7 +8956,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1218_1",
+    "id": "DEBT_2025_2026_0390",
     "date": "2025-12-18",
     "displayDate": "18/12/2025",
     "fy": "2025-2026",
@@ -7338,7 +8979,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1212_2",
+    "id": "DEBT_2025_2026_0391",
     "date": "2025-12-12",
     "displayDate": "12/12/2025",
     "fy": "2025-2026",
@@ -7361,7 +9002,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1212_1",
+    "id": "DEBT_2025_2026_0392",
     "date": "2025-12-12",
     "displayDate": "12/12/2025",
     "fy": "2025-2026",
@@ -7384,7 +9025,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1211_2",
+    "id": "DEBT_2025_2026_0393",
     "date": "2025-12-11",
     "displayDate": "11/12/2025",
     "fy": "2025-2026",
@@ -7407,7 +9048,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1211_1",
+    "id": "DEBT_2025_2026_0394",
     "date": "2025-12-11",
     "displayDate": "11/12/2025",
     "fy": "2025-2026",
@@ -7430,7 +9071,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1206_2",
+    "id": "DEBT_2025_2026_0395",
     "date": "2025-12-06",
     "displayDate": "06/12/2025",
     "fy": "2025-2026",
@@ -7453,7 +9094,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1206_1",
+    "id": "DEBT_2025_2026_0396",
     "date": "2025-12-06",
     "displayDate": "06/12/2025",
     "fy": "2025-2026",
@@ -7476,7 +9117,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1203_1",
+    "id": "DEBT_2025_2026_0397",
     "date": "2025-12-03",
     "displayDate": "03/12/2025",
     "fy": "2025-2026",
@@ -7499,7 +9140,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1125_2",
+    "id": "DEBT_2025_2026_0398",
     "date": "2025-11-25",
     "displayDate": "25/11/2025",
     "fy": "2025-2026",
@@ -7522,7 +9163,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1125_1",
+    "id": "DEBT_2025_2026_0399",
     "date": "2025-11-25",
     "displayDate": "25/11/2025",
     "fy": "2025-2026",
@@ -7545,7 +9186,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1119_2",
+    "id": "DEBT_2025_2026_0400",
     "date": "2025-11-19",
     "displayDate": "19/11/2025",
     "fy": "2025-2026",
@@ -7568,7 +9209,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1119_1",
+    "id": "DEBT_2025_2026_0401",
     "date": "2025-11-19",
     "displayDate": "19/11/2025",
     "fy": "2025-2026",
@@ -7591,7 +9232,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1118_3",
+    "id": "DEBT_2025_2026_0402",
     "date": "2025-11-18",
     "displayDate": "18/11/2025",
     "fy": "2025-2026",
@@ -7614,7 +9255,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1118_2",
+    "id": "DEBT_2025_2026_0403",
     "date": "2025-11-18",
     "displayDate": "18/11/2025",
     "fy": "2025-2026",
@@ -7637,7 +9278,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1118_1",
+    "id": "DEBT_2025_2026_0404",
     "date": "2025-11-18",
     "displayDate": "18/11/2025",
     "fy": "2025-2026",
@@ -7660,7 +9301,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1116_3",
+    "id": "DEBT_2025_2026_0405",
     "date": "2025-11-16",
     "displayDate": "16/11/2025",
     "fy": "2025-2026",
@@ -7683,7 +9324,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1116_2",
+    "id": "DEBT_2025_2026_0406",
     "date": "2025-11-16",
     "displayDate": "16/11/2025",
     "fy": "2025-2026",
@@ -7706,7 +9347,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1116_1",
+    "id": "DEBT_2025_2026_0407",
     "date": "2025-11-16",
     "displayDate": "16/11/2025",
     "fy": "2025-2026",
@@ -7729,7 +9370,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1114_2",
+    "id": "DEBT_2025_2026_0408",
     "date": "2025-11-14",
     "displayDate": "14/11/2025",
     "fy": "2025-2026",
@@ -7752,7 +9393,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1114_1",
+    "id": "DEBT_2025_2026_0409",
     "date": "2025-11-14",
     "displayDate": "14/11/2025",
     "fy": "2025-2026",
@@ -7775,7 +9416,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1111_2",
+    "id": "DEBT_2025_2026_0410",
     "date": "2025-11-11",
     "displayDate": "11/11/2025",
     "fy": "2025-2026",
@@ -7798,7 +9439,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1111_1",
+    "id": "DEBT_2025_2026_0411",
     "date": "2025-11-11",
     "displayDate": "11/11/2025",
     "fy": "2025-2026",
@@ -7821,7 +9462,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1108_2",
+    "id": "DEBT_2025_2026_0412",
     "date": "2025-11-08",
     "displayDate": "08/11/2025",
     "fy": "2025-2026",
@@ -7844,7 +9485,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1108_1",
+    "id": "DEBT_2025_2026_0413",
     "date": "2025-11-08",
     "displayDate": "08/11/2025",
     "fy": "2025-2026",
@@ -7867,7 +9508,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1106_1",
+    "id": "DEBT_2025_2026_0414",
     "date": "2025-11-06",
     "displayDate": "06/11/2025",
     "fy": "2025-2026",
@@ -7890,7 +9531,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1105_2",
+    "id": "DEBT_2025_2026_0415",
     "date": "2025-11-05",
     "displayDate": "05/11/2025",
     "fy": "2025-2026",
@@ -7913,7 +9554,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1105_1",
+    "id": "DEBT_2025_2026_0416",
     "date": "2025-11-05",
     "displayDate": "05/11/2025",
     "fy": "2025-2026",
@@ -7936,7 +9577,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1102_2",
+    "id": "DEBT_2025_2026_0417",
     "date": "2025-11-02",
     "displayDate": "02/11/2025",
     "fy": "2025-2026",
@@ -7959,7 +9600,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1102_1",
+    "id": "DEBT_2025_2026_0418",
     "date": "2025-11-02",
     "displayDate": "02/11/2025",
     "fy": "2025-2026",
@@ -7982,7 +9623,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1101_2",
+    "id": "DEBT_2025_2026_0419",
     "date": "2025-11-01",
     "displayDate": "01/11/2025",
     "fy": "2025-2026",
@@ -8005,7 +9646,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1101_1",
+    "id": "DEBT_2025_2026_0420",
     "date": "2025-11-01",
     "displayDate": "01/11/2025",
     "fy": "2025-2026",
@@ -8028,7 +9669,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1030_2",
+    "id": "DEBT_2025_2026_0421",
     "date": "2025-10-30",
     "displayDate": "30/10/2025",
     "fy": "2025-2026",
@@ -8051,7 +9692,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1030_1",
+    "id": "DEBT_2025_2026_0422",
     "date": "2025-10-30",
     "displayDate": "30/10/2025",
     "fy": "2025-2026",
@@ -8074,7 +9715,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1029_1",
+    "id": "DEBT_2025_2026_0423",
     "date": "2025-10-29",
     "displayDate": "29/10/2025",
     "fy": "2025-2026",
@@ -8097,7 +9738,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1027_4",
+    "id": "DEBT_2025_2026_0424",
     "date": "2025-10-27",
     "displayDate": "27/10/2025",
     "fy": "2025-2026",
@@ -8120,7 +9761,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1027_3",
+    "id": "DEBT_2025_2026_0425",
     "date": "2025-10-27",
     "displayDate": "27/10/2025",
     "fy": "2025-2026",
@@ -8143,7 +9784,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1027_2",
+    "id": "DEBT_2025_2026_0426",
     "date": "2025-10-27",
     "displayDate": "27/10/2025",
     "fy": "2025-2026",
@@ -8166,7 +9807,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1027_1",
+    "id": "DEBT_2025_2026_0427",
     "date": "2025-10-27",
     "displayDate": "27/10/2025",
     "fy": "2025-2026",
@@ -8189,7 +9830,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1026_1",
+    "id": "DEBT_2025_2026_0428",
     "date": "2025-10-26",
     "displayDate": "26/10/2025",
     "fy": "2025-2026",
@@ -8212,7 +9853,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1024_2",
+    "id": "DEBT_2025_2026_0429",
     "date": "2025-10-24",
     "displayDate": "24/10/2025",
     "fy": "2025-2026",
@@ -8235,7 +9876,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1024_1",
+    "id": "DEBT_2025_2026_0430",
     "date": "2025-10-24",
     "displayDate": "24/10/2025",
     "fy": "2025-2026",
@@ -8258,7 +9899,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1017_1",
+    "id": "DEBT_2025_2026_0431",
     "date": "2025-10-17",
     "displayDate": "17/10/2025",
     "fy": "2025-2026",
@@ -8281,7 +9922,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1016_5",
+    "id": "DEBT_2025_2026_0432",
     "date": "2025-10-16",
     "displayDate": "16/10/2025",
     "fy": "2025-2026",
@@ -8304,7 +9945,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1016_4",
+    "id": "DEBT_2025_2026_0433",
     "date": "2025-10-16",
     "displayDate": "16/10/2025",
     "fy": "2025-2026",
@@ -8327,7 +9968,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1016_3",
+    "id": "DEBT_2025_2026_0434",
     "date": "2025-10-16",
     "displayDate": "16/10/2025",
     "fy": "2025-2026",
@@ -8350,7 +9991,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1016_2",
+    "id": "DEBT_2025_2026_0435",
     "date": "2025-10-16",
     "displayDate": "16/10/2025",
     "fy": "2025-2026",
@@ -8373,7 +10014,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1016_1",
+    "id": "DEBT_2025_2026_0436",
     "date": "2025-10-16",
     "displayDate": "16/10/2025",
     "fy": "2025-2026",
@@ -8396,7 +10037,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1014_4",
+    "id": "DEBT_2025_2026_0437",
     "date": "2025-10-14",
     "displayDate": "14/10/2025",
     "fy": "2025-2026",
@@ -8419,7 +10060,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1014_3",
+    "id": "DEBT_2025_2026_0438",
     "date": "2025-10-14",
     "displayDate": "14/10/2025",
     "fy": "2025-2026",
@@ -8442,7 +10083,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1014_2",
+    "id": "DEBT_2025_2026_0439",
     "date": "2025-10-14",
     "displayDate": "14/10/2025",
     "fy": "2025-2026",
@@ -8465,7 +10106,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1014_1",
+    "id": "DEBT_2025_2026_0440",
     "date": "2025-10-14",
     "displayDate": "14/10/2025",
     "fy": "2025-2026",
@@ -8488,7 +10129,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1012_1",
+    "id": "DEBT_2025_2026_0441",
     "date": "2025-10-12",
     "displayDate": "12/10/2025",
     "fy": "2025-2026",
@@ -8511,7 +10152,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1011_2",
+    "id": "DEBT_2025_2026_0442",
     "date": "2025-10-11",
     "displayDate": "11/10/2025",
     "fy": "2025-2026",
@@ -8534,7 +10175,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1011_1",
+    "id": "DEBT_2025_2026_0443",
     "date": "2025-10-11",
     "displayDate": "11/10/2025",
     "fy": "2025-2026",
@@ -8557,145 +10198,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1009_1",
-    "date": "2025-10-09",
-    "displayDate": "09/10/2025",
-    "fy": "2025-2026",
-    "monthKey": "7 Oct",
-    "grNo": "1066_TTC",
-    "truckNo": "RJ52GB2588",
-    "from": "Kishangarh (Raj.)",
-    "to": "Delhi",
-    "company": "TTC",
-    "truckOwner": "Rameshwar Prasad",
-    "debtType": "Commission",
-    "dueAmount": 1500.0,
-    "debtAmount": 1500.0,
-    "totalReturned": 0.0,
-    "debtMode": "Cash",
-    "borrowerName": "Rameshwar Prasad",
-    "receiverName": "Raju Bhilwa",
-    "description": "",
-    "dotColor": "yellow",
-    "returnedAmounts": []
-  },
-  {
-    "id": "D25_1007_3",
-    "date": "2025-10-07",
-    "displayDate": "07/10/2025",
-    "fy": "2025-2026",
-    "monthKey": "7 Oct",
-    "grNo": "1049_TTC",
-    "truckNo": "RJ52GB2587",
-    "from": "Kishangarh (Raj.)",
-    "to": "Delhi",
-    "company": "TTC",
-    "truckOwner": "Rameshwar Prasad",
-    "debtType": "Loading",
-    "dueAmount": 14200.0,
-    "debtAmount": 14200.0,
-    "totalReturned": 0.0,
-    "debtMode": "Cash",
-    "borrowerName": "Rameshwar Prasad",
-    "receiverName": "Chintu Bansal",
-    "description": "",
-    "dotColor": "yellow",
-    "returnedAmounts": []
-  },
-  {
-    "id": "D25_1007_2",
-    "date": "2025-10-07",
-    "displayDate": "07/10/2025",
-    "fy": "2025-2026",
-    "monthKey": "7 Oct",
-    "grNo": "1050_TTC",
-    "truckNo": "RJ52GB4506",
-    "from": "Kishangarh (Raj.)",
-    "to": "Delhi",
-    "company": "TTC",
-    "truckOwner": "Shree Mahaveer Transport Company",
-    "debtType": "Other",
-    "dueAmount": 500.0,
-    "debtAmount": 500.0,
-    "totalReturned": 0.0,
-    "debtMode": "Cash",
-    "borrowerName": "Shree Mahaveer Transport Company",
-    "receiverName": "Hardan",
-    "description": "",
-    "dotColor": "yellow",
-    "returnedAmounts": []
-  },
-  {
-    "id": "D25_1007_1",
-    "date": "2025-10-07",
-    "displayDate": "07/10/2025",
-    "fy": "2025-2026",
-    "monthKey": "7 Oct",
-    "grNo": "1050_TTC",
-    "truckNo": "RJ52GB4506",
-    "from": "Kishangarh (Raj.)",
-    "to": "Delhi",
-    "company": "TTC",
-    "truckOwner": "Shree Mahaveer Transport Company",
-    "debtType": "Commission",
-    "dueAmount": 1500.0,
-    "debtAmount": 1500.0,
-    "totalReturned": 0.0,
-    "debtMode": "Cash",
-    "borrowerName": "Shree Mahaveer Transport Company",
-    "receiverName": "Hardan",
-    "description": "",
-    "dotColor": "yellow",
-    "returnedAmounts": []
-  },
-  {
-    "id": "D25_1006_2",
-    "date": "2025-10-06",
-    "displayDate": "06/10/2025",
-    "fy": "2025-2026",
-    "monthKey": "7 Oct",
-    "grNo": "1036_TTC",
-    "truckNo": "RJ52GB2587",
-    "from": "Kishangarh (Raj.)",
-    "to": "Delhi",
-    "company": "TTC",
-    "truckOwner": "Rameshwar Prasad",
-    "debtType": "Other",
-    "dueAmount": 3500.0,
-    "debtAmount": 3500.0,
-    "totalReturned": 0.0,
-    "debtMode": "Cash",
-    "borrowerName": "Rameshwar Prasad",
-    "receiverName": "Tejaram Gurjar",
-    "description": "",
-    "dotColor": "yellow",
-    "returnedAmounts": []
-  },
-  {
-    "id": "D25_1006_1",
-    "date": "2025-10-06",
-    "displayDate": "06/10/2025",
-    "fy": "2025-2026",
-    "monthKey": "7 Oct",
-    "grNo": "1036_TTC",
-    "truckNo": "RJ52GB2587",
-    "from": "Kishangarh (Raj.)",
-    "to": "Delhi",
-    "company": "TTC",
-    "truckOwner": "Rameshwar Prasad",
-    "debtType": "Commission",
-    "dueAmount": 2000.0,
-    "debtAmount": 2000.0,
-    "totalReturned": 0.0,
-    "debtMode": "Cash",
-    "borrowerName": "Rameshwar Prasad",
-    "receiverName": "Tejaram Gurjar",
-    "description": "",
-    "dotColor": "yellow",
-    "returnedAmounts": []
-  },
-  {
-    "id": "D25_1005_4",
+    "id": "DEBT_2025_2026_0444",
     "date": "2025-10-05",
     "displayDate": "05/10/2025",
     "fy": "2025-2026",
@@ -8718,7 +10221,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1005_3",
+    "id": "DEBT_2025_2026_0445",
     "date": "2025-10-05",
     "displayDate": "05/10/2025",
     "fy": "2025-2026",
@@ -8741,7 +10244,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1005_2",
+    "id": "DEBT_2025_2026_0446",
     "date": "2025-10-05",
     "displayDate": "05/10/2025",
     "fy": "2025-2026",
@@ -8764,7 +10267,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1005_1",
+    "id": "DEBT_2025_2026_0447",
     "date": "2025-10-05",
     "displayDate": "05/10/2025",
     "fy": "2025-2026",
@@ -8787,7 +10290,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_1003_1",
+    "id": "DEBT_2025_2026_0448",
     "date": "2025-10-03",
     "displayDate": "03/10/2025",
     "fy": "2025-2026",
@@ -8810,7 +10313,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0930_2",
+    "id": "DEBT_2025_2026_0449",
     "date": "2025-09-30",
     "displayDate": "30/09/2025",
     "fy": "2025-2026",
@@ -8833,7 +10336,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0930_1",
+    "id": "DEBT_2025_2026_0450",
     "date": "2025-09-30",
     "displayDate": "30/09/2025",
     "fy": "2025-2026",
@@ -8856,7 +10359,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0928_2",
+    "id": "DEBT_2025_2026_0451",
     "date": "2025-09-28",
     "displayDate": "28/09/2025",
     "fy": "2025-2026",
@@ -8879,7 +10382,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0928_1",
+    "id": "DEBT_2025_2026_0452",
     "date": "2025-09-28",
     "displayDate": "28/09/2025",
     "fy": "2025-2026",
@@ -8902,7 +10405,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0927_1",
+    "id": "DEBT_2025_2026_0453",
     "date": "2025-09-27",
     "displayDate": "27/09/2025",
     "fy": "2025-2026",
@@ -8925,7 +10428,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0924_2",
+    "id": "DEBT_2025_2026_0454",
     "date": "2025-09-24",
     "displayDate": "24/09/2025",
     "fy": "2025-2026",
@@ -8948,7 +10451,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0924_1",
+    "id": "DEBT_2025_2026_0455",
     "date": "2025-09-24",
     "displayDate": "24/09/2025",
     "fy": "2025-2026",
@@ -8971,7 +10474,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0923_1",
+    "id": "DEBT_2025_2026_0456",
     "date": "2025-09-23",
     "displayDate": "23/09/2025",
     "fy": "2025-2026",
@@ -8994,7 +10497,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0922_1",
+    "id": "DEBT_2025_2026_0457",
     "date": "2025-09-22",
     "displayDate": "22/09/2025",
     "fy": "2025-2026",
@@ -9017,7 +10520,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0921_2",
+    "id": "DEBT_2025_2026_0458",
     "date": "2025-09-21",
     "displayDate": "21/09/2025",
     "fy": "2025-2026",
@@ -9040,7 +10543,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0921_1",
+    "id": "DEBT_2025_2026_0459",
     "date": "2025-09-21",
     "displayDate": "21/09/2025",
     "fy": "2025-2026",
@@ -9063,7 +10566,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0920_2",
+    "id": "DEBT_2025_2026_0460",
     "date": "2025-09-20",
     "displayDate": "20/09/2025",
     "fy": "2025-2026",
@@ -9086,7 +10589,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0920_1",
+    "id": "DEBT_2025_2026_0461",
     "date": "2025-09-20",
     "displayDate": "20/09/2025",
     "fy": "2025-2026",
@@ -9109,7 +10612,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0919_4",
+    "id": "DEBT_2025_2026_0462",
     "date": "2025-09-19",
     "displayDate": "19/09/2025",
     "fy": "2025-2026",
@@ -9132,7 +10635,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0919_3",
+    "id": "DEBT_2025_2026_0463",
     "date": "2025-09-19",
     "displayDate": "19/09/2025",
     "fy": "2025-2026",
@@ -9155,7 +10658,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0919_2",
+    "id": "DEBT_2025_2026_0464",
     "date": "2025-09-19",
     "displayDate": "19/09/2025",
     "fy": "2025-2026",
@@ -9178,7 +10681,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0919_1",
+    "id": "DEBT_2025_2026_0465",
     "date": "2025-09-19",
     "displayDate": "19/09/2025",
     "fy": "2025-2026",
@@ -9201,7 +10704,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0918_1",
+    "id": "DEBT_2025_2026_0466",
     "date": "2025-09-18",
     "displayDate": "18/09/2025",
     "fy": "2025-2026",
@@ -9224,7 +10727,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0917_3",
+    "id": "DEBT_2025_2026_0467",
     "date": "2025-09-17",
     "displayDate": "17/09/2025",
     "fy": "2025-2026",
@@ -9247,7 +10750,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0917_2",
+    "id": "DEBT_2025_2026_0468",
     "date": "2025-09-17",
     "displayDate": "17/09/2025",
     "fy": "2025-2026",
@@ -9270,7 +10773,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0917_1",
+    "id": "DEBT_2025_2026_0469",
     "date": "2025-09-17",
     "displayDate": "17/09/2025",
     "fy": "2025-2026",
@@ -9293,7 +10796,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0916_2",
+    "id": "DEBT_2025_2026_0470",
     "date": "2025-09-16",
     "displayDate": "16/09/2025",
     "fy": "2025-2026",
@@ -9316,7 +10819,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0916_1",
+    "id": "DEBT_2025_2026_0471",
     "date": "2025-09-16",
     "displayDate": "16/09/2025",
     "fy": "2025-2026",
@@ -9339,7 +10842,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0914_2",
+    "id": "DEBT_2025_2026_0472",
     "date": "2025-09-14",
     "displayDate": "14/09/2025",
     "fy": "2025-2026",
@@ -9362,7 +10865,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0914_1",
+    "id": "DEBT_2025_2026_0473",
     "date": "2025-09-14",
     "displayDate": "14/09/2025",
     "fy": "2025-2026",
@@ -9385,7 +10888,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0910_2",
+    "id": "DEBT_2025_2026_0474",
     "date": "2025-09-10",
     "displayDate": "10/09/2025",
     "fy": "2025-2026",
@@ -9408,7 +10911,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0910_1",
+    "id": "DEBT_2025_2026_0475",
     "date": "2025-09-10",
     "displayDate": "10/09/2025",
     "fy": "2025-2026",
@@ -9431,7 +10934,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0909_2",
+    "id": "DEBT_2025_2026_0476",
     "date": "2025-09-09",
     "displayDate": "09/09/2025",
     "fy": "2025-2026",
@@ -9454,7 +10957,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0909_1",
+    "id": "DEBT_2025_2026_0477",
     "date": "2025-09-09",
     "displayDate": "09/09/2025",
     "fy": "2025-2026",
@@ -9477,7 +10980,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0907_4",
+    "id": "DEBT_2025_2026_0478",
     "date": "2025-09-07",
     "displayDate": "07/09/2025",
     "fy": "2025-2026",
@@ -9500,7 +11003,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0907_3",
+    "id": "DEBT_2025_2026_0479",
     "date": "2025-09-07",
     "displayDate": "07/09/2025",
     "fy": "2025-2026",
@@ -9523,7 +11026,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0907_2",
+    "id": "DEBT_2025_2026_0480",
     "date": "2025-09-07",
     "displayDate": "07/09/2025",
     "fy": "2025-2026",
@@ -9546,7 +11049,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0907_1",
+    "id": "DEBT_2025_2026_0481",
     "date": "2025-09-07",
     "displayDate": "07/09/2025",
     "fy": "2025-2026",
@@ -9569,7 +11072,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0901_2",
+    "id": "DEBT_2025_2026_0482",
     "date": "2025-09-01",
     "displayDate": "01/09/2025",
     "fy": "2025-2026",
@@ -9592,7 +11095,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0901_1",
+    "id": "DEBT_2025_2026_0483",
     "date": "2025-09-01",
     "displayDate": "01/09/2025",
     "fy": "2025-2026",
@@ -9615,7 +11118,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0831_2",
+    "id": "DEBT_2025_2026_0484",
     "date": "2025-08-31",
     "displayDate": "31/08/2025",
     "fy": "2025-2026",
@@ -9638,7 +11141,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0831_1",
+    "id": "DEBT_2025_2026_0485",
     "date": "2025-08-31",
     "displayDate": "31/08/2025",
     "fy": "2025-2026",
@@ -9661,7 +11164,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0830_1",
+    "id": "DEBT_2025_2026_0486",
     "date": "2025-08-30",
     "displayDate": "30/08/2025",
     "fy": "2025-2026",
@@ -9684,7 +11187,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0829_2",
+    "id": "DEBT_2025_2026_0487",
     "date": "2025-08-29",
     "displayDate": "29/08/2025",
     "fy": "2025-2026",
@@ -9707,7 +11210,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0829_1",
+    "id": "DEBT_2025_2026_0488",
     "date": "2025-08-29",
     "displayDate": "29/08/2025",
     "fy": "2025-2026",
@@ -9730,7 +11233,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0828_2",
+    "id": "DEBT_2025_2026_0489",
     "date": "2025-08-28",
     "displayDate": "28/08/2025",
     "fy": "2025-2026",
@@ -9753,7 +11256,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0828_1",
+    "id": "DEBT_2025_2026_0490",
     "date": "2025-08-28",
     "displayDate": "28/08/2025",
     "fy": "2025-2026",
@@ -9776,7 +11279,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0826_2",
+    "id": "DEBT_2025_2026_0491",
     "date": "2025-08-26",
     "displayDate": "26/08/2025",
     "fy": "2025-2026",
@@ -9799,7 +11302,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0826_1",
+    "id": "DEBT_2025_2026_0492",
     "date": "2025-08-26",
     "displayDate": "26/08/2025",
     "fy": "2025-2026",
@@ -9822,7 +11325,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0825_2",
+    "id": "DEBT_2025_2026_0493",
     "date": "2025-08-25",
     "displayDate": "25/08/2025",
     "fy": "2025-2026",
@@ -9845,7 +11348,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0825_1",
+    "id": "DEBT_2025_2026_0494",
     "date": "2025-08-25",
     "displayDate": "25/08/2025",
     "fy": "2025-2026",
@@ -9868,7 +11371,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0822_1",
+    "id": "DEBT_2025_2026_0495",
     "date": "2025-08-22",
     "displayDate": "22/08/2025",
     "fy": "2025-2026",
@@ -9891,7 +11394,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0819_2",
+    "id": "DEBT_2025_2026_0496",
     "date": "2025-08-19",
     "displayDate": "19/08/2025",
     "fy": "2025-2026",
@@ -9914,7 +11417,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0819_1",
+    "id": "DEBT_2025_2026_0497",
     "date": "2025-08-19",
     "displayDate": "19/08/2025",
     "fy": "2025-2026",
@@ -9937,7 +11440,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0817_1",
+    "id": "DEBT_2025_2026_0498",
     "date": "2025-08-17",
     "displayDate": "17/08/2025",
     "fy": "2025-2026",
@@ -9960,7 +11463,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0813_2",
+    "id": "DEBT_2025_2026_0499",
     "date": "2025-08-13",
     "displayDate": "13/08/2025",
     "fy": "2025-2026",
@@ -9983,7 +11486,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0813_1",
+    "id": "DEBT_2025_2026_0500",
     "date": "2025-08-13",
     "displayDate": "13/08/2025",
     "fy": "2025-2026",
@@ -10006,7 +11509,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0808_2",
+    "id": "DEBT_2025_2026_0501",
     "date": "2025-08-08",
     "displayDate": "08/08/2025",
     "fy": "2025-2026",
@@ -10029,7 +11532,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0808_1",
+    "id": "DEBT_2025_2026_0502",
     "date": "2025-08-08",
     "displayDate": "08/08/2025",
     "fy": "2025-2026",
@@ -10052,7 +11555,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0806_1",
+    "id": "DEBT_2025_2026_0503",
     "date": "2025-08-06",
     "displayDate": "06/08/2025",
     "fy": "2025-2026",
@@ -10075,7 +11578,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0803_3",
+    "id": "DEBT_2025_2026_0504",
     "date": "2025-08-03",
     "displayDate": "03/08/2025",
     "fy": "2025-2026",
@@ -10098,7 +11601,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0803_2",
+    "id": "DEBT_2025_2026_0505",
     "date": "2025-08-03",
     "displayDate": "03/08/2025",
     "fy": "2025-2026",
@@ -10121,7 +11624,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0803_1",
+    "id": "DEBT_2025_2026_0506",
     "date": "2025-08-03",
     "displayDate": "03/08/2025",
     "fy": "2025-2026",
@@ -10144,7 +11647,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0801_1",
+    "id": "DEBT_2025_2026_0507",
     "date": "2025-08-01",
     "displayDate": "01/08/2025",
     "fy": "2025-2026",
@@ -10175,7 +11678,7 @@ window.SAMPLE_DEBTS_DATA = [
     ]
   },
   {
-    "id": "D25_0723_2",
+    "id": "DEBT_2025_2026_0508",
     "date": "2025-07-23",
     "displayDate": "23/07/2025",
     "fy": "2025-2026",
@@ -10198,7 +11701,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0723_1",
+    "id": "DEBT_2025_2026_0509",
     "date": "2025-07-23",
     "displayDate": "23/07/2025",
     "fy": "2025-2026",
@@ -10221,7 +11724,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0718_2",
+    "id": "DEBT_2025_2026_0510",
     "date": "2025-07-18",
     "displayDate": "18/07/2025",
     "fy": "2025-2026",
@@ -10244,7 +11747,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0718_1",
+    "id": "DEBT_2025_2026_0511",
     "date": "2025-07-18",
     "displayDate": "18/07/2025",
     "fy": "2025-2026",
@@ -10267,7 +11770,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0715_2",
+    "id": "DEBT_2025_2026_0512",
     "date": "2025-07-15",
     "displayDate": "15/07/2025",
     "fy": "2025-2026",
@@ -10290,7 +11793,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0715_1",
+    "id": "DEBT_2025_2026_0513",
     "date": "2025-07-15",
     "displayDate": "15/07/2025",
     "fy": "2025-2026",
@@ -10313,7 +11816,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0710_2",
+    "id": "DEBT_2025_2026_0514",
     "date": "2025-07-10",
     "displayDate": "10/07/2025",
     "fy": "2025-2026",
@@ -10336,7 +11839,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0710_1",
+    "id": "DEBT_2025_2026_0515",
     "date": "2025-07-10",
     "displayDate": "10/07/2025",
     "fy": "2025-2026",
@@ -10359,7 +11862,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0629_1",
+    "id": "DEBT_2025_2026_0516",
     "date": "2025-06-29",
     "displayDate": "29/06/2025",
     "fy": "2025-2026",
@@ -10382,7 +11885,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0624_1",
+    "id": "DEBT_2025_2026_0517",
     "date": "2025-06-24",
     "displayDate": "24/06/2025",
     "fy": "2025-2026",
@@ -10405,7 +11908,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0608_2",
+    "id": "DEBT_2025_2026_0518",
     "date": "2025-06-08",
     "displayDate": "08/06/2025",
     "fy": "2025-2026",
@@ -10428,7 +11931,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0608_1",
+    "id": "DEBT_2025_2026_0519",
     "date": "2025-06-08",
     "displayDate": "08/06/2025",
     "fy": "2025-2026",
@@ -10451,7 +11954,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0606_2",
+    "id": "DEBT_2025_2026_0520",
     "date": "2025-06-06",
     "displayDate": "06/06/2025",
     "fy": "2025-2026",
@@ -10474,7 +11977,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0606_1",
+    "id": "DEBT_2025_2026_0521",
     "date": "2025-06-06",
     "displayDate": "06/06/2025",
     "fy": "2025-2026",
@@ -10497,7 +12000,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0604_1",
+    "id": "DEBT_2025_2026_0522",
     "date": "2025-06-04",
     "displayDate": "04/06/2025",
     "fy": "2025-2026",
@@ -10520,7 +12023,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0603_2",
+    "id": "DEBT_2025_2026_0523",
     "date": "2025-06-03",
     "displayDate": "03/06/2025",
     "fy": "2025-2026",
@@ -10543,7 +12046,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0603_1",
+    "id": "DEBT_2025_2026_0524",
     "date": "2025-06-03",
     "displayDate": "03/06/2025",
     "fy": "2025-2026",
@@ -10566,7 +12069,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0531_2",
+    "id": "DEBT_2025_2026_0525",
     "date": "2025-05-31",
     "displayDate": "31/05/2025",
     "fy": "2025-2026",
@@ -10589,7 +12092,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0531_1",
+    "id": "DEBT_2025_2026_0526",
     "date": "2025-05-31",
     "displayDate": "31/05/2025",
     "fy": "2025-2026",
@@ -10612,7 +12115,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0526_3",
+    "id": "DEBT_2025_2026_0527",
     "date": "2025-05-26",
     "displayDate": "26/05/2025",
     "fy": "2025-2026",
@@ -10635,7 +12138,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0526_2",
+    "id": "DEBT_2025_2026_0528",
     "date": "2025-05-26",
     "displayDate": "26/05/2025",
     "fy": "2025-2026",
@@ -10666,7 +12169,7 @@ window.SAMPLE_DEBTS_DATA = [
     ]
   },
   {
-    "id": "D25_0526_1",
+    "id": "DEBT_2025_2026_0529",
     "date": "2025-05-26",
     "displayDate": "26/05/2025",
     "fy": "2025-2026",
@@ -10689,7 +12192,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0525_2",
+    "id": "DEBT_2025_2026_0530",
     "date": "2025-05-25",
     "displayDate": "25/05/2025",
     "fy": "2025-2026",
@@ -10712,7 +12215,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0525_1",
+    "id": "DEBT_2025_2026_0531",
     "date": "2025-05-25",
     "displayDate": "25/05/2025",
     "fy": "2025-2026",
@@ -10735,7 +12238,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0521_4",
+    "id": "DEBT_2025_2026_0532",
     "date": "2025-05-21",
     "displayDate": "21/05/2025",
     "fy": "2025-2026",
@@ -10758,7 +12261,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0521_3",
+    "id": "DEBT_2025_2026_0533",
     "date": "2025-05-21",
     "displayDate": "21/05/2025",
     "fy": "2025-2026",
@@ -10781,7 +12284,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0521_2",
+    "id": "DEBT_2025_2026_0534",
     "date": "2025-05-21",
     "displayDate": "21/05/2025",
     "fy": "2025-2026",
@@ -10804,7 +12307,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0521_1",
+    "id": "DEBT_2025_2026_0535",
     "date": "2025-05-21",
     "displayDate": "21/05/2025",
     "fy": "2025-2026",
@@ -10827,7 +12330,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0520_2",
+    "id": "DEBT_2025_2026_0536",
     "date": "2025-05-20",
     "displayDate": "20/05/2025",
     "fy": "2025-2026",
@@ -10850,7 +12353,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0520_1",
+    "id": "DEBT_2025_2026_0537",
     "date": "2025-05-20",
     "displayDate": "20/05/2025",
     "fy": "2025-2026",
@@ -10873,7 +12376,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0519_1",
+    "id": "DEBT_2025_2026_0538",
     "date": "2025-05-19",
     "displayDate": "19/05/2025",
     "fy": "2025-2026",
@@ -10896,7 +12399,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0515_1",
+    "id": "DEBT_2025_2026_0539",
     "date": "2025-05-15",
     "displayDate": "15/05/2025",
     "fy": "2025-2026",
@@ -10919,7 +12422,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0514_2",
+    "id": "DEBT_2025_2026_0540",
     "date": "2025-05-14",
     "displayDate": "14/05/2025",
     "fy": "2025-2026",
@@ -10942,7 +12445,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0514_1",
+    "id": "DEBT_2025_2026_0541",
     "date": "2025-05-14",
     "displayDate": "14/05/2025",
     "fy": "2025-2026",
@@ -10965,7 +12468,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0512_2",
+    "id": "DEBT_2025_2026_0542",
     "date": "2025-05-12",
     "displayDate": "12/05/2025",
     "fy": "2025-2026",
@@ -10988,7 +12491,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0512_1",
+    "id": "DEBT_2025_2026_0543",
     "date": "2025-05-12",
     "displayDate": "12/05/2025",
     "fy": "2025-2026",
@@ -11011,7 +12514,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0511_2",
+    "id": "DEBT_2025_2026_0544",
     "date": "2025-05-11",
     "displayDate": "11/05/2025",
     "fy": "2025-2026",
@@ -11034,7 +12537,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0511_1",
+    "id": "DEBT_2025_2026_0545",
     "date": "2025-05-11",
     "displayDate": "11/05/2025",
     "fy": "2025-2026",
@@ -11057,7 +12560,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0510_1",
+    "id": "DEBT_2025_2026_0546",
     "date": "2025-05-10",
     "displayDate": "10/05/2025",
     "fy": "2025-2026",
@@ -11080,7 +12583,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0509_2",
+    "id": "DEBT_2025_2026_0547",
     "date": "2025-05-09",
     "displayDate": "09/05/2025",
     "fy": "2025-2026",
@@ -11103,7 +12606,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0509_1",
+    "id": "DEBT_2025_2026_0548",
     "date": "2025-05-09",
     "displayDate": "09/05/2025",
     "fy": "2025-2026",
@@ -11126,7 +12629,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0508_2",
+    "id": "DEBT_2025_2026_0549",
     "date": "2025-05-08",
     "displayDate": "08/05/2025",
     "fy": "2025-2026",
@@ -11149,7 +12652,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0508_1",
+    "id": "DEBT_2025_2026_0550",
     "date": "2025-05-08",
     "displayDate": "08/05/2025",
     "fy": "2025-2026",
@@ -11172,7 +12675,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0507_2",
+    "id": "DEBT_2025_2026_0551",
     "date": "2025-05-07",
     "displayDate": "07/05/2025",
     "fy": "2025-2026",
@@ -11195,7 +12698,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0507_1",
+    "id": "DEBT_2025_2026_0552",
     "date": "2025-05-07",
     "displayDate": "07/05/2025",
     "fy": "2025-2026",
@@ -11218,7 +12721,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0502_1",
+    "id": "DEBT_2025_2026_0553",
     "date": "2025-05-02",
     "displayDate": "02/05/2025",
     "fy": "2025-2026",
@@ -11241,7 +12744,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0428_4",
+    "id": "DEBT_2025_2026_0554",
     "date": "2025-04-28",
     "displayDate": "28/04/2025",
     "fy": "2025-2026",
@@ -11264,7 +12767,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0428_3",
+    "id": "DEBT_2025_2026_0555",
     "date": "2025-04-28",
     "displayDate": "28/04/2025",
     "fy": "2025-2026",
@@ -11287,7 +12790,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0428_2",
+    "id": "DEBT_2025_2026_0556",
     "date": "2025-04-28",
     "displayDate": "28/04/2025",
     "fy": "2025-2026",
@@ -11310,7 +12813,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0428_1",
+    "id": "DEBT_2025_2026_0557",
     "date": "2025-04-28",
     "displayDate": "28/04/2025",
     "fy": "2025-2026",
@@ -11333,7 +12836,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0426_2",
+    "id": "DEBT_2025_2026_0558",
     "date": "2025-04-26",
     "displayDate": "26/04/2025",
     "fy": "2025-2026",
@@ -11356,7 +12859,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0426_1",
+    "id": "DEBT_2025_2026_0559",
     "date": "2025-04-26",
     "displayDate": "26/04/2025",
     "fy": "2025-2026",
@@ -11379,7 +12882,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0424_5",
+    "id": "DEBT_2025_2026_0560",
     "date": "2025-04-24",
     "displayDate": "24/04/2025",
     "fy": "2025-2026",
@@ -11402,7 +12905,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0424_4",
+    "id": "DEBT_2025_2026_0561",
     "date": "2025-04-24",
     "displayDate": "24/04/2025",
     "fy": "2025-2026",
@@ -11425,7 +12928,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0424_3",
+    "id": "DEBT_2025_2026_0562",
     "date": "2025-04-24",
     "displayDate": "24/04/2025",
     "fy": "2025-2026",
@@ -11448,7 +12951,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0424_2",
+    "id": "DEBT_2025_2026_0563",
     "date": "2025-04-24",
     "displayDate": "24/04/2025",
     "fy": "2025-2026",
@@ -11471,7 +12974,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0424_1",
+    "id": "DEBT_2025_2026_0564",
     "date": "2025-04-24",
     "displayDate": "24/04/2025",
     "fy": "2025-2026",
@@ -11494,7 +12997,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0423_1",
+    "id": "DEBT_2025_2026_0565",
     "date": "2025-04-23",
     "displayDate": "23/04/2025",
     "fy": "2025-2026",
@@ -11517,7 +13020,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0421_2",
+    "id": "DEBT_2025_2026_0566",
     "date": "2025-04-21",
     "displayDate": "21/04/2025",
     "fy": "2025-2026",
@@ -11540,7 +13043,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0421_1",
+    "id": "DEBT_2025_2026_0567",
     "date": "2025-04-21",
     "displayDate": "21/04/2025",
     "fy": "2025-2026",
@@ -11563,7 +13066,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0420_2",
+    "id": "DEBT_2025_2026_0568",
     "date": "2025-04-20",
     "displayDate": "20/04/2025",
     "fy": "2025-2026",
@@ -11586,7 +13089,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0420_1",
+    "id": "DEBT_2025_2026_0569",
     "date": "2025-04-20",
     "displayDate": "20/04/2025",
     "fy": "2025-2026",
@@ -11609,7 +13112,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0419_1",
+    "id": "DEBT_2025_2026_0570",
     "date": "2025-04-19",
     "displayDate": "19/04/2025",
     "fy": "2025-2026",
@@ -11632,7 +13135,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0417_1",
+    "id": "DEBT_2025_2026_0571",
     "date": "2025-04-17",
     "displayDate": "17/04/2025",
     "fy": "2025-2026",
@@ -11655,7 +13158,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D25_0414_1",
+    "id": "DEBT_2025_2026_0572",
     "date": "2025-04-14",
     "displayDate": "14/04/2025",
     "fy": "2025-2026",
@@ -11678,7 +13181,29 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0331_2",
+    "date": "2025-07-20",
+    "displayDate": "20/07/2025",
+    "fy": "2025-2026",
+    "monthKey": "4 Jul",
+    "grNo": "780_MTC",
+    "truckNo": "RJ52GA4506",
+    "from": "Kishangarh (Raj.)",
+    "to": "Delhi",
+    "company": "MTC",
+    "truckOwner": "Mukesh Gurjar 6148",
+    "debtType": "Loading",
+    "dueAmount": 392150.0,
+    "debtAmount": 392150.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Mukesh Gurjar 6148",
+    "receiverName": "Mukesh Gurjar 6148",
+    "description": "Freight advance",
+    "returnedAmounts": [],
+    "id": "DEBT_2025_2026_0573"
+  },
+  {
+    "id": "DEBT_2024_2025_0574",
     "date": "2025-03-31",
     "displayDate": "31/03/2025",
     "fy": "2024-2025",
@@ -11701,7 +13226,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0331_1",
+    "id": "DEBT_2024_2025_0575",
     "date": "2025-03-31",
     "displayDate": "31/03/2025",
     "fy": "2024-2025",
@@ -11724,7 +13249,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0329_2",
+    "id": "DEBT_2024_2025_0576",
     "date": "2025-03-29",
     "displayDate": "29/03/2025",
     "fy": "2024-2025",
@@ -11747,7 +13272,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0329_1",
+    "id": "DEBT_2024_2025_0577",
     "date": "2025-03-29",
     "displayDate": "29/03/2025",
     "fy": "2024-2025",
@@ -11770,7 +13295,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0326_6",
+    "id": "DEBT_2024_2025_0578",
     "date": "2025-03-26",
     "displayDate": "26/03/2025",
     "fy": "2024-2025",
@@ -11793,7 +13318,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0326_5",
+    "id": "DEBT_2024_2025_0579",
     "date": "2025-03-26",
     "displayDate": "26/03/2025",
     "fy": "2024-2025",
@@ -11816,7 +13341,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0326_4",
+    "id": "DEBT_2024_2025_0580",
     "date": "2025-03-26",
     "displayDate": "26/03/2025",
     "fy": "2024-2025",
@@ -11839,7 +13364,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0326_3",
+    "id": "DEBT_2024_2025_0581",
     "date": "2025-03-26",
     "displayDate": "26/03/2025",
     "fy": "2024-2025",
@@ -11862,7 +13387,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0326_2",
+    "id": "DEBT_2024_2025_0582",
     "date": "2025-03-26",
     "displayDate": "26/03/2025",
     "fy": "2024-2025",
@@ -11885,7 +13410,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0326_1",
+    "id": "DEBT_2024_2025_0583",
     "date": "2025-03-26",
     "displayDate": "26/03/2025",
     "fy": "2024-2025",
@@ -11908,7 +13433,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0325_2",
+    "id": "DEBT_2024_2025_0584",
     "date": "2025-03-25",
     "displayDate": "25/03/2025",
     "fy": "2024-2025",
@@ -11939,7 +13464,7 @@ window.SAMPLE_DEBTS_DATA = [
     ]
   },
   {
-    "id": "D24_0325_1",
+    "id": "DEBT_2024_2025_0585",
     "date": "2025-03-25",
     "displayDate": "25/03/2025",
     "fy": "2024-2025",
@@ -11970,7 +13495,7 @@ window.SAMPLE_DEBTS_DATA = [
     ]
   },
   {
-    "id": "D24_0323_2",
+    "id": "DEBT_2024_2025_0586",
     "date": "2025-03-23",
     "displayDate": "23/03/2025",
     "fy": "2024-2025",
@@ -11993,7 +13518,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0323_1",
+    "id": "DEBT_2024_2025_0587",
     "date": "2025-03-23",
     "displayDate": "23/03/2025",
     "fy": "2024-2025",
@@ -12016,7 +13541,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0319_1",
+    "id": "DEBT_2024_2025_0588",
     "date": "2025-03-19",
     "displayDate": "19/03/2025",
     "fy": "2024-2025",
@@ -12039,7 +13564,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0312_4",
+    "id": "DEBT_2024_2025_0589",
     "date": "2025-03-12",
     "displayDate": "12/03/2025",
     "fy": "2024-2025",
@@ -12062,7 +13587,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0312_3",
+    "id": "DEBT_2024_2025_0590",
     "date": "2025-03-12",
     "displayDate": "12/03/2025",
     "fy": "2024-2025",
@@ -12085,7 +13610,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0312_2",
+    "id": "DEBT_2024_2025_0591",
     "date": "2025-03-12",
     "displayDate": "12/03/2025",
     "fy": "2024-2025",
@@ -12108,7 +13633,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0312_1",
+    "id": "DEBT_2024_2025_0592",
     "date": "2025-03-12",
     "displayDate": "12/03/2025",
     "fy": "2024-2025",
@@ -12131,7 +13656,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0311_6",
+    "id": "DEBT_2024_2025_0593",
     "date": "2025-03-11",
     "displayDate": "11/03/2025",
     "fy": "2024-2025",
@@ -12154,7 +13679,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0311_5",
+    "id": "DEBT_2024_2025_0594",
     "date": "2025-03-11",
     "displayDate": "11/03/2025",
     "fy": "2024-2025",
@@ -12177,7 +13702,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0311_4",
+    "id": "DEBT_2024_2025_0595",
     "date": "2025-03-11",
     "displayDate": "11/03/2025",
     "fy": "2024-2025",
@@ -12200,7 +13725,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0311_3",
+    "id": "DEBT_2024_2025_0596",
     "date": "2025-03-11",
     "displayDate": "11/03/2025",
     "fy": "2024-2025",
@@ -12223,7 +13748,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0311_2",
+    "id": "DEBT_2024_2025_0597",
     "date": "2025-03-11",
     "displayDate": "11/03/2025",
     "fy": "2024-2025",
@@ -12246,7 +13771,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0311_1",
+    "id": "DEBT_2024_2025_0598",
     "date": "2025-03-11",
     "displayDate": "11/03/2025",
     "fy": "2024-2025",
@@ -12269,7 +13794,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0308_1",
+    "id": "DEBT_2024_2025_0599",
     "date": "2025-03-08",
     "displayDate": "08/03/2025",
     "fy": "2024-2025",
@@ -12292,7 +13817,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0301_2",
+    "id": "DEBT_2024_2025_0600",
     "date": "2025-03-01",
     "displayDate": "01/03/2025",
     "fy": "2024-2025",
@@ -12315,7 +13840,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0301_1",
+    "id": "DEBT_2024_2025_0601",
     "date": "2025-03-01",
     "displayDate": "01/03/2025",
     "fy": "2024-2025",
@@ -12338,7 +13863,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0224_2",
+    "id": "DEBT_2024_2025_0602",
     "date": "2025-02-24",
     "displayDate": "24/02/2025",
     "fy": "2024-2025",
@@ -12369,7 +13894,7 @@ window.SAMPLE_DEBTS_DATA = [
     ]
   },
   {
-    "id": "D24_0224_1",
+    "id": "DEBT_2024_2025_0603",
     "date": "2025-02-24",
     "displayDate": "24/02/2025",
     "fy": "2024-2025",
@@ -12392,7 +13917,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0222_2",
+    "id": "DEBT_2024_2025_0604",
     "date": "2025-02-22",
     "displayDate": "22/02/2025",
     "fy": "2024-2025",
@@ -12415,7 +13940,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0222_1",
+    "id": "DEBT_2024_2025_0605",
     "date": "2025-02-22",
     "displayDate": "22/02/2025",
     "fy": "2024-2025",
@@ -12438,7 +13963,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0219_2",
+    "id": "DEBT_2024_2025_0606",
     "date": "2025-02-19",
     "displayDate": "19/02/2025",
     "fy": "2024-2025",
@@ -12461,7 +13986,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0219_1",
+    "id": "DEBT_2024_2025_0607",
     "date": "2025-02-19",
     "displayDate": "19/02/2025",
     "fy": "2024-2025",
@@ -12484,7 +14009,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0216_2",
+    "id": "DEBT_2024_2025_0608",
     "date": "2025-02-16",
     "displayDate": "16/02/2025",
     "fy": "2024-2025",
@@ -12507,7 +14032,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0216_1",
+    "id": "DEBT_2024_2025_0609",
     "date": "2025-02-16",
     "displayDate": "16/02/2025",
     "fy": "2024-2025",
@@ -12530,7 +14055,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0212_2",
+    "id": "DEBT_2024_2025_0610",
     "date": "2025-02-12",
     "displayDate": "12/02/2025",
     "fy": "2024-2025",
@@ -12553,7 +14078,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0212_1",
+    "id": "DEBT_2024_2025_0611",
     "date": "2025-02-12",
     "displayDate": "12/02/2025",
     "fy": "2024-2025",
@@ -12576,7 +14101,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0209_1",
+    "id": "DEBT_2024_2025_0612",
     "date": "2025-02-09",
     "displayDate": "09/02/2025",
     "fy": "2024-2025",
@@ -12599,7 +14124,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0207_1",
+    "id": "DEBT_2024_2025_0613",
     "date": "2025-02-07",
     "displayDate": "07/02/2025",
     "fy": "2024-2025",
@@ -12622,7 +14147,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0125_2",
+    "id": "DEBT_2024_2025_0614",
     "date": "2025-01-25",
     "displayDate": "25/01/2025",
     "fy": "2024-2025",
@@ -12645,7 +14170,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0125_1",
+    "id": "DEBT_2024_2025_0615",
     "date": "2025-01-25",
     "displayDate": "25/01/2025",
     "fy": "2024-2025",
@@ -12668,7 +14193,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0121_2",
+    "id": "DEBT_2024_2025_0616",
     "date": "2025-01-21",
     "displayDate": "21/01/2025",
     "fy": "2024-2025",
@@ -12691,7 +14216,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0121_1",
+    "id": "DEBT_2024_2025_0617",
     "date": "2025-01-21",
     "displayDate": "21/01/2025",
     "fy": "2024-2025",
@@ -12714,7 +14239,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0117_1",
+    "id": "DEBT_2024_2025_0618",
     "date": "2025-01-17",
     "displayDate": "17/01/2025",
     "fy": "2024-2025",
@@ -12737,7 +14262,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0116_2",
+    "id": "DEBT_2024_2025_0619",
     "date": "2025-01-16",
     "displayDate": "16/01/2025",
     "fy": "2024-2025",
@@ -12760,7 +14285,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0116_1",
+    "id": "DEBT_2024_2025_0620",
     "date": "2025-01-16",
     "displayDate": "16/01/2025",
     "fy": "2024-2025",
@@ -12783,7 +14308,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0115_4",
+    "id": "DEBT_2024_2025_0621",
     "date": "2025-01-15",
     "displayDate": "15/01/2025",
     "fy": "2024-2025",
@@ -12806,7 +14331,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0115_3",
+    "id": "DEBT_2024_2025_0622",
     "date": "2025-01-15",
     "displayDate": "15/01/2025",
     "fy": "2024-2025",
@@ -12829,7 +14354,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0115_2",
+    "id": "DEBT_2024_2025_0623",
     "date": "2025-01-15",
     "displayDate": "15/01/2025",
     "fy": "2024-2025",
@@ -12852,7 +14377,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0115_1",
+    "id": "DEBT_2024_2025_0624",
     "date": "2025-01-15",
     "displayDate": "15/01/2025",
     "fy": "2024-2025",
@@ -12875,7 +14400,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0110_1",
+    "id": "DEBT_2024_2025_0625",
     "date": "2025-01-10",
     "displayDate": "10/01/2025",
     "fy": "2024-2025",
@@ -12898,7 +14423,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0106_1",
+    "id": "DEBT_2024_2025_0626",
     "date": "2025-01-06",
     "displayDate": "06/01/2025",
     "fy": "2024-2025",
@@ -12921,7 +14446,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1229_1",
+    "id": "DEBT_2024_2025_0627",
     "date": "2024-12-29",
     "displayDate": "29/12/2024",
     "fy": "2024-2025",
@@ -12944,7 +14469,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1228_1",
+    "id": "DEBT_2024_2025_0628",
     "date": "2024-12-28",
     "displayDate": "28/12/2024",
     "fy": "2024-2025",
@@ -12975,7 +14500,7 @@ window.SAMPLE_DEBTS_DATA = [
     ]
   },
   {
-    "id": "D24_1226_2",
+    "id": "DEBT_2024_2025_0629",
     "date": "2024-12-26",
     "displayDate": "26/12/2024",
     "fy": "2024-2025",
@@ -12998,7 +14523,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1226_1",
+    "id": "DEBT_2024_2025_0630",
     "date": "2024-12-26",
     "displayDate": "26/12/2024",
     "fy": "2024-2025",
@@ -13021,7 +14546,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1224_2",
+    "id": "DEBT_2024_2025_0631",
     "date": "2024-12-24",
     "displayDate": "24/12/2024",
     "fy": "2024-2025",
@@ -13044,7 +14569,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1224_1",
+    "id": "DEBT_2024_2025_0632",
     "date": "2024-12-24",
     "displayDate": "24/12/2024",
     "fy": "2024-2025",
@@ -13067,7 +14592,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1222_4",
+    "id": "DEBT_2024_2025_0633",
     "date": "2024-12-22",
     "displayDate": "22/12/2024",
     "fy": "2024-2025",
@@ -13090,7 +14615,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1222_3",
+    "id": "DEBT_2024_2025_0634",
     "date": "2024-12-22",
     "displayDate": "22/12/2024",
     "fy": "2024-2025",
@@ -13113,7 +14638,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1222_2",
+    "id": "DEBT_2024_2025_0635",
     "date": "2024-12-22",
     "displayDate": "22/12/2024",
     "fy": "2024-2025",
@@ -13136,7 +14661,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1222_1",
+    "id": "DEBT_2024_2025_0636",
     "date": "2024-12-22",
     "displayDate": "22/12/2024",
     "fy": "2024-2025",
@@ -13167,7 +14692,7 @@ window.SAMPLE_DEBTS_DATA = [
     ]
   },
   {
-    "id": "D24_1219_2",
+    "id": "DEBT_2024_2025_0637",
     "date": "2024-12-19",
     "displayDate": "19/12/2024",
     "fy": "2024-2025",
@@ -13190,7 +14715,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1219_1",
+    "id": "DEBT_2024_2025_0638",
     "date": "2024-12-19",
     "displayDate": "19/12/2024",
     "fy": "2024-2025",
@@ -13213,7 +14738,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1218_2",
+    "id": "DEBT_2024_2025_0639",
     "date": "2024-12-18",
     "displayDate": "18/12/2024",
     "fy": "2024-2025",
@@ -13236,7 +14761,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1218_1",
+    "id": "DEBT_2024_2025_0640",
     "date": "2024-12-18",
     "displayDate": "18/12/2024",
     "fy": "2024-2025",
@@ -13259,7 +14784,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1216_2",
+    "id": "DEBT_2024_2025_0641",
     "date": "2024-12-16",
     "displayDate": "16/12/2024",
     "fy": "2024-2025",
@@ -13282,7 +14807,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1216_1",
+    "id": "DEBT_2024_2025_0642",
     "date": "2024-12-16",
     "displayDate": "16/12/2024",
     "fy": "2024-2025",
@@ -13305,7 +14830,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1215_1",
+    "id": "DEBT_2024_2025_0643",
     "date": "2024-12-15",
     "displayDate": "15/12/2024",
     "fy": "2024-2025",
@@ -13328,7 +14853,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1212_2",
+    "id": "DEBT_2024_2025_0644",
     "date": "2024-12-12",
     "displayDate": "12/12/2024",
     "fy": "2024-2025",
@@ -13351,7 +14876,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1212_1",
+    "id": "DEBT_2024_2025_0645",
     "date": "2024-12-12",
     "displayDate": "12/12/2024",
     "fy": "2024-2025",
@@ -13374,7 +14899,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1209_4",
+    "id": "DEBT_2024_2025_0646",
     "date": "2024-12-09",
     "displayDate": "09/12/2024",
     "fy": "2024-2025",
@@ -13397,7 +14922,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1209_3",
+    "id": "DEBT_2024_2025_0647",
     "date": "2024-12-09",
     "displayDate": "09/12/2024",
     "fy": "2024-2025",
@@ -13420,7 +14945,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1209_2",
+    "id": "DEBT_2024_2025_0648",
     "date": "2024-12-09",
     "displayDate": "09/12/2024",
     "fy": "2024-2025",
@@ -13443,7 +14968,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1209_1",
+    "id": "DEBT_2024_2025_0649",
     "date": "2024-12-09",
     "displayDate": "09/12/2024",
     "fy": "2024-2025",
@@ -13466,7 +14991,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1207_2",
+    "id": "DEBT_2024_2025_0650",
     "date": "2024-12-07",
     "displayDate": "07/12/2024",
     "fy": "2024-2025",
@@ -13489,7 +15014,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1207_1",
+    "id": "DEBT_2024_2025_0651",
     "date": "2024-12-07",
     "displayDate": "07/12/2024",
     "fy": "2024-2025",
@@ -13512,7 +15037,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1203_1",
+    "id": "DEBT_2024_2025_0652",
     "date": "2024-12-03",
     "displayDate": "03/12/2024",
     "fy": "2024-2025",
@@ -13535,7 +15060,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1130_2",
+    "id": "DEBT_2024_2025_0653",
     "date": "2024-11-30",
     "displayDate": "30/11/2024",
     "fy": "2024-2025",
@@ -13558,7 +15083,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1130_1",
+    "id": "DEBT_2024_2025_0654",
     "date": "2024-11-30",
     "displayDate": "30/11/2024",
     "fy": "2024-2025",
@@ -13581,7 +15106,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1128_2",
+    "id": "DEBT_2024_2025_0655",
     "date": "2024-11-28",
     "displayDate": "28/11/2024",
     "fy": "2024-2025",
@@ -13604,7 +15129,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1128_1",
+    "id": "DEBT_2024_2025_0656",
     "date": "2024-11-28",
     "displayDate": "28/11/2024",
     "fy": "2024-2025",
@@ -13627,7 +15152,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1126_2",
+    "id": "DEBT_2024_2025_0657",
     "date": "2024-11-26",
     "displayDate": "26/11/2024",
     "fy": "2024-2025",
@@ -13650,7 +15175,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1126_1",
+    "id": "DEBT_2024_2025_0658",
     "date": "2024-11-26",
     "displayDate": "26/11/2024",
     "fy": "2024-2025",
@@ -13673,7 +15198,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1123_2",
+    "id": "DEBT_2024_2025_0659",
     "date": "2024-11-23",
     "displayDate": "23/11/2024",
     "fy": "2024-2025",
@@ -13696,7 +15221,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1123_1",
+    "id": "DEBT_2024_2025_0660",
     "date": "2024-11-23",
     "displayDate": "23/11/2024",
     "fy": "2024-2025",
@@ -13719,7 +15244,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1121_2",
+    "id": "DEBT_2024_2025_0661",
     "date": "2024-11-21",
     "displayDate": "21/11/2024",
     "fy": "2024-2025",
@@ -13742,7 +15267,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1121_1",
+    "id": "DEBT_2024_2025_0662",
     "date": "2024-11-21",
     "displayDate": "21/11/2024",
     "fy": "2024-2025",
@@ -13765,7 +15290,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1117_2",
+    "id": "DEBT_2024_2025_0663",
     "date": "2024-11-17",
     "displayDate": "17/11/2024",
     "fy": "2024-2025",
@@ -13788,7 +15313,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1117_1",
+    "id": "DEBT_2024_2025_0664",
     "date": "2024-11-17",
     "displayDate": "17/11/2024",
     "fy": "2024-2025",
@@ -13811,7 +15336,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1113_2",
+    "id": "DEBT_2024_2025_0665",
     "date": "2024-11-13",
     "displayDate": "13/11/2024",
     "fy": "2024-2025",
@@ -13834,7 +15359,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1113_1",
+    "id": "DEBT_2024_2025_0666",
     "date": "2024-11-13",
     "displayDate": "13/11/2024",
     "fy": "2024-2025",
@@ -13857,7 +15382,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1112_3",
+    "id": "DEBT_2024_2025_0667",
     "date": "2024-11-12",
     "displayDate": "12/11/2024",
     "fy": "2024-2025",
@@ -13888,7 +15413,7 @@ window.SAMPLE_DEBTS_DATA = [
     ]
   },
   {
-    "id": "D24_1112_2",
+    "id": "DEBT_2024_2025_0668",
     "date": "2024-11-12",
     "displayDate": "12/11/2024",
     "fy": "2024-2025",
@@ -13911,7 +15436,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1112_1",
+    "id": "DEBT_2024_2025_0669",
     "date": "2024-11-12",
     "displayDate": "12/11/2024",
     "fy": "2024-2025",
@@ -13934,7 +15459,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1111_1",
+    "id": "DEBT_2024_2025_0670",
     "date": "2024-11-11",
     "displayDate": "11/11/2024",
     "fy": "2024-2025",
@@ -13957,7 +15482,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1110_2",
+    "id": "DEBT_2024_2025_0671",
     "date": "2024-11-10",
     "displayDate": "10/11/2024",
     "fy": "2024-2025",
@@ -13980,7 +15505,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1110_1",
+    "id": "DEBT_2024_2025_0672",
     "date": "2024-11-10",
     "displayDate": "10/11/2024",
     "fy": "2024-2025",
@@ -14003,7 +15528,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1027_2",
+    "id": "DEBT_2024_2025_0673",
     "date": "2024-10-27",
     "displayDate": "27/10/2024",
     "fy": "2024-2025",
@@ -14026,7 +15551,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1027_1",
+    "id": "DEBT_2024_2025_0674",
     "date": "2024-10-27",
     "displayDate": "27/10/2024",
     "fy": "2024-2025",
@@ -14049,7 +15574,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1025_1",
+    "id": "DEBT_2024_2025_0675",
     "date": "2024-10-25",
     "displayDate": "25/10/2024",
     "fy": "2024-2025",
@@ -14072,7 +15597,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1024_6",
+    "id": "DEBT_2024_2025_0676",
     "date": "2024-10-24",
     "displayDate": "24/10/2024",
     "fy": "2024-2025",
@@ -14095,7 +15620,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1024_5",
+    "id": "DEBT_2024_2025_0677",
     "date": "2024-10-24",
     "displayDate": "24/10/2024",
     "fy": "2024-2025",
@@ -14118,7 +15643,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1024_4",
+    "id": "DEBT_2024_2025_0678",
     "date": "2024-10-24",
     "displayDate": "24/10/2024",
     "fy": "2024-2025",
@@ -14141,7 +15666,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1024_3",
+    "id": "DEBT_2024_2025_0679",
     "date": "2024-10-24",
     "displayDate": "24/10/2024",
     "fy": "2024-2025",
@@ -14164,7 +15689,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1024_2",
+    "id": "DEBT_2024_2025_0680",
     "date": "2024-10-24",
     "displayDate": "24/10/2024",
     "fy": "2024-2025",
@@ -14187,7 +15712,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1024_1",
+    "id": "DEBT_2024_2025_0681",
     "date": "2024-10-24",
     "displayDate": "24/10/2024",
     "fy": "2024-2025",
@@ -14210,7 +15735,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1023_2",
+    "id": "DEBT_2024_2025_0682",
     "date": "2024-10-23",
     "displayDate": "23/10/2024",
     "fy": "2024-2025",
@@ -14233,7 +15758,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1023_1",
+    "id": "DEBT_2024_2025_0683",
     "date": "2024-10-23",
     "displayDate": "23/10/2024",
     "fy": "2024-2025",
@@ -14256,7 +15781,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1022_4",
+    "id": "DEBT_2024_2025_0684",
     "date": "2024-10-22",
     "displayDate": "22/10/2024",
     "fy": "2024-2025",
@@ -14279,7 +15804,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1022_3",
+    "id": "DEBT_2024_2025_0685",
     "date": "2024-10-22",
     "displayDate": "22/10/2024",
     "fy": "2024-2025",
@@ -14302,7 +15827,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1022_2",
+    "id": "DEBT_2024_2025_0686",
     "date": "2024-10-22",
     "displayDate": "22/10/2024",
     "fy": "2024-2025",
@@ -14325,7 +15850,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1022_1",
+    "id": "DEBT_2024_2025_0687",
     "date": "2024-10-22",
     "displayDate": "22/10/2024",
     "fy": "2024-2025",
@@ -14348,7 +15873,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1019_2",
+    "id": "DEBT_2024_2025_0688",
     "date": "2024-10-19",
     "displayDate": "19/10/2024",
     "fy": "2024-2025",
@@ -14371,7 +15896,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1019_1",
+    "id": "DEBT_2024_2025_0689",
     "date": "2024-10-19",
     "displayDate": "19/10/2024",
     "fy": "2024-2025",
@@ -14394,7 +15919,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1018_2",
+    "id": "DEBT_2024_2025_0690",
     "date": "2024-10-18",
     "displayDate": "18/10/2024",
     "fy": "2024-2025",
@@ -14417,7 +15942,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1018_1",
+    "id": "DEBT_2024_2025_0691",
     "date": "2024-10-18",
     "displayDate": "18/10/2024",
     "fy": "2024-2025",
@@ -14440,7 +15965,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1012_1",
+    "id": "DEBT_2024_2025_0692",
     "date": "2024-10-12",
     "displayDate": "12/10/2024",
     "fy": "2024-2025",
@@ -14463,7 +15988,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1010_1",
+    "id": "DEBT_2024_2025_0693",
     "date": "2024-10-10",
     "displayDate": "10/10/2024",
     "fy": "2024-2025",
@@ -14486,7 +16011,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1008_2",
+    "id": "DEBT_2024_2025_0694",
     "date": "2024-10-08",
     "displayDate": "08/10/2024",
     "fy": "2024-2025",
@@ -14509,7 +16034,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1008_1",
+    "id": "DEBT_2024_2025_0695",
     "date": "2024-10-08",
     "displayDate": "08/10/2024",
     "fy": "2024-2025",
@@ -14532,7 +16057,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_1003_1",
+    "id": "DEBT_2024_2025_0696",
     "date": "2024-10-03",
     "displayDate": "03/10/2024",
     "fy": "2024-2025",
@@ -14555,7 +16080,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0919_1",
+    "id": "DEBT_2024_2025_0697",
     "date": "2024-09-19",
     "displayDate": "19/09/2024",
     "fy": "2024-2025",
@@ -14578,7 +16103,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0829_1",
+    "id": "DEBT_2024_2025_0698",
     "date": "2024-08-29",
     "displayDate": "29/08/2024",
     "fy": "2024-2025",
@@ -14601,7 +16126,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0823_1",
+    "id": "DEBT_2024_2025_0699",
     "date": "2024-08-23",
     "displayDate": "23/08/2024",
     "fy": "2024-2025",
@@ -14624,7 +16149,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0803_1",
+    "id": "DEBT_2024_2025_0700",
     "date": "2024-08-03",
     "displayDate": "03/08/2024",
     "fy": "2024-2025",
@@ -14647,7 +16172,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0710_2",
+    "id": "DEBT_2024_2025_0701",
     "date": "2024-07-10",
     "displayDate": "10/07/2024",
     "fy": "2024-2025",
@@ -14670,7 +16195,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0710_1",
+    "id": "DEBT_2024_2025_0702",
     "date": "2024-07-10",
     "displayDate": "10/07/2024",
     "fy": "2024-2025",
@@ -14693,7 +16218,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0703_1",
+    "id": "DEBT_2024_2025_0703",
     "date": "2024-07-03",
     "displayDate": "03/07/2024",
     "fy": "2024-2025",
@@ -14716,7 +16241,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0701_1",
+    "id": "DEBT_2024_2025_0704",
     "date": "2024-07-01",
     "displayDate": "01/07/2024",
     "fy": "2024-2025",
@@ -14739,7 +16264,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0627_1",
+    "id": "DEBT_2024_2025_0705",
     "date": "2024-06-27",
     "displayDate": "27/06/2024",
     "fy": "2024-2025",
@@ -14762,7 +16287,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0610_2",
+    "id": "DEBT_2024_2025_0706",
     "date": "2024-06-10",
     "displayDate": "10/06/2024",
     "fy": "2024-2025",
@@ -14785,7 +16310,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0610_1",
+    "id": "DEBT_2024_2025_0707",
     "date": "2024-06-10",
     "displayDate": "10/06/2024",
     "fy": "2024-2025",
@@ -14808,7 +16333,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0601_1",
+    "id": "DEBT_2024_2025_0708",
     "date": "2024-06-01",
     "displayDate": "01/06/2024",
     "fy": "2024-2025",
@@ -14831,7 +16356,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0526_1",
+    "id": "DEBT_2024_2025_0709",
     "date": "2024-05-26",
     "displayDate": "26/05/2024",
     "fy": "2024-2025",
@@ -14854,7 +16379,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0522_1",
+    "id": "DEBT_2024_2025_0710",
     "date": "2024-05-22",
     "displayDate": "22/05/2024",
     "fy": "2024-2025",
@@ -14877,7 +16402,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0509_1",
+    "id": "DEBT_2024_2025_0711",
     "date": "2024-05-09",
     "displayDate": "09/05/2024",
     "fy": "2024-2025",
@@ -14900,7 +16425,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0505_1",
+    "id": "DEBT_2024_2025_0712",
     "date": "2024-05-05",
     "displayDate": "05/05/2024",
     "fy": "2024-2025",
@@ -14923,7 +16448,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D24_0429_1",
+    "id": "DEBT_2024_2025_0713",
     "date": "2024-04-29",
     "displayDate": "29/04/2024",
     "fy": "2024-2025",
@@ -14946,7 +16471,29 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D23_0328_1",
+    "date": "2024-11-10",
+    "displayDate": "10/11/2024",
+    "fy": "2024-2025",
+    "monthKey": "8 Nov",
+    "grNo": "2024_TTC",
+    "truckNo": "RJ52GB2588",
+    "from": "Kishangarh (Raj.)",
+    "to": "Delhi",
+    "company": "TTC",
+    "truckOwner": "Rameshwar Prasad",
+    "debtType": "Advance",
+    "dueAmount": 281200.0,
+    "debtAmount": 281200.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Rameshwar Prasad",
+    "receiverName": "Raju Bhilwa",
+    "description": "Outstanding Ledger Advance FY 2024-2025",
+    "returnedAmounts": [],
+    "id": "DEBT_2024_2025_0714"
+  },
+  {
+    "id": "DEBT_2023_2024_0715",
     "date": "2024-03-28",
     "displayDate": "28/03/2024",
     "fy": "2023-2024",
@@ -14969,7 +16516,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D23_0320_1",
+    "id": "DEBT_2023_2024_0716",
     "date": "2024-03-20",
     "displayDate": "20/03/2024",
     "fy": "2023-2024",
@@ -14992,7 +16539,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D23_0319_1",
+    "id": "DEBT_2023_2024_0717",
     "date": "2024-03-19",
     "displayDate": "19/03/2024",
     "fy": "2023-2024",
@@ -15015,7 +16562,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D23_0224_1",
+    "id": "DEBT_2023_2024_0718",
     "date": "2024-02-24",
     "displayDate": "24/02/2024",
     "fy": "2023-2024",
@@ -15038,7 +16585,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D23_0207_1",
+    "id": "DEBT_2023_2024_0719",
     "date": "2024-02-07",
     "displayDate": "07/02/2024",
     "fy": "2023-2024",
@@ -15061,7 +16608,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D23_0113_1",
+    "id": "DEBT_2023_2024_0720",
     "date": "2024-01-13",
     "displayDate": "13/01/2024",
     "fy": "2023-2024",
@@ -15084,7 +16631,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D23_1228_1",
+    "id": "DEBT_2023_2024_0721",
     "date": "2023-12-28",
     "displayDate": "28/12/2023",
     "fy": "2023-2024",
@@ -15107,7 +16654,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D23_1224_1",
+    "id": "DEBT_2023_2024_0722",
     "date": "2023-12-24",
     "displayDate": "24/12/2023",
     "fy": "2023-2024",
@@ -15130,7 +16677,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D23_1223_1",
+    "id": "DEBT_2023_2024_0723",
     "date": "2023-12-23",
     "displayDate": "23/12/2023",
     "fy": "2023-2024",
@@ -15153,7 +16700,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D23_1220_1",
+    "id": "DEBT_2023_2024_0724",
     "date": "2023-12-20",
     "displayDate": "20/12/2023",
     "fy": "2023-2024",
@@ -15176,7 +16723,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D23_1219_1",
+    "id": "DEBT_2023_2024_0725",
     "date": "2023-12-19",
     "displayDate": "19/12/2023",
     "fy": "2023-2024",
@@ -15199,7 +16746,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D23_1217_1",
+    "id": "DEBT_2023_2024_0726",
     "date": "2023-12-17",
     "displayDate": "17/12/2023",
     "fy": "2023-2024",
@@ -15222,7 +16769,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D23_1216_1",
+    "id": "DEBT_2023_2024_0727",
     "date": "2023-12-16",
     "displayDate": "16/12/2023",
     "fy": "2023-2024",
@@ -15245,7 +16792,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D23_1209_1",
+    "id": "DEBT_2023_2024_0728",
     "date": "2023-12-09",
     "displayDate": "09/12/2023",
     "fy": "2023-2024",
@@ -15268,7 +16815,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D23_1124_1",
+    "id": "DEBT_2023_2024_0729",
     "date": "2023-11-24",
     "displayDate": "24/11/2023",
     "fy": "2023-2024",
@@ -15291,7 +16838,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D23_1123_1",
+    "id": "DEBT_2023_2024_0730",
     "date": "2023-11-23",
     "displayDate": "23/11/2023",
     "fy": "2023-2024",
@@ -15314,7 +16861,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D23_1121_1",
+    "id": "DEBT_2023_2024_0731",
     "date": "2023-11-21",
     "displayDate": "21/11/2023",
     "fy": "2023-2024",
@@ -15346,7 +16893,7 @@ window.SAMPLE_DEBTS_DATA = [
     ]
   },
   {
-    "id": "D23_1109_1",
+    "id": "DEBT_2023_2024_0732",
     "date": "2023-11-09",
     "displayDate": "09/11/2023",
     "fy": "2023-2024",
@@ -15369,7 +16916,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D23_0902_1",
+    "id": "DEBT_2023_2024_0733",
     "date": "2023-09-02",
     "displayDate": "02/09/2023",
     "fy": "2023-2024",
@@ -15392,7 +16939,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D23_0823_1",
+    "id": "DEBT_2023_2024_0734",
     "date": "2023-08-23",
     "displayDate": "23/08/2023",
     "fy": "2023-2024",
@@ -15415,7 +16962,7 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D23_0729_1",
+    "id": "DEBT_2023_2024_0735",
     "date": "2023-07-29",
     "displayDate": "29/07/2023",
     "fy": "2023-2024",
@@ -15438,7 +16985,29 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D22_0616_1",
+    "date": "2023-11-10",
+    "displayDate": "10/11/2023",
+    "fy": "2023-2024",
+    "monthKey": "8 Nov",
+    "grNo": "2023_TTC",
+    "truckNo": "RJ52GB2588",
+    "from": "Kishangarh (Raj.)",
+    "to": "Delhi",
+    "company": "TTC",
+    "truckOwner": "Rameshwar Prasad",
+    "debtType": "Advance",
+    "dueAmount": 128600.0,
+    "debtAmount": 128600.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Rameshwar Prasad",
+    "receiverName": "Raju Bhilwa",
+    "description": "Outstanding Ledger Advance FY 2023-2024",
+    "returnedAmounts": [],
+    "id": "DEBT_2023_2024_0736"
+  },
+  {
+    "id": "DEBT_2022_2023_0737",
     "date": "2022-06-16",
     "displayDate": "16/06/2022",
     "fy": "2022-2023",
@@ -15461,7 +17030,51 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D20_1106_1",
+    "date": "2022-11-10",
+    "displayDate": "10/11/2022",
+    "fy": "2022-2023",
+    "monthKey": "8 Nov",
+    "grNo": "2022_TTC",
+    "truckNo": "RJ52GB2588",
+    "from": "Kishangarh (Raj.)",
+    "to": "Delhi",
+    "company": "TTC",
+    "truckOwner": "Rameshwar Prasad",
+    "debtType": "Advance",
+    "dueAmount": 47500.0,
+    "debtAmount": 47500.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Rameshwar Prasad",
+    "receiverName": "Raju Bhilwa",
+    "description": "Outstanding Ledger Advance FY 2022-2023",
+    "returnedAmounts": [],
+    "id": "DEBT_2022_2023_0738"
+  },
+  {
+    "date": "2021-11-10",
+    "displayDate": "10/11/2021",
+    "fy": "2021-2022",
+    "monthKey": "8 Nov",
+    "grNo": "2021_TTC",
+    "truckNo": "RJ52GB2588",
+    "from": "Kishangarh (Raj.)",
+    "to": "Delhi",
+    "company": "TTC",
+    "truckOwner": "Rameshwar Prasad",
+    "debtType": "Advance",
+    "dueAmount": 111050.0,
+    "debtAmount": 111050.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Rameshwar Prasad",
+    "receiverName": "Raju Bhilwa",
+    "description": "Outstanding Ledger Advance FY 2021-2022",
+    "returnedAmounts": [],
+    "id": "DEBT_2021_2022_0739"
+  },
+  {
+    "id": "DEBT_2020_2021_0740",
     "date": "2020-11-06",
     "displayDate": "06/11/2020",
     "fy": "2020-2021",
@@ -15484,7 +17097,29 @@ window.SAMPLE_DEBTS_DATA = [
     "returnedAmounts": []
   },
   {
-    "id": "D19_0902_1",
+    "date": "2020-11-10",
+    "displayDate": "10/11/2020",
+    "fy": "2020-2021",
+    "monthKey": "8 Nov",
+    "grNo": "2020_TTC",
+    "truckNo": "RJ52GB2588",
+    "from": "Kishangarh (Raj.)",
+    "to": "Delhi",
+    "company": "TTC",
+    "truckOwner": "Rameshwar Prasad",
+    "debtType": "Advance",
+    "dueAmount": 48100.0,
+    "debtAmount": 48100.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Rameshwar Prasad",
+    "receiverName": "Raju Bhilwa",
+    "description": "Outstanding Ledger Advance FY 2020-2021",
+    "returnedAmounts": [],
+    "id": "DEBT_2020_2021_0741"
+  },
+  {
+    "id": "DEBT_2019_2020_0742",
     "date": "2019-09-02",
     "displayDate": "02/09/2019",
     "fy": "2019-2020",
@@ -15505,5 +17140,27 @@ window.SAMPLE_DEBTS_DATA = [
     "description": "Cash Rohitash",
     "dotColor": "yellow",
     "returnedAmounts": []
+  },
+  {
+    "date": "2019-11-10",
+    "displayDate": "10/11/2019",
+    "fy": "2019-2020",
+    "monthKey": "8 Nov",
+    "grNo": "2019_TTC",
+    "truckNo": "RJ52GB2588",
+    "from": "Kishangarh (Raj.)",
+    "to": "Delhi",
+    "company": "TTC",
+    "truckOwner": "Rameshwar Prasad",
+    "debtType": "Advance",
+    "dueAmount": 223300.0,
+    "debtAmount": 223300.0,
+    "totalReturned": 0.0,
+    "debtMode": "Cash",
+    "borrowerName": "Rameshwar Prasad",
+    "receiverName": "Raju Bhilwa",
+    "description": "Outstanding Ledger Advance FY 2019-2020",
+    "returnedAmounts": [],
+    "id": "DEBT_2019_2020_0743"
   }
 ];
