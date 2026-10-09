@@ -1278,9 +1278,9 @@
 
         <!-- CARD 2: Returned Amount -->
         <div class="appsheet-dash-card" id="card-dash-returned">
-          <div class="appsheet-dash-card-header">
-            <span class="appsheet-dash-card-title" onclick="LedgerModule.goToReturnedAmountView()">Returned Amount</span>
-            <div class="appsheet-dash-card-tools">
+          <div class="appsheet-dash-card-header" style="cursor: pointer;" onclick="LedgerModule.goToReturnedAmountView()">
+            <span class="appsheet-dash-card-title">Returned Amount</span>
+            <div class="appsheet-dash-card-tools" onclick="event.stopPropagation()">
               <span class="appsheet-tool-icon" onclick="LedgerModule.toggleFilterDropdown()" title="Filter">🔻</span>
               <span class="appsheet-tool-icon" onclick="LedgerModule.goToReturnedAmountView()" title="Expand Returned Amount">↗</span>
             </div>
@@ -1907,7 +1907,7 @@
           </div>
 
           <!-- Split Wrapper: Table on Left + Details Panel on Right -->
-          <div class="returned-split-wrapper">
+          <div class="returned-split-wrapper" id="returned-split-wrapper">
             <!-- Table Wrapper -->
             <div class="returned-table-wrapper" id="returned-table-wrapper">
               <table class="returned-amount-table" id="returned-amount-table">

@@ -1053,7 +1053,7 @@ const LedgerModule = {
     };
 
     ['2026-2027', '2025-2026', '2024-2025'].forEach(fy => {
-      const isExpanded = this.expandedReturnedFYs.has(fy);
+      const isExpanded = !!this.expandedReturnedFYs[fy];
       const sublistEl = document.getElementById(`returned-sublist-${fy}`);
       const fyItemEl = document.getElementById(`returned-tree-${fy}`);
 
@@ -1091,25 +1091,25 @@ const LedgerModule = {
   },
 
   toggleReturnedFYTree(fy) {
-    if (this.expandedReturnedFYs.has(fy)) {
-      this.expandedReturnedFYs.delete(fy);
-    } else {
-      this.expandedReturnedFYs.add(fy);
-    }
+    this.expandedReturnedFYs[fy] = !this.expandedReturnedFYs[fy];
     this.renderReturnedTreeSidebar();
   },
 
   selectReturnedFY(fy) {
     this.selectedReturnedFY = fy;
     this.selectedReturnedMonth = 'ALL';
-    this.expandedReturnedFYs.add(fy);
+    if (fy !== 'ALL') {
+      this.expandedReturnedFYs[fy] = true;
+    }
     this.applyReturnedFilters();
   },
 
   selectReturnedMonth(fy, month) {
     this.selectedReturnedFY = fy;
     this.selectedReturnedMonth = month;
-    this.expandedReturnedFYs.add(fy);
+    if (fy !== 'ALL') {
+      this.expandedReturnedFYs[fy] = true;
+    }
     this.applyReturnedFilters();
   },
 
@@ -1276,7 +1276,7 @@ const LedgerModule = {
 
     // Show side panel and activate split-open mode
     const panel = document.getElementById('panel-settled-debt-details');
-    const splitWrapper = document.querySelector('.returned-split-wrapper');
+    const splitWrapper = document.getElementById('returned-split-wrapper') || (document.querySelector && document.querySelector('.returned-split-wrapper'));
     if (panel) panel.classList.remove('d-none');
     if (splitWrapper) splitWrapper.classList.add('split-open');
 
@@ -1393,7 +1393,7 @@ const LedgerModule = {
   closeSettledDebtDetails() {
     this.activeReturnedRecordId = null;
     const panel = document.getElementById('panel-settled-debt-details');
-    const splitWrapper = document.querySelector('.returned-split-wrapper');
+    const splitWrapper = document.getElementById('returned-split-wrapper') || (document.querySelector && document.querySelector('.returned-split-wrapper'));
     if (panel) {
       panel.classList.add('d-none');
       panel.classList.remove('fullscreen');
