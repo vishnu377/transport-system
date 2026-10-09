@@ -21,8 +21,9 @@ const LedgerModule = {
   allCashLedger: [],
   allReturnedAmounts: [],
   allCompanyExpenses: [],
+  allReceivedPayments: [],
 
-  // Main Mode State: 'dashboard' | 'cash-ledger' | 'returned-amount' | 'company-expense' | 'debts' | 'details' | 'statements'
+  // Main Mode State: 'dashboard' | 'cash-ledger' | 'returned-amount' | 'company-expense' | 'received' | 'debts' | 'details' | 'statements'
   mainViewMode: 'dashboard',
 
   // Cash Ledger State
@@ -60,6 +61,19 @@ const LedgerModule = {
   modalExpenseType: 'Company',
   modalExpenseFrom: 'Cash',
 
+  // Received Payments State (Authentic AppSheet Green Master-Detail)
+  selectedReceivedFY: '2026-2027',
+  selectedReceivedType: 'ALL',
+  expandedReceivedFYs: { '2026-2027': true, '2025-2026': false, '2024-2025': false },
+  isReceivedSidebarHidden: false,
+  receivedPageSize: 100,
+  receivedCurrentPage: 1,
+  filteredReceivedList: [],
+  activeReceivedPaymentId: null,
+  isReceivedPanelFullscreen: false,
+  modalIncomeStatus: 'Paid',
+  modalIncomeMode: 'Cash',
+
   // View Hierarchy State: 'year' | 'month' | 'table' | 'details'
   viewLevel: 'year',
   selectedFY: 'ALL',
@@ -91,6 +105,7 @@ const LedgerModule = {
     this.applyCashFilters();
     this.applyReturnedFilters();
     this.applyCompanyFilters();
+    this.applyReceivedFilters();
     this.renderRegisterTable();
     this.renderFYSidebar();
     this.renderMonthBar();
@@ -106,6 +121,7 @@ const LedgerModule = {
     this.allCashLedger = await dbService.getAll('cashLedger');
     this.allReturnedAmounts = await dbService.getAll('returnedAmounts');
     this.allCompanyExpenses = await dbService.getAll('companyExpenses');
+    this.allReceivedPayments = await dbService.getAll('receivedPayments');
   },
 
   // ----------------------------------------------------
@@ -203,9 +219,25 @@ const LedgerModule = {
     this.renderCurrentView();
   },
 
-  goToReceivedView(fy = 'ALL') {
-    if (typeof AppUI !== 'undefined') AppUI.showToast(`Received payments for ${fy} opening...`, 'info');
-    this.goToDebtsView('settled', fy);
+  goToReceivedView(fy = '2026-2027', type = null) {
+    this.mainViewMode = 'received';
+    if (fy === 'ALL') {
+      this.selectedReceivedFY = 'ALL';
+      this.selectedReceivedType = 'ALL';
+    } else {
+      this.selectedReceivedFY = fy;
+      this.selectedReceivedType = type !== null ? type : 'ALL';
+      this.expandedReceivedFYs[fy] = true;
+    }
+    this.receivedCurrentPage = 1;
+    this.searchQuery = '';
+    const sInput = document.getElementById('ledger-search-input');
+    if (sInput) {
+      sInput.value = '';
+      sInput.placeholder = 'Search Received Payments';
+    }
+    this.applyReceivedFilters();
+    this.renderCurrentView();
   },
 
   goToOwnerExpenseView(fy = 'ALL') {
@@ -218,6 +250,8 @@ const LedgerModule = {
       this.openCashDetailsModal();
     } else if (this.mainViewMode === 'company-expense') {
       this.openAddCompanyExpenseModal();
+    } else if (this.mainViewMode === 'received') {
+      this.openAddIncomeRecordModal();
     } else {
       this.openAddDebtModal();
     }
@@ -2164,6 +2198,680 @@ const LedgerModule = {
   },
 
   // ----------------------------------------------------
+  // RECEIVED PAYMENTS (INCOME SLICE) FILTERING, RENDERING & ACTIONS
+  // ----------------------------------------------------
+  applyReceivedFilters() {
+    if (!this.allReceivedPayments || !Array.isArray(this.allReceivedPayments)) {
+      this.filteredReceivedList = [];
+      this.renderReceivedTable();
+      return;
+    }
+
+    const query = (this.searchQuery || '').trim().toLowerCase();
+
+    this.filteredReceivedList = this.allReceivedPayments.filter(item => {
+      // Financial Year Filter
+      if (this.selectedReceivedFY !== 'ALL') {
+        if (item.fy !== this.selectedReceivedFY) return false;
+      }
+
+      // Type Filter
+      if (this.selectedReceivedType !== 'ALL') {
+        if (item.type !== this.selectedReceivedType) return false;
+      }
+
+      // Search Query Filter
+      if (query) {
+        const match =
+          (item.displayDate && item.displayDate.toLowerCase().includes(query)) ||
+          (item.date && item.date.toLowerCase().includes(query)) ||
+          (item.depositor && item.depositor.toLowerCase().includes(query)) ||
+          (item.depositorType && item.depositorType.toLowerCase().includes(query)) ||
+          (item.truckNo && item.truckNo.toLowerCase().includes(query)) ||
+          (item.owner && item.owner.toLowerCase().includes(query)) ||
+          (item.refName && item.refName.toLowerCase().includes(query)) ||
+          (item.from && item.from.toLowerCase().includes(query)) ||
+          (item.to && item.to.toLowerCase().includes(query)) ||
+          (item.type && item.type.toLowerCase().includes(query)) ||
+          (item.mode && item.mode.toLowerCase().includes(query)) ||
+          (item.status && item.status.toLowerCase().includes(query)) ||
+          (item.grNo && item.grNo.toString().toLowerCase().includes(query)) ||
+          (item.description && item.description.toLowerCase().includes(query)) ||
+          (item.amount && item.amount.toString().includes(query));
+        if (!match) return false;
+      }
+
+      return true;
+    });
+
+    // Update filter badge
+    const badge = document.getElementById('received-current-filter-badge');
+    if (badge) {
+      if (this.selectedReceivedFY === 'ALL') {
+        badge.innerHTML = `<i class="bi bi-funnel me-1 text-muted"></i>All Financial Years (${this.filteredReceivedList.length} records)`;
+      } else if (this.selectedReceivedType === 'ALL') {
+        badge.innerHTML = `<i class="bi bi-funnel me-1 text-muted"></i>${this.selectedReceivedFY} &gt; <strong>All Types</strong> (${this.filteredReceivedList.length} records)`;
+      } else {
+        badge.innerHTML = `<i class="bi bi-funnel me-1 text-muted"></i>${this.selectedReceivedFY} &gt; <strong>${this.selectedReceivedType}</strong> (${this.filteredReceivedList.length} records)`;
+      }
+    }
+
+    this.receivedCurrentPage = 1;
+    this.renderReceivedTreeSidebar();
+    this.renderReceivedTable();
+  },
+
+  renderReceivedTreeSidebar() {
+    if (!this.allReceivedPayments) return;
+
+    let grandTotal = 0;
+    const fyTotals = {};
+    const typeTotals = {}; // key: `${fy}_${type}`
+
+    this.allReceivedPayments.forEach(r => {
+      const amt = Number(r.amount) || 0;
+      grandTotal += amt;
+
+      const fy = r.fy || 'empty';
+      fyTotals[fy] = (fyTotals[fy] || 0) + amt;
+
+      if (r.type) {
+        const tKey = `${fy}_${r.type}`;
+        typeTotals[tKey] = (typeTotals[tKey] || 0) + amt;
+      }
+    });
+
+    // Update Left Sidebar Badges
+    const badgeAll = document.getElementById('received-badge-all');
+    if (badgeAll) badgeAll.textContent = `₹ ${this.formatINR(grandTotal)}`;
+
+    ['2026-2027', '2025-2026', '2024-2025'].forEach(fy => {
+      const b = document.getElementById(`received-badge-${fy}`);
+      if (b) b.textContent = `₹ ${this.formatINR(fyTotals[fy] || 0)}`;
+    });
+
+    // Also update Card 4 Badges on the main dashboard dynamically!
+    const cardBadge26 = document.getElementById('card-received-badge-2026-2027');
+    if (cardBadge26 && fyTotals['2026-2027']) cardBadge26.textContent = `₹ ${this.formatINR(fyTotals['2026-2027'])}`;
+    const cardBadge25 = document.getElementById('card-received-badge-2025-2026');
+    if (cardBadge25 && fyTotals['2025-2026']) cardBadge25.textContent = `₹ ${this.formatINR(fyTotals['2025-2026'])}`;
+    const cardBadge24 = document.getElementById('card-received-badge-2024-2025');
+    if (cardBadge24 && fyTotals['2024-2025']) cardBadge24.textContent = `₹ ${this.formatINR(fyTotals['2024-2025'])}`;
+
+    // Active state highlighting on All & FY items
+    const treeAll = document.getElementById('received-tree-all');
+    if (treeAll) {
+      treeAll.classList.toggle('active', this.selectedReceivedFY === 'ALL');
+    }
+
+    // Default authentic AppSheet type order
+    const orderedTypes = [
+      'Returned Other',
+      'Returned Old',
+      'Returned Loading',
+      'Returned In Hand',
+      'Returned Commission',
+      'Returned Advance',
+      'Other',
+      'Old',
+      'Commission',
+      'Cash from MTC/TTC',
+      'Advance'
+    ];
+
+    ['2026-2027', '2025-2026', '2024-2025'].forEach(fy => {
+      const isExpanded = !!this.expandedReceivedFYs[fy];
+      const sublistEl = document.getElementById(`received-sublist-${fy}`);
+      const fyItemEl = document.getElementById(`received-tree-${fy}`);
+
+      if (fyItemEl) {
+        fyItemEl.classList.toggle('active', this.selectedReceivedFY === fy && this.selectedReceivedType === 'ALL');
+        const caret = fyItemEl.querySelector('.received-tree-caret');
+        if (caret) {
+          caret.innerHTML = isExpanded ? '<i class="bi bi-caret-down-fill"></i>' : '<i class="bi bi-caret-right-fill"></i>';
+        }
+      }
+
+      if (sublistEl) {
+        if (!isExpanded) {
+          sublistEl.classList.add('d-none');
+          sublistEl.innerHTML = '';
+        } else {
+          sublistEl.classList.remove('d-none');
+          
+          // Get unique types for this FY
+          const availableTypes = Array.from(new Set(
+            this.allReceivedPayments.filter(r => r.fy === fy && r.type).map(r => r.type)
+          ));
+
+          // Sort according to preferred order, then remaining
+          availableTypes.sort((a, b) => {
+            const idxA = orderedTypes.indexOf(a);
+            const idxB = orderedTypes.indexOf(b);
+            if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+            if (idxA !== -1) return -1;
+            if (idxB !== -1) return 1;
+            return a.localeCompare(b);
+          });
+
+          sublistEl.innerHTML = availableTypes.map(tKey => {
+            const tTotal = typeTotals[`${fy}_${tKey}`] || 0;
+            const isTypeActive = this.selectedReceivedFY === fy && this.selectedReceivedType === tKey;
+            return `
+              <div class="received-tree-item received-tree-subitem ${isTypeActive ? 'active' : ''}" onclick="LedgerModule.selectReceivedType('${fy}', '${tKey}')">
+                <div class="d-flex align-items-center gap-1">
+                  <span class="appsheet-bullet green-bullet" style="font-size: 11px;">●</span>
+                  <span>${tKey}</span>
+                </div>
+                <span class="received-tree-badge">₹ ${this.formatINR(tTotal)}</span>
+              </div>
+            `;
+          }).join('');
+        }
+      }
+    });
+  },
+
+  toggleReceivedFYTree(fy) {
+    this.expandedReceivedFYs[fy] = !this.expandedReceivedFYs[fy];
+    this.renderReceivedTreeSidebar();
+  },
+
+  selectReceivedFY(fy) {
+    this.selectedReceivedFY = fy;
+    this.selectedReceivedType = 'ALL';
+    if (fy !== 'ALL') {
+      this.expandedReceivedFYs[fy] = true;
+    }
+    this.applyReceivedFilters();
+  },
+
+  selectReceivedType(fy, type) {
+    this.selectedReceivedFY = fy;
+    this.selectedReceivedType = type;
+    if (fy !== 'ALL') {
+      this.expandedReceivedFYs[fy] = true;
+    }
+    this.applyReceivedFilters();
+  },
+
+  selectReceivedAll() {
+    this.selectedReceivedFY = 'ALL';
+    this.selectedReceivedType = 'ALL';
+    this.applyReceivedFilters();
+  },
+
+  toggleReceivedDateSidebar() {
+    this.isReceivedSidebarHidden = !this.isReceivedSidebarHidden;
+    const sidebar = document.getElementById('received-tree-sidebar');
+    const btnText = document.getElementById('btn-toggle-received-text');
+    const btnIcon = document.getElementById('btn-toggle-received-icon');
+
+    if (sidebar) {
+      if (this.isReceivedSidebarHidden) {
+        sidebar.classList.add('collapsed');
+        if (btnText) btnText.textContent = 'Show Date Filter';
+        if (btnIcon) btnIcon.className = 'bi bi-layout-sidebar';
+      } else {
+        sidebar.classList.remove('collapsed');
+        if (btnText) btnText.textContent = 'Hide Date Filter';
+        if (btnIcon) btnIcon.className = 'bi bi-layout-sidebar-inset';
+      }
+    }
+  },
+
+  renderReceivedTable() {
+    const tbody = document.getElementById('received-tbody');
+    if (!tbody) return;
+
+    if (!this.filteredReceivedList || this.filteredReceivedList.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="9" class="text-center py-5 text-muted">
+            <i class="bi bi-inbox fs-2 d-block mb-2 text-secondary"></i>
+            No received payment records match the selected filter or search criteria.
+            <div class="mt-2">
+              <button type="button" class="btn btn-sm btn-outline-success" style="color: #0b8043; border-color: #0b8043;" onclick="LedgerModule.selectReceivedAll(); LedgerModule.clearSearch();">
+                Reset Filters & Search
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+      const pInfo = document.getElementById('received-pagination-info');
+      if (pInfo) pInfo.textContent = 'Showing 0 records';
+      const pBtns = document.getElementById('received-pagination-buttons');
+      if (pBtns) pBtns.innerHTML = '';
+      return;
+    }
+
+    // Pagination Calculation
+    const totalCount = this.filteredReceivedList.length;
+    let recordsToDisplay = this.filteredReceivedList;
+    let totalPages = 1;
+
+    if (this.receivedPageSize !== 'ALL') {
+      const pSize = parseInt(this.receivedPageSize, 10);
+      totalPages = Math.max(1, Math.ceil(totalCount / pSize));
+      if (this.receivedCurrentPage > totalPages) this.receivedCurrentPage = totalPages;
+      if (this.receivedCurrentPage < 1) this.receivedCurrentPage = 1;
+
+      const startIndex = (this.receivedCurrentPage - 1) * pSize;
+      const endIndex = Math.min(startIndex + pSize, totalCount);
+      recordsToDisplay = this.filteredReceivedList.slice(startIndex, endIndex);
+
+      const pInfo = document.getElementById('received-pagination-info');
+      if (pInfo) pInfo.textContent = `Showing ${startIndex + 1}-${endIndex} of ${totalCount} entries`;
+    } else {
+      const pInfo = document.getElementById('received-pagination-info');
+      if (pInfo) pInfo.textContent = `Showing all ${totalCount} entries`;
+    }
+
+    // Pagination Buttons
+    const pBtns = document.getElementById('received-pagination-buttons');
+    if (pBtns) {
+      if (this.receivedPageSize === 'ALL' || totalPages <= 1) {
+        pBtns.innerHTML = '';
+      } else {
+        let btnsHtml = `
+          <button type="button" class="btn btn-outline-secondary ${this.receivedCurrentPage === 1 ? 'disabled' : ''}" onclick="LedgerModule.changeReceivedPage(${this.receivedCurrentPage - 1})">Prev</button>
+        `;
+        const startP = Math.max(1, this.receivedCurrentPage - 2);
+        const endP = Math.min(totalPages, this.receivedCurrentPage + 2);
+        for (let p = startP; p <= endP; p++) {
+          btnsHtml += `
+            <button type="button" class="btn ${p === this.receivedCurrentPage ? 'text-white' : 'btn-outline-secondary'}" style="${p === this.receivedCurrentPage ? 'background-color: #0b8043; border-color: #0b8043;' : ''}" onclick="LedgerModule.changeReceivedPage(${p})">${p}</button>
+          `;
+        }
+        btnsHtml += `
+          <button type="button" class="btn btn-outline-secondary ${this.receivedCurrentPage === totalPages ? 'disabled' : ''}" onclick="LedgerModule.changeReceivedPage(${this.receivedCurrentPage + 1})">Next</button>
+        `;
+        pBtns.innerHTML = btnsHtml;
+      }
+    }
+
+    // Grouping by Type (AppSheet structure)
+    const grouped = new Map();
+    recordsToDisplay.forEach(item => {
+      const tKey = item.type || 'Other';
+      if (!grouped.has(tKey)) {
+        grouped.set(tKey, []);
+      }
+      grouped.get(tKey).push(item);
+    });
+
+    let html = '';
+    grouped.forEach((items, typeKey) => {
+      const groupSum = items.reduce((acc, x) => acc + (Number(x.amount) || 0), 0);
+
+      // Authentic AppSheet Group Header (● Type ₹ Total)
+      html += `
+        <tr class="received-type-group-row">
+          <td colspan="9">
+            <span class="appsheet-bullet green-bullet">●</span>
+            <span class="fw-bold me-2 group-header-type" style="color: #0b8043; font-size: 13px;">${typeKey}</span>
+            <span class="appsheet-drill-badge green-badge">₹ ${this.formatINR(groupSum)}</span>
+          </td>
+        </tr>
+      `;
+
+      // Data Rows - Authentic AppSheet green cells with green bullet on every column
+      items.forEach(r => {
+        const isSelected = this.activeReceivedPaymentId === r.id;
+        html += `
+          <tr class="received-data-row ${isSelected ? 'active' : ''}" id="rec-row-${r.id}" onclick="LedgerModule.openReceivedPaymentDetails('${r.id}')">
+            <td>
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span>${r.displayDate || r.date || ''}</span>
+            </td>
+            <td>
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span class="fw-bold" style="color: #0b8043;">₹ ${this.formatINR(r.amount)}</span>
+            </td>
+            <td class="text-truncate" style="max-width: 170px;" title="${r.depositor || ''}">
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span>${r.depositor || ''}</span>
+            </td>
+            <td>
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span>${r.depositorType || ''}</span>
+            </td>
+            <td>
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span class="fw-medium">${r.truckNo || ''}</span>
+            </td>
+            <td>
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span>${r.mode || ''}</span>
+            </td>
+            <td>
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span>${r.status || 'Paid'}</span>
+            </td>
+            <td class="text-truncate" style="max-width: 190px;" title="${r.description || ''}">
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span>${r.description || ''}</span>
+            </td>
+            <td class="text-center" style="font-size: 11px; color: #0b8043;"><i class="bi bi-chevron-right"></i></td>
+          </tr>
+        `;
+      });
+    });
+
+    tbody.innerHTML = html;
+  },
+
+  openReceivedPaymentDetails(recordId) {
+    this.activeReceivedPaymentId = recordId;
+    const r = (this.allReceivedPayments || []).find(x => x.id === recordId);
+    if (!r) return;
+
+    // Highlight row in table
+    const allRows = document.querySelectorAll('.received-data-row');
+    allRows.forEach(row => row.classList.remove('active'));
+    const targetRow = document.getElementById(`rec-row-${recordId}`);
+    if (targetRow) targetRow.classList.add('active');
+
+    // Show side panel and activate split-open mode
+    const panel = document.getElementById('panel-received-details');
+    const splitWrapper = document.getElementById('received-split-wrapper');
+    if (panel) panel.classList.remove('d-none');
+    if (splitWrapper) splitWrapper.classList.add('split-open');
+
+    const content = document.getElementById('received-panel-content');
+    if (!content) return;
+
+    content.innerHTML = `
+      <div class="received-detail-card shadow-sm">
+        <div class="received-field-row">
+          <span class="received-field-label">Received Date</span>
+          <span class="received-field-value text-dark" style="font-weight: 500;">${r.displayDate || r.date || '-'}</span>
+        </div>
+        <div class="received-field-row">
+          <span class="received-field-label">Truck No.</span>
+          <span class="received-field-value" style="color: #202124;">${r.truckNo || '-'}</span>
+        </div>
+        <div class="received-field-row">
+          <span class="received-field-label">Owner</span>
+          <span class="received-field-value" style="color: #202124;">${r.owner || '-'}</span>
+        </div>
+        <div class="received-field-row">
+          <span class="received-field-label">Reference Name</span>
+          <span class="received-field-value" style="color: #202124;">${r.refName || '-'}</span>
+        </div>
+        <div class="received-field-row">
+          <span class="received-field-label">Depositor</span>
+          <span class="received-field-value" style="color: #202124;">${r.depositor || '-'}</span>
+        </div>
+        <div class="received-field-row">
+          <span class="received-field-label">G.R.No.</span>
+          <span class="received-field-value" style="color: #202124;">${r.grNo || '-'}</span>
+        </div>
+        <div class="received-field-row">
+          <span class="received-field-label">Transport</span>
+          <span class="received-field-value" style="color: #202124;">${r.transport || 'TTC'}</span>
+        </div>
+        <div class="received-field-row">
+          <span class="received-field-label">From</span>
+          <span class="received-field-value" style="color: #202124;">${r.from || '-'}</span>
+        </div>
+        <div class="received-field-row">
+          <span class="received-field-label">To</span>
+          <span class="received-field-value" style="color: #202124;">${r.to || '-'}</span>
+        </div>
+        <div class="received-field-row">
+          <span class="received-field-label">Type</span>
+          <span class="received-field-value" style="color: #202124;">${r.type || '-'}</span>
+        </div>
+        <div class="received-field-row">
+          <span class="received-field-label">Status</span>
+          <span class="received-field-value">
+            <span class="appsheet-bullet green-bullet">●</span>
+            <span>${r.status || 'Paid'}</span>
+          </span>
+        </div>
+        <div class="received-field-row">
+          <span class="received-field-label">Amount</span>
+          <span class="received-field-value fs-6 fw-bold" style="color: #0b8043;">₹ ${this.formatINR(r.amount)}</span>
+        </div>
+        <div class="received-field-row">
+          <span class="received-field-label">Mode</span>
+          <span class="received-field-value" style="color: #202124;">${r.mode || 'Cash'}</span>
+        </div>
+        <div class="received-field-row mb-0">
+          <span class="received-field-label">Description</span>
+          <span class="received-field-value" style="color: #5f6368; font-weight: normal;">${r.description || '-'}</span>
+        </div>
+      </div>
+    `;
+  },
+
+  closeReceivedPaymentDetails() {
+    this.activeReceivedPaymentId = null;
+    const panel = document.getElementById('panel-received-details');
+    const splitWrapper = document.getElementById('received-split-wrapper');
+    if (panel) {
+      panel.classList.add('d-none');
+      panel.classList.remove('fullscreen');
+    }
+    if (splitWrapper) splitWrapper.classList.remove('split-open');
+
+    this.isReceivedPanelFullscreen = false;
+    const btnExpand = document.getElementById('btn-expand-received-panel');
+    if (btnExpand) btnExpand.textContent = '↗';
+
+    const allRows = document.querySelectorAll('.received-data-row');
+    allRows.forEach(row => row.classList.remove('active'));
+  },
+
+  toggleReceivedDetailFullscreen() {
+    this.isReceivedPanelFullscreen = !this.isReceivedPanelFullscreen;
+    const panel = document.getElementById('panel-received-details');
+    const btnExpand = document.getElementById('btn-expand-received-panel');
+    if (panel) {
+      panel.classList.toggle('fullscreen', this.isReceivedPanelFullscreen);
+    }
+    if (btnExpand) {
+      btnExpand.textContent = this.isReceivedPanelFullscreen ? '↙' : '↗';
+    }
+  },
+
+  prevReceivedPaymentRecord() {
+    if (!this.activeReceivedPaymentId || !this.filteredReceivedList.length) return;
+    const currentIndex = this.filteredReceivedList.findIndex(x => x.id === this.activeReceivedPaymentId);
+    if (currentIndex > 0) {
+      this.openReceivedPaymentDetails(this.filteredReceivedList[currentIndex - 1].id);
+    } else {
+      if (typeof AppUI !== 'undefined') AppUI.showToast('First record reached', 'info');
+    }
+  },
+
+  nextReceivedPaymentRecord() {
+    if (!this.activeReceivedPaymentId || !this.filteredReceivedList.length) return;
+    const currentIndex = this.filteredReceivedList.findIndex(x => x.id === this.activeReceivedPaymentId);
+    if (currentIndex >= 0 && currentIndex < this.filteredReceivedList.length - 1) {
+      this.openReceivedPaymentDetails(this.filteredReceivedList[currentIndex + 1].id);
+    } else {
+      if (typeof AppUI !== 'undefined') AppUI.showToast('Last record reached', 'info');
+    }
+  },
+
+  toggleReceivedFullscreen() {
+    const el = document.getElementById('ledger-view-received');
+    if (!el) return;
+    if (!document.fullscreenElement) {
+      if (el.requestFullscreen) {
+        el.requestFullscreen();
+      } else if (el.webkitRequestFullscreen) {
+        el.webkitRequestFullscreen();
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    }
+  },
+
+  changeReceivedPageSize(size) {
+    this.receivedPageSize = size;
+    this.receivedCurrentPage = 1;
+    this.renderReceivedTable();
+  },
+
+  changeReceivedPage(page) {
+    this.receivedCurrentPage = page;
+    this.renderReceivedTable();
+    const tableWrap = document.getElementById('received-table-wrapper');
+    if (tableWrap) tableWrap.scrollTop = 0;
+  },
+
+  openAddIncomeRecordModal() {
+    this.modalIncomeStatus = 'Paid';
+    this.modalIncomeMode = 'Cash';
+
+    const form = document.getElementById('form-add-income-record');
+    if (form) form.reset();
+
+    const dateInput = document.getElementById('inc-date');
+    if (dateInput) {
+      const now = new Date();
+      const yyyy = now.getFullYear();
+      const mm = String(now.getMonth() + 1).padStart(2, '0');
+      const dd = String(now.getDate()).padStart(2, '0');
+      dateInput.value = `${yyyy}-${mm}-${dd}`;
+    }
+
+    const amtInput = document.getElementById('inc-amount');
+    if (amtInput) amtInput.value = '';
+
+    const descInput = document.getElementById('inc-description');
+    if (descInput) descInput.value = '';
+
+    this.setIncomeStatus('Paid');
+    this.setIncomeMode('Cash');
+
+    const modalEl = document.getElementById('modal-add-income-record');
+    if (modalEl && typeof bootstrap !== 'undefined') {
+      bootstrap.Modal.getOrCreateInstance(modalEl).show();
+    }
+  },
+
+  setIncomeStatus(status) {
+    this.modalIncomeStatus = status;
+    const btnPaid = document.getElementById('btn-inc-status-paid');
+    const btnDue = document.getElementById('btn-inc-status-due');
+
+    if (status === 'Paid') {
+      btnPaid?.classList.add('active');
+      btnDue?.classList.remove('active');
+    } else {
+      btnPaid?.classList.remove('active');
+      btnDue?.classList.add('active');
+    }
+  },
+
+  setIncomeMode(mode, btnEl = null) {
+    this.modalIncomeMode = mode;
+    const container = document.getElementById('inc-mode-pill-container');
+    if (container) {
+      const pills = container.querySelectorAll('.btn-mode-pill');
+      pills.forEach(p => {
+        p.classList.toggle('active', p.getAttribute('data-mode') === mode);
+      });
+    }
+  },
+
+  async saveIncomeRecord() {
+    const dateVal = document.getElementById('inc-date')?.value?.trim();
+    const amountVal = parseFloat(document.getElementById('inc-amount')?.value);
+    const typeVal = document.getElementById('inc-type')?.value?.trim() || 'Returned Loading';
+    const truckNoVal = document.getElementById('inc-truck-no')?.value?.trim() || '';
+    const fromVal = document.getElementById('inc-from')?.value?.trim() || '';
+    const toVal = document.getElementById('inc-to')?.value?.trim() || '';
+    const depositorTypeVal = document.getElementById('inc-depositor-type')?.value?.trim() || 'Driver';
+    const depositorVal = document.getElementById('inc-depositor')?.value?.trim() || '';
+    const descVal = document.getElementById('inc-description')?.value?.trim() || '';
+
+    if (!dateVal) {
+      if (typeof AppUI !== 'undefined') AppUI.showToast('Please select a valid date', 'warning');
+      return;
+    }
+    if (isNaN(amountVal) || amountVal <= 0) {
+      if (typeof AppUI !== 'undefined') AppUI.showToast('Please enter a valid amount', 'warning');
+      return;
+    }
+
+    const [y, m, d] = dateVal.split('-');
+    const displayDate = `${d}/${m}/${y}`;
+    const monthNum = parseInt(m, 10);
+    const yearNum = parseInt(y, 10);
+
+    const fy = monthNum >= 4 ? `${yearNum}-${yearNum + 1}` : `${yearNum - 1}-${yearNum}`;
+    const monthMap = {
+      4: '1 Apr', 5: '2 May', 6: '3 Jun', 7: '4 Jul', 8: '5 Aug', 9: '6 Sep',
+      10: '7 Oct', 11: '8 Nov', 12: '9 Dec', 1: '10 Jan', 2: '11 Feb', 3: '12 Mar'
+    };
+    const monthKey = monthMap[monthNum] || '7 Oct';
+
+    const newRecord = {
+      id: `REC_MANUAL_${Date.now()}`,
+      date: dateVal,
+      displayDate,
+      amount: amountVal,
+      type: typeVal,
+      depositor: depositorVal,
+      depositorType: depositorTypeVal,
+      truckNo: truckNoVal,
+      owner: depositorTypeVal === 'Truck Owner' ? depositorVal : '',
+      refName: depositorTypeVal === 'Reference' ? depositorVal : '',
+      grNo: '',
+      transport: 'TTC',
+      from: fromVal,
+      to: toVal,
+      mode: this.modalIncomeMode || 'Cash',
+      status: this.modalIncomeStatus || 'Paid',
+      description: descVal,
+      fy,
+      monthKey
+    };
+
+    if (typeof dbService !== 'undefined') {
+      try {
+        await dbService.add('receivedPayments', newRecord);
+      } catch (err) {
+        console.error('Failed to save to dbService:', err);
+      }
+    }
+
+    if (!Array.isArray(this.allReceivedPayments)) {
+      this.allReceivedPayments = [];
+    }
+    this.allReceivedPayments.unshift(newRecord);
+
+    // Close modal
+    const modalEl = document.getElementById('modal-add-income-record');
+    if (modalEl && typeof bootstrap !== 'undefined') {
+      bootstrap.Modal.getOrCreateInstance(modalEl).hide();
+    }
+
+    // Switch view to received view, select this FY and type
+    this.mainViewMode = 'received';
+    this.selectedReceivedFY = fy;
+    this.selectedReceivedType = typeVal;
+    this.expandedReceivedFYs[fy] = true;
+
+    this.applyReceivedFilters();
+    this.renderCurrentView();
+
+    // Open detail panel for the new record
+    this.openReceivedPaymentDetails(newRecord.id);
+
+    if (typeof AppUI !== 'undefined') {
+      AppUI.showToast(`Income Record of ₹ ${this.formatINR(amountVal)} saved successfully!`, 'success');
+    }
+  },
+
+  // ----------------------------------------------------
   // DRILLDOWN ROUTING & NAVIGATION (Debts Register)
   // ----------------------------------------------------
   goToYearView() {
@@ -2251,6 +2959,7 @@ const LedgerModule = {
     const cashRegView = document.getElementById('ledger-view-cash-register');
     const retView = document.getElementById('ledger-view-returned-amount');
     const compExpView = document.getElementById('ledger-view-company-expense');
+    const recView = document.getElementById('ledger-view-received');
     const regView = document.getElementById('ledger-view-register');
     const detView = document.getElementById('ledger-view-details');
     const stmtView = document.getElementById('ledger-view-statements');
@@ -2270,6 +2979,7 @@ const LedgerModule = {
       cashRegView?.classList.add('d-none');
       retView?.classList.add('d-none');
       compExpView?.classList.add('d-none');
+      recView?.classList.add('d-none');
       regView?.classList.add('d-none');
       detView?.classList.add('d-none');
       stmtView?.classList.remove('d-none');
@@ -2294,6 +3004,7 @@ const LedgerModule = {
       cashRegView?.classList.add('d-none');
       retView?.classList.add('d-none');
       compExpView?.classList.add('d-none');
+      recView?.classList.add('d-none');
       regView?.classList.add('d-none');
       detView?.classList.remove('d-none');
       if (breadcrumbRoot) {
@@ -2319,6 +3030,7 @@ const LedgerModule = {
       cashRegView?.classList.add('d-none');
       retView?.classList.add('d-none');
       compExpView?.classList.add('d-none');
+      recView?.classList.add('d-none');
       regView?.classList.add('d-none');
       if (breadcrumbRoot) {
         breadcrumbRoot.innerHTML = `
@@ -2337,6 +3049,8 @@ const LedgerModule = {
         addBtnText.innerText = '+ Add';
       } else if (this.mainViewMode === 'company-expense') {
         addBtnText.innerText = '+ Add Expense';
+      } else if (this.mainViewMode === 'received') {
+        addBtnText.innerText = '+ New Recei...';
       } else {
         addBtnText.innerText = '+ Add Debt';
       }
@@ -2348,6 +3062,7 @@ const LedgerModule = {
       cashRegView?.classList.remove('d-none');
       retView?.classList.add('d-none');
       compExpView?.classList.add('d-none');
+      recView?.classList.add('d-none');
       regView?.classList.add('d-none');
       if (breadcrumbRoot) {
         breadcrumbRoot.innerHTML = `
@@ -2369,6 +3084,7 @@ const LedgerModule = {
       cashRegView?.classList.add('d-none');
       regView?.classList.add('d-none');
       compExpView?.classList.add('d-none');
+      recView?.classList.add('d-none');
       retView?.classList.remove('d-none');
       if (breadcrumbRoot) {
         breadcrumbRoot.innerHTML = `
@@ -2395,6 +3111,7 @@ const LedgerModule = {
       cashRegView?.classList.add('d-none');
       regView?.classList.add('d-none');
       retView?.classList.add('d-none');
+      recView?.classList.add('d-none');
       detView?.classList.add('d-none');
       stmtView?.classList.add('d-none');
       compExpView?.classList.remove('d-none');
@@ -2417,11 +3134,41 @@ const LedgerModule = {
       return;
     }
 
+    // 4D. LEVEL 1: RECEIVED (INCOME SLICE) VIEW (Authentic AppSheet Green Master-Detail)
+    if (this.mainViewMode === 'received') {
+      dashView?.classList.add('d-none');
+      cashRegView?.classList.add('d-none');
+      regView?.classList.add('d-none');
+      retView?.classList.add('d-none');
+      compExpView?.classList.add('d-none');
+      detView?.classList.add('d-none');
+      stmtView?.classList.add('d-none');
+      recView?.classList.remove('d-none');
+      if (breadcrumbRoot) {
+        breadcrumbRoot.innerHTML = `
+          <a href="javascript:void(0)" onclick="LedgerModule.goToDashboardView()">Home</a>
+          <span class="sep">&gt;</span>
+          <a href="javascript:void(0)" onclick="LedgerModule.goToDashboardView()">Ledger</a>
+          <span class="sep">&gt;</span>
+          <span class="active">Received</span>
+        `;
+      }
+      this.renderReceivedTreeSidebar();
+      this.renderReceivedTable();
+      if (this.activeReceivedPaymentId) {
+        this.openReceivedPaymentDetails(this.activeReceivedPaymentId);
+      } else {
+        this.closeReceivedPaymentDetails();
+      }
+      return;
+    }
+
     // 5. LEVEL 1-3: DEBTS REGISTER VIEWS
     dashView?.classList.add('d-none');
     cashRegView?.classList.add('d-none');
     retView?.classList.add('d-none');
     compExpView?.classList.add('d-none');
+    recView?.classList.add('d-none');
     regView?.classList.remove('d-none');
 
     const tabName = this.currentTab === 'open' ? 'Open' : this.currentTab === 'all' ? 'All' : 'Settled';
@@ -2689,6 +3436,12 @@ const LedgerModule = {
 
   onSearchInput(val) {
     this.searchQuery = (val || '').toLowerCase().trim();
+    if (this.mainViewMode === 'received') {
+      this.receivedCurrentPage = 1;
+      this.applyReceivedFilters();
+      this.renderReceivedTable();
+      return;
+    }
     if (this.mainViewMode === 'company-expense') {
       this.companyCurrentPage = 1;
       this.applyCompanyFilters();
@@ -2721,6 +3474,12 @@ const LedgerModule = {
     const sInput = document.getElementById('ledger-search-input');
     if (sInput) sInput.value = '';
     this.searchQuery = '';
+    if (this.mainViewMode === 'received') {
+      this.receivedCurrentPage = 1;
+      this.applyReceivedFilters();
+      this.renderReceivedTable();
+      return;
+    }
     if (this.mainViewMode === 'company-expense') {
       this.companyCurrentPage = 1;
       this.applyCompanyFilters();

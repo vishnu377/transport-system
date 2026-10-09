@@ -1395,6 +1395,258 @@
       color: #ffffff !important;
       border-color: #8d6e32 !important;
     }
+
+    /* ==================================================== */
+    /* RECEIVED PAYMENTS (Income Slice - Authentic AppSheet Green Theme) */
+    /* ==================================================== */
+    .received-container {
+      display: flex;
+      min-height: calc(100vh - 110px);
+      background: #ffffff;
+      position: relative;
+    }
+    .received-tree-sidebar {
+      width: 250px;
+      border-right: 1px solid #eeeeee;
+      padding: 14px 10px;
+      flex-shrink: 0;
+      background: #ffffff;
+      transition: margin-left 0.25s ease, width 0.25s ease;
+      overflow-y: auto;
+    }
+    .received-tree-sidebar.collapsed {
+      margin-left: -250px;
+    }
+    .received-tree-header {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #70757a;
+      font-weight: 600;
+      padding: 4px 8px 10px 8px;
+      border-bottom: 1px solid #f1f3f4;
+      margin-bottom: 8px;
+    }
+    .received-tree-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      color: #3c4043;
+      transition: background-color 0.15s;
+      margin-bottom: 2px;
+      user-select: none;
+    }
+    .received-tree-item:hover {
+      background: #f1f8f3;
+    }
+    .received-tree-item.active {
+      background: #e6f4ea;
+      font-weight: 600;
+      color: #137333;
+    }
+    .received-tree-caret {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      color: #5f6368;
+      font-size: 10px;
+      cursor: pointer;
+    }
+    .received-tree-badge {
+      font-size: 11px;
+      font-family: var(--font-numeric);
+      color: #3c4043;
+      background: #e8eaed;
+      border-radius: 12px;
+      padding: 2px 7px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .received-tree-item.active .received-tree-badge {
+      background: #ceead6;
+      color: #0d652d;
+      font-weight: 600;
+    }
+    .received-tree-sublist {
+      margin-left: 12px;
+      border-left: 1px dashed #ceead6;
+      margin-bottom: 4px;
+    }
+    .received-tree-subitem {
+      padding-left: 16px;
+      font-size: 12px;
+    }
+    .received-main-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      overflow: hidden;
+      background: #ffffff;
+    }
+    .received-split-wrapper {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+    }
+    .received-table-wrapper {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: auto;
+      transition: all 0.25s ease;
+      -webkit-overflow-scrolling: touch;
+    }
+    .received-split-wrapper.split-open .received-table-wrapper {
+      flex: 1 1 55%;
+    }
+    .received-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+    }
+    .received-table th {
+      padding: 9px 12px;
+      font-weight: 600;
+      color: #3c4043;
+      font-size: 11.5px;
+      border-bottom: 1px solid #dadce0;
+      background: #ffffff;
+      white-space: nowrap;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+    .received-table td {
+      padding: 7px 12px;
+      border-bottom: 1px solid #f1f3f4;
+      font-weight: 500;
+      white-space: nowrap;
+      color: #0b8043 !important; /* Authentic Google AppSheet Green cell text */
+      font-size: 12.5px;
+      vertical-align: middle;
+    }
+    .received-table td span {
+      color: inherit;
+    }
+    .received-table td .green-bullet {
+      color: #00b11f !important;
+      font-size: 11px;
+      margin-right: 4px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .received-table tbody tr.received-data-row {
+      cursor: pointer;
+      transition: background-color 0.1s ease;
+    }
+    .received-table tbody tr.received-data-row:hover {
+      background-color: #f2f9f4 !important;
+    }
+    .received-table tbody tr.received-data-row.active {
+      background-color: #e6f4ea !important;
+    }
+    .received-table tbody tr.received-data-row.active td {
+      color: #0b8043 !important;
+      font-weight: 600;
+    }
+    .received-group-row td {
+      background: #f8f9fa;
+      color: #0b8043;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 8px 12px;
+      border-top: 1px solid #e0e0e0;
+      border-bottom: 1px solid #eeeeee;
+    }
+
+    /* Master-Detail Side Panel (Income Slice) */
+    .received-panel {
+      width: 440px;
+      border-left: 1px solid #dadce0;
+      background: #f8f9fa;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      flex-shrink: 0;
+      transition: all 0.25s ease;
+      z-index: 10;
+    }
+    .received-panel.fullscreen {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      width: 100% !important;
+      z-index: 100;
+    }
+    .received-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      background: #ffffff;
+      border-bottom: 1px solid #dadce0;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .received-card {
+      background: #ffffff;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      padding: 16px 20px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+      margin: 14px;
+    }
+    .received-field-row {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 12px;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+    .received-field-label {
+      width: 150px;
+      flex-shrink: 0;
+      color: #5f6368;
+      font-weight: 500;
+    }
+    .received-field-value {
+      flex: 1;
+      color: #0b8043;
+      font-weight: 600;
+      display: flex;
+      align-items: flex-start;
+      gap: 4px;
+      word-break: break-word;
+    }
+    .btn-mode-pill {
+      border: 1px solid #dadce0;
+      background: #ffffff;
+      color: #3c4043;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 500;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-mode-pill.active {
+      background: #8d6e32 !important;
+      color: #ffffff !important;
+      border-color: #8d6e32 !important;
+    }
+    .btn-mode-pill.active .green-bullet {
+      color: #ffffff !important;
+    }
   </style>
 </head>
 <body>
@@ -1680,41 +1932,41 @@
 
         <!-- CARD 4: Received -->
         <div class="appsheet-dash-card" id="card-dash-received">
-          <div class="appsheet-dash-card-header">
-            <span class="appsheet-dash-card-title" onclick="LedgerModule.goToReceivedView()">Received</span>
-            <div class="appsheet-dash-card-tools">
-              <button type="button" class="btn-appsheet-add py-0 px-2" style="font-size: 0.76rem;" onclick="AppUI.showToast('New Received payment ready', 'info')">+ New Recei...</button>
+          <div class="appsheet-dash-card-header" style="cursor: pointer;" onclick="LedgerModule.goToReceivedView()">
+            <span class="appsheet-dash-card-title">Received</span>
+            <div class="appsheet-dash-card-tools" onclick="event.stopPropagation()">
+              <button type="button" class="btn-appsheet-add py-0 px-2" style="font-size: 0.76rem;" onclick="LedgerModule.openAddIncomeRecordModal()">+ New Recei...</button>
               <span class="appsheet-tool-icon" onclick="LedgerModule.toggleFilterDropdown()" title="Filter">🔻</span>
               <span class="appsheet-tool-icon" onclick="LedgerModule.goToReceivedView()" title="Expand Received">↗</span>
             </div>
           </div>
           <div class="appsheet-dash-card-body">
             <div class="appsheet-drill-section-label">Year</div>
-            <div class="appsheet-drill-row" onclick="LedgerModule.goToReceivedView('ALL')">
+            <div class="appsheet-drill-row" onclick="event.stopPropagation(); LedgerModule.goToReceivedView('ALL')">
               <span class="appsheet-drill-label-all">All</span>
               <span class="appsheet-chevron">&gt;</span>
             </div>
-            <div class="appsheet-drill-row" onclick="LedgerModule.goToReceivedView('2026-2027')">
+            <div class="appsheet-drill-row" onclick="event.stopPropagation(); LedgerModule.goToReceivedView('2026-2027')">
               <div class="appsheet-drill-left">
                 <span class="appsheet-bullet green-bullet">●</span>
                 <span class="appsheet-drill-label-gold">2026-2027</span>
-                <span class="appsheet-drill-badge">₹ 42,922,365.00</span>
+                <span class="appsheet-drill-badge" id="card-received-badge-2026-2027">₹ 43,045,465.00</span>
               </div>
               <span class="appsheet-chevron">&gt;</span>
             </div>
-            <div class="appsheet-drill-row" onclick="LedgerModule.goToReceivedView('2025-2026')">
+            <div class="appsheet-drill-row" onclick="event.stopPropagation(); LedgerModule.goToReceivedView('2025-2026')">
               <div class="appsheet-drill-left">
                 <span class="appsheet-bullet green-bullet">●</span>
                 <span class="appsheet-drill-label-gold">2025-2026</span>
-                <span class="appsheet-drill-badge">₹ 59,470,903.00</span>
+                <span class="appsheet-drill-badge" id="card-received-badge-2025-2026">₹ 59,470,903.00</span>
               </div>
               <span class="appsheet-chevron">&gt;</span>
             </div>
-            <div class="appsheet-drill-row" onclick="LedgerModule.goToReceivedView('2024-2025')">
+            <div class="appsheet-drill-row" onclick="event.stopPropagation(); LedgerModule.goToReceivedView('2024-2025')">
               <div class="appsheet-drill-left">
                 <span class="appsheet-bullet green-bullet">●</span>
                 <span class="appsheet-drill-label-gold">2024-2025</span>
-                <span class="appsheet-drill-badge">₹ 27,980,085.00</span>
+                <span class="appsheet-drill-badge" id="card-received-badge-2024-2025">₹ 27,980,085.00</span>
               </div>
               <span class="appsheet-chevron">&gt;</span>
             </div>
@@ -2489,6 +2741,266 @@
                     <span class="appsheet-bullet" style="color: #8d6e32;">●</span> Online
                   </button>
                 </div>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 5B. APPSHEET RECEIVED (INCOME SLICE) FULL VIEW -->
+    <!-- ========================================== -->
+    <div id="ledger-view-received" class="d-none">
+      <div class="received-main-container" id="received-main-card">
+        
+        <!-- Left Tree Sidebar: Year & Type hierarchy -->
+        <div class="received-tree-sidebar" id="received-tree-sidebar">
+          <div class="received-tree-header">
+            <span>Year</span>
+            <span class="appsheet-tool-icon cursor-pointer" onclick="LedgerModule.toggleReceivedDateSidebar()" title="Hide Sidebar">◀</span>
+          </div>
+
+          <!-- All -->
+          <div class="received-tree-item" id="received-tree-all" onclick="LedgerModule.selectReceivedAll()">
+            <span class="fw-semibold text-dark">All</span>
+            <span class="received-tree-badge" id="received-badge-all">₹ 130,496,453.00</span>
+          </div>
+
+          <!-- FY 2026-2027 -->
+          <div class="received-tree-item" id="received-tree-2026-2027">
+            <div class="d-flex align-items-center gap-1 flex-grow-1" onclick="LedgerModule.selectReceivedFY('2026-2027')">
+              <span class="received-tree-caret" onclick="event.stopPropagation(); LedgerModule.toggleReceivedFYTree('2026-2027')"><i class="bi bi-caret-down-fill" id="received-caret-2026-2027"></i></span>
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span class="fw-semibold">2026-2027</span>
+            </div>
+            <span class="received-tree-badge" id="received-badge-2026-2027">₹ 43,045,465.00</span>
+          </div>
+          <div class="received-tree-sublist" id="received-sublist-2026-2027"></div>
+
+          <!-- FY 2025-2026 -->
+          <div class="received-tree-item" id="received-tree-2025-2026">
+            <div class="d-flex align-items-center gap-1 flex-grow-1" onclick="LedgerModule.selectReceivedFY('2025-2026')">
+              <span class="received-tree-caret" onclick="event.stopPropagation(); LedgerModule.toggleReceivedFYTree('2025-2026')"><i class="bi bi-caret-right-fill" id="received-caret-2025-2026"></i></span>
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span class="fw-semibold">2025-2026</span>
+            </div>
+            <span class="received-tree-badge" id="received-badge-2025-2026">₹ 59,470,903.00</span>
+          </div>
+          <div class="received-tree-sublist d-none" id="received-sublist-2025-2026"></div>
+
+          <!-- FY 2024-2025 -->
+          <div class="received-tree-item" id="received-tree-2024-2025">
+            <div class="d-flex align-items-center gap-1 flex-grow-1" onclick="LedgerModule.selectReceivedFY('2024-2025')">
+              <span class="received-tree-caret" onclick="event.stopPropagation(); LedgerModule.toggleReceivedFYTree('2024-2025')"><i class="bi bi-caret-right-fill" id="received-caret-2024-2025"></i></span>
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span class="fw-semibold">2024-2025</span>
+            </div>
+            <span class="received-tree-badge" id="received-badge-2024-2025">₹ 27,980,085.00</span>
+          </div>
+          <div class="received-tree-sublist d-none" id="received-sublist-2024-2025"></div>
+        </div>
+
+        <!-- Main Area: Toolbar + Split Layout -->
+        <div class="received-main-area">
+          <div class="d-flex align-items-center justify-content-between px-3 py-2 border-bottom bg-white flex-wrap gap-2">
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+              <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2 d-inline-flex align-items-center gap-1" id="btn-toggle-received-sidebar" onclick="LedgerModule.toggleReceivedDateSidebar()" style="font-size: 0.8rem;">
+                <i class="bi bi-layout-sidebar-inset" id="btn-toggle-received-icon"></i>
+                <span id="btn-toggle-received-text">Hide Date Filter</span>
+              </button>
+              <span class="badge bg-light text-dark border fw-normal" id="received-current-filter-badge" style="font-size: 0.78rem;">
+                <i class="bi bi-funnel me-1 text-muted"></i>2026-2027 &gt; <strong>All Types</strong>
+              </span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <button type="button" class="btn btn-sm text-white py-1 px-3 fw-medium d-inline-flex align-items-center gap-1" style="background-color: #8d6e32; font-size: 0.8rem; border-radius: 4px;" onclick="LedgerModule.openAddIncomeRecordModal()">
+                <i class="bi bi-plus-lg"></i> + New Recei...
+              </button>
+              <span class="appsheet-tool-icon" onclick="LedgerModule.toggleFilterDropdown()" title="Filter">🔻</span>
+              <span class="appsheet-tool-icon" onclick="LedgerModule.toggleReceivedFullscreen()" title="Full screen">⤢</span>
+            </div>
+          </div>
+
+          <!-- Split Wrapper: Table + Detail Panel -->
+          <div class="received-split-wrapper" id="received-split-wrapper">
+            <div class="received-table-wrapper" id="received-table-wrapper">
+              <table class="received-table" id="received-table">
+                <thead class="sticky-top" style="z-index: 5;">
+                  <tr>
+                    <th style="min-width: 105px;">Date</th>
+                    <th style="min-width: 125px;">Amount</th>
+                    <th style="min-width: 160px;">Depositor</th>
+                    <th style="min-width: 130px;">Depositor Type</th>
+                    <th style="min-width: 125px;">Truck No.</th>
+                    <th style="min-width: 115px;">Mode</th>
+                    <th style="min-width: 95px;">Status</th>
+                    <th style="min-width: 170px;">Description</th>
+                    <th style="width: 25px;"></th>
+                  </tr>
+                </thead>
+                <tbody id="received-tbody"></tbody>
+              </table>
+            </div>
+
+            <!-- Master-Detail Side Panel (Income Slice Detail matching WhatsApp Photos) -->
+            <div class="received-panel d-none" id="panel-received-details">
+              <div class="received-panel-header">
+                <div class="d-flex align-items-center gap-2">
+                  <span class="appsheet-tool-icon cursor-pointer" onclick="LedgerModule.toggleReceivedDetailFullscreen()" title="Expand / Shrink">↗</span>
+                  <span class="fw-bold" style="font-size: 14px; color: #202124;">Income Slice</span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="appsheet-tool-icon cursor-pointer" onclick="LedgerModule.prevReceivedPaymentRecord()" title="Previous">&lt;</span>
+                  <span class="appsheet-tool-icon cursor-pointer" onclick="LedgerModule.nextReceivedPaymentRecord()" title="Next">&gt;</span>
+                  <span class="appsheet-tool-icon cursor-pointer" onclick="LedgerModule.toggleReceivedDetailFullscreen()" title="Full screen" id="btn-expand-received-panel">↗</span>
+                  <span class="appsheet-tool-icon cursor-pointer" onclick="LedgerModule.closeReceivedPaymentDetails()" title="Close details">✕</span>
+                </div>
+              </div>
+
+              <div id="received-panel-content">
+                <!-- Dynamically populated: Card with 14 fields -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Pagination Footer -->
+          <div class="p-2 bg-white border-top d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <small class="text-muted" id="received-pagination-info">Showing 1-100 entries</small>
+            <div class="d-flex align-items-center gap-2">
+              <select id="received-page-size" class="form-select form-select-sm" style="width: auto; font-size: 0.8rem;" onchange="LedgerModule.changeReceivedPageSize(this.value)">
+                <option value="50">50 rows</option>
+                <option value="100" selected>100 rows</option>
+                <option value="250">250 rows</option>
+                <option value="ALL">All rows</option>
+              </select>
+              <div class="btn-group btn-group-sm" id="received-pagination-buttons"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Modal: Add Income Record (Matching WhatsApp Photo exactly) -->
+    <div class="modal fade" id="modal-add-income-record" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" style="max-width: 540px;">
+        <div class="modal-content shadow border-0" style="border-radius: 8px;">
+          <div class="modal-header py-2 px-3 border-bottom d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-2">
+              <button type="button" class="btn-close m-0" data-bs-dismiss="modal" aria-label="Close"></button>
+              <h6 class="modal-title fw-bold text-dark m-0" style="font-size: 15px;">Income Record</h6>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <button type="button" class="btn btn-sm btn-light border py-1 px-3" data-bs-dismiss="modal" style="font-size: 13px;">Cancel</button>
+              <button type="button" class="btn btn-sm text-white py-1 px-3 fw-medium" style="background-color: #8d6e32; font-size: 13px;" onclick="LedgerModule.saveIncomeRecord()">Save</button>
+            </div>
+          </div>
+          <div class="modal-body p-3" style="max-height: 80vh; overflow-y: auto;">
+            <form id="form-add-income-record" onsubmit="event.preventDefault(); LedgerModule.saveIncomeRecord();">
+              
+              <!-- Received Date* -->
+              <div class="mb-3 d-flex align-items-center">
+                <label class="form-label text-muted m-0" style="width: 140px; font-size: 13.5px;">Received Date*</label>
+                <div class="input-group">
+                  <input type="date" id="inc-date" class="form-control form-control-sm" required style="font-size: 13.5px;">
+                </div>
+              </div>
+
+              <!-- Type -->
+              <div class="mb-3 d-flex align-items-center">
+                <label class="form-label text-muted m-0" style="width: 140px; font-size: 13.5px;">Type</label>
+                <select id="inc-type" class="form-select form-select-sm" style="font-size: 13.5px;">
+                  <option value="Commission">Commission</option>
+                  <option value="Other">Other</option>
+                  <option value="Old">Old</option>
+                  <option value="Cash from MTC/TTC">Cash from MTC/TTC</option>
+                  <option value="Returned Other">Returned Other</option>
+                  <option value="Returned Old">Returned Old</option>
+                  <option value="Returned Loading" selected>Returned Loading</option>
+                  <option value="Returned In Hand">Returned In Hand</option>
+                  <option value="Returned Commission">Returned Commission</option>
+                  <option value="Returned Advance">Returned Advance</option>
+                  <option value="Advance">Advance</option>
+                </select>
+              </div>
+
+              <!-- Truck No. -->
+              <div class="mb-3 d-flex align-items-center">
+                <label class="form-label text-muted m-0" style="width: 140px; font-size: 13.5px;">Truck No.</label>
+                <input type="text" id="inc-truck-no" class="form-control form-control-sm" placeholder="e.g. RJ26GA4713" style="font-size: 13.5px;">
+              </div>
+
+              <!-- From -->
+              <div class="mb-3 d-flex align-items-center">
+                <label class="form-label text-muted m-0" style="width: 140px; font-size: 13.5px;">From</label>
+                <input type="text" id="inc-from" class="form-control form-control-sm" placeholder="e.g. Dera Bassi" style="font-size: 13.5px;">
+              </div>
+
+              <!-- To -->
+              <div class="mb-3 d-flex align-items-center">
+                <label class="form-label text-muted m-0" style="width: 140px; font-size: 13.5px;">To</label>
+                <input type="text" id="inc-to" class="form-control form-control-sm" placeholder="e.g. Morbi" style="font-size: 13.5px;">
+              </div>
+
+              <!-- Depositor Type -->
+              <div class="mb-3 d-flex align-items-center">
+                <label class="form-label text-muted m-0" style="width: 140px; font-size: 13.5px;">Depositor Type</label>
+                <select id="inc-depositor-type" class="form-select form-select-sm" style="font-size: 13.5px;">
+                  <option value="Reference">Reference</option>
+                  <option value="Driver" selected>Driver</option>
+                  <option value="Truck Owner">Truck Owner</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              <!-- Depositor -->
+              <div class="mb-3 d-flex align-items-center">
+                <label class="form-label text-muted m-0" style="width: 140px; font-size: 13.5px;">Depositor</label>
+                <input type="text" id="inc-depositor" class="form-control form-control-sm" placeholder="e.g. Kalyan Meena" style="font-size: 13.5px;">
+              </div>
+
+              <!-- Amount* -->
+              <div class="mb-3 d-flex align-items-center">
+                <label class="form-label text-muted m-0" style="width: 140px; font-size: 13.5px;">Amount*</label>
+                <div class="input-group">
+                  <span class="input-group-text py-1 px-2 text-muted" style="font-size: 13px;">₹</span>
+                  <input type="number" step="0.01" min="0" id="inc-amount" class="form-control form-control-sm" placeholder="0.00" required style="font-size: 13.5px;">
+                </div>
+              </div>
+
+              <!-- Status (Paid / Due) -->
+              <div class="mb-3 d-flex align-items-center">
+                <label class="form-label text-muted m-0" style="width: 140px; font-size: 13.5px;">Status</label>
+                <div class="btn-group flex-grow-1" role="group">
+                  <button type="button" class="btn btn-sm btn-segmented active" id="btn-inc-status-paid" onclick="LedgerModule.setIncomeStatus('Paid')">
+                    <span class="appsheet-bullet green-bullet">●</span> Paid
+                  </button>
+                  <button type="button" class="btn btn-sm btn-segmented" id="btn-inc-status-due" onclick="LedgerModule.setIncomeStatus('Due')">
+                    <span class="appsheet-bullet" style="color: #ea8600;">●</span> Due
+                  </button>
+                </div>
+              </div>
+
+              <!-- Mode (Pills matching photo) -->
+              <div class="mb-3 d-flex align-items-start">
+                <label class="form-label text-muted m-0 pt-1" style="width: 140px; font-size: 13.5px;">Mode</label>
+                <div class="d-flex flex-wrap gap-1 flex-grow-1" id="inc-mode-pill-container">
+                  <button type="button" class="btn-mode-pill active" data-mode="Cash" onclick="LedgerModule.setIncomeMode('Cash', this)">Cash</button>
+                  <button type="button" class="btn-mode-pill" data-mode="Cash in Rajsamand" onclick="LedgerModule.setIncomeMode('Cash in Rajsamand', this)">Cash in Rajsamand</button>
+                  <button type="button" class="btn-mode-pill" data-mode="Adjustment" onclick="LedgerModule.setIncomeMode('Adjustment', this)">Adjustment</button>
+                  <button type="button" class="btn-mode-pill" data-mode="NEFT/RTGS" onclick="LedgerModule.setIncomeMode('NEFT/RTGS', this)">NEFT/RTGS</button>
+                  <button type="button" class="btn-mode-pill" data-mode="Phone Pe/GPay/PayTM/UPI" onclick="LedgerModule.setIncomeMode('Phone Pe/GPay/PayTM/UPI', this)">Phone Pe/GPay/PayTM/UPI</button>
+                  <button type="button" class="btn-mode-pill" data-mode="Cheque" onclick="LedgerModule.setIncomeMode('Cheque', this)">Cheque</button>
+                  <button type="button" class="btn-mode-pill" data-mode="Online" onclick="LedgerModule.setIncomeMode('Online', this)">Online</button>
+                </div>
+              </div>
+
+              <!-- Description -->
+              <div class="mb-2 d-flex align-items-start">
+                <label class="form-label text-muted m-0 pt-1" style="width: 140px; font-size: 13.5px;">Description</label>
+                <textarea id="inc-description" class="form-control form-control-sm flex-grow-1" rows="2" placeholder="Optional notes" style="font-size: 13.5px;"></textarea>
               </div>
 
             </form>
@@ -3363,6 +3875,7 @@
   <script src="../js/sample-cash-ledger-data.js"></script>
   <script src="../js/sample-returned-amounts-data.js"></script>
   <script src="../js/sample-company-expenses-data.js"></script>
+  <script src="../js/sample-received-payments-data.js"></script>
   <script src="../js/db-service.js"></script>
   <script src="../js/app.js"></script>
   <script src="../js/modules/ledger.js"></script>

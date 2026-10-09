@@ -182,6 +182,10 @@ class DBService {
       return this.getAllCompanyExpenses(cloudItems);
     }
 
+    if (collectionName === 'receivedPayments') {
+      return this.getAllReceivedPayments(cloudItems);
+    }
+
     // LocalStorage Fallback for other collections
     const localData = localStorage.getItem(`tms_${collectionName}`);
     return localData ? JSON.parse(localData) : [];
@@ -483,6 +487,50 @@ class DBService {
     all.sort((a, b) => {
       const dateA = a.date || '';
       const dateB = b.date || '';
+      return dateB.localeCompare(dateA);
+    });
+    return all;
+  }
+
+  // --- Authentic Google AppSheet Received Payments Engine (Income Slice) ---
+  getAllReceivedPayments(cloudItems = []) {
+    const basePayments = (typeof window !== 'undefined' && Array.isArray(window.SAMPLE_RECEIVED_PAYMENTS_DATA))
+      ? window.SAMPLE_RECEIVED_PAYMENTS_DATA
+      : (typeof SAMPLE_RECEIVED_PAYMENTS_DATA !== 'undefined' ? SAMPLE_RECEIVED_PAYMENTS_DATA : []);
+
+    const customEntries = JSON.parse(localStorage.getItem('tms_custom_received_payments') || '[]');
+    const editedMap = JSON.parse(localStorage.getItem('tms_edited_received_payments') || '{}');
+    const deletedList = JSON.parse(localStorage.getItem('tms_deleted_received_payments') || '[]');
+    const deletedSet = new Set(deletedList.map(String));
+
+    const entryMap = new Map();
+    for (const item of basePayments) {
+      const id = String(item.id);
+      if (!deletedSet.has(id)) {
+        entryMap.set(id, editedMap[id] ? { ...item, ...editedMap[id] } : item);
+      }
+    }
+    for (const item of customEntries) {
+      const id = String(item.id);
+      if (!deletedSet.has(id)) {
+        entryMap.set(id, editedMap[id] ? { ...item, ...editedMap[id] } : item);
+      }
+    }
+    if (Array.isArray(cloudItems)) {
+      for (const item of cloudItems) {
+        if (item && item.id) {
+          const id = String(item.id);
+          if (!deletedSet.has(id)) {
+            entryMap.set(id, { ...(entryMap.get(id) || {}), ...item });
+          }
+        }
+      }
+    }
+
+    const all = Array.from(entryMap.values());
+    all.sort((a, b) => {
+      const dateA = a.receivedDate ? (a.receivedDate.split('/').reverse().join('-')) : '';
+      const dateB = b.receivedDate ? (b.receivedDate.split('/').reverse().join('-')) : '';
       return dateB.localeCompare(dateA);
     });
     return all;
@@ -949,6 +997,28 @@ class DBService {
       return newItem;
     }
 
+    if (collectionName === 'receivedPayments') {
+      const newItem = {
+        ...itemData,
+        id: itemData.id || `REC_${Date.now()}`,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      const customPayments = JSON.parse(localStorage.getItem('tms_custom_received_payments') || '[]');
+      customPayments.unshift(newItem);
+      this.safeSetItem('tms_custom_received_payments', JSON.stringify(customPayments));
+
+      if (this.isFirebaseReady) {
+        try {
+          await this.db.collection('receivedPayments').doc(newItem.id).set(newItem);
+          console.log(` Cloud Synced: receivedPayments/${newItem.id}`);
+        } catch (err) {
+          console.warn('Firestore sync error for receivedPayments:', err.message);
+        }
+      }
+      return newItem;
+    }
+
     const newItem = {
       ...itemData,
       id: itemData.id || `${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
@@ -1206,6 +1276,34 @@ class DBService {
       return updatedItem;
     }
 
+    if (collectionName === 'receivedPayments') {
+      let customPayments = JSON.parse(localStorage.getItem('tms_custom_received_payments') || '[]');
+      const customIdx = customPayments.findIndex(r => String(r.id) === String(id));
+      let updatedItem = null;
+
+      if (customIdx >= 0) {
+        updatedItem = { ...customPayments[customIdx], ...updatedFields, updatedAt };
+        customPayments[customIdx] = updatedItem;
+        this.safeSetItem('tms_custom_received_payments', JSON.stringify(customPayments));
+      } else {
+        const editedMap = JSON.parse(localStorage.getItem('tms_edited_received_payments') || '{}');
+        const existing = await this.getById('receivedPayments', id);
+        updatedItem = { ...(existing || {}), id, ...updatedFields, updatedAt };
+        editedMap[id] = updatedItem;
+        this.safeSetItem('tms_edited_received_payments', JSON.stringify(editedMap));
+      }
+
+      if (this.isFirebaseReady) {
+        try {
+          await this.db.collection('receivedPayments').doc(String(id)).set(updatedItem, { merge: true });
+          console.log(` Cloud Updated: receivedPayments/${id}`);
+        } catch (err) {
+          console.warn('Firestore update error for receivedPayments:', err.message);
+        }
+      }
+      return updatedItem;
+    }
+
     // Update locally
     const items = await this.getAll(collectionName);
     const index = items.findIndex(item => String(item.id) === String(id));
@@ -1402,6 +1500,28 @@ class DBService {
           console.log(` Cloud Deleted: companyExpenses/${id}`);
         } catch (err) {
           console.warn('Firestore delete error for companyExpenses:', err.message);
+        }
+      }
+      return true;
+    }
+
+    if (collectionName === 'receivedPayments') {
+      let customPayments = JSON.parse(localStorage.getItem('tms_custom_received_payments') || '[]');
+      customPayments = customPayments.filter(r => String(r.id) !== String(id));
+      this.safeSetItem('tms_custom_received_payments', JSON.stringify(customPayments));
+
+      const deletedList = JSON.parse(localStorage.getItem('tms_deleted_received_payments') || '[]');
+      if (!deletedList.includes(String(id))) {
+        deletedList.push(String(id));
+        this.safeSetItem('tms_deleted_received_payments', JSON.stringify(deletedList));
+      }
+
+      if (this.isFirebaseReady) {
+        try {
+          await this.db.collection('receivedPayments').doc(String(id)).delete();
+          console.log(` Cloud Deleted: receivedPayments/${id}`);
+        } catch (err) {
+          console.warn('Firestore delete error for receivedPayments:', err.message);
         }
       }
       return true;
@@ -2221,6 +2341,8 @@ class DBService {
 
 // Global Singleton Instance
 const dbService = new DBService();
+if (typeof window !== 'undefined') window.dbService = dbService;
+if (typeof module !== 'undefined' && module.exports) module.exports = dbService;
 
 
 
