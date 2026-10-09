@@ -134,7 +134,9 @@ class DBService {
     let cloudItems = [];
     if (this.isFirebaseReady) {
       try {
-        const snapshot = await this.db.collection(collectionName).get();
+        const fetchPromise = this.db.collection(collectionName).get();
+        const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Firestore timeout')), 250));
+        const snapshot = await Promise.race([fetchPromise, timeoutPromise]);
         if (!snapshot.empty) {
           cloudItems = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
           if (collectionName !== 'trips' && collectionName !== 'debts' && collectionName !== 'parties' && collectionName !== 'truckOwners' && collectionName !== 'cheques' && collectionName !== 'drivers') {
@@ -142,7 +144,7 @@ class DBService {
           }
         }
       } catch (err) {
-        console.warn(`Firestore read failed for ${collectionName}, reading from LocalStorage:`, err.message);
+        console.warn(`Firestore read failed/timeout for ${collectionName}, reading from LocalStorage:`, err.message);
       }
     }
 
@@ -263,7 +265,7 @@ class DBService {
   // --- Authentic AppSheet Ledger Debts Engine ---
   getAllDebts(cloudItems = []) {
     // Ensure dataset version consistency
-    const CURRENT_DEBTS_VERSION = '2026_10_10_V1';
+    const CURRENT_DEBTS_VERSION = '2026_10_10_V2';
     if (localStorage.getItem('tms_debts_data_version') !== CURRENT_DEBTS_VERSION) {
       localStorage.removeItem('tms_base_debts_cleared');
       localStorage.removeItem('tms_custom_debts');

@@ -2079,6 +2079,326 @@
       background: #fdfdfd;
       font-size: 12.5px;
     }
+
+    /* ==================================================== */
+    /* ALL DEBTS (Google AppSheet Master-Detail Dual Pane)  */
+    /* ==================================================== */
+    .all-debts-container {
+      display: flex;
+      flex-direction: row;
+      height: calc(100vh - 100px);
+      max-height: calc(100vh - 100px);
+      background: #ffffff;
+      position: relative;
+      overflow: hidden;
+    }
+    .all-debts-tree-sidebar {
+      width: 250px;
+      height: 100%;
+      max-height: 100%;
+      border-right: 1px solid #eeeeee;
+      padding: 14px 10px;
+      flex-shrink: 0;
+      background: #ffffff;
+      transition: width 0.22s ease, padding 0.22s ease, opacity 0.18s ease;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+    .all-debts-tree-sidebar.collapsed {
+      width: 0 !important;
+      max-width: 0 !important;
+      padding: 0 !important;
+      opacity: 0;
+      border-right: none !important;
+      pointer-events: none;
+      display: none !important;
+    }
+    @media (max-width: 991.98px) {
+      .all-debts-tree-sidebar {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1040;
+        width: 270px;
+        box-shadow: 4px 0 20px rgba(0,0,0,0.18);
+        background: #ffffff;
+        display: block !important;
+      }
+      .all-debts-tree-sidebar.collapsed {
+        transform: translateX(-100%);
+        width: 270px !important;
+        max-width: 270px !important;
+        opacity: 1 !important;
+        pointer-events: auto;
+        display: block !important;
+      }
+    }
+    .all-debts-tree-header {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #70757a;
+      font-weight: 600;
+      padding: 4px 8px 10px 8px;
+      border-bottom: 1px solid #f1f3f4;
+      margin-bottom: 8px;
+    }
+    .all-debts-tree-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      color: #3c4043;
+      transition: background-color 0.15s;
+      margin-bottom: 2px;
+      user-select: none;
+    }
+    .all-debts-tree-item:hover {
+      background: #fdfaf2;
+    }
+    .all-debts-tree-item.active {
+      background: #fef7e0;
+      font-weight: 600;
+      color: #8d6e32;
+    }
+    .all-debts-tree-caret {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      color: #5f6368;
+      font-size: 10px;
+      cursor: pointer;
+    }
+    .all-debts-tree-badge {
+      font-size: 11px;
+      font-family: var(--font-numeric);
+      color: #3c4043;
+      background: #e8eaed;
+      border-radius: 12px;
+      padding: 2px 7px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .all-debts-tree-item.active .all-debts-tree-badge {
+      background: #fce8b2;
+      color: #7a5a1e;
+      font-weight: 600;
+    }
+    .all-debts-tree-sublist {
+      margin-left: 12px;
+      border-left: 1px dashed #e0e0e0;
+      margin-bottom: 4px;
+    }
+    .all-debts-tree-subitem {
+      padding: 5px 10px 5px 16px;
+      font-size: 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #5f6368;
+    }
+    .all-debts-tree-subitem:hover {
+      background: #fdfaf2;
+      color: #202124;
+    }
+    .all-debts-tree-subitem.active {
+      background: #fef7e0;
+      color: #8d6e32;
+      font-weight: 600;
+    }
+    .all-debts-main-area {
+      flex: 1 1 0;
+      min-width: 0;
+      min-height: 0;
+      height: 100%;
+      max-height: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: #ffffff;
+    }
+    .all-debts-split-wrapper {
+      display: flex;
+      flex: 1 1 0;
+      min-height: 0;
+      height: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+    .all-debts-table-wrapper {
+      flex: 1 1 0;
+      min-width: 0;
+      min-height: 0;
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: auto;
+      transition: all 0.25s ease;
+      -webkit-overflow-scrolling: touch;
+    }
+    .all-debts-split-wrapper.split-open .all-debts-table-wrapper {
+      flex: 1 1 52%;
+    }
+    .all-debts-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+    }
+    .all-debts-table th {
+      padding: 9px 12px;
+      font-weight: 600;
+      color: #3c4043;
+      font-size: 11.5px;
+      border-bottom: 1px solid #dadce0;
+      background: #ffffff;
+      white-space: nowrap;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+    .all-debts-table td {
+      padding: 7px 12px;
+      border-bottom: 1px solid #f1f3f4;
+      font-weight: 500;
+      white-space: nowrap;
+      font-size: 12.5px;
+      vertical-align: middle;
+    }
+    /* Dynamic Status Row Colors matching Google AppSheet */
+    .all-debts-row-green td {
+      color: #0b8043 !important;
+    }
+    .all-debts-row-green td span {
+      color: inherit;
+    }
+    .all-debts-row-gold td {
+      color: #8d6e32 !important;
+    }
+    .all-debts-row-gold td span {
+      color: inherit;
+    }
+    .all-debts-row-blue td {
+      color: #1a73e8 !important;
+    }
+    .all-debts-row-blue td span {
+      color: inherit;
+    }
+    .all-debts-table td.td-due-amount {
+      color: #d93025 !important;
+      font-weight: 700 !important;
+    }
+    .all-debts-table td.td-due-amount span {
+      color: #d93025 !important;
+    }
+    .all-debts-table td.td-returned-green {
+      color: #0b8043 !important;
+      font-weight: 600 !important;
+    }
+    .all-debts-table td.td-returned-green span {
+      color: #0b8043 !important;
+    }
+    .all-debts-table tbody tr.all-debts-data-row {
+      cursor: pointer;
+      transition: background-color 0.1s ease;
+    }
+    .all-debts-table tbody tr.all-debts-data-row:hover {
+      background-color: #f8f9fa;
+    }
+    .all-debts-table tbody tr.all-debts-data-row.active {
+      background-color: #fef7e0 !important;
+    }
+    .all-debts-table tbody tr.all-debts-date-header td {
+      background-color: #ffffff;
+      font-weight: 700;
+      font-size: 12px;
+      color: #8d6e32;
+      border-top: 1px solid #e0e0e0;
+      border-bottom: 1px solid #f1f3f4;
+      padding: 9px 12px;
+    }
+    .all-debts-table tbody tr.all-debts-date-header.date-header-green td {
+      color: #0b8043 !important;
+    }
+    /* Master-Detail Side Panel */
+    .all-debts-panel {
+      width: 480px;
+      height: 100%;
+      max-height: 100%;
+      border-left: 1px solid #dadce0;
+      background: #f8f9fa;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      flex-shrink: 0;
+      transition: all 0.25s ease;
+      z-index: 10;
+    }
+    .all-debts-panel.fullscreen {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      width: 100% !important;
+      max-height: 100vh !important;
+      z-index: 1050;
+    }
+    @media (max-width: 991.98px) {
+      .all-debts-panel {
+        position: fixed !important;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        width: 100% !important;
+        max-height: 100vh !important;
+        z-index: 1050;
+      }
+    }
+    .all-debts-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      background: #ffffff;
+      border-bottom: 1px solid #dadce0;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .all-debt-card {
+      background: #ffffff;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      padding: 14px 16px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    }
+    .all-field-row {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 10px;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+    .all-field-label {
+      width: 150px;
+      flex-shrink: 0;
+      color: #5f6368;
+      font-weight: 500;
+    }
+    .all-field-val {
+      flex: 1;
+      color: #202124;
+      font-weight: 500;
+      word-break: break-word;
+    }
   </style>
 </head>
 <body>
@@ -2492,79 +2812,79 @@
         <!-- CARD 6: All Debts -->
         <div class="appsheet-dash-card" id="card-dash-all-debts">
           <div class="appsheet-dash-card-header">
-            <span class="appsheet-dash-card-title" onclick="LedgerModule.goToDebtsView('all')">All Debts</span>
+            <span class="appsheet-dash-card-title" onclick="LedgerModule.goToAllDebtsView('ALL')">All Debts</span>
             <div class="appsheet-dash-card-tools">
               <span class="appsheet-tool-icon" onclick="LedgerModule.toggleFilterDropdown()" title="Filter">🔻</span>
-              <span class="appsheet-tool-icon" onclick="LedgerModule.goToDebtsView('all')" title="Expand All Debts">↗</span>
+              <span class="appsheet-tool-icon" onclick="LedgerModule.goToAllDebtsView('ALL')" title="Expand All Debts">↗</span>
             </div>
           </div>
           <div class="appsheet-dash-card-body">
             <div class="appsheet-drill-section-label">Year</div>
-            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('all', 'ALL')">
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToAllDebtsView('ALL')">
               <span class="appsheet-drill-label-all">All</span>
               <span class="appsheet-chevron">&gt;</span>
             </div>
-            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('all', '2026-2027')">
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToAllDebtsView('2026-2027')">
               <div class="appsheet-drill-left">
                 <span class="appsheet-bullet gold-bullet">●</span>
                 <span class="appsheet-drill-label-gold">2026-2027</span>
-                <span class="appsheet-drill-badge">₹ 15,760,198.00</span>
+                <span class="appsheet-drill-badge" id="card-all-badge-2026-2027">₹ 16,161,655.00</span>
               </div>
               <span class="appsheet-chevron">&gt;</span>
             </div>
-            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('all', '2025-2026')">
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToAllDebtsView('2025-2026')">
               <div class="appsheet-drill-left">
                 <span class="appsheet-bullet green-bullet">●</span>
                 <span class="appsheet-drill-label-gold">2025-2026</span>
-                <span class="appsheet-drill-badge">₹ 27,735,468.00</span>
+                <span class="appsheet-drill-badge" id="card-all-badge-2025-2026">₹ 27,735,468.00</span>
               </div>
               <span class="appsheet-chevron">&gt;</span>
             </div>
-            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('all', '2024-2025')">
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToAllDebtsView('2024-2025')">
               <div class="appsheet-drill-left">
                 <span class="appsheet-bullet green-bullet">●</span>
                 <span class="appsheet-drill-label-gold">2024-2025</span>
-                <span class="appsheet-drill-badge">₹ 19,049,831.00</span>
+                <span class="appsheet-drill-badge" id="card-all-badge-2024-2025">₹ 19,049,831.00</span>
               </div>
               <span class="appsheet-chevron">&gt;</span>
             </div>
-            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('all', '2023-2024')">
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToAllDebtsView('2023-2024')">
               <div class="appsheet-drill-left">
                 <span class="appsheet-bullet gold-bullet">●</span>
                 <span class="appsheet-drill-label-gold">2023-2024</span>
-                <span class="appsheet-drill-badge">₹ 388,200.00</span>
+                <span class="appsheet-drill-badge" id="card-all-badge-2023-2024">₹ 388,200.00</span>
               </div>
               <span class="appsheet-chevron">&gt;</span>
             </div>
-            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('all', '2022-2023')">
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToAllDebtsView('2022-2023')">
               <div class="appsheet-drill-left">
-                <span class="appsheet-bullet gold-bullet">●</span>
+                <span class="appsheet-bullet green-bullet">●</span>
                 <span class="appsheet-drill-label-gold">2022-2023</span>
-                <span class="appsheet-drill-badge">₹ 143,300.00</span>
+                <span class="appsheet-drill-badge" id="card-all-badge-2022-2023">₹ 143,300.00</span>
               </div>
               <span class="appsheet-chevron">&gt;</span>
             </div>
-            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('all', '2021-2022')">
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToAllDebtsView('2021-2022')">
               <div class="appsheet-drill-left">
                 <span class="appsheet-bullet green-bullet">●</span>
                 <span class="appsheet-drill-label-gold">2021-2022</span>
-                <span class="appsheet-drill-badge">₹ 185,050.00</span>
+                <span class="appsheet-drill-badge" id="card-all-badge-2021-2022">₹ 185,050.00</span>
               </div>
               <span class="appsheet-chevron">&gt;</span>
             </div>
-            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('all', '2020-2021')">
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToAllDebtsView('2020-2021')">
               <div class="appsheet-drill-left">
                 <span class="appsheet-bullet gold-bullet">●</span>
                 <span class="appsheet-drill-label-gold">2020-2021</span>
-                <span class="appsheet-drill-badge">₹ 138,100.00</span>
+                <span class="appsheet-drill-badge" id="card-all-badge-2020-2021">₹ 138,100.00</span>
               </div>
               <span class="appsheet-chevron">&gt;</span>
             </div>
-            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('all', '2019-2020')">
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToAllDebtsView('2019-2020')">
               <div class="appsheet-drill-left">
                 <span class="appsheet-bullet gold-bullet">●</span>
                 <span class="appsheet-drill-label-gold">2019-2020</span>
-                <span class="appsheet-drill-badge">₹ 268,300.00</span>
+                <span class="appsheet-drill-badge" id="card-all-badge-2019-2020">₹ 268,300.00</span>
               </div>
               <span class="appsheet-chevron">&gt;</span>
             </div>
@@ -3702,6 +4022,264 @@
           </div>
 
         </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 4F. ALL DEBTS (Google AppSheet Master-Detail Dual Pane) -->
+    <!-- ========================================== -->
+    <div id="ledger-view-all-debts" class="d-none">
+      <div class="all-debts-container" id="all-debts-main-container">
+        
+        <!-- Left Sidebar: Year Tree Sidebar -->
+        <div class="all-debts-tree-sidebar" id="all-debts-tree-sidebar">
+          <div class="all-debts-tree-header d-flex align-items-center justify-content-between">
+            <span>Year</span>
+            <button type="button" class="btn btn-sm btn-link text-muted p-0 border-0" onclick="LedgerModule.toggleAllDebtsSidebar()" title="Hide Year Sidebar">
+              <i class="bi bi-chevron-bar-left fs-6"></i>
+            </button>
+          </div>
+
+          <!-- All -->
+          <div class="all-debts-tree-item" id="all-tree-all" onclick="LedgerModule.selectAllDebtsFY('ALL')">
+            <span class="fw-semibold text-dark">All</span>
+            <span class="all-debts-tree-badge" id="all-badge-all">₹ 64,069,904.00</span>
+          </div>
+
+          <!-- FY 2026-2027 -->
+          <div class="all-debts-tree-item" id="all-tree-2026-2027">
+            <div class="d-flex align-items-center gap-1 flex-grow-1" onclick="LedgerModule.selectAllDebtsFY('2026-2027')">
+              <span class="all-debts-tree-caret" onclick="event.stopPropagation(); LedgerModule.toggleAllDebtsFYTree('2026-2027')"><i class="bi bi-caret-down-fill" id="all-caret-2026-2027"></i></span>
+              <span class="appsheet-bullet gold-bullet">●</span>
+              <span class="fw-semibold">2026-2027</span>
+            </div>
+            <span class="all-debts-tree-badge" id="all-badge-2026-2027">₹ 16,161,655.00</span>
+          </div>
+          <div class="all-debts-tree-sublist" id="all-sublist-2026-2027"></div>
+
+          <!-- FY 2025-2026 -->
+          <div class="all-debts-tree-item" id="all-tree-2025-2026">
+            <div class="d-flex align-items-center gap-1 flex-grow-1" onclick="LedgerModule.selectAllDebtsFY('2025-2026')">
+              <span class="all-debts-tree-caret" onclick="event.stopPropagation(); LedgerModule.toggleAllDebtsFYTree('2025-2026')"><i class="bi bi-caret-right-fill" id="all-caret-2025-2026"></i></span>
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span class="fw-semibold">2025-2026</span>
+            </div>
+            <span class="all-debts-tree-badge" id="all-badge-2025-2026">₹ 27,735,468.00</span>
+          </div>
+          <div class="all-debts-tree-sublist d-none" id="all-sublist-2025-2026"></div>
+
+          <!-- FY 2024-2025 -->
+          <div class="all-debts-tree-item" id="all-tree-2024-2025">
+            <div class="d-flex align-items-center gap-1 flex-grow-1" onclick="LedgerModule.selectAllDebtsFY('2024-2025')">
+              <span class="all-debts-tree-caret" onclick="event.stopPropagation(); LedgerModule.toggleAllDebtsFYTree('2024-2025')"><i class="bi bi-caret-right-fill" id="all-caret-2024-2025"></i></span>
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span class="fw-semibold">2024-2025</span>
+            </div>
+            <span class="all-debts-tree-badge" id="all-badge-2024-2025">₹ 19,049,831.00</span>
+          </div>
+          <div class="all-debts-tree-sublist d-none" id="all-sublist-2024-2025"></div>
+
+          <!-- FY 2023-2024 -->
+          <div class="all-debts-tree-item" id="all-tree-2023-2024">
+            <div class="d-flex align-items-center gap-1 flex-grow-1" onclick="LedgerModule.selectAllDebtsFY('2023-2024')">
+              <span class="all-debts-tree-caret" onclick="event.stopPropagation(); LedgerModule.toggleAllDebtsFYTree('2023-2024')"><i class="bi bi-caret-right-fill" id="all-caret-2023-2024"></i></span>
+              <span class="appsheet-bullet gold-bullet">●</span>
+              <span class="fw-semibold">2023-2024</span>
+            </div>
+            <span class="all-debts-tree-badge" id="all-badge-2023-2024">₹ 388,200.00</span>
+          </div>
+          <div class="all-debts-tree-sublist d-none" id="all-sublist-2023-2024"></div>
+
+          <!-- FY 2022-2023 -->
+          <div class="all-debts-tree-item" id="all-tree-2022-2023">
+            <div class="d-flex align-items-center gap-1 flex-grow-1" onclick="LedgerModule.selectAllDebtsFY('2022-2023')">
+              <span class="all-debts-tree-caret" onclick="event.stopPropagation(); LedgerModule.toggleAllDebtsFYTree('2022-2023')"><i class="bi bi-caret-right-fill" id="all-caret-2022-2023"></i></span>
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span class="fw-semibold">2022-2023</span>
+            </div>
+            <span class="all-debts-tree-badge" id="all-badge-2022-2023">₹ 143,300.00</span>
+          </div>
+          <div class="all-debts-tree-sublist d-none" id="all-sublist-2022-2023"></div>
+
+          <!-- FY 2021-2022 -->
+          <div class="all-debts-tree-item" id="all-tree-2021-2022">
+            <div class="d-flex align-items-center gap-1 flex-grow-1" onclick="LedgerModule.selectAllDebtsFY('2021-2022')">
+              <span class="all-debts-tree-caret" onclick="event.stopPropagation(); LedgerModule.toggleAllDebtsFYTree('2021-2022')"><i class="bi bi-caret-right-fill" id="all-caret-2021-2022"></i></span>
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span class="fw-semibold">2021-2022</span>
+            </div>
+            <span class="all-debts-tree-badge" id="all-badge-2021-2022">₹ 185,050.00</span>
+          </div>
+          <div class="all-debts-tree-sublist d-none" id="all-sublist-2021-2022"></div>
+
+          <!-- FY 2020-2021 -->
+          <div class="all-debts-tree-item" id="all-tree-2020-2021">
+            <div class="d-flex align-items-center gap-1 flex-grow-1" onclick="LedgerModule.selectAllDebtsFY('2020-2021')">
+              <span class="all-debts-tree-caret" onclick="event.stopPropagation(); LedgerModule.toggleAllDebtsFYTree('2020-2021')"><i class="bi bi-caret-right-fill" id="all-caret-2020-2021"></i></span>
+              <span class="appsheet-bullet gold-bullet">●</span>
+              <span class="fw-semibold">2020-2021</span>
+            </div>
+            <span class="all-debts-tree-badge" id="all-badge-2020-2021">₹ 138,100.00</span>
+          </div>
+          <div class="all-debts-tree-sublist d-none" id="all-sublist-2020-2021"></div>
+
+          <!-- FY 2019-2020 -->
+          <div class="all-debts-tree-item" id="all-tree-2019-2020">
+            <div class="d-flex align-items-center gap-1 flex-grow-1" onclick="LedgerModule.selectAllDebtsFY('2019-2020')">
+              <span class="all-debts-tree-caret" onclick="event.stopPropagation(); LedgerModule.toggleAllDebtsFYTree('2019-2020')"><i class="bi bi-caret-right-fill" id="all-caret-2019-2020"></i></span>
+              <span class="appsheet-bullet gold-bullet">●</span>
+              <span class="fw-semibold">2019-2020</span>
+            </div>
+            <span class="all-debts-tree-badge" id="all-badge-2019-2020">₹ 268,300.00</span>
+          </div>
+          <div class="all-debts-tree-sublist d-none" id="all-sublist-2019-2020"></div>
+
+        </div>
+
+        <!-- Main Area: Toolbar + Split Layout + Pagination -->
+        <div class="all-debts-main-area" id="all-debts-main-area">
+          
+          <!-- Authentic AppSheet Toolbar -->
+          <div class="d-flex align-items-center justify-content-between px-3 py-2 border-bottom bg-white flex-wrap gap-2">
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+              <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2 d-inline-flex align-items-center gap-1" id="btn-toggle-all-sidebar" onclick="LedgerModule.toggleAllDebtsSidebar()" title="Toggle Sidebar" style="font-size: 0.8rem;">
+                <i class="bi bi-layout-sidebar-inset" id="btn-toggle-all-icon"></i>
+                <span id="btn-toggle-all-text">Hide Date Filter</span>
+              </button>
+              <div class="appsheet-breadcrumb mb-0 d-none d-sm-flex align-items-center" style="font-size: 13px;">
+                <span class="text-secondary cursor-pointer" onclick="LedgerModule.goToDashboardView()">Home</span>
+                <span class="text-muted mx-1">&gt;</span>
+                <span class="text-secondary cursor-pointer" onclick="LedgerModule.goToDashboardView()">Ledger</span>
+                <span class="text-muted mx-1">&gt;</span>
+                <span class="fw-semibold text-dark" id="all-debts-title-badge">All Debts</span>
+              </div>
+              <span class="badge bg-light text-dark border fw-normal" id="all-debts-filter-pill" style="font-size: 0.78rem;">
+                <i class="bi bi-funnel me-1 text-muted"></i><strong id="all-debts-filter-pill-text">All Years</strong>
+              </span>
+            </div>
+
+            <div class="d-flex align-items-center gap-2">
+              <button type="button" class="btn btn-sm py-1 px-3 fw-semibold text-white d-flex align-items-center gap-1" style="background: #1a73e8; border-radius: 4px; font-size: 0.8rem;" onclick="LedgerModule.openAddDebtModal()">
+                <i class="bi bi-plus-lg"></i>
+                <span>+ Add Debt</span>
+              </button>
+              <span class="appsheet-tool-icon" onclick="LedgerModule.toggleFilterDropdown()" title="Filter">🔻</span>
+              <span class="appsheet-tool-icon" onclick="AppUI.showToast('Multi-select mode active', 'info')" title="Select">☑</span>
+              <span class="appsheet-tool-icon" onclick="LedgerModule.toggleAllDebtsFullscreen()" title="Fullscreen">⤢</span>
+            </div>
+          </div>
+
+          <!-- Split Wrapper (Table + Side Panel) -->
+          <div class="all-debts-split-wrapper" id="all-debts-split-wrapper">
+            
+            <!-- Table Wrapper -->
+            <div class="all-debts-table-wrapper" id="all-debts-table-wrapper">
+              <table class="all-debts-table" id="all-debts-table">
+                <thead>
+                  <tr>
+                    <th>G.R.No.</th>
+                    <th>Truck No.</th>
+                    <th>To</th>
+                    <th>Total Returned Amount</th>
+                    <th>Due Amount</th>
+                    <th>Debt Amount</th>
+                    <th>Debt Type</th>
+                    <th>Debt Mode</th>
+                    <th>Borrower Name</th>
+                    <th>Receiver Name</th>
+                    <th>Description</th>
+                    <th>Date</th>
+                    <th style="width: 25px;"></th>
+                  </tr>
+                </thead>
+                <tbody id="all-debts-table-body">
+                  <!-- Dynamically rendered rows -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Master-Detail Side Panel -->
+            <div class="all-debts-panel d-none" id="all-debts-panel">
+              <div class="all-debts-panel-header">
+                <span class="fw-bold text-dark fs-6" id="all-panel-title">All Debts Details</span>
+                <div class="d-flex align-items-center gap-2">
+                  <button type="button" class="btn btn-sm btn-link text-muted p-1" onclick="LedgerModule.editCurrentAllDebt()" title="Edit Debt">
+                    <i class="bi bi-pencil fs-6"></i>
+                  </button>
+                  <button type="button" class="btn btn-sm btn-link text-danger p-1" onclick="LedgerModule.deleteCurrentAllDebt()" title="Delete Debt">
+                    <i class="bi bi-trash fs-6"></i>
+                  </button>
+                  <button type="button" class="btn btn-sm btn-link text-muted p-1" onclick="LedgerModule.toggleAllPanelFullscreen()" title="Fullscreen">
+                    <i class="bi bi-arrows-fullscreen fs-6"></i>
+                  </button>
+                  <button type="button" class="btn btn-sm btn-link text-muted p-1" onclick="LedgerModule.closeAllDebtDetails()" title="Close">
+                    <i class="bi bi-x-lg fs-6"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="all-debts-detail-body p-3" id="all-debts-detail-body">
+                <!-- Dual Card Layout matching WhatsApp photos -->
+                <!-- Card 1: Debt Details -->
+                <div class="all-debt-card mb-3">
+                  <div class="all-debt-card-header fw-bold text-dark mb-3 pb-2 border-bottom">
+                    Debt Details
+                  </div>
+                  <div class="all-field-row"><span class="all-field-label">Debt Type</span><span class="all-field-val" id="all-det-debt-type">-</span></div>
+                  <div class="all-field-row"><span class="all-field-label">Date</span><span class="all-field-val" id="all-det-debt-date">-</span></div>
+                  <div class="all-field-row"><span class="all-field-label">Truck Owner Name</span><span class="all-field-val" id="all-det-debt-owner">-</span></div>
+                  <div class="all-field-row"><span class="all-field-label">G.R.No.</span><span class="all-field-val" id="all-det-debt-gr">-</span></div>
+                  <div class="all-field-row"><span class="all-field-label">Company Name</span><span class="all-field-val" id="all-det-debt-company">-</span></div>
+                  <div class="all-field-row"><span class="all-field-label">From</span><span class="all-field-val" id="all-det-debt-from">-</span></div>
+                  <div class="all-field-row"><span class="all-field-label">To</span><span class="all-field-val" id="all-det-debt-to">-</span></div>
+                  <div class="all-field-row"><span class="all-field-label">Borrower Name</span><span class="all-field-val" id="all-det-debt-borrower">-</span></div>
+                  <div class="all-field-row"><span class="all-field-label">Receiver Name</span><span class="all-field-val" id="all-det-debt-receiver">-</span></div>
+                  <div class="all-field-row"><span class="all-field-label">Description</span><span class="all-field-val" id="all-det-debt-desc">-</span></div>
+                </div>
+
+                <!-- Card 2: Returned Amount [count] with + Add button -->
+                <div class="all-debt-card mb-3">
+                  <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+                    <span class="fw-bold text-dark" id="all-det-returned-header">Returned Amount [0]</span>
+                    <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2 fw-semibold" style="font-size: 0.78rem;" onclick="LedgerModule.openRecordReturnModalForAllDebt()">
+                      <i class="bi bi-plus-lg me-1"></i> Add
+                    </button>
+                  </div>
+                  <div id="all-det-returned-list">
+                    <!-- Populated dynamically -->
+                  </div>
+                </div>
+
+                <!-- Card 3: Summary matching WhatsApp Image 2026-10-10 at 2.29.52 AM (1).jpeg -->
+                <div class="all-debt-card mb-3">
+                  <div class="all-field-row"><span class="all-field-label">Debt Mode</span><span class="all-field-val" id="all-det-debt-mode">-</span></div>
+                  <div class="all-field-row"><span class="all-field-label">Debt Amount</span><span class="all-field-val fw-bold" id="all-det-debt-amount">-</span></div>
+                  <div class="all-field-row"><span class="all-field-label">Total Returned Amount</span><span class="all-field-val fw-bold text-success" id="all-det-total-returned">-</span></div>
+                  <div class="all-field-row"><span class="all-field-label">Due Amount</span><span class="all-field-val fw-bold text-danger" id="all-det-due-amount">-</span></div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Bottom Pagination Bar -->
+          <div class="p-2 px-3 bg-white border-top d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <small class="text-muted" id="all-debts-pagination-info">Showing 1-100 of entries</small>
+            <div class="d-flex align-items-center gap-2">
+              <select id="all-debts-page-size" class="form-select form-select-sm" style="width: auto; font-size: 0.8rem;" onchange="LedgerModule.changeAllDebtsPageSize(this.value)">
+                <option value="50">50 rows</option>
+                <option value="100" selected>100 rows</option>
+                <option value="250">250 rows</option>
+                <option value="ALL">All rows</option>
+              </select>
+              <div class="btn-group btn-group-sm" id="all-debts-pagination-buttons">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+          </div>
+
+        </div>
 
       </div>
     </div>
@@ -4044,7 +4622,20 @@
             <!-- Depositor Name -->
             <div class="mb-3 d-flex align-items-center">
               <label class="form-label text-muted m-0" style="width: 140px; font-size: 13.5px;">Depositor Name</label>
-              <input type="text" id="return-depositor-name" class="form-control form-control-sm" placeholder="e.g. Suraj Bhan" style="font-size: 13.5px;">
+              <input type="text" id="return-depositor-name" list="depositor-name-list" class="form-control form-control-sm" placeholder="Add or search" style="font-size: 13.5px;">
+              <datalist id="depositor-name-list">
+                <option value="Balveer Yadav">
+                <option value="Kalim Khan">
+                <option value="Raju Kasana">
+                <option value="Ram Swaroop">
+                <option value="Panchuram Gurjar">
+                <option value="Umrav kasana">
+                <option value="Govind Choudhary">
+                <option value="Mahendra Gurjar">
+                <option value="Sitaram Meena">
+                <option value="Kishan Rawat">
+                <option value="Pappu Gurjar">
+              </datalist>
             </div>
 
             <!-- Return Mode -->

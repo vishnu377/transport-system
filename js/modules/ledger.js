@@ -95,6 +95,26 @@ const LedgerModule = {
   isOpenDebtsPanelFullscreen: false,
   modalReturnMode: 'Cash',
 
+  // All Debts State (Authentic AppSheet Master-Detail Dual Pane)
+  selectedAllDebtsFY: 'ALL',
+  selectedAllDebtsDate: null,
+  expandedAllDebtsFYs: {
+    '2026-2027': true,
+    '2025-2026': false,
+    '2024-2025': false,
+    '2023-2024': false,
+    '2022-2023': false,
+    '2021-2022': false,
+    '2020-2021': false,
+    '2019-2020': false
+  },
+  isAllDebtsSidebarHidden: false,
+  allDebtsPageSize: 100,
+  allDebtsCurrentPage: 1,
+  filteredAllDebtsList: [],
+  activeAllDebtId: null,
+  isAllDebtsPanelFullscreen: false,
+
   // View Hierarchy State: 'year' | 'month' | 'table' | 'details'
   viewLevel: 'year',
   selectedFY: 'ALL',
@@ -122,12 +142,32 @@ const LedgerModule = {
       AppUI.renderSidebar('ledger');
     }
     await this.loadData();
+
+    // Check URL parameters for direct deep-linking
+    const urlParams = (typeof window !== 'undefined' && window.location) ? new URLSearchParams(window.location.search) : null;
+    const viewParam = urlParams ? urlParams.get('view') : null;
+    const fyParam = urlParams ? urlParams.get('fy') : null;
+    if (viewParam === 'all-debts') {
+      return this.goToAllDebtsView(fyParam || 'ALL');
+    } else if (viewParam === 'open-debts') {
+      return this.goToOpenDebtsView(fyParam || '2026-2027');
+    } else if (viewParam === 'cash-ledger') {
+      return this.goToCashLedgerView(fyParam || '2026-2027');
+    } else if (viewParam === 'returned') {
+      return this.goToReturnedAmountView(fyParam || '2026-2027');
+    } else if (viewParam === 'company') {
+      return this.goToCompanyExpenseView(fyParam || '2026-2027');
+    } else if (viewParam === 'received') {
+      return this.goToReceivedView(fyParam || '2026-2027');
+    }
+
     this.applyFilters();
     this.applyCashFilters();
     this.applyReturnedFilters();
     this.applyCompanyFilters();
     this.applyReceivedFilters();
     this.applyOpenDebtsFilters();
+    this.applyAllDebtsFilters();
     this.renderRegisterTable();
     this.renderFYSidebar();
     this.renderMonthBar();
@@ -135,15 +175,30 @@ const LedgerModule = {
   },
 
   async loadData() {
-    this.allDebts = await dbService.getAll('debts');
-    this.allParties = await dbService.getAll('parties');
-    this.allOwners = await dbService.getAll('truckOwners');
-    this.allTrips = await dbService.getAll('trips');
-    this.allPayments = await dbService.getAll('payments');
-    this.allCashLedger = await dbService.getAll('cashLedger');
-    this.allReturnedAmounts = await dbService.getAll('returnedAmounts');
-    this.allCompanyExpenses = await dbService.getAll('companyExpenses');
-    this.allReceivedPayments = await dbService.getAll('receivedPayments');
+    const [
+      allDebts, allParties, allOwners, allTrips,
+      allPayments, allCashLedger, allReturnedAmounts,
+      allCompanyExpenses, allReceivedPayments
+    ] = await Promise.all([
+      dbService.getAll('debts'),
+      dbService.getAll('parties'),
+      dbService.getAll('truckOwners'),
+      dbService.getAll('trips'),
+      dbService.getAll('payments'),
+      dbService.getAll('cashLedger'),
+      dbService.getAll('returnedAmounts'),
+      dbService.getAll('companyExpenses'),
+      dbService.getAll('receivedPayments')
+    ]);
+    this.allDebts = allDebts || [];
+    this.allParties = allParties || [];
+    this.allOwners = allOwners || [];
+    this.allTrips = allTrips || [];
+    this.allPayments = allPayments || [];
+    this.allCashLedger = allCashLedger || [];
+    this.allReturnedAmounts = allReturnedAmounts || [];
+    this.allCompanyExpenses = allCompanyExpenses || [];
+    this.allReceivedPayments = allReceivedPayments || [];
   },
 
   // ----------------------------------------------------
@@ -219,13 +274,43 @@ const LedgerModule = {
       sInput.value = '';
       sInput.placeholder = 'Search Open Debts';
     }
+    document.getElementById('tab-btn-open')?.classList.add('active');
+    document.getElementById('tab-btn-all')?.classList.remove('active');
+    document.getElementById('tab-btn-settled')?.classList.remove('active');
+    document.getElementById('tab-btn-statements')?.classList.remove('active');
     this.applyOpenDebtsFilters();
+    this.renderCurrentView();
+  },
+
+  goToAllDebtsView(fy = 'ALL') {
+    this.mainViewMode = 'all-debts';
+    this.currentTab = 'all';
+    this.selectedAllDebtsFY = fy || 'ALL';
+    this.selectedAllDebtsDate = null;
+    if (fy && fy !== 'ALL') {
+      this.expandedAllDebtsFYs[fy] = true;
+    }
+    this.allDebtsCurrentPage = 1;
+    this.searchQuery = '';
+    const sInput = document.getElementById('ledger-search-input');
+    if (sInput) {
+      sInput.value = '';
+      sInput.placeholder = 'Search All Debts';
+    }
+    document.getElementById('tab-btn-open')?.classList.remove('active');
+    document.getElementById('tab-btn-all')?.classList.add('active');
+    document.getElementById('tab-btn-settled')?.classList.remove('active');
+    document.getElementById('tab-btn-statements')?.classList.remove('active');
+    this.applyAllDebtsFilters();
     this.renderCurrentView();
   },
 
   goToDebtsView(tab = 'open', fy = 'ALL') {
     if (tab === 'open') {
       return this.goToOpenDebtsView(fy === 'ALL' ? 'ALL' : fy);
+    }
+    if (tab === 'all') {
+      return this.goToAllDebtsView(fy === 'ALL' ? 'ALL' : fy);
     }
     this.mainViewMode = 'debts';
     this.currentTab = tab;
@@ -3552,10 +3637,17 @@ const LedgerModule = {
         bootstrap.Modal.getOrCreateInstance(modalEl).hide();
       }
 
-      this.applyOpenDebtsFilters();
-      this.renderOpenDebtsTreeSidebar();
-      this.renderOpenDebtsTable();
-      this.openOpenDebtDetails(debtId);
+      if (this.mainViewMode === 'all-debts') {
+        this.applyAllDebtsFilters();
+        this.renderAllDebtsTreeSidebar();
+        this.renderAllDebtsTable();
+        this.openAllDebtDetails(debtId);
+      } else {
+        this.applyOpenDebtsFilters();
+        this.renderOpenDebtsTreeSidebar();
+        this.renderOpenDebtsTable();
+        this.openOpenDebtDetails(debtId);
+      }
 
       if (typeof AppUI !== 'undefined') {
         AppUI.showToast(`Returned payment of ₹ ${this.formatINR(amtVal)} recorded successfully!`, 'success');
@@ -3563,6 +3655,555 @@ const LedgerModule = {
     } catch (err) {
       console.error(err);
       if (typeof AppUI !== 'undefined') AppUI.showToast('Failed to record return: ' + err.message, 'error');
+    }
+  },
+
+  // ----------------------------------------------------
+  // ALL DEBTS (Google AppSheet Master-Detail Dual Pane) METHODS
+  // ----------------------------------------------------
+  toggleAllDebtsSidebar() {
+    const sb = document.getElementById('all-debts-tree-sidebar');
+    if (!sb) return;
+    this.isAllDebtsSidebarHidden = !this.isAllDebtsSidebarHidden;
+    sb.classList.toggle('collapsed', this.isAllDebtsSidebarHidden);
+    const btnText = document.getElementById('btn-toggle-all-text');
+    const btnIcon = document.getElementById('btn-toggle-all-icon');
+    if (btnText) btnText.innerText = this.isAllDebtsSidebarHidden ? 'Show Date Filter' : 'Hide Date Filter';
+    if (btnIcon) btnIcon.className = this.isAllDebtsSidebarHidden ? 'bi bi-layout-sidebar' : 'bi bi-layout-sidebar-inset';
+  },
+
+  toggleAllDebtsFYTree(fy) {
+    this.expandedAllDebtsFYs[fy] = !this.expandedAllDebtsFYs[fy];
+    this.renderAllDebtsTreeSidebar();
+  },
+
+  selectAllDebtsFY(fy) {
+    this.selectedAllDebtsFY = fy;
+    this.selectedAllDebtsDate = null;
+    this.allDebtsCurrentPage = 1;
+    if (fy !== 'ALL') {
+      this.expandedAllDebtsFYs[fy] = true;
+    }
+    this.applyAllDebtsFilters();
+    this.renderAllDebtsTreeSidebar();
+    this.renderAllDebtsTable();
+  },
+
+  selectAllDebtsDate(fy, date) {
+    this.selectedAllDebtsFY = fy;
+    this.selectedAllDebtsDate = date;
+    this.allDebtsCurrentPage = 1;
+    this.applyAllDebtsFilters();
+    this.renderAllDebtsTreeSidebar();
+    this.renderAllDebtsTable();
+  },
+
+  renderAllDebtsTreeSidebar() {
+    if (!this.allDebts) return;
+    const fyList = [
+      '2026-2027', '2025-2026', '2024-2025', '2023-2024',
+      '2022-2023', '2021-2022', '2020-2021', '2019-2020'
+    ];
+    let grandTotal = 0;
+    const fyTotals = {};
+    const dateTotals = {};
+    const dateCounts = {};
+    const dateHasOpen = {};
+
+    fyList.forEach(fy => { fyTotals[fy] = 0; });
+
+    this.allDebts.forEach(d => {
+      const debt = Number(d.debtAmount) || 0;
+      const due = Number(d.dueAmount) || 0;
+      grandTotal += debt;
+      if (fyTotals.hasOwnProperty(d.fy)) {
+        fyTotals[d.fy] += debt;
+      }
+      const dKey = d.displayDate || d.date || 'Undated';
+      const key = `${d.fy}_${dKey}`;
+      dateTotals[key] = (dateTotals[key] || 0) + debt;
+      dateCounts[key] = (dateCounts[key] || 0) + 1;
+      if (due > 0) {
+        dateHasOpen[key] = true;
+      }
+    });
+
+    const badgeAll = document.getElementById('all-badge-all');
+    if (badgeAll) badgeAll.textContent = `₹ ${this.formatINR(grandTotal)}`;
+
+    const treeAll = document.getElementById('all-tree-all');
+    if (treeAll) {
+      treeAll.classList.toggle('active', this.selectedAllDebtsFY === 'ALL');
+    }
+
+    fyList.forEach(fy => {
+      const b = document.getElementById(`all-badge-${fy}`);
+      if (b) b.textContent = `₹ ${this.formatINR(fyTotals[fy] || 0)}`;
+
+      const item = document.getElementById(`all-tree-${fy}`);
+      if (item) {
+        item.classList.toggle('active', this.selectedAllDebtsFY === fy && !this.selectedAllDebtsDate);
+      }
+
+      const caret = document.getElementById(`all-caret-${fy}`);
+      const isExp = !!this.expandedAllDebtsFYs[fy];
+      if (caret) caret.className = isExp ? 'bi bi-caret-down-fill' : 'bi bi-caret-right-fill';
+
+      const sub = document.getElementById(`all-sublist-${fy}`);
+      if (sub) {
+        if (isExp) {
+          sub.classList.remove('d-none');
+          const datesInFY = [];
+          Object.keys(dateTotals).forEach(k => {
+            if (k.startsWith(`${fy}_`)) {
+              const dStr = k.replace(`${fy}_`, '');
+              datesInFY.push({
+                date: dStr,
+                total: dateTotals[k],
+                count: dateCounts[k],
+                hasOpen: !!dateHasOpen[k]
+              });
+            }
+          });
+
+          // Sort dates descending
+          datesInFY.sort((a, b) => {
+            const p = s => {
+              const pts = s.split('/');
+              if (pts.length === 3) return new Date(`${pts[2]}-${pts[1]}-${pts[0]}`);
+              return new Date(s);
+            };
+            return p(b.date) - p(a.date);
+          });
+
+          let subHtml = '';
+          datesInFY.forEach(item => {
+            const isActive = this.selectedAllDebtsFY === fy && this.selectedAllDebtsDate === item.date;
+            const bulletClass = item.hasOpen ? 'gold-bullet' : 'green-bullet';
+            subHtml += `
+              <div class="all-debts-tree-subitem ${isActive ? 'active' : ''}" onclick="LedgerModule.selectAllDebtsDate('${fy}', '${item.date}')">
+                <span class="d-flex align-items-center gap-1">
+                  <span class="appsheet-bullet ${bulletClass}">●</span>
+                  <span>${item.date} (${item.count})</span>
+                </span>
+                <span class="all-debts-tree-badge">₹ ${this.formatINR(item.total)}</span>
+              </div>
+            `;
+          });
+          sub.innerHTML = subHtml;
+        } else {
+          sub.classList.add('d-none');
+          sub.innerHTML = '';
+        }
+      }
+
+      const cardBadge = document.getElementById(`card-all-badge-${fy}`);
+      if (cardBadge) cardBadge.textContent = `₹ ${this.formatINR(fyTotals[fy] || 0)}`;
+    });
+  },
+
+  applyAllDebtsFilters() {
+    if (!this.allDebts) {
+      this.filteredAllDebtsList = [];
+      return;
+    }
+    const q = (this.searchQuery || '').trim().toLowerCase();
+
+    this.filteredAllDebtsList = this.allDebts.filter(d => {
+      // FY filter
+      if (this.selectedAllDebtsFY !== 'ALL') {
+        if (d.fy !== this.selectedAllDebtsFY) return false;
+      }
+
+      // Date filter
+      if (this.selectedAllDebtsDate) {
+        const itemDate = d.displayDate || d.date || '';
+        if (itemDate !== this.selectedAllDebtsDate) return false;
+      }
+
+      // Dropdown filters
+      if (this.filterCompany !== 'ALL' && d.company !== this.filterCompany) return false;
+      if (this.filterDebtType !== 'ALL' && d.debtType !== this.filterDebtType) return false;
+      if (this.filterDebtMode !== 'ALL' && d.debtMode !== this.filterDebtMode) return false;
+
+      // Search query
+      if (q) {
+        const matchGR = String(d.grNo || '').toLowerCase().includes(q);
+        const matchTruck = String(d.truckNo || '').toLowerCase().includes(q);
+        const matchBorrower = String(d.borrowerName || '').toLowerCase().includes(q);
+        const matchReceiver = String(d.receiverName || '').toLowerCase().includes(q);
+        const matchOwner = String(d.truckOwner || '').toLowerCase().includes(q);
+        const matchCompany = String(d.company || '').toLowerCase().includes(q);
+        const matchType = String(d.debtType || '').toLowerCase().includes(q);
+        const matchFrom = String(d.from || '').toLowerCase().includes(q);
+        const matchTo = String(d.to || '').toLowerCase().includes(q);
+        const matchDesc = String(d.description || '').toLowerCase().includes(q);
+        const matchAmt = String(d.dueAmount || '').includes(q) || String(d.debtAmount || '').includes(q);
+        if (!matchGR && !matchTruck && !matchBorrower && !matchReceiver && !matchOwner && !matchCompany && !matchType && !matchFrom && !matchTo && !matchDesc && !matchAmt) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+
+    // Sort descending by date, then id
+    this.filteredAllDebtsList.sort((a, b) => {
+      const dateA = a.date || '';
+      const dateB = b.date || '';
+      if (dateA !== dateB) return dateB.localeCompare(dateA);
+      return String(b.id || '').localeCompare(String(a.id || ''));
+    });
+  },
+
+  renderAllDebtsTable() {
+    const tbody = document.getElementById('all-debts-table-body');
+    if (!tbody) return;
+
+    // Update filter pill in toolbar
+    const pillText = document.getElementById('all-debts-filter-pill-text');
+    if (pillText) {
+      if (this.selectedAllDebtsFY === 'ALL') {
+        pillText.innerText = 'All Years';
+      } else if (this.selectedAllDebtsDate) {
+        pillText.innerText = `${this.selectedAllDebtsFY} > ${this.selectedAllDebtsDate}`;
+      } else {
+        pillText.innerText = this.selectedAllDebtsFY;
+      }
+    }
+
+    if (!this.filteredAllDebtsList || this.filteredAllDebtsList.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="13" class="text-center py-5 text-muted">
+            <i class="bi bi-inbox fs-2 d-block mb-2 text-secondary"></i>
+            No debt records match the selected filter or search criteria.
+          </td>
+        </tr>
+      `;
+      this.renderAllDebtsPagination(0);
+      return;
+    }
+
+    const totalItems = this.filteredAllDebtsList.length;
+    const pageSize = this.allDebtsPageSize === 'ALL' ? totalItems : parseInt(this.allDebtsPageSize);
+    const totalPages = Math.ceil(totalItems / pageSize) || 1;
+    if (this.allDebtsCurrentPage > totalPages) this.allDebtsCurrentPage = totalPages;
+    if (this.allDebtsCurrentPage < 1) this.allDebtsCurrentPage = 1;
+
+    const startIdx = (this.allDebtsCurrentPage - 1) * pageSize;
+    const endIdx = Math.min(startIdx + pageSize, totalItems);
+    const pageRecords = this.filteredAllDebtsList.slice(startIdx, endIdx);
+
+    // Group page records by date
+    const dateGroups = {};
+    pageRecords.forEach(d => {
+      const dKey = d.displayDate || d.date || 'Undated';
+      if (!dateGroups[dKey]) dateGroups[dKey] = [];
+      dateGroups[dKey].push(d);
+    });
+
+    let html = '';
+    Object.keys(dateGroups).forEach(dKey => {
+      const records = dateGroups[dKey];
+      const dayTotal = records.reduce((sum, r) => sum + (Number(r.debtAmount) || 0), 0);
+      const allSettled = records.every(r => (Number(r.dueAmount) || 0) <= 0);
+      const groupBullet = allSettled ? 'green-bullet' : 'gold-bullet';
+      const headerClass = allSettled ? 'all-debts-date-header date-header-green' : 'all-debts-date-header';
+
+      // Date Header Row
+      html += `
+        <tr class="${headerClass}">
+          <td colspan="13">
+            <div class="d-flex align-items-center gap-2">
+              <span class="appsheet-bullet ${groupBullet}">●</span>
+              <span class="fw-bold">${dKey}</span>
+              <span class="badge bg-light text-dark border px-2 py-1 font-monospace" style="font-size: 11px;">₹ ${this.formatINR(dayTotal)}</span>
+            </div>
+          </td>
+        </tr>
+      `;
+
+      // Data Rows
+      records.forEach(d => {
+        const debt = Number(d.debtAmount) || 0;
+        const due = Number(d.dueAmount) || 0;
+        const ret = Number(d.totalReturned) || 0;
+
+        let rowClass = 'all-debts-row-gold';
+        let primaryColor = '#8d6e32'; // Gold for open debts
+        if (due <= 0) {
+          rowClass = 'all-debts-row-green';
+          primaryColor = '#0b8043'; // Green for settled debts
+        } else if (ret > 0 && due < debt) {
+          rowClass = 'all-debts-row-blue';
+          primaryColor = '#1a73e8'; // Blue for partially returned debts
+        }
+
+        const isRowActive = this.activeAllDebtId && String(this.activeAllDebtId) === String(d.id);
+        const activeClass = isRowActive ? 'active' : '';
+
+        // Returned Amount cell formatting
+        let returnedCellContent = `<span style="color: #0b8043;">●</span>`;
+        if (due <= 0) {
+          returnedCellContent = `<span class="td-returned-green">● ₹ ${this.formatINR(ret || debt)}</span>`;
+        } else if (ret > 0) {
+          returnedCellContent = `<span class="td-returned-green">● ₹ ${this.formatINR(ret)}</span>`;
+        } else {
+          returnedCellContent = `<span style="color: #0b8043;">●</span> <span class="td-returned-green">₹ 0.00</span>`;
+        }
+
+        // Due Amount cell formatting (empty if settled)
+        let dueCellContent = `<span></span>`;
+        if (due > 0) {
+          dueCellContent = `<span class="td-due-amount">● ₹ ${this.formatINR(due)}</span>`;
+        }
+
+        html += `
+          <tr class="all-debts-data-row ${rowClass} ${activeClass}" id="all-row-${d.id}" onclick="LedgerModule.openAllDebtDetails('${d.id}')">
+            <td><span style="color: ${primaryColor};">●</span> <span style="font-weight: 600;">${d.grNo || ''}</span></td>
+            <td>${d.truckNo ? `<span style="color: ${primaryColor};">●</span> <span style="font-weight: 600;">${d.truckNo}</span>` : `<span style="color: ${primaryColor};">●</span>`}</td>
+            <td>${d.to ? `<span style="color: ${primaryColor};">●</span> <span>${d.to}</span>` : `<span style="color: ${primaryColor};">●</span>`}</td>
+            <td>${returnedCellContent}</td>
+            <td class="td-due-amount">${dueCellContent}</td>
+            <td><span style="color: ${primaryColor}; font-weight: 600;">● ₹ ${this.formatINR(debt)}</span></td>
+            <td><span style="color: ${primaryColor};">●</span> <span>${d.debtType || ''}</span></td>
+            <td><span style="color: ${primaryColor};">●</span> <span>${d.debtMode || 'Cash'}</span></td>
+            <td><span style="color: ${primaryColor};">●</span> <span>${d.borrowerName || ''}</span></td>
+            <td><span style="color: ${primaryColor};">●</span> <span>${d.receiverName || ''}</span></td>
+            <td><span style="color: ${primaryColor};">●</span> <span>${d.description || ''}</span></td>
+            <td><span style="color: ${primaryColor};">${d.displayDate || d.date || ''}</span></td>
+            <td class="text-end" style="color: ${primaryColor}; font-weight: bold; width: 25px;">&gt;</td>
+          </tr>
+        `;
+      });
+    });
+
+    tbody.innerHTML = html;
+    this.renderAllDebtsPagination(totalItems);
+  },
+
+  renderAllDebtsPagination(totalItems) {
+    const info = document.getElementById('all-debts-pagination-info');
+    const container = document.getElementById('all-debts-pagination-buttons');
+    if (!info || !container) return;
+
+    if (totalItems === 0) {
+      info.innerText = 'Showing 0-0 of 0 entries';
+      container.innerHTML = '';
+      return;
+    }
+
+    const pageSize = this.allDebtsPageSize === 'ALL' ? totalItems : parseInt(this.allDebtsPageSize);
+    const totalPages = Math.ceil(totalItems / pageSize) || 1;
+    const startIdx = (this.allDebtsCurrentPage - 1) * pageSize + 1;
+    const endIdx = Math.min(startIdx + pageSize - 1, totalItems);
+
+    info.innerText = `Showing ${startIdx}-${endIdx} of ${totalItems} entries`;
+
+    if (totalPages <= 1) {
+      container.innerHTML = '';
+      return;
+    }
+
+    let btns = '';
+    btns += `<button type="button" class="btn btn-outline-secondary ${this.allDebtsCurrentPage === 1 ? 'disabled' : ''}" onclick="LedgerModule.goToAllDebtsPage(1)" title="First"><i class="bi bi-chevron-double-left"></i></button>`;
+    btns += `<button type="button" class="btn btn-outline-secondary ${this.allDebtsCurrentPage === 1 ? 'disabled' : ''}" onclick="LedgerModule.goToAllDebtsPage(${this.allDebtsCurrentPage - 1})" title="Previous"><i class="bi bi-chevron-left"></i></button>`;
+
+    const startP = Math.max(1, this.allDebtsCurrentPage - 2);
+    const endP = Math.min(totalPages, this.allDebtsCurrentPage + 2);
+
+    for (let p = startP; p <= endP; p++) {
+      btns += `<button type="button" class="btn ${p === this.allDebtsCurrentPage ? 'btn-primary' : 'btn-outline-secondary'}" onclick="LedgerModule.goToAllDebtsPage(${p})">${p}</button>`;
+    }
+
+    btns += `<button type="button" class="btn btn-outline-secondary ${this.allDebtsCurrentPage === totalPages ? 'disabled' : ''}" onclick="LedgerModule.goToAllDebtsPage(${this.allDebtsCurrentPage + 1})" title="Next"><i class="bi bi-chevron-right"></i></button>`;
+    btns += `<button type="button" class="btn btn-outline-secondary ${this.allDebtsCurrentPage === totalPages ? 'disabled' : ''}" onclick="LedgerModule.goToAllDebtsPage(${totalPages})" title="Last"><i class="bi bi-chevron-double-right"></i></button>`;
+
+    container.innerHTML = btns;
+  },
+
+  changeAllDebtsPageSize(sz) {
+    this.allDebtsPageSize = sz;
+    this.allDebtsCurrentPage = 1;
+    this.renderAllDebtsTable();
+  },
+
+  goToAllDebtsPage(pg) {
+    this.allDebtsCurrentPage = pg;
+    this.renderAllDebtsTable();
+  },
+
+  openAllDebtDetails(debtId) {
+    this.activeAllDebtId = debtId;
+    const debt = (this.allDebts || []).find(d => String(d.id) === String(debtId));
+    if (!debt) return;
+
+    // Highlight row
+    document.querySelectorAll('.all-debts-data-row').forEach(r => r.classList.remove('active'));
+    const rEl = document.getElementById(`all-row-${debtId}`);
+    if (rEl) rEl.classList.add('active');
+
+    // Expand split wrapper
+    const splitWrapper = document.getElementById('all-debts-split-wrapper');
+    if (splitWrapper) splitWrapper.classList.add('split-open');
+
+    // Show side panel
+    const panel = document.getElementById('all-debts-panel');
+    if (panel) panel.classList.remove('d-none');
+
+    const due = Number(debt.dueAmount) || 0;
+    const totalDebt = Number(debt.debtAmount) || 0;
+    const totalRet = Number(debt.totalReturned) || 0;
+
+    let primaryColor = '#8d6e32'; // Gold
+    if (due <= 0) {
+      primaryColor = '#0b8043'; // Green
+    } else if (totalRet > 0 && due < totalDebt) {
+      primaryColor = '#1a73e8'; // Blue
+    }
+
+    const bulletHtml = `<span style="color: ${primaryColor};">●</span> `;
+
+    // Card 1: Debt Details
+    const setVal = (id, text) => {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = `${bulletHtml}<span style="color: ${primaryColor}; font-weight: 600;">${text || '-'}</span>`;
+    };
+
+    setVal('all-det-debt-type', debt.debtType);
+    setVal('all-det-debt-date', debt.displayDate || debt.date);
+    setVal('all-det-debt-owner', debt.truckOwner);
+    setVal('all-det-debt-gr', debt.grNo);
+    setVal('all-det-debt-company', debt.company);
+    setVal('all-det-debt-from', debt.from);
+    setVal('all-det-debt-to', debt.to);
+    setVal('all-det-debt-borrower', debt.borrowerName);
+    setVal('all-det-debt-receiver', debt.receiverName);
+    setVal('all-det-debt-desc', debt.description);
+
+    // Card 2: Returned Amount [count]
+    const returns = Array.isArray(debt.returnedAmounts) ? debt.returnedAmounts : [];
+    const retHeader = document.getElementById('all-det-returned-header');
+    if (retHeader) retHeader.innerText = `Returned Amount ${returns.length}`;
+
+    const retList = document.getElementById('all-det-returned-list');
+    if (retList) {
+      if (returns.length === 0) {
+        retList.innerHTML = `<div class="text-center py-4 text-muted" style="font-size: 13px;">No items</div>`;
+      } else {
+        let rHtml = '';
+        returns.forEach(r => {
+          const rDate = r.displayDate || r.date || '';
+          const rAmt = Number(r.amount) || 0;
+          rHtml += `
+            <div class="returned-history-item mb-2 p-2 border rounded bg-white">
+              <div class="d-flex align-items-center justify-content-between mb-1">
+                <span class="fw-semibold text-dark" style="font-size: 12.5px;"><span class="appsheet-bullet green-bullet">●</span> ${rDate}</span>
+                <span class="fw-bold text-success" style="font-size: 13px;">₹ ${this.formatINR(rAmt)}</span>
+              </div>
+              <div class="d-flex align-items-center justify-content-between text-muted" style="font-size: 11.5px;">
+                <span>${r.depositorType || 'Driver'}: ${r.depositorName || r.receivedBy || '-'}</span>
+                <span class="badge bg-light text-dark border">${r.mode || r.returnMode || 'Cash'}</span>
+              </div>
+              ${r.description ? `<div class="text-muted mt-1 small" style="font-size: 11px;"><em>${r.description}</em></div>` : ''}
+            </div>
+          `;
+        });
+        retList.innerHTML = rHtml;
+      }
+    }
+
+    // Card 3: Summary matching WhatsApp screenshot
+    const elMode = document.getElementById('all-det-debt-mode');
+    if (elMode) elMode.innerHTML = `${bulletHtml}<span style="color: ${primaryColor}; font-weight: 600;">${debt.debtMode || 'Cash'}</span>`;
+
+    const elAmt = document.getElementById('all-det-debt-amount');
+    if (elAmt) elAmt.innerHTML = `${bulletHtml}<span style="color: ${primaryColor}; font-weight: 700;">₹ ${this.formatINR(totalDebt)}</span>`;
+
+    const elRet = document.getElementById('all-det-total-returned');
+    if (elRet) elRet.innerHTML = `<span class="appsheet-bullet green-bullet">●</span> <span style="color: #0b8043; font-weight: 700;">₹ ${this.formatINR(totalRet)}</span>`;
+
+    const elDue = document.getElementById('all-det-due-amount');
+    if (elDue) {
+      if (due > 0) {
+        elDue.innerHTML = `<span class="appsheet-bullet red-bullet">●</span> <span style="color: #d93025; font-weight: 700;">₹ ${this.formatINR(due)}</span>`;
+      } else {
+        elDue.innerHTML = `<span class="appsheet-bullet green-bullet">●</span> <span style="color: #0b8043; font-weight: 700;">₹ 0.00</span>`;
+      }
+    }
+  },
+
+  closeAllDebtDetails() {
+    this.activeAllDebtId = null;
+    document.querySelectorAll('.all-debts-data-row').forEach(r => r.classList.remove('active'));
+    const panel = document.getElementById('all-debts-panel');
+    if (panel) panel.classList.add('d-none');
+    const splitWrapper = document.getElementById('all-debts-split-wrapper');
+    if (splitWrapper) splitWrapper.classList.remove('split-open');
+  },
+
+  toggleAllDebtsFullscreen() {
+    const main = document.getElementById('all-debts-main-container');
+    if (!main) return;
+    if (!document.fullscreenElement) {
+      main.requestFullscreen?.().catch(() => {});
+    } else {
+      document.exitFullscreen?.().catch(() => {});
+    }
+  },
+
+  toggleAllPanelFullscreen() {
+    const panel = document.getElementById('all-debts-panel');
+    if (panel) panel.classList.toggle('fullscreen');
+  },
+
+  editCurrentAllDebt() {
+    if (!this.activeAllDebtId) return;
+    this.editDebt(this.activeAllDebtId);
+  },
+
+  async deleteCurrentAllDebt() {
+    if (!this.activeAllDebtId) return;
+    if (!confirm('Are you sure you want to delete this debt record?')) return;
+    try {
+      await dbService.delete('debts', this.activeAllDebtId);
+      this.allDebts = await dbService.getAll('debts');
+      this.closeAllDebtDetails();
+      this.applyAllDebtsFilters();
+      this.renderAllDebtsTreeSidebar();
+      this.renderAllDebtsTable();
+      if (typeof AppUI !== 'undefined') AppUI.showToast('Debt deleted successfully', 'success');
+    } catch (err) {
+      console.error(err);
+      if (typeof AppUI !== 'undefined') AppUI.showToast('Failed to delete debt: ' + err.message, 'error');
+    }
+  },
+
+  openRecordReturnModalForAllDebt() {
+    if (!this.activeAllDebtId) return;
+    const debt = this.allDebts.find(d => String(d.id) === String(this.activeAllDebtId));
+    if (!debt) return;
+
+    document.getElementById('return-debt-id').value = debt.id;
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('return-date').value = today;
+    document.getElementById('return-depositor-name').value = debt.borrowerName || '';
+    document.getElementById('return-modal-debt-amount').value = `₹ ${this.formatINR(debt.debtAmount || 0)}`;
+    document.getElementById('return-modal-due').value = `₹ ${this.formatINR(debt.dueAmount || 0)}`;
+    document.getElementById('return-amount').value = debt.dueAmount || '';
+    document.getElementById('return-remarks').value = '';
+
+    // Reset return mode pill to Cash
+    this.modalReturnMode = 'Cash';
+    document.getElementById('return-mode').value = 'Cash';
+    document.querySelectorAll('#return-mode-pill-container .btn-mode-pill').forEach(btn => {
+      btn.classList.toggle('active', btn.getAttribute('data-mode') === 'Cash');
+    });
+
+    const modalEl = document.getElementById('modal-record-return');
+    if (modalEl && typeof bootstrap !== 'undefined') {
+      bootstrap.Modal.getOrCreateInstance(modalEl).show();
     }
   },
 
@@ -3653,11 +4294,20 @@ const LedgerModule = {
         bootstrap.Modal.getOrCreateInstance(modalEl).hide();
       }
 
-      this.applyOpenDebtsFilters();
-      this.renderOpenDebtsTreeSidebar();
-      this.renderOpenDebtsTable();
-      if (formId) {
-        this.openOpenDebtDetails(formId);
+      if (this.mainViewMode === 'all-debts') {
+        this.applyAllDebtsFilters();
+        this.renderAllDebtsTreeSidebar();
+        this.renderAllDebtsTable();
+        if (formId) {
+          this.openAllDebtDetails(formId);
+        }
+      } else {
+        this.applyOpenDebtsFilters();
+        this.renderOpenDebtsTreeSidebar();
+        this.renderOpenDebtsTable();
+        if (formId) {
+          this.openOpenDebtDetails(formId);
+        }
       }
     } catch (err) {
       console.error(err);
@@ -3755,6 +4405,7 @@ const LedgerModule = {
     const compExpView = document.getElementById('ledger-view-company-expense');
     const recView = document.getElementById('ledger-view-received');
     const openDebtsView = document.getElementById('ledger-view-open-debts');
+    const allDebtsView = document.getElementById('ledger-view-all-debts');
     const regView = document.getElementById('ledger-view-register');
     const detView = document.getElementById('ledger-view-details');
     const stmtView = document.getElementById('ledger-view-statements');
@@ -3829,6 +4480,7 @@ const LedgerModule = {
       compExpView?.classList.add('d-none');
       recView?.classList.add('d-none');
       openDebtsView?.classList.add('d-none');
+      allDebtsView?.classList.add('d-none');
       regView?.classList.add('d-none');
       if (breadcrumbRoot) {
         breadcrumbRoot.innerHTML = `
@@ -3864,6 +4516,7 @@ const LedgerModule = {
       compExpView?.classList.add('d-none');
       recView?.classList.add('d-none');
       openDebtsView?.classList.add('d-none');
+      allDebtsView?.classList.add('d-none');
       regView?.classList.add('d-none');
       if (breadcrumbRoot) {
         breadcrumbRoot.innerHTML = `
@@ -3887,6 +4540,7 @@ const LedgerModule = {
       compExpView?.classList.add('d-none');
       recView?.classList.add('d-none');
       openDebtsView?.classList.add('d-none');
+      allDebtsView?.classList.add('d-none');
       retView?.classList.remove('d-none');
       if (breadcrumbRoot) {
         breadcrumbRoot.innerHTML = `
@@ -3915,6 +4569,7 @@ const LedgerModule = {
       retView?.classList.add('d-none');
       recView?.classList.add('d-none');
       openDebtsView?.classList.add('d-none');
+      allDebtsView?.classList.add('d-none');
       detView?.classList.add('d-none');
       stmtView?.classList.add('d-none');
       compExpView?.classList.remove('d-none');
@@ -3945,6 +4600,7 @@ const LedgerModule = {
       retView?.classList.add('d-none');
       compExpView?.classList.add('d-none');
       openDebtsView?.classList.add('d-none');
+      allDebtsView?.classList.add('d-none');
       detView?.classList.add('d-none');
       stmtView?.classList.add('d-none');
       recView?.classList.remove('d-none');
@@ -3977,6 +4633,7 @@ const LedgerModule = {
       detView?.classList.add('d-none');
       stmtView?.classList.add('d-none');
       regView?.classList.add('d-none');
+      allDebtsView?.classList.add('d-none');
       openDebtsView?.classList.remove('d-none');
 
       if (breadcrumbRoot) {
@@ -3998,6 +4655,38 @@ const LedgerModule = {
       return;
     }
 
+    // 4F. LEVEL 1: ALL DEBTS VIEW (Authentic Google AppSheet Master-Detail)
+    if (this.mainViewMode === 'all-debts' || (this.mainViewMode === 'debts' && this.currentTab === 'all')) {
+      dashView?.classList.add('d-none');
+      cashRegView?.classList.add('d-none');
+      retView?.classList.add('d-none');
+      compExpView?.classList.add('d-none');
+      recView?.classList.add('d-none');
+      openDebtsView?.classList.add('d-none');
+      detView?.classList.add('d-none');
+      stmtView?.classList.add('d-none');
+      regView?.classList.add('d-none');
+      allDebtsView?.classList.remove('d-none');
+
+      if (breadcrumbRoot) {
+        breadcrumbRoot.innerHTML = `
+          <a href="javascript:void(0)" onclick="LedgerModule.goToDashboardView()">Home</a>
+          <span class="sep">&gt;</span>
+          <a href="javascript:void(0)" onclick="LedgerModule.goToDashboardView()">Ledger</a>
+          <span class="sep">&gt;</span>
+          <span class="active">All Debts</span>
+        `;
+      }
+      this.renderAllDebtsTreeSidebar();
+      this.renderAllDebtsTable();
+      if (this.activeAllDebtId) {
+        this.openAllDebtDetails(this.activeAllDebtId);
+      } else {
+        this.closeAllDebtDetails();
+      }
+      return;
+    }
+
     // 5. LEVEL 1-3: DEBTS REGISTER VIEWS
     dashView?.classList.add('d-none');
     cashRegView?.classList.add('d-none');
@@ -4005,6 +4694,7 @@ const LedgerModule = {
     compExpView?.classList.add('d-none');
     recView?.classList.add('d-none');
     openDebtsView?.classList.add('d-none');
+    allDebtsView?.classList.add('d-none');
     regView?.classList.remove('d-none');
 
     const tabName = this.currentTab === 'open' ? 'Open' : this.currentTab === 'all' ? 'All' : 'Settled';
@@ -4179,9 +4869,15 @@ const LedgerModule = {
     const typeEl = document.getElementById('filter-debt-type');
     const modeEl = document.getElementById('filter-debt-mode');
 
-    if (compEl) this.filterCompany = compEl.value;
-    if (typeEl) this.filterDebtType = typeEl.value;
-    if (modeEl) this.filterDebtMode = modeEl.value;
+    if (compEl) this.filterCompany = compEl.value || 'ALL';
+    if (typeEl) this.filterDebtType = typeEl.value || 'ALL';
+    if (modeEl) this.filterDebtMode = modeEl.value || 'ALL';
+
+    if (this.mainViewMode === 'all-debts') {
+      this.applyAllDebtsFilters();
+      this.renderAllDebtsTable();
+      return;
+    }
 
     if (this.mainViewMode === 'open-debts') {
       this.applyOpenDebtsFilters();
@@ -4258,13 +4954,13 @@ const LedgerModule = {
     });
 
     const sumDueEl = document.getElementById('summary-total-due');
-    if (sumDueEl) sumDueEl.innerText = AppUI.formatCurrency(totalDue);
+    if (sumDueEl) sumDueEl.innerText = (typeof AppUI !== 'undefined' && AppUI.formatCurrency) ? AppUI.formatCurrency(totalDue) : `₹ ${this.formatINR(totalDue)}`;
 
     const sumDebtEl = document.getElementById('summary-total-debt');
-    if (sumDebtEl) sumDebtEl.innerText = AppUI.formatCurrency(totalDebt);
+    if (sumDebtEl) sumDebtEl.innerText = (typeof AppUI !== 'undefined' && AppUI.formatCurrency) ? AppUI.formatCurrency(totalDebt) : `₹ ${this.formatINR(totalDebt)}`;
 
     const sumRetEl = document.getElementById('summary-total-returned');
-    if (sumRetEl) sumRetEl.innerText = AppUI.formatCurrency(totalReturned);
+    if (sumRetEl) sumRetEl.innerText = (typeof AppUI !== 'undefined' && AppUI.formatCurrency) ? AppUI.formatCurrency(totalReturned) : `₹ ${this.formatINR(totalReturned)}`;
 
     const countEl = document.getElementById('summary-count');
     if (countEl) countEl.innerText = this.filteredList.length;
@@ -4278,6 +4974,12 @@ const LedgerModule = {
 
   onSearchInput(val) {
     this.searchQuery = (val || '').toLowerCase().trim();
+    if (this.mainViewMode === 'all-debts') {
+      this.allDebtsCurrentPage = 1;
+      this.applyAllDebtsFilters();
+      this.renderAllDebtsTable();
+      return;
+    }
     if (this.mainViewMode === 'open-debts') {
       this.openDebtsCurrentPage = 1;
       this.applyOpenDebtsFilters();
@@ -4322,6 +5024,12 @@ const LedgerModule = {
     const sInput = document.getElementById('ledger-search-input');
     if (sInput) sInput.value = '';
     this.searchQuery = '';
+    if (this.mainViewMode === 'all-debts') {
+      this.allDebtsCurrentPage = 1;
+      this.applyAllDebtsFilters();
+      this.renderAllDebtsTable();
+      return;
+    }
     if (this.mainViewMode === 'open-debts') {
       this.openDebtsCurrentPage = 1;
       this.applyOpenDebtsFilters();
@@ -5370,6 +6078,15 @@ const LedgerModule = {
   // TAB SWITCHING (OPEN / SETTLED / ALL / STATEMENTS)
   // ----------------------------------------------------
   switchTab(tabName) {
+    if (tabName === 'open') {
+      return this.goToOpenDebtsView(this.selectedOpenDebtsFY || '2026-2027');
+    }
+    if (tabName === 'all') {
+      return this.goToAllDebtsView(this.selectedAllDebtsFY || 'ALL');
+    }
+    if (tabName === 'settled') {
+      return this.goToReturnedAmountView(this.selectedReturnedFY || '2026-2027');
+    }
     this.currentTab = tabName;
     if (tabName === 'statements') {
       this.mainViewMode = 'statements';
@@ -5666,8 +6383,12 @@ const LedgerModule = {
 window.LedgerModule = LedgerModule;
 
 // Auto-initialize when DOM is ready
-if (typeof document !== 'undefined' && document.addEventListener) {
-  document.addEventListener('DOMContentLoaded', () => {
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
     LedgerModule.init();
-  });
+  } else {
+    document.addEventListener('DOMContentLoaded', () => {
+      LedgerModule.init();
+    });
+  }
 }

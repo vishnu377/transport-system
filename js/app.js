@@ -491,6 +491,8 @@ const AppUI = {
   }
 };
 
+window.AppUI = AppUI;
+
 // Initialize common interactions when DOM loads
 document.addEventListener('DOMContentLoaded', () => {
   AppUI.bindHamburgerToggles();
