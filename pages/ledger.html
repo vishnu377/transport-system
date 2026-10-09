@@ -810,6 +810,274 @@
       color: #3c4043;
       cursor: default;
     }
+
+    /* ==================================================== */
+    /* RETURNED AMOUNT (Authentic AppSheet Green Master-Detail) */
+    /* ==================================================== */
+    .returned-amount-container {
+      display: flex;
+      min-height: calc(100vh - 110px);
+      background: #ffffff;
+      position: relative;
+    }
+    .returned-amount-tree-sidebar {
+      width: 230px;
+      border-right: 1px solid #eeeeee;
+      padding: 14px 10px;
+      flex-shrink: 0;
+      background: #ffffff;
+      transition: width 0.22s ease, padding 0.22s ease, opacity 0.18s ease;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+    .returned-amount-tree-sidebar.collapsed {
+      width: 0 !important;
+      padding: 0 !important;
+      opacity: 0;
+      border-right: none !important;
+      pointer-events: none;
+    }
+    @media (max-width: 768px) {
+      .returned-amount-tree-sidebar {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 100;
+        box-shadow: 2px 0 8px rgba(0,0,0,0.15);
+      }
+      .returned-amount-tree-sidebar.collapsed {
+        transform: translateX(-100%);
+      }
+    }
+    .returned-tree-header {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #5f6368;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 4px 10px;
+      margin-bottom: 6px;
+    }
+    .returned-tree-item {
+      padding: 6px 10px;
+      border-radius: 20px;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: #202124;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 3px;
+      transition: background 0.1s;
+      user-select: none;
+    }
+    .returned-tree-item:hover {
+      background: #f1f3f4;
+    }
+    .returned-tree-item.active {
+      background: #e6f4ea;
+      color: #137333;
+      font-weight: 600;
+    }
+    .returned-tree-badge {
+      font-size: 11px;
+      font-weight: 600;
+      color: #5f6368;
+      background: #f1f3f4;
+      padding: 2px 7px;
+      border-radius: 10px;
+      letter-spacing: -0.2px;
+    }
+    .returned-tree-item.active .returned-tree-badge {
+      background: #ceead6;
+      color: #137333;
+    }
+    .returned-tree-sublist {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-bottom: 6px;
+    }
+    .returned-tree-subitem {
+      padding-left: 26px !important;
+      font-size: 12px;
+    }
+    .returned-tree-caret {
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      font-size: 11px;
+      color: #5f6368;
+      user-select: none;
+      transition: color 0.15s ease;
+    }
+    .returned-tree-caret:hover {
+      color: #202124;
+    }
+    .returned-amount-main-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      background: #ffffff;
+    }
+    .returned-split-wrapper {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+    }
+    .returned-table-wrapper {
+      flex: 1;
+      overflow-x: auto;
+      overflow-y: auto;
+      max-height: calc(100vh - 190px);
+      min-width: 0;
+    }
+    .returned-amount-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+    }
+    .returned-amount-table th {
+      padding: 8px 12px;
+      font-weight: 600;
+      color: #5f6368;
+      font-size: 11.5px;
+      border-bottom: 1px solid #e0e0e0;
+      background: #ffffff;
+      white-space: nowrap;
+    }
+    .returned-amount-table td {
+      padding: 6px 12px;
+      border-bottom: 1px solid #f2f2f2;
+      font-weight: 500;
+      white-space: nowrap;
+      color: #202124;
+    }
+    .returned-amount-table tbody tr.returned-data-row {
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+    .returned-amount-table tbody tr.returned-data-row:hover {
+      background-color: #f8f9fa;
+    }
+    .returned-amount-table tbody tr.returned-data-row.active {
+      background-color: #e8f0fe !important;
+    }
+    .returned-date-group-row td {
+      background: #fafafa;
+      color: #202124;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 7px 12px;
+      border-top: 1px solid #eeeeee;
+      border-bottom: 1px solid #eeeeee;
+    }
+    .returned-split-wrapper.split-open .col-ext {
+      display: none !important;
+    }
+
+    /* Master-Detail Side Panel (Settled Debt Details) */
+    .settled-debt-panel {
+      width: 530px;
+      border-left: 1px solid #dadce0;
+      background: #f8f9fa;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      transition: width 0.22s ease;
+      overflow-y: auto;
+      max-height: calc(100vh - 190px);
+    }
+    .settled-debt-panel.fullscreen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100% !important;
+      max-height: 100% !important;
+      z-index: 100;
+    }
+    .settled-debt-panel-header {
+      padding: 8px 16px;
+      background: #ffffff;
+      border-bottom: 1px solid #dadce0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .settled-debt-panel-body {
+      padding: 12px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(235px, 1fr));
+      gap: 12px;
+    }
+    .settled-card {
+      background: #ffffff;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      padding: 12px 14px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    }
+    .settled-field-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+      font-size: 12px;
+      line-height: 1.35;
+      gap: 8px;
+    }
+    .settled-field-label {
+      color: #5f6368;
+      font-weight: 500;
+      min-width: 105px;
+      flex-shrink: 0;
+    }
+    .settled-field-value {
+      color: #137333;
+      font-weight: 600;
+      text-align: right;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      word-break: break-word;
+      justify-content: flex-end;
+    }
+    .settled-card-divider {
+      border-top: 1px solid #e8eaed;
+      margin: 10px 0;
+    }
+    .returned-mini-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11.5px;
+      margin-top: 6px;
+    }
+    .returned-mini-table th {
+      color: #5f6368;
+      font-weight: 600;
+      padding: 5px 6px;
+      border-bottom: 1px solid #e0e0e0;
+      white-space: nowrap;
+    }
+    .returned-mini-table td {
+      padding: 5px 6px;
+      border-bottom: 1px solid #f2f2f2;
+      color: #137333;
+      font-weight: 500;
+      white-space: nowrap;
+    }
   </style>
 </head>
 <body>
@@ -1011,27 +1279,27 @@
         <!-- CARD 2: Returned Amount -->
         <div class="appsheet-dash-card" id="card-dash-returned">
           <div class="appsheet-dash-card-header">
-            <span class="appsheet-dash-card-title" onclick="LedgerModule.goToDebtsView('settled')">Returned Amount</span>
+            <span class="appsheet-dash-card-title" onclick="LedgerModule.goToReturnedAmountView()">Returned Amount</span>
             <div class="appsheet-dash-card-tools">
               <span class="appsheet-tool-icon" onclick="LedgerModule.toggleFilterDropdown()" title="Filter">🔻</span>
-              <span class="appsheet-tool-icon" onclick="LedgerModule.goToDebtsView('settled')" title="Expand Returned Amount">↗</span>
+              <span class="appsheet-tool-icon" onclick="LedgerModule.goToReturnedAmountView()" title="Expand Returned Amount">↗</span>
             </div>
           </div>
           <div class="appsheet-dash-card-body">
             <div class="appsheet-drill-section-label">Year</div>
-            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('settled', 'ALL')">
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToReturnedAmountView('ALL')">
               <span class="appsheet-drill-label-all">All</span>
               <span class="appsheet-chevron">&gt;</span>
             </div>
-            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('settled', '2026-2027')">
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToReturnedAmountView('2026-2027')">
               <div class="appsheet-drill-left">
                 <span class="appsheet-bullet green-bullet">●</span>
                 <span class="appsheet-drill-label-gold">2026-2027</span>
-                <span class="appsheet-drill-badge">₹ 12,912,180.00</span>
+                <span class="appsheet-drill-badge">₹ 12,960,180.00</span>
               </div>
               <span class="appsheet-chevron">&gt;</span>
             </div>
-            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('settled', '2025-2026')">
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToReturnedAmountView('2025-2026')">
               <div class="appsheet-drill-left">
                 <span class="appsheet-bullet green-bullet">●</span>
                 <span class="appsheet-drill-label-gold">2025-2026</span>
@@ -1039,7 +1307,7 @@
               </div>
               <span class="appsheet-chevron">&gt;</span>
             </div>
-            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('settled', '2024-2025')">
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToReturnedAmountView('2024-2025')">
               <div class="appsheet-drill-left">
                 <span class="appsheet-bullet green-bullet">●</span>
                 <span class="appsheet-drill-label-gold">2024-2025</span>
@@ -1561,6 +1829,146 @@
             </div>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 5B. RETURNED AMOUNT VIEW (Authentic AppSheet Green Master-Detail) -->
+    <!-- ========================================== -->
+    <div id="ledger-view-returned-amount" class="d-none">
+      <div class="returned-amount-container">
+        
+        <!-- Left Sidebar: Year / Month Tree (media_1791479872194.png & WhatsApp photos) -->
+        <div class="returned-amount-tree-sidebar" id="returned-tree-sidebar">
+          <div class="returned-tree-header d-flex align-items-center justify-content-between">
+            <span>Date</span>
+            <button type="button" class="btn btn-sm btn-link text-muted p-0 border-0" onclick="LedgerModule.toggleReturnedDateSidebar()" title="Hide Date Sidebar">
+              <i class="bi bi-chevron-bar-left fs-6"></i>
+            </button>
+          </div>
+          <div class="returned-tree-item" id="returned-tree-all" onclick="LedgerModule.selectReturnedAll()">
+            <span>All</span>
+            <span class="returned-tree-badge" id="returned-badge-all">₹ 58,870,528.00</span>
+          </div>
+
+          <!-- FY 2026-2027 (Expanded by default) -->
+          <div class="returned-tree-item" id="returned-tree-2026-2027">
+            <div class="d-flex align-items-center gap-1">
+              <span class="returned-tree-caret" onclick="LedgerModule.toggleReturnedFYTree('2026-2027')"><i class="bi bi-caret-down-fill"></i></span>
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span class="fw-semibold" onclick="LedgerModule.selectReturnedFY('2026-2027')">2026-2027</span>
+            </div>
+            <span class="returned-tree-badge" id="returned-badge-2026-2027">₹ 12,960,180.00</span>
+          </div>
+          <div class="returned-tree-sublist" id="returned-sublist-2026-2027">
+            <!-- Dynamically populated or static with dynamic badges -->
+          </div>
+
+          <!-- FY 2025-2026 -->
+          <div class="returned-tree-item" id="returned-tree-2025-2026">
+            <div class="d-flex align-items-center gap-1">
+              <span class="returned-tree-caret" onclick="LedgerModule.toggleReturnedFYTree('2025-2026')"><i class="bi bi-caret-right-fill"></i></span>
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span class="fw-semibold" onclick="LedgerModule.selectReturnedFY('2025-2026')">2025-2026</span>
+            </div>
+            <span class="returned-tree-badge" id="returned-badge-2025-2026">₹ 29,619,314.00</span>
+          </div>
+          <div class="returned-tree-sublist d-none" id="returned-sublist-2025-2026"></div>
+
+          <!-- FY 2024-2025 -->
+          <div class="returned-tree-item" id="returned-tree-2024-2025">
+            <div class="d-flex align-items-center gap-1">
+              <span class="returned-tree-caret" onclick="LedgerModule.toggleReturnedFYTree('2024-2025')"><i class="bi bi-caret-right-fill"></i></span>
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span class="fw-semibold" onclick="LedgerModule.selectReturnedFY('2024-2025')">2024-2025</span>
+            </div>
+            <span class="returned-tree-badge" id="returned-badge-2024-2025">₹ 16,291,034.00</span>
+          </div>
+          <div class="returned-tree-sublist d-none" id="returned-sublist-2024-2025"></div>
+        </div>
+
+        <!-- Main Area: Toolbar + Split Layout (Table + Settled Debt Details Panel) -->
+        <div class="returned-amount-main-area">
+          <!-- Toolbar with Sidebar Hide/Show Toggle & Filter Breadcrumb -->
+          <div class="d-flex align-items-center justify-content-between px-3 py-2 border-bottom bg-white flex-wrap gap-2">
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+              <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2 d-inline-flex align-items-center gap-1" id="btn-toggle-returned-sidebar" onclick="LedgerModule.toggleReturnedDateSidebar()" style="font-size: 0.8rem;" title="Show or Hide Date Sidebar">
+                <i class="bi bi-layout-sidebar-inset" id="btn-toggle-returned-icon"></i>
+                <span id="btn-toggle-returned-text">Hide Date Filter</span>
+              </button>
+              <span class="badge bg-light text-dark border fw-normal" id="returned-current-filter-badge" style="font-size: 0.78rem;">
+                <i class="bi bi-funnel me-1 text-muted"></i>2026-2027 &gt; <strong>7 Oct</strong>
+              </span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <span class="appsheet-tool-icon" onclick="LedgerModule.toggleFilterDropdown()" title="Filter">🔻</span>
+              <span class="appsheet-tool-icon" onclick="LedgerModule.toggleReturnedFullscreen()" title="Full screen">⤢</span>
+            </div>
+          </div>
+
+          <!-- Split Wrapper: Table on Left + Details Panel on Right -->
+          <div class="returned-split-wrapper">
+            <!-- Table Wrapper -->
+            <div class="returned-table-wrapper" id="returned-table-wrapper">
+              <table class="returned-amount-table" id="returned-amount-table">
+                <thead class="sticky-top" style="z-index: 5;">
+                  <tr id="returned-table-thead-tr">
+                    <th style="min-width: 140px;">Return Mode</th>
+                    <th style="min-width: 110px;">Truck No.</th>
+                    <th style="min-width: 100px;">Return Date</th>
+                    <th style="min-width: 120px;">Returned Amount</th>
+                    <th style="min-width: 100px;">Debt Date</th>
+                    <th style="min-width: 110px;">Debt Amount</th>
+                    <!-- Full table columns (visible when details panel is closed) -->
+                    <th class="col-ext" style="min-width: 100px;">Debt Type</th>
+                    <th class="col-ext" style="min-width: 80px;">G.R.No.</th>
+                    <th class="col-ext" style="min-width: 80px;">Transport</th>
+                    <th class="col-ext" style="min-width: 180px;">Depositor Name</th>
+                    <th class="col-ext" style="min-width: 200px;">Description</th>
+                    <th style="width: 25px;"></th>
+                  </tr>
+                </thead>
+                <tbody id="returned-amount-tbody">
+                  <!-- Dynamically populated with date group headers and rows -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Master-Detail Side Panel: Settled Debt Details (media WhatsApp photos) -->
+            <div class="settled-debt-panel d-none" id="panel-settled-debt-details">
+              <div class="settled-debt-panel-header">
+                <div class="d-flex align-items-center gap-2">
+                  <span class="fw-bold" style="font-size: 14px; color: #202124;">Settled Debt Details</span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="appsheet-tool-icon" onclick="LedgerModule.toggleSettledDebtFullscreen()" title="Expand / Shrink Panel" id="btn-expand-settled-panel">↗</span>
+                  <span class="appsheet-tool-icon" onclick="LedgerModule.closeSettledDebtDetails()" title="Close details">✕</span>
+                </div>
+              </div>
+
+              <div class="settled-debt-panel-body" id="settled-debt-panel-content">
+                <!-- Populated dynamically: Card 1 (Debt Information) + Card 2 (Returned Amount 1) -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Returned Amount Pagination Footer -->
+          <div class="p-2 bg-white border-top d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <small class="text-muted" id="returned-pagination-info">Showing 1-100 entries</small>
+            <div class="d-flex align-items-center gap-2">
+              <select id="returned-page-size" class="form-select form-select-sm" style="width: auto; font-size: 0.8rem;" onchange="LedgerModule.changeReturnedPageSize(this.value)">
+                <option value="50">50 rows</option>
+                <option value="100" selected>100 rows</option>
+                <option value="250">250 rows</option>
+                <option value="ALL">All rows</option>
+              </select>
+              <div class="btn-group btn-group-sm" id="returned-pagination-buttons">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -2428,6 +2836,7 @@
   <script src="../js/sample-debts-data.js"></script>
   <script src="../js/sample-cheques-data.js"></script>
   <script src="../js/sample-cash-ledger-data.js"></script>
+  <script src="../js/sample-returned-amounts-data.js"></script>
   <script src="../js/db-service.js"></script>
   <script src="../js/app.js"></script>
   <script src="../js/modules/ledger.js"></script>

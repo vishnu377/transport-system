@@ -174,6 +174,10 @@ class DBService {
       return this.getAllCashLedger(cloudItems);
     }
 
+    if (collectionName === 'returnedAmounts') {
+      return this.getAllReturnedAmounts(cloudItems);
+    }
+
     // LocalStorage Fallback for other collections
     const localData = localStorage.getItem(`tms_${collectionName}`);
     return localData ? JSON.parse(localData) : [];
@@ -388,6 +392,50 @@ class DBService {
       const keyA = pA.length === 3 ? `${pA[2]}-${pA[1]}-${pA[0]}` : a.date;
       const keyB = pB.length === 3 ? `${pB[2]}-${pB[1]}-${pB[0]}` : b.date;
       return keyB.localeCompare(keyA);
+    });
+    return all;
+  }
+
+  // --- Authentic Google AppSheet Returned Amount Engine ---
+  getAllReturnedAmounts(cloudItems = []) {
+    const baseReturned = (typeof window !== 'undefined' && Array.isArray(window.SAMPLE_RETURNED_AMOUNTS_DATA))
+      ? window.SAMPLE_RETURNED_AMOUNTS_DATA
+      : (typeof SAMPLE_RETURNED_AMOUNTS_DATA !== 'undefined' ? SAMPLE_RETURNED_AMOUNTS_DATA : []);
+
+    const customEntries = JSON.parse(localStorage.getItem('tms_custom_returned_amounts') || '[]');
+    const editedMap = JSON.parse(localStorage.getItem('tms_edited_returned_amounts') || '{}');
+    const deletedList = JSON.parse(localStorage.getItem('tms_deleted_returned_amounts') || '[]');
+    const deletedSet = new Set(deletedList.map(String));
+
+    const entryMap = new Map();
+    for (const item of baseReturned) {
+      const id = String(item.id);
+      if (!deletedSet.has(id)) {
+        entryMap.set(id, editedMap[id] ? { ...item, ...editedMap[id] } : item);
+      }
+    }
+    for (const item of customEntries) {
+      const id = String(item.id);
+      if (!deletedSet.has(id)) {
+        entryMap.set(id, editedMap[id] ? { ...item, ...editedMap[id] } : item);
+      }
+    }
+    if (Array.isArray(cloudItems)) {
+      for (const item of cloudItems) {
+        if (item && item.id) {
+          const id = String(item.id);
+          if (!deletedSet.has(id)) {
+            entryMap.set(id, { ...(entryMap.get(id) || {}), ...item });
+          }
+        }
+      }
+    }
+
+    const all = Array.from(entryMap.values());
+    all.sort((a, b) => {
+      const dateA = a.returnDate || '';
+      const dateB = b.returnDate || '';
+      return dateB.localeCompare(dateA);
     });
     return all;
   }
@@ -809,6 +857,28 @@ class DBService {
       return newItem;
     }
 
+    if (collectionName === 'returnedAmounts') {
+      const newItem = {
+        ...itemData,
+        id: itemData.id || `RET_${Date.now()}`,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      const customReturned = JSON.parse(localStorage.getItem('tms_custom_returned_amounts') || '[]');
+      customReturned.unshift(newItem);
+      this.safeSetItem('tms_custom_returned_amounts', JSON.stringify(customReturned));
+
+      if (this.isFirebaseReady) {
+        try {
+          await this.db.collection('returnedAmounts').doc(newItem.id).set(newItem);
+          console.log(` Cloud Synced: returnedAmounts/${newItem.id}`);
+        } catch (err) {
+          console.warn('Firestore sync error for returnedAmounts:', err.message);
+        }
+      }
+      return newItem;
+    }
+
     const newItem = {
       ...itemData,
       id: itemData.id || `${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
@@ -1010,6 +1080,34 @@ class DBService {
       return updatedItem;
     }
 
+    if (collectionName === 'returnedAmounts') {
+      let customReturned = JSON.parse(localStorage.getItem('tms_custom_returned_amounts') || '[]');
+      const customIdx = customReturned.findIndex(r => String(r.id) === String(id));
+      let updatedItem = null;
+
+      if (customIdx >= 0) {
+        updatedItem = { ...customReturned[customIdx], ...updatedFields, updatedAt };
+        customReturned[customIdx] = updatedItem;
+        this.safeSetItem('tms_custom_returned_amounts', JSON.stringify(customReturned));
+      } else {
+        const editedMap = JSON.parse(localStorage.getItem('tms_edited_returned_amounts') || '{}');
+        const existing = await this.getById('returnedAmounts', id);
+        updatedItem = { ...(existing || {}), id, ...updatedFields, updatedAt };
+        editedMap[id] = updatedItem;
+        this.safeSetItem('tms_edited_returned_amounts', JSON.stringify(editedMap));
+      }
+
+      if (this.isFirebaseReady) {
+        try {
+          await this.db.collection('returnedAmounts').doc(String(id)).set(updatedItem, { merge: true });
+          console.log(` Cloud Updated: returnedAmounts/${id}`);
+        } catch (err) {
+          console.warn('Firestore update error for returnedAmounts:', err.message);
+        }
+      }
+      return updatedItem;
+    }
+
     // Update locally
     const items = await this.getAll(collectionName);
     const index = items.findIndex(item => String(item.id) === String(id));
@@ -1162,6 +1260,28 @@ class DBService {
           console.log(` Cloud Deleted: drivers/${id}`);
         } catch (err) {
           console.warn('Firestore delete error for drivers:', err.message);
+        }
+      }
+      return true;
+    }
+
+    if (collectionName === 'returnedAmounts') {
+      let customReturned = JSON.parse(localStorage.getItem('tms_custom_returned_amounts') || '[]');
+      customReturned = customReturned.filter(r => String(r.id) !== String(id));
+      this.safeSetItem('tms_custom_returned_amounts', JSON.stringify(customReturned));
+
+      const deletedList = JSON.parse(localStorage.getItem('tms_deleted_returned_amounts') || '[]');
+      if (!deletedList.includes(String(id))) {
+        deletedList.push(String(id));
+        this.safeSetItem('tms_deleted_returned_amounts', JSON.stringify(deletedList));
+      }
+
+      if (this.isFirebaseReady) {
+        try {
+          await this.db.collection('returnedAmounts').doc(String(id)).delete();
+          console.log(` Cloud Deleted: returnedAmounts/${id}`);
+        } catch (err) {
+          console.warn('Firestore delete error for returnedAmounts:', err.message);
         }
       }
       return true;

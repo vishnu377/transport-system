@@ -19,8 +19,9 @@ const LedgerModule = {
   allTrips: [],
   allPayments: [],
   allCashLedger: [],
+  allReturnedAmounts: [],
 
-  // Main Mode State: 'dashboard' | 'cash-ledger' | 'debts' | 'details' | 'statements'
+  // Main Mode State: 'dashboard' | 'cash-ledger' | 'returned-amount' | 'debts' | 'details' | 'statements'
   mainViewMode: 'dashboard',
 
   // Cash Ledger State
@@ -33,6 +34,17 @@ const LedgerModule = {
   filteredCashList: [],
   activeCashBreakdownDate: null,
   activeCashDetailsRecord: null,
+
+  // Returned Amount State (Authentic AppSheet Green Master-Detail)
+  selectedReturnedFY: '2026-2027',
+  selectedReturnedMonth: '7 Oct',
+  expandedReturnedFYs: { '2026-2027': true, '2025-2026': false, '2024-2025': false },
+  isReturnedSidebarHidden: false,
+  returnedPageSize: 100,
+  returnedCurrentPage: 1,
+  filteredReturnedList: [],
+  activeReturnedRecordId: null,
+  isSettledPanelFullscreen: false,
 
   // View Hierarchy State: 'year' | 'month' | 'table' | 'details'
   viewLevel: 'year',
@@ -63,6 +75,7 @@ const LedgerModule = {
     await this.loadData();
     this.applyFilters();
     this.applyCashFilters();
+    this.applyReturnedFilters();
     this.renderRegisterTable();
     this.renderFYSidebar();
     this.renderMonthBar();
@@ -76,6 +89,7 @@ const LedgerModule = {
     this.allTrips = await dbService.getAll('trips');
     this.allPayments = await dbService.getAll('payments');
     this.allCashLedger = await dbService.getAll('cashLedger');
+    this.allReturnedAmounts = await dbService.getAll('returnedAmounts');
   },
 
   // ----------------------------------------------------
@@ -112,6 +126,27 @@ const LedgerModule = {
       sInput.placeholder = 'Search Cash Ledger';
     }
     this.applyCashFilters();
+    this.renderCurrentView();
+  },
+
+  goToReturnedAmountView(fy = '2026-2027', month = null) {
+    this.mainViewMode = 'returned-amount';
+    if (fy === 'ALL') {
+      this.selectedReturnedFY = 'ALL';
+      this.selectedReturnedMonth = 'ALL';
+    } else {
+      this.selectedReturnedFY = fy;
+      this.selectedReturnedMonth = month !== null ? month : (fy === '2026-2027' ? '7 Oct' : 'ALL');
+      this.expandedReturnedFYs[fy] = true;
+    }
+    this.returnedCurrentPage = 1;
+    this.searchQuery = '';
+    const sInput = document.getElementById('ledger-search-input');
+    if (sInput) {
+      sInput.value = '';
+      sInput.placeholder = 'Search Returned Amount';
+    }
+    this.applyReturnedFilters();
     this.renderCurrentView();
   },
 
@@ -909,6 +944,555 @@ const LedgerModule = {
   },
 
   // ----------------------------------------------------
+  // RETURNED AMOUNT (Authentic AppSheet Green Master-Detail)
+  // ----------------------------------------------------
+  applyReturnedFilters() {
+    if (!this.allReturnedAmounts || !Array.isArray(this.allReturnedAmounts)) {
+      this.filteredReturnedList = [];
+      this.renderReturnedAmountTable();
+      return;
+    }
+
+    const query = (this.searchQuery || '').trim().toLowerCase();
+
+    this.filteredReturnedList = this.allReturnedAmounts.filter(item => {
+      // Financial Year Filter
+      if (this.selectedReturnedFY !== 'ALL') {
+        if (item.fy !== this.selectedReturnedFY) return false;
+      }
+
+      // Month Filter
+      if (this.selectedReturnedMonth !== 'ALL') {
+        if (item.monthKey !== this.selectedReturnedMonth) return false;
+      }
+
+      // Search Query Filter
+      if (query) {
+        const match =
+          (item.truckNo && item.truckNo.toLowerCase().includes(query)) ||
+          (item.returnMode && item.returnMode.toLowerCase().includes(query)) ||
+          (item.debtType && item.debtType.toLowerCase().includes(query)) ||
+          (item.grNo && item.grNo.toLowerCase().includes(query)) ||
+          (item.company && item.company.toLowerCase().includes(query)) ||
+          (item.depositorName && item.depositorName.toLowerCase().includes(query)) ||
+          (item.truckOwnerName && item.truckOwnerName.toLowerCase().includes(query)) ||
+          (item.borrowerName && item.borrowerName.toLowerCase().includes(query)) ||
+          (item.receiverName && item.receiverName.toLowerCase().includes(query)) ||
+          (item.from && item.from.toLowerCase().includes(query)) ||
+          (item.to && item.to.toLowerCase().includes(query)) ||
+          (item.debtMode && item.debtMode.toLowerCase().includes(query)) ||
+          (item.description && item.description.toLowerCase().includes(query)) ||
+          (item.displayReturnDate && item.displayReturnDate.toLowerCase().includes(query)) ||
+          (item.displayDebtDate && item.displayDebtDate.toLowerCase().includes(query)) ||
+          (item.returnedAmount && item.returnedAmount.toString().includes(query)) ||
+          (item.debtAmount && item.debtAmount.toString().includes(query));
+        if (!match) return false;
+      }
+
+      return true;
+    });
+
+    // Update breadcrumb badge
+    const badge = document.getElementById('returned-current-filter-badge');
+    if (badge) {
+      if (this.selectedReturnedFY === 'ALL') {
+        badge.innerHTML = `<i class="bi bi-funnel me-1 text-muted"></i>All Financial Years (${this.filteredReturnedList.length} records)`;
+      } else if (this.selectedReturnedMonth === 'ALL') {
+        badge.innerHTML = `<i class="bi bi-funnel me-1 text-muted"></i>${this.selectedReturnedFY} &gt; <strong>All Months</strong>`;
+      } else {
+        badge.innerHTML = `<i class="bi bi-funnel me-1 text-muted"></i>${this.selectedReturnedFY} &gt; <strong>${this.selectedReturnedMonth}</strong>`;
+      }
+    }
+
+    this.returnedCurrentPage = 1;
+    this.renderReturnedTreeSidebar();
+    this.renderReturnedAmountTable();
+  },
+
+  renderReturnedTreeSidebar() {
+    if (!this.allReturnedAmounts) return;
+
+    // Calculate totals across dataset
+    let grandTotal = 0;
+    const fyTotals = {};
+    const monthTotals = {}; // key: `${fy}_${monthKey}`
+
+    this.allReturnedAmounts.forEach(r => {
+      const amt = Number(r.returnedAmount) || 0;
+      grandTotal += amt;
+
+      const fy = r.fy || 'empty';
+      fyTotals[fy] = (fyTotals[fy] || 0) + amt;
+
+      if (r.monthKey) {
+        const mKey = `${fy}_${r.monthKey}`;
+        monthTotals[mKey] = (monthTotals[mKey] || 0) + amt;
+      }
+    });
+
+    // Update badges
+    const badgeAll = document.getElementById('returned-badge-all');
+    if (badgeAll) badgeAll.textContent = `₹ ${this.formatINR(grandTotal)}`;
+
+    ['2026-2027', '2025-2026', '2024-2025'].forEach(fy => {
+      const b = document.getElementById(`returned-badge-${fy}`);
+      if (b) b.textContent = `₹ ${this.formatINR(fyTotals[fy] || 0)}`;
+    });
+
+    // Active state highlighting on All & FY items
+    const treeAll = document.getElementById('returned-tree-all');
+    if (treeAll) {
+      treeAll.classList.toggle('active', this.selectedReturnedFY === 'ALL');
+    }
+
+    // Authentic AppSheet month lists
+    const monthsByFY = {
+      '2026-2027': ['7 Oct', '6 Sep', '5 Aug', '4 Jul', '3 Jun', '2 May', '1 Apr'],
+      '2025-2026': ['12 Mar', '11 Feb', '10 Jan', '9 Dec', '8 Nov', '7 Oct', '6 Sep', '5 Aug', '4 Jul', '3 Jun', '2 May', '1 Apr'],
+      '2024-2025': ['12 Mar', '11 Feb', '10 Jan', '9 Dec', '8 Nov', '7 Oct', '6 Sep', '5 Aug', '4 Jul', '3 Jun', '2 May', '1 Apr']
+    };
+
+    ['2026-2027', '2025-2026', '2024-2025'].forEach(fy => {
+      const isExpanded = this.expandedReturnedFYs.has(fy);
+      const sublistEl = document.getElementById(`returned-sublist-${fy}`);
+      const fyItemEl = document.getElementById(`returned-tree-${fy}`);
+
+      if (fyItemEl) {
+        fyItemEl.classList.toggle('active', this.selectedReturnedFY === fy && this.selectedReturnedMonth === 'ALL');
+        const caret = fyItemEl.querySelector('.returned-tree-caret');
+        if (caret) {
+          caret.innerHTML = isExpanded ? '<i class="bi bi-caret-down-fill"></i>' : '<i class="bi bi-caret-right-fill"></i>';
+        }
+      }
+
+      if (sublistEl) {
+        if (!isExpanded) {
+          sublistEl.classList.add('d-none');
+          sublistEl.innerHTML = '';
+        } else {
+          sublistEl.classList.remove('d-none');
+          const months = monthsByFY[fy] || [];
+          sublistEl.innerHTML = months.map(mKey => {
+            const mTotal = monthTotals[`${fy}_${mKey}`] || 0;
+            const isMonthActive = this.selectedReturnedFY === fy && this.selectedReturnedMonth === mKey;
+            return `
+              <div class="returned-tree-item returned-tree-subitem ${isMonthActive ? 'active' : ''}" onclick="LedgerModule.selectReturnedMonth('${fy}', '${mKey}')">
+                <div class="d-flex align-items-center gap-1">
+                  <span class="appsheet-bullet text-muted" style="font-size: 11px;">●</span>
+                  <span>${mKey}</span>
+                </div>
+                <span class="returned-tree-badge">₹ ${this.formatINR(mTotal)}</span>
+              </div>
+            `;
+          }).join('');
+        }
+      }
+    });
+  },
+
+  toggleReturnedFYTree(fy) {
+    if (this.expandedReturnedFYs.has(fy)) {
+      this.expandedReturnedFYs.delete(fy);
+    } else {
+      this.expandedReturnedFYs.add(fy);
+    }
+    this.renderReturnedTreeSidebar();
+  },
+
+  selectReturnedFY(fy) {
+    this.selectedReturnedFY = fy;
+    this.selectedReturnedMonth = 'ALL';
+    this.expandedReturnedFYs.add(fy);
+    this.applyReturnedFilters();
+  },
+
+  selectReturnedMonth(fy, month) {
+    this.selectedReturnedFY = fy;
+    this.selectedReturnedMonth = month;
+    this.expandedReturnedFYs.add(fy);
+    this.applyReturnedFilters();
+  },
+
+  selectReturnedAll() {
+    this.selectedReturnedFY = 'ALL';
+    this.selectedReturnedMonth = 'ALL';
+    this.applyReturnedFilters();
+  },
+
+  toggleReturnedDateSidebar() {
+    this.isReturnedSidebarHidden = !this.isReturnedSidebarHidden;
+    const sidebar = document.getElementById('returned-tree-sidebar');
+    const btnText = document.getElementById('btn-toggle-returned-text');
+    const btnIcon = document.getElementById('btn-toggle-returned-icon');
+
+    if (sidebar) {
+      if (this.isReturnedSidebarHidden) {
+        sidebar.classList.add('collapsed');
+        if (btnText) btnText.textContent = 'Show Date Filter';
+        if (btnIcon) btnIcon.className = 'bi bi-layout-sidebar';
+      } else {
+        sidebar.classList.remove('collapsed');
+        if (btnText) btnText.textContent = 'Hide Date Filter';
+        if (btnIcon) btnIcon.className = 'bi bi-layout-sidebar-inset';
+      }
+    }
+  },
+
+  renderReturnedAmountTable() {
+    const tbody = document.getElementById('returned-amount-tbody');
+    if (!tbody) return;
+
+    if (!this.filteredReturnedList || this.filteredReturnedList.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="12" class="text-center py-5 text-muted">
+            <i class="bi bi-inbox fs-2 d-block mb-2 text-secondary"></i>
+            No returned amount records match the selected filter or search criteria.
+            <div class="mt-2">
+              <button type="button" class="btn btn-sm btn-outline-success" onclick="LedgerModule.selectReturnedAll(); LedgerModule.clearSearch();">
+                Reset Filters & Search
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+      const pInfo = document.getElementById('returned-pagination-info');
+      if (pInfo) pInfo.textContent = 'Showing 0 records';
+      const pBtns = document.getElementById('returned-pagination-buttons');
+      if (pBtns) pBtns.innerHTML = '';
+      return;
+    }
+
+    // Pagination Calculation
+    const totalCount = this.filteredReturnedList.length;
+    let recordsToDisplay = this.filteredReturnedList;
+    let totalPages = 1;
+
+    if (this.returnedPageSize !== 'ALL') {
+      const pSize = parseInt(this.returnedPageSize, 10);
+      totalPages = Math.max(1, Math.ceil(totalCount / pSize));
+      if (this.returnedCurrentPage > totalPages) this.returnedCurrentPage = totalPages;
+      if (this.returnedCurrentPage < 1) this.returnedCurrentPage = 1;
+
+      const startIndex = (this.returnedCurrentPage - 1) * pSize;
+      const endIndex = Math.min(startIndex + pSize, totalCount);
+      recordsToDisplay = this.filteredReturnedList.slice(startIndex, endIndex);
+
+      const pInfo = document.getElementById('returned-pagination-info');
+      if (pInfo) pInfo.textContent = `Showing ${startIndex + 1}-${endIndex} of ${totalCount} entries`;
+    } else {
+      const pInfo = document.getElementById('returned-pagination-info');
+      if (pInfo) pInfo.textContent = `Showing all ${totalCount} entries`;
+    }
+
+    // Pagination Buttons
+    const pBtns = document.getElementById('returned-pagination-buttons');
+    if (pBtns) {
+      if (this.returnedPageSize === 'ALL' || totalPages <= 1) {
+        pBtns.innerHTML = '';
+      } else {
+        let btnsHtml = `
+          <button type="button" class="btn btn-outline-secondary ${this.returnedCurrentPage === 1 ? 'disabled' : ''}" onclick="LedgerModule.changeReturnedPage(${this.returnedCurrentPage - 1})">Prev</button>
+        `;
+        const startP = Math.max(1, this.returnedCurrentPage - 2);
+        const endP = Math.min(totalPages, this.returnedCurrentPage + 2);
+        for (let p = startP; p <= endP; p++) {
+          btnsHtml += `
+            <button type="button" class="btn ${p === this.returnedCurrentPage ? 'btn-success text-white' : 'btn-outline-secondary'}" onclick="LedgerModule.changeReturnedPage(${p})">${p}</button>
+          `;
+        }
+        btnsHtml += `
+          <button type="button" class="btn btn-outline-secondary ${this.returnedCurrentPage === totalPages ? 'disabled' : ''}" onclick="LedgerModule.changeReturnedPage(${this.returnedCurrentPage + 1})">Next</button>
+        `;
+        pBtns.innerHTML = btnsHtml;
+      }
+    }
+
+    // Grouping by Return Date (displayReturnDate)
+    const grouped = new Map();
+    recordsToDisplay.forEach(item => {
+      const dKey = item.displayReturnDate || item.returnDate || 'Other';
+      if (!grouped.has(dKey)) {
+        grouped.set(dKey, []);
+      }
+      grouped.get(dKey).push(item);
+    });
+
+    let html = '';
+    grouped.forEach((items, dateKey) => {
+      const groupSum = items.reduce((acc, x) => acc + (Number(x.returnedAmount) || 0), 0);
+
+      // Authentic AppSheet Group Header (● DD/MM/YYYY ₹ Total)
+      html += `
+        <tr class="returned-date-group-row">
+          <td colspan="12">
+            <span class="appsheet-bullet green-bullet">●</span>
+            <span class="fw-bold me-3" style="color: #202124;">${dateKey}</span>
+            <span class="fw-bold text-success" style="font-size: 13px;">₹ ${this.formatINR(groupSum)}</span>
+          </td>
+        </tr>
+      `;
+
+      // Data Rows
+      items.forEach(r => {
+        const isSelected = this.activeReturnedRecordId === r.id;
+        html += `
+          <tr class="returned-data-row ${isSelected ? 'active' : ''}" id="ret-row-${r.id}" onclick="LedgerModule.openSettledDebtDetails('${r.id}')">
+            <td>
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span>${r.returnMode || '-'}</span>
+            </td>
+            <td class="fw-semibold">${r.truckNo || '-'}</td>
+            <td>${r.displayReturnDate || r.returnDate || '-'}</td>
+            <td class="text-end fw-bold text-success">₹ ${this.formatINR(r.returnedAmount)}</td>
+            <td>${r.displayDebtDate || r.debtDate || '-'}</td>
+            <td class="text-end fw-semibold">₹ ${this.formatINR(r.debtAmount)}</td>
+            
+            <!-- Full table columns (hidden in split view) -->
+            <td class="col-ext">${r.debtType || '-'}</td>
+            <td class="col-ext">${r.grNo || '-'}</td>
+            <td class="col-ext">${r.company || '-'}</td>
+            <td class="col-ext text-truncate" style="max-width: 170px;" title="${r.depositorName || ''}">${r.depositorName || '-'}</td>
+            <td class="col-ext text-truncate" style="max-width: 190px;" title="${r.description || ''}">${r.description || '-'}</td>
+            <td class="text-center text-muted" style="font-size: 11px;"><i class="bi bi-chevron-right"></i></td>
+          </tr>
+        `;
+      });
+    });
+
+    tbody.innerHTML = html;
+  },
+
+  openSettledDebtDetails(recordId) {
+    this.activeReturnedRecordId = recordId;
+    const r = (this.allReturnedAmounts || []).find(x => x.id === recordId);
+    if (!r) return;
+
+    // Highlight row in table
+    const allRows = document.querySelectorAll('.returned-data-row');
+    allRows.forEach(row => row.classList.remove('active'));
+    const targetRow = document.getElementById(`ret-row-${recordId}`);
+    if (targetRow) targetRow.classList.add('active');
+
+    // Show side panel and activate split-open mode
+    const panel = document.getElementById('panel-settled-debt-details');
+    const splitWrapper = document.querySelector('.returned-split-wrapper');
+    if (panel) panel.classList.remove('d-none');
+    if (splitWrapper) splitWrapper.classList.add('split-open');
+
+    const content = document.getElementById('settled-debt-panel-content');
+    if (!content) return;
+
+    const receipts = (r.receipts && Array.isArray(r.receipts)) ? r.receipts : [
+      {
+        returnDate: r.displayReturnDate || r.returnDate,
+        depositorName: r.depositorName || '-',
+        returnMode: r.returnMode || '-',
+        amount: r.returnedAmount || 0
+      }
+    ];
+
+    content.innerHTML = `
+      <!-- CARD 1: Debt Information (Matching WhatsApp Photo exactly) -->
+      <div class="settled-card">
+        <div class="settled-field-row">
+          <span class="settled-field-label">Debt Type</span>
+          <span class="settled-field-value">
+            <span class="appsheet-bullet green-bullet">●</span>
+            ${r.debtType || '-'}
+          </span>
+        </div>
+        <div class="settled-field-row">
+          <span class="settled-field-label">Date</span>
+          <span class="settled-field-value">${r.displayDebtDate || r.debtDate || '-'}</span>
+        </div>
+        <div class="settled-field-row">
+          <span class="settled-field-label">Truck Owner Name</span>
+          <span class="settled-field-value">${r.truckOwnerName || '-'}</span>
+        </div>
+        <div class="settled-field-row">
+          <span class="settled-field-label">G.R.No.</span>
+          <span class="settled-field-value">${r.grNo || '-'}</span>
+        </div>
+        <div class="settled-field-row">
+          <span class="settled-field-label">Company Name</span>
+          <span class="settled-field-value">${r.company || '-'}</span>
+        </div>
+        <div class="settled-field-row">
+          <span class="settled-field-label">From</span>
+          <span class="settled-field-value">${r.from || '-'}</span>
+        </div>
+        <div class="settled-field-row">
+          <span class="settled-field-label">To</span>
+          <span class="settled-field-value">${r.to || '-'}</span>
+        </div>
+        <div class="settled-field-row">
+          <span class="settled-field-label">Borrower Name</span>
+          <span class="settled-field-value">${r.borrowerName || '-'}</span>
+        </div>
+        <div class="settled-field-row">
+          <span class="settled-field-label">Receiver Name</span>
+          <span class="settled-field-value">${r.receiverName || '-'}</span>
+        </div>
+
+        <div class="settled-card-divider"></div>
+
+        <div class="settled-field-row">
+          <span class="settled-field-label">Debt Mode</span>
+          <span class="settled-field-value">${r.debtMode || 'Cash'}</span>
+        </div>
+        <div class="settled-field-row">
+          <span class="settled-field-label">Debt Amount</span>
+          <span class="settled-field-value">₹ ${this.formatINR(r.debtAmount)}</span>
+        </div>
+        <div class="settled-field-row">
+          <span class="settled-field-label">Total Returned Amount</span>
+          <span class="settled-field-value" style="color: #137333; font-weight: 700;">₹ ${this.formatINR(r.returnedAmount)}</span>
+        </div>
+      </div>
+
+      <!-- CARD 2: Returned Amount [count] (Matching WhatsApp Photo exactly) -->
+      <div class="settled-card">
+        <div class="d-flex align-items-center justify-content-between mb-2 pb-1 border-bottom">
+          <span class="fw-bold text-dark" style="font-size: 13.5px;">Returned Amount ${receipts.length}</span>
+          <span class="badge bg-success bg-opacity-10 text-success fw-normal" style="font-size: 11px;">Settled</span>
+        </div>
+        <div class="table-responsive">
+          <table class="returned-mini-table">
+            <thead>
+              <tr>
+                <th>Return Date</th>
+                <th>Depositor Name</th>
+                <th>Return Mode</th>
+                <th class="text-end">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${receipts.map(rec => `
+                <tr>
+                  <td>${rec.returnDate || '-'}</td>
+                  <td class="text-truncate" style="max-width: 130px;" title="${rec.depositorName || ''}">${rec.depositorName || '-'}</td>
+                  <td>${rec.returnMode || '-'}</td>
+                  <td class="text-end fw-bold">₹ ${this.formatINR(rec.amount)}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+        <div class="mt-3 pt-2 border-top d-flex align-items-center justify-content-between">
+          <small class="text-muted" style="font-size: 11px;">Truck: <strong class="text-dark">${r.truckNo || '-'}</strong></small>
+          <button type="button" class="btn btn-sm btn-outline-success py-1 px-3 d-inline-flex align-items-center gap-1" style="font-size: 12px; border-radius: 4px;" onclick="LedgerModule.expandReturnedReceipt('${r.id}')">
+            <span>Expand</span>
+            <i class="bi bi-box-arrow-up-right" style="font-size: 11px;"></i>
+          </button>
+        </div>
+      </div>
+    `;
+  },
+
+  closeSettledDebtDetails() {
+    this.activeReturnedRecordId = null;
+    const panel = document.getElementById('panel-settled-debt-details');
+    const splitWrapper = document.querySelector('.returned-split-wrapper');
+    if (panel) {
+      panel.classList.add('d-none');
+      panel.classList.remove('fullscreen');
+    }
+    if (splitWrapper) splitWrapper.classList.remove('split-open');
+
+    this.isSettledPanelFullscreen = false;
+    const btnExpand = document.getElementById('btn-expand-settled-panel');
+    if (btnExpand) btnExpand.textContent = '↗';
+
+    const allRows = document.querySelectorAll('.returned-data-row');
+    allRows.forEach(row => row.classList.remove('active'));
+  },
+
+  toggleSettledDebtFullscreen() {
+    this.isSettledPanelFullscreen = !this.isSettledPanelFullscreen;
+    const panel = document.getElementById('panel-settled-debt-details');
+    const btnExpand = document.getElementById('btn-expand-settled-panel');
+    if (panel) {
+      panel.classList.toggle('fullscreen', this.isSettledPanelFullscreen);
+    }
+    if (btnExpand) {
+      btnExpand.textContent = this.isSettledPanelFullscreen ? '↙' : '↗';
+    }
+  },
+
+  toggleReturnedFullscreen() {
+    const el = document.getElementById('ledger-view-returned-amount');
+    if (!el) return;
+    if (!document.fullscreenElement) {
+      if (el.requestFullscreen) {
+        el.requestFullscreen();
+      } else if (el.webkitRequestFullscreen) {
+        el.webkitRequestFullscreen();
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    }
+  },
+
+  changeReturnedPageSize(size) {
+    this.returnedPageSize = size;
+    this.returnedCurrentPage = 1;
+    this.renderReturnedAmountTable();
+  },
+
+  changeReturnedPage(page) {
+    this.returnedCurrentPage = page;
+    this.renderReturnedAmountTable();
+    const tableWrap = document.getElementById('returned-table-wrapper');
+    if (tableWrap) tableWrap.scrollTop = 0;
+  },
+
+  expandReturnedReceipt(recordId) {
+    const r = (this.allReturnedAmounts || []).find(x => x.id === recordId);
+    if (!r) return;
+
+    const receipts = (r.receipts && Array.isArray(r.receipts)) ? r.receipts : [
+      {
+        returnDate: r.displayReturnDate || r.returnDate,
+        depositorName: r.depositorName || '-',
+        returnMode: r.returnMode || '-',
+        amount: r.returnedAmount || 0
+      }
+    ];
+
+    const receiptRows = receipts.map((rec, i) =>
+      `• Receipt #${i + 1}: ₹ ${this.formatINR(rec.amount)} via ${rec.returnMode} on ${rec.returnDate} (${rec.depositorName})`
+    ).join('\n');
+
+    const msg = `*MTC & TTC Transport - Settled Debt Receipt*\n` +
+      `----------------------------------------\n` +
+      `G.R. No.: ${r.grNo || '-'}\n` +
+      `Truck No.: ${r.truckNo || '-'}\n` +
+      `Owner: ${r.truckOwnerName || '-'}\n` +
+      `Company: ${r.company || '-'}\n` +
+      `From: ${r.from || '-'} To: ${r.to || '-'}\n` +
+      `Debt Date: ${r.displayDebtDate || r.debtDate || '-'}\n` +
+      `Debt Amount: ₹ ${this.formatINR(r.debtAmount)}\n` +
+      `Total Returned: ₹ ${this.formatINR(r.returnedAmount)} (SETTLED)\n` +
+      `----------------------------------------\n` +
+      `Receipt Details:\n${receiptRows}\n`;
+
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(msg).then(() => {
+        alert('Receipt details copied to clipboard!\nYou can paste and share via WhatsApp or SMS.');
+      }).catch(() => {
+        const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+        window.open(url, '_blank');
+      });
+    } else {
+      const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+      window.open(url, '_blank');
+    }
+  },
+
+  // ----------------------------------------------------
   // DRILLDOWN ROUTING & NAVIGATION (Debts Register)
   // ----------------------------------------------------
   goToYearView() {
@@ -994,6 +1578,7 @@ const LedgerModule = {
   renderCurrentView() {
     const dashView = document.getElementById('ledger-view-dashboard');
     const cashRegView = document.getElementById('ledger-view-cash-register');
+    const retView = document.getElementById('ledger-view-returned-amount');
     const regView = document.getElementById('ledger-view-register');
     const detView = document.getElementById('ledger-view-details');
     const stmtView = document.getElementById('ledger-view-statements');
@@ -1011,6 +1596,7 @@ const LedgerModule = {
     if (this.currentTab === 'statements') {
       dashView?.classList.add('d-none');
       cashRegView?.classList.add('d-none');
+      retView?.classList.add('d-none');
       regView?.classList.add('d-none');
       detView?.classList.add('d-none');
       stmtView?.classList.remove('d-none');
@@ -1033,6 +1619,7 @@ const LedgerModule = {
     if (this.viewLevel === 'details') {
       dashView?.classList.add('d-none');
       cashRegView?.classList.add('d-none');
+      retView?.classList.add('d-none');
       regView?.classList.add('d-none');
       detView?.classList.remove('d-none');
       if (breadcrumbRoot) {
@@ -1056,6 +1643,7 @@ const LedgerModule = {
     if (this.mainViewMode === 'dashboard') {
       dashView?.classList.remove('d-none');
       cashRegView?.classList.add('d-none');
+      retView?.classList.add('d-none');
       regView?.classList.add('d-none');
       if (breadcrumbRoot) {
         breadcrumbRoot.innerHTML = `
@@ -1077,6 +1665,7 @@ const LedgerModule = {
     if (this.mainViewMode === 'cash-ledger') {
       dashView?.classList.add('d-none');
       cashRegView?.classList.remove('d-none');
+      retView?.classList.add('d-none');
       regView?.classList.add('d-none');
       if (breadcrumbRoot) {
         breadcrumbRoot.innerHTML = `
@@ -1092,9 +1681,35 @@ const LedgerModule = {
       return;
     }
 
+    // 4B. LEVEL 1: RETURNED AMOUNT VIEW (Authentic AppSheet Green Master-Detail)
+    if (this.mainViewMode === 'returned-amount') {
+      dashView?.classList.add('d-none');
+      cashRegView?.classList.add('d-none');
+      regView?.classList.add('d-none');
+      retView?.classList.remove('d-none');
+      if (breadcrumbRoot) {
+        breadcrumbRoot.innerHTML = `
+          <a href="javascript:void(0)" onclick="LedgerModule.goToDashboardView()">Home</a>
+          <span class="sep">&gt;</span>
+          <a href="javascript:void(0)" onclick="LedgerModule.goToDashboardView()">Ledger</a>
+          <span class="sep">&gt;</span>
+          <span class="active">Returned Amount</span>
+        `;
+      }
+      this.renderReturnedTreeSidebar();
+      this.renderReturnedAmountTable();
+      if (this.activeReturnedRecordId) {
+        this.openSettledDebtDetails(this.activeReturnedRecordId);
+      } else {
+        this.closeSettledDebtDetails();
+      }
+      return;
+    }
+
     // 5. LEVEL 1-3: DEBTS REGISTER VIEWS
     dashView?.classList.add('d-none');
     cashRegView?.classList.add('d-none');
+    retView?.classList.add('d-none');
     regView?.classList.remove('d-none');
 
     const tabName = this.currentTab === 'open' ? 'Open' : this.currentTab === 'all' ? 'All' : 'Settled';
@@ -1362,6 +1977,12 @@ const LedgerModule = {
 
   onSearchInput(val) {
     this.searchQuery = (val || '').toLowerCase().trim();
+    if (this.mainViewMode === 'returned-amount') {
+      this.returnedCurrentPage = 1;
+      this.applyReturnedFilters();
+      this.renderReturnedAmountTable();
+      return;
+    }
     if (this.mainViewMode === 'cash-ledger') {
       this.cashCurrentPage = 1;
       this.applyCashFilters();
@@ -1382,6 +2003,12 @@ const LedgerModule = {
     const sInput = document.getElementById('ledger-search-input');
     if (sInput) sInput.value = '';
     this.searchQuery = '';
+    if (this.mainViewMode === 'returned-amount') {
+      this.returnedCurrentPage = 1;
+      this.applyReturnedFilters();
+      this.renderReturnedAmountTable();
+      return;
+    }
     if (this.mainViewMode === 'cash-ledger') {
       this.cashCurrentPage = 1;
       this.applyCashFilters();
