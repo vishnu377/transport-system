@@ -1113,6 +1113,288 @@
       font-weight: 500;
       white-space: nowrap;
     }
+
+    /* ==================================================== */
+    /* COMPANY EXPENSES (Authentic AppSheet Gold/Ochre Theme) */
+    /* ==================================================== */
+    .company-expense-container {
+      display: flex;
+      min-height: calc(100vh - 110px);
+      background: #ffffff;
+      position: relative;
+    }
+    .company-tree-sidebar {
+      width: 230px;
+      border-right: 1px solid #eeeeee;
+      padding: 14px 10px;
+      flex-shrink: 0;
+      background: #ffffff;
+      transition: width 0.22s ease, padding 0.22s ease, opacity 0.18s ease;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+    .company-tree-sidebar.collapsed {
+      width: 0 !important;
+      padding: 0 !important;
+      opacity: 0;
+      border-right: none !important;
+      pointer-events: none;
+    }
+    @media (max-width: 991.98px) {
+      .company-tree-sidebar {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1040;
+        width: 260px;
+        box-shadow: 4px 0 20px rgba(0,0,0,0.18);
+        background: #ffffff;
+      }
+      .company-tree-sidebar.collapsed {
+        transform: translateX(-100%);
+      }
+    }
+    .company-tree-header {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #5f6368;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 4px 10px;
+      margin-bottom: 6px;
+    }
+    .company-tree-item {
+      padding: 6px 10px;
+      border-radius: 20px;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: #202124;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 3px;
+      transition: background 0.1s;
+      user-select: none;
+    }
+    .company-tree-item:hover {
+      background: #fdfaf3;
+    }
+    .company-tree-item.active {
+      background: #f7edd8;
+      color: #8d6e32;
+      font-weight: 600;
+    }
+    .company-tree-badge {
+      font-size: 11px;
+      font-weight: 600;
+      color: #5f6368;
+      background: #f1f3f4;
+      padding: 2px 7px;
+      border-radius: 10px;
+      letter-spacing: -0.2px;
+    }
+    .company-tree-item.active .company-tree-badge {
+      background: #eedcb5;
+      color: #8d6e32;
+    }
+    .company-tree-sublist {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-bottom: 6px;
+    }
+    .company-tree-subitem {
+      padding-left: 26px !important;
+      font-size: 12px;
+    }
+    .company-tree-caret {
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      font-size: 11px;
+      color: #5f6368;
+      user-select: none;
+    }
+
+    .company-expense-main-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      background: #ffffff;
+    }
+    .company-split-wrapper {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+    }
+    .company-table-wrapper {
+      flex: 1;
+      overflow-x: auto;
+      overflow-y: auto;
+      max-height: calc(100vh - 190px);
+      min-width: 0;
+      -webkit-overflow-scrolling: touch;
+    }
+    .company-expense-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+    }
+    .company-expense-table th {
+      padding: 9px 12px;
+      font-weight: 600;
+      color: #3c4043;
+      font-size: 11.5px;
+      border-bottom: 1px solid #dadce0;
+      background: #ffffff;
+      white-space: nowrap;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+    .company-expense-table td {
+      padding: 7px 12px;
+      border-bottom: 1px solid #f1f3f4;
+      font-weight: 500;
+      white-space: nowrap;
+      color: #8d6e32 !important; /* Authentic Google AppSheet Gold/Ochre cell text */
+      font-size: 12.5px;
+      vertical-align: middle;
+    }
+    .company-expense-table td span {
+      color: inherit;
+    }
+    .company-expense-table td .gold-bullet {
+      color: #8d6e32 !important;
+      font-size: 11px;
+      margin-right: 4px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .company-expense-table tbody tr.company-data-row {
+      cursor: pointer;
+      transition: background-color 0.1s ease;
+    }
+    .company-expense-table tbody tr.company-data-row:hover {
+      background-color: #fbf7ee !important;
+    }
+    .company-expense-table tbody tr.company-data-row.active {
+      background-color: #f5edd9 !important;
+    }
+    .company-expense-table tbody tr.company-data-row.active td {
+      color: #6e5424 !important;
+      font-weight: 600;
+    }
+    .company-date-group-row td {
+      background: #ffffff;
+      color: #8d6e32;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 8px 12px;
+      border-top: 1px solid #e0e0e0;
+      border-bottom: 1px solid #eeeeee;
+    }
+
+    /* Master-Detail Side Panel (Company Expense Details) */
+    .company-expense-panel {
+      width: 480px;
+      border-left: 1px solid #dadce0;
+      background: #f8f9fa;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      transition: width 0.22s ease, transform 0.22s ease;
+      overflow-y: auto;
+      max-height: calc(100vh - 190px);
+    }
+    @media (max-width: 991.98px) {
+      .company-expense-panel {
+        position: fixed !important;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 100% !important;
+        max-width: 480px;
+        max-height: 100vh !important;
+        z-index: 1050;
+        box-shadow: -4px 0 24px rgba(0,0,0,0.2);
+      }
+    }
+    .company-expense-panel.fullscreen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100% !important;
+      max-height: 100% !important;
+      z-index: 1060;
+    }
+    .company-expense-panel-header {
+      padding: 8px 16px;
+      background: #ffffff;
+      border-bottom: 1px solid #dadce0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .company-detail-card {
+      background: #ffffff;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      padding: 16px 20px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+      margin: 14px;
+    }
+    .company-field-row {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 14px;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+    .company-field-label {
+      width: 150px;
+      flex-shrink: 0;
+      color: #5f6368;
+      font-weight: 500;
+    }
+    .company-field-value {
+      flex: 1;
+      color: #8d6e32;
+      font-weight: 600;
+      display: flex;
+      align-items: flex-start;
+      gap: 4px;
+      word-break: break-word;
+    }
+
+    /* Add Expense Modal Specific Styling (WhatsApp Image match) */
+    .btn-segmented {
+      border: 1px solid #dadce0;
+      background: #ffffff;
+      color: #3c4043;
+      padding: 6px 18px;
+      font-size: 13.5px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-segmented.active {
+      background: #8d6e32 !important;
+      color: #ffffff !important;
+      border-color: #8d6e32 !important;
+    }
   </style>
 </head>
 <body>
@@ -1355,29 +1637,29 @@
 
         <!-- CARD 3: Company -->
         <div class="appsheet-dash-card" id="card-dash-company">
-          <div class="appsheet-dash-card-header">
-            <span class="appsheet-dash-card-title" onclick="LedgerModule.goToCompanyExpenseView()">Company</span>
-            <div class="appsheet-dash-card-tools">
-              <button type="button" class="btn-appsheet-add py-0 px-2" style="font-size: 0.76rem;" onclick="AppUI.showToast('Company Expense form ready', 'info')">+ Add Expen...</button>
+          <div class="appsheet-dash-card-header" style="cursor: pointer;" onclick="LedgerModule.goToCompanyExpenseView()">
+            <span class="appsheet-dash-card-title">Company</span>
+            <div class="appsheet-dash-card-tools" onclick="event.stopPropagation()">
+              <button type="button" class="btn-appsheet-add py-0 px-2" style="font-size: 0.76rem;" onclick="LedgerModule.openAddCompanyExpenseModal()">+ Add Expen...</button>
               <span class="appsheet-tool-icon" onclick="LedgerModule.toggleFilterDropdown()" title="Filter">🔻</span>
               <span class="appsheet-tool-icon" onclick="LedgerModule.goToCompanyExpenseView()" title="Expand Company">↗</span>
             </div>
           </div>
           <div class="appsheet-dash-card-body">
             <div class="appsheet-drill-section-label">Year</div>
-            <div class="appsheet-drill-row" onclick="LedgerModule.goToCompanyExpenseView('ALL')">
+            <div class="appsheet-drill-row" onclick="event.stopPropagation(); LedgerModule.goToCompanyExpenseView('ALL')">
               <span class="appsheet-drill-label-all">All</span>
               <span class="appsheet-chevron">&gt;</span>
             </div>
-            <div class="appsheet-drill-row" onclick="LedgerModule.goToCompanyExpenseView('2026-2027')">
+            <div class="appsheet-drill-row" onclick="event.stopPropagation(); LedgerModule.goToCompanyExpenseView('2026-2027')">
               <div class="appsheet-drill-left">
                 <span class="appsheet-bullet gold-bullet">●</span>
                 <span class="appsheet-drill-label-gold">2026-2027</span>
-                <span class="appsheet-drill-badge">₹ 683,636.370</span>
+                <span class="appsheet-drill-badge">₹ 692,551.370</span>
               </div>
               <span class="appsheet-chevron">&gt;</span>
             </div>
-            <div class="appsheet-drill-row" onclick="LedgerModule.goToCompanyExpenseView('2025-2026')">
+            <div class="appsheet-drill-row" onclick="event.stopPropagation(); LedgerModule.goToCompanyExpenseView('2025-2026')">
               <div class="appsheet-drill-left">
                 <span class="appsheet-bullet gold-bullet">●</span>
                 <span class="appsheet-drill-label-gold">2025-2026</span>
@@ -1385,7 +1667,7 @@
               </div>
               <span class="appsheet-chevron">&gt;</span>
             </div>
-            <div class="appsheet-drill-row" onclick="LedgerModule.goToCompanyExpenseView('2024-2025')">
+            <div class="appsheet-drill-row" onclick="event.stopPropagation(); LedgerModule.goToCompanyExpenseView('2024-2025')">
               <div class="appsheet-drill-left">
                 <span class="appsheet-bullet gold-bullet">●</span>
                 <span class="appsheet-drill-label-gold">2024-2025</span>
@@ -2004,6 +2286,214 @@
           </div>
         </div>
 
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 5C. COMPANY EXPENSE VIEW (Authentic AppSheet Gold Master-Detail) -->
+    <!-- ========================================== -->
+    <div id="ledger-view-company-expense" class="d-none">
+      <div class="company-expense-container">
+        
+        <!-- Left Sidebar: Year / Month Tree -->
+        <div class="company-tree-sidebar" id="company-tree-sidebar">
+          <div class="company-tree-header d-flex align-items-center justify-content-between">
+            <span>Date</span>
+            <button type="button" class="btn btn-sm btn-link text-muted p-0 border-0" onclick="LedgerModule.toggleCompanyDateSidebar()" title="Hide Date Sidebar">
+              <i class="bi bi-chevron-bar-left fs-6"></i>
+            </button>
+          </div>
+          <div class="company-tree-item" id="company-tree-all" onclick="LedgerModule.selectCompanyAll()">
+            <span>All</span>
+            <span class="company-tree-badge" id="company-badge-all">₹ 3,259,878.900</span>
+          </div>
+
+          <!-- FY 2026-2027 -->
+          <div class="company-tree-item" id="company-tree-2026-2027">
+            <div class="d-flex align-items-center gap-1">
+              <span class="company-tree-caret" onclick="LedgerModule.toggleCompanyFYTree('2026-2027')"><i class="bi bi-caret-down-fill"></i></span>
+              <span class="appsheet-bullet gold-bullet">●</span>
+              <span class="fw-semibold" onclick="LedgerModule.selectCompanyFY('2026-2027')">2026-2027</span>
+            </div>
+            <span class="company-tree-badge" id="company-badge-2026-2027">₹ 692,551.370</span>
+          </div>
+          <div class="company-tree-sublist" id="company-sublist-2026-2027"></div>
+
+          <!-- FY 2025-2026 -->
+          <div class="company-tree-item" id="company-tree-2025-2026">
+            <div class="d-flex align-items-center gap-1">
+              <span class="company-tree-caret" onclick="LedgerModule.toggleCompanyFYTree('2025-2026')"><i class="bi bi-caret-right-fill"></i></span>
+              <span class="appsheet-bullet gold-bullet">●</span>
+              <span class="fw-semibold" onclick="LedgerModule.selectCompanyFY('2025-2026')">2025-2026</span>
+            </div>
+            <span class="company-tree-badge" id="company-badge-2025-2026">₹ 1,964,934.530</span>
+          </div>
+          <div class="company-tree-sublist d-none" id="company-sublist-2025-2026"></div>
+
+          <!-- FY 2024-2025 -->
+          <div class="company-tree-item" id="company-tree-2024-2025">
+            <div class="d-flex align-items-center gap-1">
+              <span class="company-tree-caret" onclick="LedgerModule.toggleCompanyFYTree('2024-2025')"><i class="bi bi-caret-right-fill"></i></span>
+              <span class="appsheet-bullet gold-bullet">●</span>
+              <span class="fw-semibold" onclick="LedgerModule.selectCompanyFY('2024-2025')">2024-2025</span>
+            </div>
+            <span class="company-tree-badge" id="company-badge-2024-2025">₹ 602,393.000</span>
+          </div>
+          <div class="company-tree-sublist d-none" id="company-sublist-2024-2025"></div>
+        </div>
+
+        <!-- Main Area: Toolbar + Split Layout -->
+        <div class="company-expense-main-area">
+          <div class="d-flex align-items-center justify-content-between px-3 py-2 border-bottom bg-white flex-wrap gap-2">
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+              <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2 d-inline-flex align-items-center gap-1" id="btn-toggle-company-sidebar" onclick="LedgerModule.toggleCompanyDateSidebar()" style="font-size: 0.8rem;">
+                <i class="bi bi-layout-sidebar-inset" id="btn-toggle-company-icon"></i>
+                <span id="btn-toggle-company-text">Hide Date Filter</span>
+              </button>
+              <span class="badge bg-light text-dark border fw-normal" id="company-current-filter-badge" style="font-size: 0.78rem;">
+                <i class="bi bi-funnel me-1 text-muted"></i>2026-2027 &gt; <strong>7 Oct</strong>
+              </span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <button type="button" class="btn btn-sm text-white py-1 px-3 fw-medium d-inline-flex align-items-center gap-1" style="background-color: #8d6e32; font-size: 0.8rem; border-radius: 4px;" onclick="LedgerModule.openAddCompanyExpenseModal()">
+                <i class="bi bi-plus-lg"></i> + Add Expense
+              </button>
+              <span class="appsheet-tool-icon" onclick="LedgerModule.toggleFilterDropdown()" title="Filter">🔻</span>
+              <span class="appsheet-tool-icon" onclick="LedgerModule.toggleCompanyFullscreen()" title="Full screen">⤢</span>
+            </div>
+          </div>
+
+          <!-- Split Wrapper: Table + Detail Panel -->
+          <div class="company-split-wrapper" id="company-split-wrapper">
+            <div class="company-table-wrapper" id="company-table-wrapper">
+              <table class="company-expense-table" id="company-expense-table">
+                <thead class="sticky-top" style="z-index: 5;">
+                  <tr>
+                    <th style="min-width: 110px;">Date</th>
+                    <th style="min-width: 120px;">Amount</th>
+                    <th style="min-width: 280px;">Expense Line Item</th>
+                    <th style="min-width: 120px;">Expense From</th>
+                    <th style="min-width: 120px;">Expense Type</th>
+                    <th style="width: 25px;"></th>
+                  </tr>
+                </thead>
+                <tbody id="company-expense-tbody"></tbody>
+              </table>
+            </div>
+
+            <!-- Master-Detail Side Panel (Matching WhatsApp Photo exactly) -->
+            <div class="company-expense-panel d-none" id="panel-company-expense-details">
+              <div class="company-expense-panel-header">
+                <div class="d-flex align-items-center gap-2">
+                  <span class="appsheet-tool-icon cursor-pointer" onclick="LedgerModule.toggleCompanyDetailFullscreen()" title="Expand / Shrink">↗</span>
+                  <span class="fw-bold" style="font-size: 14px; color: #202124;">Company Expense</span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="appsheet-tool-icon cursor-pointer" onclick="LedgerModule.prevCompanyExpenseRecord()" title="Previous">&lt;</span>
+                  <span class="appsheet-tool-icon cursor-pointer" onclick="LedgerModule.nextCompanyExpenseRecord()" title="Next">&gt;</span>
+                  <span class="appsheet-tool-icon cursor-pointer" onclick="LedgerModule.toggleCompanyDetailFullscreen()" title="Full screen" id="btn-expand-company-panel">↗</span>
+                  <span class="appsheet-tool-icon cursor-pointer" onclick="LedgerModule.closeCompanyExpenseDetails()" title="Close details">✕</span>
+                </div>
+              </div>
+
+              <div id="company-expense-panel-content">
+                <!-- Dynamically populated: Card with Date, Amount, Expense Type, Line Item, Expense From -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Pagination Footer -->
+          <div class="p-2 bg-white border-top d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <small class="text-muted" id="company-pagination-info">Showing 1-100 entries</small>
+            <div class="d-flex align-items-center gap-2">
+              <select id="company-page-size" class="form-select form-select-sm" style="width: auto; font-size: 0.8rem;" onchange="LedgerModule.changeCompanyPageSize(this.value)">
+                <option value="50">50 rows</option>
+                <option value="100" selected>100 rows</option>
+                <option value="250">250 rows</option>
+                <option value="ALL">All rows</option>
+              </select>
+              <div class="btn-group btn-group-sm" id="company-pagination-buttons"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Modal: Add Expense (Matching WhatsApp Photo exactly) -->
+    <div class="modal fade" id="modal-add-company-expense" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" style="max-width: 500px;">
+        <div class="modal-content shadow border-0" style="border-radius: 8px;">
+          <div class="modal-header py-2 px-3 border-bottom d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-2">
+              <button type="button" class="btn-close m-0" data-bs-dismiss="modal" aria-label="Close"></button>
+              <h6 class="modal-title fw-bold text-dark m-0" style="font-size: 15px;">Add Expense</h6>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <button type="button" class="btn btn-sm btn-light border py-1 px-3" data-bs-dismiss="modal" style="font-size: 13px;">Cancel</button>
+              <button type="button" class="btn btn-sm text-white py-1 px-3 fw-medium" style="background-color: #8d6e32; font-size: 13px;" onclick="LedgerModule.saveCompanyExpense()">Save</button>
+            </div>
+          </div>
+          <div class="modal-body p-3">
+            <form id="form-add-company-expense" onsubmit="event.preventDefault(); LedgerModule.saveCompanyExpense();">
+              
+              <!-- Date* -->
+              <div class="mb-3 d-flex align-items-center">
+                <label class="form-label text-muted m-0" style="width: 140px; font-size: 13.5px;">Date*</label>
+                <div class="input-group">
+                  <input type="date" id="comp-exp-date" class="form-control form-control-sm" required style="font-size: 13.5px;">
+                </div>
+              </div>
+
+              <!-- Amount* -->
+              <div class="mb-3 d-flex align-items-center">
+                <label class="form-label text-muted m-0" style="width: 140px; font-size: 13.5px;">Amount*</label>
+                <div class="input-group">
+                  <span class="input-group-text py-1 px-2 text-muted" style="font-size: 13px;">₹</span>
+                  <input type="number" step="0.001" min="0" id="comp-exp-amount" class="form-control form-control-sm" placeholder="0.000" required style="font-size: 13.5px;">
+                </div>
+              </div>
+
+              <!-- Expense Type* (Company / Owner) -->
+              <div class="mb-3 d-flex align-items-start">
+                <label class="form-label text-muted m-0 pt-1" style="width: 140px; font-size: 13.5px;">Expense Type*</label>
+                <div class="flex-grow-1">
+                  <div class="btn-group w-100" role="group">
+                    <button type="button" class="btn btn-sm btn-segmented active" id="btn-comp-type-company" onclick="LedgerModule.setExpenseType('Company')">Company</button>
+                    <button type="button" class="btn btn-sm btn-segmented" id="btn-comp-type-owner" onclick="LedgerModule.setExpenseType('Owner')">
+                      <span class="appsheet-bullet" style="color: #e91e63;">●</span> Owner
+                    </button>
+                  </div>
+
+                  <!-- Sub-selector if Owner is selected -->
+                  <div id="comp-owner-select-wrap" class="mt-2 d-none">
+                    <select id="comp-exp-owner" class="form-select form-select-sm" style="font-size: 13px;">
+                      <option value="Ramkaran Jat" selected>● Ramkaran Jat</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Expense Line Item* -->
+              <div class="mb-3 d-flex align-items-start">
+                <label class="form-label text-muted m-0 pt-1" style="width: 140px; font-size: 13.5px;">Expense Line Item*</label>
+                <input type="text" id="comp-exp-line-item" class="form-control form-control-sm flex-grow-1" placeholder="e.g. Bike Petrol, Room Rent, Tea & Snacks" required style="font-size: 13.5px;">
+              </div>
+
+              <!-- Expense From* (Cash / Online) -->
+              <div class="mb-2 d-flex align-items-center">
+                <label class="form-label text-muted m-0" style="width: 140px; font-size: 13.5px;">Expense From*</label>
+                <div class="btn-group flex-grow-1" role="group">
+                  <button type="button" class="btn btn-sm btn-segmented active" id="btn-comp-from-cash" onclick="LedgerModule.setExpenseFrom('Cash')">Cash</button>
+                  <button type="button" class="btn btn-sm btn-segmented" id="btn-comp-from-online" onclick="LedgerModule.setExpenseFrom('Online')">
+                    <span class="appsheet-bullet" style="color: #8d6e32;">●</span> Online
+                  </button>
+                </div>
+              </div>
+
+            </form>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -2872,6 +3362,7 @@
   <script src="../js/sample-cheques-data.js"></script>
   <script src="../js/sample-cash-ledger-data.js"></script>
   <script src="../js/sample-returned-amounts-data.js"></script>
+  <script src="../js/sample-company-expenses-data.js"></script>
   <script src="../js/db-service.js"></script>
   <script src="../js/app.js"></script>
   <script src="../js/modules/ledger.js"></script>

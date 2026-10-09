@@ -20,8 +20,9 @@ const LedgerModule = {
   allPayments: [],
   allCashLedger: [],
   allReturnedAmounts: [],
+  allCompanyExpenses: [],
 
-  // Main Mode State: 'dashboard' | 'cash-ledger' | 'returned-amount' | 'debts' | 'details' | 'statements'
+  // Main Mode State: 'dashboard' | 'cash-ledger' | 'returned-amount' | 'company-expense' | 'debts' | 'details' | 'statements'
   mainViewMode: 'dashboard',
 
   // Cash Ledger State
@@ -45,6 +46,19 @@ const LedgerModule = {
   filteredReturnedList: [],
   activeReturnedRecordId: null,
   isSettledPanelFullscreen: false,
+
+  // Company Expense State (Authentic AppSheet Gold Master-Detail)
+  selectedCompanyFY: '2026-2027',
+  selectedCompanyMonth: '7 Oct',
+  expandedCompanyFYs: { '2026-2027': true, '2025-2026': false, '2024-2025': false },
+  isCompanySidebarHidden: false,
+  companyPageSize: 100,
+  companyCurrentPage: 1,
+  filteredCompanyList: [],
+  activeCompanyExpenseId: null,
+  isCompanyPanelFullscreen: false,
+  modalExpenseType: 'Company',
+  modalExpenseFrom: 'Cash',
 
   // View Hierarchy State: 'year' | 'month' | 'table' | 'details'
   viewLevel: 'year',
@@ -76,6 +90,7 @@ const LedgerModule = {
     this.applyFilters();
     this.applyCashFilters();
     this.applyReturnedFilters();
+    this.applyCompanyFilters();
     this.renderRegisterTable();
     this.renderFYSidebar();
     this.renderMonthBar();
@@ -90,6 +105,7 @@ const LedgerModule = {
     this.allPayments = await dbService.getAll('payments');
     this.allCashLedger = await dbService.getAll('cashLedger');
     this.allReturnedAmounts = await dbService.getAll('returnedAmounts');
+    this.allCompanyExpenses = await dbService.getAll('companyExpenses');
   },
 
   // ----------------------------------------------------
@@ -166,9 +182,25 @@ const LedgerModule = {
     this.renderCurrentView();
   },
 
-  goToCompanyExpenseView(fy = 'ALL') {
-    if (typeof AppUI !== 'undefined') AppUI.showToast(`Company Expenses for ${fy} opening...`, 'info');
-    this.goToDebtsView('all', fy);
+  goToCompanyExpenseView(fy = '2026-2027', month = null) {
+    this.mainViewMode = 'company-expense';
+    if (fy === 'ALL') {
+      this.selectedCompanyFY = 'ALL';
+      this.selectedCompanyMonth = 'ALL';
+    } else {
+      this.selectedCompanyFY = fy;
+      this.selectedCompanyMonth = month !== null ? month : (fy === '2026-2027' ? '7 Oct' : 'ALL');
+      this.expandedCompanyFYs[fy] = true;
+    }
+    this.companyCurrentPage = 1;
+    this.searchQuery = '';
+    const sInput = document.getElementById('ledger-search-input');
+    if (sInput) {
+      sInput.value = '';
+      sInput.placeholder = 'Search Company Expense';
+    }
+    this.applyCompanyFilters();
+    this.renderCurrentView();
   },
 
   goToReceivedView(fy = 'ALL') {
@@ -184,6 +216,8 @@ const LedgerModule = {
   handleTopAddAction() {
     if (this.mainViewMode === 'cash-ledger') {
       this.openCashDetailsModal();
+    } else if (this.mainViewMode === 'company-expense') {
+      this.openAddCompanyExpenseModal();
     } else {
       this.openAddDebtModal();
     }
@@ -425,6 +459,14 @@ const LedgerModule = {
     return Number(val).toLocaleString('en-US', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
+    });
+  },
+
+  formatINR3(val) {
+    if (val === null || val === undefined || isNaN(val)) return '0.000';
+    return Number(val).toLocaleString('en-US', {
+      minimumFractionDigits: 3,
+      maximumFractionDigits: 3
     });
   },
 
@@ -1523,6 +1565,605 @@ const LedgerModule = {
   },
 
   // ----------------------------------------------------
+  // COMPANY EXPENSE (Authentic AppSheet Gold Master-Detail)
+  // ----------------------------------------------------
+  applyCompanyFilters() {
+    if (!this.allCompanyExpenses || !Array.isArray(this.allCompanyExpenses)) {
+      this.filteredCompanyList = [];
+      this.renderCompanyExpenseTable();
+      return;
+    }
+
+    const query = (this.searchQuery || '').trim().toLowerCase();
+
+    this.filteredCompanyList = this.allCompanyExpenses.filter(item => {
+      // Financial Year Filter
+      if (this.selectedCompanyFY !== 'ALL') {
+        if (item.fy !== this.selectedCompanyFY) return false;
+      }
+
+      // Month Filter
+      if (this.selectedCompanyMonth !== 'ALL') {
+        if (item.monthKey !== this.selectedCompanyMonth) return false;
+      }
+
+      // Search Query Filter
+      if (query) {
+        const match =
+          (item.displayDate && item.displayDate.toLowerCase().includes(query)) ||
+          (item.date && item.date.toLowerCase().includes(query)) ||
+          (item.expenseLineItem && item.expenseLineItem.toLowerCase().includes(query)) ||
+          (item.expenseFrom && item.expenseFrom.toLowerCase().includes(query)) ||
+          (item.expenseType && item.expenseType.toLowerCase().includes(query)) ||
+          (item.ownerName && item.ownerName.toLowerCase().includes(query)) ||
+          (item.amount && item.amount.toString().includes(query));
+        if (!match) return false;
+      }
+
+      return true;
+    });
+
+    // Update breadcrumb badge
+    const badge = document.getElementById('company-current-filter-badge');
+    if (badge) {
+      if (this.selectedCompanyFY === 'ALL') {
+        badge.innerHTML = `<i class="bi bi-funnel me-1 text-muted"></i>All Financial Years (${this.filteredCompanyList.length} records)`;
+      } else if (this.selectedCompanyMonth === 'ALL') {
+        badge.innerHTML = `<i class="bi bi-funnel me-1 text-muted"></i>${this.selectedCompanyFY} &gt; <strong>All Months</strong> (${this.filteredCompanyList.length} records)`;
+      } else {
+        badge.innerHTML = `<i class="bi bi-funnel me-1 text-muted"></i>${this.selectedCompanyFY} &gt; <strong>${this.selectedCompanyMonth}</strong> (${this.filteredCompanyList.length} records)`;
+      }
+    }
+
+    this.companyCurrentPage = 1;
+    this.renderCompanyTreeSidebar();
+    this.renderCompanyExpenseTable();
+  },
+
+  renderCompanyTreeSidebar() {
+    if (!this.allCompanyExpenses) return;
+
+    // Calculate totals across dataset
+    let grandTotal = 0;
+    const fyTotals = {};
+    const monthTotals = {}; // key: `${fy}_${monthKey}`
+
+    this.allCompanyExpenses.forEach(r => {
+      const amt = Number(r.amount) || 0;
+      grandTotal += amt;
+
+      const fy = r.fy || 'empty';
+      fyTotals[fy] = (fyTotals[fy] || 0) + amt;
+
+      if (r.monthKey) {
+        const mKey = `${fy}_${r.monthKey}`;
+        monthTotals[mKey] = (monthTotals[mKey] || 0) + amt;
+      }
+    });
+
+    // Update badges
+    const badgeAll = document.getElementById('company-badge-all');
+    if (badgeAll) badgeAll.textContent = `₹ ${this.formatINR3(grandTotal)}`;
+
+    ['2026-2027', '2025-2026', '2024-2025'].forEach(fy => {
+      const b = document.getElementById(`company-badge-${fy}`);
+      if (b) b.textContent = `₹ ${this.formatINR3(fyTotals[fy] || 0)}`;
+    });
+
+    // Also update Card 3 badges on the main dashboard if they exist
+    const cardBadge26 = document.querySelector('#card-dash-company .appsheet-drill-row:nth-child(3) .appsheet-drill-badge');
+    if (cardBadge26 && fyTotals['2026-2027']) cardBadge26.textContent = `₹ ${this.formatINR3(fyTotals['2026-2027'])}`;
+    const cardBadge25 = document.querySelector('#card-dash-company .appsheet-drill-row:nth-child(4) .appsheet-drill-badge');
+    if (cardBadge25 && fyTotals['2025-2026']) cardBadge25.textContent = `₹ ${this.formatINR3(fyTotals['2025-2026'])}`;
+    const cardBadge24 = document.querySelector('#card-dash-company .appsheet-drill-row:nth-child(5) .appsheet-drill-badge');
+    if (cardBadge24 && fyTotals['2024-2025']) cardBadge24.textContent = `₹ ${this.formatINR3(fyTotals['2024-2025'])}`;
+
+    // Active state highlighting on All & FY items
+    const treeAll = document.getElementById('company-tree-all');
+    if (treeAll) {
+      treeAll.classList.toggle('active', this.selectedCompanyFY === 'ALL');
+    }
+
+    // Authentic AppSheet month lists
+    const monthsByFY = {
+      '2026-2027': ['7 Oct', '6 Sep', '5 Aug', '4 Jul', '3 Jun', '2 May', '1 Apr'],
+      '2025-2026': ['12 Mar', '11 Feb', '10 Jan', '9 Dec', '8 Nov', '7 Oct', '6 Sep', '5 Aug', '4 Jul', '3 Jun', '2 May', '1 Apr'],
+      '2024-2025': ['12 Mar', '11 Feb', '10 Jan', '9 Dec', '8 Nov', '7 Oct', '6 Sep', '5 Aug', '4 Jul', '3 Jun', '2 May', '1 Apr']
+    };
+
+    ['2026-2027', '2025-2026', '2024-2025'].forEach(fy => {
+      const isExpanded = !!this.expandedCompanyFYs[fy];
+      const sublistEl = document.getElementById(`company-sublist-${fy}`);
+      const fyItemEl = document.getElementById(`company-tree-${fy}`);
+
+      if (fyItemEl) {
+        fyItemEl.classList.toggle('active', this.selectedCompanyFY === fy && this.selectedCompanyMonth === 'ALL');
+        const caret = fyItemEl.querySelector('.company-tree-caret');
+        if (caret) {
+          caret.innerHTML = isExpanded ? '<i class="bi bi-caret-down-fill"></i>' : '<i class="bi bi-caret-right-fill"></i>';
+        }
+      }
+
+      if (sublistEl) {
+        if (!isExpanded) {
+          sublistEl.classList.add('d-none');
+          sublistEl.innerHTML = '';
+        } else {
+          sublistEl.classList.remove('d-none');
+          const months = monthsByFY[fy] || [];
+          sublistEl.innerHTML = months.map(mKey => {
+            const mTotal = monthTotals[`${fy}_${mKey}`] || 0;
+            const isMonthActive = this.selectedCompanyFY === fy && this.selectedCompanyMonth === mKey;
+            return `
+              <div class="company-tree-item company-tree-subitem ${isMonthActive ? 'active' : ''}" onclick="LedgerModule.selectCompanyMonth('${fy}', '${mKey}')">
+                <div class="d-flex align-items-center gap-1">
+                  <span class="appsheet-bullet text-muted" style="font-size: 11px;">●</span>
+                  <span>${mKey}</span>
+                </div>
+                <span class="company-tree-badge">₹ ${this.formatINR3(mTotal)}</span>
+              </div>
+            `;
+          }).join('');
+        }
+      }
+    });
+  },
+
+  toggleCompanyFYTree(fy) {
+    this.expandedCompanyFYs[fy] = !this.expandedCompanyFYs[fy];
+    this.renderCompanyTreeSidebar();
+  },
+
+  selectCompanyFY(fy) {
+    this.selectedCompanyFY = fy;
+    this.selectedCompanyMonth = 'ALL';
+    if (fy !== 'ALL') {
+      this.expandedCompanyFYs[fy] = true;
+    }
+    this.applyCompanyFilters();
+  },
+
+  selectCompanyMonth(fy, month) {
+    this.selectedCompanyFY = fy;
+    this.selectedCompanyMonth = month;
+    if (fy !== 'ALL') {
+      this.expandedCompanyFYs[fy] = true;
+    }
+    this.applyCompanyFilters();
+  },
+
+  selectCompanyAll() {
+    this.selectedCompanyFY = 'ALL';
+    this.selectedCompanyMonth = 'ALL';
+    this.applyCompanyFilters();
+  },
+
+  toggleCompanyDateSidebar() {
+    this.isCompanySidebarHidden = !this.isCompanySidebarHidden;
+    const sidebar = document.getElementById('company-tree-sidebar');
+    const btnText = document.getElementById('btn-toggle-company-text');
+    const btnIcon = document.getElementById('btn-toggle-company-icon');
+
+    if (sidebar) {
+      if (this.isCompanySidebarHidden) {
+        sidebar.classList.add('collapsed');
+        if (btnText) btnText.textContent = 'Show Date Filter';
+        if (btnIcon) btnIcon.className = 'bi bi-layout-sidebar';
+      } else {
+        sidebar.classList.remove('collapsed');
+        if (btnText) btnText.textContent = 'Hide Date Filter';
+        if (btnIcon) btnIcon.className = 'bi bi-layout-sidebar-inset';
+      }
+    }
+  },
+
+  renderCompanyExpenseTable() {
+    const tbody = document.getElementById('company-expense-tbody');
+    if (!tbody) return;
+
+    if (!this.filteredCompanyList || this.filteredCompanyList.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="6" class="text-center py-5 text-muted">
+            <i class="bi bi-inbox fs-2 d-block mb-2 text-secondary"></i>
+            No company expense records match the selected filter or search criteria.
+            <div class="mt-2">
+              <button type="button" class="btn btn-sm btn-outline-warning" style="color: #8d6e32; border-color: #8d6e32;" onclick="LedgerModule.selectCompanyAll(); LedgerModule.clearSearch();">
+                Reset Filters & Search
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+      const pInfo = document.getElementById('company-pagination-info');
+      if (pInfo) pInfo.textContent = 'Showing 0 records';
+      const pBtns = document.getElementById('company-pagination-buttons');
+      if (pBtns) pBtns.innerHTML = '';
+      return;
+    }
+
+    // Pagination Calculation
+    const totalCount = this.filteredCompanyList.length;
+    let recordsToDisplay = this.filteredCompanyList;
+    let totalPages = 1;
+
+    if (this.companyPageSize !== 'ALL') {
+      const pSize = parseInt(this.companyPageSize, 10);
+      totalPages = Math.max(1, Math.ceil(totalCount / pSize));
+      if (this.companyCurrentPage > totalPages) this.companyCurrentPage = totalPages;
+      if (this.companyCurrentPage < 1) this.companyCurrentPage = 1;
+
+      const startIndex = (this.companyCurrentPage - 1) * pSize;
+      const endIndex = Math.min(startIndex + pSize, totalCount);
+      recordsToDisplay = this.filteredCompanyList.slice(startIndex, endIndex);
+
+      const pInfo = document.getElementById('company-pagination-info');
+      if (pInfo) pInfo.textContent = `Showing ${startIndex + 1}-${endIndex} of ${totalCount} entries`;
+    } else {
+      const pInfo = document.getElementById('company-pagination-info');
+      if (pInfo) pInfo.textContent = `Showing all ${totalCount} entries`;
+    }
+
+    // Pagination Buttons
+    const pBtns = document.getElementById('company-pagination-buttons');
+    if (pBtns) {
+      if (this.companyPageSize === 'ALL' || totalPages <= 1) {
+        pBtns.innerHTML = '';
+      } else {
+        let btnsHtml = `
+          <button type="button" class="btn btn-outline-secondary ${this.companyCurrentPage === 1 ? 'disabled' : ''}" onclick="LedgerModule.changeCompanyPage(${this.companyCurrentPage - 1})">Prev</button>
+        `;
+        const startP = Math.max(1, this.companyCurrentPage - 2);
+        const endP = Math.min(totalPages, this.companyCurrentPage + 2);
+        for (let p = startP; p <= endP; p++) {
+          btnsHtml += `
+            <button type="button" class="btn ${p === this.companyCurrentPage ? 'text-white' : 'btn-outline-secondary'}" style="${p === this.companyCurrentPage ? 'background-color: #8d6e32; border-color: #8d6e32;' : ''}" onclick="LedgerModule.changeCompanyPage(${p})">${p}</button>
+          `;
+        }
+        btnsHtml += `
+          <button type="button" class="btn btn-outline-secondary ${this.companyCurrentPage === totalPages ? 'disabled' : ''}" onclick="LedgerModule.changeCompanyPage(${this.companyCurrentPage + 1})">Next</button>
+        `;
+        pBtns.innerHTML = btnsHtml;
+      }
+    }
+
+    // Grouping by Date (displayDate)
+    const grouped = new Map();
+    recordsToDisplay.forEach(item => {
+      const dKey = item.displayDate || item.date || 'Other';
+      if (!grouped.has(dKey)) {
+        grouped.set(dKey, []);
+      }
+      grouped.get(dKey).push(item);
+    });
+
+    let html = '';
+    grouped.forEach((items, dateKey) => {
+      const groupSum = items.reduce((acc, x) => acc + (Number(x.amount) || 0), 0);
+
+      // Authentic AppSheet Group Header (● DD/MM/YYYY ₹ Total)
+      html += `
+        <tr class="company-date-group-row">
+          <td colspan="6">
+            <span class="appsheet-bullet gold-bullet">●</span>
+            <span class="fw-bold me-2 group-header-date" style="color: #8d6e32; font-size: 13px;">${dateKey}</span>
+            <span class="appsheet-drill-badge" style="background: #fbf7ee; color: #8d6e32; border: 1px solid #ebd9b4; border-radius: 12px; padding: 2px 10px; font-size: 11.5px; font-weight: 600;">₹ ${this.formatINR3(groupSum)}</span>
+          </td>
+        </tr>
+      `;
+
+      // Data Rows - Authentic AppSheet gold cells with bullet on every column
+      items.forEach(r => {
+        const isSelected = this.activeCompanyExpenseId === r.id;
+        html += `
+          <tr class="company-data-row ${isSelected ? 'active' : ''}" id="comp-row-${r.id}" onclick="LedgerModule.openCompanyExpenseDetails('${r.id}')">
+            <td>
+              <span class="appsheet-bullet gold-bullet">●</span>
+              <span>${r.displayDate || r.date || ''}</span>
+            </td>
+            <td>
+              <span class="appsheet-bullet gold-bullet">●</span>
+              <span class="fw-bold">₹ ${this.formatINR3(r.amount)}</span>
+            </td>
+            <td class="text-truncate" style="max-width: 320px;" title="${r.expenseLineItem || ''}">
+              <span class="appsheet-bullet gold-bullet">●</span>
+              <span>${r.expenseLineItem || ''}</span>
+            </td>
+            <td>
+              <span class="appsheet-bullet gold-bullet">●</span>
+              <span>${r.expenseFrom || 'Cash'}</span>
+            </td>
+            <td>
+              <span class="appsheet-bullet gold-bullet">●</span>
+              <span>${r.expenseType === 'Owner' && r.ownerName ? `Owner (${r.ownerName})` : (r.expenseType || 'Company')}</span>
+            </td>
+            <td class="text-center" style="font-size: 11px; color: #8d6e32;"><i class="bi bi-chevron-right"></i></td>
+          </tr>
+        `;
+      });
+    });
+
+    tbody.innerHTML = html;
+  },
+
+  openCompanyExpenseDetails(recordId) {
+    this.activeCompanyExpenseId = recordId;
+    const r = (this.allCompanyExpenses || []).find(x => x.id === recordId);
+    if (!r) return;
+
+    // Highlight row in table
+    const allRows = document.querySelectorAll('.company-data-row');
+    allRows.forEach(row => row.classList.remove('active'));
+    const targetRow = document.getElementById(`comp-row-${recordId}`);
+    if (targetRow) targetRow.classList.add('active');
+
+    // Show side panel and activate split-open mode
+    const panel = document.getElementById('panel-company-expense-details');
+    const splitWrapper = document.getElementById('company-split-wrapper');
+    if (panel) panel.classList.remove('d-none');
+    if (splitWrapper) splitWrapper.classList.add('split-open');
+
+    const content = document.getElementById('company-expense-panel-content');
+    if (!content) return;
+
+    content.innerHTML = `
+      <div class="company-detail-card shadow-sm">
+        <div class="company-field-row">
+          <span class="company-field-label">Date</span>
+          <span class="company-field-value text-dark" style="font-weight: 500;">${r.displayDate || r.date || '-'}</span>
+        </div>
+        <div class="company-field-row">
+          <span class="company-field-label">Amount</span>
+          <span class="company-field-value fs-6 fw-bold" style="color: #8d6e32;">₹ ${this.formatINR3(r.amount)}</span>
+        </div>
+        <div class="company-field-row">
+          <span class="company-field-label">Expense Type</span>
+          <span class="company-field-value">
+            <span class="appsheet-bullet gold-bullet">●</span>
+            <span>${r.expenseType === 'Owner' && r.ownerName ? `Owner (${r.ownerName})` : (r.expenseType || 'Company')}</span>
+          </span>
+        </div>
+        <div class="company-field-row">
+          <span class="company-field-label">Expense Line Item</span>
+          <span class="company-field-value" style="color: #202124; font-weight: 500;">${r.expenseLineItem || '-'}</span>
+        </div>
+        <div class="company-field-row mb-0">
+          <span class="company-field-label">Expense From</span>
+          <span class="company-field-value">
+            <span class="appsheet-bullet gold-bullet">●</span>
+            <span>${r.expenseFrom || 'Cash'}</span>
+          </span>
+        </div>
+      </div>
+    `;
+  },
+
+  closeCompanyExpenseDetails() {
+    this.activeCompanyExpenseId = null;
+    const panel = document.getElementById('panel-company-expense-details');
+    const splitWrapper = document.getElementById('company-split-wrapper');
+    if (panel) {
+      panel.classList.add('d-none');
+      panel.classList.remove('fullscreen');
+    }
+    if (splitWrapper) splitWrapper.classList.remove('split-open');
+
+    this.isCompanyPanelFullscreen = false;
+    const btnExpand = document.getElementById('btn-expand-company-panel');
+    if (btnExpand) btnExpand.textContent = '↗';
+
+    const allRows = document.querySelectorAll('.company-data-row');
+    allRows.forEach(row => row.classList.remove('active'));
+  },
+
+  toggleCompanyDetailFullscreen() {
+    this.isCompanyPanelFullscreen = !this.isCompanyPanelFullscreen;
+    const panel = document.getElementById('panel-company-expense-details');
+    const btnExpand = document.getElementById('btn-expand-company-panel');
+    if (panel) {
+      panel.classList.toggle('fullscreen', this.isCompanyPanelFullscreen);
+    }
+    if (btnExpand) {
+      btnExpand.textContent = this.isCompanyPanelFullscreen ? '↙' : '↗';
+    }
+  },
+
+  prevCompanyExpenseRecord() {
+    if (!this.activeCompanyExpenseId || !this.filteredCompanyList.length) return;
+    const currentIndex = this.filteredCompanyList.findIndex(x => x.id === this.activeCompanyExpenseId);
+    if (currentIndex > 0) {
+      this.openCompanyExpenseDetails(this.filteredCompanyList[currentIndex - 1].id);
+    } else {
+      if (typeof AppUI !== 'undefined') AppUI.showToast('First record reached', 'info');
+    }
+  },
+
+  nextCompanyExpenseRecord() {
+    if (!this.activeCompanyExpenseId || !this.filteredCompanyList.length) return;
+    const currentIndex = this.filteredCompanyList.findIndex(x => x.id === this.activeCompanyExpenseId);
+    if (currentIndex >= 0 && currentIndex < this.filteredCompanyList.length - 1) {
+      this.openCompanyExpenseDetails(this.filteredCompanyList[currentIndex + 1].id);
+    } else {
+      if (typeof AppUI !== 'undefined') AppUI.showToast('Last record reached', 'info');
+    }
+  },
+
+  toggleCompanyFullscreen() {
+    const el = document.getElementById('ledger-view-company-expense');
+    if (!el) return;
+    if (!document.fullscreenElement) {
+      if (el.requestFullscreen) {
+        el.requestFullscreen();
+      } else if (el.webkitRequestFullscreen) {
+        el.webkitRequestFullscreen();
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    }
+  },
+
+  changeCompanyPageSize(size) {
+    this.companyPageSize = size;
+    this.companyCurrentPage = 1;
+    this.renderCompanyExpenseTable();
+  },
+
+  changeCompanyPage(page) {
+    this.companyCurrentPage = page;
+    this.renderCompanyExpenseTable();
+    const tableWrap = document.getElementById('company-table-wrapper');
+    if (tableWrap) tableWrap.scrollTop = 0;
+  },
+
+  openAddCompanyExpenseModal() {
+    this.modalExpenseType = 'Company';
+    this.modalExpenseFrom = 'Cash';
+
+    const form = document.getElementById('form-add-company-expense');
+    if (form) form.reset();
+
+    const dateInput = document.getElementById('comp-exp-date');
+    if (dateInput) {
+      const now = new Date();
+      const yyyy = now.getFullYear();
+      const mm = String(now.getMonth() + 1).padStart(2, '0');
+      const dd = String(now.getDate()).padStart(2, '0');
+      dateInput.value = `${yyyy}-${mm}-${dd}`;
+    }
+
+    const amtInput = document.getElementById('comp-exp-amount');
+    if (amtInput) amtInput.value = '';
+
+    const lineItemInput = document.getElementById('comp-exp-line-item');
+    if (lineItemInput) lineItemInput.value = '';
+
+    this.setExpenseType('Company');
+    this.setExpenseFrom('Cash');
+
+    const modalEl = document.getElementById('modal-add-company-expense');
+    if (modalEl && typeof bootstrap !== 'undefined') {
+      bootstrap.Modal.getOrCreateInstance(modalEl).show();
+    }
+  },
+
+  setExpenseType(type) {
+    this.modalExpenseType = type;
+    const btnComp = document.getElementById('btn-comp-type-company');
+    const btnOwner = document.getElementById('btn-comp-type-owner');
+    const ownerWrap = document.getElementById('comp-owner-select-wrap');
+
+    if (type === 'Company') {
+      btnComp?.classList.add('active');
+      btnOwner?.classList.remove('active');
+      ownerWrap?.classList.add('d-none');
+    } else {
+      btnComp?.classList.remove('active');
+      btnOwner?.classList.add('active');
+      ownerWrap?.classList.remove('d-none');
+    }
+  },
+
+  setExpenseFrom(from) {
+    this.modalExpenseFrom = from;
+    const btnCash = document.getElementById('btn-comp-from-cash');
+    const btnOnline = document.getElementById('btn-comp-from-online');
+
+    if (from === 'Cash') {
+      btnCash?.classList.add('active');
+      btnOnline?.classList.remove('active');
+    } else {
+      btnCash?.classList.remove('active');
+      btnOnline?.classList.add('active');
+    }
+  },
+
+  async saveCompanyExpense() {
+    const dateVal = document.getElementById('comp-exp-date')?.value?.trim();
+    const amountVal = parseFloat(document.getElementById('comp-exp-amount')?.value);
+    const lineItemVal = document.getElementById('comp-exp-line-item')?.value?.trim();
+
+    if (!dateVal) {
+      if (typeof AppUI !== 'undefined') AppUI.showToast('Please select a valid date', 'warning');
+      return;
+    }
+    if (isNaN(amountVal) || amountVal <= 0) {
+      if (typeof AppUI !== 'undefined') AppUI.showToast('Please enter a valid amount', 'warning');
+      return;
+    }
+    if (!lineItemVal) {
+      if (typeof AppUI !== 'undefined') AppUI.showToast('Please enter expense line item', 'warning');
+      return;
+    }
+
+    const [y, m, d] = dateVal.split('-');
+    const displayDate = `${d}/${m}/${y}`;
+    const monthNum = parseInt(m, 10);
+    const yearNum = parseInt(y, 10);
+
+    const fy = monthNum >= 4 ? `${yearNum}-${yearNum + 1}` : `${yearNum - 1}-${yearNum}`;
+    const monthMap = {
+      4: '1 Apr', 5: '2 May', 6: '3 Jun', 7: '4 Jul', 8: '5 Aug', 9: '6 Sep',
+      10: '7 Oct', 11: '8 Nov', 12: '9 Dec', 1: '10 Jan', 2: '11 Feb', 3: '12 Mar'
+    };
+    const monthKey = monthMap[monthNum] || '7 Oct';
+
+    let ownerName = '';
+    if (this.modalExpenseType === 'Owner') {
+      ownerName = document.getElementById('comp-exp-owner')?.value || 'Ramkaran Jat';
+    }
+
+    const newRecord = {
+      id: `COMP_EXP_${Date.now()}`,
+      date: dateVal,
+      displayDate,
+      amount: amountVal,
+      expenseLineItem: lineItemVal,
+      expenseFrom: this.modalExpenseFrom || 'Cash',
+      expenseType: this.modalExpenseType || 'Company',
+      ownerName,
+      fy,
+      monthKey
+    };
+
+    if (typeof dbService !== 'undefined') {
+      try {
+        await dbService.add('companyExpenses', newRecord);
+      } catch (err) {
+        console.error('Failed to save to dbService:', err);
+      }
+    }
+
+    if (!Array.isArray(this.allCompanyExpenses)) {
+      this.allCompanyExpenses = [];
+    }
+    this.allCompanyExpenses.unshift(newRecord);
+
+    // Close modal
+    const modalEl = document.getElementById('modal-add-company-expense');
+    if (modalEl && typeof bootstrap !== 'undefined') {
+      bootstrap.Modal.getOrCreateInstance(modalEl).hide();
+    }
+
+    // Switch view to company expense if not already there, select appropriate FY and month
+    this.mainViewMode = 'company-expense';
+    this.selectedCompanyFY = fy;
+    this.selectedCompanyMonth = monthKey;
+    this.expandedCompanyFYs[fy] = true;
+
+    this.applyCompanyFilters();
+    this.renderCurrentView();
+
+    // Open detail panel for the new record
+    this.openCompanyExpenseDetails(newRecord.id);
+
+    if (typeof AppUI !== 'undefined') {
+      AppUI.showToast(`Expense of ₹ ${this.formatINR3(amountVal)} saved successfully!`, 'success');
+    }
+  },
+
+  // ----------------------------------------------------
   // DRILLDOWN ROUTING & NAVIGATION (Debts Register)
   // ----------------------------------------------------
   goToYearView() {
@@ -1609,6 +2250,7 @@ const LedgerModule = {
     const dashView = document.getElementById('ledger-view-dashboard');
     const cashRegView = document.getElementById('ledger-view-cash-register');
     const retView = document.getElementById('ledger-view-returned-amount');
+    const compExpView = document.getElementById('ledger-view-company-expense');
     const regView = document.getElementById('ledger-view-register');
     const detView = document.getElementById('ledger-view-details');
     const stmtView = document.getElementById('ledger-view-statements');
@@ -1627,6 +2269,7 @@ const LedgerModule = {
       dashView?.classList.add('d-none');
       cashRegView?.classList.add('d-none');
       retView?.classList.add('d-none');
+      compExpView?.classList.add('d-none');
       regView?.classList.add('d-none');
       detView?.classList.add('d-none');
       stmtView?.classList.remove('d-none');
@@ -1650,6 +2293,7 @@ const LedgerModule = {
       dashView?.classList.add('d-none');
       cashRegView?.classList.add('d-none');
       retView?.classList.add('d-none');
+      compExpView?.classList.add('d-none');
       regView?.classList.add('d-none');
       detView?.classList.remove('d-none');
       if (breadcrumbRoot) {
@@ -1674,6 +2318,7 @@ const LedgerModule = {
       dashView?.classList.remove('d-none');
       cashRegView?.classList.add('d-none');
       retView?.classList.add('d-none');
+      compExpView?.classList.add('d-none');
       regView?.classList.add('d-none');
       if (breadcrumbRoot) {
         breadcrumbRoot.innerHTML = `
@@ -1688,7 +2333,13 @@ const LedgerModule = {
     // Update top subheader Add button text
     const addBtnText = document.getElementById('btn-top-add-text');
     if (addBtnText) {
-      addBtnText.innerText = (this.mainViewMode === 'cash-ledger') ? '+ Add' : '+ Add Debt';
+      if (this.mainViewMode === 'cash-ledger') {
+        addBtnText.innerText = '+ Add';
+      } else if (this.mainViewMode === 'company-expense') {
+        addBtnText.innerText = '+ Add Expense';
+      } else {
+        addBtnText.innerText = '+ Add Debt';
+      }
     }
 
     // 4. LEVEL 1: CASH LEDGER REGISTER VIEW
@@ -1696,6 +2347,7 @@ const LedgerModule = {
       dashView?.classList.add('d-none');
       cashRegView?.classList.remove('d-none');
       retView?.classList.add('d-none');
+      compExpView?.classList.add('d-none');
       regView?.classList.add('d-none');
       if (breadcrumbRoot) {
         breadcrumbRoot.innerHTML = `
@@ -1716,6 +2368,7 @@ const LedgerModule = {
       dashView?.classList.add('d-none');
       cashRegView?.classList.add('d-none');
       regView?.classList.add('d-none');
+      compExpView?.classList.add('d-none');
       retView?.classList.remove('d-none');
       if (breadcrumbRoot) {
         breadcrumbRoot.innerHTML = `
@@ -1736,10 +2389,39 @@ const LedgerModule = {
       return;
     }
 
+    // 4C. LEVEL 1: COMPANY EXPENSE VIEW (Authentic AppSheet Gold Master-Detail)
+    if (this.mainViewMode === 'company-expense') {
+      dashView?.classList.add('d-none');
+      cashRegView?.classList.add('d-none');
+      regView?.classList.add('d-none');
+      retView?.classList.add('d-none');
+      detView?.classList.add('d-none');
+      stmtView?.classList.add('d-none');
+      compExpView?.classList.remove('d-none');
+      if (breadcrumbRoot) {
+        breadcrumbRoot.innerHTML = `
+          <a href="javascript:void(0)" onclick="LedgerModule.goToDashboardView()">Home</a>
+          <span class="sep">&gt;</span>
+          <a href="javascript:void(0)" onclick="LedgerModule.goToDashboardView()">Ledger</a>
+          <span class="sep">&gt;</span>
+          <span class="active">Company Expense</span>
+        `;
+      }
+      this.renderCompanyTreeSidebar();
+      this.renderCompanyExpenseTable();
+      if (this.activeCompanyExpenseId) {
+        this.openCompanyExpenseDetails(this.activeCompanyExpenseId);
+      } else {
+        this.closeCompanyExpenseDetails();
+      }
+      return;
+    }
+
     // 5. LEVEL 1-3: DEBTS REGISTER VIEWS
     dashView?.classList.add('d-none');
     cashRegView?.classList.add('d-none');
     retView?.classList.add('d-none');
+    compExpView?.classList.add('d-none');
     regView?.classList.remove('d-none');
 
     const tabName = this.currentTab === 'open' ? 'Open' : this.currentTab === 'all' ? 'All' : 'Settled';
@@ -2007,6 +2689,12 @@ const LedgerModule = {
 
   onSearchInput(val) {
     this.searchQuery = (val || '').toLowerCase().trim();
+    if (this.mainViewMode === 'company-expense') {
+      this.companyCurrentPage = 1;
+      this.applyCompanyFilters();
+      this.renderCompanyExpenseTable();
+      return;
+    }
     if (this.mainViewMode === 'returned-amount') {
       this.returnedCurrentPage = 1;
       this.applyReturnedFilters();
@@ -2033,6 +2721,12 @@ const LedgerModule = {
     const sInput = document.getElementById('ledger-search-input');
     if (sInput) sInput.value = '';
     this.searchQuery = '';
+    if (this.mainViewMode === 'company-expense') {
+      this.companyCurrentPage = 1;
+      this.applyCompanyFilters();
+      this.renderCompanyExpenseTable();
+      return;
+    }
     if (this.mainViewMode === 'returned-amount') {
       this.returnedCurrentPage = 1;
       this.applyReturnedFilters();
