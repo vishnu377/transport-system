@@ -1399,8 +1399,10 @@
     /* ==================================================== */
     /* RECEIVED PAYMENTS (Income Slice - Authentic AppSheet Green Theme) */
     /* ==================================================== */
-    .received-container {
+    .received-container,
+    .received-main-container {
       display: flex;
+      flex-direction: row;
       min-height: calc(100vh - 110px);
       background: #ffffff;
       position: relative;
@@ -1411,11 +1413,34 @@
       padding: 14px 10px;
       flex-shrink: 0;
       background: #ffffff;
-      transition: margin-left 0.25s ease, width 0.25s ease;
+      transition: width 0.22s ease, padding 0.22s ease, opacity 0.18s ease;
+      overflow-x: hidden;
       overflow-y: auto;
     }
     .received-tree-sidebar.collapsed {
-      margin-left: -250px;
+      width: 0 !important;
+      padding: 0 !important;
+      opacity: 0;
+      border-right: none !important;
+      pointer-events: none;
+    }
+    @media (max-width: 991.98px) {
+      .received-tree-sidebar {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1040;
+        width: 270px;
+        box-shadow: 4px 0 20px rgba(0,0,0,0.18);
+        background: #ffffff;
+      }
+      .received-tree-sidebar.collapsed {
+        transform: translateX(-100%);
+        width: 270px !important;
+        opacity: 1 !important;
+        pointer-events: auto;
+      }
     }
     .received-tree-header {
       font-size: 11px;
@@ -1500,6 +1525,8 @@
       flex: 1;
       overflow-y: auto;
       overflow-x: auto;
+      max-height: calc(100vh - 190px);
+      min-width: 0;
       transition: all 0.25s ease;
       -webkit-overflow-scrolling: touch;
     }
@@ -1574,18 +1601,32 @@
       display: flex;
       flex-direction: column;
       overflow-y: auto;
+      max-height: calc(100vh - 190px);
       flex-shrink: 0;
       transition: all 0.25s ease;
       z-index: 10;
     }
     .received-panel.fullscreen {
-      position: absolute;
+      position: fixed;
       top: 0;
       right: 0;
       bottom: 0;
       left: 0;
       width: 100% !important;
-      z-index: 100;
+      max-height: 100vh !important;
+      z-index: 1050;
+    }
+    @media (max-width: 768px) {
+      .received-panel {
+        position: fixed !important;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        width: 100% !important;
+        max-height: 100vh !important;
+        z-index: 1050;
+      }
     }
     .received-panel-header {
       display: flex;
@@ -2753,13 +2794,15 @@
     <!-- 5B. APPSHEET RECEIVED (INCOME SLICE) FULL VIEW -->
     <!-- ========================================== -->
     <div id="ledger-view-received" class="d-none">
-      <div class="received-main-container" id="received-main-card">
+      <div class="received-container received-main-container" id="received-main-card">
         
         <!-- Left Tree Sidebar: Year & Type hierarchy -->
         <div class="received-tree-sidebar" id="received-tree-sidebar">
-          <div class="received-tree-header">
+          <div class="received-tree-header d-flex align-items-center justify-content-between">
             <span>Year</span>
-            <span class="appsheet-tool-icon cursor-pointer" onclick="LedgerModule.toggleReceivedDateSidebar()" title="Hide Sidebar">◀</span>
+            <button type="button" class="btn btn-sm btn-link text-muted p-0 border-0" onclick="LedgerModule.toggleReceivedDateSidebar()" title="Hide Date Sidebar">
+              <i class="bi bi-chevron-bar-left fs-6"></i>
+            </button>
           </div>
 
           <!-- All -->
@@ -2802,17 +2845,23 @@
           <div class="received-tree-sublist d-none" id="received-sublist-2024-2025"></div>
         </div>
 
+        <!-- Main Area: Toolbar + Split Layout + Pagination -->
+        <div class="received-main-area" id="received-main-area">
           <!-- Authentic AppSheet Toolbar (Ledger > Received, + New Recei..., 🔻, ☑, ⤢) -->
           <div class="d-flex align-items-center justify-content-between px-3 py-2 border-bottom bg-white flex-wrap gap-2">
-            <div class="d-flex align-items-center gap-2">
-              <button type="button" class="btn btn-sm btn-light border py-1 px-2 d-inline-flex align-items-center gap-1" id="btn-toggle-received-sidebar" onclick="LedgerModule.toggleReceivedDateSidebar()" title="Toggle Sidebar">
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+              <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2 d-inline-flex align-items-center gap-1" id="btn-toggle-received-sidebar" onclick="LedgerModule.toggleReceivedDateSidebar()" title="Toggle Sidebar" style="font-size: 0.8rem;">
                 <i class="bi bi-layout-sidebar-inset" id="btn-toggle-received-icon"></i>
+                <span id="btn-toggle-received-text">Hide Date Filter</span>
               </button>
-              <div class="appsheet-breadcrumb mb-0" style="font-size: 13px;">
+              <div class="appsheet-breadcrumb mb-0 d-none d-sm-flex align-items-center" style="font-size: 13px;">
                 <span class="text-secondary">Ledger</span>
                 <span class="text-muted mx-1">&gt;</span>
                 <span class="fw-semibold text-dark">Received</span>
               </div>
+              <span class="badge bg-light text-dark border fw-normal" id="received-current-filter-badge" style="font-size: 0.78rem;">
+                <i class="bi bi-funnel me-1 text-muted"></i>All Financial Years
+              </span>
             </div>
             <div class="d-flex align-items-center gap-2">
               <button type="button" class="btn btn-sm text-white py-1 px-3 fw-medium d-inline-flex align-items-center gap-1" style="background-color: #8d6e32; font-size: 0.8rem; border-radius: 4px;" onclick="LedgerModule.openAddIncomeRecordModal()">
