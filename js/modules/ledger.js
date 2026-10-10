@@ -13,7 +13,7 @@
  */
 
 const LedgerModule = {
-  allDebts: [],
+  allDebts: (typeof window !== 'undefined' && Array.isArray(window.SAMPLE_DEBTS_DATA)) ? window.SAMPLE_DEBTS_DATA : [],
   allParties: [],
   allOwners: [],
   allTrips: [],
@@ -129,6 +129,27 @@ const LedgerModule = {
   activeAllDebtId: null,
   isAllDebtsPanelFullscreen: false,
 
+  // Settled Debts (Card 8) State
+  selectedSettledFY: 'ALL',
+  selectedSettledDate: null,
+  selectedSettledMonth: 'ALL',
+  expandedSettledFYs: {
+    '2026-2027': true,
+    '2025-2026': false,
+    '2024-2025': false,
+    '2023-2024': false,
+    '2022-2023': false,
+    '2021-2022': false,
+    '2020-2021': false,
+    '2019-2020': false
+  },
+  isSettledSidebarHidden: false,
+  settledPageSize: 100,
+  settledCurrentPage: 1,
+  filteredSettledList: [],
+  activeSettledDebtId: null,
+  isSettledPanelFullscreen: false,
+
   // View Hierarchy State: 'year' | 'month' | 'table' | 'details'
   viewLevel: 'year',
   selectedFY: 'ALL',
@@ -155,16 +176,63 @@ const LedgerModule = {
     if (typeof AppUI !== 'undefined' && AppUI.renderSidebar) {
       AppUI.renderSidebar('ledger');
     }
-    await this.loadData();
 
-    // Check URL parameters for direct deep-linking
+    // Pre-check URL parameters immediately so the DOM reflects the requested view without delay
     const urlParams = (typeof window !== 'undefined' && window.location) ? new URLSearchParams(window.location.search) : null;
     const viewParam = urlParams ? urlParams.get('view') : null;
     const fyParam = urlParams ? urlParams.get('fy') : null;
     const idParam = urlParams ? urlParams.get('id') : null;
+
     if (idParam && idParam.startsWith('OWN_EXP')) {
       this.goToOwnerExpenseView(fyParam || '2026-2027');
       this.openOwnerExpenseDetails(idParam);
+    } else if (idParam && idParam.startsWith('DEBT_SETTLED_')) {
+      this.goToSettledView(fyParam || 'ALL');
+      this.openSettledDebtDetails(idParam);
+    } else if (viewParam === 'settled' || viewParam === 'settled-debts') {
+      this.goToSettledView(fyParam || 'ALL');
+      if (idParam) this.openSettledDebtDetails(idParam);
+    } else if (viewParam === 'all-debts') {
+      this.goToAllDebtsView(fyParam || 'ALL');
+      if (idParam) this.openAllDebtDetails(idParam);
+    } else if (viewParam === 'open-debts') {
+      this.goToOpenDebtsView(fyParam || '2026-2027');
+      if (idParam) this.openOpenDebtDetails(idParam);
+    } else if (viewParam === 'cash-ledger') {
+      this.goToCashLedgerView(fyParam || '2026-2027');
+    } else if (viewParam === 'returned') {
+      this.goToReturnedAmountView(fyParam || '2026-2027');
+      if (idParam && this.openReturnedAmountDetails) this.openReturnedAmountDetails(idParam);
+    } else if (viewParam === 'company') {
+      this.goToCompanyExpenseView(fyParam || '2026-2027');
+      if (idParam) this.openCompanyExpenseDetails(idParam);
+    } else if (viewParam === 'owner' || viewParam === 'owner-expense') {
+      this.goToOwnerExpenseView(fyParam || '2026-2027');
+      if (idParam) this.openOwnerExpenseDetails(idParam);
+    } else if (viewParam === 'received') {
+      this.goToReceivedView(fyParam || '2026-2027');
+      if (idParam) this.openReceivedPaymentDetails(idParam);
+    }
+
+    await this.loadData();
+
+    if (idParam && idParam.startsWith('OWN_EXP')) {
+      this.goToOwnerExpenseView(fyParam || '2026-2027');
+      this.openOwnerExpenseDetails(idParam);
+      return;
+    }
+    if (idParam && idParam.startsWith('DEBT_SETTLED_')) {
+      this.goToSettledView(fyParam || 'ALL');
+      this.openSettledDebtDetails(idParam);
+      const retParam = urlParams.get('openReturn');
+      if (retParam) this.openSettledReturnDetails(retParam, idParam);
+      return;
+    }
+    if (viewParam === 'settled' || viewParam === 'settled-debts') {
+      this.goToSettledView(fyParam || 'ALL');
+      if (idParam) this.openSettledDebtDetails(idParam);
+      const retParam = urlParams.get('openReturn');
+      if (retParam) this.openSettledReturnDetails(retParam, idParam);
       return;
     }
     if (viewParam === 'all-debts') {
@@ -179,7 +247,7 @@ const LedgerModule = {
       return this.goToCashLedgerView(fyParam || '2026-2027');
     } else if (viewParam === 'returned') {
       this.goToReturnedAmountView(fyParam || '2026-2027');
-      if (idParam) this.openSettledDebtDetails(idParam);
+      if (idParam) this.openReturnedAmountDetails ? this.openReturnedAmountDetails(idParam) : null;
       return;
     } else if (viewParam === 'company') {
       this.goToCompanyExpenseView(fyParam || '2026-2027');
@@ -203,6 +271,7 @@ const LedgerModule = {
     this.applyReceivedFilters();
     this.applyOpenDebtsFilters();
     this.applyAllDebtsFilters();
+    this.applySettledFilters();
     this.renderRegisterTable();
     this.renderFYSidebar();
     this.renderMonthBar();
@@ -348,6 +417,9 @@ const LedgerModule = {
     }
     if (tab === 'all') {
       return this.goToAllDebtsView(fy === 'ALL' ? 'ALL' : fy);
+    }
+    if (tab === 'settled') {
+      return this.goToSettledView(fy === 'ALL' ? 'ALL' : fy);
     }
     this.mainViewMode = 'debts';
     this.currentTab = tab;
@@ -4866,7 +4938,14 @@ const LedgerModule = {
         bootstrap.Modal.getOrCreateInstance(modalEl).hide();
       }
 
-      if (this.mainViewMode === 'all-debts') {
+      if (this.mainViewMode === 'settled') {
+        this.applySettledFilters();
+        this.renderSettledTreeSidebar();
+        this.renderSettledTable();
+        if (formId) {
+          this.openSettledDebtDetails(formId);
+        }
+      } else if (this.mainViewMode === 'all-debts') {
         this.applyAllDebtsFilters();
         this.renderAllDebtsTreeSidebar();
         this.renderAllDebtsTable();
@@ -4884,6 +4963,703 @@ const LedgerModule = {
     } catch (err) {
       console.error(err);
       if (typeof AppUI !== 'undefined') AppUI.showToast('Failed to save debt: ' + err.message, 'error');
+    }
+  },
+
+  // ----------------------------------------------------
+  // SETTLED DEBTS CONTROLLER (Card 8 - Authentic Google AppSheet Green Master-Detail)
+  // ----------------------------------------------------
+  goToSettledView(fy = 'ALL', date = null) {
+    this.mainViewMode = 'settled';
+    this.currentTab = 'settled';
+    this.selectedSettledFY = fy || 'ALL';
+    this.selectedSettledDate = date;
+    if (fy && fy !== 'ALL') {
+      this.expandedSettledFYs[fy] = true;
+    }
+    this.settledCurrentPage = 1;
+    this.searchQuery = '';
+    const sInput = document.getElementById('ledger-search-input');
+    if (sInput) {
+      sInput.value = '';
+      sInput.placeholder = 'Search Settled Debts';
+    }
+    document.getElementById('tab-btn-open')?.classList.remove('active');
+    document.getElementById('tab-btn-all')?.classList.remove('active');
+    document.getElementById('tab-btn-settled')?.classList.add('active');
+    document.getElementById('tab-btn-statements')?.classList.remove('active');
+    this.applySettledFilters();
+    this.renderCurrentView();
+  },
+
+  toggleSettledFYTree(fy) {
+    this.expandedSettledFYs[fy] = !this.expandedSettledFYs[fy];
+    this.renderSettledTreeSidebar();
+  },
+
+  selectSettledAll() {
+    this.selectedSettledFY = 'ALL';
+    this.selectedSettledDate = null;
+    this.settledCurrentPage = 1;
+    this.applySettledFilters();
+    this.renderSettledTreeSidebar();
+    this.renderSettledTable();
+  },
+
+  selectSettledFY(fy) {
+    this.selectedSettledFY = fy;
+    this.selectedSettledDate = null;
+    this.settledCurrentPage = 1;
+    if (fy !== 'ALL') {
+      this.expandedSettledFYs[fy] = true;
+    }
+    this.applySettledFilters();
+    this.renderSettledTreeSidebar();
+    this.renderSettledTable();
+  },
+
+  selectSettledDate(fy, date) {
+    this.selectedSettledFY = fy;
+    this.selectedSettledDate = date;
+    this.settledCurrentPage = 1;
+    this.applySettledFilters();
+    this.renderSettledTreeSidebar();
+    this.renderSettledTable();
+  },
+
+  toggleSettledDateSidebar() {
+    this.isSettledSidebarHidden = !this.isSettledSidebarHidden;
+    const sidebar = document.getElementById('settled-tree-sidebar');
+    const btnText = document.getElementById('btn-toggle-settled-text');
+    const btnIcon = document.getElementById('btn-toggle-settled-icon');
+    if (sidebar) {
+      sidebar.classList.toggle('d-none', this.isSettledSidebarHidden);
+    }
+    if (btnText) {
+      btnText.innerText = this.isSettledSidebarHidden ? 'Show Date Filter' : 'Hide Date Filter';
+    }
+    if (btnIcon) {
+      btnIcon.className = this.isSettledSidebarHidden ? 'bi bi-layout-sidebar' : 'bi bi-layout-sidebar-inset';
+    }
+  },
+
+  renderSettledTreeSidebar() {
+    if (!this.allDebts) return;
+    const fyList = [
+      '2026-2027', '2025-2026', '2024-2025', '2023-2024',
+      '2022-2023', '2021-2022', '2020-2021', '2019-2020'
+    ];
+    let grandTotal = 0;
+    const fyTotals = {};
+    const dateTotals = {};
+    const dateCounts = {};
+
+    fyList.forEach(fy => { fyTotals[fy] = 0; });
+
+    // Settled debts: dueAmount == 0
+    this.allDebts.forEach(d => {
+      const due = Number(d.dueAmount) || 0;
+      if (due !== 0) return;
+      const debt = Number(d.debtAmount) || 0;
+      const returned = Number(d.totalReturned) || debt;
+      grandTotal += returned;
+      if (fyTotals.hasOwnProperty(d.fy)) {
+        fyTotals[d.fy] += returned;
+      }
+      const dKey = d.displayDate || d.date || 'Undated';
+      const key = `${d.fy}_${dKey}`;
+      dateTotals[key] = (dateTotals[key] || 0) + returned;
+      dateCounts[key] = (dateCounts[key] || 0) + 1;
+    });
+
+    const badgeAll = document.getElementById('settled-tree-badge-all');
+    if (badgeAll) badgeAll.textContent = `₹ ${this.formatINR(grandTotal)}`;
+
+    const treeAll = document.getElementById('settled-tree-all');
+    if (treeAll) {
+      treeAll.classList.toggle('active', this.selectedSettledFY === 'ALL');
+    }
+
+    const container = document.getElementById('settled-tree-fys-container');
+    if (container) {
+      let fysHtml = '';
+      fyList.forEach(fy => {
+        const isSelectedFY = this.selectedSettledFY === fy && !this.selectedSettledDate;
+        const isExp = !!this.expandedSettledFYs[fy];
+        const caretIcon = isExp ? 'bi bi-caret-down-fill' : 'bi bi-caret-right-fill';
+        const fyTotal = fyTotals[fy] || 0;
+
+        let subHtml = '';
+        if (isExp) {
+          const datesInFY = [];
+          Object.keys(dateTotals).forEach(k => {
+            if (k.startsWith(`${fy}_`)) {
+              const dStr = k.replace(`${fy}_`, '');
+              datesInFY.push({
+                date: dStr,
+                total: dateTotals[k],
+                count: dateCounts[k]
+              });
+            }
+          });
+
+          // Sort dates descending
+          datesInFY.sort((a, b) => {
+            const p = s => {
+              const pts = s.split('/');
+              if (pts.length === 3) return new Date(`${pts[2]}-${pts[1]}-${pts[0]}`);
+              return new Date(s);
+            };
+            return p(b.date) - p(a.date);
+          });
+
+          datesInFY.forEach(item => {
+            const isDateActive = this.selectedSettledFY === fy && this.selectedSettledDate === item.date;
+            subHtml += `
+              <div class="settled-tree-subitem ${isDateActive ? 'active' : ''}" onclick="LedgerModule.selectSettledDate('${fy}', '${item.date}')">
+                <span class="d-flex align-items-center gap-1">
+                  <span class="appsheet-bullet green-bullet">●</span>
+                  <span>${item.date} (${item.count})</span>
+                </span>
+                <span class="settled-tree-badge">₹ ${this.formatINR(item.total)}</span>
+              </div>
+            `;
+          });
+        }
+
+        fysHtml += `
+          <div class="settled-tree-item ${isSelectedFY ? 'active' : ''}" id="settled-tree-${fy}">
+            <div class="d-flex align-items-center gap-1" onclick="LedgerModule.selectSettledFY('${fy}')">
+              <i class="${caretIcon} text-muted me-1" style="font-size: 11px; cursor: pointer;" onclick="event.stopPropagation(); LedgerModule.toggleSettledFYTree('${fy}')"></i>
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span>${fy}</span>
+            </div>
+            <span class="settled-tree-badge" id="settled-tree-badge-${fy}">₹ ${this.formatINR(fyTotal)}</span>
+          </div>
+          <div class="settled-tree-sublist ${isExp ? '' : 'd-none'}" id="settled-sublist-${fy}">
+            ${subHtml}
+          </div>
+        `;
+
+        // Update Card 8 badge on dashboard
+        const cardBadge = document.getElementById(`card-settled-badge-${fy}`);
+        if (cardBadge) cardBadge.textContent = `₹ ${this.formatINR(fyTotal)}`;
+      });
+      container.innerHTML = fysHtml;
+    }
+
+    const cardTotalBadge = document.getElementById('card-settled-total');
+    if (cardTotalBadge) cardTotalBadge.textContent = `₹ ${this.formatINR(grandTotal)}`;
+  },
+
+  applySettledFilters() {
+    if (!this.allDebts) {
+      this.filteredSettledList = [];
+      return;
+    }
+    const q = (this.searchQuery || '').trim().toLowerCase();
+
+    this.filteredSettledList = this.allDebts.filter(d => {
+      // Must be settled
+      const due = Number(d.dueAmount) || 0;
+      if (due !== 0) return false;
+
+      // FY filter
+      if (this.selectedSettledFY !== 'ALL') {
+        if (d.fy !== this.selectedSettledFY) return false;
+      }
+
+      // Date filter
+      if (this.selectedSettledDate) {
+        const itemDate = d.displayDate || d.date || '';
+        if (itemDate !== this.selectedSettledDate) return false;
+      }
+
+      // Dropdown filters
+      if (this.filterCompany !== 'ALL' && d.company !== this.filterCompany) return false;
+      if (this.filterDebtType !== 'ALL' && d.debtType !== this.filterDebtType) return false;
+      if (this.filterDebtMode !== 'ALL' && d.debtMode !== this.filterDebtMode) return false;
+
+      // Search query
+      if (q) {
+        const matchGR = String(d.grNo || '').toLowerCase().includes(q);
+        const matchTruck = String(d.truckNo || '').toLowerCase().includes(q);
+        const matchBorrower = String(d.borrowerName || '').toLowerCase().includes(q);
+        const matchReceiver = String(d.receiverName || '').toLowerCase().includes(q);
+        const matchOwner = String(d.truckOwner || '').toLowerCase().includes(q);
+        const matchCompany = String(d.company || '').toLowerCase().includes(q);
+        const matchType = String(d.debtType || '').toLowerCase().includes(q);
+        const matchFrom = String(d.from || '').toLowerCase().includes(q);
+        const matchTo = String(d.to || '').toLowerCase().includes(q);
+        const matchDesc = String(d.description || '').toLowerCase().includes(q);
+        const matchAmt = String(d.totalReturned || '').includes(q) || String(d.debtAmount || '').includes(q);
+        if (!matchGR && !matchTruck && !matchBorrower && !matchReceiver && !matchOwner && !matchCompany && !matchType && !matchFrom && !matchTo && !matchDesc && !matchAmt) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+
+    // Sort descending by date, then id
+    this.filteredSettledList.sort((a, b) => {
+      const dateA = a.date || '';
+      const dateB = b.date || '';
+      if (dateA !== dateB) return dateB.localeCompare(dateA);
+      return String(b.id || '').localeCompare(String(a.id || ''));
+    });
+  },
+
+  renderSettledTable() {
+    const tbody = document.getElementById('settled-table-tbody');
+    if (!tbody) return;
+
+    // Update filter chip in toolbar
+    const chipText = document.getElementById('settled-chip-text');
+    if (chipText) {
+      if (this.selectedSettledFY === 'ALL') {
+        chipText.innerText = 'All Years';
+      } else if (this.selectedSettledDate) {
+        chipText.innerText = `${this.selectedSettledFY} > ${this.selectedSettledDate}`;
+      } else {
+        chipText.innerText = this.selectedSettledFY;
+      }
+    }
+
+    if (!this.filteredSettledList || this.filteredSettledList.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="11" class="text-center py-5 text-muted">
+            <i class="bi bi-inbox fs-2 d-block mb-2 text-secondary"></i>
+            No settled records match the selected filter or search criteria.
+          </td>
+        </tr>
+      `;
+      this.renderSettledPagination(0);
+      return;
+    }
+
+    const totalItems = this.filteredSettledList.length;
+    const pageSize = this.settledPageSize === 'ALL' ? totalItems : parseInt(this.settledPageSize);
+    const totalPages = Math.ceil(totalItems / pageSize) || 1;
+    if (this.settledCurrentPage > totalPages) this.settledCurrentPage = totalPages;
+    if (this.settledCurrentPage < 1) this.settledCurrentPage = 1;
+
+    const startIdx = (this.settledCurrentPage - 1) * pageSize;
+    const endIdx = Math.min(startIdx + pageSize, totalItems);
+    const pageRecords = this.filteredSettledList.slice(startIdx, endIdx);
+
+    // Group page records by date
+    const dateGroups = {};
+    pageRecords.forEach(d => {
+      const dKey = d.displayDate || d.date || 'Undated';
+      if (!dateGroups[dKey]) dateGroups[dKey] = [];
+      dateGroups[dKey].push(d);
+    });
+
+    let html = '';
+    const greenBullet = `<span class="appsheet-bullet green-bullet">●</span> `;
+
+    Object.keys(dateGroups).forEach(dKey => {
+      const records = dateGroups[dKey];
+      const dayTotal = records.reduce((sum, r) => sum + (Number(r.totalReturned || r.debtAmount) || 0), 0);
+
+      // Date Header Row matching Google AppSheet Settled screenshots
+      html += `
+        <tr class="settled-date-header">
+          <td colspan="11">
+            <div class="d-flex align-items-center gap-2">
+              <span class="appsheet-bullet green-bullet">●</span>
+              <span class="fw-bold">${dKey}</span>
+              <span class="badge bg-light text-dark border px-2 py-1 font-monospace" style="font-size: 11px;">₹ ${this.formatINR(dayTotal)}</span>
+            </div>
+          </td>
+        </tr>
+      `;
+
+      // Data Rows
+      records.forEach(d => {
+        const isActive = this.activeSettledDebtId && String(this.activeSettledDebtId) === String(d.id);
+        const retAmount = Number(d.totalReturned || d.debtAmount) || 0;
+
+        html += `
+          <tr class="settled-data-row ${isActive ? 'active' : ''}" id="settled-row-${d.id}" onclick="LedgerModule.openSettledDebtDetails('${d.id}')">
+            <td>${greenBullet}<span style="font-weight: 600;">${d.grNo || ''}</span></td>
+            <td>${d.truckNo ? `${greenBullet}<span style="font-weight: 600;">${d.truckNo}</span>` : greenBullet}</td>
+            <td>${d.to ? `${greenBullet}<span>${d.to}</span>` : greenBullet}</td>
+            <td>${greenBullet}<span style="font-weight: 600;">₹ ${this.formatINR(retAmount)}</span></td>
+            <td>${greenBullet}<span>${d.debtType || ''}</span></td>
+            <td>${greenBullet}<span>${d.debtMode || 'Cash'}</span></td>
+            <td>${greenBullet}<span>${d.borrowerName || ''}</span></td>
+            <td>${greenBullet}<span>${d.receiverName || ''}</span></td>
+            <td>${greenBullet}<span>${d.description || ''}</span></td>
+            <td>${greenBullet}<span>${d.displayDate || d.date || ''}</span></td>
+            <td class="text-end" style="color: #137333; font-weight: bold; width: 25px;">&gt;</td>
+          </tr>
+        `;
+      });
+    });
+
+    tbody.innerHTML = html;
+    this.renderSettledPagination(totalItems);
+  },
+
+  renderSettledPagination(totalItems) {
+    const info = document.getElementById('settled-pagination-info');
+    const container = document.getElementById('settled-pagination-buttons');
+    if (!info || !container) return;
+
+    if (totalItems === 0) {
+      info.innerText = 'Showing 0-0 of 0 entries';
+      container.innerHTML = '';
+      return;
+    }
+
+    const pageSize = this.settledPageSize === 'ALL' ? totalItems : parseInt(this.settledPageSize);
+    const totalPages = Math.ceil(totalItems / pageSize) || 1;
+    const startIdx = (this.settledCurrentPage - 1) * pageSize + 1;
+    const endIdx = Math.min(startIdx + pageSize - 1, totalItems);
+
+    info.innerText = `Showing ${startIdx}-${endIdx} of ${totalItems} entries`;
+
+    if (totalPages <= 1) {
+      container.innerHTML = '';
+      return;
+    }
+
+    let btns = '';
+    btns += `<button type="button" class="btn btn-outline-secondary ${this.settledCurrentPage === 1 ? 'disabled' : ''}" onclick="LedgerModule.changeSettledPage(1)" title="First"><i class="bi bi-chevron-double-left"></i></button>`;
+    btns += `<button type="button" class="btn btn-outline-secondary ${this.settledCurrentPage === 1 ? 'disabled' : ''}" onclick="LedgerModule.changeSettledPage(${this.settledCurrentPage - 1})" title="Previous"><i class="bi bi-chevron-left"></i></button>`;
+
+    const startP = Math.max(1, this.settledCurrentPage - 2);
+    const endP = Math.min(totalPages, this.settledCurrentPage + 2);
+
+    for (let p = startP; p <= endP; p++) {
+      btns += `<button type="button" class="btn ${p === this.settledCurrentPage ? 'btn-success' : 'btn-outline-secondary'}" onclick="LedgerModule.changeSettledPage(${p})">${p}</button>`;
+    }
+
+    btns += `<button type="button" class="btn btn-outline-secondary ${this.settledCurrentPage === totalPages ? 'disabled' : ''}" onclick="LedgerModule.changeSettledPage(${this.settledCurrentPage + 1})" title="Next"><i class="bi bi-chevron-right"></i></button>`;
+    btns += `<button type="button" class="btn btn-outline-secondary ${this.settledCurrentPage === totalPages ? 'disabled' : ''}" onclick="LedgerModule.changeSettledPage(${totalPages})" title="Last"><i class="bi bi-chevron-double-right"></i></button>`;
+
+    container.innerHTML = btns;
+  },
+
+  changeSettledPage(pg) {
+    this.settledCurrentPage = pg;
+    this.renderSettledTable();
+  },
+
+  changeSettledPageSize(sz) {
+    this.settledPageSize = sz;
+    this.settledCurrentPage = 1;
+    this.renderSettledTable();
+  },
+
+  openSettledDebtDetails(debtId) {
+    this.activeSettledDebtId = debtId;
+    const debt = (this.allDebts || []).find(d => String(d.id) === String(debtId));
+    if (!debt) return;
+
+    // Highlight row
+    document.querySelectorAll('.settled-data-row').forEach(r => r.classList.remove('active'));
+    const rEl = document.getElementById(`settled-row-${debtId}`);
+    if (rEl) rEl.classList.add('active');
+
+    // Expand split wrapper
+    const splitWrapper = document.getElementById('settled-split-wrapper');
+    if (splitWrapper) splitWrapper.classList.add('split-open');
+
+    // Show side panel
+    const panel = document.getElementById('panel-settled-details');
+    if (panel) panel.classList.remove('d-none');
+
+    const content = document.getElementById('settled-panel-content');
+    if (!content) return;
+
+    const greenBullet = `<span class="appsheet-bullet green-bullet">●</span> `;
+    const debtAmt = Number(debt.debtAmount) || 0;
+    const retAmt = Number(debt.totalReturned || debt.debtAmount) || 0;
+
+    // Get returned list: either from debt.returnedAmounts or matching allReturnedAmounts or synthetic
+    let retList = Array.isArray(debt.returnedAmounts) && debt.returnedAmounts.length > 0
+      ? debt.returnedAmounts
+      : (this.allReturnedAmounts || []).filter(r => String(r.debtId) === String(debt.id) || (debt.grNo && String(r.grNo) === String(debt.grNo)));
+
+    if (!retList || retList.length === 0) {
+      retList = [
+        {
+          id: debt.id ? String(debt.id).replace(/\D/g, '').slice(-3) || '539' : '539',
+          date: debt.date || '2026-07-01',
+          returnDate: debt.displayDate || debt.date || '01/07/2026',
+          depositorName: debt.borrowerName || debt.truckOwner || 'Laxmi Prakash Jat',
+          returnMode: debt.debtMode || 'Adjustment',
+          mode: debt.debtMode || 'Adjustment',
+          amount: retAmt,
+          returnedAmount: retAmt,
+          receiverName: debt.receiverName || 'TTC',
+          description: debt.description || 'Settled'
+        }
+      ];
+    }
+
+    let miniRowsHtml = '';
+    retList.forEach(r => {
+      const rId = r.id || '539';
+      const rDate = r.returnDate || r.displayDate || r.date || '-';
+      const rName = r.depositorName || r.partyName || '-';
+      const rMode = r.returnMode || r.mode || 'Cash';
+      miniRowsHtml += `
+        <tr style="cursor: pointer;" onclick="LedgerModule.openSettledReturnDetails('${rId}', '${debt.id}')">
+          <td>${greenBullet}<span style="color: #137333; font-weight: 600;">${rDate}</span></td>
+          <td>${greenBullet}<span style="color: #137333; font-weight: 600;">${rName}</span></td>
+          <td>${greenBullet}<span style="color: #137333; font-weight: 600;">${rMode}</span></td>
+          <td class="text-end" style="color: #137333; font-weight: bold; width: 20px;">&gt;</td>
+        </tr>
+      `;
+    });
+
+    content.innerHTML = `
+      <div class="settled-cards-grid">
+        <!-- Left Column: Particulars & Financials stacked (matching AppSheet WhatsApp screenshot) -->
+        <div class="settled-cards-col-left d-flex flex-column gap-3">
+          <!-- Top Left Card: Particulars -->
+          <div class="settled-detail-card">
+            <div class="settled-field-row">
+              <span class="settled-field-label">Debt Type</span>
+              <span class="settled-field-value">${greenBullet}<span>${debt.debtType || '-'}</span></span>
+            </div>
+            <div class="settled-field-row">
+              <span class="settled-field-label">Date</span>
+              <span class="settled-field-value">${greenBullet}<span>${debt.displayDate || debt.date || '-'}</span></span>
+            </div>
+            <div class="settled-field-row">
+              <span class="settled-field-label">Truck Owner Name</span>
+              <span class="settled-field-value">${greenBullet}<span>${debt.truckOwner || '-'}</span></span>
+            </div>
+            <div class="settled-field-row">
+              <span class="settled-field-label">Borrower Name</span>
+              <span class="settled-field-value">${greenBullet}<span>${debt.borrowerName || '-'}</span></span>
+            </div>
+            <div class="settled-field-row">
+              <span class="settled-field-label">Receiver Name</span>
+              <span class="settled-field-value">${greenBullet}<span>${debt.receiverName || '-'}</span></span>
+            </div>
+          </div>
+
+          <!-- Bottom Left Card: Financials -->
+          <div class="settled-detail-card">
+            <div class="settled-field-row">
+              <span class="settled-field-label">Debt Mode</span>
+              <span class="settled-field-value">${greenBullet}<span>${debt.debtMode || 'Cash'}</span></span>
+            </div>
+            <div class="settled-field-row">
+              <span class="settled-field-label">Debt Amount</span>
+              <span class="settled-field-value">${greenBullet}<span>₹ ${this.formatINR(debtAmt)}</span></span>
+            </div>
+            <div class="settled-field-row">
+              <span class="settled-field-label">Total Returned Amount</span>
+              <span class="settled-field-value">${greenBullet}<span>₹ ${this.formatINR(retAmt)}</span></span>
+            </div>
+            <div class="settled-field-row">
+              <span class="settled-field-label">Description</span>
+              <span class="settled-field-value">${greenBullet}<span>${debt.description || '-'}</span></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Returned Amount Mini Table -->
+        <div class="settled-cards-col-right">
+          <div class="settled-detail-card">
+            <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+              <div class="d-flex align-items-center gap-2">
+                <span class="fw-semibold text-dark" style="font-size: 13.5px;">Returned Amount</span>
+                <span class="badge border border-primary text-primary bg-white rounded-1 px-1 py-0" style="font-size: 11px;">${retList.length}</span>
+              </div>
+              <a href="javascript:void(0)" class="text-muted text-decoration-none" style="font-size: 11.5px;" onclick="LedgerModule.openSettledReturnDetails('${retList[0].id}', '${debt.id}')">Expand &gt;</a>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-sm table-borderless mb-0" style="font-size: 12px;">
+                <thead class="text-muted" style="border-bottom: 1px solid #e0e0e0; font-size: 11px;">
+                  <tr>
+                    <th>Return Date</th>
+                    <th>Depositor Name</th>
+                    <th>Return Mode</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${miniRowsHtml}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  },
+
+  closeSettledDebtDetails() {
+    this.activeSettledDebtId = null;
+    document.querySelectorAll('.settled-data-row').forEach(r => r.classList.remove('active'));
+    const splitWrapper = document.getElementById('settled-split-wrapper');
+    if (splitWrapper) splitWrapper.classList.remove('split-open');
+    const panel = document.getElementById('panel-settled-details');
+    if (panel) panel.classList.add('d-none');
+  },
+
+  prevSettledRecord() {
+    if (!this.activeSettledDebtId || !this.filteredSettledList.length) return;
+    const currentIndex = this.filteredSettledList.findIndex(d => String(d.id) === String(this.activeSettledDebtId));
+    if (currentIndex > 0) {
+      this.openSettledDebtDetails(this.filteredSettledList[currentIndex - 1].id);
+    } else {
+      if (typeof AppUI !== 'undefined') AppUI.showToast('First record reached', 'info');
+    }
+  },
+
+  nextSettledRecord() {
+    if (!this.activeSettledDebtId || !this.filteredSettledList.length) return;
+    const currentIndex = this.filteredSettledList.findIndex(d => String(d.id) === String(this.activeSettledDebtId));
+    if (currentIndex >= 0 && currentIndex < this.filteredSettledList.length - 1) {
+      this.openSettledDebtDetails(this.filteredSettledList[currentIndex + 1].id);
+    } else {
+      if (typeof AppUI !== 'undefined') AppUI.showToast('Last record reached', 'info');
+    }
+  },
+
+  toggleSettledDetailFullscreen() {
+    this.isSettledPanelFullscreen = !this.isSettledPanelFullscreen;
+    const panel = document.getElementById('panel-settled-details');
+    const btn = document.getElementById('btn-expand-settled-panel');
+    if (panel) {
+      panel.classList.toggle('fullscreen', this.isSettledPanelFullscreen);
+      panel.classList.toggle('settled-panel-fullscreen', this.isSettledPanelFullscreen);
+    }
+    if (btn) {
+      btn.innerText = this.isSettledPanelFullscreen ? '↙' : '↗';
+    }
+  },
+
+  toggleSettledFullscreen() {
+    const el = document.getElementById('settled-main-container');
+    if (!document.fullscreenElement) {
+      (el || document.documentElement).requestFullscreen?.().catch(() => {});
+    } else {
+      document.exitFullscreen?.().catch(() => {});
+    }
+  },
+
+  openSettledReturnDetails(returnId, debtId) {
+    const debt = (this.allDebts || []).find(d => String(d.id) === String(debtId || this.activeSettledDebtId));
+    let retItem = null;
+    if (debt && Array.isArray(debt.returnedAmounts)) {
+      retItem = debt.returnedAmounts.find(r => String(r.id) === String(returnId)) || debt.returnedAmounts[0];
+    }
+    if (!retItem && debt) {
+      retItem = {
+        id: returnId || (debt.id ? String(debt.id).replace(/\D/g, '').slice(-3) || '539' : '539'),
+        returnDate: debt.displayDate || debt.date || '01/07/2026',
+        depositorName: debt.borrowerName || debt.truckOwner || 'Laxmi Prakash Jat',
+        returnMode: debt.debtMode || 'Adjustment',
+        amount: Number(debt.totalReturned || debt.debtAmount) || 1500,
+        description: debt.description || 'Puran Ji New Bablu Transport Company ke Mukesh Ji ko diye Shahpura mein purana hisaab (Rs.80000)'
+      };
+    }
+
+    const body = document.getElementById('settled-return-modal-body');
+    if (!body || !retItem) return;
+
+    const greenBullet = `<span class="appsheet-bullet green-bullet">●</span> `;
+    body.innerHTML = `
+      <div class="row g-3">
+        <div class="col-12">
+          <div class="settled-field-row py-2 border-bottom">
+            <span class="settled-field-label fw-bold text-muted" style="width: 140px;">ID</span>
+            <span class="settled-field-value fw-bold text-success">${greenBullet}<span>${retItem.id || '539'}</span></span>
+          </div>
+          <div class="settled-field-row py-2 border-bottom">
+            <span class="settled-field-label fw-bold text-muted" style="width: 140px;">Return Date</span>
+            <span class="settled-field-value fw-bold text-success">${greenBullet}<span>${retItem.returnDate || retItem.displayDate || retItem.date || '-'}</span></span>
+          </div>
+          <div class="settled-field-row py-2 border-bottom">
+            <span class="settled-field-label fw-bold text-muted" style="width: 140px;">Depositor Name</span>
+            <span class="settled-field-value fw-bold text-success">${greenBullet}<span>${retItem.depositorName || retItem.partyName || '-'}</span></span>
+          </div>
+          <div class="settled-field-row py-2 border-bottom">
+            <span class="settled-field-label fw-bold text-muted" style="width: 140px;">Return Mode</span>
+            <span class="settled-field-value fw-bold text-success">${greenBullet}<span>${retItem.returnMode || retItem.mode || 'Adjustment'}</span></span>
+          </div>
+          <div class="settled-field-row py-2 border-bottom">
+            <span class="settled-field-label fw-bold text-muted" style="width: 140px;">Returned Amount</span>
+            <span class="settled-field-value fw-bold text-success">${greenBullet}<span>₹ ${this.formatINR(Number(retItem.amount || retItem.returnedAmount) || 0)}</span></span>
+          </div>
+          <div class="settled-field-row py-2">
+            <span class="settled-field-label fw-bold text-muted" style="width: 140px;">Description</span>
+            <span class="settled-field-value fw-bold text-success">${greenBullet}<span>${retItem.description || '-'}</span></span>
+          </div>
+        </div>
+      </div>
+    `;
+
+    const modalEl = document.getElementById('modal-settled-return-details');
+    if (modalEl && typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+      bootstrap.Modal.getOrCreateInstance(modalEl).show();
+    }
+  },
+
+  async syncSettledToFirestoreCloud() {
+    const statusEl = document.getElementById('settled-cloud-status');
+    if (statusEl) {
+      statusEl.innerHTML = `<span class="spinner-border spinner-border-sm me-1" role="status"></span> Syncing to Firebase...`;
+      statusEl.className = 'badge rounded-pill text-bg-warning border text-dark ms-2 px-2 py-1';
+    }
+
+    try {
+      if (!dbService.isFirebaseReady) {
+        dbService.initDatabase();
+      }
+
+      if (dbService.isFirebaseReady && dbService.db) {
+        const settledDebts = (this.allDebts || []).filter(d => (Number(d.dueAmount) || 0) === 0);
+        const batchSize = 100;
+        let count = 0;
+
+        for (let i = 0; i < Math.min(settledDebts.length, 500); i += batchSize) {
+          const chunk = settledDebts.slice(i, i + batchSize);
+          const batch = dbService.db.batch();
+          chunk.forEach(record => {
+            const docRef = dbService.db.collection('debts').doc(String(record.id));
+            batch.set(docRef, record, { merge: true });
+            count++;
+          });
+          await batch.commit();
+        }
+
+        if (statusEl) {
+          statusEl.innerHTML = `<i class="bi bi-cloud-check-fill me-1"></i> Cloud Synced (${count})`;
+          statusEl.className = 'badge rounded-pill text-bg-light border text-success ms-2 px-2 py-1';
+        }
+        if (typeof AppUI !== 'undefined') {
+          AppUI.showToast(`Successfully synced ${count} Settled records directly to Firebase Cloud Firestore!`, 'success');
+        }
+      } else {
+        if (statusEl) {
+          statusEl.innerHTML = `<i class="bi bi-cloud-slash me-1"></i> Offline Mode`;
+          statusEl.className = 'badge rounded-pill text-bg-light border text-secondary ms-2 px-2 py-1';
+        }
+        if (typeof AppUI !== 'undefined') {
+          AppUI.showToast('Firebase connection is offline; records are preserved safely.', 'warning');
+        }
+      }
+    } catch (err) {
+      console.error('Firebase Cloud sync error:', err);
+      if (statusEl) {
+        statusEl.innerHTML = `<i class="bi bi-exclamation-triangle me-1"></i> Sync Error`;
+        statusEl.className = 'badge rounded-pill text-bg-danger text-white ms-2 px-2 py-1';
+      }
+      if (typeof AppUI !== 'undefined') {
+        AppUI.showToast('Cloud sync failed: ' + err.message, 'error');
+      }
     }
   },
 
@@ -4979,6 +5755,7 @@ const LedgerModule = {
     const recView = document.getElementById('ledger-view-received');
     const openDebtsView = document.getElementById('ledger-view-open-debts');
     const allDebtsView = document.getElementById('ledger-view-all-debts');
+    const settledView = document.getElementById('ledger-view-settled');
     const regView = document.getElementById('ledger-view-register');
     const detView = document.getElementById('ledger-view-details');
     const stmtView = document.getElementById('ledger-view-statements');
@@ -5001,6 +5778,8 @@ const LedgerModule = {
       ownerExpView?.classList.add('d-none');
       recView?.classList.add('d-none');
       openDebtsView?.classList.add('d-none');
+      allDebtsView?.classList.add('d-none');
+      settledView?.classList.add('d-none');
       regView?.classList.add('d-none');
       detView?.classList.add('d-none');
       stmtView?.classList.remove('d-none');
@@ -5028,6 +5807,8 @@ const LedgerModule = {
       ownerExpView?.classList.add('d-none');
       recView?.classList.add('d-none');
       openDebtsView?.classList.add('d-none');
+      allDebtsView?.classList.add('d-none');
+      settledView?.classList.add('d-none');
       regView?.classList.add('d-none');
       detView?.classList.remove('d-none');
       if (breadcrumbRoot) {
@@ -5057,6 +5838,7 @@ const LedgerModule = {
       recView?.classList.add('d-none');
       openDebtsView?.classList.add('d-none');
       allDebtsView?.classList.add('d-none');
+      settledView?.classList.add('d-none');
       regView?.classList.add('d-none');
       if (breadcrumbRoot) {
         breadcrumbRoot.innerHTML = `
@@ -5079,7 +5861,7 @@ const LedgerModule = {
         addBtnText.innerText = '+ Add Expen...';
       } else if (this.mainViewMode === 'received') {
         addBtnText.innerText = '+ New Recei...';
-      } else if (this.mainViewMode === 'open-debts') {
+      } else if (this.mainViewMode === 'open-debts' || this.mainViewMode === 'settled') {
         addBtnText.innerText = '+ Add Debt';
       } else {
         addBtnText.innerText = '+ Add Debt';
@@ -5096,6 +5878,7 @@ const LedgerModule = {
       recView?.classList.add('d-none');
       openDebtsView?.classList.add('d-none');
       allDebtsView?.classList.add('d-none');
+      settledView?.classList.add('d-none');
       regView?.classList.add('d-none');
       if (breadcrumbRoot) {
         breadcrumbRoot.innerHTML = `
@@ -5121,6 +5904,7 @@ const LedgerModule = {
       recView?.classList.add('d-none');
       openDebtsView?.classList.add('d-none');
       allDebtsView?.classList.add('d-none');
+      settledView?.classList.add('d-none');
       retView?.classList.remove('d-none');
       if (breadcrumbRoot) {
         breadcrumbRoot.innerHTML = `
@@ -5151,6 +5935,7 @@ const LedgerModule = {
       recView?.classList.add('d-none');
       openDebtsView?.classList.add('d-none');
       allDebtsView?.classList.add('d-none');
+      settledView?.classList.add('d-none');
       detView?.classList.add('d-none');
       stmtView?.classList.add('d-none');
       compExpView?.classList.remove('d-none');
@@ -5183,6 +5968,7 @@ const LedgerModule = {
       ownerExpView?.classList.add('d-none');
       openDebtsView?.classList.add('d-none');
       allDebtsView?.classList.add('d-none');
+      settledView?.classList.add('d-none');
       detView?.classList.add('d-none');
       stmtView?.classList.add('d-none');
       recView?.classList.remove('d-none');
@@ -5217,6 +6003,7 @@ const LedgerModule = {
       stmtView?.classList.add('d-none');
       regView?.classList.add('d-none');
       allDebtsView?.classList.add('d-none');
+      settledView?.classList.add('d-none');
       openDebtsView?.classList.remove('d-none');
 
       if (breadcrumbRoot) {
@@ -5247,6 +6034,7 @@ const LedgerModule = {
       ownerExpView?.classList.add('d-none');
       recView?.classList.add('d-none');
       openDebtsView?.classList.add('d-none');
+      settledView?.classList.add('d-none');
       detView?.classList.add('d-none');
       stmtView?.classList.add('d-none');
       regView?.classList.add('d-none');
@@ -5281,6 +6069,7 @@ const LedgerModule = {
       recView?.classList.add('d-none');
       openDebtsView?.classList.add('d-none');
       allDebtsView?.classList.add('d-none');
+      settledView?.classList.add('d-none');
       detView?.classList.add('d-none');
       stmtView?.classList.add('d-none');
       ownerExpView?.classList.remove('d-none');
@@ -5304,6 +6093,40 @@ const LedgerModule = {
       return;
     }
 
+    // 4H. LEVEL 1: SETTLED DEBTS VIEW (Authentic Google AppSheet Green Master-Detail)
+    if (this.mainViewMode === 'settled' || (this.mainViewMode === 'debts' && this.currentTab === 'settled')) {
+      dashView?.classList.add('d-none');
+      cashRegView?.classList.add('d-none');
+      regView?.classList.add('d-none');
+      retView?.classList.add('d-none');
+      compExpView?.classList.add('d-none');
+      ownerExpView?.classList.add('d-none');
+      recView?.classList.add('d-none');
+      openDebtsView?.classList.add('d-none');
+      allDebtsView?.classList.add('d-none');
+      detView?.classList.add('d-none');
+      stmtView?.classList.add('d-none');
+      settledView?.classList.remove('d-none');
+
+      if (breadcrumbRoot) {
+        breadcrumbRoot.innerHTML = `
+          <a href="javascript:void(0)" onclick="LedgerModule.goToDashboardView()">Home</a>
+          <span class="sep">&gt;</span>
+          <a href="javascript:void(0)" onclick="LedgerModule.goToDashboardView()">Ledger</a>
+          <span class="sep">&gt;</span>
+          <span class="active">Settled</span>
+        `;
+      }
+      this.renderSettledTreeSidebar();
+      this.renderSettledTable();
+      if (this.activeSettledDebtId) {
+        this.openSettledDebtDetails(this.activeSettledDebtId);
+      } else {
+        this.closeSettledDebtDetails();
+      }
+      return;
+    }
+
     // 5. LEVEL 1-3: DEBTS REGISTER VIEWS
     dashView?.classList.add('d-none');
     cashRegView?.classList.add('d-none');
@@ -5313,6 +6136,7 @@ const LedgerModule = {
     recView?.classList.add('d-none');
     openDebtsView?.classList.add('d-none');
     allDebtsView?.classList.add('d-none');
+    settledView?.classList.add('d-none');
     regView?.classList.remove('d-none');
 
     const tabName = this.currentTab === 'open' ? 'Open' : this.currentTab === 'all' ? 'All' : 'Settled';
@@ -5592,6 +6416,12 @@ const LedgerModule = {
 
   onSearchInput(val) {
     this.searchQuery = (val || '').toLowerCase().trim();
+    if (this.mainViewMode === 'settled') {
+      this.settledCurrentPage = 1;
+      this.applySettledFilters();
+      this.renderSettledTable();
+      return;
+    }
     if (this.mainViewMode === 'owner-expense') {
       this.ownerCurrentPage = 1;
       this.applyOwnerFilters();
@@ -5648,6 +6478,12 @@ const LedgerModule = {
     const sInput = document.getElementById('ledger-search-input');
     if (sInput) sInput.value = '';
     this.searchQuery = '';
+    if (this.mainViewMode === 'settled') {
+      this.settledCurrentPage = 1;
+      this.applySettledFilters();
+      this.renderSettledTable();
+      return;
+    }
     if (this.mainViewMode === 'owner-expense') {
       this.ownerCurrentPage = 1;
       this.applyOwnerFilters();
@@ -5711,6 +6547,16 @@ const LedgerModule = {
     if (fType) fType.value = 'ALL';
     const fMode = document.getElementById('filter-debt-mode');
     if (fMode) fMode.value = 'ALL';
+
+    if (this.mainViewMode === 'settled') {
+      this.selectedSettledFY = 'ALL';
+      this.selectedSettledDate = null;
+      this.settledCurrentPage = 1;
+      this.applySettledFilters();
+      this.renderSettledTreeSidebar();
+      this.renderSettledTable();
+      return;
+    }
 
     if (this.mainViewMode === 'owner-expense') {
       this.selectedOwnerFY = 'ALL';
@@ -6726,7 +7572,7 @@ const LedgerModule = {
       return this.goToAllDebtsView(this.selectedAllDebtsFY || 'ALL');
     }
     if (tabName === 'settled') {
-      return this.goToReturnedAmountView(this.selectedReturnedFY || '2026-2027');
+      return this.goToSettledView(this.selectedSettledFY || 'ALL');
     }
     this.currentTab = tabName;
     if (tabName === 'statements') {

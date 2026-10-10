@@ -1742,6 +1742,349 @@
     }
 
     /* ==================================================== */
+    /* 5E. SETTLED DEBTS (Authentic AppSheet Green Master-Detail) */
+    /* ==================================================== */
+    .settled-container {
+      display: flex;
+      height: calc(100vh - 100px);
+      max-height: calc(100vh - 100px);
+      background: #ffffff;
+      position: relative;
+      overflow: hidden;
+    }
+    .settled-tree-sidebar {
+      width: 240px;
+      height: 100%;
+      max-height: 100%;
+      border-right: 1px solid #eeeeee;
+      padding: 14px 10px;
+      flex-shrink: 0;
+      background: #ffffff;
+      transition: width 0.22s ease, padding 0.22s ease, opacity 0.18s ease;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+    .settled-tree-sidebar.collapsed {
+      width: 0 !important;
+      max-width: 0 !important;
+      padding: 0 !important;
+      opacity: 0;
+      border-right: none !important;
+      pointer-events: none;
+      display: none !important;
+    }
+    @media (max-width: 991.98px) {
+      .settled-tree-sidebar {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1040;
+        width: 260px;
+        box-shadow: 4px 0 20px rgba(0,0,0,0.18);
+        background: #ffffff;
+        display: block !important;
+      }
+      .settled-tree-sidebar.collapsed {
+        transform: translateX(-100%);
+        width: 260px !important;
+        max-width: 260px !important;
+        display: block !important;
+      }
+    }
+    .settled-tree-header {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #5f6368;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 4px 10px;
+      margin-bottom: 6px;
+    }
+    .settled-tree-item {
+      padding: 6px 10px;
+      border-radius: 20px;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: #202124;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 3px;
+      transition: background 0.1s;
+      user-select: none;
+    }
+    .settled-tree-item:hover {
+      background: #f1f8f3;
+    }
+    .settled-tree-item.active {
+      background: #e6f4ea;
+      color: #137333;
+      font-weight: 600;
+    }
+    .settled-tree-badge {
+      font-size: 11px;
+      font-weight: 600;
+      color: #5f6368;
+      background: #f1f3f4;
+      padding: 2px 7px;
+      border-radius: 10px;
+      letter-spacing: -0.2px;
+    }
+    .settled-tree-item.active .settled-tree-badge {
+      background: #ceead6;
+      color: #137333;
+    }
+    .settled-tree-sublist {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-bottom: 6px;
+      padding-left: 10px;
+    }
+    .settled-tree-subitem {
+      padding: 5px 8px 5px 12px;
+      font-size: 12px;
+    }
+    .settled-tree-caret {
+      font-size: 10px;
+      color: #70757a;
+      width: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .settled-main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      height: 100%;
+      overflow: hidden;
+      background: #ffffff;
+    }
+    .settled-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 16px;
+      border-bottom: 1px solid #eeeeee;
+      background: #ffffff;
+      min-height: 44px;
+      flex-shrink: 0;
+      gap: 8px;
+    }
+    .settled-toolbar-left {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      min-width: 0;
+    }
+    .settled-toolbar-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .settled-breadcrumb {
+      font-size: 13px;
+      color: #202124;
+      font-weight: 500;
+    }
+    .settled-chip-filter {
+      display: inline-flex;
+      align-items: center;
+      background: #e6f4ea;
+      color: #137333;
+      padding: 3px 9px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+      border: 1px solid #ceead6;
+    }
+    .settled-split-wrapper {
+      flex: 1;
+      display: flex;
+      min-height: 0;
+      overflow: hidden;
+      position: relative;
+    }
+    .settled-table-wrapper {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: auto;
+      min-width: 0;
+      height: 100%;
+      background: #ffffff;
+    }
+    .settled-split-wrapper.split-open .settled-table-wrapper {
+      flex: 1 1 50%;
+      max-width: 50%;
+    }
+    @media (max-width: 991.98px) {
+      .settled-split-wrapper.split-open .settled-table-wrapper {
+        display: none !important;
+      }
+      .settled-split-wrapper.split-open .settled-panel {
+        flex: 1 1 100% !important;
+        max-width: 100% !important;
+        width: 100% !important;
+      }
+    }
+    .settled-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 13px;
+    }
+    .settled-table thead th {
+      position: sticky;
+      top: 0;
+      background: #ffffff;
+      color: #202124;
+      font-weight: 600;
+      padding: 8px 12px;
+      border-bottom: 2px solid #e0e0e0;
+      white-space: nowrap;
+      z-index: 5;
+      font-size: 12px;
+    }
+    .settled-date-group-row td {
+      background: #ffffff;
+      padding: 10px 12px 6px 12px;
+      font-weight: 600;
+      color: #202124;
+      font-size: 13.5px;
+      border-bottom: 1px solid #f1f3f4;
+    }
+    .settled-date-group-badge {
+      display: inline-block;
+      margin-left: 8px;
+      padding: 2px 8px;
+      background: #e8eaed;
+      color: #3c4043;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .settled-data-row {
+      cursor: pointer;
+      transition: background 0.1s;
+      border-bottom: 1px solid #f1f3f4;
+    }
+    .settled-data-row:hover {
+      background: #f6fbf7;
+    }
+    .settled-data-row.active {
+      background: #e6f4ea !important;
+    }
+    .settled-data-row td {
+      padding: 8px 12px;
+      vertical-align: middle;
+      white-space: nowrap;
+      font-size: 13px;
+      color: #137333;
+    }
+    .settled-panel {
+      flex: 1 1 50%;
+      max-width: 50%;
+      height: 100%;
+      border-left: 1px solid #dadce0;
+      background: #f8f9fa;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.2s ease;
+    }
+    .settled-panel.fullscreen,
+    .settled-panel.settled-panel-fullscreen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      max-width: 100% !important;
+      width: 100% !important;
+      z-index: 1060;
+    }
+    .settled-panel-header {
+      padding: 8px 16px;
+      background: #ffffff;
+      border-bottom: 1px solid #dadce0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .settled-detail-card {
+      background: #ffffff;
+      border: 1px solid #dadce0;
+      border-radius: 8px;
+      padding: 16px 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      margin-bottom: 12px;
+    }
+    .settled-field-row {
+      display: flex;
+      align-items: baseline;
+      margin-bottom: 11px;
+      font-size: 13px;
+      line-height: 1.4;
+      gap: 8px;
+    }
+    .settled-field-label {
+      width: 140px;
+      min-width: 130px;
+      max-width: 155px;
+      flex-shrink: 0;
+      color: #5f6368;
+      font-weight: 500;
+    }
+    .settled-field-value {
+      flex: 1;
+      color: #137333;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      word-break: normal;
+      overflow-wrap: break-word;
+    }
+    .settled-cards-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+    .settled-cards-col-left,
+    .settled-cards-col-right {
+      flex: 1 1 100%;
+      min-width: 0;
+    }
+    .settled-panel.fullscreen .settled-cards-col-left,
+    .settled-panel.fullscreen .settled-cards-col-right,
+    .settled-panel.settled-panel-fullscreen .settled-cards-col-left,
+    .settled-panel.settled-panel-fullscreen .settled-cards-col-right {
+      flex: 1 1 calc(50% - 7px);
+      max-width: calc(50% - 7px);
+    }
+    .settled-pagination-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 16px;
+      border-top: 1px solid #eeeeee;
+      background: #ffffff;
+      flex-shrink: 0;
+      font-size: 12px;
+      min-height: 38px;
+    }
+
+    /* ==================================================== */
     /* RECEIVED PAYMENTS (Income Slice - Authentic AppSheet Green Theme) */
     /* ==================================================== */
     .received-container,
@@ -3229,80 +3572,80 @@
 
         <!-- CARD 8: Settled -->
         <div class="appsheet-dash-card" id="card-dash-settled">
-          <div class="appsheet-dash-card-header">
-            <span class="appsheet-dash-card-title" onclick="LedgerModule.goToDebtsView('settled')">Settled</span>
-            <div class="appsheet-dash-card-tools">
+          <div class="appsheet-dash-card-header" style="cursor: pointer;" onclick="LedgerModule.goToSettledView()">
+            <span class="appsheet-dash-card-title">Settled</span>
+            <div class="appsheet-dash-card-tools" onclick="event.stopPropagation()">
               <span class="appsheet-tool-icon" onclick="LedgerModule.toggleFilterDropdown()" title="Filter">🔻</span>
-              <span class="appsheet-tool-icon" onclick="LedgerModule.goToDebtsView('settled')" title="Expand Settled">↗</span>
+              <span class="appsheet-tool-icon" onclick="LedgerModule.goToSettledView()" title="Expand Settled">↗</span>
             </div>
           </div>
           <div class="appsheet-dash-card-body">
             <div class="appsheet-drill-section-label">Year</div>
-            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('settled', 'ALL')">
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToSettledView('ALL')">
               <span class="appsheet-drill-label-all">All</span>
               <span class="appsheet-chevron">&gt;</span>
             </div>
-            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('settled', '2026-2027')">
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToSettledView('2026-2027')">
               <div class="appsheet-drill-left">
                 <span class="appsheet-bullet green-bullet">●</span>
                 <span class="appsheet-drill-label-gold">2026-2027</span>
-                <span class="appsheet-drill-badge">₹ 13,540,243.00</span>
+                <span class="appsheet-drill-badge" id="card-settled-badge-2026-2027">₹ 13,609,243.00</span>
               </div>
               <span class="appsheet-chevron">&gt;</span>
             </div>
-            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('settled', '2025-2026')">
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToSettledView('2025-2026')">
               <div class="appsheet-drill-left">
                 <span class="appsheet-bullet green-bullet">●</span>
                 <span class="appsheet-drill-label-gold">2025-2026</span>
-                <span class="appsheet-drill-badge">₹ 25,999,868.00</span>
+                <span class="appsheet-drill-badge" id="card-settled-badge-2025-2026">₹ 25,999,868.00</span>
               </div>
               <span class="appsheet-chevron">&gt;</span>
             </div>
-            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('settled', '2024-2025')">
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToSettledView('2024-2025')">
               <div class="appsheet-drill-left">
                 <span class="appsheet-bullet green-bullet">●</span>
                 <span class="appsheet-drill-label-gold">2024-2025</span>
-                <span class="appsheet-drill-badge">₹ 18,059,731.00</span>
+                <span class="appsheet-drill-badge" id="card-settled-badge-2024-2025">₹ 18,059,731.00</span>
               </div>
               <span class="appsheet-chevron">&gt;</span>
             </div>
-            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('settled', '2023-2024')">
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToSettledView('2023-2024')">
               <div class="appsheet-drill-left">
                 <span class="appsheet-bullet green-bullet">●</span>
                 <span class="appsheet-drill-label-gold">2023-2024</span>
-                <span class="appsheet-drill-badge">₹ 10,500.00</span>
+                <span class="appsheet-drill-badge" id="card-settled-badge-2023-2024">₹ 10,500.00</span>
               </div>
               <span class="appsheet-chevron">&gt;</span>
             </div>
-            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('settled', '2022-2023')">
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToSettledView('2022-2023')">
               <div class="appsheet-drill-left">
                 <span class="appsheet-bullet green-bullet">●</span>
                 <span class="appsheet-drill-label-gold">2022-2023</span>
-                <span class="appsheet-drill-badge">₹ 85,800.00</span>
+                <span class="appsheet-drill-badge" id="card-settled-badge-2022-2023">₹ 85,800.00</span>
               </div>
               <span class="appsheet-chevron">&gt;</span>
             </div>
-            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('settled', '2021-2022')">
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToSettledView('2021-2022')">
               <div class="appsheet-drill-left">
                 <span class="appsheet-bullet green-bullet">●</span>
                 <span class="appsheet-drill-label-gold">2021-2022</span>
-                <span class="appsheet-drill-badge">₹ 74,000.00</span>
+                <span class="appsheet-drill-badge" id="card-settled-badge-2021-2022">₹ 74,000.00</span>
               </div>
               <span class="appsheet-chevron">&gt;</span>
             </div>
-            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('settled', '2020-2021')">
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToSettledView('2020-2021')">
               <div class="appsheet-drill-left">
                 <span class="appsheet-bullet green-bullet">●</span>
                 <span class="appsheet-drill-label-gold">2020-2021</span>
-                <span class="appsheet-drill-badge">₹ 70,000.00</span>
+                <span class="appsheet-drill-badge" id="card-settled-badge-2020-2021">₹ 70,000.00</span>
               </div>
               <span class="appsheet-chevron">&gt;</span>
             </div>
-            <div class="appsheet-drill-row" onclick="LedgerModule.goToDebtsView('settled', '2019-2020')">
+            <div class="appsheet-drill-row" onclick="LedgerModule.goToSettledView('2019-2020')">
               <div class="appsheet-drill-left">
                 <span class="appsheet-bullet green-bullet">●</span>
                 <span class="appsheet-drill-label-gold">2019-2020</span>
-                <span class="appsheet-drill-badge">₹ 39,000.00</span>
+                <span class="appsheet-drill-badge" id="card-settled-badge-2019-2020">₹ 39,000.00</span>
               </div>
               <span class="appsheet-chevron">&gt;</span>
             </div>
@@ -4714,6 +5057,128 @@
     </div>
 
     <!-- ========================================== -->
+    <!-- 4H. SETTLED DEBTS VIEW (Authentic AppSheet Green Master-Detail) -->
+    <!-- ========================================== -->
+    <div id="ledger-view-settled" class="d-none">
+      <div class="settled-container" id="settled-main-container">
+        
+        <!-- Left Sidebar: Year / Month Tree -->
+        <div class="settled-tree-sidebar" id="settled-tree-sidebar">
+          <div class="d-flex align-items-center justify-content-between settled-tree-header">
+            <span>DATE</span>
+            <button type="button" class="btn btn-sm btn-link text-muted p-0 text-decoration-none" onclick="LedgerModule.toggleSettledDateSidebar()" title="Collapse Filter" style="font-size: 11px;">
+              | &lt;
+            </button>
+          </div>
+
+          <!-- All option -->
+          <div class="settled-tree-item" id="settled-tree-all" onclick="LedgerModule.selectSettledAll()">
+            <div class="d-flex align-items-center gap-1">
+              <span class="appsheet-bullet green-bullet" style="font-size: 11px;">●</span>
+              <span>All</span>
+            </div>
+            <span class="settled-tree-badge" id="settled-tree-badge-all">₹ 57,948,142.00</span>
+          </div>
+
+          <!-- Dynamic FYs & Months (2026-2027 down to 2019-2020) -->
+          <div id="settled-tree-fys-container"></div>
+        </div>
+
+        <!-- Right Main Content -->
+        <div class="settled-main-content">
+          
+          <!-- Inner Subheader / Filter Breadcrumb Toolbar -->
+          <div class="settled-toolbar">
+            <div class="settled-toolbar-left">
+              <button type="button" class="btn btn-sm btn-outline-secondary me-2" onclick="LedgerModule.toggleSettledDateSidebar()" style="font-size: 0.78rem; padding: 3px 8px; border-radius: 4px;">
+                <i class="bi bi-layout-sidebar-inset" id="btn-toggle-settled-icon"></i>
+                <span id="btn-toggle-settled-text">Hide Date Filter</span>
+              </button>
+              <span class="settled-breadcrumb" id="settled-crumb-path">
+                Ledger &gt; <span class="fw-semibold">Settled</span>
+              </span>
+              <span class="settled-chip-filter ms-2" id="settled-chip-filter">
+                <i class="bi bi-funnel-fill text-success me-1" style="font-size: 10px;"></i>
+                <span id="settled-chip-text">2026-2027</span>
+              </span>
+              <span class="badge rounded-pill text-bg-light border text-success ms-2 px-2 py-1" id="settled-cloud-status" title="Firebase Firestore Cloud Synchronized">
+                <i class="bi bi-cloud-check-fill me-1"></i> Cloud Synced
+              </span>
+            </div>
+
+            <div class="settled-toolbar-right">
+              <button type="button" class="btn btn-sm btn-outline-success me-2" onclick="LedgerModule.syncSettledToFirestoreCloud()" title="Sync directly to Firebase Cloud" style="font-size: 0.76rem; border-radius: 4px;">
+                <i class="bi bi-cloud-arrow-up me-1"></i> Sync Cloud
+              </button>
+              <span class="appsheet-tool-icon" onclick="LedgerModule.toggleFilterDropdown()" title="Filter by Mode/Type">🔻</span>
+              <span class="appsheet-tool-icon" onclick="LedgerModule.toggleSettledFullscreen()" title="Fullscreen">↗</span>
+            </div>
+          </div>
+
+          <!-- Split Wrapper: Table + Side Detail Panel -->
+          <div class="settled-split-wrapper" id="settled-split-wrapper">
+            
+            <!-- Table Container -->
+            <div class="settled-table-wrapper" id="settled-table-wrapper">
+              <table class="settled-table table mb-0">
+                <thead>
+                  <tr>
+                    <th style="min-width: 100px;">G.R.No.</th>
+                    <th style="min-width: 110px;">Truck No.</th>
+                    <th style="min-width: 140px;">To</th>
+                    <th style="min-width: 150px;">Total Returned Amount</th>
+                    <th style="min-width: 120px;">Debt Type</th>
+                    <th style="min-width: 110px;">Debt Mode</th>
+                    <th style="min-width: 180px;">Borrower Name</th>
+                    <th style="min-width: 200px;">Receiver Name</th>
+                    <th style="min-width: 160px;">Description</th>
+                    <th style="min-width: 100px;">Date</th>
+                    <th style="width: 30px;"></th>
+                  </tr>
+                </thead>
+                <tbody id="settled-table-tbody">
+                  <!-- Dynamic Date Groups & Data Rows -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Side Detail Panel (Split Mode) matching WhatsApp Image 2026-10-10 at 3.24.28 AM.jpeg -->
+            <div class="settled-panel d-none" id="panel-settled-details">
+              <div class="settled-panel-header">
+                <span class="fw-semibold text-dark" style="font-size: 13.5px;" id="settled-panel-title">Settled Debt Details</span>
+                <div class="d-flex align-items-center gap-1">
+                  <button type="button" class="btn btn-sm btn-light text-muted p-1" onclick="LedgerModule.prevSettledRecord()" title="Previous Record" style="line-height: 1;">&lt;</button>
+                  <button type="button" class="btn btn-sm btn-light text-muted p-1" onclick="LedgerModule.nextSettledRecord()" title="Next Record" style="line-height: 1;">&gt;</button>
+                  <button type="button" class="btn btn-sm btn-light text-muted p-1" id="btn-expand-settled-panel" onclick="LedgerModule.toggleSettledDetailFullscreen()" title="Fullscreen" style="line-height: 1;">↗</button>
+                  <button type="button" class="btn btn-sm btn-light text-muted p-1" onclick="LedgerModule.closeSettledDebtDetails()" title="Close" style="line-height: 1;">✕</button>
+                </div>
+              </div>
+              <div class="p-3" id="settled-panel-content">
+                <!-- Dynamic Settled Detail Cards -->
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Bottom Pagination Bar -->
+          <div class="settled-pagination-bar">
+            <small class="text-muted" id="settled-pagination-info">Showing 1-100 entries</small>
+            <div class="d-flex align-items-center gap-2">
+              <select id="settled-page-size" class="form-select form-select-sm" style="width: auto; font-size: 0.8rem;" onchange="LedgerModule.changeSettledPageSize(this.value)">
+                <option value="50">50 rows</option>
+                <option value="100" selected>100 rows</option>
+                <option value="250">250 rows</option>
+                <option value="ALL">All rows</option>
+              </select>
+              <div class="btn-group btn-group-sm" id="settled-pagination-buttons"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
     <!-- 5. 3-CARD OPEN DEBT DETAILS (Level 4) -->
     <!-- ========================================== -->
     <div id="ledger-view-details" class="d-none px-4 py-3">
@@ -5512,6 +5977,26 @@
             </div>
           </div>
 
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Settled Returned Amount Details (WhatsApp Image 2026-10-10 at 3.24.27 AM.jpeg) -->
+  <div class="modal fade" id="modal-settled-return-details" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 540px;">
+      <div class="modal-content shadow border-0" style="border-radius: 12px; overflow: hidden;">
+        <div class="modal-header border-bottom px-4 py-3 bg-white">
+          <h6 class="modal-title fw-bold text-dark mb-0">Settled Returned Amount Details</h6>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4 bg-light">
+          <div class="bg-white rounded-3 border p-4 shadow-sm" id="settled-return-modal-body">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+        <div class="modal-footer bg-white border-top px-4 py-2">
+          <button type="button" class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal">Close</button>
         </div>
       </div>
     </div>

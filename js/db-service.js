@@ -135,7 +135,7 @@ class DBService {
     if (this.isFirebaseReady) {
       try {
         const fetchPromise = this.db.collection(collectionName).get();
-        const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Firestore timeout')), 250));
+        const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Firestore timeout')), 3000));
         const snapshot = await Promise.race([fetchPromise, timeoutPromise]);
         if (!snapshot.empty) {
           cloudItems = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -361,6 +361,20 @@ class DBService {
     const returnedAmounts = Array.isArray(debt.returnedAmounts) ? [...debt.returnedAmounts, returnEntry] : [returnEntry];
     const totalReturned = returnedAmounts.reduce((sum, r) => sum + (Number(r.amount) || 0), 0);
     const dueAmount = Math.max(0, Number(debt.debtAmount || 0) - totalReturned);
+
+    // Save into returnedAmounts collection as well for dual-sync in Firestore
+    try {
+      await this.add('returnedAmounts', {
+        ...returnEntry,
+        debtId: debt.id,
+        debtNo: debt.grNo || debt.id,
+        truckNo: debt.truckNo || '',
+        borrowerName: debt.borrowerName || '',
+        debtType: debt.debtType || ''
+      });
+    } catch (retErr) {
+      console.warn('returnedAmounts collection sync error:', retErr.message);
+    }
 
     return await this.update('debts', debtId, {
       returnedAmounts,
