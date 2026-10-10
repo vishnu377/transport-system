@@ -9,10 +9,10 @@
   <!-- Bootstrap Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
   <!-- AppSheet Design System Theme -->
-  <link rel="stylesheet" href="../css/appsheet-theme.css?v=20260928_v4">
+  <link rel="stylesheet" href="../css/appsheet-theme.css?v=20261011_v1">
   <!-- Custom TMS Theme & Print Stylesheet -->
-  <link rel="stylesheet" href="../css/style.css?v=20260928_v4">
-  <link rel="stylesheet" href="../css/print.css?v=20260928_v4">
+  <link rel="stylesheet" href="../css/style.css?v=20261011_v1">
+  <link rel="stylesheet" href="../css/print.css?v=20261011_v1">
   <style>
     /* Google AppSheet Authentic Theme & Pixel-Perfect Styling for Trips */
     :root {
@@ -678,6 +678,172 @@
       color: #202124;
       text-align: right;
     }
+
+    /* Sidebar Collapsed State (100% full width table) */
+    .appsheet-trips-split.sidebar-collapsed .appsheet-trips-sidebar {
+      display: none !important;
+    }
+    .appsheet-trips-split.sidebar-collapsed .appsheet-trips-content {
+      width: 100% !important;
+      max-width: 100% !important;
+      flex: 1 1 100% !important;
+    }
+
+    /* Google AppSheet Open Trip Details Workspace View (wa_0.png) */
+    .appsheet-open-view-container {
+      background: #fafafa;
+      padding: 12px 18px;
+      min-height: calc(100vh - 100px);
+    }
+    .appsheet-open-header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #ffffff;
+      border: 1px solid #ebebeb;
+      border-radius: 4px;
+      padding: 8px 16px;
+      margin-bottom: 14px;
+    }
+    .appsheet-open-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #202124;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .appsheet-open-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .appsheet-open-action-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: #5f6368;
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 14px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s;
+    }
+    .appsheet-open-action-btn:hover {
+      background: #f1f3f4;
+      color: #202124;
+    }
+    .appsheet-open-action-btn.btn-edit-badge {
+      border: 1px solid #dadce0;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 3px 12px;
+      border-radius: 14px;
+      color: #202124;
+    }
+
+    /* Open Details Left Particulars Card */
+    .appsheet-open-card {
+      background: #ffffff;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      padding: 16px 20px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .appsheet-open-field-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5.5px 0;
+      font-size: 12.5px;
+      border-bottom: 1px solid #f6f6f6;
+    }
+    .appsheet-open-field-label {
+      color: #5f6368;
+      font-weight: 500;
+      flex-shrink: 0;
+      width: 195px;
+    }
+    .appsheet-open-field-value {
+      color: #202124;
+      font-weight: 600;
+      text-align: right;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+      word-break: break-word;
+    }
+    .appsheet-open-field-value .blue-bullet {
+      color: #1a73e8;
+    }
+    .appsheet-open-field-value .red-bullet {
+      color: #d90429;
+    }
+    .appsheet-open-phone-link {
+      color: #0088cc;
+      text-decoration: none;
+      margin-left: 6px;
+      font-size: 13.5px;
+    }
+    .appsheet-open-phone-link:hover {
+      color: #005580;
+    }
+
+    /* Open Details Right Tables (Consignor / Payment) */
+    .appsheet-open-subcard {
+      background: #ffffff;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      padding: 14px 18px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+      margin-bottom: 14px;
+    }
+    .appsheet-open-subcard-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 14px;
+      font-weight: 700;
+      color: #202124;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #eeeeee;
+      margin-bottom: 10px;
+    }
+    .appsheet-open-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    .appsheet-open-table th {
+      color: #5f6368;
+      font-weight: 600;
+      padding: 6px 8px;
+      border-bottom: 1px solid #e0e0e0;
+      background: #ffffff;
+    }
+    .appsheet-open-table td {
+      padding: 8px 8px;
+      border-bottom: 1px solid #f0f0f0;
+      color: #202124;
+      vertical-align: middle;
+    }
+    .appsheet-open-btn-add {
+      background-color: #bfa15f;
+      color: #ffffff;
+      border: none;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 14px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .appsheet-open-btn-add:hover {
+      background-color: #aa8c48;
+    }
   </style>
 </head>
 <body>
@@ -784,7 +950,9 @@
           <button type="button" class="btn-appsheet-alert py-0 px-2" id="toolbar-btn-truck-owner" onclick="TripsModule.openTruckOwnerAlert('open')" title="Truck Owner Alert">
             <span style="display:inline-block; width:12px; height:12px; background:#202124; color:#bfa15f; font-size:9px; line-height:12px; text-align:center; border-radius:2px; font-weight:bold;">!</span> Truck Own...
           </button>
-          <button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2" onclick="TripsModule.toggleSidebar()" title="Toggle Sidebar Filter"><i class="bi bi-funnel"></i></button>
+          <button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2" id="btn-toggle-sidebar" onclick="TripsModule.toggleSidebar()" title="Toggle Sidebar Filter">
+            <i class="bi bi-funnel"></i> <span id="btn-toggle-sidebar-text" class="d-none d-md-inline" style="font-size: 11px;">Filter</span>
+          </button>
           <button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2" onclick="TripsModule.toggleBulkSelect()" title="Select Multiple"><i class="bi bi-check2-square"></i></button>
 
           <!-- Action Buttons -->
@@ -1105,7 +1273,12 @@
           
           <!-- LEFT FY HIERARCHY PANEL (AppSheet Style) -->
           <div class="appsheet-trips-sidebar" id="trips-fy-sidebar">
-            <div class="appsheet-trips-sidebar-title">Financial Year</div>
+            <div class="d-flex align-items-center justify-content-between px-3 pb-1 border-bottom">
+              <span class="appsheet-trips-sidebar-title p-0 m-0">Financial Year</span>
+              <button type="button" class="btn btn-sm btn-link text-muted p-0 text-decoration-none" onclick="TripsModule.toggleSidebar()" title="Hide Sidebar">
+                <i class="bi bi-layout-sidebar-inset"></i>
+              </button>
+            </div>
             <div id="fy-pill-group">
               <div class="appsheet-trips-sidebar-item active" data-fy="All" onclick="TripsModule.filterByFY('All')">
                 <span>All Years</span>
@@ -1197,6 +1370,382 @@
             </div>
           </div>
 
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 4C. AUTHENTIC APPSHEET OPEN TRIP DETAILS VIEW -->
+    <!-- (100% Matching wa_0.png through wa_4.png) -->
+    <!-- ========================================== -->
+    <div id="trip-open-detail-view" class="d-none appsheet-open-view-container">
+      
+      <!-- Top Action Toolbar (Matching wa_0.png top bar) -->
+      <div class="appsheet-open-header-bar">
+        <div class="appsheet-open-title">
+          <span style="cursor: pointer;" onclick="TripsModule.toggleDetailFullscreen()" title="Fullscreen / Popout">
+            <i class="bi bi-arrows-angle-expand"></i>
+          </span>
+          <span id="open-view-title-text">Open Trip Details</span>
+        </div>
+        <div class="appsheet-open-actions">
+          <!-- Truck Action Icon -> Truck Owner Payment Details -->
+          <button type="button" class="appsheet-open-action-btn" title="Truck Owner Payment" onclick="TripsModule.openTruckOwnerPaymentModal(TripsModule.activeTrip?.id)">
+            <i class="bi bi-truck fs-5"></i>
+          </button>
+          <!-- Red Bilty Icon -> Generate Bill Modal -->
+          <button type="button" class="appsheet-open-action-btn" title="Generate Bill" onclick="TripsModule.openGenerateBillModal(TripsModule.activeTrip?.id)">
+            <i class="bi bi-file-earmark-text text-danger fs-5"></i>
+          </button>
+          <!-- Folder Icon -> Archive / Files -->
+          <button type="button" class="appsheet-open-action-btn" title="Files / POD" onclick="TripsModule.openTripFiles()">
+            <i class="bi bi-folder2-open fs-5"></i>
+          </button>
+          <!-- Edit Button (AppSheet pill) -->
+          <button type="button" class="appsheet-open-action-btn btn-edit-badge" title="Edit Trip" onclick="TripsModule.editActiveTrip()">
+            <i class="bi bi-pencil me-1"></i> Edit
+          </button>
+          <!-- Expand View toggle -->
+          <button type="button" class="appsheet-open-action-btn" title="Expand View" onclick="TripsModule.toggleDetailFullscreen()">
+            <i class="bi bi-arrows-fullscreen"></i>
+          </button>
+          <!-- Close Button -> Returns to Open Register -->
+          <button type="button" class="appsheet-open-action-btn" title="Close" onclick="TripsModule.goToTripsList()">
+            <i class="bi bi-x-lg fs-5"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Main 2-Column AppSheet Body (wa_0.png) -->
+      <div class="row g-3">
+        
+        <!-- LEFT COLUMN: All 20+ Particulars Fields -->
+        <div class="col-lg-7 col-12">
+          <div class="appsheet-open-card">
+            
+            <div class="appsheet-open-field-row">
+              <span class="appsheet-open-field-label">G.R.No.</span>
+              <span class="appsheet-open-field-value" id="op-gr-no"><span class="blue-bullet">●</span> -</span>
+            </div>
+            <div class="appsheet-open-field-row">
+              <span class="appsheet-open-field-label">Truck No.</span>
+              <span class="appsheet-open-field-value" id="op-truck-no"><span class="blue-bullet">●</span> -</span>
+            </div>
+            <div class="appsheet-open-field-row">
+              <span class="appsheet-open-field-label">Trip Start Date</span>
+              <span class="appsheet-open-field-value" id="op-start-date"><span class="blue-bullet">●</span> -</span>
+            </div>
+            <div class="appsheet-open-field-row">
+              <span class="appsheet-open-field-label">Trip End Date</span>
+              <span class="appsheet-open-field-value" id="op-end-date"><span class="blue-bullet">●</span> -</span>
+            </div>
+            <div class="appsheet-open-field-row">
+              <span class="appsheet-open-field-label">Origin</span>
+              <span class="appsheet-open-field-value" id="op-origin"><span class="blue-bullet">●</span> -</span>
+            </div>
+            <div class="appsheet-open-field-row">
+              <span class="appsheet-open-field-label">Destination</span>
+              <span class="appsheet-open-field-value" id="op-destination"><span class="blue-bullet">●</span> -</span>
+            </div>
+            <div class="appsheet-open-field-row">
+              <span class="appsheet-open-field-label">Consignee Billing Type</span>
+              <span class="appsheet-open-field-value" id="op-billing-type"><span class="blue-bullet">●</span> Per Tonne</span>
+            </div>
+            <div class="appsheet-open-field-row">
+              <span class="appsheet-open-field-label">Bilty Amount</span>
+              <span class="appsheet-open-field-value" id="op-bilty-amount"><span class="blue-bullet">●</span> ₹ 0.00</span>
+            </div>
+            <div class="appsheet-open-field-row">
+              <span class="appsheet-open-field-label">Weight</span>
+              <span class="appsheet-open-field-value" id="op-weight"><span class="blue-bullet">●</span> 0.000</span>
+            </div>
+            <div class="appsheet-open-field-row">
+              <span class="appsheet-open-field-label">Rate</span>
+              <span class="appsheet-open-field-value" id="op-rate"><span class="blue-bullet">●</span> ₹ 0.00</span>
+            </div>
+            <div class="appsheet-open-field-row">
+              <span class="appsheet-open-field-label">Material</span>
+              <span class="appsheet-open-field-value" id="op-material"><span class="blue-bullet">●</span> -</span>
+            </div>
+            <div class="appsheet-open-field-row">
+              <span class="appsheet-open-field-label">Reference</span>
+              <span class="appsheet-open-field-value" id="op-reference"><span class="blue-bullet">●</span> -</span>
+            </div>
+            <div class="appsheet-open-field-row">
+              <span class="appsheet-open-field-label">Reference Mobile No.</span>
+              <span class="appsheet-open-field-value">
+                <span id="op-ref-mobile"><span class="blue-bullet">●</span> -</span>
+                <a href="javascript:void(0)" id="op-ref-tel" class="appsheet-open-phone-link" title="Call Reference"><i class="bi bi-telephone"></i></a>
+              </span>
+            </div>
+            <div class="appsheet-open-field-row">
+              <span class="appsheet-open-field-label">Driver</span>
+              <span class="appsheet-open-field-value" id="op-driver"><span class="blue-bullet">●</span> -</span>
+            </div>
+            <div class="appsheet-open-field-row">
+              <span class="appsheet-open-field-label">Driver Mobile No.</span>
+              <span class="appsheet-open-field-value">
+                <span id="op-driver-mobile"><span class="blue-bullet">●</span> -</span>
+                <a href="javascript:void(0)" id="op-driver-tel" class="appsheet-open-phone-link" title="Call Driver"><i class="bi bi-telephone"></i></a>
+              </span>
+            </div>
+            <div class="appsheet-open-field-row">
+              <span class="appsheet-open-field-label">GSTIN Consignee</span>
+              <span class="appsheet-open-field-value text-muted" id="op-consignee-gstin"><span class="blue-bullet">●</span> -</span>
+            </div>
+            <div class="appsheet-open-field-row">
+              <span class="appsheet-open-field-label">Consignee</span>
+              <span class="appsheet-open-field-value" id="op-consignee"><span class="blue-bullet">●</span> -</span>
+            </div>
+            <div class="appsheet-open-field-row">
+              <span class="appsheet-open-field-label">Owner</span>
+              <span class="appsheet-open-field-value" id="op-owner"><span class="blue-bullet">●</span> -</span>
+            </div>
+            <div class="appsheet-open-field-row">
+              <span class="appsheet-open-field-label">Owner Mobile No.</span>
+              <span class="appsheet-open-field-value">
+                <span id="op-owner-mobile"><span class="blue-bullet">●</span> -</span>
+                <a href="javascript:void(0)" id="op-owner-tel" class="appsheet-open-phone-link" title="Call Owner"><i class="bi bi-telephone"></i></a>
+              </span>
+            </div>
+            <div class="appsheet-open-field-row">
+              <span class="appsheet-open-field-label">Freight</span>
+              <span class="appsheet-open-field-value" id="op-freight"><span class="blue-bullet">●</span> ₹ 0.00</span>
+            </div>
+
+            <!-- Add Records for Dropdown (wa_2.png) -->
+            <div class="my-3 p-2 bg-light rounded border">
+              <label class="form-label small text-muted mb-1 fw-semibold">Add Records for</label>
+              <select id="op-add-records-select" class="form-select form-select-sm" onchange="TripsModule.handleOtdAddRecord(this.value)">
+                <option value="" disabled selected>Select Action to Add Record...</option>
+                <option value="Party Payment">Party Payment</option>
+                <option value="Truck Owner Payment">Truck Owner Payment</option>
+                <option value="Cheque">Cheque</option>
+                <option value="Other B">Other B</option>
+              </select>
+            </div>
+
+            <div class="appsheet-open-field-row">
+              <span class="appsheet-open-field-label">Total Freight</span>
+              <span class="appsheet-open-field-value" id="op-total-freight"><span class="blue-bullet">●</span> ₹ 0.00</span>
+            </div>
+            <div class="appsheet-open-field-row">
+              <span class="appsheet-open-field-label">Paid Amount</span>
+              <span class="appsheet-open-field-value" id="op-paid-amount"><span class="blue-bullet">●</span> ₹ 0.00</span>
+            </div>
+            <div class="appsheet-open-field-row border-0">
+              <span class="appsheet-open-field-label">Due Amount</span>
+              <span class="appsheet-open-field-value text-danger fw-bold" id="op-due-amount"><span class="red-bullet">●</span> ₹ 0.00</span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN: Consignor/s and Payment Cards (wa_0.png) -->
+        <div class="col-lg-5 col-12 d-flex flex-column gap-3">
+          
+          <!-- CARD 1: Consignor/s -->
+          <div class="appsheet-open-subcard">
+            <div class="appsheet-open-subcard-header">
+              <span><span class="blue-bullet">●</span> Consignor/s</span>
+              <span class="badge bg-secondary rounded-pill" id="op-consignor-count">1</span>
+            </div>
+            <div class="table-responsive">
+              <table class="appsheet-open-table">
+                <thead>
+                  <tr>
+                    <th>Consignor</th>
+                    <th>Consignor Address</th>
+                    <th>GSTIN</th>
+                  </tr>
+                </thead>
+                <tbody id="op-consignor-tbody">
+                  <tr>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="d-flex justify-content-end mt-2 pt-2 border-top">
+              <a href="javascript:void(0)" class="text-decoration-none small text-muted" onclick="TripsModule.expandConsignorDetails()">Expand</a>
+            </div>
+          </div>
+
+          <!-- CARD 2: Payment -->
+          <div class="appsheet-open-subcard flex-grow-1">
+            <div class="appsheet-open-subcard-header">
+              <span><span class="blue-bullet">●</span> Payment</span>
+              <span class="badge bg-secondary rounded-pill" id="op-payment-count">0</span>
+            </div>
+            <div class="table-responsive">
+              <table class="appsheet-open-table">
+                <thead>
+                  <tr>
+                    <th style="width: 25px;"></th>
+                    <th>Payment Date ↑</th>
+                    <th class="text-end">Amount Paid</th>
+                    <th>Mode</th>
+                  </tr>
+                </thead>
+                <tbody id="op-payments-tbody">
+                  <tr>
+                    <td colspan="4" class="text-center text-muted py-2">No payment entries</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top">
+              <a href="javascript:void(0)" class="text-decoration-none small text-muted" onclick="TripsModule.openTripPaymentsView()">Expand</a>
+              <button type="button" class="appsheet-open-btn-add" onclick="TripsModule.openConsigneePaymentModal(TripsModule.activeTrip?.id)">
+                + Add
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 4D. OPEN TRIP PARTY DETAILS VIEW (wa_6.png) -->
+    <!-- ========================================== -->
+    <div id="trip-open-party-view" class="d-none appsheet-open-view-container">
+      <div class="appsheet-open-header-bar">
+        <div class="appsheet-open-title">
+          <button class="btn btn-sm btn-outline-secondary py-0 px-2 me-2" onclick="TripsModule.returnToOpenTripDetails()">
+            <i class="bi bi-arrow-left"></i>
+          </button>
+          <span>Open Trip Party Details</span>
+        </div>
+        <div class="appsheet-open-actions">
+          <button type="button" class="appsheet-open-action-btn" title="Close" onclick="TripsModule.returnToOpenTripDetails()">
+            <i class="bi bi-x-lg fs-5"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-lg-7 col-12">
+          <div class="appsheet-open-subcard">
+            <div class="table-responsive">
+              <table class="appsheet-open-table">
+                <thead>
+                  <tr>
+                    <th>Consignor</th>
+                    <th>Consignor Address</th>
+                    <th>GSTIN</th>
+                  </tr>
+                </thead>
+                <tbody id="op-party-view-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-5 col-12">
+          <div class="appsheet-open-card">
+            <h6 class="fw-bold mb-3 pb-2 border-bottom">Open Trip Party Details</h6>
+            <div class="appsheet-open-field-row">
+              <span class="appsheet-open-field-label">G.R.No.</span>
+              <span class="appsheet-open-field-value" id="op-pv-gr">-</span>
+            </div>
+            <div class="appsheet-open-field-row">
+              <span class="appsheet-open-field-label">Consignor</span>
+              <span class="appsheet-open-field-value" id="op-pv-consignor">-</span>
+            </div>
+            <div class="appsheet-open-field-row">
+              <span class="appsheet-open-field-label">Consignor Address</span>
+              <span class="appsheet-open-field-value" id="op-pv-address">-</span>
+            </div>
+            <div class="appsheet-open-field-row border-0">
+              <span class="appsheet-open-field-label">GSTIN</span>
+              <span class="appsheet-open-field-value text-muted" id="op-pv-gstin">-</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 4E. TRIP PAYMENT DETAILS VIEW (wa_5.png) -->
+    <!-- ========================================== -->
+    <div id="trip-payment-details-view" class="d-none appsheet-open-view-container">
+      <div class="appsheet-open-header-bar">
+        <div class="appsheet-open-title">
+          <button class="btn btn-sm btn-outline-secondary py-0 px-2 me-2" onclick="TripsModule.returnToOpenTripDetails()">
+            <i class="bi bi-arrow-left"></i>
+          </button>
+          <span>Trip Payment Details</span>
+        </div>
+        <div class="appsheet-open-actions">
+          <button type="button" class="appsheet-open-btn-add" onclick="TripsModule.openConsigneePaymentModal(TripsModule.activeTrip?.id)">
+            + Add
+          </button>
+          <button type="button" class="appsheet-open-action-btn" title="Close" onclick="TripsModule.returnToOpenTripDetails()">
+            <i class="bi bi-x-lg fs-5"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-lg-7 col-12">
+          <div class="appsheet-open-subcard">
+            <div class="table-responsive">
+              <table class="appsheet-open-table">
+                <thead>
+                  <tr>
+                    <th style="width: 25px;"></th>
+                    <th>Payment Date ↑</th>
+                    <th class="text-end">Amount Paid</th>
+                    <th>Mode</th>
+                    <th>Beneficiary</th>
+                    <th>Description</th>
+                    <th>Paid To</th>
+                  </tr>
+                </thead>
+                <tbody id="op-tpd-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-5 col-12">
+          <div class="appsheet-open-card">
+            <h6 class="fw-bold mb-3 pb-2 border-bottom">Details</h6>
+            <div class="appsheet-open-field-row">
+              <span class="appsheet-open-field-label">Payment Date</span>
+              <span class="appsheet-open-field-value" id="op-tpd-d-date">-</span>
+            </div>
+            <div class="appsheet-open-field-row">
+              <span class="appsheet-open-field-label">Paid To</span>
+              <span class="appsheet-open-field-value" id="op-tpd-d-paidto">Transporter</span>
+            </div>
+            <div class="appsheet-open-field-row">
+              <span class="appsheet-open-field-label">Mode</span>
+              <span class="appsheet-open-field-value" id="op-tpd-d-mode">NEFT/RTGS</span>
+            </div>
+            <div class="appsheet-open-field-row">
+              <span class="appsheet-open-field-label">Amount Paid</span>
+              <span class="appsheet-open-field-value fw-bold text-success" id="op-tpd-d-amount">₹ 0.00</span>
+            </div>
+            <div class="appsheet-open-field-row">
+              <span class="appsheet-open-field-label">Beneficiary</span>
+              <span class="appsheet-open-field-value" id="op-tpd-d-beneficiary">MTC</span>
+            </div>
+            <div class="appsheet-open-field-row">
+              <span class="appsheet-open-field-label">From Bank</span>
+              <span class="appsheet-open-field-value" id="op-tpd-d-frombank">Other</span>
+            </div>
+            <div class="appsheet-open-field-row">
+              <span class="appsheet-open-field-label">To Bank</span>
+              <span class="appsheet-open-field-value" id="op-tpd-d-tobank">IDBI</span>
+            </div>
+            <div class="appsheet-open-field-row border-0">
+              <span class="appsheet-open-field-label">Description</span>
+              <span class="appsheet-open-field-value" id="op-tpd-d-desc">-</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -1730,6 +2279,12 @@
                 </div>
               </div>
 
+              <!-- Dynamic Truck Owner Selector (Shown when Paid To is Truck Owner) -->
+              <div class="mb-3 d-none" id="cp-truck-owner-group">
+                <label class="form-label small text-muted fw-semibold mb-1">Select Truck Owner *</label>
+                <select id="cp-truck-owner-select" class="form-select form-select-sm"></select>
+              </div>
+
               <div class="mb-3">
                 <label class="form-label small text-muted fw-semibold mb-1">Amount Paid *</label>
                 <div class="input-group">
@@ -1743,9 +2298,17 @@
                 <select id="cp-mode" class="form-select" required>
                   <option value="NEFT/RTGS" selected>NEFT/RTGS</option>
                   <option value="Cash">Cash</option>
+                  <option value="Cash in Rajsamand">Cash in Rajsamand</option>
+                  <option value="Cash in Bank">Cash in Bank</option>
                   <option value="Cheque">Cheque</option>
-                  <option value="UPI">UPI</option>
+                  <option value="Phone Pe/GPay/PayTM/UPI">Phone Pe/GPay/PayTM/UPI</option>
                   <option value="Adjustment">Adjustment</option>
+                  <option value="Less Freight">Less Freight</option>
+                  <option value="Dalla">Dalla</option>
+                  <option value="Loading">Loading</option>
+                  <option value="TDS">TDS</option>
+                  <option value="GST">GST</option>
+                  <option value="Rate Difference">Rate Difference</option>
                 </select>
               </div>
 
@@ -1755,10 +2318,15 @@
                   <select id="cp-from-bank" class="form-select form-select-sm">
                     <option value="Other" selected>Other</option>
                     <option value="IDBI">IDBI</option>
-                    <option value="HDFC">HDFC</option>
-                    <option value="ICICI">ICICI</option>
+                    <option value="HDFC Bank">HDFC Bank</option>
+                    <option value="ICICI Bank">ICICI Bank</option>
                     <option value="SBI">SBI</option>
+                    <option value="Axis Bank">Axis Bank</option>
+                    <option value="Bank of Baroda">Bank of Baroda</option>
+                    <option value="PNB">PNB</option>
                     <option value="Cash">Cash</option>
+                    <option value="MTC">MTC</option>
+                    <option value="TTC">TTC</option>
                   </select>
                 </div>
                 <div class="col-6">
@@ -1767,8 +2335,13 @@
                     <option value="IDBI" selected>IDBI</option>
                     <option value="MTC">MTC</option>
                     <option value="TTC">TTC</option>
-                    <option value="HDFC">HDFC</option>
+                    <option value="HDFC Bank">HDFC Bank</option>
                     <option value="SBI">SBI</option>
+                    <option value="ICICI Bank">ICICI Bank</option>
+                    <option value="Axis Bank">Axis Bank</option>
+                    <option value="Bank of Baroda">Bank of Baroda</option>
+                    <option value="PNB">PNB</option>
+                    <option value="Other">Other</option>
                   </select>
                 </div>
               </div>
@@ -2107,7 +2680,7 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
   <!-- Core App Scripts with Cache Busting -->
-  <script src="../js/config.js?v=20260928_v4"></script>
+  <script src="../js/config.js?v=20261011_v1"></script>
   <!-- Universal Master Data Assets (Guaranteed 100% Offline & Fresh Git Deploy Resilience) -->
   <script src="../js/sample-parties-data.js"></script>
   <script src="../js/sample-truck-owners-data.js"></script>
@@ -2116,8 +2689,8 @@
   <script src="../js/sample-trips-data.js"></script>
   <script src="../js/sample-debts-data.js"></script>
   <script src="../js/sample-cheques-data.js"></script>
-  <script src="../js/db-service.js?v=20260928_v4"></script>
-  <script src="../js/app.js?v=20260928_v4"></script>
-  <script src="../js/modules/trips.js?v=20260928_v4"></script>
+  <script src="../js/db-service.js?v=20261011_v1"></script>
+  <script src="../js/app.js?v=20261011_v1"></script>
+  <script src="../js/modules/trips.js?v=20261011_v1"></script>
 </body>
 </html>

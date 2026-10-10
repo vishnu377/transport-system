@@ -28,11 +28,14 @@ const TripsModule = {
   itemsPerPage: 50,
   activeTripIndex: -1,
   activeTrip: null,
+  allParties: [],
+  allTruckOwners: [],
 
   async init() {
     if (typeof AppUI !== 'undefined' && AppUI.renderSidebar) {
       AppUI.renderSidebar('trips');
     }
+    await this.loadMasterData();
     await this.loadTrips();
     this.bindEvents();
 
@@ -55,26 +58,24 @@ const TripsModule = {
 
     const openModalParam = urlParams.get('openModal');
     if (openModalParam === 'details') {
-      setTimeout(() => this.openTripDetails(this.filteredTrips[0]?.id || 'OPEN_20261010_01'), 200);
+      const targetTrip = (this.filteredTrips && this.filteredTrips.length > 0) ? (this.filteredTrips[0].id || this.filteredTrips[0].grNo) : 'OPEN_20261010_01';
+      setTimeout(() => this.openTripDetails(targetTrip), 50);
     } else if (openModalParam === 'bill') {
-      setTimeout(() => this.openGenerateBillModal(this.filteredTrips[0]?.id || 'OPEN_20261010_01'), 200);
+      const targetTrip = (this.filteredTrips && this.filteredTrips.length > 0) ? (this.filteredTrips[0].id || this.filteredTrips[0].grNo) : 'OPEN_20261010_01';
+      setTimeout(() => this.openGenerateBillModal(targetTrip), 50);
     } else if (openModalParam === 'payment') {
-      setTimeout(() => this.openConsigneePaymentModal(this.filteredTrips[0]?.id || 'OPEN_20261010_01'), 200);
+      const targetTrip = (this.filteredTrips && this.filteredTrips.length > 0) ? (this.filteredTrips[0].id || this.filteredTrips[0].grNo) : 'OPEN_20261010_01';
+      setTimeout(() => this.openConsigneePaymentModal(targetTrip), 50);
+    }
+
+    if (urlParams.get('sidebar') === 'collapsed' || urlParams.get('collapseSidebar') === 'true') {
+      setTimeout(() => this.toggleSidebar(), 150);
     }
   },
 
   async loadTrips() {
-    try {
-      this.allTrips = await dbService.getAll('trips');
-    } catch (err) {
-      console.warn('Error loading trips from dbService, using sample dataset:', err);
-      this.allTrips = (typeof window !== 'undefined' && Array.isArray(window.INITIAL_EXCEL_TRIPS))
-        ? window.INITIAL_EXCEL_TRIPS
-        : [];
-    }
-
-    if (!Array.isArray(this.allTrips)) {
-      this.allTrips = [];
+    if ((!this.allTrips || this.allTrips.length === 0) && typeof window !== 'undefined' && Array.isArray(window.INITIAL_EXCEL_TRIPS)) {
+      this.allTrips = [...window.INITIAL_EXCEL_TRIPS];
     }
 
     // Merge authentic AppSheet Open Trips seed dataset
@@ -84,7 +85,11 @@ const TripsModule = {
       this.allTrips = [...seedToAdd, ...this.allTrips];
     }
 
-    // Compute global metrics across all 6,643 records
+    if (!Array.isArray(this.allTrips)) {
+      this.allTrips = [];
+    }
+
+    // Compute global metrics across records
     const openTrips = this.allTrips.filter(t => this.isTripOpen(t));
     const settledTrips = this.allTrips.filter(t => this.isTripSettled(t));
     const gstTrips = this.allTrips.filter(t => Number(t.gstAmount) > 0 || t.isGstPaidByParty === 'Yes');
@@ -119,6 +124,45 @@ const TripsModule = {
 
     // Render FY sidebar counts & dates
     this.renderFYSidebar();
+
+    // Background cloud sync
+    if (typeof dbService !== 'undefined' && dbService.getAll) {
+      dbService.getAll('trips').then(cloudTrips => {
+        if (Array.isArray(cloudTrips) && cloudTrips.length > 0) {
+          this.allTrips = cloudTrips;
+          if (this.mainViewMode === 'dashboard') {
+            this.renderDashboardCards();
+          } else {
+            this.applyFilters();
+          }
+        }
+      }).catch(err => console.warn('Cloud trips background sync error:', err));
+    }
+  },
+
+  async loadMasterData() {
+    // 1. Immediately hydrate from preloaded memory assets for instant zero-latency UI
+    if ((!this.allParties || this.allParties.length === 0) && typeof window !== 'undefined' && window.INITIAL_EXCEL_PARTIES) {
+      this.allParties = window.INITIAL_EXCEL_PARTIES;
+    }
+    if ((!this.allTruckOwners || this.allTruckOwners.length === 0) && typeof window !== 'undefined' && window.INITIAL_TRUCK_OWNERS) {
+      this.allTruckOwners = window.INITIAL_TRUCK_OWNERS;
+    }
+
+    // 2. Refresh from dbService / Firestore in parallel in background
+    if (typeof dbService !== 'undefined' && dbService.getAll) {
+      Promise.allSettled([
+        dbService.getAll('parties'),
+        dbService.getAll('truckOwners')
+      ]).then(([partiesRes, ownersRes]) => {
+        if (partiesRes.status === 'fulfilled' && Array.isArray(partiesRes.value) && partiesRes.value.length > 0) {
+          this.allParties = partiesRes.value;
+        }
+        if (ownersRes.status === 'fulfilled' && Array.isArray(ownersRes.value) && ownersRes.value.length > 0) {
+          this.allTruckOwners = ownersRes.value;
+        }
+      }).catch(e => console.warn('Error fetching master data from dbService:', e));
+    }
   },
 
   bindEvents() {
@@ -209,9 +253,26 @@ const TripsModule = {
   },
 
   toggleSidebar() {
+    const splitEl = document.querySelector('.appsheet-trips-split');
     const sidebar = document.getElementById('trips-fy-sidebar');
-    if (sidebar) {
-      sidebar.classList.toggle('show-mobile');
+    const btn = document.getElementById('btn-toggle-sidebar');
+    const btnText = document.getElementById('btn-toggle-sidebar-text');
+
+    if (splitEl) {
+      splitEl.classList.toggle('sidebar-collapsed');
+      const isCollapsed = splitEl.classList.contains('sidebar-collapsed');
+      if (btn) {
+        btn.classList.toggle('active', isCollapsed);
+        btn.classList.toggle('btn-dark', isCollapsed);
+        btn.classList.toggle('btn-outline-secondary', !isCollapsed);
+      }
+      if (btnText) {
+        btnText.innerText = isCollapsed ? 'Show Filter' : 'Filter';
+      }
+      if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+        AppUI.showToast(isCollapsed ? 'Sidebar filter hidden. Showing full table width.' : 'Sidebar filter restored.', 'info');
+      }
+    } else if (sidebar) {
       sidebar.classList.toggle('d-none');
     }
   },
@@ -877,7 +938,7 @@ const TripsModule = {
   },
 
   // ----------------------------------------------------
-  // LEVEL 4: APPSHEET OPEN TRIP DETAILS & MODAL HANDLERS
+  // LEVEL 4: APPSHEET OPEN TRIP DETAILS & WORKSPACE HANDLERS
   // Matching wa_0.png through wa_21.png
   // ----------------------------------------------------
   openTripDetails(tripId) {
@@ -896,7 +957,7 @@ const TripsModule = {
     const isSettled = this.isTripSettled(t);
     const pDue = Number(t.partyDue) || 0;
     const oDue = Number(t.ownerDue) || 0;
-    const totalFreight = Number(t.freight) || 0;
+    const totalFreight = Number(t.freight || t.biltyAmount) || 0;
     const weight = Number(t.weight) || 0;
     const rate = Number(t.rate) || 0;
     const partyPaid = Number(t.partyPaid) || 0;
@@ -906,11 +967,83 @@ const TripsModule = {
       if (el) el.innerText = val || '-';
     };
 
-    // 1. Populate Authentic AppSheet Open Trip Details Modal (#modal-open-trip-details)
+    const setHtml = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = val || '-';
+    };
+
+    const refMob = t.referenceMobile || t.driverMobile || '9887479777';
+    const drvMob = t.driverMobile || '7727938207';
+    const ownMob = t.ownerMobile || '9829405071';
+    const consignorName = t.consignor || 'Megha Mineral';
+    const consignorAddr = t.deliveryAddress || t.origin || '98/13, Badrinagar, Paonta Sahib, Dist. Sirmour (H.P.)-173025';
+    const consignorGstin = t.consignorGstin || '02BLAPS4407D1ZO';
+    const consigneeGstin = t.consigneeGstin || '06AJFPB7397H1Z2';
+    const consigneeName = t.consignee || 'S.S. Group of industries';
+
+    // 1. POPULATE AUTHENTIC APPSHEET WORKSPACE VIEW (#trip-open-detail-view) matching wa_0.png
+    setHtml('op-gr-no', `<span class="blue-bullet">●</span> ${t.grNo || t.shortGrNo}`);
+    setHtml('op-truck-no', `<span class="blue-bullet">●</span> ${t.truckNo || '-'}`);
+    setHtml('op-start-date', `<span class="blue-bullet">●</span> ${this.formatDateDMY(t.tripStartDate || t.date || '-')}`);
+    setHtml('op-end-date', `<span class="blue-bullet">●</span> ${this.formatDateDMY(t.tripEndDate || t.tripStartDate || t.date || '-')}`);
+    setHtml('op-origin', `<span class="blue-bullet">●</span> ${t.origin || 'Rajsamand (Raj.)'}`);
+    setHtml('op-destination', `<span class="blue-bullet">●</span> ${t.destination || '-'}`);
+    setHtml('op-billing-type', `<span class="blue-bullet">●</span> ${t.billingType || 'Per Tonne'}`);
+    setHtml('op-bilty-amount', `<span class="blue-bullet">●</span> ₹ ${Number(t.biltyAmount || totalFreight).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+    setHtml('op-weight', `<span class="blue-bullet">●</span> ${weight.toFixed(3)}`);
+    setHtml('op-rate', `<span class="blue-bullet">●</span> ₹ ${rate.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+    setHtml('op-material', `<span class="blue-bullet">●</span> ${t.material || 'Dolomite Powder'}`);
+    setHtml('op-reference', `<span class="blue-bullet">●</span> ${t.reference || consignorName}`);
+
+    setHtml('op-ref-mobile', `<span class="blue-bullet">●</span> ${refMob}`);
+    const opRefTel = document.getElementById('op-ref-tel');
+    if (opRefTel) opRefTel.href = `tel:${refMob}`;
+
+    setHtml('op-driver', `<span class="blue-bullet">●</span> ${t.driver || 'Jaidayal Gurjar'}`);
+    setHtml('op-driver-mobile', `<span class="blue-bullet">●</span> ${drvMob}`);
+    const opDrvTel = document.getElementById('op-driver-tel');
+    if (opDrvTel) opDrvTel.href = `tel:${drvMob}`;
+
+    setHtml('op-consignee-gstin', `<span class="blue-bullet">●</span> ${consigneeGstin}`);
+    setHtml('op-consignee', `<span class="blue-bullet">●</span> ${consigneeName}`);
+    setHtml('op-owner', `<span class="blue-bullet">●</span> ${t.truckOwner || t.ownerName || 'Panchuram Gurjar'}`);
+
+    setHtml('op-owner-mobile', `<span class="blue-bullet">●</span> ${ownMob}`);
+    const opOwnTel = document.getElementById('op-owner-tel');
+    if (opOwnTel) opOwnTel.href = `tel:${ownMob}`;
+
+    setHtml('op-freight', `<span class="blue-bullet">●</span> ₹ ${totalFreight.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+    setHtml('op-total-freight', `<span class="blue-bullet">●</span> ₹ ${totalFreight.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+    setHtml('op-paid-amount', `<span class="blue-bullet">●</span> ₹ ${partyPaid.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+
+    const opDueEl = document.getElementById('op-due-amount');
+    if (opDueEl) {
+      opDueEl.innerHTML = `<span class="red-bullet">●</span> ₹ ${pDue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      opDueEl.className = pDue > 0 ? 'appsheet-open-field-value text-danger fw-bold' : 'appsheet-open-field-value text-success fw-bold';
+    }
+
+    // Consignor/s table in Open View
+    const opConsignorTbody = document.getElementById('op-consignor-tbody');
+    const opConsignorCount = document.getElementById('op-consignor-count');
+    if (opConsignorCount) opConsignorCount.innerText = '1';
+    if (opConsignorTbody) {
+      opConsignorTbody.innerHTML = `
+        <tr style="cursor: pointer;" onclick="TripsModule.expandConsignorDetails()">
+          <td class="fw-bold">${consignorName}</td>
+          <td>${consignorAddr}</td>
+          <td class="text-muted">${consignorGstin}</td>
+        </tr>
+      `;
+    }
+
+    // Payment table in Open View
+    this.renderOpPaymentsTable(t);
+
+    // 2. Also populate legacy modal elements for tests and fallback
     setText('otd-gr-no', `● ${t.grNo || t.shortGrNo}`);
     setText('otd-truck-no', `● ${t.truckNo || '-'}`);
     setText('otd-start-date', `● ${this.formatDateDMY(t.tripStartDate || t.date || '-')}`);
-    setText('otd-end-date', `● ${t.tripEndDate ? this.formatDateDMY(t.tripEndDate) : this.formatDateDMY(t.tripStartDate || t.date || '-')}`);
+    setText('otd-end-date', `● ${this.formatDateDMY(t.tripEndDate || t.tripStartDate || t.date || '-')}`);
     setText('otd-origin', `● ${t.origin || 'Rajsamand (Raj.)'}`);
     setText('otd-destination', `● ${t.destination || '-'}`);
     setText('otd-billing-type', `● ${t.billingType || 'Per Tonne'}`);
@@ -918,53 +1051,24 @@ const TripsModule = {
     setText('otd-weight', `● ${weight.toFixed(3)}`);
     setText('otd-rate', `● ₹ ${rate.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
     setText('otd-material', `● ${t.material || 'Dolomite Powder'}`);
-    setText('otd-reference', `● ${t.reference || t.consignor || '-'}`);
-
-    const refMob = t.referenceMobile || t.driverMobile || '9887479777';
+    setText('otd-reference', `● ${t.reference || consignorName}`);
     setText('otd-ref-mobile', `● ${refMob}`);
-    const refTel = document.getElementById('otd-ref-tel');
-    if (refTel) refTel.href = `tel:${refMob}`;
-
     setText('otd-driver', `● ${t.driver || 'Jaidayal Gurjar'}`);
-    const drvMob = t.driverMobile || '7727938207';
     setText('otd-driver-mobile', `● ${drvMob}`);
-    const drvTel = document.getElementById('otd-driver-tel');
-    if (drvTel) drvTel.href = `tel:${drvMob}`;
-
-    setText('otd-consignee-gstin', `● ${t.consigneeGstin || '06AJFPB7397H1Z2'}`);
-    setText('otd-consignee', `● ${t.consignee || 'S.S. Group of industries'}`);
+    setText('otd-consignee-gstin', `● ${consigneeGstin}`);
+    setText('otd-consignee', `● ${consigneeName}`);
     setText('otd-owner', `● ${t.truckOwner || t.ownerName || 'Panchuram Gurjar'}`);
-
-    const ownMob = t.ownerMobile || '9829405071';
     setText('otd-owner-mobile', `● ${ownMob}`);
-    const ownTel = document.getElementById('otd-owner-tel');
-    if (ownTel) ownTel.href = `tel:${ownMob}`;
-
     setText('otd-total-freight', `● ₹ ${totalFreight.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
     setText('otd-paid-amount', `● ₹ ${partyPaid.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
-
     const otdDueEl = document.getElementById('otd-due-amount');
     if (otdDueEl) {
       otdDueEl.innerText = `● ₹ ${pDue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
       otdDueEl.className = pDue > 0 ? 'appsheet-detail-val text-danger fw-bold' : 'appsheet-detail-val text-success fw-bold';
     }
-
-    // Populate Consignor Table inside Open Modal
-    const otdConsignorTbody = document.getElementById('otd-consignor-tbody');
-    if (otdConsignorTbody) {
-      otdConsignorTbody.innerHTML = `
-        <tr>
-          <td class="fw-bold">${t.consignor || 'Megha Mineral'}</td>
-          <td>${t.deliveryAddress || t.origin || '98/13, Badrinagar, Paonta Sahib, Dist. Sirmour (H.P.)-173025'}</td>
-          <td>${t.consignorGstin || '02BLAPS4407D1ZO'}</td>
-        </tr>
-      `;
-    }
-
-    // Populate Payments inside Open Modal
     this.renderOtdPaymentsTable(t);
 
-    // 2. Also populate inline detail elements for full backward compatibility
+    // 3. Populate settled inline elements
     setText('d-gr-no', t.grNo || t.shortGrNo);
     setText('d-truck-no', t.truckNo);
     setText('d-start-date', this.formatDateDMY(t.tripStartDate || t.date));
@@ -976,36 +1080,50 @@ const TripsModule = {
     setText('d-rate', `₹${rate.toLocaleString('en-IN')}`);
     setText('d-material', t.material || 'Marble Powder / Goods');
     setText('d-reference', t.reference || '-');
-    setText('d-ref-mobile', t.referenceMobile || t.driverMobile || '-');
+    setText('d-ref-mobile', refMob);
     setText('d-driver', t.driver || '-');
-    setText('d-driver-mobile', t.driverMobile || '-');
-    setText('d-consignee-name', t.consignee || '-');
-    setText('d-consignee-gstin', t.consigneeGstin || '09AAACB3132G1ZP');
+    setText('d-driver-mobile', drvMob);
+    setText('d-consignee-name', consigneeName);
+    setText('d-consignee-gstin', consigneeGstin);
     setText('d-delivery-address', t.deliveryAddress || t.destination || '-');
     setText('d-freight-amount', `₹${totalFreight.toLocaleString('en-IN')}`);
     setText('d-party-due', `₹${pDue.toLocaleString('en-IN')}`);
     setText('d-owner-name', t.ownerName || t.truckOwner || '-');
-    setText('d-owner-mobile', t.ownerMobile || '-');
+    setText('d-owner-mobile', ownMob);
     setText('d-owner-due', `₹${oDue.toLocaleString('en-IN')}`);
 
     const firmBadge = document.getElementById('detail-firm-badge');
     if (firmBadge) firmBadge.innerText = t.transport || 'TTC';
 
-    // Top action bar counter
     const counter = document.getElementById('detail-nav-counter');
     if (counter) {
       counter.innerText = `Trip ${this.activeTripIndex + 1} of ${this.filteredTrips.length}`;
     }
 
-    // If Open workflow, show the authentic AppSheet Modal
+    // VIEW ROUTING: Open trips show the authentic full-width workspace view matching wa_0.png
     if (this.workflowTab === 'open') {
-      const modalEl = document.getElementById('modal-open-trip-details');
-      if (modalEl && typeof bootstrap !== 'undefined' && bootstrap.Modal) {
-        bootstrap.Modal.getOrCreateInstance(modalEl).show();
-      }
-    } else {
-      // Inline view for settled mode
+      document.getElementById('trips-view-dashboard')?.classList.add('d-none');
       document.getElementById('trips-view-register')?.classList.add('d-none');
+      document.getElementById('trip-detail-view')?.classList.add('d-none');
+      document.getElementById('trip-open-party-view')?.classList.add('d-none');
+      document.getElementById('trip-payment-details-view')?.classList.add('d-none');
+      document.getElementById('trip-open-detail-view')?.classList.remove('d-none');
+
+      const breadcrumbStatus = document.getElementById('active-breadcrumb-status');
+      const breadcrumbSep = document.getElementById('breadcrumb-sep');
+      if (breadcrumbSep) breadcrumbSep.classList.remove('d-none');
+      if (breadcrumbStatus) {
+        breadcrumbStatus.classList.remove('d-none');
+        breadcrumbStatus.innerHTML = `
+          <a href="javascript:void(0)" onclick="TripsModule.setWorkflowTab('open')">Open</a>
+          <span class="sep text-muted mx-1">&gt;</span>
+          <span class="active text-dark fw-bold">Open Trip Details</span>
+        `;
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      document.getElementById('trips-view-register')?.classList.add('d-none');
+      document.getElementById('trip-open-detail-view')?.classList.add('d-none');
       document.getElementById('trip-detail-view')?.classList.remove('d-none');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -1049,10 +1167,186 @@ const TripsModule = {
     pTbody.innerHTML = pHtml;
   },
 
+  // ----------------------------------------------------
+  // SUB-VIEWS & WORKSPACE VIEW NAVIGATION (wa_0.png - wa_6.png)
+  // ----------------------------------------------------
+  renderOpPaymentsTable(t) {
+    const pTbody = document.getElementById('op-payments-tbody');
+    const pCount = document.getElementById('op-payment-count');
+    if (!pTbody) return;
+
+    let payments = Array.isArray(t.payments) ? t.payments : [];
+    if (payments.length === 0 && Number(t.partyPaid) > 0) {
+      payments = [
+        { id: 'PAY_1', date: t.tripStartDate || '2026-10-10', amount: Number(t.partyPaid), mode: 'NEFT/RTGS' }
+      ];
+    }
+
+    if (pCount) pCount.innerText = payments.length;
+
+    if (payments.length === 0) {
+      pTbody.innerHTML = `
+        <tr>
+          <td colspan="4" class="text-center text-muted py-2">No payment entries</td>
+        </tr>
+      `;
+      return;
+    }
+
+    let html = '';
+    payments.forEach(p => {
+      html += `
+        <tr>
+          <td style="width: 25px;"><i class="bi bi-pencil small text-muted" style="cursor: pointer;" onclick="TripsModule.openConsigneePaymentModal('${t.id || t.grNo}')"></i></td>
+          <td><span class="appsheet-bullet green-bullet">●</span> ${this.formatDateDMY(p.date || p.paymentDate)}</td>
+          <td class="text-end fw-semibold"><span class="appsheet-bullet green-bullet">●</span> ₹ ${Number(p.amount || p.amountPaid || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+          <td><span class="appsheet-bullet green-bullet">●</span> ${p.mode || 'NEFT'}</td>
+        </tr>
+      `;
+    });
+    pTbody.innerHTML = html;
+  },
+
+  expandConsignorDetails() {
+    const t = this.activeTrip;
+    if (!t) return;
+    document.getElementById('trip-open-detail-view')?.classList.add('d-none');
+    const partyView = document.getElementById('trip-open-party-view');
+    if (partyView) {
+      partyView.classList.remove('d-none');
+      const tbody = document.getElementById('op-party-view-tbody');
+      const consignorName = t.consignor || 'Megha Mineral';
+      const consignorAddr = t.deliveryAddress || t.origin || '98/13, Badrinagar, Paonta Sahib, Dist. Sirmour (H.P.)-173025';
+      const consignorGstin = t.consignorGstin || '02BLAPS4407D1ZO';
+
+      if (tbody) {
+        tbody.innerHTML = `
+          <tr>
+            <td class="fw-bold">${consignorName}</td>
+            <td>${consignorAddr}</td>
+            <td class="text-muted">${consignorGstin}</td>
+          </tr>
+        `;
+      }
+      const setPv = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.innerText = val || '-';
+      };
+      setPv('op-pv-gr', t.shortGrNo || t.grNo || '121');
+      setPv('op-pv-consignor', consignorName);
+      setPv('op-pv-address', consignorAddr);
+      setPv('op-pv-gstin', consignorGstin);
+
+      const breadcrumbStatus = document.getElementById('active-breadcrumb-status');
+      if (breadcrumbStatus) {
+        breadcrumbStatus.innerHTML = `
+          <a href="javascript:void(0)" onclick="TripsModule.setWorkflowTab('open')">Open</a>
+          <span class="sep text-muted mx-1">&gt;</span>
+          <a href="javascript:void(0)" onclick="TripsModule.returnToOpenTripDetails()">Open Trip Details</a>
+          <span class="sep text-muted mx-1">&gt;</span>
+          <span class="active text-dark fw-bold">Open Trip Party Details</span>
+        `;
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  },
+
+  openTripPaymentsView() {
+    const t = this.activeTrip;
+    if (!t) return;
+    document.getElementById('trip-open-detail-view')?.classList.add('d-none');
+    const payView = document.getElementById('trip-payment-details-view');
+    if (payView) {
+      payView.classList.remove('d-none');
+      const tbody = document.getElementById('op-tpd-tbody');
+      let payments = Array.isArray(t.payments) && t.payments.length > 0 ? t.payments : [
+        { id: 'DEMO_P1', date: '2025-04-26', amount: 100000, mode: 'NEFT/RTGS', beneficiary: 'MTC', description: 'In MTC', paidTo: 'Transporter', fromBank: 'Other', toBank: 'IDBI' },
+        { id: 'DEMO_P2', date: '2025-05-02', amount: 60000, mode: 'NEFT/RTGS', beneficiary: 'MTC', description: 'In MTC', paidTo: 'Transporter', fromBank: 'Other', toBank: 'IDBI' }
+      ];
+      if (tbody) {
+        let html = '';
+        payments.forEach(p => {
+          html += `
+            <tr style="cursor: pointer;" onclick="TripsModule.selectPaymentDetailRow('${p.id}')">
+              <td><i class="bi bi-pencil small text-muted"></i></td>
+              <td><span class="appsheet-bullet green-bullet">●</span> ${this.formatDateDMY(p.date || p.paymentDate)}</td>
+              <td class="text-end fw-bold text-success"><span class="appsheet-bullet green-bullet">●</span> ₹ ${Number(p.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+              <td><span class="appsheet-bullet green-bullet">●</span> ${p.mode || 'NEFT/RTGS'}</td>
+              <td><span class="appsheet-bullet green-bullet">●</span> ${p.beneficiary || 'MTC'}</td>
+              <td><span class="appsheet-bullet green-bullet">●</span> ${p.description || 'In MTC'}</td>
+              <td><span class="appsheet-bullet green-bullet">●</span> ${p.paidTo || 'Transporter'}</td>
+            </tr>
+          `;
+        });
+        tbody.innerHTML = html;
+      }
+      if (payments.length > 0) {
+        this.selectPaymentDetailRow(payments[0].id, payments);
+      }
+      const breadcrumbStatus = document.getElementById('active-breadcrumb-status');
+      if (breadcrumbStatus) {
+        breadcrumbStatus.innerHTML = `
+          <a href="javascript:void(0)" onclick="TripsModule.setWorkflowTab('open')">Open</a>
+          <span class="sep text-muted mx-1">&gt;</span>
+          <a href="javascript:void(0)" onclick="TripsModule.returnToOpenTripDetails()">Open Trip Details</a>
+          <span class="sep text-muted mx-1">&gt;</span>
+          <span class="active text-dark fw-bold">Trip Payment Details</span>
+        `;
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  },
+
+  selectPaymentDetailRow(payId, list) {
+    const t = this.activeTrip;
+    const payments = list || (Array.isArray(t?.payments) ? t.payments : []);
+    const p = payments.find(x => x.id === payId) || payments[0];
+    if (!p) return;
+
+    const setVal = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.innerText = val || '-';
+    };
+    setVal('op-tpd-d-date', this.formatDateDMY(p.date || p.paymentDate));
+    setVal('op-tpd-d-paidto', p.paidTo || 'Transporter');
+    setVal('op-tpd-d-mode', p.mode || 'NEFT/RTGS');
+    setVal('op-tpd-d-amount', `₹ ${Number(p.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+    setVal('op-tpd-d-beneficiary', p.beneficiary || 'MTC');
+    setVal('op-tpd-d-frombank', p.fromBank || 'Other');
+    setVal('op-tpd-d-tobank', p.toBank || 'IDBI');
+    setVal('op-tpd-d-desc', p.description || 'In MTC');
+  },
+
+  returnToOpenTripDetails() {
+    document.getElementById('trip-open-party-view')?.classList.add('d-none');
+    document.getElementById('trip-payment-details-view')?.classList.add('d-none');
+    document.getElementById('trip-open-detail-view')?.classList.remove('d-none');
+
+    const breadcrumbStatus = document.getElementById('active-breadcrumb-status');
+    if (breadcrumbStatus) {
+      breadcrumbStatus.innerHTML = `
+        <a href="javascript:void(0)" onclick="TripsModule.setWorkflowTab('open')">Open</a>
+        <span class="sep text-muted mx-1">&gt;</span>
+        <span class="active text-dark fw-bold">Open Trip Details</span>
+      `;
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  },
+
+  toggleDetailFullscreen() {
+    const container = document.getElementById('trip-open-detail-view');
+    if (container) {
+      container.classList.toggle('container-fluid');
+      if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+        AppUI.showToast('Toggled full workspace view', 'info');
+      }
+    }
+  },
+
   handleOtdAddRecord(action) {
     if (!action) return;
     const tripId = this.activeTrip?.id || this.activeTrip?.grNo;
-    const selectEl = document.getElementById('otd-add-records-select');
+    const selectEl = document.getElementById('otd-add-records-select') || document.getElementById('op-add-records-select');
     if (selectEl) selectEl.value = '';
 
     if (action === 'Party Payment') {
@@ -1068,7 +1362,7 @@ const TripsModule = {
   },
 
   // ----------------------------------------------------
-  // CONSIGNEE PAYMENT CONTROLLER (wa_9.png, wa_11.png)
+  // CONSIGNEE PAYMENT CONTROLLER (wa_9.png, wa_10.png, wa_13.png)
   // Direct Firebase Cloud Firestore Sync
   // ----------------------------------------------------
   paidToTarget: 'Transporter',
@@ -1094,28 +1388,64 @@ const TripsModule = {
     const fAmt = document.getElementById('cp-amount');
     if (fAmt) fAmt.value = pDue > 0 ? pDue : '';
 
-    this.setPaidTo('Transporter');
+    const fDesc = document.getElementById('cp-desc');
+    if (fDesc) fDesc.value = `In ${t.transport || 'MTC'} or Part payment`;
+
+    // Populate dynamic truck owners dropdown synchronously
+    this.populateTruckOwnersDropdown(t.truckOwner || t.ownerName);
+
+    if (t.truckOwner || Number(t.ownerDue) > 0) {
+      this.setPaidTo('Truck Owner');
+    } else {
+      this.setPaidTo('Transporter');
+    }
 
     if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
       bootstrap.Modal.getOrCreateInstance(modalEl).show();
     }
   },
 
+  populateTruckOwnersDropdown(selectedOwner) {
+    const sel = document.getElementById('cp-truck-owner-select');
+    if (!sel) return;
+
+    let opts = '<option value="" disabled>-- Select Truck Owner --</option>';
+    const seen = new Set();
+    if (selectedOwner) {
+      opts += `<option value="${selectedOwner}" selected>● ${selectedOwner}</option>`;
+      seen.add(selectedOwner);
+    }
+
+    (this.allTruckOwners || []).forEach(o => {
+      const name = o.name || o.ownerName;
+      if (name && !seen.has(name)) {
+        seen.add(name);
+        opts += `<option value="${name}">● ${name} (${o.truckNo || o.mobile || 'Fleet'})</option>`;
+      }
+    });
+
+    sel.innerHTML = opts;
+  },
+
   setPaidTo(target) {
     this.paidToTarget = target;
     const btnTrans = document.getElementById('cp-paidto-transporter');
     const btnOwner = document.getElementById('cp-paidto-owner');
+    const ownerGroup = document.getElementById('cp-truck-owner-group');
+
     if (btnTrans && btnOwner) {
       if (target === 'Transporter') {
-        btnTrans.classList.add('active', 'btn-light');
-        btnTrans.style.borderColor = '#137333';
-        btnOwner.classList.remove('active');
-        btnOwner.style.borderColor = '#dee2e6';
+        btnTrans.classList.add('active', 'btn-secondary', 'text-white');
+        btnTrans.classList.remove('btn-light');
+        btnOwner.classList.remove('active', 'btn-secondary', 'text-white');
+        btnOwner.classList.add('btn-light');
+        if (ownerGroup) ownerGroup.classList.add('d-none');
       } else {
-        btnOwner.classList.add('active', 'btn-light');
-        btnOwner.style.borderColor = '#137333';
-        btnTrans.classList.remove('active');
-        btnTrans.style.borderColor = '#dee2e6';
+        btnOwner.classList.add('active', 'btn-secondary', 'text-white');
+        btnOwner.classList.remove('btn-light');
+        btnTrans.classList.remove('active', 'btn-secondary', 'text-white');
+        btnTrans.classList.add('btn-light');
+        if (ownerGroup) ownerGroup.classList.remove('d-none');
       }
     }
   },
@@ -1127,8 +1457,9 @@ const TripsModule = {
     const mode = document.getElementById('cp-mode')?.value || 'NEFT/RTGS';
     const fromBank = document.getElementById('cp-from-bank')?.value || 'Other';
     const toBank = document.getElementById('cp-to-bank')?.value || 'IDBI';
-    const beneficiary = document.getElementById('cp-beneficiary')?.value || 'MTC';
     const desc = document.getElementById('cp-desc')?.value || 'In MTC';
+    const paidTo = this.paidToTarget || 'Transporter';
+    const truckOwner = paidTo === 'Truck Owner' ? document.getElementById('cp-truck-owner-select')?.value : null;
 
     if (!tripId || amt <= 0) {
       if (typeof AppUI !== 'undefined') AppUI.showToast('Please enter a valid payment amount', 'warning');
@@ -1147,10 +1478,11 @@ const TripsModule = {
       amount: amt,
       amountPaid: amt,
       mode,
-      paidTo: this.paidToTarget || 'Transporter',
+      paidTo,
+      truckOwner,
       fromBank,
       toBank,
-      beneficiary,
+      beneficiary: t.transport || 'MTC',
       description: desc,
       createdAt: new Date().toISOString()
     };
@@ -1163,7 +1495,7 @@ const TripsModule = {
     t.partyPaid = newPaid;
     t.partyDue = newDue;
     if (!Array.isArray(t.payments)) t.payments = [];
-    t.payments.push(paymentRecord);
+    t.payments.unshift(paymentRecord);
 
     if (newDue <= 0 && Number(t.ownerDue || 0) <= 0) {
       t.status = 'Settled';
@@ -1171,13 +1503,15 @@ const TripsModule = {
 
     // Direct write to Firebase Cloud Firestore and LocalStorage
     try {
-      await dbService.add('receivedPayments', paymentRecord);
-      await dbService.update('trips', t.id, {
-        partyPaid: newPaid,
-        partyDue: newDue,
-        payments: t.payments,
-        status: t.status
-      });
+      if (typeof dbService !== 'undefined' && dbService.add) {
+        await dbService.add('receivedPayments', paymentRecord);
+        await dbService.update('trips', t.id, {
+          partyPaid: newPaid,
+          partyDue: newDue,
+          payments: t.payments,
+          status: t.status
+        });
+      }
     } catch (err) {
       console.warn('Firebase sync warning:', err);
     }
@@ -1188,15 +1522,24 @@ const TripsModule = {
       bootstrap.Modal.getInstance(modalEl)?.hide();
     }
 
-    // Refresh Open Trip Details UI
+    // Refresh UI
+    this.renderOpPaymentsTable(t);
     this.renderOtdPaymentsTable(t);
-    const pPaidEl = document.getElementById('otd-paid-amount');
-    if (pPaidEl) pPaidEl.innerText = `● ₹ ${newPaid.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    const pDueEl = document.getElementById('otd-due-amount');
-    if (pDueEl) {
-      pDueEl.innerText = `● ₹ ${newDue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-      pDueEl.className = newDue > 0 ? 'appsheet-detail-val text-danger fw-bold' : 'appsheet-detail-val text-success fw-bold';
-    }
+
+    const setElem = (id, text, isClass) => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.innerText = text;
+        if (isClass) el.className = isClass;
+      }
+    };
+    setElem('op-paid-amount', `● ₹ ${newPaid.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+    setElem('otd-paid-amount', `● ₹ ${newPaid.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+
+    const dueFormatted = `● ₹ ${newDue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    const dueClass = newDue > 0 ? 'appsheet-open-field-value text-danger fw-bold' : 'appsheet-open-field-value text-success fw-bold';
+    setElem('op-due-amount', dueFormatted, dueClass);
+    setElem('otd-due-amount', dueFormatted, newDue > 0 ? 'appsheet-detail-val text-danger fw-bold' : 'appsheet-detail-val text-success fw-bold');
 
     // Refresh main table & sidebar
     this.applyFilters();
@@ -1208,11 +1551,11 @@ const TripsModule = {
 
   // ----------------------------------------------------
   // GENERATE BILL CONTROLLER (wa_16.png, wa_18.png, wa_20.png)
-  // Direct Firebase Cloud Firestore Sync
+  // Direct Firebase Cloud Firestore Sync & Dynamic Master Sourcing
   // ----------------------------------------------------
   gstPayableByTarget: 'NA',
 
-  openGenerateBillModal(tripId) {
+  async openGenerateBillModal(tripId) {
     const t = this.allTrips.find(x => x.id === tripId || x.grNo === tripId) || this.activeTrip;
     if (!t) return;
 
@@ -1234,7 +1577,6 @@ const TripsModule = {
       if (t.billNo) {
         fBillNo.value = t.billNo;
       } else {
-        // Next sequential bill number without call stack overflow
         const maxBill = this.allTrips.reduce((m, x) => {
           const num = parseInt(x.billNo, 10);
           return (!isNaN(num) && num > m) ? num : m;
@@ -1243,31 +1585,8 @@ const TripsModule = {
       }
     }
 
-    // Consignee GSTIN & name
-    const selConsigneeGstin = document.getElementById('gb-consignee-gstin');
-    if (selConsigneeGstin) {
-      const gstin = t.consigneeGstin || '09AABCB0976E1ZT';
-      selConsigneeGstin.innerHTML = `
-        <option value="${gstin}" selected>● ${gstin}</option>
-        <option value="08AABCT2345M1Z8">● 08AABCT2345M1Z8</option>
-        <option value="06AJFPB7397H1Z2">● 06AJFPB7397H1Z2</option>
-      `;
-    }
-    const fConsignee = document.getElementById('gb-consignee-name');
-    if (fConsignee) fConsignee.value = t.consignee || 'Berger Paints India Ltd.';
-
-    // Consignor GSTIN & name
-    const selConsignorGstin = document.getElementById('gb-consignor-gstin');
-    if (selConsignorGstin) {
-      const gstin = t.consignorGstin || '24AAACK3795M1Z5';
-      selConsignorGstin.innerHTML = `
-        <option value="${gstin}" selected>● ${gstin}</option>
-        <option value="02BLAPS4407D1ZO">● 02BLAPS4407D1ZO</option>
-        <option value="08AAEFM1290K1ZY">● 08AAEFM1290K1ZY</option>
-      `;
-    }
-    const fConsignor = document.getElementById('gb-consignor-name');
-    if (fConsignor) fConsignor.value = t.consignor || 'KALPANA MINERALS PVT. LTD.';
+    // Populate dynamic parties dropdowns
+    await this.populatePartiesDropdowns(t.consigneeGstin, t.consignorGstin, t.consignee, t.consignor);
 
     // Freight & charges
     const baseFreight = Number(t.biltyAmount || t.freight || 0);
@@ -1288,6 +1607,116 @@ const TripsModule = {
     }
   },
 
+  async populatePartiesDropdowns(currConsigneeGst, currConsignorGst, currConsigneeName, currConsignorName) {
+    await this.loadMasterData();
+
+    const cGstSel = document.getElementById('gb-consignee-gstin');
+    const crGstSel = document.getElementById('gb-consignor-gstin');
+    const cNameInput = document.getElementById('gb-consignee-name');
+    const crNameInput = document.getElementById('gb-consignor-name');
+
+    const partiesWithGst = (this.allParties || []).filter(p => p.gstin && p.gstin.trim());
+    partiesWithGst.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+
+    const buildOptions = (activeGstin, fallbackName) => {
+      let html = '<option value="" disabled>-- Select Party GSTIN --</option>';
+      const seen = new Set();
+      if (activeGstin) {
+        html += `<option value="${activeGstin}" data-name="${fallbackName || ''}" selected>● ${activeGstin} (${fallbackName || 'Current'})</option>`;
+        seen.add(activeGstin);
+      }
+      partiesWithGst.forEach(p => {
+        const g = p.gstin.trim();
+        if (!seen.has(g)) {
+          seen.add(g);
+          html += `<option value="${g}" data-name="${(p.name || '').replace(/"/g, '&quot;')}">● ${g} (${p.name || 'Party'})</option>`;
+        }
+      });
+      return html;
+    };
+
+    if (cGstSel) {
+      cGstSel.innerHTML = buildOptions(currConsigneeGst || '09AABCB0976E1ZT', currConsigneeName || 'Berger Paints India Ltd.');
+      if (cNameInput) cNameInput.value = currConsigneeName || 'Berger Paints India Ltd.';
+    }
+
+    if (crGstSel) {
+      crGstSel.innerHTML = buildOptions(currConsignorGst || '24AAACK3795M1Z5', currConsignorName || 'KALPANA MINERALS PVT. LTD.');
+      if (crNameInput) crNameInput.value = currConsignorName || 'KALPANA MINERALS PVT. LTD.';
+    }
+  },
+
+  onGbConsigneeGstinChange() {
+    const sel = document.getElementById('gb-consignee-gstin');
+    const nameInput = document.getElementById('gb-consignee-name');
+    if (!sel || !nameInput) return;
+    const selectedGst = sel.value;
+    const opt = sel.options[sel.selectedIndex];
+    if (opt && opt.dataset.name) {
+      nameInput.value = opt.dataset.name;
+    } else {
+      const match = (this.allParties || []).find(p => p.gstin && p.gstin.trim() === selectedGst);
+      if (match && match.name) nameInput.value = match.name;
+    }
+  },
+
+  onGbConsignorGstinChange() {
+    const sel = document.getElementById('gb-consignor-gstin');
+    const nameInput = document.getElementById('gb-consignor-name');
+    if (!sel || !nameInput) return;
+    const selectedGst = sel.value;
+    const opt = sel.options[sel.selectedIndex];
+    if (opt && opt.dataset.name) {
+      nameInput.value = opt.dataset.name;
+    } else {
+      const match = (this.allParties || []).find(p => p.gstin && p.gstin.trim() === selectedGst);
+      if (match && match.name) nameInput.value = match.name;
+    }
+  },
+
+  async promptNewConsignorGstin() {
+    const gstin = prompt('Enter new Consignor GSTIN (15 characters):');
+    if (!gstin || gstin.trim().length < 5) return;
+    const name = prompt('Enter new Consignor Party Name:', 'New Consignor');
+    if (!name) return;
+
+    const cleanGst = gstin.trim().toUpperCase();
+    const cleanName = name.trim();
+    const newParty = {
+      id: 'PARTY_' + Date.now(),
+      gstin: cleanGst,
+      name: cleanName,
+      address: 'Industrial Area, Rajasthan'
+    };
+
+    if (!Array.isArray(this.allParties)) this.allParties = [];
+    this.allParties.unshift(newParty);
+
+    try {
+      if (typeof dbService !== 'undefined' && dbService.add) {
+        await dbService.add('parties', newParty);
+      }
+    } catch (e) {
+      console.warn('Party Firestore sync warning:', e);
+    }
+
+    const sel = document.getElementById('gb-consignor-gstin');
+    if (sel) {
+      const opt = document.createElement('option');
+      opt.value = cleanGst;
+      opt.dataset.name = cleanName;
+      opt.innerText = `● ${cleanGst} (${cleanName})`;
+      opt.selected = true;
+      sel.prepend(opt);
+    }
+    const nameInput = document.getElementById('gb-consignor-name');
+    if (nameInput) nameInput.value = cleanName;
+
+    if (typeof AppUI !== 'undefined') {
+      AppUI.showToast(`Party ${cleanName} added & synced to Firebase!`, 'success');
+    }
+  },
+
   setGstPayableBy(val) {
     this.gstPayableByTarget = val;
     const btns = ['na', 'consignee', 'consignor', 'transporter'];
@@ -1302,28 +1731,6 @@ const TripsModule = {
         el.style.color = '';
       }
     });
-  },
-
-  onGbConsigneeGstinChange() {
-    // Sync consignee name if mapped
-  },
-
-  onGbConsignorGstinChange() {
-    // Sync consignor name if mapped
-  },
-
-  promptNewConsignorGstin() {
-    const val = prompt('Enter new Consignor GSTIN (15 characters):');
-    if (val && val.trim().length >= 10) {
-      const sel = document.getElementById('gb-consignor-gstin');
-      if (sel) {
-        const opt = document.createElement('option');
-        opt.value = val.trim();
-        opt.innerText = `● ${val.trim()}`;
-        opt.selected = true;
-        sel.prepend(opt);
-      }
-    }
   },
 
   calcGbTotal() {
@@ -1344,7 +1751,9 @@ const TripsModule = {
     const hault = parseFloat(document.getElementById('gb-hault')?.value) || 0;
     const loading = parseFloat(document.getElementById('gb-loading')?.value) || 0;
     const consigneeGstin = document.getElementById('gb-consignee-gstin')?.value || '';
+    const consigneeName = document.getElementById('gb-consignee-name')?.value || '';
     const consignorGstin = document.getElementById('gb-consignor-gstin')?.value || '';
+    const consignorName = document.getElementById('gb-consignor-name')?.value || '';
 
     if (!tripId || !billNo) {
       if (typeof AppUI !== 'undefined') AppUI.showToast('Please provide a valid Bill No.', 'warning');
@@ -1359,6 +1768,11 @@ const TripsModule = {
 
     t.billNo = billNo;
     t.billDate = billDate;
+    t.isBilled = true;
+    t.consignee = consigneeName || t.consignee;
+    t.consigneeGstin = consigneeGstin || t.consigneeGstin;
+    t.consignor = consignorName || t.consignor;
+    t.consignorGstin = consignorGstin || t.consignorGstin;
     t.haultCharges = hault;
     t.loadingCharges = loading;
     t.totalBillAmount = totalBill;
@@ -1384,17 +1798,24 @@ const TripsModule = {
 
     // Firebase Cloud Firestore write
     try {
-      await dbService.add('invoices', invoiceData);
-      await dbService.update('trips', t.id, {
-        billNo,
-        billDate,
-        haultCharges: hault,
-        loadingCharges: loading,
-        totalBillAmount: totalBill,
-        gstPayableBy: t.gstPayableBy
-      });
+      if (typeof dbService !== 'undefined' && dbService.add) {
+        await dbService.add('invoices', invoiceData);
+        await dbService.update('trips', t.id, {
+          billNo,
+          billDate,
+          isBilled: true,
+          consignee: t.consignee,
+          consigneeGstin,
+          consignor: t.consignor,
+          consignorGstin,
+          haultCharges: hault,
+          loadingCharges: loading,
+          totalBillAmount: totalBill,
+          gstPayableBy: t.gstPayableBy
+        });
+      }
     } catch (err) {
-      console.warn('Firebase invoice write:', err);
+      console.warn('Firebase invoice write warning:', err);
     }
 
     // Close modal
@@ -1572,6 +1993,9 @@ const TripsModule = {
 
   goToTripsList() {
     document.getElementById('trip-detail-view')?.classList.add('d-none');
+    document.getElementById('trip-open-detail-view')?.classList.add('d-none');
+    document.getElementById('trip-open-party-view')?.classList.add('d-none');
+    document.getElementById('trip-payment-details-view')?.classList.add('d-none');
     if (this.mainViewMode === 'dashboard') {
       this.goToDashboardView();
     } else {
@@ -1600,6 +2024,9 @@ const TripsModule = {
     if (dashEl) dashEl.classList.remove('d-none');
     if (regEl) regEl.classList.add('d-none');
     if (detailEl) detailEl.classList.add('d-none');
+    document.getElementById('trip-open-detail-view')?.classList.add('d-none');
+    document.getElementById('trip-open-party-view')?.classList.add('d-none');
+    document.getElementById('trip-payment-details-view')?.classList.add('d-none');
     if (toolbarEl) toolbarEl.classList.add('d-none');
 
     if (crumbSep) crumbSep.classList.add('d-none');
@@ -1624,6 +2051,9 @@ const TripsModule = {
     if (dashEl) dashEl.classList.add('d-none');
     if (regEl) regEl.classList.remove('d-none');
     if (detailEl) detailEl.classList.add('d-none');
+    document.getElementById('trip-open-detail-view')?.classList.add('d-none');
+    document.getElementById('trip-open-party-view')?.classList.add('d-none');
+    document.getElementById('trip-payment-details-view')?.classList.add('d-none');
     if (toolbarEl) toolbarEl.classList.remove('d-none');
 
     this.workflowTab = status;

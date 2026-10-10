@@ -197,6 +197,10 @@ const AppUI = {
 
   // Focus Search Box or Open Drawer
   focusSearchOrOpenDrawer() {
+    if (window.location.pathname.includes('trips') && typeof TripsModule !== 'undefined' && TripsModule.toggleSidebar) {
+      TripsModule.toggleSidebar();
+      return;
+    }
     const searchInput = document.querySelector('#search-home-input, #bilty-search-input, #trips-search-input, #ledger-search-input, input[placeholder*="Search"]');
     if (searchInput) {
       searchInput.focus();
