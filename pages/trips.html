@@ -478,6 +478,21 @@
       background: #ffffff;
       padding: 10px 0;
     }
+
+    @media (max-width: 768px) {
+      .appsheet-trips-split {
+        flex-direction: column;
+      }
+      .appsheet-trips-sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #ebebeb;
+        display: none;
+      }
+      .appsheet-trips-sidebar.show-mobile {
+        display: block !important;
+      }
+    }
     .appsheet-trips-sidebar-title {
       font-size: 11px;
       font-weight: 700;
@@ -764,6 +779,13 @@
           </button>
 
           <div class="vr mx-1"></div>
+
+          <!-- AppSheet Quick Actions (Matching open_sc_top.png) -->
+          <button type="button" class="btn-appsheet-alert py-0 px-2" id="toolbar-btn-truck-owner" onclick="TripsModule.openTruckOwnerAlert('open')" title="Truck Owner Alert">
+            <span style="display:inline-block; width:12px; height:12px; background:#202124; color:#bfa15f; font-size:9px; line-height:12px; text-align:center; border-radius:2px; font-weight:bold;">!</span> Truck Own...
+          </button>
+          <button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2" onclick="TripsModule.toggleSidebar()" title="Toggle Sidebar Filter"><i class="bi bi-funnel"></i></button>
+          <button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2" onclick="TripsModule.toggleBulkSelect()" title="Select Multiple"><i class="bi bi-check2-square"></i></button>
 
           <!-- Action Buttons -->
           <a href="./bilty-booking.html" class="btn-appsheet-add">
@@ -1449,6 +1471,580 @@
       </div>
     </div>
 
+    <!-- ========================================== -->
+    <!-- APPSHEET MODAL 1: OPEN TRIP DETAILS -->
+    <!-- (Matching wa_0.png through wa_4.png) -->
+    <!-- ========================================== -->
+    <div class="modal fade" id="modal-open-trip-details" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow">
+          <!-- Modal Header (AppSheet Style) -->
+          <div class="modal-header py-2 px-3 bg-light border-bottom d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-2">
+              <span class="text-muted fs-6"><i class="bi bi-arrows-angle-expand"></i></span>
+              <h6 class="modal-title fw-bold text-dark mb-0" id="otd-modal-title">Open Trip Details</h6>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2 border" title="Truck Owner Payment" onclick="TripsModule.openTruckOwnerPaymentModal(TripsModule.activeTrip?.id)">
+                <i class="bi bi-truck text-dark"></i>
+              </button>
+              <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2 border" title="Print Bilty" onclick="TripsModule.printActiveTrip()">
+                <i class="bi bi-file-earmark-text text-danger"></i>
+              </button>
+              <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2 border" title="Files / POD" onclick="TripsModule.openTripFiles()">
+                <i class="bi bi-folder2-open text-primary"></i>
+              </button>
+              <button type="button" class="btn btn-sm btn-outline-dark py-1 px-2" title="Edit Trip" onclick="TripsModule.editActiveTrip()">
+                <i class="bi bi-pencil me-1"></i> Edit
+              </button>
+              <button type="button" class="btn-close ms-2" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+          </div>
+          <!-- Modal Body (Two-Column Layout) -->
+          <div class="modal-body p-3 bg-light">
+            <div class="row g-3">
+              <!-- Left Column: Particulars fields -->
+              <div class="col-lg-7 col-12">
+                <div class="card border-0 shadow-sm p-3 h-100 bg-white">
+                  <div class="appsheet-detail-row">
+                    <span class="appsheet-detail-label">G.R.No.</span>
+                    <span class="appsheet-detail-val" id="otd-gr-no">● -</span>
+                  </div>
+                  <div class="appsheet-detail-row">
+                    <span class="appsheet-detail-label">Truck No.</span>
+                    <span class="appsheet-detail-val" id="otd-truck-no">● -</span>
+                  </div>
+                  <div class="appsheet-detail-row">
+                    <span class="appsheet-detail-label">Trip Start Date</span>
+                    <span class="appsheet-detail-val" id="otd-start-date">● -</span>
+                  </div>
+                  <div class="appsheet-detail-row">
+                    <span class="appsheet-detail-label">Trip End Date</span>
+                    <span class="appsheet-detail-val" id="otd-end-date">● -</span>
+                  </div>
+                  <div class="appsheet-detail-row">
+                    <span class="appsheet-detail-label">Origin</span>
+                    <span class="appsheet-detail-val" id="otd-origin">● -</span>
+                  </div>
+                  <div class="appsheet-detail-row">
+                    <span class="appsheet-detail-label">Destination</span>
+                    <span class="appsheet-detail-val" id="otd-destination">● -</span>
+                  </div>
+                  <div class="appsheet-detail-row">
+                    <span class="appsheet-detail-label">Consignee Billing Type</span>
+                    <span class="appsheet-detail-val" id="otd-billing-type">● Per Tonne</span>
+                  </div>
+                  <div class="appsheet-detail-row">
+                    <span class="appsheet-detail-label">Bilty Amount</span>
+                    <span class="appsheet-detail-val" id="otd-bilty-amount">● ₹ 0.00</span>
+                  </div>
+                  <div class="appsheet-detail-row">
+                    <span class="appsheet-detail-label">Weight</span>
+                    <span class="appsheet-detail-val" id="otd-weight">● 0.000</span>
+                  </div>
+                  <div class="appsheet-detail-row">
+                    <span class="appsheet-detail-label">Rate</span>
+                    <span class="appsheet-detail-val" id="otd-rate">● ₹ 0.00</span>
+                  </div>
+                  <div class="appsheet-detail-row">
+                    <span class="appsheet-detail-label">Material</span>
+                    <span class="appsheet-detail-val" id="otd-material">● -</span>
+                  </div>
+                  <div class="appsheet-detail-row">
+                    <span class="appsheet-detail-label">Reference</span>
+                    <span class="appsheet-detail-val" id="otd-reference">● -</span>
+                  </div>
+                  <div class="appsheet-detail-row">
+                    <span class="appsheet-detail-label">Reference Mobile No.</span>
+                    <span class="appsheet-detail-val">
+                      <span id="otd-ref-mobile">● -</span>
+                      <a href="javascript:void(0)" id="otd-ref-tel" class="text-primary ms-1"><i class="bi bi-telephone"></i></a>
+                    </span>
+                  </div>
+                  <div class="appsheet-detail-row">
+                    <span class="appsheet-detail-label">Driver</span>
+                    <span class="appsheet-detail-val" id="otd-driver">● -</span>
+                  </div>
+                  <div class="appsheet-detail-row">
+                    <span class="appsheet-detail-label">Driver Mobile No.</span>
+                    <span class="appsheet-detail-val">
+                      <span id="otd-driver-mobile">● -</span>
+                      <a href="javascript:void(0)" id="otd-driver-tel" class="text-primary ms-1"><i class="bi bi-telephone"></i></a>
+                    </span>
+                  </div>
+                  <div class="appsheet-detail-row">
+                    <span class="appsheet-detail-label">GSTIN Consignee</span>
+                    <span class="appsheet-detail-val text-muted" id="otd-consignee-gstin">● -</span>
+                  </div>
+                  <div class="appsheet-detail-row">
+                    <span class="appsheet-detail-label">Consignee</span>
+                    <span class="appsheet-detail-val" id="otd-consignee">● -</span>
+                  </div>
+                  <div class="appsheet-detail-row">
+                    <span class="appsheet-detail-label">Owner</span>
+                    <span class="appsheet-detail-val" id="otd-owner">● -</span>
+                  </div>
+                  <div class="appsheet-detail-row">
+                    <span class="appsheet-detail-label">Owner Mobile No.</span>
+                    <span class="appsheet-detail-val">
+                      <span id="otd-owner-mobile">● -</span>
+                      <a href="javascript:void(0)" id="otd-owner-tel" class="text-primary ms-1"><i class="bi bi-telephone"></i></a>
+                    </span>
+                  </div>
+                  
+                  <!-- Add Records for Dropdown (Matching wa_2.png) -->
+                  <div class="my-2 p-2 bg-light rounded border">
+                    <label class="form-label small text-muted mb-1 fw-semibold">Add Records for</label>
+                    <select id="otd-add-records-select" class="form-select form-select-sm" onchange="TripsModule.handleOtdAddRecord(this.value)">
+                      <option value="" disabled selected>Select Action to Add Record...</option>
+                      <option value="Party Payment">Party Payment</option>
+                      <option value="Truck Owner Payment">Truck Owner Payment</option>
+                      <option value="Cheque">Cheque</option>
+                      <option value="Other B">Other B</option>
+                    </select>
+                  </div>
+
+                  <div class="appsheet-detail-row">
+                    <span class="appsheet-detail-label">Total Freight</span>
+                    <span class="appsheet-detail-val" id="otd-total-freight">● ₹ 0.00</span>
+                  </div>
+                  <div class="appsheet-detail-row">
+                    <span class="appsheet-detail-label">Paid Amount</span>
+                    <span class="appsheet-detail-val" id="otd-paid-amount">● ₹ 0.00</span>
+                  </div>
+                  <div class="appsheet-detail-row border-0">
+                    <span class="appsheet-detail-label">Due Amount</span>
+                    <span class="appsheet-detail-val text-danger fw-bold" id="otd-due-amount">● ₹ 0.00</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right Column: Consignor/s Table and Payment Table -->
+              <div class="col-lg-5 col-12 d-flex flex-column gap-3">
+                <!-- Consignor/s Card (Matching wa_0.png) -->
+                <div class="card border-0 shadow-sm p-3 bg-white">
+                  <div class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom">
+                    <span class="fw-bold fs-6 text-dark"><span class="appsheet-bullet blue-bullet">●</span> Consignor/s</span>
+                    <span class="badge bg-secondary" id="otd-consignor-count">1</span>
+                  </div>
+                  <div class="table-responsive">
+                    <table class="table table-sm table-hover mb-0" style="font-size: 11.5px;">
+                      <thead class="table-light">
+                        <tr>
+                          <th>Consignor</th>
+                          <th>Consignor Address</th>
+                          <th>GSTIN</th>
+                        </tr>
+                      </thead>
+                      <tbody id="otd-consignor-tbody">
+                        <tr>
+                          <td>-</td>
+                          <td>-</td>
+                          <td>-</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="d-flex justify-content-end mt-2">
+                    <a href="javascript:void(0)" class="text-decoration-none small text-muted" onclick="TripsModule.expandConsignorDetails()">Expand</a>
+                  </div>
+                </div>
+
+                <!-- Payment Card (Matching wa_0.png & wa_2.png) -->
+                <div class="card border-0 shadow-sm p-3 bg-white flex-grow-1">
+                  <div class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom">
+                    <span class="fw-bold fs-6 text-dark"><span class="appsheet-bullet blue-bullet">●</span> Payment</span>
+                    <span class="badge bg-secondary" id="otd-payment-count">0</span>
+                  </div>
+                  <div class="table-responsive">
+                    <table class="table table-sm table-hover mb-0" style="font-size: 11.5px;">
+                      <thead class="table-light">
+                        <tr>
+                          <th style="width: 25px;"></th>
+                          <th>Payment Date ↑</th>
+                          <th class="text-end">Amount Paid</th>
+                          <th>Mode</th>
+                        </tr>
+                      </thead>
+                      <tbody id="otd-payments-tbody">
+                        <tr>
+                          <td colspan="4" class="text-center text-muted py-2">No payment entries</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top">
+                    <a href="javascript:void(0)" class="text-decoration-none small text-muted" onclick="TripsModule.openTripPaymentsView()">Expand</a>
+                    <button type="button" class="btn btn-sm py-1 px-3" style="background:#bfa15f; color:#fff; font-weight:600;" onclick="TripsModule.openConsigneePaymentModal(TripsModule.activeTrip?.id)">
+                      + Add
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- APPSHEET MODAL 2: CONSIGNEE PAYMENT DETAILS -->
+    <!-- (Matching wa_9.png, wa_11.png, wa_12.png) -->
+    <!-- ========================================== -->
+    <div class="modal fade" id="modal-consignee-payment" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-md modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+          <div class="modal-header py-2 px-3 bg-light border-bottom d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-2">
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <h6 class="modal-title fw-bold text-dark mb-0">Consignee Payment Details</h6>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-3" data-bs-dismiss="modal">Cancel</button>
+              <button type="button" class="btn btn-sm py-1 px-3 text-white fw-semibold" style="background-color: #a07e2a;" onclick="TripsModule.saveConsigneePayment()">Save</button>
+            </div>
+          </div>
+          <div class="modal-body p-4 bg-white">
+            <form id="form-consignee-payment" onsubmit="event.preventDefault(); TripsModule.saveConsigneePayment();">
+              <input type="hidden" id="cp-trip-id">
+              
+              <div class="mb-3">
+                <label class="form-label small text-muted fw-semibold mb-1">Payment Date *</label>
+                <input type="date" id="cp-date" class="form-control" required>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label small text-muted fw-semibold mb-1">Due</label>
+                <div id="cp-disp-due" class="form-control bg-light text-danger fw-bold" readonly>₹ 0.00</div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label small text-muted fw-semibold mb-1">Paid To *</label>
+                <div class="d-flex gap-2">
+                  <button type="button" class="btn btn-sm flex-fill border btn-light active" id="cp-paidto-transporter" onclick="TripsModule.setPaidTo('Transporter')">
+                    <span class="appsheet-bullet green-bullet">●</span> Transporter
+                  </button>
+                  <button type="button" class="btn btn-sm flex-fill border btn-light" id="cp-paidto-owner" onclick="TripsModule.setPaidTo('Truck Owner')">
+                    <span class="appsheet-bullet green-bullet">●</span> Truck Owner
+                  </button>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label small text-muted fw-semibold mb-1">Amount Paid *</label>
+                <div class="input-group">
+                  <span class="input-group-text">₹</span>
+                  <input type="number" step="0.01" id="cp-amount" class="form-control fw-bold" placeholder="0.00" required>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label small text-muted fw-semibold mb-1">Mode *</label>
+                <select id="cp-mode" class="form-select" required>
+                  <option value="NEFT/RTGS" selected>NEFT/RTGS</option>
+                  <option value="Cash">Cash</option>
+                  <option value="Cheque">Cheque</option>
+                  <option value="UPI">UPI</option>
+                  <option value="Adjustment">Adjustment</option>
+                </select>
+              </div>
+
+              <div class="row g-2 mb-3">
+                <div class="col-6">
+                  <label class="form-label small text-muted fw-semibold mb-1">From Bank</label>
+                  <select id="cp-from-bank" class="form-select form-select-sm">
+                    <option value="Other" selected>Other</option>
+                    <option value="IDBI">IDBI</option>
+                    <option value="HDFC">HDFC</option>
+                    <option value="ICICI">ICICI</option>
+                    <option value="SBI">SBI</option>
+                    <option value="Cash">Cash</option>
+                  </select>
+                </div>
+                <div class="col-6">
+                  <label class="form-label small text-muted fw-semibold mb-1">To Bank</label>
+                  <select id="cp-to-bank" class="form-select form-select-sm">
+                    <option value="IDBI" selected>IDBI</option>
+                    <option value="MTC">MTC</option>
+                    <option value="TTC">TTC</option>
+                    <option value="HDFC">HDFC</option>
+                    <option value="SBI">SBI</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label small text-muted fw-semibold mb-1">Description</label>
+                <input type="text" id="cp-desc" class="form-control" placeholder="e.g. In MTC or Part payment">
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- APPSHEET MODAL 3: GENERATE BILL -->
+    <!-- (Matching wa_16.png, wa_18.png, wa_20.png) -->
+    <!-- ========================================== -->
+    <div class="modal fade" id="modal-generate-bill" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+          <div class="modal-header py-2 px-3 bg-light border-bottom d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-2">
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <h6 class="modal-title fw-bold text-dark mb-0">Generate Bill</h6>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-3" data-bs-dismiss="modal">Cancel</button>
+              <button type="button" class="btn btn-sm py-1 px-3 text-white fw-semibold" style="background-color: #a07e2a;" onclick="TripsModule.saveGeneratedBill()">Save</button>
+            </div>
+          </div>
+          <div class="modal-body p-4 bg-white">
+            <form id="form-generate-bill" onsubmit="event.preventDefault(); TripsModule.saveGeneratedBill();">
+              <input type="hidden" id="gb-trip-id">
+
+              <div class="row g-3">
+                <div class="col-md-6 col-12">
+                  <label class="form-label small text-muted fw-semibold mb-1">G.R.No.</label>
+                  <input type="text" id="gb-gr-no" class="form-control bg-light" readonly>
+                </div>
+                <div class="col-md-6 col-12">
+                  <label class="form-label small text-muted fw-semibold mb-1">Bill Date *</label>
+                  <input type="date" id="gb-date" class="form-control" required>
+                </div>
+
+                <div class="col-md-6 col-12">
+                  <label class="form-label small text-muted fw-semibold mb-1">Bill No. *</label>
+                  <input type="text" id="gb-bill-no" class="form-control fw-bold" placeholder="e.g. 312" required>
+                </div>
+                <div class="col-md-6 col-12">
+                  <label class="form-label small text-muted fw-semibold mb-1">GST Payable By *</label>
+                  <div class="d-flex gap-1 flex-wrap">
+                    <button type="button" class="btn btn-sm py-1 px-2 border" id="gb-gst-na" style="background:#a07e2a; color:#fff;" onclick="TripsModule.setGstPayableBy('NA')">
+                      <span class="appsheet-bullet green-bullet">●</span> NA
+                    </button>
+                    <button type="button" class="btn btn-sm py-1 px-2 border btn-light" id="gb-gst-consignee" onclick="TripsModule.setGstPayableBy('Consignee')">Consignee</button>
+                    <button type="button" class="btn btn-sm py-1 px-2 border btn-light" id="gb-gst-consignor" onclick="TripsModule.setGstPayableBy('Consignor')">Consignor</button>
+                    <button type="button" class="btn btn-sm py-1 px-2 border btn-light" id="gb-gst-transporter" onclick="TripsModule.setGstPayableBy('Transporter')">Transporter</button>
+                  </div>
+                </div>
+
+                <div class="col-md-6 col-12">
+                  <label class="form-label small text-muted fw-semibold mb-1">GSTIN Consignee *</label>
+                  <select id="gb-consignee-gstin" class="form-select" onchange="TripsModule.onGbConsigneeGstinChange()"></select>
+                </div>
+                <div class="col-md-6 col-12">
+                  <label class="form-label small text-muted fw-semibold mb-1">Consignee</label>
+                  <input type="text" id="gb-consignee-name" class="form-control bg-light" readonly>
+                </div>
+
+                <div class="col-md-6 col-12">
+                  <label class="form-label small text-muted fw-semibold mb-1">GSTIN Consignor *</label>
+                  <div class="input-group">
+                    <select id="gb-consignor-gstin" class="form-select" onchange="TripsModule.onGbConsignorGstinChange()"></select>
+                    <button class="btn btn-outline-secondary btn-sm" type="button" onclick="TripsModule.promptNewConsignorGstin()">+ New</button>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <label class="form-label small text-muted fw-semibold mb-1">Consignor</label>
+                  <input type="text" id="gb-consignor-name" class="form-control bg-light" readonly>
+                </div>
+
+                <div class="col-md-4 col-12">
+                  <label class="form-label small text-muted fw-semibold mb-1">Freight</label>
+                  <input type="text" id="gb-freight" class="form-control bg-light fw-semibold" readonly>
+                </div>
+                <div class="col-md-4 col-12">
+                  <label class="form-label small text-muted fw-semibold mb-1">Hault Charges</label>
+                  <input type="number" step="0.01" id="gb-hault" class="form-control" value="0" oninput="TripsModule.calcGbTotal()">
+                </div>
+                <div class="col-md-4 col-12">
+                  <label class="form-label small text-muted fw-semibold mb-1">Loading Charges</label>
+                  <input type="number" step="0.01" id="gb-loading" class="form-control" value="0" oninput="TripsModule.calcGbTotal()">
+                </div>
+
+                <div class="col-md-6 col-12">
+                  <label class="form-label small text-muted fw-semibold mb-1">Total</label>
+                  <input type="text" id="gb-total" class="form-control bg-light fw-bold text-success fs-6" readonly>
+                </div>
+                <div class="col-md-6 col-12 d-flex flex-column justify-content-end">
+                  <label class="form-label small text-muted fw-semibold mb-1">Action</label>
+                  <div>
+                    <span class="badge bg-light text-success border px-3 py-2 fs-6">
+                      <span class="appsheet-bullet green-bullet">●</span> Generate Bill
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- APPSHEET MODAL 4: AUTHENTICATION / OTP -->
+    <!-- (Matching wa_14.png) -->
+    <!-- ========================================== -->
+    <div class="modal fade" id="modal-auth-otp" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+          <div class="modal-header py-2 px-3 bg-light border-bottom d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-2">
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <h6 class="modal-title fw-bold text-dark mb-0">Authentication</h6>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2" data-bs-dismiss="modal">Cancel</button>
+              <button type="button" class="btn btn-sm py-1 px-3 text-white fw-semibold" style="background-color: #a07e2a;" onclick="TripsModule.verifyAuthOtp()">Save</button>
+            </div>
+          </div>
+          <div class="modal-body p-3 bg-white">
+            <div class="mb-3">
+              <label class="form-label small text-muted fw-semibold mb-1">Company_G.R.No.</label>
+              <input type="text" id="auth-gr-no" class="form-control bg-light" readonly>
+            </div>
+            <div class="mb-3">
+              <label class="form-label small text-muted fw-semibold mb-1">Enter OTP</label>
+              <input type="password" id="auth-otp-input" class="form-control" placeholder="Enter OTP (e.g. 1234)">
+            </div>
+            <small class="text-muted d-block text-center">Default security PIN: <strong>1234</strong></small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- APPSHEET MODAL 5: TRIP PAYMENT DETAILS VIEW -->
+    <!-- (Matching wa_5.png & wa_7.png) -->
+    <!-- ========================================== -->
+    <div class="modal fade" id="modal-trip-payment-details" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+          <div class="modal-header py-2 px-3 bg-light border-bottom d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-2">
+              <span class="small text-muted">Trips &gt; Open &gt; Open Trip Details &gt; <strong class="text-dark">Trip Payment Details</strong></span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <button type="button" class="btn btn-sm py-1 px-3 text-white fw-semibold" style="background-color: #a07e2a;" onclick="TripsModule.openConsigneePaymentModal(TripsModule.activeTrip?.id)">+ Add</button>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+          </div>
+          <div class="modal-body p-3 bg-light">
+            <div class="row g-3">
+              <!-- Left table of payments -->
+              <div class="col-lg-7 col-12">
+                <div class="card border-0 shadow-sm p-3 bg-white h-100">
+                  <div class="table-responsive">
+                    <table class="table table-sm table-hover align-middle mb-0" style="font-size: 12px;">
+                      <thead class="table-light">
+                        <tr>
+                          <th style="width: 25px;"></th>
+                          <th>Payment Date ↑</th>
+                          <th class="text-end">Amount Paid</th>
+                          <th>Mode</th>
+                          <th>Beneficiary</th>
+                          <th>Description</th>
+                          <th>Paid To</th>
+                        </tr>
+                      </thead>
+                      <tbody id="tpd-payments-tbody">
+                        <!-- populated dynamically -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <!-- Right details card -->
+              <div class="col-lg-5 col-12">
+                <div class="card border-0 shadow-sm p-3 bg-white h-100">
+                  <h6 class="fw-bold mb-3 pb-2 border-bottom">Details</h6>
+                  <div class="appsheet-detail-row">
+                    <span class="appsheet-detail-label">Payment Date</span>
+                    <span class="appsheet-detail-val" id="tpd-d-date">● -</span>
+                  </div>
+                  <div class="appsheet-detail-row">
+                    <span class="appsheet-detail-label">Paid To</span>
+                    <span class="appsheet-detail-val" id="tpd-d-paidto">● Transporter</span>
+                  </div>
+                  <div class="appsheet-detail-row">
+                    <span class="appsheet-detail-label">Mode</span>
+                    <span class="appsheet-detail-val" id="tpd-d-mode">● NEFT/RTGS</span>
+                  </div>
+                  <div class="appsheet-detail-row">
+                    <span class="appsheet-detail-label">Amount Paid</span>
+                    <span class="appsheet-detail-val fw-bold" id="tpd-d-amount">● ₹ 0.00</span>
+                  </div>
+                  <div class="appsheet-detail-row">
+                    <span class="appsheet-detail-label">Beneficiary</span>
+                    <span class="appsheet-detail-val" id="tpd-d-beneficiary">● MTC</span>
+                  </div>
+                  <div class="appsheet-detail-row">
+                    <span class="appsheet-detail-label">From Bank</span>
+                    <span class="appsheet-detail-val" id="tpd-d-frombank">● Other</span>
+                  </div>
+                  <div class="appsheet-detail-row">
+                    <span class="appsheet-detail-label">To Bank</span>
+                    <span class="appsheet-detail-val" id="tpd-d-tobank">● IDBI</span>
+                  </div>
+                  <div class="appsheet-detail-row border-0">
+                    <span class="appsheet-detail-label">Description</span>
+                    <span class="appsheet-detail-val" id="tpd-d-desc">● In MTC</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- APPSHEET MODAL 6: TRUCK OWNER PAYMENT DETAILS -->
+    <!-- (Matching wa_19.png & wa_21.png) -->
+    <!-- ========================================== -->
+    <div class="modal fade" id="modal-truck-owner-payment-details" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+          <div class="modal-header py-2 px-3 bg-light border-bottom d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-2">
+              <span class="small text-muted">Trips &gt; Open &gt; <strong class="text-dark">Truck Owner Payment Details</strong></span>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body p-3 bg-white">
+            <div class="table-responsive">
+              <table class="table table-sm table-hover align-middle mb-0" style="font-size: 12px;">
+                <thead class="table-light">
+                  <tr>
+                    <th>Email ID</th>
+                    <th>Date</th>
+                    <th>Mode</th>
+                    <th>Beneficiary</th>
+                    <th>From Bank</th>
+                    <th>To Bank</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody id="topd-tbody">
+                  <tr>
+                    <td>mahaveer0236@gmail.com</td>
+                    <td>10/10/2026</td>
+                    <td>Adjustment</td>
+                    <td>MTC</td>
+                    <td>Other</td>
+                    <td>IDBI</td>
+                    <td>2026-2027-2299_TTC</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Hidden compatibility elements to ensure 100% test suite pass -->
     <div style="display: none !important;">
       <span id="stat-open-count">201</span>
@@ -1516,6 +2112,7 @@
   <script src="../js/sample-parties-data.js"></script>
   <script src="../js/sample-truck-owners-data.js"></script>
   <script src="../js/sample-drivers-data.js"></script>
+  <script src="../js/open-trips-seed.js"></script>
   <script src="../js/sample-trips-data.js"></script>
   <script src="../js/sample-debts-data.js"></script>
   <script src="../js/sample-cheques-data.js"></script>
