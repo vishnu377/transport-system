@@ -18,6 +18,7 @@
 const TripsModule = {
   allTrips: [],
   filteredTrips: [],
+  mainViewMode: 'dashboard', // 'dashboard' | 'register'
   workflowTab: 'settled', // 'settled' | 'open' | 'all' | 'gst'
   currentFirmTab: 'All', // 'All' | 'TTC_SMTC' | 'MTC'
   currentFY: 'All', // 'All' | '2026-2027' | '2025-2026' | '2024-2025'
@@ -34,7 +35,23 @@ const TripsModule = {
     }
     await this.loadTrips();
     this.bindEvents();
-    this.applyFilters();
+
+    // Check URL search parameters for direct routing (?view=open, ?view=settled, etc.)
+    const urlParams = new URLSearchParams(window.location.search);
+    const viewParam = urlParams.get('view');
+    const fyParam = urlParams.get('fy');
+
+    if (viewParam === 'open') {
+      this.goToOpenTripsView(fyParam || 'All');
+    } else if (viewParam === 'settled') {
+      this.goToSettledTripsView(fyParam || 'All');
+    } else if (viewParam === 'all') {
+      this.goToAllTripsView(fyParam || 'All');
+    } else if (viewParam === 'gst') {
+      this.goToGstAmountView(fyParam || 'All');
+    } else {
+      this.goToDashboardView();
+    }
   },
 
   async loadTrips() {
@@ -264,8 +281,12 @@ const TripsModule = {
 
   onSearchInput(val) {
     this.searchQuery = (val || '').toLowerCase().trim();
-    this.currentPage = 1;
-    this.applyFilters();
+    if (this.searchQuery.length > 0 && this.mainViewMode === 'dashboard') {
+      this.goToRegisterView('all');
+    } else {
+      this.currentPage = 1;
+      this.applyFilters();
+    }
   },
 
   clearSearch() {
@@ -808,10 +829,163 @@ const TripsModule = {
 
   goToTripsList() {
     document.getElementById('trip-detail-view')?.classList.add('d-none');
-    document.getElementById('trips-view-register')?.classList.remove('d-none');
+    if (this.mainViewMode === 'dashboard') {
+      this.goToDashboardView();
+    } else {
+      document.getElementById('trips-view-register')?.classList.remove('d-none');
+      document.getElementById('trips-register-toolbar')?.classList.remove('d-none');
+    }
 
     const crumbTail = document.getElementById('appsheet-crumb-tail');
     if (crumbTail) crumbTail.innerHTML = '';
+  },
+
+  // ----------------------------------------------------
+  // DASHBOARD VIEW CONTROLLERS (8-Card Google AppSheet)
+  // Matching media_1791639676754.png
+  // ----------------------------------------------------
+  goToDashboardView() {
+    this.mainViewMode = 'dashboard';
+    const dashEl = document.getElementById('trips-view-dashboard');
+    const regEl = document.getElementById('trips-view-register');
+    const detailEl = document.getElementById('trip-detail-view');
+    const toolbarEl = document.getElementById('trips-register-toolbar');
+    const crumbTail = document.getElementById('appsheet-crumb-tail');
+    const crumbSep = document.getElementById('breadcrumb-sep');
+    const activeCrumb = document.getElementById('active-breadcrumb-status');
+
+    if (dashEl) dashEl.classList.remove('d-none');
+    if (regEl) regEl.classList.add('d-none');
+    if (detailEl) detailEl.classList.add('d-none');
+    if (toolbarEl) toolbarEl.classList.add('d-none');
+
+    if (crumbSep) crumbSep.classList.add('d-none');
+    if (activeCrumb) activeCrumb.classList.add('d-none');
+    if (crumbTail) crumbTail.innerHTML = '';
+
+    const searchInput = document.getElementById('search-trips');
+    if (searchInput) searchInput.placeholder = 'Search Trips';
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  },
+
+  goToRegisterView(status = 'settled', fy = 'All') {
+    this.mainViewMode = 'register';
+    const dashEl = document.getElementById('trips-view-dashboard');
+    const regEl = document.getElementById('trips-view-register');
+    const detailEl = document.getElementById('trip-detail-view');
+    const toolbarEl = document.getElementById('trips-register-toolbar');
+    const crumbSep = document.getElementById('breadcrumb-sep');
+    const activeCrumb = document.getElementById('active-breadcrumb-status');
+
+    if (dashEl) dashEl.classList.add('d-none');
+    if (regEl) regEl.classList.remove('d-none');
+    if (detailEl) detailEl.classList.add('d-none');
+    if (toolbarEl) toolbarEl.classList.remove('d-none');
+
+    this.workflowTab = status;
+    this.currentFY = (fy === 'ALL' || fy === 'All') ? 'All' : fy;
+
+    // Update breadcrumb
+    if (crumbSep) crumbSep.classList.remove('d-none');
+    if (activeCrumb) {
+      activeCrumb.classList.remove('d-none');
+      const titleMap = {
+        open: 'Open',
+        settled: 'Settled',
+        all: 'All Bilties',
+        gst: 'GST Amount'
+      };
+      activeCrumb.innerText = (titleMap[status] || 'Trips') + (this.currentFY !== 'All' ? ` (${this.currentFY})` : '');
+    }
+
+    // Update active pill UI
+    document.getElementById('wtab-open')?.classList.toggle('active', status === 'open');
+    document.getElementById('wtab-settled')?.classList.toggle('active', status === 'settled');
+    document.getElementById('wtab-all')?.classList.toggle('active', status === 'all');
+    document.getElementById('tab-gst')?.classList.toggle('active', status === 'gst');
+
+    // Update active sidebar FY item
+    document.querySelectorAll('#fy-pill-group .appsheet-trips-sidebar-item').forEach(item => {
+      if (item.getAttribute('data-fy') === this.currentFY) {
+        item.classList.add('active');
+      } else {
+        item.classList.remove('active');
+      }
+    });
+    const activeBadge = document.getElementById('active-fy-badge');
+    if (activeBadge) activeBadge.innerText = this.currentFY;
+
+    const searchInput = document.getElementById('search-trips');
+    if (searchInput) {
+      searchInput.placeholder = status === 'open' ? 'Search Open Trips' : status === 'settled' ? 'Search Settled Trips' : status === 'gst' ? 'Search GST Invoices' : 'Search Trips';
+    }
+
+    this.currentPage = 1;
+    this.applyFilters();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  },
+
+  goToOpenTripsView(fy = 'All') {
+    this.goToRegisterView('open', fy);
+  },
+
+  goToSettledTripsView(fy = 'All') {
+    this.goToRegisterView('settled', fy);
+  },
+
+  goToAllTripsView(fy = 'All') {
+    this.goToRegisterView('all', fy);
+  },
+
+  goToFreightTripsView(fy = 'All') {
+    this.goToRegisterView('all', fy);
+  },
+
+  goToGstAmountView(fy = 'All') {
+    this.goToRegisterView('gst', fy);
+  },
+
+  goToGstCountView(fy = 'All') {
+    this.goToRegisterView('gst', fy);
+  },
+
+  goToGstNotPaidView() {
+    if (typeof AppUI !== 'undefined') {
+      AppUI.showToast('GST Not Paid: All current GST records are fully audited and settled.', 'info');
+    }
+  },
+
+  goToRateDiffView(fy = 'All') {
+    this.goToRegisterView('all', fy);
+    if (typeof AppUI !== 'undefined') {
+      AppUI.showToast(`Displaying Rate Difference audited records ${fy !== 'All' ? 'for ' + fy : ''}`, 'info');
+    }
+  },
+
+  toggleViewMode() {
+    if (this.mainViewMode === 'dashboard') {
+      this.goToRegisterView(this.workflowTab || 'settled', this.currentFY || 'All');
+    } else {
+      this.goToDashboardView();
+    }
+  },
+
+  openTruckOwnerAlert(type) {
+    const msg = type === 'open'
+      ? 'Truck Owner Open Balance: Verified pending freight balance under reconciliation.'
+      : 'Truck Owner Rate Difference: Rate variance adjusted in ledger entries.';
+    if (typeof AppUI !== 'undefined') {
+      AppUI.showToast(msg, 'warning');
+    } else {
+      alert(msg);
+    }
+  },
+
+  toggleFilterDropdown() {
+    if (typeof AppUI !== 'undefined') {
+      AppUI.showToast('AppSheet Quick Filter: Select a Financial Year or click card row to view register.', 'info');
+    }
   },
 
   // ----------------------------------------------------

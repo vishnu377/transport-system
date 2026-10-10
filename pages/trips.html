@@ -251,6 +251,208 @@
       color: #000000;
     }
 
+    /* Google AppSheet 8-Card Trips Dashboard Grid (media_1791639676754.png) */
+    .appsheet-dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      padding: 12px 18px;
+      background: #fafafa;
+    }
+    @media (max-width: 1100px) {
+      .appsheet-dashboard-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        padding: 10px 14px;
+      }
+    }
+    @media (max-width: 768px) {
+      .appsheet-rail {
+        display: none !important;
+      }
+      .appsheet-main-workspace {
+        margin-left: 0 !important;
+        width: 100% !important;
+        max-width: 100vw !important;
+        overflow-x: hidden !important;
+      }
+      .appsheet-top-bar {
+        padding: 4px 8px;
+        gap: 6px;
+      }
+      .appsheet-brand {
+        gap: 4px;
+        font-size: 13px;
+      }
+      .appsheet-brand span {
+        display: inline-block;
+        white-space: nowrap;
+        font-size: 13px;
+        max-width: 110px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .appsheet-search-box {
+        min-width: 0;
+        flex: 1;
+        padding: 0.25rem 0.5rem;
+      }
+      .appsheet-search-box input {
+        font-size: 12px;
+      }
+      .appsheet-dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        padding: 10px 10px;
+      }
+      .appsheet-dash-card-header {
+        padding: 8px 12px;
+      }
+      .appsheet-drill-row {
+        padding: 7px 12px;
+      }
+      .appsheet-drill-badge {
+        font-size: 11px;
+        padding: 2px 7px;
+        margin-left: 4px;
+      }
+    }
+    .appsheet-dash-card {
+      background: #ffffff;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      min-height: 270px;
+      transition: box-shadow 0.15s;
+    }
+    .appsheet-dash-card:hover {
+      box-shadow: 0 2px 6px rgba(0,0,0,0.07);
+    }
+    .appsheet-dash-card-header {
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #eeeeee;
+      gap: 8px;
+    }
+    .appsheet-dash-card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #202124;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      cursor: pointer;
+    }
+    .appsheet-dash-card-title:hover {
+      text-decoration: underline;
+    }
+    .appsheet-dash-card-tools {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #5f6368;
+      font-size: 13px;
+    }
+    .appsheet-tool-icon {
+      cursor: pointer;
+      color: #5f6368;
+      transition: color 0.15s;
+      user-select: none;
+      font-size: 13px;
+    }
+    .appsheet-tool-icon:hover {
+      color: #202124;
+    }
+    .appsheet-dash-card-body {
+      padding: 0;
+      flex: 1;
+      overflow-y: auto;
+      max-height: 380px;
+    }
+    .appsheet-drill-section-label {
+      font-size: 11.5px;
+      color: #5f6368;
+      font-weight: 500;
+      padding: 8px 14px 4px 14px;
+      text-transform: capitalize;
+    }
+    .appsheet-drill-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 14px;
+      border-bottom: 1px solid #f6f6f6;
+      cursor: pointer;
+      transition: background 0.12s;
+      font-size: 13px;
+      color: #202124;
+      gap: 6px;
+    }
+    .appsheet-drill-row:hover {
+      background: #f8f9fa;
+    }
+    .appsheet-drill-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      min-width: 0;
+    }
+    .appsheet-drill-label-all {
+      font-weight: 500;
+      color: #202124;
+    }
+    .appsheet-drill-badge {
+      display: inline-block;
+      margin-left: 8px;
+      padding: 2px 8px;
+      background: #f1f3f4;
+      color: #3c4043;
+      border-radius: 12px;
+      font-size: 11.5px;
+      font-weight: 500;
+      border: 1px solid #e0e0e0;
+    }
+    .appsheet-chevron {
+      color: #80868b;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .blue-bullet {
+      color: #1a73e8;
+    }
+    .green-bullet {
+      color: #137333;
+    }
+    .cyan-bullet {
+      color: #00acc1;
+    }
+    .gold-bullet {
+      color: #bfa15f;
+    }
+    .btn-appsheet-alert {
+      background: #bfa15f;
+      color: #202124;
+      font-weight: 500;
+      font-size: 11.5px;
+      border-radius: 4px;
+      border: none;
+      padding: 2px 7px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-appsheet-alert:hover {
+      background: #ab8e4f;
+    }
+
     /* AppSheet Main Card & Layout */
     .appsheet-main-card {
       background: #ffffff;
@@ -519,61 +721,363 @@
     <!-- Subheader with Breadcrumbs and Controls -->
     <div class="appsheet-subheader">
       <div class="appsheet-breadcrumb" id="appsheet-breadcrumb">
-        <a href="javascript:void(0)" onclick="TripsModule.goToTripsList()">Trips</a>
-        <span class="sep">&gt;</span>
-        <span class="active" id="active-breadcrumb-status">Settled</span>
-        <span id="appsheet-crumb-tail"></span>
+        <a href="javascript:void(0)" onclick="TripsModule.goToDashboardView()">Trips</a>
+        <span class="sep d-none" id="breadcrumb-sep">&gt;</span>
+        <span class="active d-none" id="active-breadcrumb-status">Settled</span>
       </div>
 
       <div class="d-flex align-items-center gap-2 flex-wrap">
         <!-- View Toggle Grid Icon ⊞ -->
-        <button type="button" class="btn-view-toggle" id="btn-view-toggle" onclick="TripsModule.toggleSidebar()" title="Toggle FY Sidebar">
-          田
+        <button type="button" class="btn-view-toggle" id="btn-view-toggle" onclick="TripsModule.toggleViewMode()" title="Toggle Dashboard / Register">
+          ⊞
         </button>
 
-        <div class="vr mx-1"></div>
+        <!-- Register Toolbar Pills & Actions (Hidden on Dashboard) -->
+        <div id="trips-register-toolbar" class="d-none d-flex align-items-center gap-2 flex-wrap">
+          <div class="vr mx-1"></div>
 
-        <!-- Filter Pills: Open / Settled / All Bilties / GST Amount -->
-        <button type="button" class="appsheet-pill" id="wtab-open" onclick="TripsModule.setWorkflowTab('open')">
-          Open <span class="badge bg-danger rounded-pill ms-1" id="badge-count-open" style="font-size: 0.72rem;">201</span>
-        </button>
-        <button type="button" class="appsheet-pill active" id="wtab-settled" onclick="TripsModule.setWorkflowTab('settled')">
-          Settled <span class="badge bg-success rounded-pill ms-1" id="badge-count-settled" style="font-size: 0.72rem;">6,442</span>
-        </button>
-        <button type="button" class="appsheet-pill" id="wtab-all" onclick="TripsModule.setWorkflowTab('all')">
-          All Bilties <span class="badge bg-secondary rounded-pill ms-1" id="badge-count-all" style="font-size: 0.72rem;">6,643</span>
-        </button>
-        <button type="button" class="appsheet-pill" id="tab-gst" onclick="TripsModule.setWorkflowTab('gst')">
-          GST Amount <span class="badge bg-primary rounded-pill ms-1" id="badge-count-gst" style="font-size: 0.72rem;">516</span>
-        </button>
+          <!-- Filter Pills: Open / Settled / All Bilties / GST Amount -->
+          <button type="button" class="appsheet-pill" id="wtab-open" onclick="TripsModule.setWorkflowTab('open')">
+            Open <span class="badge bg-danger rounded-pill ms-1" id="badge-count-open" style="font-size: 0.72rem;">201</span>
+          </button>
+          <button type="button" class="appsheet-pill active" id="wtab-settled" onclick="TripsModule.setWorkflowTab('settled')">
+            Settled <span class="badge bg-success rounded-pill ms-1" id="badge-count-settled" style="font-size: 0.72rem;">6,442</span>
+          </button>
+          <button type="button" class="appsheet-pill" id="wtab-all" onclick="TripsModule.setWorkflowTab('all')">
+            All Bilties <span class="badge bg-secondary rounded-pill ms-1" id="badge-count-all" style="font-size: 0.72rem;">6,643</span>
+          </button>
+          <button type="button" class="appsheet-pill" id="tab-gst" onclick="TripsModule.setWorkflowTab('gst')">
+            GST Amount <span class="badge bg-primary rounded-pill ms-1" id="badge-count-gst" style="font-size: 0.72rem;">516</span>
+          </button>
 
-        <div class="vr mx-1"></div>
+          <div class="vr mx-1"></div>
 
-        <!-- Firm Filters: TTC/SMTC / MTC / All -->
-        <button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2 fw-semibold" id="tab-ttc-smtc" onclick="TripsModule.setFirmTab('TTC_SMTC')">
-          TTC & SMTC
-        </button>
-        <button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2 fw-semibold" id="tab-mtc" onclick="TripsModule.setFirmTab('MTC')">
-          MTC
-        </button>
-        <button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2 fw-semibold d-none" id="tab-firm-all" onclick="TripsModule.setFirmTab('All')">
-          All Firms
-        </button>
+          <!-- Firm Filters: TTC/SMTC / MTC / All -->
+          <button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2 fw-semibold" id="tab-ttc-smtc" onclick="TripsModule.setFirmTab('TTC_SMTC')">
+            TTC & SMTC
+          </button>
+          <button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2 fw-semibold" id="tab-mtc" onclick="TripsModule.setFirmTab('MTC')">
+            MTC
+          </button>
+          <button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2 fw-semibold d-none" id="tab-firm-all" onclick="TripsModule.setFirmTab('All')">
+            All Firms
+          </button>
 
-        <div class="vr mx-1"></div>
+          <div class="vr mx-1"></div>
 
-        <!-- Action Buttons -->
-        <a href="./bilty-booking.html" class="btn-appsheet-add">
-          <i class="bi bi-plus-lg"></i> + Book Bilty
-        </a>
+          <!-- Action Buttons -->
+          <a href="./bilty-booking.html" class="btn-appsheet-add">
+            <i class="bi bi-plus-lg"></i> + Book Bilty
+          </a>
+        </div>
       </div>
     </div>
 
     <!-- ========================================== -->
-    <!-- 4. APPSHEET MAIN CARD & SPLIT LAYOUT -->
+    <!-- 4A. TRIPS 8-CARD DASHBOARD VIEW (Level 1) -->
+    <!-- Matching media_1791639676754.png -->
+    <!-- ========================================== -->
+    <div id="trips-view-dashboard">
+      <div class="appsheet-dashboard-grid">
+        
+        <!-- CARD 1: Open -->
+        <div class="appsheet-dash-card" id="card-trips-open">
+          <div class="appsheet-dash-card-header" style="cursor: pointer;" onclick="TripsModule.goToOpenTripsView()">
+            <span class="appsheet-dash-card-title">Open</span>
+            <div class="appsheet-dash-card-tools" onclick="event.stopPropagation()">
+              <button type="button" class="btn-appsheet-alert py-0 px-2" onclick="TripsModule.openTruckOwnerAlert('open')" title="Truck Owner Alert">
+                <span style="display:inline-block; width:12px; height:12px; background:#202124; color:#bfa15f; font-size:9px; line-height:12px; text-align:center; border-radius:2px; font-weight:bold;">!</span> Truck Own...
+              </button>
+              <span class="appsheet-tool-icon" onclick="TripsModule.toggleFilterDropdown()" title="Filter"><i class="bi bi-funnel"></i></span>
+              <span class="appsheet-tool-icon" onclick="TripsModule.goToOpenTripsView()" title="Expand Open">↗</span>
+            </div>
+          </div>
+          <div class="appsheet-dash-card-body">
+            <div class="appsheet-drill-section-label">Year</div>
+            <div class="appsheet-drill-row" onclick="TripsModule.goToOpenTripsView('ALL')">
+              <span class="appsheet-drill-label-all">All</span>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="TripsModule.goToOpenTripsView('2026-2027')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet blue-bullet">●</span>
+                <span class="fw-semibold text-primary">2026-2027</span>
+                <span class="appsheet-drill-badge" id="card-open-badge-2026">₹ 24,025,979.75</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="TripsModule.goToOpenTripsView('2025-2026')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet blue-bullet">●</span>
+                <span class="fw-semibold text-primary">2025-2026</span>
+                <span class="appsheet-drill-badge" id="card-open-badge-2025">₹ 943,706.10</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="TripsModule.goToOpenTripsView('2024-2025')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet blue-bullet">●</span>
+                <span class="fw-semibold text-primary">2024-2025</span>
+                <span class="appsheet-drill-badge" id="card-open-badge-2024">₹ 195,431.00</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 2: Settled -->
+        <div class="appsheet-dash-card" id="card-trips-settled">
+          <div class="appsheet-dash-card-header" style="cursor: pointer;" onclick="TripsModule.goToSettledTripsView()">
+            <span class="appsheet-dash-card-title">Settled</span>
+            <div class="appsheet-dash-card-tools" onclick="event.stopPropagation()">
+              <span class="appsheet-tool-icon" onclick="TripsModule.toggleFilterDropdown()" title="Filter"><i class="bi bi-funnel"></i></span>
+              <span class="appsheet-tool-icon" onclick="TripsModule.goToSettledTripsView()" title="Expand Settled">↗</span>
+            </div>
+          </div>
+          <div class="appsheet-dash-card-body">
+            <div class="appsheet-drill-section-label">Year</div>
+            <div class="appsheet-drill-row" onclick="TripsModule.goToSettledTripsView('ALL')">
+              <span class="appsheet-drill-label-all">All</span>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="TripsModule.goToSettledTripsView('2026-2027')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet green-bullet">●</span>
+                <span class="fw-semibold text-success">2026-2027</span>
+                <span class="appsheet-drill-badge" id="card-settled-badge-2026">₹ 267,227,181.00</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="TripsModule.goToSettledTripsView('2025-2026')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet green-bullet">●</span>
+                <span class="fw-semibold text-success">2025-2026</span>
+                <span class="appsheet-drill-badge" id="card-settled-badge-2025">₹ 577,013,476.49</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="TripsModule.goToSettledTripsView('2024-2025')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet green-bullet">●</span>
+                <span class="fw-semibold text-success">2024-2025</span>
+                <span class="appsheet-drill-badge" id="card-settled-badge-2024">₹ 263,358,138.84</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 3: Trips -->
+        <div class="appsheet-dash-card" id="card-trips-count">
+          <div class="appsheet-dash-card-header" style="cursor: pointer;" onclick="TripsModule.goToAllTripsView()">
+            <span class="appsheet-dash-card-title">Trips</span>
+            <div class="appsheet-dash-card-tools" onclick="event.stopPropagation()">
+              <span class="appsheet-tool-icon" onclick="TripsModule.toggleFilterDropdown()" title="Filter"><i class="bi bi-funnel"></i></span>
+              <span class="appsheet-tool-icon" onclick="TripsModule.goToAllTripsView()" title="Expand Trips">↗</span>
+            </div>
+          </div>
+          <div class="appsheet-dash-card-body">
+            <div class="appsheet-drill-section-label">Year</div>
+            <div class="appsheet-drill-row" onclick="TripsModule.goToAllTripsView('ALL')">
+              <span class="appsheet-drill-label-all">All</span>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="TripsModule.goToAllTripsView('2026-2027')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet green-bullet">●</span>
+                <span class="fw-semibold text-success">2026-2027</span>
+                <span class="appsheet-drill-badge" id="card-trips-badge-2026">2850</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="TripsModule.goToAllTripsView('2025-2026')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet green-bullet">●</span>
+                <span class="fw-semibold text-success">2025-2026</span>
+                <span class="appsheet-drill-badge" id="card-trips-badge-2025">4897</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="TripsModule.goToAllTripsView('2024-2025')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet green-bullet">●</span>
+                <span class="fw-semibold text-success">2024-2025</span>
+                <span class="appsheet-drill-badge" id="card-trips-badge-2024">2195</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 4: Trips Total Freight -->
+        <div class="appsheet-dash-card" id="card-trips-freight">
+          <div class="appsheet-dash-card-header" style="cursor: pointer;" onclick="TripsModule.goToFreightTripsView()">
+            <span class="appsheet-dash-card-title">Trips Total Freight</span>
+            <div class="appsheet-dash-card-tools" onclick="event.stopPropagation()">
+              <span class="appsheet-tool-icon" onclick="TripsModule.toggleFilterDropdown()" title="Filter"><i class="bi bi-funnel"></i></span>
+              <span class="appsheet-tool-icon" onclick="TripsModule.goToFreightTripsView()" title="Expand Freight">↗</span>
+            </div>
+          </div>
+          <div class="appsheet-dash-card-body">
+            <div class="appsheet-drill-section-label">Year</div>
+            <div class="appsheet-drill-row" onclick="TripsModule.goToFreightTripsView('ALL')">
+              <span class="appsheet-drill-label-all">All</span>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="TripsModule.goToFreightTripsView('2026-2027')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet green-bullet">●</span>
+                <span class="fw-semibold text-success">2026-2027</span>
+                <span class="appsheet-drill-badge" id="card-freight-badge-2026">₹ 361,649,153.00</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="TripsModule.goToFreightTripsView('2025-2026')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet green-bullet">●</span>
+                <span class="fw-semibold text-success">2025-2026</span>
+                <span class="appsheet-drill-badge" id="card-freight-badge-2025">₹ 624,453,100.59</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="TripsModule.goToFreightTripsView('2024-2025')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet green-bullet">●</span>
+                <span class="fw-semibold text-success">2024-2025</span>
+                <span class="appsheet-drill-badge" id="card-freight-badge-2024">₹ 264,272,359.88</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 5: GST not Paid -->
+        <div class="appsheet-dash-card" id="card-trips-gst-not-paid">
+          <div class="appsheet-dash-card-header" style="cursor: pointer;" onclick="TripsModule.goToGstNotPaidView()">
+            <span class="appsheet-dash-card-title">GST not Paid</span>
+            <div class="appsheet-dash-card-tools" onclick="event.stopPropagation()">
+              <span class="appsheet-tool-icon" onclick="TripsModule.toggleFilterDropdown()" title="Filter"><i class="bi bi-funnel"></i></span>
+              <span class="appsheet-tool-icon" onclick="TripsModule.goToGstNotPaidView()" title="Expand GST not Paid">↗</span>
+            </div>
+          </div>
+          <div class="appsheet-dash-card-body d-flex align-items-center justify-content-center" style="min-height: 200px;">
+            <span class="text-muted" style="font-size: 13.5px;">No items</span>
+          </div>
+        </div>
+
+        <!-- CARD 6: GST Amount -->
+        <div class="appsheet-dash-card" id="card-trips-gst-amount">
+          <div class="appsheet-dash-card-header" style="cursor: pointer;" onclick="TripsModule.goToGstAmountView()">
+            <span class="appsheet-dash-card-title">GST Amount</span>
+            <div class="appsheet-dash-card-tools" onclick="event.stopPropagation()">
+              <span class="appsheet-tool-icon" onclick="TripsModule.toggleFilterDropdown()" title="Filter"><i class="bi bi-funnel"></i></span>
+              <span class="appsheet-tool-icon" onclick="TripsModule.goToGstAmountView()" title="Expand GST Amount">↗</span>
+            </div>
+          </div>
+          <div class="appsheet-dash-card-body">
+            <div class="appsheet-drill-section-label">Year</div>
+            <div class="appsheet-drill-row" onclick="TripsModule.goToGstAmountView('ALL')">
+              <span class="appsheet-drill-label-all">All</span>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="TripsModule.goToGstAmountView('2026-2027')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet green-bullet">●</span>
+                <span class="fw-semibold text-success">2026-2027</span>
+                <span class="appsheet-drill-badge" id="card-gstamt-badge-2026">₹ 4,887,692.00</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="TripsModule.goToGstAmountView('2025-2026')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet green-bullet">●</span>
+                <span class="fw-semibold text-success">2025-2026</span>
+                <span class="appsheet-drill-badge" id="card-gstamt-badge-2025">₹ 11,841,075.38</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 7: GST Count -->
+        <div class="appsheet-dash-card" id="card-trips-gst-count">
+          <div class="appsheet-dash-card-header" style="cursor: pointer;" onclick="TripsModule.goToGstCountView()">
+            <span class="appsheet-dash-card-title">GST Count</span>
+            <div class="appsheet-dash-card-tools" onclick="event.stopPropagation()">
+              <span class="appsheet-tool-icon" onclick="TripsModule.toggleFilterDropdown()" title="Filter"><i class="bi bi-funnel"></i></span>
+              <span class="appsheet-tool-icon" onclick="TripsModule.goToGstCountView()" title="Expand GST Count">↗</span>
+            </div>
+          </div>
+          <div class="appsheet-dash-card-body">
+            <div class="appsheet-drill-section-label">Year</div>
+            <div class="appsheet-drill-row" onclick="TripsModule.goToGstCountView('ALL')">
+              <span class="appsheet-drill-label-all">All</span>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="TripsModule.goToGstCountView('2026-2027')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet green-bullet">●</span>
+                <span class="fw-semibold text-success">2026-2027</span>
+                <span class="appsheet-drill-badge" id="card-gstcnt-badge-2026">208</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="TripsModule.goToGstCountView('2025-2026')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet green-bullet">●</span>
+                <span class="fw-semibold text-success">2025-2026</span>
+                <span class="appsheet-drill-badge" id="card-gstcnt-badge-2025">634</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 8: Rate Difference -->
+        <div class="appsheet-dash-card" id="card-trips-rate-diff">
+          <div class="appsheet-dash-card-header" style="cursor: pointer;" onclick="TripsModule.goToRateDiffView()">
+            <span class="appsheet-dash-card-title">Rate Difference</span>
+            <div class="appsheet-dash-card-tools" onclick="event.stopPropagation()">
+              <button type="button" class="btn-appsheet-alert py-0 px-2" onclick="TripsModule.openTruckOwnerAlert('rate-diff')" title="Truck Owner Alert">
+                <span style="display:inline-block; width:12px; height:12px; background:#202124; color:#bfa15f; font-size:9px; line-height:12px; text-align:center; border-radius:2px; font-weight:bold;">!</span> Truck Own...
+              </button>
+              <span class="appsheet-tool-icon" onclick="TripsModule.toggleFilterDropdown()" title="Filter"><i class="bi bi-funnel"></i></span>
+              <span class="appsheet-tool-icon" onclick="TripsModule.goToRateDiffView()" title="Expand Rate Difference">↗</span>
+            </div>
+          </div>
+          <div class="appsheet-dash-card-body">
+            <div class="appsheet-drill-section-label">Year</div>
+            <div class="appsheet-drill-row" onclick="TripsModule.goToRateDiffView('ALL')">
+              <span class="appsheet-drill-label-all">All</span>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="TripsModule.goToRateDiffView('2026-2027')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet cyan-bullet">●</span>
+                <span class="fw-semibold" style="color: #009688;">2026-2027</span>
+                <span class="appsheet-drill-badge" id="card-ratediff-badge-2026">₹ 1,016,713.00</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+            <div class="appsheet-drill-row" onclick="TripsModule.goToRateDiffView('2025-2026')">
+              <div class="appsheet-drill-left">
+                <span class="appsheet-bullet cyan-bullet">●</span>
+                <span class="fw-semibold" style="color: #009688;">2025-2026</span>
+                <span class="appsheet-drill-badge" id="card-ratediff-badge-2025">₹ 778,900.00</span>
+              </div>
+              <span class="appsheet-chevron">&gt;</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 4B. APPSHEET MAIN CARD & REGISTER VIEW -->
     <!-- (Matching 17_09_05.png & 16_46_17.png) -->
     <!-- ========================================== -->
-    <div id="trips-view-register">
+    <div id="trips-view-register" class="d-none">
       <div class="appsheet-main-card">
         <div class="appsheet-trips-split">
           
