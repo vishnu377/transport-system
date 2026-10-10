@@ -61,6 +61,20 @@ const LedgerModule = {
   modalExpenseType: 'Company',
   modalExpenseFrom: 'Cash',
 
+  // Owner Expense State (Authentic AppSheet Pink Master-Detail)
+  allOwnerExpenses: [],
+  selectedOwnerFY: '2026-2027',
+  selectedOwnerMonth: '7 Oct',
+  selectedOwnerName: null,
+  expandedOwnerFYs: { '2026-2027': true, '2025-2026': false, '2024-2025': false },
+  isOwnerSidebarHidden: false,
+  ownerPageSize: 100,
+  ownerCurrentPage: 1,
+  filteredOwnerList: [],
+  activeOwnerExpenseId: null,
+  isOwnerPanelFullscreen: false,
+  isOwnerViewFullscreen: false,
+
   // Received Payments State (Authentic AppSheet Green Master-Detail)
   selectedReceivedFY: '2026-2027',
   selectedReceivedType: 'ALL',
@@ -147,24 +161,45 @@ const LedgerModule = {
     const urlParams = (typeof window !== 'undefined' && window.location) ? new URLSearchParams(window.location.search) : null;
     const viewParam = urlParams ? urlParams.get('view') : null;
     const fyParam = urlParams ? urlParams.get('fy') : null;
+    const idParam = urlParams ? urlParams.get('id') : null;
+    if (idParam && idParam.startsWith('OWN_EXP')) {
+      this.goToOwnerExpenseView(fyParam || '2026-2027');
+      this.openOwnerExpenseDetails(idParam);
+      return;
+    }
     if (viewParam === 'all-debts') {
-      return this.goToAllDebtsView(fyParam || 'ALL');
+      this.goToAllDebtsView(fyParam || 'ALL');
+      if (idParam) this.openAllDebtDetails(idParam);
+      return;
     } else if (viewParam === 'open-debts') {
-      return this.goToOpenDebtsView(fyParam || '2026-2027');
+      this.goToOpenDebtsView(fyParam || '2026-2027');
+      if (idParam) this.openOpenDebtDetails(idParam);
+      return;
     } else if (viewParam === 'cash-ledger') {
       return this.goToCashLedgerView(fyParam || '2026-2027');
     } else if (viewParam === 'returned') {
-      return this.goToReturnedAmountView(fyParam || '2026-2027');
+      this.goToReturnedAmountView(fyParam || '2026-2027');
+      if (idParam) this.openSettledDebtDetails(idParam);
+      return;
     } else if (viewParam === 'company') {
-      return this.goToCompanyExpenseView(fyParam || '2026-2027');
+      this.goToCompanyExpenseView(fyParam || '2026-2027');
+      if (idParam) this.openCompanyExpenseDetails(idParam);
+      return;
+    } else if (viewParam === 'owner' || viewParam === 'owner-expense') {
+      this.goToOwnerExpenseView(fyParam || '2026-2027');
+      if (idParam) this.openOwnerExpenseDetails(idParam);
+      return;
     } else if (viewParam === 'received') {
-      return this.goToReceivedView(fyParam || '2026-2027');
+      this.goToReceivedView(fyParam || '2026-2027');
+      if (idParam) this.openReceivedPaymentDetails(idParam);
+      return;
     }
 
     this.applyFilters();
     this.applyCashFilters();
     this.applyReturnedFilters();
     this.applyCompanyFilters();
+    this.applyOwnerFilters();
     this.applyReceivedFilters();
     this.applyOpenDebtsFilters();
     this.applyAllDebtsFilters();
@@ -178,7 +213,7 @@ const LedgerModule = {
     const [
       allDebts, allParties, allOwners, allTrips,
       allPayments, allCashLedger, allReturnedAmounts,
-      allCompanyExpenses, allReceivedPayments
+      allCompanyExpenses, allReceivedPayments, allOwnerExpenses
     ] = await Promise.all([
       dbService.getAll('debts'),
       dbService.getAll('parties'),
@@ -188,7 +223,8 @@ const LedgerModule = {
       dbService.getAll('cashLedger'),
       dbService.getAll('returnedAmounts'),
       dbService.getAll('companyExpenses'),
-      dbService.getAll('receivedPayments')
+      dbService.getAll('receivedPayments'),
+      dbService.getAll('ownerExpenses')
     ]);
     this.allDebts = allDebts || [];
     this.allParties = allParties || [];
@@ -199,6 +235,7 @@ const LedgerModule = {
     this.allReturnedAmounts = allReturnedAmounts || [];
     this.allCompanyExpenses = allCompanyExpenses || [];
     this.allReceivedPayments = allReceivedPayments || [];
+    this.allOwnerExpenses = allOwnerExpenses || [];
   },
 
   // ----------------------------------------------------
@@ -369,9 +406,27 @@ const LedgerModule = {
     this.renderCurrentView();
   },
 
-  goToOwnerExpenseView(fy = 'ALL') {
-    if (typeof AppUI !== 'undefined') AppUI.showToast(`Owner Expenses for ${fy} opening...`, 'info');
-    this.goToDebtsView('all', fy);
+  goToOwnerExpenseView(fy = '2026-2027', month = null, owner = null) {
+    this.mainViewMode = 'owner-expense';
+    if (fy === 'ALL') {
+      this.selectedOwnerFY = 'ALL';
+      this.selectedOwnerMonth = 'ALL';
+      this.selectedOwnerName = null;
+    } else {
+      this.selectedOwnerFY = fy;
+      this.selectedOwnerMonth = month !== null ? month : (fy === '2026-2027' ? '7 Oct' : 'ALL');
+      this.selectedOwnerName = owner || null;
+      this.expandedOwnerFYs[fy] = true;
+    }
+    this.ownerCurrentPage = 1;
+    this.searchQuery = '';
+    const sInput = document.getElementById('ledger-search-input');
+    if (sInput) {
+      sInput.value = '';
+      sInput.placeholder = 'Search Owner';
+    }
+    this.applyOwnerFilters();
+    this.renderCurrentView();
   },
 
   handleTopAddAction() {
@@ -379,6 +434,8 @@ const LedgerModule = {
       this.openCashDetailsModal();
     } else if (this.mainViewMode === 'company-expense') {
       this.openAddCompanyExpenseModal();
+    } else if (this.mainViewMode === 'owner-expense') {
+      this.openAddOwnerExpenseModal();
     } else if (this.mainViewMode === 'received') {
       this.openAddIncomeRecordModal();
     } else {
@@ -2202,6 +2259,15 @@ const LedgerModule = {
     const lineItemInput = document.getElementById('comp-exp-line-item');
     if (lineItemInput) lineItemInput.value = '';
 
+    // Populate owners in dropdown
+    const ownerSelect = document.getElementById('comp-exp-owner');
+    if (ownerSelect) {
+      const ownerNames = new Set(['Ramkaran Jat', 'Damji Vyas (Mining)', 'Govind Choudhary', 'Kalu Khan', 'Kalu Bhai', 'Suresh Kumar Choudhary', 'Balveer Yadav', 'Narendra Choudhary']);
+      (this.allOwnerExpenses || []).forEach(o => { if (o.ownerName) ownerNames.add(o.ownerName); });
+      (this.allOwners || []).forEach(o => { if (o.name) ownerNames.add(o.name); });
+      ownerSelect.innerHTML = Array.from(ownerNames).map(name => `<option value="${name}" ${name === 'Ramkaran Jat' ? 'selected' : ''}>● ${name}</option>`).join('');
+    }
+
     this.setExpenseType('Company');
     this.setExpenseFrom('Cash');
 
@@ -2273,12 +2339,16 @@ const LedgerModule = {
     const monthKey = monthMap[monthNum] || '7 Oct';
 
     let ownerName = '';
-    if (this.modalExpenseType === 'Owner') {
+    const isOwner = this.modalExpenseType === 'Owner';
+    if (isOwner) {
       ownerName = document.getElementById('comp-exp-owner')?.value || 'Ramkaran Jat';
     }
 
+    const collection = isOwner ? 'ownerExpenses' : 'companyExpenses';
+    const idPrefix = isOwner ? 'OWN_EXP_' : 'COMP_EXP_';
+
     const newRecord = {
-      id: `COMP_EXP_${Date.now()}`,
+      id: `${idPrefix}${Date.now()}`,
       date: dateVal,
       displayDate,
       amount: amountVal,
@@ -2292,16 +2362,11 @@ const LedgerModule = {
 
     if (typeof dbService !== 'undefined') {
       try {
-        await dbService.add('companyExpenses', newRecord);
+        await dbService.create(collection, newRecord);
       } catch (err) {
         console.error('Failed to save to dbService:', err);
       }
     }
-
-    if (!Array.isArray(this.allCompanyExpenses)) {
-      this.allCompanyExpenses = [];
-    }
-    this.allCompanyExpenses.unshift(newRecord);
 
     // Close modal
     const modalEl = document.getElementById('modal-add-company-expense');
@@ -2309,21 +2374,528 @@ const LedgerModule = {
       bootstrap.Modal.getOrCreateInstance(modalEl).hide();
     }
 
-    // Switch view to company expense if not already there, select appropriate FY and month
-    this.mainViewMode = 'company-expense';
-    this.selectedCompanyFY = fy;
-    this.selectedCompanyMonth = monthKey;
-    this.expandedCompanyFYs[fy] = true;
-
-    this.applyCompanyFilters();
-    this.renderCurrentView();
-
-    // Open detail panel for the new record
-    this.openCompanyExpenseDetails(newRecord.id);
-
-    if (typeof AppUI !== 'undefined') {
-      AppUI.showToast(`Expense of ₹ ${this.formatINR3(amountVal)} saved successfully!`, 'success');
+    if (isOwner) {
+      if (!Array.isArray(this.allOwnerExpenses)) this.allOwnerExpenses = [];
+      this.allOwnerExpenses.unshift(newRecord);
+      this.mainViewMode = 'owner-expense';
+      this.selectedOwnerFY = fy;
+      this.selectedOwnerMonth = monthKey;
+      this.expandedOwnerFYs[fy] = true;
+      this.applyOwnerFilters();
+      this.renderCurrentView();
+      this.openOwnerExpenseDetails(newRecord.id);
+      if (typeof AppUI !== 'undefined') {
+        AppUI.showToast(`Owner Expense of ₹ ${this.formatINR3(amountVal)} saved successfully!`, 'success');
+      }
+    } else {
+      if (!Array.isArray(this.allCompanyExpenses)) this.allCompanyExpenses = [];
+      this.allCompanyExpenses.unshift(newRecord);
+      this.mainViewMode = 'company-expense';
+      this.selectedCompanyFY = fy;
+      this.selectedCompanyMonth = monthKey;
+      this.expandedCompanyFYs[fy] = true;
+      this.applyCompanyFilters();
+      this.renderCurrentView();
+      this.openCompanyExpenseDetails(newRecord.id);
+      if (typeof AppUI !== 'undefined') {
+        AppUI.showToast(`Expense of ₹ ${this.formatINR3(amountVal)} saved successfully!`, 'success');
+      }
     }
+  },
+
+  // ----------------------------------------------------
+  // OWNER EXPENSE FILTERING, RENDERING & ACTIONS (Authentic AppSheet Pink Master-Detail)
+  // ----------------------------------------------------
+  openAddOwnerExpenseModal() {
+    this.openAddCompanyExpenseModal();
+    this.setExpenseType('Owner');
+  },
+
+  applyOwnerFilters() {
+    if (!this.allOwnerExpenses || !Array.isArray(this.allOwnerExpenses)) {
+      this.filteredOwnerList = [];
+      this.renderOwnerExpenseTable();
+      return;
+    }
+
+    const query = (this.searchQuery || '').trim().toLowerCase();
+
+    this.filteredOwnerList = this.allOwnerExpenses.filter(item => {
+      // Financial Year Filter
+      if (this.selectedOwnerFY !== 'ALL') {
+        if (item.fy !== this.selectedOwnerFY) return false;
+      }
+
+      // Month Filter
+      if (this.selectedOwnerMonth && this.selectedOwnerMonth !== 'ALL') {
+        if (item.monthKey !== this.selectedOwnerMonth) return false;
+      }
+
+      // Owner Name Filter
+      if (this.selectedOwnerName && this.selectedOwnerName !== 'ALL') {
+        if (item.ownerName !== this.selectedOwnerName) return false;
+      }
+
+      // Search Query Filter
+      if (query) {
+        const match =
+          (item.displayDate && item.displayDate.toLowerCase().includes(query)) ||
+          (item.date && item.date.toLowerCase().includes(query)) ||
+          (item.expenseLineItem && item.expenseLineItem.toLowerCase().includes(query)) ||
+          (item.expenseFrom && item.expenseFrom.toLowerCase().includes(query)) ||
+          (item.expenseType && item.expenseType.toLowerCase().includes(query)) ||
+          (item.ownerName && item.ownerName.toLowerCase().includes(query)) ||
+          (item.amount && item.amount.toString().includes(query));
+        if (!match) return false;
+      }
+
+      return true;
+    });
+
+    // Update breadcrumb badge
+    const badge = document.getElementById('owner-current-filter-badge');
+    if (badge) {
+      if (this.selectedOwnerFY === 'ALL') {
+        badge.innerHTML = `<i class="bi bi-funnel me-1 text-muted"></i>All Financial Years (${this.filteredOwnerList.length} records)`;
+      } else if (this.selectedOwnerMonth === 'ALL') {
+        badge.innerHTML = `<i class="bi bi-funnel me-1 text-muted"></i>${this.selectedOwnerFY} &gt; <strong>All Months</strong> (${this.filteredOwnerList.length} records)`;
+      } else {
+        badge.innerHTML = `<i class="bi bi-funnel me-1 text-muted"></i>${this.selectedOwnerFY} &gt; <strong>${this.selectedOwnerMonth}</strong> (${this.filteredOwnerList.length} records)`;
+      }
+    }
+
+    this.ownerCurrentPage = 1;
+    this.renderOwnerTreeSidebar();
+    this.renderOwnerExpenseTable();
+  },
+
+  renderOwnerTreeSidebar() {
+    if (!this.allOwnerExpenses) return;
+
+    // Calculate totals across dataset
+    let grandTotal = 0;
+    const fyTotals = {};
+    const monthTotals = {}; // key: `${fy}_${monthKey}`
+
+    this.allOwnerExpenses.forEach(r => {
+      const amt = Number(r.amount) || 0;
+      grandTotal += amt;
+
+      const fy = r.fy || 'empty';
+      fyTotals[fy] = (fyTotals[fy] || 0) + amt;
+
+      if (r.monthKey) {
+        const mKey = `${fy}_${r.monthKey}`;
+        monthTotals[mKey] = (monthTotals[mKey] || 0) + amt;
+      }
+    });
+
+    // Update badges
+    const badgeAll = document.getElementById('owner-badge-all');
+    if (badgeAll) badgeAll.textContent = `₹ ${this.formatINR3(grandTotal)}`;
+
+    ['2026-2027', '2025-2026', '2024-2025'].forEach(fy => {
+      const b = document.getElementById(`owner-badge-${fy}`);
+      if (b) b.textContent = `₹ ${this.formatINR3(fyTotals[fy] || 0)}`;
+    });
+
+    // Also update Card 7 badges on the main dashboard
+    const cardBadge26 = document.getElementById('card-owner-badge-2026-2027');
+    if (cardBadge26 && fyTotals['2026-2027']) cardBadge26.textContent = `₹ ${this.formatINR3(fyTotals['2026-2027'])}`;
+    const cardBadge25 = document.getElementById('card-owner-badge-2025-2026');
+    if (cardBadge25 && fyTotals['2025-2026']) cardBadge25.textContent = `₹ ${this.formatINR3(fyTotals['2025-2026'])}`;
+    const cardBadge24 = document.getElementById('card-owner-badge-2024-2025');
+    if (cardBadge24 && fyTotals['2024-2025']) cardBadge24.textContent = `₹ ${this.formatINR3(fyTotals['2024-2025'])}`;
+
+    // Active state highlighting on All & FY items
+    const treeAll = document.getElementById('owner-tree-all');
+    if (treeAll) {
+      treeAll.classList.toggle('active', this.selectedOwnerFY === 'ALL');
+    }
+
+    const monthsByFY = {
+      '2026-2027': ['7 Oct', '6 Sep', '5 Aug', '4 Jul', '3 Jun', '2 May', '1 Apr'],
+      '2025-2026': ['12 Mar', '11 Feb', '10 Jan', '9 Dec', '8 Nov', '7 Oct', '6 Sep', '5 Aug', '4 Jul', '3 Jun', '2 May', '1 Apr'],
+      '2024-2025': ['12 Mar', '11 Feb', '10 Jan', '9 Dec', '8 Nov', '7 Oct', '6 Sep', '5 Aug', '4 Jul', '3 Jun', '2 May', '1 Apr']
+    };
+
+    ['2026-2027', '2025-2026', '2024-2025'].forEach(fy => {
+      const isExpanded = !!this.expandedOwnerFYs[fy];
+      const sublistEl = document.getElementById(`owner-sublist-${fy}`);
+      const fyItemEl = document.getElementById(`owner-tree-${fy}`);
+
+      if (fyItemEl) {
+        fyItemEl.classList.toggle('active', this.selectedOwnerFY === fy && this.selectedOwnerMonth === 'ALL');
+        const caret = fyItemEl.querySelector('.owner-tree-caret');
+        if (caret) {
+          caret.innerHTML = isExpanded ? '<i class="bi bi-caret-down-fill"></i>' : '<i class="bi bi-caret-right-fill"></i>';
+        }
+      }
+
+      if (sublistEl) {
+        if (!isExpanded) {
+          sublistEl.classList.add('d-none');
+          sublistEl.innerHTML = '';
+        } else {
+          sublistEl.classList.remove('d-none');
+          const months = monthsByFY[fy] || [];
+          sublistEl.innerHTML = months.map(mKey => {
+            const mTotal = monthTotals[`${fy}_${mKey}`] || 0;
+            const isMonthActive = this.selectedOwnerFY === fy && this.selectedOwnerMonth === mKey;
+            return `
+              <div class="owner-tree-item owner-tree-subitem ${isMonthActive ? 'active' : ''}" onclick="LedgerModule.selectOwnerMonth('${fy}', '${mKey}')">
+                <div class="d-flex align-items-center gap-1">
+                  <span class="appsheet-bullet pink-bullet" style="font-size: 11px;">●</span>
+                  <span>${mKey}</span>
+                </div>
+                <span class="owner-tree-badge">₹ ${this.formatINR3(mTotal)}</span>
+              </div>
+            `;
+          }).join('');
+        }
+      }
+    });
+  },
+
+  toggleOwnerFYTree(fy) {
+    this.expandedOwnerFYs[fy] = !this.expandedOwnerFYs[fy];
+    this.renderOwnerTreeSidebar();
+  },
+
+  selectOwnerFY(fy) {
+    this.selectedOwnerFY = fy;
+    this.selectedOwnerMonth = 'ALL';
+    if (fy !== 'ALL') {
+      this.expandedOwnerFYs[fy] = true;
+    }
+    this.applyOwnerFilters();
+  },
+
+  selectOwnerMonth(fy, month) {
+    this.selectedOwnerFY = fy;
+    this.selectedOwnerMonth = month;
+    if (fy !== 'ALL') {
+      this.expandedOwnerFYs[fy] = true;
+    }
+    this.applyOwnerFilters();
+  },
+
+  selectOwnerAll() {
+    this.selectedOwnerFY = 'ALL';
+    this.selectedOwnerMonth = 'ALL';
+    this.applyOwnerFilters();
+  },
+
+  toggleOwnerDateSidebar() {
+    this.isOwnerSidebarHidden = !this.isOwnerSidebarHidden;
+    const sidebar = document.getElementById('owner-tree-sidebar');
+    const btnText = document.getElementById('btn-toggle-owner-text');
+    const btnIcon = document.getElementById('btn-toggle-owner-icon');
+
+    if (sidebar) {
+      if (this.isOwnerSidebarHidden) {
+        sidebar.classList.add('collapsed');
+        if (btnText) btnText.textContent = 'Show Date Filter';
+        if (btnIcon) btnIcon.className = 'bi bi-layout-sidebar';
+      } else {
+        sidebar.classList.remove('collapsed');
+        if (btnText) btnText.textContent = 'Hide Date Filter';
+        if (btnIcon) btnIcon.className = 'bi bi-layout-sidebar-inset';
+      }
+    }
+  },
+
+  renderOwnerExpenseTable() {
+    const tbody = document.getElementById('owner-expense-tbody');
+    if (!tbody) return;
+
+    if (!this.filteredOwnerList || this.filteredOwnerList.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="6" class="text-center py-5 text-muted">
+            <i class="bi bi-inbox fs-2 d-block mb-2 text-secondary"></i>
+            No owner expense records match the selected filter or search criteria.
+            <div class="mt-2">
+              <button type="button" class="btn btn-sm btn-outline-danger" style="color: #e91e63; border-color: #e91e63;" onclick="LedgerModule.selectOwnerAll(); LedgerModule.clearSearch();">
+                Reset Filters & Search
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+      const pInfo = document.getElementById('owner-pagination-info');
+      if (pInfo) pInfo.textContent = 'Showing 0 records';
+      const pBtns = document.getElementById('owner-pagination-buttons');
+      if (pBtns) pBtns.innerHTML = '';
+      return;
+    }
+
+    const totalCount = this.filteredOwnerList.length;
+    let recordsToDisplay = this.filteredOwnerList;
+    let totalPages = 1;
+
+    if (this.ownerPageSize !== 'ALL') {
+      const pSize = parseInt(this.ownerPageSize, 10);
+      totalPages = Math.max(1, Math.ceil(totalCount / pSize));
+      if (this.ownerCurrentPage > totalPages) this.ownerCurrentPage = totalPages;
+      if (this.ownerCurrentPage < 1) this.ownerCurrentPage = 1;
+
+      const startIndex = (this.ownerCurrentPage - 1) * pSize;
+      const endIndex = Math.min(startIndex + pSize, totalCount);
+      recordsToDisplay = this.filteredOwnerList.slice(startIndex, endIndex);
+
+      const pInfo = document.getElementById('owner-pagination-info');
+      if (pInfo) {
+        pInfo.textContent = `Showing ${startIndex + 1}-${endIndex} of ${totalCount} entries`;
+      }
+    } else {
+      const pInfo = document.getElementById('owner-pagination-info');
+      if (pInfo) pInfo.textContent = `Showing all ${totalCount} entries`;
+    }
+
+    // Render pagination buttons
+    this.renderOwnerPaginationButtons(totalPages);
+
+    // Group records by Date (displayDate or date)
+    const groups = [];
+    let currentGroup = null;
+
+    recordsToDisplay.forEach(item => {
+      const dateKey = item.displayDate || item.date || 'Undated';
+      if (!currentGroup || currentGroup.date !== dateKey) {
+        currentGroup = {
+          date: dateKey,
+          total: 0,
+          items: []
+        };
+        groups.push(currentGroup);
+      }
+      currentGroup.items.push(item);
+      currentGroup.total += (Number(item.amount) || 0);
+    });
+
+    let html = '';
+    groups.forEach(group => {
+      // Date Group Header Row
+      html += `
+        <tr class="owner-date-group-row">
+          <td colspan="6">
+            <span class="appsheet-bullet pink-bullet">●</span>
+            <strong>${group.date}</strong>
+            <span class="owner-date-group-badge">₹ ${this.formatINR3(group.total)}</span>
+          </td>
+        </tr>
+      `;
+
+      // Data rows under this group
+      group.items.forEach(r => {
+        const isActive = this.activeOwnerExpenseId === r.id;
+        const ownerDisplay = r.expenseType === 'Owner' && r.ownerName ? r.ownerName : (r.expenseType || 'Owner');
+        html += `
+          <tr class="owner-data-row ${isActive ? 'active' : ''}" id="owner-row-${r.id}" onclick="LedgerModule.openOwnerExpenseDetails('${r.id}')">
+            <td>${r.displayDate || r.date || '-'}</td>
+            <td>
+              <span class="appsheet-bullet pink-bullet">●</span>
+              <span>₹ ${this.formatINR3(r.amount)}</span>
+            </td>
+            <td>
+              <span class="appsheet-bullet pink-bullet">●</span>
+              <span>${r.expenseLineItem || '-'}</span>
+            </td>
+            <td>
+              <span class="appsheet-bullet pink-bullet">●</span>
+              <span>${r.expenseFrom || 'Cash'}</span>
+            </td>
+            <td>
+              <span class="appsheet-bullet pink-bullet">●</span>
+              <span>${ownerDisplay}</span>
+            </td>
+            <td class="text-end text-muted" style="width: 25px; padding-right: 12px;">&gt;</td>
+          </tr>
+        `;
+      });
+    });
+
+    tbody.innerHTML = html;
+  },
+
+  renderOwnerPaginationButtons(totalPages) {
+    const pBtns = document.getElementById('owner-pagination-buttons');
+    if (!pBtns) return;
+    if (this.ownerPageSize === 'ALL' || totalPages <= 1) {
+      pBtns.innerHTML = '';
+      return;
+    }
+
+    let btnHtml = '';
+    const cur = this.ownerCurrentPage;
+
+    btnHtml += `
+      <button type="button" class="btn btn-outline-secondary ${cur === 1 ? 'disabled' : ''}" onclick="LedgerModule.changeOwnerPage(1)" title="First Page">&laquo;</button>
+      <button type="button" class="btn btn-outline-secondary ${cur === 1 ? 'disabled' : ''}" onclick="LedgerModule.changeOwnerPage(${cur - 1})" title="Previous Page">&lsaquo;</button>
+    `;
+
+    let startP = Math.max(1, cur - 2);
+    let endP = Math.min(totalPages, cur + 2);
+    if (endP - startP < 4) {
+      if (startP === 1) endP = Math.min(totalPages, startP + 4);
+      else if (endP === totalPages) startP = Math.max(1, endP - 4);
+    }
+
+    for (let p = startP; p <= endP; p++) {
+      btnHtml += `
+        <button type="button" class="btn ${p === cur ? 'btn-primary active text-white' : 'btn-outline-secondary'}" style="${p === cur ? 'background-color: #e91e63; border-color: #e91e63;' : ''}" onclick="LedgerModule.changeOwnerPage(${p})">${p}</button>
+      `;
+    }
+
+    btnHtml += `
+      <button type="button" class="btn btn-outline-secondary ${cur === totalPages ? 'disabled' : ''}" onclick="LedgerModule.changeOwnerPage(${cur + 1})" title="Next Page">&rsaquo;</button>
+      <button type="button" class="btn btn-outline-secondary ${cur === totalPages ? 'disabled' : ''}" onclick="LedgerModule.changeOwnerPage(${totalPages})" title="Last Page">&raquo;</button>
+    `;
+
+    pBtns.innerHTML = btnHtml;
+  },
+
+  openOwnerExpenseDetails(recordId) {
+    this.activeOwnerExpenseId = recordId;
+    const r = (this.allOwnerExpenses || []).find(x => x.id === recordId);
+    if (!r) return;
+
+    // Highlight row in table
+    const allRows = document.querySelectorAll('.owner-data-row');
+    allRows.forEach(row => row.classList.remove('active'));
+    const targetRow = document.getElementById(`owner-row-${recordId}`);
+    if (targetRow) targetRow.classList.add('active');
+
+    // Show side panel and activate split-open mode
+    const panel = document.getElementById('panel-owner-expense-details');
+    const splitWrapper = document.getElementById('owner-split-wrapper');
+    if (panel) panel.classList.remove('d-none');
+    if (splitWrapper) splitWrapper.classList.add('split-open');
+
+    const content = document.getElementById('owner-expense-panel-content');
+    if (!content) return;
+
+    const ownerDisplay = r.expenseType === 'Owner' && r.ownerName ? r.ownerName : (r.expenseType || 'Owner');
+
+    content.innerHTML = `
+      <div class="owner-detail-card shadow-sm">
+        <div class="owner-field-row">
+          <span class="owner-field-label">Date</span>
+          <span class="owner-field-value">
+            <span class="appsheet-bullet pink-bullet">●</span>
+            <span class="text-dark" style="font-weight: 600;">${r.displayDate || r.date || '-'}</span>
+          </span>
+        </div>
+        <div class="owner-field-row">
+          <span class="owner-field-label">Amount</span>
+          <span class="owner-field-value fs-6 fw-bold" style="color: #e91e63;">
+            <span class="appsheet-bullet pink-bullet">●</span>
+            <span>₹${this.formatINR3(r.amount)}</span>
+          </span>
+        </div>
+        <div class="owner-field-row">
+          <span class="owner-field-label">Expense Type</span>
+          <span class="owner-field-value">
+            <span class="appsheet-bullet pink-bullet">●</span>
+            <span>${ownerDisplay}</span>
+          </span>
+        </div>
+        <div class="owner-field-row">
+          <span class="owner-field-label">Expense Line Item</span>
+          <span class="owner-field-value">
+            <span class="appsheet-bullet pink-bullet">●</span>
+            <span>${r.expenseLineItem || '-'}</span>
+          </span>
+        </div>
+        <div class="owner-field-row mb-0">
+          <span class="owner-field-label">Expense From</span>
+          <span class="owner-field-value">
+            <span class="appsheet-bullet pink-bullet">●</span>
+            <span>${r.expenseFrom || 'Cash'}</span>
+          </span>
+        </div>
+      </div>
+    `;
+  },
+
+  closeOwnerExpenseDetails() {
+    this.activeOwnerExpenseId = null;
+    const panel = document.getElementById('panel-owner-expense-details');
+    const splitWrapper = document.getElementById('owner-split-wrapper');
+    if (panel) {
+      panel.classList.add('d-none');
+      panel.classList.remove('fullscreen');
+    }
+    if (splitWrapper) splitWrapper.classList.remove('split-open');
+
+    this.isOwnerPanelFullscreen = false;
+    const btnExpand = document.getElementById('btn-expand-owner-panel');
+    if (btnExpand) btnExpand.textContent = '↗';
+
+    const allRows = document.querySelectorAll('.owner-data-row');
+    allRows.forEach(row => row.classList.remove('active'));
+  },
+
+  toggleOwnerDetailFullscreen() {
+    this.isOwnerPanelFullscreen = !this.isOwnerPanelFullscreen;
+    const panel = document.getElementById('panel-owner-expense-details');
+    const btnExpand = document.getElementById('btn-expand-owner-panel');
+    if (panel) {
+      panel.classList.toggle('fullscreen', this.isOwnerPanelFullscreen);
+    }
+    if (btnExpand) {
+      btnExpand.textContent = this.isOwnerPanelFullscreen ? '↙' : '↗';
+    }
+  },
+
+  prevOwnerExpenseRecord() {
+    if (!this.activeOwnerExpenseId || !this.filteredOwnerList.length) return;
+    const currentIndex = this.filteredOwnerList.findIndex(x => x.id === this.activeOwnerExpenseId);
+    if (currentIndex > 0) {
+      this.openOwnerExpenseDetails(this.filteredOwnerList[currentIndex - 1].id);
+    } else {
+      if (typeof AppUI !== 'undefined') AppUI.showToast('First record reached', 'info');
+    }
+  },
+
+  nextOwnerExpenseRecord() {
+    if (!this.activeOwnerExpenseId || !this.filteredOwnerList.length) return;
+    const currentIndex = this.filteredOwnerList.findIndex(x => x.id === this.activeOwnerExpenseId);
+    if (currentIndex >= 0 && currentIndex < this.filteredOwnerList.length - 1) {
+      this.openOwnerExpenseDetails(this.filteredOwnerList[currentIndex + 1].id);
+    } else {
+      if (typeof AppUI !== 'undefined') AppUI.showToast('Last record reached', 'info');
+    }
+  },
+
+  toggleOwnerFullscreen() {
+    const el = document.getElementById('ledger-view-owner-expense');
+    if (!el) return;
+    if (!document.fullscreenElement) {
+      if (el.requestFullscreen) {
+        el.requestFullscreen();
+      } else if (el.webkitRequestFullscreen) {
+        el.webkitRequestFullscreen();
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    }
+  },
+
+  changeOwnerPageSize(size) {
+    this.ownerPageSize = size;
+    this.ownerCurrentPage = 1;
+    this.renderOwnerExpenseTable();
+  },
+
+  changeOwnerPage(page) {
+    this.ownerCurrentPage = page;
+    this.renderOwnerExpenseTable();
+    const tableWrap = document.getElementById('owner-table-wrapper');
+    if (tableWrap) tableWrap.scrollTop = 0;
   },
 
   // ----------------------------------------------------
@@ -4403,6 +4975,7 @@ const LedgerModule = {
     const cashRegView = document.getElementById('ledger-view-cash-register');
     const retView = document.getElementById('ledger-view-returned-amount');
     const compExpView = document.getElementById('ledger-view-company-expense');
+    const ownerExpView = document.getElementById('ledger-view-owner-expense');
     const recView = document.getElementById('ledger-view-received');
     const openDebtsView = document.getElementById('ledger-view-open-debts');
     const allDebtsView = document.getElementById('ledger-view-all-debts');
@@ -4425,6 +4998,7 @@ const LedgerModule = {
       cashRegView?.classList.add('d-none');
       retView?.classList.add('d-none');
       compExpView?.classList.add('d-none');
+      ownerExpView?.classList.add('d-none');
       recView?.classList.add('d-none');
       openDebtsView?.classList.add('d-none');
       regView?.classList.add('d-none');
@@ -4451,6 +5025,7 @@ const LedgerModule = {
       cashRegView?.classList.add('d-none');
       retView?.classList.add('d-none');
       compExpView?.classList.add('d-none');
+      ownerExpView?.classList.add('d-none');
       recView?.classList.add('d-none');
       openDebtsView?.classList.add('d-none');
       regView?.classList.add('d-none');
@@ -4478,6 +5053,7 @@ const LedgerModule = {
       cashRegView?.classList.add('d-none');
       retView?.classList.add('d-none');
       compExpView?.classList.add('d-none');
+      ownerExpView?.classList.add('d-none');
       recView?.classList.add('d-none');
       openDebtsView?.classList.add('d-none');
       allDebtsView?.classList.add('d-none');
@@ -4499,6 +5075,8 @@ const LedgerModule = {
         addBtnText.innerText = '+ Add';
       } else if (this.mainViewMode === 'company-expense') {
         addBtnText.innerText = '+ Add Expense';
+      } else if (this.mainViewMode === 'owner-expense') {
+        addBtnText.innerText = '+ Add Expen...';
       } else if (this.mainViewMode === 'received') {
         addBtnText.innerText = '+ New Recei...';
       } else if (this.mainViewMode === 'open-debts') {
@@ -4514,6 +5092,7 @@ const LedgerModule = {
       cashRegView?.classList.remove('d-none');
       retView?.classList.add('d-none');
       compExpView?.classList.add('d-none');
+      ownerExpView?.classList.add('d-none');
       recView?.classList.add('d-none');
       openDebtsView?.classList.add('d-none');
       allDebtsView?.classList.add('d-none');
@@ -4538,6 +5117,7 @@ const LedgerModule = {
       cashRegView?.classList.add('d-none');
       regView?.classList.add('d-none');
       compExpView?.classList.add('d-none');
+      ownerExpView?.classList.add('d-none');
       recView?.classList.add('d-none');
       openDebtsView?.classList.add('d-none');
       allDebtsView?.classList.add('d-none');
@@ -4567,6 +5147,7 @@ const LedgerModule = {
       cashRegView?.classList.add('d-none');
       regView?.classList.add('d-none');
       retView?.classList.add('d-none');
+      ownerExpView?.classList.add('d-none');
       recView?.classList.add('d-none');
       openDebtsView?.classList.add('d-none');
       allDebtsView?.classList.add('d-none');
@@ -4599,6 +5180,7 @@ const LedgerModule = {
       regView?.classList.add('d-none');
       retView?.classList.add('d-none');
       compExpView?.classList.add('d-none');
+      ownerExpView?.classList.add('d-none');
       openDebtsView?.classList.add('d-none');
       allDebtsView?.classList.add('d-none');
       detView?.classList.add('d-none');
@@ -4629,6 +5211,7 @@ const LedgerModule = {
       cashRegView?.classList.add('d-none');
       retView?.classList.add('d-none');
       compExpView?.classList.add('d-none');
+      ownerExpView?.classList.add('d-none');
       recView?.classList.add('d-none');
       detView?.classList.add('d-none');
       stmtView?.classList.add('d-none');
@@ -4661,6 +5244,7 @@ const LedgerModule = {
       cashRegView?.classList.add('d-none');
       retView?.classList.add('d-none');
       compExpView?.classList.add('d-none');
+      ownerExpView?.classList.add('d-none');
       recView?.classList.add('d-none');
       openDebtsView?.classList.add('d-none');
       detView?.classList.add('d-none');
@@ -4687,11 +5271,45 @@ const LedgerModule = {
       return;
     }
 
+    // 4G. LEVEL 1: OWNER EXPENSE VIEW (Authentic AppSheet Hot-Pink Master-Detail)
+    if (this.mainViewMode === 'owner-expense') {
+      dashView?.classList.add('d-none');
+      cashRegView?.classList.add('d-none');
+      regView?.classList.add('d-none');
+      retView?.classList.add('d-none');
+      compExpView?.classList.add('d-none');
+      recView?.classList.add('d-none');
+      openDebtsView?.classList.add('d-none');
+      allDebtsView?.classList.add('d-none');
+      detView?.classList.add('d-none');
+      stmtView?.classList.add('d-none');
+      ownerExpView?.classList.remove('d-none');
+
+      if (breadcrumbRoot) {
+        breadcrumbRoot.innerHTML = `
+          <a href="javascript:void(0)" onclick="LedgerModule.goToDashboardView()">Home</a>
+          <span class="sep">&gt;</span>
+          <a href="javascript:void(0)" onclick="LedgerModule.goToDashboardView()">Ledger</a>
+          <span class="sep">&gt;</span>
+          <span class="active">Owner</span>
+        `;
+      }
+      this.renderOwnerTreeSidebar();
+      this.renderOwnerExpenseTable();
+      if (this.activeOwnerExpenseId) {
+        this.openOwnerExpenseDetails(this.activeOwnerExpenseId);
+      } else {
+        this.closeOwnerExpenseDetails();
+      }
+      return;
+    }
+
     // 5. LEVEL 1-3: DEBTS REGISTER VIEWS
     dashView?.classList.add('d-none');
     cashRegView?.classList.add('d-none');
     retView?.classList.add('d-none');
     compExpView?.classList.add('d-none');
+    ownerExpView?.classList.add('d-none');
     recView?.classList.add('d-none');
     openDebtsView?.classList.add('d-none');
     allDebtsView?.classList.add('d-none');
@@ -4974,6 +5592,12 @@ const LedgerModule = {
 
   onSearchInput(val) {
     this.searchQuery = (val || '').toLowerCase().trim();
+    if (this.mainViewMode === 'owner-expense') {
+      this.ownerCurrentPage = 1;
+      this.applyOwnerFilters();
+      this.renderOwnerExpenseTable();
+      return;
+    }
     if (this.mainViewMode === 'all-debts') {
       this.allDebtsCurrentPage = 1;
       this.applyAllDebtsFilters();
@@ -5024,6 +5648,12 @@ const LedgerModule = {
     const sInput = document.getElementById('ledger-search-input');
     if (sInput) sInput.value = '';
     this.searchQuery = '';
+    if (this.mainViewMode === 'owner-expense') {
+      this.ownerCurrentPage = 1;
+      this.applyOwnerFilters();
+      this.renderOwnerExpenseTable();
+      return;
+    }
     if (this.mainViewMode === 'all-debts') {
       this.allDebtsCurrentPage = 1;
       this.applyAllDebtsFilters();
@@ -5081,6 +5711,17 @@ const LedgerModule = {
     if (fType) fType.value = 'ALL';
     const fMode = document.getElementById('filter-debt-mode');
     if (fMode) fMode.value = 'ALL';
+
+    if (this.mainViewMode === 'owner-expense') {
+      this.selectedOwnerFY = 'ALL';
+      this.selectedOwnerMonth = 'ALL';
+      this.selectedOwnerDate = null;
+      this.ownerCurrentPage = 1;
+      this.applyOwnerFilters();
+      this.renderOwnerTreeSidebar();
+      this.renderOwnerExpenseTable();
+      return;
+    }
 
     if (this.mainViewMode === 'open-debts') {
       this.selectedOpenDebtsDate = null;

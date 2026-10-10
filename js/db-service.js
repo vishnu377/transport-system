@@ -184,6 +184,10 @@ class DBService {
       return this.getAllCompanyExpenses(cloudItems);
     }
 
+    if (collectionName === 'ownerExpenses') {
+      return this.getAllOwnerExpenses(cloudItems);
+    }
+
     if (collectionName === 'receivedPayments') {
       return this.getAllReceivedPayments(cloudItems);
     }
@@ -462,6 +466,50 @@ class DBService {
     const customEntries = JSON.parse(localStorage.getItem('tms_custom_company_expenses') || '[]');
     const editedMap = JSON.parse(localStorage.getItem('tms_edited_company_expenses') || '{}');
     const deletedList = JSON.parse(localStorage.getItem('tms_deleted_company_expenses') || '[]');
+    const deletedSet = new Set(deletedList.map(String));
+
+    const entryMap = new Map();
+    for (const item of baseExpenses) {
+      const id = String(item.id);
+      if (!deletedSet.has(id)) {
+        entryMap.set(id, editedMap[id] ? { ...item, ...editedMap[id] } : item);
+      }
+    }
+    for (const item of customEntries) {
+      const id = String(item.id);
+      if (!deletedSet.has(id)) {
+        entryMap.set(id, editedMap[id] ? { ...item, ...editedMap[id] } : item);
+      }
+    }
+    if (Array.isArray(cloudItems)) {
+      for (const item of cloudItems) {
+        if (item && item.id) {
+          const id = String(item.id);
+          if (!deletedSet.has(id)) {
+            entryMap.set(id, { ...(entryMap.get(id) || {}), ...item });
+          }
+        }
+      }
+    }
+
+    const all = Array.from(entryMap.values());
+    all.sort((a, b) => {
+      const dateA = a.date || '';
+      const dateB = b.date || '';
+      return dateB.localeCompare(dateA);
+    });
+    return all;
+  }
+
+  // --- Authentic Google AppSheet Owner Expense Engine ---
+  getAllOwnerExpenses(cloudItems = []) {
+    const baseExpenses = (typeof window !== 'undefined' && Array.isArray(window.SAMPLE_OWNER_EXPENSES_DATA))
+      ? window.SAMPLE_OWNER_EXPENSES_DATA
+      : (typeof SAMPLE_OWNER_EXPENSES_DATA !== 'undefined' ? SAMPLE_OWNER_EXPENSES_DATA : []);
+
+    const customEntries = JSON.parse(localStorage.getItem('tms_custom_owner_expenses') || '[]');
+    const editedMap = JSON.parse(localStorage.getItem('tms_edited_owner_expenses') || '{}');
+    const deletedList = JSON.parse(localStorage.getItem('tms_deleted_owner_expenses') || '[]');
     const deletedSet = new Set(deletedList.map(String));
 
     const entryMap = new Map();
@@ -1002,6 +1050,28 @@ class DBService {
       return newItem;
     }
 
+    if (collectionName === 'ownerExpenses') {
+      const newItem = {
+        ...itemData,
+        id: itemData.id || `OWN_EXP_${Date.now()}`,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      const customExpenses = JSON.parse(localStorage.getItem('tms_custom_owner_expenses') || '[]');
+      customExpenses.unshift(newItem);
+      this.safeSetItem('tms_custom_owner_expenses', JSON.stringify(customExpenses));
+
+      if (this.isFirebaseReady) {
+        try {
+          await this.db.collection('ownerExpenses').doc(newItem.id).set(newItem);
+          console.log(` Cloud Synced: ownerExpenses/${newItem.id}`);
+        } catch (err) {
+          console.warn('Firestore sync error for ownerExpenses:', err.message);
+        }
+      }
+      return newItem;
+    }
+
     if (collectionName === 'receivedPayments') {
       const newItem = {
         ...itemData,
@@ -1281,6 +1351,34 @@ class DBService {
       return updatedItem;
     }
 
+    if (collectionName === 'ownerExpenses') {
+      let customExpenses = JSON.parse(localStorage.getItem('tms_custom_owner_expenses') || '[]');
+      const customIdx = customExpenses.findIndex(r => String(r.id) === String(id));
+      let updatedItem = null;
+
+      if (customIdx >= 0) {
+        updatedItem = { ...customExpenses[customIdx], ...updatedFields, updatedAt };
+        customExpenses[customIdx] = updatedItem;
+        this.safeSetItem('tms_custom_owner_expenses', JSON.stringify(customExpenses));
+      } else {
+        const editedMap = JSON.parse(localStorage.getItem('tms_edited_owner_expenses') || '{}');
+        const existing = await this.getById('ownerExpenses', id);
+        updatedItem = { ...(existing || {}), id, ...updatedFields, updatedAt };
+        editedMap[id] = updatedItem;
+        this.safeSetItem('tms_edited_owner_expenses', JSON.stringify(editedMap));
+      }
+
+      if (this.isFirebaseReady) {
+        try {
+          await this.db.collection('ownerExpenses').doc(String(id)).set(updatedItem, { merge: true });
+          console.log(` Cloud Updated: ownerExpenses/${id}`);
+        } catch (err) {
+          console.warn('Firestore update error for ownerExpenses:', err.message);
+        }
+      }
+      return updatedItem;
+    }
+
     if (collectionName === 'receivedPayments') {
       let customPayments = JSON.parse(localStorage.getItem('tms_custom_received_payments') || '[]');
       const customIdx = customPayments.findIndex(r => String(r.id) === String(id));
@@ -1505,6 +1603,28 @@ class DBService {
           console.log(` Cloud Deleted: companyExpenses/${id}`);
         } catch (err) {
           console.warn('Firestore delete error for companyExpenses:', err.message);
+        }
+      }
+      return true;
+    }
+
+    if (collectionName === 'ownerExpenses') {
+      let customExpenses = JSON.parse(localStorage.getItem('tms_custom_owner_expenses') || '[]');
+      customExpenses = customExpenses.filter(r => String(r.id) !== String(id));
+      this.safeSetItem('tms_custom_owner_expenses', JSON.stringify(customExpenses));
+
+      const deletedList = JSON.parse(localStorage.getItem('tms_deleted_owner_expenses') || '[]');
+      if (!deletedList.includes(String(id))) {
+        deletedList.push(String(id));
+        this.safeSetItem('tms_deleted_owner_expenses', JSON.stringify(deletedList));
+      }
+
+      if (this.isFirebaseReady) {
+        try {
+          await this.db.collection('ownerExpenses').doc(String(id)).delete();
+          console.log(` Cloud Deleted: ownerExpenses/${id}`);
+        } catch (err) {
+          console.warn('Firestore delete error for ownerExpenses:', err.message);
         }
       }
       return true;

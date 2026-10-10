@@ -1449,6 +1449,299 @@
     }
 
     /* ==================================================== */
+    /* 5D. OWNER EXPENSE (Authentic AppSheet Pink Master-Detail) */
+    /* ==================================================== */
+    .owner-expense-container {
+      display: flex;
+      height: calc(100vh - 100px);
+      max-height: calc(100vh - 100px);
+      background: #ffffff;
+      position: relative;
+      overflow: hidden;
+    }
+    .owner-tree-sidebar {
+      width: 230px;
+      height: 100%;
+      max-height: 100%;
+      border-right: 1px solid #eeeeee;
+      padding: 14px 10px;
+      flex-shrink: 0;
+      background: #ffffff;
+      transition: width 0.22s ease, padding 0.22s ease, opacity 0.18s ease;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+    .owner-tree-sidebar.collapsed {
+      width: 0 !important;
+      max-width: 0 !important;
+      padding: 0 !important;
+      opacity: 0;
+      border-right: none !important;
+      pointer-events: none;
+      display: none !important;
+    }
+    @media (max-width: 991.98px) {
+      .owner-tree-sidebar {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1040;
+        width: 260px;
+        box-shadow: 4px 0 20px rgba(0,0,0,0.18);
+        background: #ffffff;
+        display: block !important;
+      }
+      .owner-tree-sidebar.collapsed {
+        transform: translateX(-100%);
+        width: 260px !important;
+        max-width: 260px !important;
+        display: block !important;
+      }
+    }
+    .owner-tree-header {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #5f6368;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 4px 10px;
+      margin-bottom: 6px;
+    }
+    .owner-tree-item {
+      padding: 6px 10px;
+      border-radius: 20px;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: #202124;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 3px;
+      transition: background 0.1s;
+      user-select: none;
+    }
+    .owner-tree-item:hover {
+      background: #fdf2f6;
+    }
+    .owner-tree-item.active {
+      background: #fce4ec;
+      color: #c2185b;
+      font-weight: 600;
+    }
+    .owner-tree-badge {
+      font-size: 11px;
+      font-weight: 600;
+      color: #5f6368;
+      background: #f1f3f4;
+      padding: 2px 7px;
+      border-radius: 10px;
+      letter-spacing: -0.2px;
+    }
+    .owner-tree-item.active .owner-tree-badge {
+      background: #f8bbd0;
+      color: #c2185b;
+    }
+    .owner-tree-sublist {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-bottom: 6px;
+    }
+    .owner-tree-subitem {
+      padding-left: 26px !important;
+      font-size: 12px;
+    }
+    .owner-tree-caret {
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      font-size: 11px;
+      color: #5f6368;
+      user-select: none;
+    }
+
+    .owner-expense-main-area {
+      flex: 1 1 0;
+      min-width: 0;
+      min-height: 0;
+      height: 100%;
+      max-height: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: #ffffff;
+    }
+    .owner-split-wrapper {
+      display: flex;
+      flex: 1 1 0;
+      min-height: 0;
+      height: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+    .owner-table-wrapper {
+      flex: 1 1 0;
+      min-width: 0;
+      min-height: 0;
+      height: 100%;
+      overflow-x: auto;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .owner-expense-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+    }
+    .owner-expense-table th {
+      padding: 9px 12px;
+      font-weight: 600;
+      color: #3c4043;
+      font-size: 11.5px;
+      border-bottom: 1px solid #dadce0;
+      background: #ffffff;
+      white-space: nowrap;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+    .owner-expense-table td {
+      padding: 7px 12px;
+      border-bottom: 1px solid #f1f3f4;
+      font-weight: 500;
+      white-space: nowrap;
+      color: #e91e63 !important; /* Authentic Google AppSheet Pink cell text */
+      font-size: 12.5px;
+      vertical-align: middle;
+    }
+    .owner-expense-table td span {
+      color: inherit;
+    }
+    .owner-expense-table td .pink-bullet {
+      color: #e91e63 !important;
+      font-size: 11px;
+      margin-right: 4px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .owner-expense-table tbody tr.owner-data-row {
+      cursor: pointer;
+      transition: background-color 0.1s ease;
+    }
+    .owner-expense-table tbody tr.owner-data-row:hover {
+      background-color: #fdf2f6 !important;
+    }
+    .owner-expense-table tbody tr.owner-data-row.active {
+      background-color: #fce4ec !important;
+    }
+    .owner-expense-table tbody tr.owner-data-row.active td {
+      color: #ad1457 !important;
+      font-weight: 600;
+    }
+    .owner-date-group-row td {
+      background: #ffffff;
+      color: #202124;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 8px 12px;
+      border-top: 1px solid #e0e0e0;
+      border-bottom: 1px solid #eeeeee;
+    }
+    .owner-date-group-badge {
+      background: #e8eaed;
+      color: #3c4043;
+      border-radius: 12px;
+      font-size: 11px;
+      padding: 2px 8px;
+      font-weight: 500;
+      margin-left: 8px;
+      display: inline-block;
+    }
+
+    /* Master-Detail Side Panel (Owner Expense Details) */
+    .owner-expense-panel {
+      width: 480px;
+      height: 100%;
+      max-height: 100%;
+      border-left: 1px solid #dadce0;
+      background: #f8f9fa;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      transition: width 0.22s ease, transform 0.22s ease;
+      overflow-y: auto;
+    }
+    @media (max-width: 991.98px) {
+      .owner-expense-panel {
+        position: fixed !important;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 100% !important;
+        max-width: 480px;
+        max-height: 100vh !important;
+        z-index: 1050;
+        box-shadow: -4px 0 24px rgba(0,0,0,0.2);
+      }
+    }
+    .owner-expense-panel.fullscreen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100% !important;
+      max-height: 100% !important;
+      z-index: 1060;
+    }
+    .owner-expense-panel-header {
+      padding: 8px 16px;
+      background: #ffffff;
+      border-bottom: 1px solid #dadce0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .owner-detail-card {
+      background: #ffffff;
+      border: 1px solid #dadce0;
+      border-radius: 10px;
+      padding: 20px 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      margin: 20px;
+    }
+    .owner-field-row {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 16px;
+      font-size: 13.5px;
+      line-height: 1.4;
+    }
+    .owner-field-label {
+      width: 160px;
+      flex-shrink: 0;
+      color: #5f6368;
+      font-weight: 500;
+    }
+    .owner-field-value {
+      flex: 1;
+      color: #e91e63;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      word-break: break-word;
+    }
+
+    /* ==================================================== */
     /* RECEIVED PAYMENTS (Income Slice - Authentic AppSheet Green Theme) */
     /* ==================================================== */
     .received-container,
@@ -2893,10 +3186,10 @@
 
         <!-- CARD 7: Owner -->
         <div class="appsheet-dash-card" id="card-dash-owner">
-          <div class="appsheet-dash-card-header">
-            <span class="appsheet-dash-card-title" onclick="LedgerModule.goToOwnerExpenseView()">Owner</span>
-            <div class="appsheet-dash-card-tools">
-              <button type="button" class="btn-appsheet-add py-0 px-2" style="font-size: 0.76rem;" onclick="AppUI.showToast('Owner Expense form ready', 'info')">+ Add Expen...</button>
+          <div class="appsheet-dash-card-header" style="cursor: pointer;" onclick="LedgerModule.goToOwnerExpenseView()">
+            <span class="appsheet-dash-card-title">Owner</span>
+            <div class="appsheet-dash-card-tools" onclick="event.stopPropagation()">
+              <button type="button" class="btn-appsheet-add py-0 px-2" style="font-size: 0.76rem;" onclick="LedgerModule.openAddOwnerExpenseModal()">+ Add Expen...</button>
               <span class="appsheet-tool-icon" onclick="LedgerModule.toggleFilterDropdown()" title="Filter">🔻</span>
               <span class="appsheet-tool-icon" onclick="LedgerModule.goToOwnerExpenseView()" title="Expand Owner">↗</span>
             </div>
@@ -2911,7 +3204,7 @@
               <div class="appsheet-drill-left">
                 <span class="appsheet-bullet pink-bullet">●</span>
                 <span class="appsheet-drill-label-gold">2026-2027</span>
-                <span class="appsheet-drill-badge">₹ 30,396,992.000</span>
+                <span class="appsheet-drill-badge" id="card-owner-badge-2026-2027">₹ 30,396,992.000</span>
               </div>
               <span class="appsheet-chevron">&gt;</span>
             </div>
@@ -2919,7 +3212,7 @@
               <div class="appsheet-drill-left">
                 <span class="appsheet-bullet pink-bullet">●</span>
                 <span class="appsheet-drill-label-gold">2025-2026</span>
-                <span class="appsheet-drill-badge">₹ 26,620,921.000</span>
+                <span class="appsheet-drill-badge" id="card-owner-badge-2025-2026">₹ 26,620,921.000</span>
               </div>
               <span class="appsheet-chevron">&gt;</span>
             </div>
@@ -2927,7 +3220,7 @@
               <div class="appsheet-drill-left">
                 <span class="appsheet-bullet pink-bullet">●</span>
                 <span class="appsheet-drill-label-gold">2024-2025</span>
-                <span class="appsheet-drill-badge">₹ 6,164,020.000</span>
+                <span class="appsheet-drill-badge" id="card-owner-badge-2024-2025">₹ 6,164,020.000</span>
               </div>
               <span class="appsheet-chevron">&gt;</span>
             </div>
@@ -4285,6 +4578,142 @@
     </div>
 
     <!-- ========================================== -->
+    <!-- 4G. OWNER EXPENSE VIEW (Authentic AppSheet Pink Master-Detail) -->
+    <!-- ========================================== -->
+    <div id="ledger-view-owner-expense" class="d-none">
+      <div class="owner-expense-container">
+        
+        <!-- Left Sidebar: Year / Month Tree -->
+        <div class="owner-tree-sidebar" id="owner-tree-sidebar">
+          <div class="owner-tree-header d-flex align-items-center justify-content-between">
+            <span>Date</span>
+            <button type="button" class="btn btn-sm btn-link text-muted p-0 border-0" onclick="LedgerModule.toggleOwnerDateSidebar()" title="Hide Date Sidebar">
+              <i class="bi bi-chevron-bar-left fs-6"></i>
+            </button>
+          </div>
+          <div class="owner-tree-item" id="owner-tree-all" onclick="LedgerModule.selectOwnerAll()">
+            <span>All</span>
+            <span class="owner-tree-badge" id="owner-badge-all">₹ 63,181,933.000</span>
+          </div>
+
+          <!-- FY 2026-2027 -->
+          <div class="owner-tree-item" id="owner-tree-2026-2027">
+            <div class="d-flex align-items-center gap-1">
+              <span class="owner-tree-caret" onclick="LedgerModule.toggleOwnerFYTree('2026-2027')"><i class="bi bi-caret-down-fill"></i></span>
+              <span class="appsheet-bullet pink-bullet">●</span>
+              <span class="fw-semibold" onclick="LedgerModule.selectOwnerFY('2026-2027')">2026-2027</span>
+            </div>
+            <span class="owner-tree-badge" id="owner-badge-2026-2027">₹ 30,396,992.000</span>
+          </div>
+          <div class="owner-tree-sublist" id="owner-sublist-2026-2027"></div>
+
+          <!-- FY 2025-2026 -->
+          <div class="owner-tree-item" id="owner-tree-2025-2026">
+            <div class="d-flex align-items-center gap-1">
+              <span class="owner-tree-caret" onclick="LedgerModule.toggleOwnerFYTree('2025-2026')"><i class="bi bi-caret-right-fill"></i></span>
+              <span class="appsheet-bullet pink-bullet">●</span>
+              <span class="fw-semibold" onclick="LedgerModule.selectOwnerFY('2025-2026')">2025-2026</span>
+            </div>
+            <span class="owner-tree-badge" id="owner-badge-2025-2026">₹ 26,620,921.000</span>
+          </div>
+          <div class="owner-tree-sublist d-none" id="owner-sublist-2025-2026"></div>
+
+          <!-- FY 2024-2025 -->
+          <div class="owner-tree-item" id="owner-tree-2024-2025">
+            <div class="d-flex align-items-center gap-1">
+              <span class="owner-tree-caret" onclick="LedgerModule.toggleOwnerFYTree('2024-2025')"><i class="bi bi-caret-right-fill"></i></span>
+              <span class="appsheet-bullet pink-bullet">●</span>
+              <span class="fw-semibold" onclick="LedgerModule.selectOwnerFY('2024-2025')">2024-2025</span>
+            </div>
+            <span class="owner-tree-badge" id="owner-badge-2024-2025">₹ 6,164,020.000</span>
+          </div>
+          <div class="owner-tree-sublist d-none" id="owner-sublist-2024-2025"></div>
+        </div>
+
+        <!-- Main Area: Toolbar + Split Layout -->
+        <div class="owner-expense-main-area">
+          <div class="d-flex align-items-center justify-content-between px-3 py-2 border-bottom bg-white flex-wrap gap-2">
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+              <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2 d-inline-flex align-items-center gap-1" id="btn-toggle-owner-sidebar" onclick="LedgerModule.toggleOwnerDateSidebar()" style="font-size: 0.8rem;">
+                <i class="bi bi-layout-sidebar-inset" id="btn-toggle-owner-icon"></i>
+                <span id="btn-toggle-owner-text">Hide Date Filter</span>
+              </button>
+              <div class="appsheet-breadcrumb mb-0 d-none d-sm-flex align-items-center" style="font-size: 13px;">
+                <span class="text-secondary cursor-pointer" onclick="LedgerModule.goToDashboardView()">Ledger</span>
+                <span class="text-muted mx-1">&gt;</span>
+                <span class="fw-semibold text-dark" id="owner-title-badge">Owner</span>
+              </div>
+              <span class="badge bg-light text-dark border fw-normal" id="owner-current-filter-badge" style="font-size: 0.78rem;">
+                <i class="bi bi-funnel me-1 text-muted"></i>2026-2027 &gt; <strong>7 Oct</strong>
+              </span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <button type="button" class="btn btn-sm text-white py-1 px-3 fw-medium d-inline-flex align-items-center gap-1" style="background-color: #8d6e32; font-size: 0.8rem; border-radius: 4px;" onclick="LedgerModule.openAddOwnerExpenseModal()">
+                <i class="bi bi-plus-lg"></i> + Add Expen...
+              </button>
+              <span class="appsheet-tool-icon" onclick="LedgerModule.toggleFilterDropdown()" title="Filter">🔻</span>
+              <span class="appsheet-tool-icon" onclick="LedgerModule.toggleOwnerFullscreen()" title="Full screen">⤢</span>
+            </div>
+          </div>
+
+          <!-- Split Wrapper: Table + Detail Panel -->
+          <div class="owner-split-wrapper" id="owner-split-wrapper">
+            <div class="owner-table-wrapper" id="owner-table-wrapper">
+              <table class="owner-expense-table" id="owner-expense-table">
+                <thead class="sticky-top" style="z-index: 5;">
+                  <tr>
+                    <th style="min-width: 110px;">Date</th>
+                    <th style="min-width: 120px;">Amount</th>
+                    <th style="min-width: 280px;">Expense Line Item</th>
+                    <th style="min-width: 120px;">Expense From</th>
+                    <th style="min-width: 120px;">Expense Type</th>
+                    <th style="width: 25px;"></th>
+                  </tr>
+                </thead>
+                <tbody id="owner-expense-tbody"></tbody>
+              </table>
+            </div>
+
+            <!-- Master-Detail Side Panel (Matching WhatsApp Photo exactly) -->
+            <div class="owner-expense-panel d-none" id="panel-owner-expense-details">
+              <div class="owner-expense-panel-header">
+                <div class="d-flex align-items-center gap-2">
+                  <span class="appsheet-tool-icon cursor-pointer" onclick="LedgerModule.toggleOwnerDetailFullscreen()" title="Expand / Shrink">↗</span>
+                  <span class="fw-bold" style="font-size: 14px; color: #202124;">Owner Expense</span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="appsheet-tool-icon cursor-pointer" onclick="LedgerModule.prevOwnerExpenseRecord()" title="Previous">&lt;</span>
+                  <span class="appsheet-tool-icon cursor-pointer" onclick="LedgerModule.nextOwnerExpenseRecord()" title="Next">&gt;</span>
+                  <span class="appsheet-tool-icon cursor-pointer" onclick="LedgerModule.toggleOwnerDetailFullscreen()" title="Full screen" id="btn-expand-owner-panel">↗</span>
+                  <span class="appsheet-tool-icon cursor-pointer" onclick="LedgerModule.closeOwnerExpenseDetails()" title="Close details">✕</span>
+                </div>
+              </div>
+
+              <div id="owner-expense-panel-content">
+                <!-- Dynamically populated: Card with Date, Amount, Expense Type, Line Item, Expense From -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Pagination Footer -->
+          <div class="p-2 bg-white border-top d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <small class="text-muted" id="owner-pagination-info">Showing 1-100 entries</small>
+            <div class="d-flex align-items-center gap-2">
+              <select id="owner-page-size" class="form-select form-select-sm" style="width: auto; font-size: 0.8rem;" onchange="LedgerModule.changeOwnerPageSize(this.value)">
+                <option value="50">50 rows</option>
+                <option value="100" selected>100 rows</option>
+                <option value="250">250 rows</option>
+                <option value="ALL">All rows</option>
+              </select>
+              <div class="btn-group btn-group-sm" id="owner-pagination-buttons"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ========================================== -->
     <!-- 5. 3-CARD OPEN DEBT DETAILS (Level 4) -->
     <!-- ========================================== -->
     <div id="ledger-view-details" class="d-none px-4 py-3">
@@ -5122,6 +5551,7 @@
   <script src="../js/sample-returned-amounts-data.js"></script>
   <script src="../js/sample-company-expenses-data.js"></script>
   <script src="../js/sample-received-payments-data.js"></script>
+  <script src="../js/sample-owner-expenses-data.js"></script>
   <script src="../js/db-service.js"></script>
   <script src="../js/app.js"></script>
   <script src="../js/modules/ledger.js"></script>
