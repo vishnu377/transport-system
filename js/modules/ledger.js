@@ -4978,6 +4978,7 @@ const LedgerModule = {
       this.expandedSettledFYs[fy] = true;
     }
     this.settledCurrentPage = 1;
+    this.isSettledSidebarHidden = (typeof window !== 'undefined' && window.innerWidth <= 991);
     this.searchQuery = '';
     const sInput = document.getElementById('ledger-search-input');
     if (sInput) {
@@ -4990,6 +4991,7 @@ const LedgerModule = {
     document.getElementById('tab-btn-statements')?.classList.remove('active');
     this.applySettledFilters();
     this.renderCurrentView();
+    this.toggleSettledDateSidebar(this.isSettledSidebarHidden);
   },
 
   toggleSettledFYTree(fy) {
@@ -5001,6 +5003,9 @@ const LedgerModule = {
     this.selectedSettledFY = 'ALL';
     this.selectedSettledDate = null;
     this.settledCurrentPage = 1;
+    if (typeof window !== 'undefined' && window.innerWidth <= 991) {
+      this.toggleSettledDateSidebar(true);
+    }
     this.applySettledFilters();
     this.renderSettledTreeSidebar();
     this.renderSettledTable();
@@ -5013,6 +5018,9 @@ const LedgerModule = {
     if (fy !== 'ALL') {
       this.expandedSettledFYs[fy] = true;
     }
+    if (typeof window !== 'undefined' && window.innerWidth <= 991) {
+      this.toggleSettledDateSidebar(true);
+    }
     this.applySettledFilters();
     this.renderSettledTreeSidebar();
     this.renderSettledTable();
@@ -5022,18 +5030,35 @@ const LedgerModule = {
     this.selectedSettledFY = fy;
     this.selectedSettledDate = date;
     this.settledCurrentPage = 1;
+    if (typeof window !== 'undefined' && window.innerWidth <= 991) {
+      this.toggleSettledDateSidebar(true);
+    }
     this.applySettledFilters();
     this.renderSettledTreeSidebar();
     this.renderSettledTable();
   },
 
-  toggleSettledDateSidebar() {
-    this.isSettledSidebarHidden = !this.isSettledSidebarHidden;
+  toggleSettledDateSidebar(forceHide) {
+    if (typeof forceHide === 'boolean') {
+      this.isSettledSidebarHidden = forceHide;
+    } else {
+      this.isSettledSidebarHidden = !this.isSettledSidebarHidden;
+    }
     const sidebar = document.getElementById('settled-tree-sidebar');
+    const backdrop = document.getElementById('settled-sidebar-backdrop');
     const btnText = document.getElementById('btn-toggle-settled-text');
     const btnIcon = document.getElementById('btn-toggle-settled-icon');
+
     if (sidebar) {
-      sidebar.classList.toggle('d-none', this.isSettledSidebarHidden);
+      if (this.isSettledSidebarHidden) {
+        sidebar.classList.add('collapsed');
+      } else {
+        sidebar.classList.remove('collapsed');
+      }
+    }
+    if (backdrop) {
+      const isMobile = typeof window !== 'undefined' && window.innerWidth <= 991;
+      backdrop.classList.toggle('d-none', this.isSettledSidebarHidden || !isMobile);
     }
     if (btnText) {
       btnText.innerText = this.isSettledSidebarHidden ? 'Show Date Filter' : 'Hide Date Filter';
