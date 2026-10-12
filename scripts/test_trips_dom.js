@@ -1,6 +1,11 @@
 const fs = require('fs');
 
-const html = fs.readFileSync('C:/Users/HP/.gemini/antigravity/scratch/transport-system/pages/trips.html', 'utf8');
+const path = require('path');
+
+const targetPath = fs.existsSync(path.join(__dirname, '../pages/trips.html')) 
+  ? path.join(__dirname, '../pages/trips.html')
+  : 'C:/Users/HP/.gemini/antigravity/scratch/transport-system/pages/trips.html';
+const html = fs.readFileSync(targetPath, 'utf8');
 
 // Check key IDs
 const requiredIds = [

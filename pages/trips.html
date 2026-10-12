@@ -1419,10 +1419,11 @@
       <!-- Main 2-Column AppSheet Body (wa_0.png) -->
       <div class="row g-3">
         
-        <!-- LEFT COLUMN: All 20+ Particulars Fields -->
-        <div class="col-lg-7 col-12">
+        <!-- LEFT COLUMN: 3 Distinct Cards (wa_0.png, wa_2.png, wa_3.png) -->
+        <div class="col-lg-7 col-12 d-flex flex-column gap-3">
+          
+          <!-- CARD 1: Particulars (G.R.No. to Driver Mobile No.) -->
           <div class="appsheet-open-card">
-            
             <div class="appsheet-open-field-row">
               <span class="appsheet-open-field-label">G.R.No.</span>
               <span class="appsheet-open-field-value" id="op-gr-no"><span class="blue-bullet">●</span> -</span>
@@ -1482,13 +1483,17 @@
               <span class="appsheet-open-field-label">Driver</span>
               <span class="appsheet-open-field-value" id="op-driver"><span class="blue-bullet">●</span> -</span>
             </div>
-            <div class="appsheet-open-field-row">
+            <div class="appsheet-open-field-row border-0">
               <span class="appsheet-open-field-label">Driver Mobile No.</span>
               <span class="appsheet-open-field-value">
                 <span id="op-driver-mobile"><span class="blue-bullet">●</span> -</span>
                 <a href="javascript:void(0)" id="op-driver-tel" class="appsheet-open-phone-link" title="Call Driver"><i class="bi bi-telephone"></i></a>
               </span>
             </div>
+          </div>
+
+          <!-- CARD 2: Consignee, Owner & Freight (with Add Records for) -->
+          <div class="appsheet-open-card">
             <div class="appsheet-open-field-row">
               <span class="appsheet-open-field-label">GSTIN Consignee</span>
               <span class="appsheet-open-field-value text-muted" id="op-consignee-gstin"><span class="blue-bullet">●</span> -</span>
@@ -1509,6 +1514,13 @@
               </span>
             </div>
             <div class="appsheet-open-field-row">
+              <span class="appsheet-open-field-label">Owner Mobile No.</span>
+              <span class="appsheet-open-field-value">
+                <span id="op-owner-mobile2"><span class="blue-bullet">●</span> 9462495071</span>
+                <a href="javascript:void(0)" id="op-owner-tel2" class="appsheet-open-phone-link" title="Call Owner"><i class="bi bi-telephone"></i></a>
+              </span>
+            </div>
+            <div class="appsheet-open-field-row">
               <span class="appsheet-open-field-label">Freight</span>
               <span class="appsheet-open-field-value" id="op-freight"><span class="blue-bullet">●</span> ₹ 0.00</span>
             </div>
@@ -1518,9 +1530,9 @@
               <label class="form-label small text-muted mb-1 fw-semibold">Add Records for</label>
               <select id="op-add-records-select" class="form-select form-select-sm" onchange="TripsModule.handleOtdAddRecord(this.value)">
                 <option value="" disabled selected>Select Action to Add Record...</option>
+                <option value="Cheque">Cheque</option>
                 <option value="Party Payment">Party Payment</option>
                 <option value="Truck Owner Payment">Truck Owner Payment</option>
-                <option value="Cheque">Cheque</option>
                 <option value="Other B">Other B</option>
               </select>
             </div>
@@ -1537,8 +1549,34 @@
               <span class="appsheet-open-field-label">Due Amount</span>
               <span class="appsheet-open-field-value text-danger fw-bold" id="op-due-amount"><span class="red-bullet">●</span> ₹ 0.00</span>
             </div>
-
           </div>
+
+          <!-- CARD 3: Owner Total Payment, Owner Due & Status (with editable dropdown) -->
+          <div class="appsheet-open-card">
+            <div class="appsheet-open-field-row">
+              <span class="appsheet-open-field-label">Owner Total Payment</span>
+              <span class="appsheet-open-field-value text-dark fw-bold" id="op-owner-total-payment"><span class="blue-bullet">●</span> ₹ 0.00</span>
+            </div>
+            <div class="appsheet-open-field-row">
+              <span class="appsheet-open-field-label">Owner Due</span>
+              <span class="appsheet-open-field-value text-danger fw-bold" id="op-owner-due"><span class="red-bullet">●</span> ₹ 0.00</span>
+            </div>
+            <div class="appsheet-open-field-row border-0">
+              <span class="appsheet-open-field-label">Status</span>
+              <div class="appsheet-open-field-value d-flex align-items-center gap-2">
+                <span id="op-status-bullet" class="blue-bullet">●</span>
+                <select id="op-trip-status-select" class="form-select form-select-sm border-0 bg-light py-1 px-2 fw-semibold" style="width: auto; min-width: 160px;" onchange="TripsModule.updateActiveTripStatus(this.value)">
+                  <option value="Transit">Transit</option>
+                  <option value="Off loading">Off loading</option>
+                  <option value="Cheque due">Cheque due</option>
+                  <option value="POD sent">POD sent</option>
+                  <option value="Bill generated">Bill generated</option>
+                </select>
+                <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2" title="Edit/Type Status" onclick="TripsModule.promptCustomTripStatus()"><i class="bi bi-pencil"></i></button>
+              </div>
+            </div>
+          </div>
+
         </div>
 
         <!-- RIGHT COLUMN: Consignor/s and Payment Cards (wa_0.png) -->
@@ -1748,6 +1786,111 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 4F. TRUCK OWNER PAYMENT DETAILS VIEW (wa_19.png & wa_21.png) -->
+    <!-- ========================================== -->
+    <div id="trip-truck-owner-payments-view" class="d-none appsheet-open-view-container">
+      
+      <!-- Top Action Toolbar -->
+      <div class="appsheet-open-header-bar">
+        <div class="appsheet-open-title d-flex align-items-center gap-2">
+          <button class="btn btn-sm btn-outline-secondary py-0 px-2" onclick="TripsModule.closeTruckOwnerPaymentsView()">
+            <i class="bi bi-arrow-left"></i>
+          </button>
+          <span class="text-muted" style="font-size: 13px;">Trips &gt; Open &gt;</span>
+          <span class="fw-semibold">Truck Owner Payment Details</span>
+        </div>
+        <div class="appsheet-open-actions d-flex align-items-center gap-2">
+          <div class="position-relative" style="min-width: 250px;">
+            <input type="text" id="topd-search-input" class="form-control form-control-sm ps-4" placeholder="Search Truck Owner Payment Details" oninput="TripsModule.filterTopdTable(this.value)">
+            <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-2 text-muted" style="font-size: 11px;"></i>
+          </div>
+          <button type="button" class="appsheet-open-btn-add" id="btn-topd-add" onclick="TripsModule.openAddTruckOwnerPaymentModal()">
+            + Add
+          </button>
+          <button type="button" class="appsheet-open-action-btn" title="Close" onclick="TripsModule.closeTruckOwnerPaymentsView()">
+            <i class="bi bi-x-lg fs-5"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="row g-3">
+        <!-- Master Table (Left/Main Pane wa_19.png) -->
+        <div class="col-lg-7 col-12" id="topd-master-col">
+          <div class="appsheet-open-subcard">
+            <div class="table-responsive" style="max-height: 650px; overflow-y: auto;">
+              <table class="appsheet-open-table" id="topd-table">
+                <thead>
+                  <tr>
+                    <th>Email ID</th>
+                    <th>Date</th>
+                    <th>Mode</th>
+                    <th>Beneficiary</th>
+                    <th>From Bank</th>
+                    <th>To Bank</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody id="topd-tbody">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detail Card (Right Pane wa_21.png) -->
+        <div class="col-lg-5 col-12" id="topd-detail-col">
+          <div class="appsheet-open-card">
+            <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+              <span class="fw-bold text-truncate" id="topd-d-email" style="font-size: 14px;">mahaveer0236@gmail.com</span>
+              <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                <button type="button" class="appsheet-open-action-btn btn-edit-badge py-0 px-2" id="btn-topd-edit" onclick="TripsModule.editActiveTopdRecord()">
+                  <i class="bi bi-pencil me-1"></i> Edit
+                </button>
+                <button type="button" class="appsheet-open-action-btn" title="Expand View" id="btn-topd-expand" onclick="TripsModule.toggleTopdFullscreen()">
+                  <i class="bi bi-arrows-fullscreen"></i>
+                </button>
+                <button type="button" class="appsheet-open-action-btn" title="Close Details" id="btn-topd-close" onclick="TripsModule.hideTopdDetailPane()">
+                  <i class="bi bi-x-lg"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="appsheet-open-field-row">
+              <span class="appsheet-open-field-label">Date</span>
+              <span class="appsheet-open-field-value" id="topd-d-date">10/10/2026</span>
+            </div>
+            <div class="appsheet-open-field-row">
+              <span class="appsheet-open-field-label">Mode</span>
+              <span class="appsheet-open-field-value" id="topd-d-mode">Adjustment</span>
+            </div>
+            <div class="appsheet-open-field-row">
+              <span class="appsheet-open-field-label">Beneficiary</span>
+              <span class="appsheet-open-field-value" id="topd-d-beneficiary">-</span>
+            </div>
+            <div class="appsheet-open-field-row">
+              <span class="appsheet-open-field-label">From Bank</span>
+              <span class="appsheet-open-field-value" id="topd-d-frombank">MTC</span>
+            </div>
+            <div class="appsheet-open-field-row">
+              <span class="appsheet-open-field-label">To Bank</span>
+              <span class="appsheet-open-field-value" id="topd-d-tobank">Other</span>
+            </div>
+            <div class="appsheet-open-field-row">
+              <span class="appsheet-open-field-label">Description</span>
+              <span class="appsheet-open-field-value" id="topd-d-desc">2026-2027-2299_TTC</span>
+            </div>
+            <div class="appsheet-open-field-row border-0">
+              <span class="appsheet-open-field-label">Amount</span>
+              <span class="appsheet-open-field-value fw-bold text-success" id="topd-d-amount">₹ 0.00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <!-- ========================================== -->
@@ -2574,6 +2717,101 @@
     </div>
 
     <!-- ========================================== -->
+    <!-- APPSHEET MODAL: ADD TRUCK OWNER PAYMENT -->
+    <!-- (wa_19.png / wa_21.png action modal) -->
+    <!-- ========================================== -->
+    <div class="modal fade" id="modal-add-truck-owner-payment" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-md modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+          <div class="modal-header py-2 px-3 bg-light border-bottom d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-2">
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <h6 class="modal-title fw-bold text-dark mb-0">Truck Owner Payment Details</h6>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-3" data-bs-dismiss="modal">Cancel</button>
+              <button type="button" class="btn btn-sm py-1 px-3 text-white fw-semibold" style="background-color: #a07e2a;" onclick="TripsModule.saveNewTruckOwnerPayment()">Save</button>
+            </div>
+          </div>
+          <div class="modal-body p-4 bg-white">
+            <form id="form-add-truck-owner-payment" onsubmit="event.preventDefault(); TripsModule.saveNewTruckOwnerPayment();">
+              <div class="mb-3">
+                <label class="form-label small text-muted fw-semibold mb-1">Date *</label>
+                <input type="date" id="top-date" class="form-control" required>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label small text-muted fw-semibold mb-1">Mode *</label>
+                <select id="top-mode" class="form-select" required>
+                  <option value="Adjustment" selected>Adjustment</option>
+                  <option value="NEFT/RTGS">NEFT/RTGS</option>
+                  <option value="Cash">Cash</option>
+                  <option value="Cash in Rajsamand">Cash in Rajsamand</option>
+                  <option value="Cash in Bank">Cash in Bank</option>
+                  <option value="Cheque">Cheque</option>
+                  <option value="Phone Pe/GPay/PayTM/UPI">Phone Pe/GPay/PayTM/UPI</option>
+                  <option value="Less Freight">Less Freight</option>
+                  <option value="Dalla">Dalla</option>
+                  <option value="Loading">Loading</option>
+                  <option value="TDS">TDS</option>
+                  <option value="GST">GST</option>
+                  <option value="Rate Difference">Rate Difference</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label small text-muted fw-semibold mb-1">Beneficiary (Truck Owner)</label>
+                <input type="text" id="top-beneficiary" list="top-owners-list" class="form-control" placeholder="Select or type Truck Owner">
+                <datalist id="top-owners-list"></datalist>
+              </div>
+
+              <div class="row g-2 mb-3">
+                <div class="col-6">
+                  <label class="form-label small text-muted fw-semibold mb-1">From Bank</label>
+                  <select id="top-from-bank" class="form-select form-select-sm">
+                    <option value="MTC" selected>MTC</option>
+                    <option value="TTC">TTC</option>
+                    <option value="IDBI">IDBI</option>
+                    <option value="HDFC Bank">HDFC Bank</option>
+                    <option value="ICICI Bank">ICICI Bank</option>
+                    <option value="SBI">SBI</option>
+                    <option value="Cash">Cash</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                <div class="col-6">
+                  <label class="form-label small text-muted fw-semibold mb-1">To Bank</label>
+                  <select id="top-to-bank" class="form-select form-select-sm">
+                    <option value="Other" selected>Other</option>
+                    <option value="MTC">MTC</option>
+                    <option value="TTC">TTC</option>
+                    <option value="IDBI">IDBI</option>
+                    <option value="HDFC Bank">HDFC Bank</option>
+                    <option value="SBI">SBI</option>
+                    <option value="Cash">Cash</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label small text-muted fw-semibold mb-1">Description / G.R.No.</label>
+                <input type="text" id="top-description" class="form-control" placeholder="e.g. 2026-2027-2299_TTC">
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label small text-muted fw-semibold mb-1">Amount *</label>
+                <div class="input-group">
+                  <span class="input-group-text">₹</span>
+                  <input type="number" step="0.01" id="top-amount" class="form-control fw-bold" placeholder="0.00" required>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
     <!-- APPSHEET MODAL 6: TRUCK OWNER PAYMENT DETAILS -->
     <!-- (Matching wa_19.png & wa_21.png) -->
     <!-- ========================================== -->
@@ -2680,7 +2918,7 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
   <!-- Core App Scripts with Cache Busting -->
-  <script src="../js/config.js?v=20261011_v1"></script>
+  <script src="../js/config.js?v=20261012_v1"></script>
   <!-- Universal Master Data Assets (Guaranteed 100% Offline & Fresh Git Deploy Resilience) -->
   <script src="../js/sample-parties-data.js"></script>
   <script src="../js/sample-truck-owners-data.js"></script>
@@ -2689,8 +2927,8 @@
   <script src="../js/sample-trips-data.js"></script>
   <script src="../js/sample-debts-data.js"></script>
   <script src="../js/sample-cheques-data.js"></script>
-  <script src="../js/db-service.js?v=20261011_v1"></script>
-  <script src="../js/app.js?v=20261011_v1"></script>
-  <script src="../js/modules/trips.js?v=20261011_v1"></script>
+  <script src="../js/db-service.js?v=20261012_v1"></script>
+  <script src="../js/app.js?v=20261012_v1"></script>
+  <script src="../js/modules/trips.js?v=20261012_v1"></script>
 </body>
 </html>

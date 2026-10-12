@@ -59,13 +59,20 @@ const TripsModule = {
     const openModalParam = urlParams.get('openModal');
     if (openModalParam === 'details') {
       const targetTrip = (this.filteredTrips && this.filteredTrips.length > 0) ? (this.filteredTrips[0].id || this.filteredTrips[0].grNo) : 'OPEN_20261010_01';
-      setTimeout(() => this.openTripDetails(targetTrip), 50);
+      setTimeout(() => {
+        this.openTripDetails(targetTrip);
+        if (urlParams.get('scroll') === 'card3') {
+          window.scrollBy(0, 750);
+        }
+      }, 100);
     } else if (openModalParam === 'bill') {
       const targetTrip = (this.filteredTrips && this.filteredTrips.length > 0) ? (this.filteredTrips[0].id || this.filteredTrips[0].grNo) : 'OPEN_20261010_01';
       setTimeout(() => this.openGenerateBillModal(targetTrip), 50);
     } else if (openModalParam === 'payment') {
       const targetTrip = (this.filteredTrips && this.filteredTrips.length > 0) ? (this.filteredTrips[0].id || this.filteredTrips[0].grNo) : 'OPEN_20261010_01';
       setTimeout(() => this.openConsigneePaymentModal(targetTrip), 50);
+    } else if (openModalParam === 'truckOwnerPayments') {
+      setTimeout(() => this.openTruckOwnerPaymentsView(), 50);
     }
 
     if (urlParams.get('sidebar') === 'collapsed' || urlParams.get('collapseSidebar') === 'true') {
@@ -1012,6 +1019,12 @@ const TripsModule = {
     const opOwnTel = document.getElementById('op-owner-tel');
     if (opOwnTel) opOwnTel.href = `tel:${ownMob}`;
 
+    // Owner Mobile 2 (wa_3.png)
+    const ownMob2 = t.ownerMobile2 || '9462495071';
+    setHtml('op-owner-mobile2', `<span class="blue-bullet">●</span> ${ownMob2}`);
+    const opOwnTel2 = document.getElementById('op-owner-tel2');
+    if (opOwnTel2) opOwnTel2.href = `tel:${ownMob2}`;
+
     setHtml('op-freight', `<span class="blue-bullet">●</span> ₹ ${totalFreight.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
     setHtml('op-total-freight', `<span class="blue-bullet">●</span> ₹ ${totalFreight.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
     setHtml('op-paid-amount', `<span class="blue-bullet">●</span> ₹ ${partyPaid.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
@@ -1020,6 +1033,30 @@ const TripsModule = {
     if (opDueEl) {
       opDueEl.innerHTML = `<span class="red-bullet">●</span> ₹ ${pDue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
       opDueEl.className = pDue > 0 ? 'appsheet-open-field-value text-danger fw-bold' : 'appsheet-open-field-value text-success fw-bold';
+    }
+
+    // CARD 3: Owner Total Payment, Owner Due & Status (wa_3.png)
+    const ownerTotalPay = Number(t.ownerFreight || t.ownerTotalPayment || (totalFreight * 0.95)) || 0;
+    setHtml('op-owner-total-payment', `<span class="blue-bullet">●</span> ₹ ${ownerTotalPay.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+    setHtml('op-owner-due', `<span class="red-bullet">●</span> ₹ ${oDue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+
+    const tripStatus = t.tripStatus || t.status || 'Transit';
+    const statusSelect = document.getElementById('op-trip-status-select');
+    if (statusSelect) {
+      let optExists = false;
+      for (let i = 0; i < statusSelect.options.length; i++) {
+        if (statusSelect.options[i].value === tripStatus) {
+          optExists = true;
+          break;
+        }
+      }
+      if (!optExists && tripStatus) {
+        const newOpt = document.createElement('option');
+        newOpt.value = tripStatus;
+        newOpt.innerText = tripStatus;
+        statusSelect.appendChild(newOpt);
+      }
+      statusSelect.value = tripStatus;
     }
 
     // Consignor/s table in Open View
@@ -1832,35 +1869,287 @@ const TripsModule = {
   },
 
   // ----------------------------------------------------
-  // TRUCK OWNER PAYMENT & ADJUSTMENT VIEW (wa_19.png, wa_21.png)
+  // TRIP STATUS CONTROLLER (Firebase Cloud Sync)
   // ----------------------------------------------------
-  openTruckOwnerPaymentModal(tripId) {
-    const t = this.allTrips.find(x => x.id === tripId || x.grNo === tripId) || this.activeTrip;
-    const modalEl = document.getElementById('modal-truck-owner-payment-details');
-    if (!modalEl) return;
+  updateActiveTripStatus(newStatus) {
+    if (!this.activeTrip || !newStatus) return;
+    this.activeTrip.tripStatus = newStatus;
+    this.activeTrip.status = newStatus;
 
-    const tbody = document.getElementById('topd-tbody');
-    if (tbody && t) {
-      tbody.innerHTML = `
-        <tr>
-          <td>mahaveer0236@gmail.com</td>
-          <td>${this.formatDateDMY(t.tripStartDate || t.date)}</td>
-          <td>Adjustment</td>
-          <td>${t.transport || 'MTC'}</td>
-          <td>Other</td>
-          <td>IDBI</td>
-          <td class="fw-bold">${t.grNo || t.shortGrNo}</td>
-        </tr>
-      `;
+    const target = this.allTrips.find(x => x.id === this.activeTrip.id || x.grNo === this.activeTrip.grNo);
+    if (target) {
+      target.tripStatus = newStatus;
+      target.status = newStatus;
     }
 
-    if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+    if (typeof dbService !== 'undefined' && dbService.update) {
+      dbService.update('trips', this.activeTrip.id, { tripStatus: newStatus, status: newStatus })
+        .catch(err => console.warn('Status sync error:', err));
+    }
+
+    if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+      AppUI.showToast(`Trip status updated to: "${newStatus}"`, 'success');
+    }
+  },
+
+  promptCustomTripStatus() {
+    const customStatus = prompt('Enter custom status for this trip (e.g. Transit, Off loading, Cheque due, POD sent, Bill generated):');
+    if (customStatus && customStatus.trim()) {
+      const statusSelect = document.getElementById('op-trip-status-select');
+      if (statusSelect) {
+        const opt = document.createElement('option');
+        opt.value = customStatus.trim();
+        opt.innerText = customStatus.trim();
+        statusSelect.appendChild(opt);
+        statusSelect.value = customStatus.trim();
+      }
+      this.updateActiveTripStatus(customStatus.trim());
+    }
+  },
+
+  // ----------------------------------------------------
+  // TRUCK OWNER PAYMENT DETAILS FULL VIEW (wa_19.png & wa_21.png)
+  // Master-Detail layout with cloud persistence
+  // ----------------------------------------------------
+  allTruckOwnerPayments: null,
+  activeTopdRecord: null,
+
+  async openTruckOwnerPaymentsView() {
+    // Hide other views
+    document.getElementById('trips-view-dashboard')?.classList.add('d-none');
+    document.getElementById('trips-view-register')?.classList.add('d-none');
+    document.getElementById('trip-detail-view')?.classList.add('d-none');
+    document.getElementById('trip-open-detail-view')?.classList.add('d-none');
+    document.getElementById('trip-open-party-view')?.classList.add('d-none');
+    document.getElementById('trip-payment-details-view')?.classList.add('d-none');
+    document.getElementById('trips-register-toolbar')?.classList.add('d-none');
+
+    const topdView = document.getElementById('trip-truck-owner-payments-view');
+    if (topdView) topdView.classList.remove('d-none');
+
+    // Load truck owner payments from database or fallback dataset
+    if (!this.allTruckOwnerPayments) {
+      let loaded = [];
+      if (typeof dbService !== 'undefined' && dbService.getAll) {
+        try {
+          loaded = await dbService.getAll('truckOwnerPayments');
+        } catch (e) {
+          loaded = [];
+        }
+      }
+      if (!loaded || loaded.length === 0) {
+        loaded = [
+          { id: 'TOP_2299', email: 'mahaveer0236@gmail.com', date: '2026-10-10', mode: 'Adjustment', beneficiary: '', fromBank: 'MTC', toBank: 'Other', description: '2026-2027-2299_TTC', amount: 146200 },
+          { id: 'TOP_2411', email: 'mahaveer0236@gmail.com', date: '2026-10-10', mode: 'NEFT/RTGS', beneficiary: 'Panchuram Gurjar', fromBank: 'IDBI', toBank: 'SBI', description: '2026-2027-2411_TTC', amount: 92250 },
+          { id: 'TOP_2422', email: 'mahaveer0236@gmail.com', date: '2026-10-10', mode: 'Cash', beneficiary: 'Deepak Dhabas', fromBank: 'Cash', toBank: 'Other', description: '2026-2027-2422_TTC', amount: 184500 }
+        ];
+      }
+      this.allTruckOwnerPayments = loaded;
+    }
+
+    this.renderTopdTable(this.allTruckOwnerPayments);
+    if (this.allTruckOwnerPayments.length > 0) {
+      this.selectTopdRow(this.allTruckOwnerPayments[0].id);
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  },
+
+  renderTopdTable(payments) {
+    const tbody = document.getElementById('topd-tbody');
+    if (!tbody) return;
+
+    if (!payments || payments.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-4">No Truck Owner Payment records found</td></tr>`;
+      return;
+    }
+
+    let html = '';
+    payments.forEach(p => {
+      const isSelected = this.activeTopdRecord && this.activeTopdRecord.id === p.id;
+      html += `
+        <tr class="appsheet-row ${isSelected ? 'table-active' : ''}" style="cursor: pointer;" onclick="TripsModule.selectTopdRow('${p.id}')">
+          <td>${p.email || 'mahaveer0236@gmail.com'}</td>
+          <td>${this.formatDateDMY(p.date)}</td>
+          <td>${p.mode || 'Adjustment'}</td>
+          <td>${p.beneficiary || '-'}</td>
+          <td>${p.fromBank || 'MTC'}</td>
+          <td>${p.toBank || 'Other'}</td>
+          <td class="fw-semibold">${p.description || '-'}</td>
+        </tr>
+      `;
+    });
+    tbody.innerHTML = html;
+  },
+
+  selectTopdRow(id) {
+    const rec = (this.allTruckOwnerPayments || []).find(x => x.id === id);
+    if (!rec) return;
+
+    this.activeTopdRecord = rec;
+
+    const setText = (elemId, val) => {
+      const el = document.getElementById(elemId);
+      if (el) el.innerText = val || '-';
+    };
+
+    setText('topd-d-email', rec.email || 'mahaveer0236@gmail.com');
+    setText('topd-d-date', this.formatDateDMY(rec.date));
+    setText('topd-d-mode', rec.mode || 'Adjustment');
+    setText('topd-d-beneficiary', rec.beneficiary || '-');
+    setText('topd-d-frombank', rec.fromBank || 'MTC');
+    setText('topd-d-tobank', rec.toBank || 'Other');
+    setText('topd-d-desc', rec.description || '-');
+    setText('topd-d-amount', `₹ ${Number(rec.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+
+    const tbody = document.getElementById('topd-tbody');
+    if (tbody) {
+      tbody.querySelectorAll('tr').forEach(r => r.classList.remove('table-active'));
+      const rows = Array.from(tbody.querySelectorAll('tr'));
+      const activeRow = rows.find(r => r.innerHTML.includes(rec.description));
+      if (activeRow) activeRow.classList.add('table-active');
+    }
+
+    document.getElementById('topd-detail-col')?.classList.remove('d-none');
+  },
+
+  filterTopdTable(term) {
+    if (!this.allTruckOwnerPayments) return;
+    const q = (term || '').toLowerCase().trim();
+    const filtered = this.allTruckOwnerPayments.filter(p => {
+      return (p.email || '').toLowerCase().includes(q) ||
+             (p.mode || '').toLowerCase().includes(q) ||
+             (p.beneficiary || '').toLowerCase().includes(q) ||
+             (p.fromBank || '').toLowerCase().includes(q) ||
+             (p.toBank || '').toLowerCase().includes(q) ||
+             (p.description || '').toLowerCase().includes(q) ||
+             String(p.amount || '').includes(q);
+    });
+    this.renderTopdTable(filtered);
+  },
+
+  closeTruckOwnerPaymentsView() {
+    document.getElementById('trip-truck-owner-payments-view')?.classList.add('d-none');
+    if (this.mainViewMode === 'dashboard') {
+      this.goToDashboardView();
+    } else {
+      this.goToRegisterView('open', this.currentFY);
+    }
+  },
+
+  hideTopdDetailPane() {
+    document.getElementById('topd-detail-col')?.classList.add('d-none');
+  },
+
+  toggleTopdFullscreen() {
+    const masterCol = document.getElementById('topd-master-col');
+    if (masterCol) {
+      masterCol.classList.toggle('d-none');
+    }
+  },
+
+  editActiveTopdRecord() {
+    if (!this.activeTopdRecord) return;
+    this.openAddTruckOwnerPaymentModal();
+    const r = this.activeTopdRecord;
+    const dateInput = document.getElementById('top-date');
+    if (dateInput) dateInput.value = r.date;
+    const modeSelect = document.getElementById('top-mode');
+    if (modeSelect) modeSelect.value = r.mode;
+    const benInput = document.getElementById('top-beneficiary');
+    if (benInput) benInput.value = r.beneficiary || '';
+    const fromBank = document.getElementById('top-from-bank');
+    if (fromBank) fromBank.value = r.fromBank || 'MTC';
+    const toBank = document.getElementById('top-to-bank');
+    if (toBank) toBank.value = r.toBank || 'Other';
+    const descInput = document.getElementById('top-description');
+    if (descInput) descInput.value = r.description || '';
+    const amtInput = document.getElementById('top-amount');
+    if (amtInput) amtInput.value = r.amount || 0;
+  },
+
+  openAddTruckOwnerPaymentModal(tripId) {
+    const t = tripId ? (this.allTrips.find(x => x.id === tripId || x.grNo === tripId) || this.activeTrip) : this.activeTrip;
+    
+    const dateInput = document.getElementById('top-date');
+    if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
+
+    const descInput = document.getElementById('top-description');
+    if (descInput) descInput.value = t ? (t.grNo || t.shortGrNo || '') : '';
+
+    const benInput = document.getElementById('top-beneficiary');
+    if (benInput) benInput.value = t ? (t.truckOwner || t.ownerName || '') : '';
+
+    const amtInput = document.getElementById('top-amount');
+    if (amtInput) amtInput.value = t ? (t.ownerDue || t.partyDue || 0) : '';
+
+    const datalist = document.getElementById('top-owners-list');
+    if (datalist && this.allTruckOwners) {
+      datalist.innerHTML = this.allTruckOwners.map(o => `<option value="${o.name}">${o.name} (${o.mobile || ''})</option>`).join('');
+    }
+
+    const modalEl = document.getElementById('modal-add-truck-owner-payment');
+    if (modalEl && typeof bootstrap !== 'undefined' && bootstrap.Modal) {
       bootstrap.Modal.getOrCreateInstance(modalEl).show();
     }
   },
 
+  async saveNewTruckOwnerPayment() {
+    const date = document.getElementById('top-date')?.value || new Date().toISOString().split('T')[0];
+    const mode = document.getElementById('top-mode')?.value || 'Adjustment';
+    const beneficiary = document.getElementById('top-beneficiary')?.value?.trim() || '';
+    const fromBank = document.getElementById('top-from-bank')?.value || 'MTC';
+    const toBank = document.getElementById('top-to-bank')?.value || 'Other';
+    const description = document.getElementById('top-description')?.value?.trim() || 'Payment';
+    const amount = Number(document.getElementById('top-amount')?.value) || 0;
+
+    if (!amount) {
+      if (typeof AppUI !== 'undefined') AppUI.showToast('Please enter a valid amount', 'warning');
+      return;
+    }
+
+    const newRec = {
+      id: 'TOP_' + Date.now(),
+      email: 'mahaveer0236@gmail.com',
+      date,
+      mode,
+      beneficiary,
+      fromBank,
+      toBank,
+      description,
+      amount,
+      createdAt: new Date().toISOString()
+    };
+
+    if (!this.allTruckOwnerPayments) this.allTruckOwnerPayments = [];
+    this.allTruckOwnerPayments.unshift(newRec);
+
+    if (typeof dbService !== 'undefined' && dbService.add) {
+      try {
+        await dbService.add('truckOwnerPayments', newRec);
+      } catch (e) {
+        console.warn('Fallback saving truckOwnerPayments:', e);
+      }
+    }
+
+    const modalEl = document.getElementById('modal-add-truck-owner-payment');
+    if (modalEl && typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+      bootstrap.Modal.getOrCreateInstance(modalEl).hide();
+    }
+
+    this.renderTopdTable(this.allTruckOwnerPayments);
+    this.selectTopdRow(newRec.id);
+
+    if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+      AppUI.showToast(`Truck Owner Payment of ₹${amount.toLocaleString('en-IN')} saved successfully!`, 'success');
+    }
+  },
+
+  openTruckOwnerPaymentModal(tripId) {
+    this.openAddTruckOwnerPaymentModal(tripId);
+  },
+
   openTruckOwnerAlert(type) {
-    this.openTruckOwnerPaymentModal();
+    this.openTruckOwnerPaymentsView();
   },
 
   // ----------------------------------------------------
@@ -1996,6 +2285,7 @@ const TripsModule = {
     document.getElementById('trip-open-detail-view')?.classList.add('d-none');
     document.getElementById('trip-open-party-view')?.classList.add('d-none');
     document.getElementById('trip-payment-details-view')?.classList.add('d-none');
+    document.getElementById('trip-truck-owner-payments-view')?.classList.add('d-none');
     if (this.mainViewMode === 'dashboard') {
       this.goToDashboardView();
     } else {
@@ -2027,6 +2317,7 @@ const TripsModule = {
     document.getElementById('trip-open-detail-view')?.classList.add('d-none');
     document.getElementById('trip-open-party-view')?.classList.add('d-none');
     document.getElementById('trip-payment-details-view')?.classList.add('d-none');
+    document.getElementById('trip-truck-owner-payments-view')?.classList.add('d-none');
     if (toolbarEl) toolbarEl.classList.add('d-none');
 
     if (crumbSep) crumbSep.classList.add('d-none');
@@ -2054,6 +2345,7 @@ const TripsModule = {
     document.getElementById('trip-open-detail-view')?.classList.add('d-none');
     document.getElementById('trip-open-party-view')?.classList.add('d-none');
     document.getElementById('trip-payment-details-view')?.classList.add('d-none');
+    document.getElementById('trip-truck-owner-payments-view')?.classList.add('d-none');
     if (toolbarEl) toolbarEl.classList.remove('d-none');
 
     this.workflowTab = status;
@@ -2141,17 +2433,6 @@ const TripsModule = {
       this.goToRegisterView(this.workflowTab || 'settled', this.currentFY || 'All');
     } else {
       this.goToDashboardView();
-    }
-  },
-
-  openTruckOwnerAlert(type) {
-    const msg = type === 'open'
-      ? 'Truck Owner Open Balance: Verified pending freight balance under reconciliation.'
-      : 'Truck Owner Rate Difference: Rate variance adjusted in ledger entries.';
-    if (typeof AppUI !== 'undefined') {
-      AppUI.showToast(msg, 'warning');
-    } else {
-      alert(msg);
     }
   },
 
