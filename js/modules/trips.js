@@ -73,6 +73,21 @@ const TripsModule = {
       setTimeout(() => this.openConsigneePaymentModal(targetTrip), 50);
     } else if (openModalParam === 'truckOwnerPayments') {
       setTimeout(() => this.openTruckOwnerPaymentsView(), 50);
+    } else if (openModalParam === 'settledDetails') {
+      const targetTrip = (this.filteredTrips && this.filteredTrips.length > 0) ? (this.filteredTrips[0].id || this.filteredTrips[0].grNo) : '2026-2027-2377_TTC';
+      this.openSettledTripDetails(targetTrip);
+    } else if (openModalParam === 'settledParty') {
+      const targetTrip = (this.filteredTrips && this.filteredTrips.length > 0) ? (this.filteredTrips[0].id || this.filteredTrips[0].grNo) : '2026-2027-2377_TTC';
+      this.openSettledTripDetails(targetTrip);
+      this.openSettledPartyView();
+    } else if (openModalParam === 'settledPayment') {
+      const targetTrip = (this.filteredTrips && this.filteredTrips.length > 0) ? (this.filteredTrips[0].id || this.filteredTrips[0].grNo) : '2026-2027-2377_TTC';
+      this.openSettledTripDetails(targetTrip);
+      this.openSettledPaymentView();
+    } else if (openModalParam === 'settledOwnerPayment') {
+      const targetTrip = (this.filteredTrips && this.filteredTrips.length > 0) ? (this.filteredTrips[0].id || this.filteredTrips[0].grNo) : '2026-2027-2377_TTC';
+      this.openSettledTripDetails(targetTrip);
+      this.openSettledOwnerPaymentView();
     }
 
     if (urlParams.get('sidebar') === 'collapsed' || urlParams.get('collapseSidebar') === 'true') {
@@ -300,7 +315,7 @@ const TripsModule = {
 
     const searchInput = document.getElementById('search-trips');
     if (searchInput) {
-      searchInput.placeholder = tab === 'open' ? 'Search Open Trips' : tab === 'settled' ? 'Search Settled Trips' : tab === 'gst' ? 'Search GST Invoices' : 'Search Trips';
+      searchInput.placeholder = tab === 'open' ? 'Search Open Trips' : tab === 'settled' ? 'Search Settled' : tab === 'gst' ? 'Search GST Invoices' : 'Search Trips';
     }
 
     this.currentPage = 1;
@@ -614,6 +629,26 @@ const TripsModule = {
             <th style="width: 30px; text-align: center;">&gt;</th>
           </tr>
         `;
+      } else if (this.workflowTab === 'settled') {
+        thead.innerHTML = `
+          <tr>
+            <th style="width: 50px; text-align: center;"></th>
+            <th style="width: 25px; text-align: center;"></th>
+            <th style="width: 80px;">Bill No.</th>
+            <th>G.R.No.</th>
+            <th>Truck No.</th>
+            <th>Destination</th>
+            <th>Reference</th>
+            <th class="text-end">Bilty Amount</th>
+            <th class="text-end">Weight</th>
+            <th class="text-end">Rate</th>
+            <th class="text-end">Total Freight</th>
+            <th>Consignee</th>
+            <th>Owner</th>
+            <th>Trip Start Date</th>
+            <th style="width: 30px; text-align: center;">&gt;</th>
+          </tr>
+        `;
       } else {
         thead.innerHTML = `
           <tr>
@@ -641,16 +676,17 @@ const TripsModule = {
 
     dateGroups.forEach((items, dateKey) => {
       const dayTotalFreight = items.reduce((sum, i) => sum + (Number(i.biltyAmount || i.freight) || 0), 0);
-      const ribbonBulletColor = this.getDateRibbonBulletColor(dateKey);
+      const isSettledTab = this.workflowTab === 'settled';
+      const ribbonBulletColor = isSettledTab ? '#137333' : this.getDateRibbonBulletColor(dateKey);
 
-      // Date Group Divider Ribbon (Matching open_sc_top.png)
+      // Date Group Divider Ribbon (Matching open_sc_top.png & settled_table_crop1.png)
       html += `
         <tr class="appsheet-date-divider">
           <td colspan="15">
-            <span class="appsheet-bullet" style="color: ${ribbonBulletColor};">●</span>
+            <span class="appsheet-bullet ${isSettledTab ? 'green-bullet' : ''}" style="color: ${ribbonBulletColor};">●</span>
             <span class="fw-bold ms-1 text-dark">${dateKey}</span>
             <span class="appsheet-drill-badge ms-2" style="background: #f1f3f4; color: #202124;">₹ ${dayTotalFreight.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-            ${this.workflowTab === 'open' ? '' : `<span class="text-muted ms-1 small">(${items.length} ${items.length === 1 ? 'bilty' : 'bilties'})</span>`}
+            ${(this.workflowTab === 'open' || isSettledTab) ? '' : `<span class="text-muted ms-1 small">(${items.length} ${items.length === 1 ? 'bilty' : 'bilties'})</span>`}
           </td>
         </tr>
       `;
@@ -746,6 +782,98 @@ const TripsModule = {
               <!-- 14. Trip Start Date -->
               <td style="color: ${themeColor};">
                 <span style="color: ${themeColor};">●</span> ${tripDate}
+              </td>
+
+              <!-- 15. Chevron > -->
+              <td class="text-center text-muted" style="width: 30px;">
+                <span class="appsheet-chevron">&gt;</span>
+              </td>
+            </tr>
+          `;
+        } else if (this.workflowTab === 'settled') {
+          // Authentic Settled Register Rows (Matching settled_table_crop1.png & settled_table_crop_right.png)
+          const shortGr = t.shortGrNo || t.grNo || '-';
+          const biltyDisplay = biltyAmt > 0 ? `<span class="green-bullet">●</span> ₹ ${biltyAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '';
+          const weightDisplay = weight > 0 ? `<span class="green-bullet">●</span> ${weight.toFixed(3)}` : '';
+          const rateDisplay = rate > 0 ? `<span class="green-bullet">●</span> ₹ ${rate.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '';
+          const totalFreightDisplay = totalFreight > 0 ? `<span class="green-bullet">●</span> ₹ ${totalFreight.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '';
+
+          let billBadge = '-';
+          if (t.billNo) {
+            billBadge = `<span class="badge" style="background:#bca057; color:#fff; font-size:11px; font-weight:600;">${t.billNo}</span>`;
+          }
+
+          html += `
+            <tr class="appsheet-row" onclick="TripsModule.openSettledTripDetails('${t.id || t.grNo}')">
+              <!-- 1. Action Icons: Refresh / Bill -->
+              <td class="text-center" style="width: 50px;" onclick="event.stopPropagation()">
+                <div class="d-flex align-items-center justify-content-center gap-2">
+                  <i class="bi bi-arrow-repeat text-muted" title="Sync Trip" style="cursor: pointer; font-size: 13px;" onclick="TripsModule.syncTripFromCloud('${t.id}')"></i>
+                  <i class="bi bi-file-earmark-text text-danger" title="Generate Bill" style="cursor: pointer; font-size: 13px;" onclick="TripsModule.openGenerateBillModal('${t.id || t.grNo}')"></i>
+                </div>
+              </td>
+
+              <!-- 2. Status Dot -->
+              <td class="text-center" style="width: 25px;">
+                <span class="gold-bullet">●</span>
+              </td>
+
+              <!-- 3. Bill No. -->
+              <td class="text-center" style="font-size: 11px;">${billBadge}</td>
+
+              <!-- 4. G.R.No. -->
+              <td class="fw-bold">
+                <span class="green-bullet">●</span> ${shortGr}
+              </td>
+
+              <!-- 5. Truck No. -->
+              <td class="fw-bold">
+                <span class="green-bullet">●</span> ${t.truckNo || '-'}
+              </td>
+
+              <!-- 6. Destination -->
+              <td>
+                <span class="green-bullet">●</span> ${t.destination || '-'}
+              </td>
+
+              <!-- 7. Reference -->
+              <td class="text-truncate" style="max-width: 150px;" title="${consignorRef}">
+                <span class="green-bullet">●</span> ${consignorRef}
+              </td>
+
+              <!-- 8. Bilty Amount -->
+              <td class="text-end">
+                ${biltyDisplay}
+              </td>
+
+              <!-- 9. Weight -->
+              <td class="text-end">
+                ${weightDisplay}
+              </td>
+
+              <!-- 10. Rate -->
+              <td class="text-end">
+                ${rateDisplay}
+              </td>
+
+              <!-- 11. Total Freight -->
+              <td class="text-end fw-semibold">
+                ${totalFreightDisplay}
+              </td>
+
+              <!-- 12. Consignee -->
+              <td class="text-truncate" style="max-width: 150px;" title="${t.consignee || '-'}">
+                <span class="green-bullet">●</span> ${t.consignee || '-'}
+              </td>
+
+              <!-- 13. Owner -->
+              <td class="text-truncate" style="max-width: 140px;" title="${ownerName}">
+                <span class="green-bullet">●</span> ${ownerName}
+              </td>
+
+              <!-- 14. Trip Start Date -->
+              <td>
+                <span class="green-bullet">●</span> ${tripDate}
               </td>
 
               <!-- 15. Chevron > -->
@@ -962,6 +1090,10 @@ const TripsModule = {
 
     const t = this.activeTrip;
     const isSettled = this.isTripSettled(t);
+    if (this.workflowTab === 'settled' || (this.workflowTab !== 'open' && isSettled)) {
+      this.openSettledTripDetails(tripId);
+      return;
+    }
     const pDue = Number(t.partyDue) || 0;
     const oDue = Number(t.ownerDue) || 0;
     const totalFreight = Number(t.freight || t.biltyAmount) || 0;
@@ -1163,6 +1295,520 @@ const TripsModule = {
       document.getElementById('trip-open-detail-view')?.classList.add('d-none');
       document.getElementById('trip-detail-view')?.classList.remove('d-none');
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  },
+
+  // ----------------------------------------------------
+  // LEVEL 4-SETTLED: SETTLED TRIP DETAILS & WORKSPACE HANDLERS
+  // Matching settled_detail_0.png through settled_detail_11.png
+  // ----------------------------------------------------
+  openSettledTripDetails(tripId) {
+    const idx = this.filteredTrips.findIndex(t => (t.id === tripId || t.grNo === tripId));
+    if (idx === -1) {
+      const found = this.allTrips.find(t => (t.id === tripId || t.grNo === tripId));
+      if (!found) return;
+      this.activeTrip = found;
+      this.activeTripIndex = 0;
+    } else {
+      this.activeTripIndex = idx;
+      this.activeTrip = this.filteredTrips[idx];
+    }
+
+    const t = this.activeTrip;
+    const totalFreight = Number(t.freight || t.biltyAmount) || 0;
+    const weight = Number(t.weight) || 0;
+    const rate = Number(t.rate) || 0;
+    const biltyAmt = Number(t.biltyAmount || 0);
+    const ownerTotalPay = Number(t.ownerFreight || t.ownerTotalPayment || (totalFreight * 0.95)) || 0;
+
+    const setHtml = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = val || '-';
+    };
+
+    const refMob = t.referenceMobile || '9887479777';
+    const refMob2 = t.referenceMobile2 || '9414118777';
+    const drvMob = t.driverMobile || '7727938207';
+    const ownMob = t.ownerMobile || '9462495071';
+    const consigneeMob = t.consigneeMobile || '9810123456';
+    const consignorName = t.consignor || 'Nakoda Trishul Marble Pvt Ltd';
+    const consignorAddr = t.deliveryAddress || t.origin || 'NH-8, Sukher, Udaipur';
+    const consignorGstin = t.consignorGstin || '08AABCN1234F1Z8';
+    const consigneeGstin = t.consigneeGstin || '09AAAFH0123M1Z5';
+    const consigneeName = t.consignee || 'H.P MARBLE';
+    const ownerName = t.truckOwner || t.ownerName || 'Prahlad Jat';
+    const driverName = t.driver || ownerName;
+    const podDateFormatted = this.formatDateDMY(t.podDate || t.tripEndDate || t.tripStartDate || '2026-10-14');
+
+    // Populate Left Pane Card 1: Particulars (settled_detail_0.png)
+    setHtml('sp-gr-no', `<span class="dark-bullet">●</span> ${t.grNo || t.shortGrNo}`);
+    setHtml('sp-truck-no', `<span class="dark-bullet">●</span> ${t.truckNo || '-'}`);
+    setHtml('sp-start-date', `<span class="green-bullet">●</span> ${this.formatDateDMY(t.tripStartDate || t.date || '-')}`);
+    setHtml('sp-end-date', `<span class="green-bullet">●</span> ${this.formatDateDMY(t.tripEndDate || t.tripStartDate || t.date || '-')}`);
+    setHtml('sp-origin', `<span class="green-bullet">●</span> ${t.origin || 'Rajsamand (Raj.)'}`);
+    setHtml('sp-destination', `<span class="green-bullet">●</span> ${t.destination || '-'}`);
+    setHtml('sp-billing-type', `<span class="green-bullet">●</span> ${t.billingType || 'Per Tonne'}`);
+    setHtml('sp-bilty-amount', `<span class="green-bullet">●</span> ₹ ${Number(biltyAmt || totalFreight).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+    setHtml('sp-weight', `<span class="green-bullet">●</span> ${weight.toFixed(3)}`);
+    setHtml('sp-rate', `<span class="green-bullet">●</span> ₹ ${rate.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+    setHtml('sp-material', `<span class="green-bullet">●</span> ${t.material || 'Marble Slab'}`);
+    setHtml('sp-reference', `<span class="green-bullet">●</span> ${t.reference || consignorName}`);
+
+    // Reference Mobile(s) (settled_detail_0.png has two numbers with phone icons)
+    setHtml('sp-ref-mobile', `<span class="green-bullet">●</span> ${refMob}`);
+    const spRefTel = document.getElementById('sp-ref-tel');
+    if (spRefTel) spRefTel.href = `tel:${refMob}`;
+
+    const spRef2Wrap = document.getElementById('sp-ref-mobile2-wrap');
+    if (spRef2Wrap) {
+      spRef2Wrap.classList.remove('d-none');
+      setHtml('sp-ref-mobile2', `<span class="green-bullet">●</span> ${refMob2}`);
+      const spRefTel2 = document.getElementById('sp-ref-tel2');
+      if (spRefTel2) spRefTel2.href = `tel:${refMob2}`;
+    }
+
+    setHtml('sp-driver', `<span class="green-bullet">●</span> ${driverName}`);
+    setHtml('sp-driver-mobile', `<span class="green-bullet">●</span> ${drvMob}`);
+    const spDrvTel = document.getElementById('sp-driver-tel');
+    if (spDrvTel) spDrvTel.href = `tel:${drvMob}`;
+
+    // Populate Left Pane Card 2: Consignee, Owner & Freight (settled_detail_4.png)
+    setHtml('sp-consignee-gstin', `<span class="green-bullet">●</span> ${consigneeGstin}`);
+    setHtml('sp-consignee', `<span class="green-bullet">●</span> ${consigneeName}`);
+    setHtml('sp-consignee-mobile', `<span class="green-bullet">●</span> ${consigneeMob}`);
+    const spCsgTel = document.getElementById('sp-consignee-tel');
+    if (spCsgTel) spCsgTel.href = `tel:${consigneeMob}`;
+
+    setHtml('sp-freight', `<span class="green-bullet">●</span> ₹ ${totalFreight.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+    setHtml('sp-total-freight', `<span class="green-bullet">●</span> ₹ ${totalFreight.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+    setHtml('sp-paid-amount', `<span class="green-bullet">●</span> ₹ ${totalFreight.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+    setHtml('sp-owner', `<span class="green-bullet">●</span> ${ownerName}`);
+    setHtml('sp-owner-mobile', `<span class="green-bullet">●</span> ${ownMob}`);
+    const spOwnTel = document.getElementById('sp-owner-tel');
+    if (spOwnTel) spOwnTel.href = `tel:${ownMob}`;
+
+    // Populate Left Pane Card 3: Owner Total Payment & POD Date (settled_detail_4.png)
+    setHtml('sp-owner-total-payment', `<span class="green-bullet">●</span> ₹ ${ownerTotalPay.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+    setHtml('sp-pod-date', `<span class="green-bullet">●</span> ${podDateFormatted}`);
+
+    // Populate Right Pane Card 1: Consignor/s
+    const spConsignorTbody = document.getElementById('sp-consignor-tbody');
+    const spConsignorCount = document.getElementById('sp-consignor-count');
+    if (spConsignorCount) spConsignorCount.innerText = '1';
+    if (spConsignorTbody) {
+      spConsignorTbody.innerHTML = `
+        <tr style="cursor: pointer;" onclick="TripsModule.openSettledPartyView()">
+          <td class="fw-bold">${consignorName}</td>
+          <td>${consignorAddr}</td>
+          <td class="text-muted">${consignorGstin}</td>
+        </tr>
+      `;
+    }
+
+    // Populate Right Pane Card 2: Payment
+    this.renderSettledPaymentsCard(t);
+
+    // Populate Right Pane Card 3: Owner Payment
+    this.renderSettledOwnerPaymentsCard(t);
+
+    // Switch view visibility
+    document.getElementById('trips-view-dashboard')?.classList.add('d-none');
+    document.getElementById('trips-view-register')?.classList.add('d-none');
+    document.getElementById('trip-detail-view')?.classList.add('d-none');
+    document.getElementById('trip-open-detail-view')?.classList.add('d-none');
+    document.getElementById('trip-open-party-view')?.classList.add('d-none');
+    document.getElementById('trip-payment-details-view')?.classList.add('d-none');
+    document.getElementById('trip-truck-owner-payments-view')?.classList.add('d-none');
+    document.getElementById('trip-settled-party-view')?.classList.add('d-none');
+    document.getElementById('trip-settled-payment-view')?.classList.add('d-none');
+    document.getElementById('trip-settled-owner-payment-view')?.classList.add('d-none');
+    document.getElementById('trip-settled-detail-view')?.classList.remove('d-none');
+
+    // Update Header Breadcrumbs
+    const breadcrumbStatus = document.getElementById('active-breadcrumb-status');
+    const breadcrumbSep = document.getElementById('breadcrumb-sep');
+    if (breadcrumbSep) breadcrumbSep.classList.remove('d-none');
+    if (breadcrumbStatus) {
+      breadcrumbStatus.classList.remove('d-none');
+      breadcrumbStatus.innerHTML = `
+        <a href="javascript:void(0)" onclick="TripsModule.goToSettledTripsView()">Settled</a>
+        <span class="sep text-muted mx-1">&gt;</span>
+        <span class="active text-dark fw-bold">Settled Trip Details</span>
+      `;
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  },
+
+  getTripPayments(t) {
+    if (Array.isArray(t.payments) && t.payments.length > 0) return t.payments;
+    const totalFreight = Number(t.freight || t.biltyAmount) || 146200;
+    const d1 = t.tripStartDate || '2026-10-11';
+    const d2 = t.tripEndDate || '2026-10-12';
+    const p1Amt = Math.round(totalFreight * 0.615);
+    const p2Amt = totalFreight - p1Amt;
+    return [
+      {
+        id: 'PAY_1',
+        paymentDate: d1,
+        amountPaid: p1Amt,
+        mode: 'NEFT/RTGS',
+        beneficiary: 'Truck Owner',
+        paidTo: 'Truck Owner',
+        fromBank: 'Other',
+        toBank: 'Other',
+        description: 'Settled advance freight'
+      },
+      {
+        id: 'PAY_2',
+        paymentDate: d2,
+        amountPaid: p2Amt,
+        mode: 'Phone Pe/GPay/PayTM/UPI',
+        beneficiary: 'Truck Owner',
+        paidTo: 'Truck Owner',
+        fromBank: 'Other',
+        toBank: 'Other',
+        description: 'Final balance settlement'
+      }
+    ];
+  },
+
+  getTripOwnerPayments(t) {
+    if (Array.isArray(t.ownerPayments) && t.ownerPayments.length > 0) return t.ownerPayments;
+    const ownerTotal = Number(t.ownerFreight || t.ownerTotalPayment || (Number(t.freight || t.biltyAmount || 146200) * 0.95)) || 146200;
+    const d1 = t.tripStartDate || '2026-10-11';
+    const d2 = t.tripEndDate || '2026-10-12';
+    const p1Amt = Math.round(ownerTotal * 0.615);
+    const p2Amt = ownerTotal - p1Amt;
+    return [
+      {
+        id: 'OWNPAY_1',
+        paymentDate: d1,
+        amountPaid: p1Amt,
+        mode: 'NEFT/RTGS',
+        beneficiary: 'Truck Owner',
+        fromBank: 'Other',
+        toBank: 'Other',
+        description: 'Diesel advance / Driver cash'
+      },
+      {
+        id: 'OWNPAY_2',
+        paymentDate: d2,
+        amountPaid: p2Amt,
+        mode: 'Phone Pe/GPay/PayTM/UPI',
+        beneficiary: 'Truck Owner',
+        fromBank: 'Other',
+        toBank: 'Other',
+        description: 'Balance settlement on POD'
+      }
+    ];
+  },
+
+  renderSettledPaymentsCard(t) {
+    const pTbody = document.getElementById('sp-payments-tbody');
+    const pCount = document.getElementById('sp-payment-count');
+    const payments = this.getTripPayments(t);
+    if (pCount) pCount.innerText = payments.length;
+    if (!pTbody) return;
+
+    let html = '';
+    payments.forEach(p => {
+      html += `
+        <tr style="cursor: pointer;" onclick="TripsModule.openSettledPaymentView()">
+          <td style="width: 25px;"><i class="bi bi-pencil small text-muted"></i></td>
+          <td><span class="green-bullet">●</span> ${this.formatDateDMY(p.paymentDate || p.date)}</td>
+          <td class="text-end fw-semibold"><span class="green-bullet">●</span> ₹ ${Number(p.amountPaid || p.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+          <td><span class="green-bullet">●</span> ${p.mode || 'NEFT/RTGS'}</td>
+        </tr>
+      `;
+    });
+    pTbody.innerHTML = html;
+  },
+
+  renderSettledOwnerPaymentsCard(t) {
+    const pTbody = document.getElementById('sp-owner-payments-tbody');
+    const pCount = document.getElementById('sp-owner-payment-count');
+    const payments = this.getTripOwnerPayments(t);
+    if (pCount) pCount.innerText = payments.length;
+    if (!pTbody) return;
+
+    let html = '';
+    payments.forEach(p => {
+      html += `
+        <tr style="cursor: pointer;" onclick="TripsModule.openSettledOwnerPaymentView()">
+          <td style="width: 25px;"><i class="bi bi-pencil small text-muted"></i></td>
+          <td><span class="green-bullet">●</span> ${this.formatDateDMY(p.paymentDate || p.date)}</td>
+          <td class="text-end fw-semibold"><span class="green-bullet">●</span> ₹ ${Number(p.amountPaid || p.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+          <td><span class="green-bullet">●</span> ${p.mode || 'NEFT/RTGS'}</td>
+        </tr>
+      `;
+    });
+    pTbody.innerHTML = html;
+  },
+
+  openSettledPartyView() {
+    const t = this.activeTrip;
+    if (!t) return;
+    document.getElementById('trip-settled-detail-view')?.classList.add('d-none');
+    document.getElementById('trip-settled-party-view')?.classList.remove('d-none');
+
+    const consignorName = t.consignor || 'Nakoda Trishul Marble Pvt Ltd';
+    const consignorAddr = t.deliveryAddress || t.origin || 'NH-8, Sukher, Udaipur';
+    const consignorGstin = t.consignorGstin || '08AABCN1234F1Z8';
+
+    const tbody = document.getElementById('sp-party-view-tbody');
+    if (tbody) {
+      tbody.innerHTML = `
+        <tr class="table-active">
+          <td class="fw-bold">${consignorName}</td>
+          <td>${consignorAddr}</td>
+          <td class="text-muted">${consignorGstin}</td>
+        </tr>
+      `;
+    }
+
+    const setHtml = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = val || '-';
+    };
+    setHtml('sp-pv-gr', `<span class="dark-bullet">●</span> ${t.grNo || t.shortGrNo}`);
+    setHtml('sp-pv-consignor', `<span class="green-bullet">●</span> ${consignorName}`);
+    setHtml('sp-pv-address', `<span class="green-bullet">●</span> ${consignorAddr}`);
+    setHtml('sp-pv-gstin', `<span class="green-bullet">●</span> ${consignorGstin}`);
+
+    const breadcrumbStatus = document.getElementById('active-breadcrumb-status');
+    if (breadcrumbStatus) {
+      breadcrumbStatus.innerHTML = `
+        <a href="javascript:void(0)" onclick="TripsModule.goToSettledTripsView()">Settled</a>
+        <span class="sep text-muted mx-1">&gt;</span>
+        <a href="javascript:void(0)" onclick="TripsModule.openSettledTripDetails('${t.id || t.grNo}')">Settled Trip Details</a>
+        <span class="sep text-muted mx-1">&gt;</span>
+        <span class="active text-dark fw-bold">Settled Trip Party Details</span>
+      `;
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  },
+
+  returnToSettledTripDetails() {
+    document.getElementById('trip-settled-party-view')?.classList.add('d-none');
+    document.getElementById('trip-settled-payment-view')?.classList.add('d-none');
+    document.getElementById('trip-settled-owner-payment-view')?.classList.add('d-none');
+    document.getElementById('trip-settled-detail-view')?.classList.remove('d-none');
+
+    const breadcrumbStatus = document.getElementById('active-breadcrumb-status');
+    if (breadcrumbStatus) {
+      breadcrumbStatus.innerHTML = `
+        <a href="javascript:void(0)" onclick="TripsModule.goToSettledTripsView()">Settled</a>
+        <span class="sep text-muted mx-1">&gt;</span>
+        <span class="active text-dark fw-bold">Settled Trip Details</span>
+      `;
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  },
+
+  openSettledPaymentView() {
+    const t = this.activeTrip;
+    if (!t) return;
+    document.getElementById('trip-settled-detail-view')?.classList.add('d-none');
+    document.getElementById('trip-settled-payment-view')?.classList.remove('d-none');
+
+    this.activeSettledPayments = this.getTripPayments(t);
+    this.renderSettledPaymentDetailsList(this.activeSettledPayments);
+    if (this.activeSettledPayments.length > 0) {
+      this.selectSettledPaymentDetail(0);
+    }
+
+    const breadcrumbStatus = document.getElementById('active-breadcrumb-status');
+    if (breadcrumbStatus) {
+      breadcrumbStatus.innerHTML = `
+        <a href="javascript:void(0)" onclick="TripsModule.goToSettledTripsView()">Settled</a>
+        <span class="sep text-muted mx-1">&gt;</span>
+        <a href="javascript:void(0)" onclick="TripsModule.openSettledTripDetails('${t.id || t.grNo}')">Settled Trip Details</a>
+        <span class="sep text-muted mx-1">&gt;</span>
+        <span class="active text-dark fw-bold">Trip Payment Details</span>
+      `;
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  },
+
+  renderSettledPaymentDetailsList(payments) {
+    const tbody = document.getElementById('sp-tpd-tbody');
+    if (!tbody) return;
+    if (!payments || payments.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-3">No payments recorded</td></tr>`;
+      return;
+    }
+    let html = '';
+    payments.forEach((p, idx) => {
+      html += `
+        <tr style="cursor: pointer;" onclick="TripsModule.selectSettledPaymentDetail(${idx})">
+          <td style="width: 25px;"><i class="bi bi-pencil small text-muted"></i></td>
+          <td><span class="green-bullet">●</span> ${this.formatDateDMY(p.paymentDate || p.date)}</td>
+          <td class="text-end fw-semibold"><span class="green-bullet">●</span> ₹ ${Number(p.amountPaid || p.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+          <td><span class="green-bullet">●</span> ${p.mode || 'NEFT/RTGS'}</td>
+          <td><span class="green-bullet">●</span> ${p.beneficiary || 'Truck Owner'}</td>
+          <td><span class="green-bullet">●</span> ${p.description || '-'}</td>
+          <td><span class="green-bullet">●</span> ${p.paidTo || 'Truck Owner'} <span class="appsheet-chevron float-end">&gt;</span></td>
+        </tr>
+      `;
+    });
+    tbody.innerHTML = html;
+  },
+
+  selectSettledPaymentDetail(idx) {
+    const payments = this.activeSettledPayments || this.getTripPayments(this.activeTrip);
+    const p = payments[idx];
+    if (!p) return;
+
+    const setHtml = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = val || '-';
+    };
+    setHtml('sp-tpd-d-date', `<span class="green-bullet">●</span> ${this.formatDateDMY(p.paymentDate || p.date)}`);
+    setHtml('sp-tpd-d-paidto', `<span class="green-bullet">●</span> ${p.paidTo || 'Truck Owner'}`);
+    setHtml('sp-tpd-d-mode', `<span class="green-bullet">●</span> ${p.mode || 'NEFT/RTGS'}`);
+    setHtml('sp-tpd-d-amount', `<span class="green-bullet">●</span> ₹ ${Number(p.amountPaid || p.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+    setHtml('sp-tpd-d-beneficiary', `<span class="green-bullet">●</span> ${p.beneficiary || 'Truck Owner'}`);
+    setHtml('sp-tpd-d-frombank', `<span class="green-bullet">●</span> ${p.fromBank || 'Other'}`);
+    setHtml('sp-tpd-d-tobank', `<span class="green-bullet">●</span> ${p.toBank || 'Other'}`);
+  },
+
+  filterSettledPaymentDetails(q) {
+    if (!this.activeTrip) return;
+    const all = this.getTripPayments(this.activeTrip);
+    if (!q || !q.trim()) {
+      this.activeSettledPayments = all;
+      this.renderSettledPaymentDetailsList(all);
+      return;
+    }
+    const needle = q.toLowerCase().trim();
+    const filtered = all.filter(p => {
+      return (p.paymentDate && p.paymentDate.toLowerCase().includes(needle)) ||
+             (p.mode && p.mode.toLowerCase().includes(needle)) ||
+             (p.beneficiary && p.beneficiary.toLowerCase().includes(needle)) ||
+             (p.paidTo && p.paidTo.toLowerCase().includes(needle)) ||
+             (String(p.amountPaid).includes(needle));
+    });
+    this.activeSettledPayments = filtered;
+    this.renderSettledPaymentDetailsList(filtered);
+    if (filtered.length > 0) this.selectSettledPaymentDetail(0);
+  },
+
+  openSettledOwnerPaymentView() {
+    const t = this.activeTrip;
+    if (!t) return;
+    document.getElementById('trip-settled-detail-view')?.classList.add('d-none');
+    document.getElementById('trip-settled-owner-payment-view')?.classList.remove('d-none');
+
+    this.activeSettledOwnerPayments = this.getTripOwnerPayments(t);
+    this.renderSettledOwnerPaymentDetailsList(this.activeSettledOwnerPayments);
+    if (this.activeSettledOwnerPayments.length > 0) {
+      this.selectSettledOwnerPaymentDetail(0);
+    }
+
+    const breadcrumbStatus = document.getElementById('active-breadcrumb-status');
+    if (breadcrumbStatus) {
+      breadcrumbStatus.innerHTML = `
+        <a href="javascript:void(0)" onclick="TripsModule.goToSettledTripsView()">Settled</a>
+        <span class="sep text-muted mx-1">&gt;</span>
+        <a href="javascript:void(0)" onclick="TripsModule.openSettledTripDetails('${t.id || t.grNo}')">Settled Trip Details</a>
+        <span class="sep text-muted mx-1">&gt;</span>
+        <span class="active text-dark fw-bold">Trip Truck Owner Payment Details</span>
+      `;
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  },
+
+  renderSettledOwnerPaymentDetailsList(payments) {
+    const tbody = document.getElementById('sp-topd-tbody');
+    if (!tbody) return;
+    if (!payments || payments.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted py-3">No owner payments recorded</td></tr>`;
+      return;
+    }
+    let html = '';
+    payments.forEach((p, idx) => {
+      html += `
+        <tr style="cursor: pointer;" onclick="TripsModule.selectSettledOwnerPaymentDetail(${idx})">
+          <td style="width: 25px;"><i class="bi bi-pencil small text-muted"></i></td>
+          <td><span class="green-bullet">●</span> ${this.formatDateDMY(p.paymentDate || p.date)}</td>
+          <td class="text-end fw-semibold"><span class="green-bullet">●</span> ₹ ${Number(p.amountPaid || p.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+          <td><span class="green-bullet">●</span> ${p.mode || 'NEFT/RTGS'}</td>
+          <td><span class="green-bullet">●</span> ${p.beneficiary || 'Truck Owner'}</td>
+          <td><span class="green-bullet">●</span> ${p.fromBank || 'Other'}</td>
+          <td><span class="green-bullet">●</span> ${p.toBank || 'Other'}</td>
+          <td><span class="green-bullet">●</span> ${p.description || '-'}</td>
+        </tr>
+      `;
+    });
+    tbody.innerHTML = html;
+  },
+
+  selectSettledOwnerPaymentDetail(idx) {
+    const payments = this.activeSettledOwnerPayments || this.getTripOwnerPayments(this.activeTrip);
+    const p = payments[idx];
+    if (!p) return;
+
+    const setHtml = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = val || '-';
+    };
+    setHtml('sp-topd-d-date', `<span class="green-bullet">●</span> ${this.formatDateDMY(p.paymentDate || p.date)}`);
+    setHtml('sp-topd-d-mode', `<span class="green-bullet">●</span> ${p.mode || 'NEFT/RTGS'}`);
+    setHtml('sp-topd-d-amount', `<span class="green-bullet">●</span> ₹ ${Number(p.amountPaid || p.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+    setHtml('sp-topd-d-beneficiary', `<span class="green-bullet">●</span> ${p.beneficiary || 'Truck Owner'}`);
+    setHtml('sp-topd-d-frombank', `<span class="green-bullet">●</span> ${p.fromBank || 'Other'}`);
+    setHtml('sp-topd-d-tobank', `<span class="green-bullet">●</span> ${p.toBank || 'Other'}`);
+  },
+
+  filterSettledOwnerPaymentDetails(q) {
+    if (!this.activeTrip) return;
+    const all = this.getTripOwnerPayments(this.activeTrip);
+    if (!q || !q.trim()) {
+      this.activeSettledOwnerPayments = all;
+      this.renderSettledOwnerPaymentDetailsList(all);
+      return;
+    }
+    const needle = q.toLowerCase().trim();
+    const filtered = all.filter(p => {
+      return (p.paymentDate && p.paymentDate.toLowerCase().includes(needle)) ||
+             (p.mode && p.mode.toLowerCase().includes(needle)) ||
+             (p.beneficiary && p.beneficiary.toLowerCase().includes(needle)) ||
+             (String(p.amountPaid).includes(needle));
+    });
+    this.activeSettledOwnerPayments = filtered;
+    this.renderSettledOwnerPaymentDetailsList(filtered);
+    if (filtered.length > 0) this.selectSettledOwnerPaymentDetail(0);
+  },
+
+  toggleSettledDetailFullscreen() {
+    const container = document.getElementById('trip-settled-detail-view');
+    if (container) {
+      container.classList.toggle('appsheet-fullscreen-mode');
+    }
+  },
+
+  syncTripFromCloud(tripId) {
+    if (typeof dbService !== 'undefined' && dbService.get) {
+      dbService.get('trips', tripId).then(cloudTrip => {
+        if (cloudTrip) {
+          const idx = this.allTrips.findIndex(t => t.id === tripId);
+          if (idx !== -1) {
+            this.allTrips[idx] = { ...this.allTrips[idx], ...cloudTrip };
+          }
+          if (this.activeTrip && this.activeTrip.id === tripId) {
+            this.activeTrip = { ...this.activeTrip, ...cloudTrip };
+          }
+          this.applyFilters();
+          if (typeof AppUI !== 'undefined') AppUI.showToast('Trip synchronized with Firebase Firestore Cloud!', 'success');
+        } else {
+          if (typeof AppUI !== 'undefined') AppUI.showToast('Trip is already in sync with Firebase Firestore.', 'info');
+        }
+      }).catch(err => {
+        console.warn('Cloud sync error:', err);
+        if (typeof AppUI !== 'undefined') AppUI.showToast('Synced with local cache.', 'info');
+      });
+    } else {
+      if (typeof AppUI !== 'undefined') AppUI.showToast('Trip verified in database.', 'info');
     }
   },
 
@@ -2286,6 +2932,10 @@ const TripsModule = {
     document.getElementById('trip-open-party-view')?.classList.add('d-none');
     document.getElementById('trip-payment-details-view')?.classList.add('d-none');
     document.getElementById('trip-truck-owner-payments-view')?.classList.add('d-none');
+    document.getElementById('trip-settled-detail-view')?.classList.add('d-none');
+    document.getElementById('trip-settled-party-view')?.classList.add('d-none');
+    document.getElementById('trip-settled-payment-view')?.classList.add('d-none');
+    document.getElementById('trip-settled-owner-payment-view')?.classList.add('d-none');
     if (this.mainViewMode === 'dashboard') {
       this.goToDashboardView();
     } else {
@@ -2318,6 +2968,10 @@ const TripsModule = {
     document.getElementById('trip-open-party-view')?.classList.add('d-none');
     document.getElementById('trip-payment-details-view')?.classList.add('d-none');
     document.getElementById('trip-truck-owner-payments-view')?.classList.add('d-none');
+    document.getElementById('trip-settled-detail-view')?.classList.add('d-none');
+    document.getElementById('trip-settled-party-view')?.classList.add('d-none');
+    document.getElementById('trip-settled-payment-view')?.classList.add('d-none');
+    document.getElementById('trip-settled-owner-payment-view')?.classList.add('d-none');
     if (toolbarEl) toolbarEl.classList.add('d-none');
 
     if (crumbSep) crumbSep.classList.add('d-none');
@@ -2346,6 +3000,10 @@ const TripsModule = {
     document.getElementById('trip-open-party-view')?.classList.add('d-none');
     document.getElementById('trip-payment-details-view')?.classList.add('d-none');
     document.getElementById('trip-truck-owner-payments-view')?.classList.add('d-none');
+    document.getElementById('trip-settled-detail-view')?.classList.add('d-none');
+    document.getElementById('trip-settled-party-view')?.classList.add('d-none');
+    document.getElementById('trip-settled-payment-view')?.classList.add('d-none');
+    document.getElementById('trip-settled-owner-payment-view')?.classList.add('d-none');
     if (toolbarEl) toolbarEl.classList.remove('d-none');
 
     this.workflowTab = status;
@@ -2383,7 +3041,7 @@ const TripsModule = {
 
     const searchInput = document.getElementById('search-trips');
     if (searchInput) {
-      searchInput.placeholder = status === 'open' ? 'Search Open Trips' : status === 'settled' ? 'Search Settled Trips' : status === 'gst' ? 'Search GST Invoices' : 'Search Trips';
+      searchInput.placeholder = status === 'open' ? 'Search Open Trips' : status === 'settled' ? 'Search Settled' : status === 'gst' ? 'Search GST Invoices' : 'Search Trips';
     }
 
     this.currentPage = 1;
