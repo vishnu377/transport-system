@@ -1,5 +1,312 @@
 // Seed dataset for authentic AppSheet Open Trips Register (Matching screencapture-appsheet-start-... and WhatsApp models)
 window.OPEN_TRIPS_SEED = [
+  // ========================================================
+  // AUTHENTIC APPSHEET CARD 3 (TRIPS REGISTER) SCREENSHOT DATASET
+  // Matching crop_check_0.png & screencapture-appsheet-start-...-14_19_30.png
+  // ========================================================
+  // --- 14/10/2026 (1 Trip) ---
+  {
+    id: 'TRIP_20261014_2483', grNo: '2026-2027-2483_TTC', shortGrNo: '2483_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-10-14', date: '2026-10-14',
+    truckNo: 'RJ52GA7728', truckOwner: 'Laxmi Prakash Jat', ownerName: 'Laxmi Prakash Jat',
+    driver: 'Rajendra Kumar 7728', driverMobile: '9784175913',
+    origin: 'Rajsamand (Raj.)', destination: 'Jhajjar (Haryana)', deliveryAddress: 'BirlaNu Ltd. Jhajjar',
+    consignor: 'Balwant Yadav R.B. Dyes & Chemicals', reference: 'Balwant Yadav R.B. Dyes & Chemicals',
+    consignee: 'BirlaNu Ltd. Jhajjar Putty Plant', material: 'Dolomite Powder',
+    billingType: 'Per Tonne', weight: 82.000, rate: 1450.00, freight: 118900.00, biltyAmount: 0.0,
+    billNo: '', partyPaid: 0.0, partyDue: 118900.00, ownerDue: 118900.00,
+    tripStatus: 'Cheque due', status: 'Due', colorTheme: 'mustard'
+  },
+  // --- 13/10/2026 (20 Trips) ---
+  {
+    id: 'TRIP_20261013_2456', grNo: '2026-2027-2456_TTC', shortGrNo: '2456_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-10-13', date: '2026-10-13',
+    truckNo: 'RJ01GE1235', truckOwner: 'Kalu Ram Yadav Shrinagar', ownerName: 'Kalu Ram Yadav Shrinagar',
+    driver: 'Hansraj 1235', driverMobile: '9829123456',
+    origin: 'Rajsamand (Raj.)', destination: 'Ghaziabad (U.P.)', deliveryAddress: 'Sharda Paint Industries Ghaziabad',
+    consignor: 'Om Saini', reference: 'Om Saini', consignee: 'Sharda Paint Industries',
+    material: 'Marble Powder', billingType: 'Per Tonne', weight: 100.870, rate: 1580.00, freight: 159375.00, biltyAmount: 0.0,
+    billNo: '', partyPaid: 0.0, partyDue: 159375.00, ownerDue: 159375.00,
+    tripStatus: 'Cheque due', status: 'Due', colorTheme: 'mustard'
+  },
+  {
+    id: 'TRIP_20261013_2455', grNo: '2026-2027-2455_TTC', shortGrNo: '2455_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-10-13', date: '2026-10-13',
+    truckNo: 'RJ52GB5964', truckOwner: 'Shree Mahaveer Transport Co.', ownerName: 'Shree Mahaveer Transport Co.',
+    driver: 'Kushiram Gurjar', driverMobile: '9672109876',
+    origin: 'Rajsamand (Raj.)', destination: 'Delhi', deliveryAddress: 'Ananta Marble & Granite Delhi',
+    consignor: 'Durga Marble Shahdara Delhi', reference: 'Durga Marble Shahdara Delhi',
+    consignee: 'Ananta Marble & Granite', material: 'Marble Slabs',
+    billingType: 'Per Tonne', weight: 80.000, rate: 1500.00, freight: 120000.00, biltyAmount: 20000.00,
+    billNo: '', partyPaid: 0.0, partyDue: 120000.00, ownerDue: 120000.00,
+    tripStatus: 'Cheque due', status: 'Due', colorTheme: 'mustard'
+  },
+  {
+    id: 'TRIP_20261013_2466', grNo: '2026-2027-2466_TTC', shortGrNo: '2466_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-10-13', date: '2026-10-13',
+    truckNo: 'RJ52GB2590', truckOwner: 'Rameshwar Prasad', ownerName: 'Rameshwar Prasad',
+    driver: 'Kalu Gurjar Hindoli', driverMobile: '9928345678',
+    origin: 'Rajsamand (Raj.)', destination: 'Lucknow (U.P.)', deliveryAddress: 'Phenobond India Pvt. Ltd. Lucknow',
+    consignor: 'Bharat Mineral Pasoond', reference: 'Bharat Mineral Pasoond',
+    consignee: 'Phenobond India Pvt. Ltd.', material: 'Calcite Powder',
+    billingType: 'Per Tonne', weight: 42.300, rate: 2050.00, freight: 86715.00, biltyAmount: 86715.00,
+    billNo: '', partyPaid: 0.0, partyDue: 86715.00, ownerDue: 86715.00,
+    tripStatus: 'Cheque due', status: 'Due', colorTheme: 'mustard'
+  },
+  {
+    id: 'TRIP_20261013_2465', grNo: '2026-2027-2465_TTC', shortGrNo: '2465_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-10-13', date: '2026-10-13',
+    truckNo: 'RJ52GB2590', truckOwner: 'Rameshwar Prasad', ownerName: 'Rameshwar Prasad',
+    driver: 'Kalu Gurjar Hindoli', driverMobile: '9928345678',
+    origin: 'Rajsamand (Raj.)', destination: 'Lucknow (U.P.)', deliveryAddress: 'Phenobond India Pvt. Ltd. Lucknow',
+    consignor: 'Bharat Mineral Pasoond', reference: 'Bharat Mineral Pasoond',
+    consignee: 'Phenobond India Pvt. Ltd.', material: 'Calcite Powder',
+    billingType: 'Per Tonne', weight: 42.000, rate: 2050.00, freight: 86100.00, biltyAmount: 86100.00,
+    billNo: '', partyPaid: 0.0, partyDue: 86100.00, ownerDue: 86100.00,
+    tripStatus: 'Cheque due', status: 'Due', colorTheme: 'mustard'
+  },
+  {
+    id: 'TRIP_20261013_228', grNo: '2026-2027-228_SMTC', shortGrNo: '228_SMTC', transport: 'SMTC',
+    financialYear: '2026-2027', tripStartDate: '2026-10-13', date: '2026-10-13',
+    truckNo: 'RJ14GK1136', truckOwner: 'Sitaram Meena', ownerName: 'Sitaram Meena',
+    driver: 'Banti Meena tonk', driverMobile: '9828765432',
+    origin: 'Rajsamand (Raj.)', destination: 'Sandila (U.P.)', deliveryAddress: 'Berger Paints India Ltd. Sandila',
+    consignor: 'Rajesh Rao Udaipur', reference: 'Rajesh Rao Udaipur',
+    consignee: 'Berger Paints India Ltd.', material: 'Calcite Powder',
+    billingType: 'Per Tonne', weight: 80.000, rate: 2200.00, freight: 207680.00, biltyAmount: 0.0,
+    billNo: '', partyPaid: 0.0, partyDue: 207680.00, ownerDue: 207680.00,
+    tripStatus: 'Cheque due', status: 'Due', colorTheme: 'mustard'
+  },
+  {
+    id: 'TRIP_20261013_230', grNo: '2026-2027-230_SMTC', shortGrNo: '230_SMTC', transport: 'SMTC',
+    financialYear: '2026-2027', tripStartDate: '2026-10-13', date: '2026-10-13',
+    truckNo: 'RJ52GB0724', truckOwner: 'Laxmi Prakash Jat', ownerName: 'Laxmi Prakash Jat',
+    driver: 'Ramkishore Swami', driverMobile: '9414123890',
+    origin: 'Rajsamand (Raj.)', destination: 'Neemrana (Raj.)', deliveryAddress: 'Sakarni Plaster Neemrana',
+    consignor: 'Sudhir Mishra Sarkani ka...', reference: 'Sudhir Mishra Sarkani ka...',
+    consignee: 'SAKARNI PLASTER (INDIA) PVT. LTD.', material: 'Gypsum Powder',
+    billingType: 'Per Tonne', weight: 106.100, rate: 1130.00, freight: 141474.00, biltyAmount: 141473.00,
+    billNo: '', partyPaid: 0.0, partyDue: 141474.00, ownerDue: 141474.00,
+    tripStatus: 'Cheque due', status: 'Due', colorTheme: 'mustard'
+  },
+  {
+    id: 'TRIP_20261013_2478', grNo: '2026-2027-2478_TTC', shortGrNo: '2478_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-10-13', date: '2026-10-13',
+    truckNo: 'RJ52GB3484', truckOwner: 'Deepak Dhabas', ownerName: 'Deepak Dhabas',
+    driver: 'Dhanraj Meena 0986', driverMobile: '9784561234',
+    origin: 'Rajsamand (Raj.)', destination: 'Kanpur (U.P.)', deliveryAddress: 'Shabroc India Kanpur',
+    consignor: 'Kamal Ramchandhani', reference: 'Kamal Ramchandhani',
+    consignee: 'SHABROC INDIA', material: 'Marble Powder',
+    billingType: 'Per Tonne', weight: 40.000, rate: 1850.00, freight: 74000.00, biltyAmount: 0.0,
+    billNo: '', partyPaid: 0.0, partyDue: 74000.00, ownerDue: 74000.00,
+    tripStatus: 'Cheque due', status: 'Due', colorTheme: 'mustard'
+  },
+  {
+    id: 'TRIP_20261013_2471', grNo: '2026-2027-2471_TTC', shortGrNo: '2471_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-10-13', date: '2026-10-13',
+    truckNo: 'RJ52GB2509', truckOwner: 'Laxmi Prakash Jat', ownerName: 'Laxmi Prakash Jat',
+    driver: 'Aasharam Gurjar', driverMobile: '9636987123',
+    origin: 'Rajsamand (Raj.)', destination: 'Lucknow (U.P.)', deliveryAddress: 'Aawa Industries Lucknow',
+    consignor: 'Abhishek Nayati', reference: 'Abhishek Nayati',
+    consignee: 'AAWA INDUSTRIES PRIVATE LIMITED', material: 'Tiles / Goods',
+    billingType: 'Per Tonne', weight: 1.000, rate: 2100.00, freight: 2100.00, biltyAmount: 25000.00,
+    billNo: '', partyPaid: 0.0, partyDue: 2100.00, ownerDue: 2100.00,
+    tripStatus: 'Cheque due', status: 'Due', colorTheme: 'mustard'
+  },
+  {
+    id: 'TRIP_20261013_2476', grNo: '2026-2027-2476_TTC', shortGrNo: '2476_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-10-13', date: '2026-10-13',
+    truckNo: 'RJ32GD8541', truckOwner: 'Suresh Khatana', ownerName: 'Suresh Khatana',
+    driver: 'suresh khatana 8541', driverMobile: '9828554433',
+    origin: 'Rajsamand (Raj.)', destination: 'Cheeka (Haryana)', deliveryAddress: 'Maharaja Marble Cheeka',
+    consignor: 'Laxman Gurjar Kelwa', reference: 'Laxman Gurjar Kelwa',
+    consignee: 'M/S MAHARAJA MARBLE', material: 'Marble Powder',
+    billingType: 'Per Tonne', weight: 1.000, rate: 1700.00, freight: 1700.00, biltyAmount: 20000.00,
+    billNo: '', partyPaid: 0.0, partyDue: 1700.00, ownerDue: 1700.00,
+    tripStatus: 'Cheque due', status: 'Due', colorTheme: 'mustard'
+  },
+  {
+    id: 'TRIP_20261013_2458', grNo: '2026-2027-2458_TTC', shortGrNo: '2458_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-10-13', date: '2026-10-13',
+    truckNo: 'RJ32GC2937', truckOwner: 'Hansraj Gurjar Paota', ownerName: 'Hansraj Gurjar Paota',
+    driver: 'Hansraj Gurjar Paota', driverMobile: '9783112233',
+    origin: 'Rajsamand (Raj.)', destination: 'Delhi', deliveryAddress: 'Rainbow Stones Delhi',
+    consignor: 'Pankit Jain Delhi', reference: 'Pankit Jain Delhi',
+    consignee: 'RAINBOW STONES', material: 'Granite Blocks',
+    billingType: 'Per Tonne', weight: 32.930, rate: 2690.00, freight: 88582.00, biltyAmount: 30000.00,
+    billNo: '', partyPaid: 0.0, partyDue: 88582.00, ownerDue: 88582.00,
+    tripStatus: 'Cheque due', status: 'Due', colorTheme: 'mustard'
+  },
+  {
+    id: 'TRIP_20261013_2464', grNo: '2026-2027-2464_TTC', shortGrNo: '2464_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-10-13', date: '2026-10-13',
+    truckNo: 'RJ32GD3696', truckOwner: 'Laxmi Prakash Jat', ownerName: 'Laxmi Prakash Jat',
+    driver: 'Nand Singh', driverMobile: '9829998877',
+    origin: 'Rajsamand (Raj.)', destination: 'Sikandrabad (U.P.)', deliveryAddress: 'Akross Coatings Sikandrabad',
+    consignor: 'Rishi Aggarwal Maniyana', reference: 'Rishi Aggarwal Maniyana',
+    consignee: 'AKROSS COATINGS PRIVATE LIMITED', material: 'Powder Goods',
+    billingType: 'Per Tonne', weight: 42.000, rate: 2250.00, freight: 94500.00, biltyAmount: 0.0,
+    billNo: '', partyPaid: 0.0, partyDue: 94500.00, ownerDue: 94500.00,
+    tripStatus: 'Cheque due', status: 'Due', colorTheme: 'mustard'
+  },
+  {
+    id: 'TRIP_20261013_2480', grNo: '2026-2027-2480_TTC', shortGrNo: '2480_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-10-13', date: '2026-10-13',
+    truckNo: 'RJ01GE0121', truckOwner: 'Dinesh Yadav Shrinagar', ownerName: 'Dinesh Yadav Shrinagar',
+    driver: 'Abhay Kumar Dhanka', driverMobile: '9928114477',
+    origin: 'Rajsamand (Raj.)', destination: 'Haridwar (U.K.)', deliveryAddress: 'Rana Marble Haridwar',
+    consignor: 'Ramniwas ji Nilkant Marb...', reference: 'Ramniwas ji Nilkant Marb...',
+    consignee: 'RANA MARBLE & GRANITE', material: 'Marble Goods',
+    billingType: 'Per Tonne', weight: 1.000, rate: 1700.00, freight: 1700.00, biltyAmount: 25000.00,
+    billNo: '', partyPaid: 0.0, partyDue: 1700.00, ownerDue: 1700.00,
+    tripStatus: 'Cheque due', status: 'Due', colorTheme: 'mustard'
+  },
+  {
+    id: 'TRIP_20261013_2479', grNo: '2026-2027-2479_TTC', shortGrNo: '2479_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-10-13', date: '2026-10-13',
+    truckNo: 'RJ52GB3484', truckOwner: 'Deepak Dhabas', ownerName: 'Deepak Dhabas',
+    driver: 'Dhanraj Meena 0986', driverMobile: '9784561234',
+    origin: 'Rajsamand (Raj.)', destination: 'Kanpur (U.P.)', deliveryAddress: 'Rohit Chemicals Kanpur',
+    consignor: 'Kamal Ramchandhani', reference: 'Kamal Ramchandhani',
+    consignee: 'ROHIT CHEMICALS', material: 'Chemical Minerals',
+    billingType: 'Per Tonne', weight: 56.230, rate: 1850.00, freight: 104026.00, biltyAmount: 0.0,
+    billNo: '', partyPaid: 0.0, partyDue: 104026.00, ownerDue: 104026.00,
+    tripStatus: 'Cheque due', status: 'Due', colorTheme: 'mustard'
+  },
+  {
+    id: 'TRIP_20261013_2477', grNo: '2026-2027-2477_TTC', shortGrNo: '2477_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-10-13', date: '2026-10-13',
+    truckNo: 'RJ01GD3708', truckOwner: 'Lalaram Choudhary Shrinagar', ownerName: 'Lalaram Choudhary Shrinagar',
+    driver: 'Raju Munim', driverMobile: '9414223344',
+    origin: 'Rajsamand (Raj.)', destination: 'Baheri (U.P.)', deliveryAddress: 'Neera Marble Baheri',
+    consignor: 'Mahaveer Minerals', reference: 'Mahaveer Minerals',
+    consignee: 'Neera Marble & Paints', material: 'Calcite Powder',
+    billingType: 'Per Tonne', weight: 1.000, rate: 1700.00, freight: 1700.00, biltyAmount: 25000.00,
+    billNo: '', partyPaid: 0.0, partyDue: 1700.00, ownerDue: 1700.00,
+    tripStatus: 'Cheque due', status: 'Due', colorTheme: 'mustard'
+  },
+  {
+    id: 'TRIP_20261013_2470', grNo: '2026-2027-2470_TTC', shortGrNo: '2470_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-10-13', date: '2026-10-13',
+    truckNo: 'RJ32GE5388', truckOwner: 'Billo Kasana', ownerName: 'Billo Kasana',
+    driver: 'Deva Bhaya', driverMobile: '9672334455',
+    origin: 'Rajsamand (Raj.)', destination: 'Kandhala (U.P.)', deliveryAddress: 'Rana Tiles Kandhala',
+    consignor: 'Rasid Rana Kandla', reference: 'Rasid Rana Kandla',
+    consignee: 'Rana Tiles', material: 'Ceramic Goods',
+    billingType: 'Per Tonne', weight: 87.000, rate: 1550.00, freight: 134850.00, biltyAmount: 25000.00,
+    billNo: '', partyPaid: 0.0, partyDue: 134850.00, ownerDue: 134850.00,
+    tripStatus: 'Cheque due', status: 'Due', colorTheme: 'mustard'
+  },
+  {
+    id: 'TRIP_20261013_2481', grNo: '2026-2027-2481_TTC', shortGrNo: '2481_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-10-13', date: '2026-10-13',
+    truckNo: 'RJ52GB5058', truckOwner: 'Shree Mahaveer Transport Co.', ownerName: 'Shree Mahaveer Transport Co.',
+    driver: 'Dinesh Yadav 7729', driverMobile: '9828119900',
+    origin: 'Rajsamand (Raj.)', destination: 'Delhi', deliveryAddress: 'Shreekant Marbles Delhi',
+    consignor: 'Anil Sharda', reference: 'Anil Sharda',
+    consignee: 'Shreekant Marbles', material: 'Marble Goods',
+    billingType: 'Per Tonne', weight: 1.000, rate: 1030.00, freight: 1030.00, biltyAmount: 20000.00,
+    billNo: '', partyPaid: 0.0, partyDue: 1030.00, ownerDue: 1030.00,
+    tripStatus: 'Cheque due', status: 'Due', colorTheme: 'mustard'
+  },
+  {
+    id: 'TRIP_20261013_2473', grNo: '2026-2027-2473_TTC', shortGrNo: '2473_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-10-13', date: '2026-10-13',
+    truckNo: 'RJ52GB5967', truckOwner: 'Shree Mahaveer Transport Co.', ownerName: 'Shree Mahaveer Transport Co.',
+    driver: 'Lokesh Choudhary', driverMobile: '9636112233',
+    origin: 'Rajsamand (Raj.)', destination: 'Kanpur (U.P.)', deliveryAddress: 'Jay Chemical Kanpur',
+    consignor: 'Ankush Bansal Jaipur', reference: 'Ankush Bansal Jaipur',
+    consignee: 'M/S Jay Chemical Works', material: 'Chemical Minerals',
+    billingType: 'Per Tonne', weight: 104.700, rate: 1850.00, freight: 193695.00, biltyAmount: 0.0,
+    billNo: '', partyPaid: 0.0, partyDue: 193695.00, ownerDue: 193695.00,
+    tripStatus: 'Cheque due', status: 'Due', colorTheme: 'mustard'
+  },
+  {
+    id: 'TRIP_20261013_2468', grNo: '2026-2027-2468_TTC', shortGrNo: '2468_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-10-13', date: '2026-10-13',
+    truckNo: 'RJ52GB4586', truckOwner: 'Shree Mahaveer Transport Co.', ownerName: 'Shree Mahaveer Transport Co.',
+    driver: 'Narendra Kumar Raiya', driverMobile: '9929887766',
+    origin: 'Rajsamand (Raj.)', destination: 'Roorkee (U.K.)', deliveryAddress: 'Aggarwal Organic Roorkee',
+    consignor: 'Gagan Bang', reference: 'Gagan Bang',
+    consignee: 'AGGARWAL ORGANIC CHEMICALS', material: 'Chemical Powder',
+    billingType: 'Per Tonne', weight: 90.040, rate: 1900.00, freight: 171076.00, biltyAmount: 171076.00,
+    billNo: '', partyPaid: 0.0, partyDue: 171076.00, ownerDue: 171076.00,
+    tripStatus: 'Cheque due', status: 'Due', colorTheme: 'mustard'
+  },
+  {
+    id: 'TRIP_20261013_2474', grNo: '2026-2027-2474_TTC', shortGrNo: '2474_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-10-13', date: '2026-10-13',
+    truckNo: 'RJ52GB3867', truckOwner: 'Laxmi Prakash Jat', ownerName: 'Laxmi Prakash Jat',
+    driver: 'Pratap Singh', driverMobile: '9413221100',
+    origin: 'Rajsamand (Raj.)', destination: 'Hathras (U.P.)', deliveryAddress: 'Shakti Enterprises Hathras',
+    consignor: 'Kailash Agarwal Alwar', reference: 'Kailash Agarwal Alwar',
+    consignee: 'SHAKTI ENTERPRISES', material: 'Marble Powder',
+    billingType: 'Per Tonne', weight: 92.000, rate: 1620.00, freight: 149040.00, biltyAmount: 149040.00,
+    billNo: '', partyPaid: 0.0, partyDue: 149040.00, ownerDue: 149040.00,
+    tripStatus: 'Cheque due', status: 'Due', colorTheme: 'mustard'
+  },
+  {
+    id: 'TRIP_20261013_2475', grNo: '2026-2027-2475_TTC', shortGrNo: '2475_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-10-13', date: '2026-10-13',
+    truckNo: 'RJ52GB2587', truckOwner: 'Rameshwar Prasad', ownerName: 'Rameshwar Prasad',
+    driver: 'Kirshan Saini', driverMobile: '9829778899',
+    origin: 'Rajsamand (Raj.)', destination: 'Karnal (Haryana)', deliveryAddress: 'Sun Coating Karnal',
+    consignor: 'Virsun Industries', reference: 'Virsun Industries',
+    consignee: 'Sun Coating and Chemicals', material: 'Coating Minerals',
+    billingType: 'Per Tonne', weight: 85.000, rate: 1700.00, freight: 144500.00, biltyAmount: 144500.00,
+    billNo: '', partyPaid: 0.0, partyDue: 144500.00, ownerDue: 144500.00,
+    tripStatus: 'Cheque due', status: 'Due', colorTheme: 'mustard'
+  },
+  // --- 12/10/2026 (4 Trips) ---
+  {
+    id: 'TRIP_20261012_2444', grNo: '2026-2027-2444_TTC', shortGrNo: '2444_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-10-12', date: '2026-10-12',
+    truckNo: 'RJ52GB6041', truckOwner: 'Kailash Dhabas', ownerName: 'Kailash Dhabas',
+    driver: 'Manraj Meena 7719', driverMobile: '9784112233',
+    origin: 'Rajsamand (Raj.)', destination: 'Kanpur (U.P.)', deliveryAddress: 'Kapsons India Kanpur',
+    consignor: 'Rishi Kapur Kapsons India', reference: 'Rishi Kapur Kapsons India',
+    consignee: 'Kapsons India', material: 'Marble Powder',
+    billingType: 'Per Tonne', weight: 101.190, rate: 1800.00, freight: 182142.00, biltyAmount: 182142.00,
+    billNo: '', partyPaid: 0.0, partyDue: 182142.00, ownerDue: 182142.00,
+    tripStatus: 'Cheque due', status: 'Due', colorTheme: 'mustard'
+  },
+  {
+    id: 'TRIP_20261012_2443', grNo: '2026-2027-2443_TTC', shortGrNo: '2443_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-10-12', date: '2026-10-12',
+    truckNo: 'RJ52GB2588', truckOwner: 'Rameshwar Prasad', ownerName: 'Rameshwar Prasad',
+    driver: 'Ratan Gurjar 5578', driverMobile: '9828665544',
+    origin: 'Rajsamand (Raj.)', destination: 'Jhajjar (Haryana)', deliveryAddress: 'BirlaNu Jhajjar Plant',
+    consignor: 'Balwant Yadav R.B. Dyes & Chemicals', reference: 'Balwant Yadav R.B. Dyes & Chemicals',
+    consignee: 'BirlaNu Ltd. Jhajjar Putty Plant', material: 'Dolomite Powder',
+    billingType: 'Per Tonne', weight: 82.000, rate: 1450.00, freight: 118900.00, biltyAmount: 0.0,
+    billNo: '', partyPaid: 0.0, partyDue: 118900.00, ownerDue: 118900.00,
+    tripStatus: 'Off loading', status: 'Due', colorTheme: 'pink'
+  },
+  {
+    id: 'TRIP_20261012_2438', grNo: '2026-2027-2438_TTC', shortGrNo: '2438_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-10-12', date: '2026-10-12',
+    truckNo: 'RJ52GB4506', truckOwner: 'Shree Mahaveer Transport Co.', ownerName: 'Shree Mahaveer Transport Co.',
+    driver: 'Devraj Gurjar', driverMobile: '9414556677',
+    origin: 'Rajsamand (Raj.)', destination: 'Bahadurgarh (Haryana)', deliveryAddress: 'Sugan Chand Murari Lal Bahadurgarh',
+    consignor: 'Jawahar Minerals Alwar', reference: 'Jawahar Minerals Alwar',
+    consignee: 'Sugan Chand Murari Lal', material: 'Mineral Powder',
+    billingType: 'Per Tonne', weight: 90.500, rate: 1500.00, freight: 135750.00, biltyAmount: 70000.00,
+    billNo: '', partyPaid: 19300.00, partyDue: 116450.00, ownerDue: 135750.00,
+    tripStatus: 'Transit', status: 'Due', colorTheme: 'blue'
+  },
+  {
+    id: 'TRIP_20261012_2437', grNo: '2026-2027-2437_TTC', shortGrNo: '2437_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-10-12', date: '2026-10-12',
+    truckNo: 'RJ52GB5963', truckOwner: 'Shree Mahaveer Transport Co.', ownerName: 'Shree Mahaveer Transport Co.',
+    driver: 'Trilok Saini', driverMobile: '9636778899',
+    origin: 'Rajsamand (Raj.)', destination: 'Bhiwadi (Raj.)', deliveryAddress: 'Home Pride Adhesive Bhiwadi',
+    consignor: 'Ritesh Sharma Madhusudan', reference: 'Ritesh Sharma Madhusudan',
+    consignee: 'Home Pride Adhesive Pvt. Ltd.', material: 'Powder Goods',
+    billingType: 'Per Tonne', weight: 91.490, rate: 1450.00, freight: 132661.00, biltyAmount: 141810.00,
+    billNo: '', partyPaid: 0.0, partyDue: 132661.00, ownerDue: 132661.00,
+    tripStatus: 'Transit', status: 'Due', colorTheme: 'blue'
+  },
+
   // --- 10/10/2026 (Total: Rs. 1,112,655.00) ---
   {
     id: 'OPEN_20261010_01', grNo: '2026-2027-2411_TTC', shortGrNo: '2411_TTC', transport: 'TTC',

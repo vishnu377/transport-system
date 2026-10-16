@@ -171,11 +171,11 @@ const TripsModule = {
       this.allTrips = [...window.INITIAL_EXCEL_TRIPS];
     }
 
-    // Merge authentic AppSheet Open Trips seed dataset
+    // Merge authentic AppSheet Open Trips seed dataset (Seed trips take precedence)
     if (typeof window !== 'undefined' && Array.isArray(window.OPEN_TRIPS_SEED)) {
-      const existingIds = new Set(this.allTrips.map(t => t.id || t.grNo));
-      const seedToAdd = window.OPEN_TRIPS_SEED.filter(s => !existingIds.has(s.id) && !existingIds.has(s.grNo));
-      this.allTrips = [...seedToAdd, ...this.allTrips];
+      const seedGrNos = new Set(window.OPEN_TRIPS_SEED.map(s => s.grNo || s.shortGrNo || s.id));
+      const filteredExisting = this.allTrips.filter(t => !seedGrNos.has(t.grNo) && !seedGrNos.has(t.shortGrNo) && !seedGrNos.has(t.id));
+      this.allTrips = [...window.OPEN_TRIPS_SEED, ...filteredExisting];
     }
 
     if (!Array.isArray(this.allTrips)) {
@@ -306,55 +306,82 @@ const TripsModule = {
   // ----------------------------------------------------
   getRowColorTheme(trip) {
     if (!trip) return '#0077c2';
-    // Dynamic status mapping (Transit, Off Loading, Cheque Due, POD Sent, Settled)
-    const status = String(trip.tripStatus || trip.status || '').trim().toLowerCase();
-    if (status.includes('transit') || status.includes('party payment pending')) return '#0077c2'; // Bright Cyan / Blue
-    if (status.includes('off loading') || status.includes('offloading')) return '#e91e63'; // Pink / Magenta
-    if (status.includes('cheque')) return '#967b2c'; // Mustard / Gold / Salety
-    if (status.includes('pod') || status.includes('bill')) return '#7b1fa2'; // Begani / Purple
-    if (status.includes('settled') || (this.isTripSettled(trip) && this.workflowTab === 'settled')) return '#008a38'; // Green
-
+    // 1. Explicit colorTheme
     if (trip.colorTheme) {
       switch (trip.colorTheme) {
         case 'gold':
         case 'mustard':
-        case 'salety': return '#967b2c';
+        case 'salety': return '#967b2c'; // Mustard / Olive
         case 'purple':
-        case 'begani': return '#7b1fa2';
+        case 'begani': return '#7b1fa2'; // Begani / Purple
         case 'magenta':
-        case 'pink': return '#e91e63';
-        case 'green': return '#008a38';
+        case 'pink': return '#e91e63';   // Pink / Magenta
+        case 'green': return '#008a38';  // Green
         case 'grey':
-        case 'slate': return '#5f6368';
+        case 'slate': return '#5f6368';  // Slate Grey
         case 'blue':
-        case 'cyan': return '#0077c2';
+        case 'cyan': return '#0077c2';   // Cyan / Blue
+        case 'red': return '#d90429';    // Red
       }
     }
+
     const shortGr = String(trip.shortGrNo || trip.grNo || '');
-    if (shortGr.includes('2444') || shortGr.includes('2428')) return '#967b2c';
-    if (shortGr.startsWith('-')) return '#e91e63';
+    if (shortGr.startsWith('-')) return '#d90429';
+
+    // 2. Dynamic status mapping (Transit, Off Loading, Cheque Due, POD Sent, Settled)
+    const status = String(trip.tripStatus || trip.status || '').trim().toLowerCase();
+    if (status.includes('transit') || status.includes('party payment pending')) return '#0077c2'; // Bright Cyan / Blue
+    if (status.includes('off loading') || status.includes('offloading')) return '#e91e63'; // Pink / Magenta
+    if (status.includes('cheque') || status.includes('due')) return '#967b2c'; // Mustard / Gold / Salety
+    if (status.includes('pod') || status.includes('bill')) return '#7b1fa2'; // Begani / Purple
+    if (status.includes('settled')) {
+      if (this.workflowTab === 'settled') return '#008a38';
+      if (trip.financialYear === '2026-2027') return '#967b2c';
+      return '#008a38';
+    }
+
     const transport = String(trip.transport || '').toUpperCase();
     if (transport === 'SMTC' || shortGr.includes('SMTC')) return '#7b1fa2';
 
     const dateDMY = this.formatDateDMY(trip.tripStartDate || trip.date || '');
-    if (dateDMY.startsWith('10/10') || dateDMY.startsWith('09/10') || dateDMY.startsWith('05/10') || dateDMY.startsWith('12/10')) return '#967b2c';
+    if (dateDMY.startsWith('14/10') || dateDMY.startsWith('13/10') || dateDMY.startsWith('10/10') || dateDMY.startsWith('09/10') || dateDMY.startsWith('05/10')) return '#967b2c';
     if (dateDMY.startsWith('08/10') || dateDMY.startsWith('04/10') || dateDMY.startsWith('11/10')) return '#e91e63';
+    if (dateDMY.startsWith('12/10')) return '#0077c2';
     if (dateDMY.startsWith('01/10') || dateDMY.startsWith('30/09') || dateDMY.startsWith('29/09') || dateDMY.startsWith('28/09') || dateDMY.startsWith('24/09')) return '#7b1fa2';
     if (dateDMY.startsWith('25/09') || dateDMY.startsWith('21/09')) return '#008a38';
-    if (dateDMY.startsWith('13/10') || dateDMY.startsWith('14/10')) return '#0077c2';
+    if (dateDMY.startsWith('31/03/2026')) return '#00acc1';
+    if (dateDMY.startsWith('30/03/2026')) return '#008a38';
     if (dateDMY.startsWith('02/10')) return '#5f6368';
     return '#0077c2';
   },
 
   getDateRibbonBulletColor(dateKey) {
     if (!dateKey) return '#0077c2';
-    if (dateKey.startsWith('10/10') || dateKey.startsWith('09/10') || dateKey.startsWith('05/10') || dateKey.startsWith('12/10')) return '#967b2c';
+    if (dateKey.startsWith('14/10') || dateKey.startsWith('13/10')) return '#967b2c'; // Mustard
+    if (dateKey.startsWith('12/10')) return '#0077c2'; // Blue
+    if (dateKey.startsWith('31/03/2026')) return '#00acc1'; // Cyan
+    if (dateKey.startsWith('30/03/2026') || dateKey.includes('2025') || dateKey.includes('2024')) return '#008a38'; // Green
+    if (dateKey.startsWith('10/10') || dateKey.startsWith('09/10') || dateKey.startsWith('05/10')) return '#967b2c';
     if (dateKey.startsWith('08/10') || dateKey.startsWith('04/10') || dateKey.startsWith('11/10')) return '#e91e63';
-    if (dateKey.startsWith('01/10') || dateKey.startsWith('30/09') || dateKey.startsWith('29/09') || dateKey.startsWith('28/09') || dateKey.startsWith('24/09')) return '#7b1fa2';
-    if (dateKey.startsWith('25/09') || dateKey.startsWith('21/09')) return '#008a38';
-    if (dateKey.startsWith('13/10') || dateKey.startsWith('14/10')) return '#0077c2';
-    if (dateKey.startsWith('02/10')) return '#5f6368';
+    if (dateKey.startsWith('01/10') || dateKey.startsWith('30/09') || dateKey.startsWith('29/09') || dateKey.startsWith('28/09')) return '#7b1fa2';
     return '#0077c2';
+  },
+
+  parseDateToTimestamp(dateStr) {
+    if (!dateStr || dateStr === 'Undated' || dateStr === '-') return 0;
+    const s = String(dateStr).trim();
+    if (/^\d{4}-\d{2}-\d{2}/.test(s)) {
+      return new Date(s.slice(0, 10)).getTime() || 0;
+    }
+    const dmy = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
+    if (dmy) {
+      const day = parseInt(dmy[1], 10);
+      const month = parseInt(dmy[2], 10) - 1;
+      const year = parseInt(dmy[3], 10);
+      return new Date(year, month, day).getTime() || 0;
+    }
+    const t = new Date(s).getTime();
+    return isNaN(t) ? 0 : t;
   },
 
   toggleNavDrawer() {
@@ -603,11 +630,11 @@ const TripsModule = {
       return true;
     });
 
-    // Sort: Start Date descending, GR sequence descending
+    // Sort: Start Date descending (true chronological), GR sequence descending
     this.filteredTrips.sort((a, b) => {
-      const dateA = a.tripStartDate || a.date || '';
-      const dateB = b.tripStartDate || b.date || '';
-      if (dateA !== dateB) return dateB.localeCompare(dateA);
+      const timeA = this.parseDateToTimestamp(a.tripStartDate || a.date || a.biltyDate);
+      const timeB = this.parseDateToTimestamp(b.tripStartDate || b.date || b.biltyDate);
+      if (timeA !== timeB) return timeB - timeA;
       return String(b.grNo || '').localeCompare(String(a.grNo || ''));
     });
 
@@ -744,13 +771,12 @@ const TripsModule = {
           </tr>
         `;
       } else {
-        // Authentic Trips Register (Card 3: All / Trips) - 18 Columns matching card3_top_crop.png & card3_slice2.png
+        // Authentic Trips Register (Card 3: Trips) - 17 Columns matching crop_check_0.png
         thead.innerHTML = `
           <tr>
             <th class="sticky-col-1 text-center" style="width: 44px; min-width: 44px;"><i class="bi bi-file-earmark-text text-danger fs-6" title="Action"></i></th>
-            <th class="sticky-col-2 text-center" style="width: 62px; min-width: 62px;">Bill No.</th>
-            <th class="sticky-col-3 text-center" style="width: 20px; min-width: 20px;"></th>
-            <th class="sticky-col-4" style="width: 95px; min-width: 95px;">G.R.No.</th>
+            <th class="sticky-col-2 text-center" style="width: 60px; min-width: 60px;">Bill No.</th>
+            <th class="sticky-col-4 sticky-col-gr-card3" style="width: 95px; min-width: 95px;">G.R.No.</th>
             <th style="min-width: 100px;">Truck No.</th>
             <th style="min-width: 110px;">Destination</th>
             <th style="min-width: 130px; max-width: 160px;">Reference</th>
@@ -787,7 +813,7 @@ const TripsModule = {
       // Date Group Divider Ribbon (Matching card3_top_crop.png, open_sc_top.png & settled_table_crop1.png)
       html += `
         <tr class="appsheet-date-divider">
-          <td colspan="${isCard3 ? 18 : 15}">
+          <td colspan="${isCard3 ? 17 : 15}">
             <span class="appsheet-bullet ${isSettledTab ? 'green-bullet' : ''}" style="color: ${ribbonBulletColor};">●</span>
             <span class="fw-bold ms-1" style="color: ${isSettledTab ? '#008a38' : '#202124'};">${dateKey}</span>
             ${dateBadgeHtml}
@@ -995,103 +1021,95 @@ const TripsModule = {
             </tr>
           `;
         } else {
-          // Authentic Trips Register (Card 3) - 18 Columns matching card3_top_crop.png & card3_slice2.png
+          // Authentic Trips Register (Card 3: Trips) - 17 Columns matching crop_check_0.png
           const themeColor = this.getRowColorTheme(t);
 
-          let billCol = '-';
+          let billCol = '';
           if (t.billNo) {
             billCol = `<span class="badge" style="background:#bca057; color:#fff; font-size:11px; font-weight:600;">${t.billNo}</span>`;
           }
 
           html += `
             <tr class="appsheet-row" onclick="TripsModule.openTripDetails('${t.id || t.grNo}')">
-              <!-- 1. Action Icons: Download Bilty / Generate Bill -->
+              <!-- 1. Action: Generate Bill (Red Doc Icon) matching crop_check_0.png -->
               <td class="text-center sticky-col-1" onclick="event.stopPropagation()">
-                <div class="d-flex align-items-center justify-content-center gap-2">
-                  <i class="bi bi-download text-primary" title="Download Bilty" style="cursor: pointer; font-size: 13px;" onclick="TripsModule.downloadBilty('${t.id || t.grNo}')"></i>
-                  <i class="bi bi-file-earmark-text text-danger" title="Generate Bill" style="cursor: pointer; font-size: 13px;" onclick="TripsModule.openGenerateBillModal('${t.id || t.grNo}')"></i>
-                </div>
+                <i class="bi bi-file-earmark-text text-danger" title="Generate Bill" style="cursor: pointer; font-size: 13px;" onclick="TripsModule.openGenerateBillModal('${t.id || t.grNo}')"></i>
               </td>
 
               <!-- 2. Bill No. -->
               <td class="text-center sticky-col-2" style="font-size: 11px;">${billCol}</td>
 
-              <!-- 3. Status Bullet -->
-              <td class="text-center sticky-col-3">
-                <span style="color: ${themeColor};">●</span>
-              </td>
-
-              <!-- 4. G.R.No. -->
-              <td class="sticky-col-4" style="color: ${themeColor}; font-weight: bold;">
+              <!-- 3. G.R.No. -->
+              <td class="sticky-col-4 sticky-col-gr-card3" style="color: ${themeColor}; font-weight: bold;">
                 <span style="color: ${themeColor};">●</span> ${shortGr}
               </td>
 
-              <!-- 5. Truck No. -->
+              <!-- 4. Truck No. -->
               <td style="color: ${themeColor}; font-weight: bold;">
                 <span style="color: ${themeColor};">●</span> ${t.truckNo || '-'}
               </td>
 
-              <!-- 6. Destination -->
-              <td class="text-truncate" style="max-width: 120px; color: ${themeColor};" title="${t.destination || '-'}">
+              <!-- 5. Destination -->
+              <td class="text-truncate" style="max-width: 115px; color: ${themeColor};" title="${t.destination || '-'}">
                 <span style="color: ${themeColor};">●</span> ${t.destination || '-'}
               </td>
 
-              <!-- 7. Reference -->
-              <td class="text-truncate" style="max-width: 160px; color: ${themeColor};" title="${consignorRef}">
+              <!-- 6. Reference -->
+              <td class="text-truncate" style="max-width: 150px; color: ${themeColor};" title="${consignorRef}">
                 <span style="color: ${themeColor};">●</span> ${consignorRef}
               </td>
 
-              <!-- 8. Bilty Amount -->
+              <!-- 7. Bilty Amount -->
               <td class="text-end" style="color: ${themeColor};">
                 ${biltyAmt > 0 ? `<span style="color:${themeColor};">●</span> ₹ ${biltyAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : ''}
               </td>
 
-              <!-- 9. Weight -->
+              <!-- 8. Weight -->
               <td class="text-end" style="color: ${themeColor};">
                 ${weight > 0 ? `<span style="color:${themeColor};">●</span> ${weight.toFixed(3)}` : ''}
               </td>
 
-              <!-- 10. Rate -->
+              <!-- 9. Rate -->
               <td class="text-end" style="color: ${themeColor};">
                 ${rate > 0 ? `<span style="color:${themeColor};">●</span> ₹ ${rate.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : ''}
               </td>
 
-              <!-- 11. Total Freight -->
+              <!-- 10. Total Freight -->
               <td class="text-end" style="color: ${themeColor}; font-weight: 500;">
                 ${totalFreight > 0 ? `<span style="color:${themeColor};">●</span> ₹ ${totalFreight.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : ''}
               </td>
 
-              <!-- 12. Due Amount (Red if positive, Green if settled) -->
+              <!-- 11. Due Amount (Bold Red if positive, Green if settled) -->
               <td class="text-end fw-bold" style="color: ${pDue > 0 ? '#d90429' : '#008a38'};">
                 <span style="color: ${pDue > 0 ? '#d90429' : '#008a38'};">●</span> ₹ ${pDue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </td>
 
-              <!-- 13. Consignee -->
-              <td class="text-truncate" style="max-width: 170px; color: ${themeColor};" title="${t.consignee || '-'}">
+              <!-- 12. Consignee -->
+              <td class="text-truncate" style="max-width: 160px; color: ${themeColor};" title="${t.consignee || '-'}">
                 ${t.consignee ? `<span style="color: ${themeColor};">●</span> ${t.consignee}` : ''}
               </td>
 
-              <!-- 14. Owner Due (Red if positive, Green if settled) -->
+              <!-- 13. Owner Due (Bold Red if positive, Green if settled) -->
               <td class="text-end fw-bold" style="color: ${oDue > 0 ? '#d90429' : '#008a38'};">
                 <span style="color: ${oDue > 0 ? '#d90429' : '#008a38'};">●</span> ₹ ${oDue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </td>
 
-              <!-- 15. Owner -->
-              <td class="text-truncate" style="max-width: 160px; color: ${themeColor};" title="${ownerName}">
+              <!-- 14. Owner -->
+              <td class="text-truncate" style="max-width: 150px; color: ${themeColor};" title="${ownerName}">
                 ${ownerName ? `<span style="color: ${themeColor};">●</span> ${ownerName}` : ''}
               </td>
 
-              <!-- 16. Driver -->
-              <td class="text-truncate" style="max-width: 160px; color: ${themeColor};" title="${cleanDrv}">
+              <!-- 15. Driver -->
+              <td class="text-truncate" style="max-width: 150px; color: ${themeColor};" title="${cleanDrv}">
                 <span style="color: ${themeColor};">●</span> ${cleanDrv}
               </td>
 
-              <!-- 17. Trip Start Date -->
+              <!-- 16. Trip Start Date -->
               <td style="color: ${themeColor};">
                 <span style="color: ${themeColor};">●</span> ${tripDate}
               </td>
 
-              <!-- 18. Chevron > -->
+              <!-- 17. Chevron > -->
               <td class="text-center text-muted" style="width: 26px;">
                 <span class="appsheet-chevron">&gt;</span>
               </td>
@@ -3630,7 +3648,7 @@ const TripsModule = {
       const titleMap = {
         open: 'Open',
         settled: 'Settled',
-        all: 'All Bilties',
+        all: 'Trips',
         gst: 'GST Amount'
       };
       activeCrumb.innerText = (titleMap[status] || 'Trips') + (this.currentFY !== 'All' ? ` (${this.currentFY})` : '');
@@ -3884,20 +3902,18 @@ const TripsModule = {
   // ----------------------------------------------------
   formatDateDMY(dateStr) {
     if (!dateStr || dateStr === 'Undated' || dateStr === '-') return '-';
+    const s = String(dateStr).trim();
     // If format is YYYY-MM-DD
-    const isoParts = String(dateStr).split('-');
+    const isoParts = s.split('-');
     if (isoParts.length === 3 && isoParts[0].length === 4) {
-      return `${isoParts[2].padStart(2, '0')}/${isoParts[1].padStart(2, '0')}/${isoParts[0]}`;
+      return `${isoParts[2].slice(0, 2).padStart(2, '0')}/${isoParts[1].padStart(2, '0')}/${isoParts[0]}`;
     }
-    // If format is MM/DD/YYYY or DD/MM/YYYY
-    const slashParts = String(dateStr).split('/');
-    if (slashParts.length === 3) {
-      const d = slashParts[1].padStart(2, '0');
-      const m = slashParts[0].padStart(2, '0');
-      const y = slashParts[2];
-      return `${d}/${m}/${y}`;
+    // If format is DD/MM/YYYY or D/M/YYYY
+    const slashParts = s.split('/');
+    if (slashParts.length === 3 && slashParts[2].length === 4) {
+      return `${slashParts[0].padStart(2, '0')}/${slashParts[1].padStart(2, '0')}/${slashParts[2]}`;
     }
-    return dateStr;
+    return s;
   }
 };
 
