@@ -716,9 +716,12 @@ const TripsModule = {
 
           html += `
             <tr class="appsheet-row" onclick="TripsModule.openTripDetails('${t.id || t.grNo}')">
-              <!-- 1. Red Doc Icon -> Generate Bill Modal -->
-              <td class="text-center" onclick="event.stopPropagation(); TripsModule.openGenerateBillModal('${t.id || t.grNo}')">
-                <i class="bi bi-file-earmark-text text-danger fs-6" title="Generate Bill" style="cursor: pointer;"></i>
+              <!-- 1. Action Icons: Download Bilty / Generate Bill -->
+              <td class="text-center" onclick="event.stopPropagation()">
+                <div class="d-flex align-items-center justify-content-center gap-2">
+                  <i class="bi bi-download text-primary" title="Download Bilty" style="cursor: pointer; font-size: 13px;" onclick="TripsModule.downloadBilty('${t.id || t.grNo}')"></i>
+                  <i class="bi bi-file-earmark-text text-danger" title="Generate Bill" style="cursor: pointer; font-size: 13px;" onclick="TripsModule.openGenerateBillModal('${t.id || t.grNo}')"></i>
+                </div>
               </td>
 
               <!-- 2. Bill No. -->
@@ -809,10 +812,11 @@ const TripsModule = {
 
           html += `
             <tr class="appsheet-row settled-row" onclick="TripsModule.openSettledTripDetails('${t.id || t.grNo}')">
-              <!-- 1. Action Icons: Refresh / Bill -->
-              <td class="text-center" style="width: 50px;" onclick="event.stopPropagation()">
+              <!-- 1. Action Icons: Refresh / Download Bilty / Bill -->
+              <td class="text-center" style="width: 60px;" onclick="event.stopPropagation()">
                 <div class="d-flex align-items-center justify-content-center gap-2">
                   <i class="bi bi-arrow-repeat text-muted" title="Sync Trip" style="cursor: pointer; font-size: 13px;" onclick="TripsModule.syncTripFromCloud('${t.id}')"></i>
+                  <i class="bi bi-download text-primary" title="Download Bilty" style="cursor: pointer; font-size: 13px;" onclick="TripsModule.downloadBilty('${t.id || t.grNo}')"></i>
                   <i class="bi bi-file-earmark-text text-danger" title="Generate Bill" style="cursor: pointer; font-size: 13px;" onclick="TripsModule.openGenerateBillModal('${t.id || t.grNo}')"></i>
                 </div>
               </td>
@@ -3107,16 +3111,23 @@ const TripsModule = {
   // ----------------------------------------------------
   // ACTIONS: PRINT, EDIT, WHATSAPP, PAYMENT MODAL
   // ----------------------------------------------------
+  downloadBilty(tripId) {
+    const id = tripId || (this.activeTrip ? (this.activeTrip.id || this.activeTrip.grNo) : null);
+    if (!id) return;
+    this.printBiltyRow(id);
+  },
+
   printActiveTrip() {
     if (!this.activeTrip) return;
-    this.printBiltyRow(this.activeTrip.id || this.activeTrip.grNo);
+    this.downloadBilty(this.activeTrip.id || this.activeTrip.grNo);
   },
 
   printBiltyRow(tripId) {
-    const t = this.allTrips.find(x => x.id === tripId || x.grNo === tripId);
-    if (!t) return;
-    // Redirect to Bilty Booking with trip ID or open standard printable LR
-    window.location.href = `./bilty-booking.html?id=${encodeURIComponent(t.id || t.grNo)}&print=1`;
+    const t = this.allTrips.find(x => x.id === tripId || x.grNo === tripId) || (this.activeTrip && (this.activeTrip.id === tripId || this.activeTrip.grNo === tripId) ? this.activeTrip : null);
+    const targetId = t ? (t.id || t.grNo) : tripId;
+    if (!targetId) return;
+    // Open printable/downloadable bilty in new window for direct print / PDF download without losing current view
+    window.open(`./bilty-booking.html?id=${encodeURIComponent(targetId)}&print=1`, '_blank');
   },
 
   editActiveTrip() {

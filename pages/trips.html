@@ -1439,6 +1439,10 @@
           <span id="open-view-title-text">Open Trip Details</span>
         </div>
         <div class="appsheet-open-actions">
+          <!-- Download Bilty Button -->
+          <button type="button" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 py-1 px-2" id="open-btn-download-bilty" title="Download Bilty" onclick="TripsModule.downloadBilty(TripsModule.activeTrip?.id)">
+            <i class="bi bi-download"></i> <span class="d-none d-sm-inline">Download Bilty</span>
+          </button>
           <!-- Truck Action Icon -> Truck Owner Payment Details -->
           <button type="button" class="appsheet-open-action-btn" title="Truck Owner Payment" onclick="TripsModule.openTruckOwnerPaymentModal(TripsModule.activeTrip?.id)">
             <i class="bi bi-truck fs-5"></i>
@@ -1957,6 +1961,10 @@
           <span id="settled-view-title-text">Settled Trip Details</span>
         </div>
         <div class="appsheet-open-actions">
+          <!-- Download Bilty Button -->
+          <button type="button" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 py-1 px-2" id="settled-btn-download-bilty" title="Download Bilty" onclick="TripsModule.downloadBilty(TripsModule.activeTrip?.id)">
+            <i class="bi bi-download"></i> <span class="d-none d-sm-inline">Download Bilty</span>
+          </button>
           <!-- Red Bilty Icon -> Generate Bill Modal -->
           <button type="button" class="appsheet-open-action-btn" title="Generate Bill" onclick="TripsModule.openGenerateBillModal(TripsModule.activeTrip?.id)">
             <i class="bi bi-file-earmark-text text-danger fs-5"></i>
