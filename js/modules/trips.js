@@ -228,39 +228,56 @@ const TripsModule = {
   // DYNAMIC COLOR ENGINE (Matching AppSheet open_sc_top.png)
   // ----------------------------------------------------
   getRowColorTheme(trip) {
-    if (!trip) return '#1a73e8';
+    if (!trip) return '#0077c2';
+    // Dynamic status mapping (Transit, Off Loading, Cheque Due, POD Sent, Settled)
+    const status = String(trip.tripStatus || trip.status || '').trim().toLowerCase();
+    if (status.includes('transit') || status.includes('party payment pending')) return '#0077c2'; // Bright Cyan / Blue
+    if (status.includes('off loading') || status.includes('offloading')) return '#e91e63'; // Pink / Magenta
+    if (status.includes('cheque')) return '#967b2c'; // Mustard / Gold / Salety
+    if (status.includes('pod') || status.includes('bill')) return '#7b1fa2'; // Begani / Purple
+    if (status.includes('settled') || (this.isTripSettled(trip) && this.workflowTab === 'settled')) return '#008a38'; // Green
+
     if (trip.colorTheme) {
       switch (trip.colorTheme) {
-        case 'gold': return '#b28900';
-        case 'purple': return '#7b1fa2';
-        case 'magenta': return '#d81b60';
-        case 'green': return '#137333';
-        case 'grey': return '#5f6368';
-        case 'blue': return '#1a73e8';
+        case 'gold':
+        case 'mustard':
+        case 'salety': return '#967b2c';
+        case 'purple':
+        case 'begani': return '#7b1fa2';
+        case 'magenta':
+        case 'pink': return '#e91e63';
+        case 'green': return '#008a38';
+        case 'grey':
+        case 'slate': return '#5f6368';
+        case 'blue':
+        case 'cyan': return '#0077c2';
       }
     }
     const shortGr = String(trip.shortGrNo || trip.grNo || '');
-    if (shortGr.startsWith('-')) return '#d81b60';
+    if (shortGr.includes('2444') || shortGr.includes('2428')) return '#967b2c';
+    if (shortGr.startsWith('-')) return '#e91e63';
     const transport = String(trip.transport || '').toUpperCase();
     if (transport === 'SMTC' || shortGr.includes('SMTC')) return '#7b1fa2';
 
     const dateDMY = this.formatDateDMY(trip.tripStartDate || trip.date || '');
-    if (dateDMY.startsWith('10/10') || dateDMY.startsWith('09/10') || dateDMY.startsWith('05/10')) return '#b28900';
-    if (dateDMY.startsWith('08/10') || dateDMY.startsWith('04/10')) return '#d81b60';
+    if (dateDMY.startsWith('10/10') || dateDMY.startsWith('09/10') || dateDMY.startsWith('05/10') || dateDMY.startsWith('12/10')) return '#967b2c';
+    if (dateDMY.startsWith('08/10') || dateDMY.startsWith('04/10') || dateDMY.startsWith('11/10')) return '#e91e63';
     if (dateDMY.startsWith('01/10') || dateDMY.startsWith('30/09') || dateDMY.startsWith('29/09') || dateDMY.startsWith('28/09') || dateDMY.startsWith('24/09')) return '#7b1fa2';
-    if (dateDMY.startsWith('25/09') || dateDMY.startsWith('21/09')) return '#137333';
+    if (dateDMY.startsWith('25/09') || dateDMY.startsWith('21/09')) return '#008a38';
+    if (dateDMY.startsWith('13/10') || dateDMY.startsWith('14/10')) return '#0077c2';
     if (dateDMY.startsWith('02/10')) return '#5f6368';
-    return '#1a73e8';
+    return '#0077c2';
   },
 
   getDateRibbonBulletColor(dateKey) {
-    if (!dateKey) return '#1a73e8';
-    if (dateKey.startsWith('10/10') || dateKey.startsWith('09/10') || dateKey.startsWith('05/10')) return '#b28900';
-    if (dateKey.startsWith('08/10') || dateKey.startsWith('04/10')) return '#d81b60';
+    if (!dateKey) return '#0077c2';
+    if (dateKey.startsWith('10/10') || dateKey.startsWith('09/10') || dateKey.startsWith('05/10') || dateKey.startsWith('12/10')) return '#967b2c';
+    if (dateKey.startsWith('08/10') || dateKey.startsWith('04/10') || dateKey.startsWith('11/10')) return '#e91e63';
     if (dateKey.startsWith('01/10') || dateKey.startsWith('30/09') || dateKey.startsWith('29/09') || dateKey.startsWith('28/09') || dateKey.startsWith('24/09')) return '#7b1fa2';
-    if (dateKey.startsWith('25/09') || dateKey.startsWith('21/09')) return '#137333';
+    if (dateKey.startsWith('25/09') || dateKey.startsWith('21/09')) return '#008a38';
+    if (dateKey.startsWith('13/10') || dateKey.startsWith('14/10')) return '#0077c2';
     if (dateKey.startsWith('02/10')) return '#5f6368';
-    return '#1a73e8';
+    return '#0077c2';
   },
 
   toggleNavDrawer() {
@@ -650,23 +667,27 @@ const TripsModule = {
           </tr>
         `;
       } else {
+        // Authentic Trips Register (Card 3: All / Trips) - 18 Columns matching card3_top_crop.png & card3_slice2.png
         thead.innerHTML = `
           <tr>
-            <th>Bill NO.</th>
-            <th>G.R. NO.</th>
-            <th>Trip Date</th>
-            <th>Truck NO.</th>
+            <th style="width: 50px; text-align: center;"><i class="bi bi-file-earmark-text text-danger fs-6" title="Action"></i></th>
+            <th style="width: 80px;">Bill No.</th>
+            <th style="width: 25px; text-align: center;"></th>
+            <th>G.R.No.</th>
+            <th>Truck No.</th>
             <th>Destination</th>
-            <th>Reference / Consignor</th>
-            <th>Consignee</th>
-            <th class="text-end">Weight (MT)</th>
+            <th>Reference</th>
+            <th class="text-end">Bilty Amount</th>
+            <th class="text-end">Weight</th>
             <th class="text-end">Rate</th>
             <th class="text-end">Total Freight</th>
             <th class="text-end">Due Amount</th>
+            <th>Consignee</th>
             <th class="text-end">Owner Due</th>
-            <th>Truck Owner</th>
+            <th>Owner</th>
             <th>Driver</th>
-            <th style="width: 50px; text-align: center;">Actions</th>
+            <th>Trip Start Date</th>
+            <th style="width: 30px; text-align: center;">&gt;</th>
           </tr>
         `;
       }
@@ -677,16 +698,22 @@ const TripsModule = {
     dateGroups.forEach((items, dateKey) => {
       const dayTotalFreight = items.reduce((sum, i) => sum + (Number(i.biltyAmount || i.freight) || 0), 0);
       const isSettledTab = this.workflowTab === 'settled';
+      const isOpenTab = this.workflowTab === 'open';
+      const isCard3 = (!isOpenTab && !isSettledTab);
       const ribbonBulletColor = isSettledTab ? '#00a638' : this.getDateRibbonBulletColor(dateKey);
 
-      // Date Group Divider Ribbon (Matching open_sc_top.png & settled_table_crop1.png)
+      let dateBadgeHtml = `<span class="appsheet-drill-badge ms-2" style="background: #f1f3f4; color: #202124;">₹ ${dayTotalFreight.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
+      if (isCard3) {
+        dateBadgeHtml = `<span class="appsheet-drill-badge ms-2" style="background: #e8eaed; color: #202124; font-weight: 600; padding: 2px 8px; border-radius: 12px;">${items.length}</span>`;
+      }
+
+      // Date Group Divider Ribbon (Matching card3_top_crop.png, open_sc_top.png & settled_table_crop1.png)
       html += `
         <tr class="appsheet-date-divider">
-          <td colspan="15">
+          <td colspan="${isCard3 ? 18 : 15}">
             <span class="appsheet-bullet ${isSettledTab ? 'green-bullet' : ''}" style="color: ${ribbonBulletColor};">●</span>
             <span class="fw-bold ms-1" style="color: ${isSettledTab ? '#008a38' : '#202124'};">${dateKey}</span>
-            <span class="appsheet-drill-badge ms-2" style="background: #f1f3f4; color: #202124;">₹ ${dayTotalFreight.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-            ${(this.workflowTab === 'open' || isSettledTab) ? '' : `<span class="text-muted ms-1 small">(${items.length} ${items.length === 1 ? 'bilty' : 'bilties'})</span>`}
+            ${dateBadgeHtml}
           </td>
         </tr>
       `;
@@ -891,108 +918,106 @@ const TripsModule = {
             </tr>
           `;
         } else {
-          // Settled / All Register Rows (Matching 17_09_05.png)
-          let bulletClass = 'green-bullet';
-          let cellTextClass = 'cell-green';
+          // Authentic Trips Register (Card 3) - 18 Columns matching card3_top_crop.png & card3_slice2.png
+          const themeColor = this.getRowColorTheme(t);
+          const shortGr = t.shortGrNo || t.grNo || '-';
 
-          if (!isSettled) {
-            if (pDue > 50000 || oDue > 50000) {
-              bulletClass = 'red-bullet';
-              cellTextClass = 'cell-red';
-            } else if (pDue > 0 && oDue <= 0) {
-              bulletClass = 'blue-bullet';
-              cellTextClass = 'cell-blue';
-            } else {
-              bulletClass = 'gold-bullet';
-              cellTextClass = 'cell-gold';
-            }
+          let billCol = '-';
+          if (t.billNo) {
+            billCol = `<span class="badge" style="background:#bca057; color:#fff; font-size:11px; font-weight:600;">${t.billNo}</span>`;
           }
 
-          const dueAmount = pDue > 0 ? pDue : 0;
-          const grDisplay = t.grNo || t.shortGrNo || '-';
-
           html += `
-            <tr class="appsheet-row ${isSettled ? 'settled-row' : ''}" onclick="TripsModule.openTripDetails('${t.id || t.grNo}')">
-              <!-- 1. Bill NO. -->
-              <td class="text-muted">
-                ${t.billNo ? t.billNo : '-'}
-              </td>
-
-              <!-- 2. G.R. NO. -->
-              <td class="${cellTextClass}">
-                <span class="appsheet-bullet ${bulletClass}">●</span> <strong>${grDisplay}</strong>
-              </td>
-
-              <!-- 3. Trip Date -->
-              <td class="text-muted">
-                ${tripDate}
-              </td>
-
-              <!-- 4. Truck NO. -->
-              <td>
-                <strong>${t.truckNo || '-'}</strong>
-              </td>
-
-              <!-- 5. Destination -->
-              <td>
-                ${t.destination || '-'}
-              </td>
-
-              <!-- 6. Reference / Consignor -->
-              <td class="text-truncate" style="max-width: 140px;" title="${consignorRef}">
-                ${consignorRef}
-              </td>
-
-              <!-- 7. Consignee -->
-              <td class="text-truncate" style="max-width: 140px;" title="${t.consignee || '-'}">
-                ${t.consignee || '-'}
-              </td>
-
-              <!-- 8. Weight -->
-              <td class="text-end">
-                ${weight > 0 ? weight.toFixed(3) : '-'}
-              </td>
-
-              <!-- 9. Rate -->
-              <td class="text-end">
-                ${rate > 0 ? '₹' + rate.toLocaleString('en-IN') : '-'}
-              </td>
-
-              <!-- 10. Total Freight -->
-              <td class="text-end fw-semibold">
-                ₹${totalFreight.toLocaleString('en-IN')}
-              </td>
-
-              <!-- 11. Due Amount -->
-              <td class="text-end ${dueAmount > 0 ? 'cell-red' : 'cell-green'}">
-                ₹${dueAmount.toLocaleString('en-IN')}
-              </td>
-
-              <!-- 12. Owner Due -->
-              <td class="text-end ${oDue > 0 ? 'cell-red' : 'cell-green'}">
-                ₹${oDue.toLocaleString('en-IN')}
-              </td>
-
-              <!-- 13. Owner -->
-              <td class="text-truncate" style="max-width: 130px;" title="${ownerName}">
-                ${ownerName}
-              </td>
-
-              <!-- 14. Driver -->
-              <td class="text-truncate" style="max-width: 110px;" title="${t.driver || '-'}">
-                ${t.driver || '-'}
-              </td>
-
-              <!-- 15. Actions (Chevron > + Print) -->
-              <td class="text-center" style="width: 50px;" onclick="event.stopPropagation()">
-                <div class="d-flex align-items-center justify-content-center gap-1">
-                  <button class="btn btn-xs btn-outline-secondary py-0 px-1 border-0" title="View Details" onclick="TripsModule.openTripDetails('${t.id || t.grNo}')">
-                    <span class="appsheet-chevron">&gt;</span>
-                  </button>
-                  <button class="btn btn-xs btn-outline-success py-0 px-1 border-0" title="Print Bilty" onclick="TripsModule.printBiltyRow('${t.id || t.grNo}')">
-                    <i class="bi bi-printer"></i>
-                  </button>
+            <tr class="appsheet-row" onclick="TripsModule.openTripDetails('${t.id || t.grNo}')">
+              <!-- 1. Action Icons: Download Bilty / Generate Bill -->
+              <td class="text-center" onclick="event.stopPropagation()">
+                <div class="d-flex align-items-center justify-content-center gap-2">
+                  <i class="bi bi-download text-primary" title="Download Bilty" style="cursor: pointer; font-size: 13px;" onclick="TripsModule.downloadBilty('${t.id || t.grNo}')"></i>
+                  <i class="bi bi-file-earmark-text text-danger" title="Generate Bill" style="cursor: pointer; font-size: 13px;" onclick="TripsModule.openGenerateBillModal('${t.id || t.grNo}')"></i>
                 </div>
+              </td>
+
+              <!-- 2. Bill No. -->
+              <td class="text-center" style="font-size: 11px;">${billCol}</td>
+
+              <!-- 3. Status Bullet -->
+              <td class="text-center" style="width: 25px;">
+                <span style="color: ${themeColor};">●</span>
+              </td>
+
+              <!-- 4. G.R.No. -->
+              <td style="color: ${themeColor}; font-weight: bold;">
+                <span style="color: ${themeColor};">●</span> ${shortGr}
+              </td>
+
+              <!-- 5. Truck No. -->
+              <td style="color: ${themeColor}; font-weight: bold;">
+                <span style="color: ${themeColor};">●</span> ${t.truckNo || '-'}
+              </td>
+
+              <!-- 6. Destination -->
+              <td style="color: ${themeColor};">
+                <span style="color: ${themeColor};">●</span> ${t.destination || '-'}
+              </td>
+
+              <!-- 7. Reference -->
+              <td class="text-truncate" style="max-width: 150px; color: ${themeColor};" title="${t.reference || consignorRef}">
+                <span style="color: ${themeColor};">●</span> ${t.reference || consignorRef}
+              </td>
+
+              <!-- 8. Bilty Amount -->
+              <td class="text-end" style="color: ${themeColor};">
+                ${biltyAmt > 0 ? `<span style="color:${themeColor};">●</span> ₹ ${biltyAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : ''}
+              </td>
+
+              <!-- 9. Weight -->
+              <td class="text-end" style="color: ${themeColor};">
+                ${weight > 0 ? `<span style="color:${themeColor};">●</span> ${weight.toFixed(3)}` : ''}
+              </td>
+
+              <!-- 10. Rate -->
+              <td class="text-end" style="color: ${themeColor};">
+                ${rate > 0 ? `<span style="color:${themeColor};">●</span> ₹ ${rate.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : ''}
+              </td>
+
+              <!-- 11. Total Freight -->
+              <td class="text-end" style="color: ${themeColor}; font-weight: 500;">
+                ${totalFreight > 0 ? `<span style="color:${themeColor};">●</span> ₹ ${totalFreight.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : ''}
+              </td>
+
+              <!-- 12. Due Amount (Red if positive, Green if settled) -->
+              <td class="text-end fw-bold" style="color: ${pDue > 0 ? '#d90429' : '#008a38'};">
+                <span style="color: ${pDue > 0 ? '#d90429' : '#008a38'};">●</span> ₹ ${pDue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </td>
+
+              <!-- 13. Consignee -->
+              <td class="text-truncate" style="max-width: 150px; color: ${themeColor};" title="${t.consignee || '-'}">
+                ${t.consignee ? `<span style="color: ${themeColor};">●</span> ${t.consignee}` : ''}
+              </td>
+
+              <!-- 14. Owner Due (Red if positive, Green if settled) -->
+              <td class="text-end fw-bold" style="color: ${oDue > 0 ? '#d90429' : '#008a38'};">
+                <span style="color: ${oDue > 0 ? '#d90429' : '#008a38'};">●</span> ₹ ${oDue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </td>
+
+              <!-- 15. Owner -->
+              <td class="text-truncate" style="max-width: 140px; color: ${themeColor};" title="${ownerName}">
+                ${ownerName ? `<span style="color: ${themeColor};">●</span> ${ownerName}` : ''}
+              </td>
+
+              <!-- 16. Driver -->
+              <td class="text-truncate" style="max-width: 140px; color: ${themeColor};" title="${t.driverName || t.driver || ''}">
+                ${(t.driverName || t.driver) ? `<span style="color: ${themeColor};">●</span> ${t.driverName || t.driver}` : ''}
+              </td>
+
+              <!-- 17. Trip Start Date -->
+              <td style="color: ${themeColor};">
+                <span style="color: ${themeColor};">●</span> ${tripDate}
+              </td>
+
+              <!-- 18. Chevron > -->
+              <td class="text-center text-muted" style="width: 30px;">
+                <span class="appsheet-chevron">&gt;</span>
               </td>
             </tr>
           `;
@@ -1098,7 +1123,7 @@ const TripsModule = {
 
     const t = this.activeTrip;
     const isSettled = this.isTripSettled(t);
-    if (this.workflowTab === 'settled' || (this.workflowTab !== 'open' && isSettled)) {
+    if (this.workflowTab === 'settled') {
       this.openSettledTripDetails(tripId);
       return;
     }
@@ -1153,6 +1178,24 @@ const TripsModule = {
 
     setHtml('op-consignee-gstin', `<span class="blue-bullet">●</span> ${consigneeGstin}`);
     setHtml('op-consignee', `<span class="blue-bullet">●</span> ${consigneeName}`);
+
+    // Consignee Mobile (supports 2 lines)
+    const consMob = t.consigneeMobile || t.consigneePhone || '9151068884';
+    setHtml('op-consignee-mobile', `<span class="theme-bullet">●</span> ${consMob}`);
+    const opConsTel = document.getElementById('op-consignee-tel');
+    if (opConsTel) opConsTel.href = `tel:${consMob}`;
+
+    const consMob2 = t.consigneeMobile2 || '9415044003';
+    setHtml('op-consignee-mobile2', `<span class="theme-bullet">●</span> ${consMob2}`);
+    const opConsTel2 = document.getElementById('op-consignee-tel2');
+    if (opConsTel2) opConsTel2.href = `tel:${consMob2}`;
+
+    // Driver Mobile 2
+    const drvMob2 = t.driverMobile2 || '9784687522';
+    setHtml('op-driver-mobile2', `<span class="theme-bullet">●</span> ${drvMob2}`);
+    const opDrvTel2 = document.getElementById('op-driver-tel2');
+    if (opDrvTel2) opDrvTel2.href = `tel:${drvMob2}`;
+
     setHtml('op-owner', `<span class="blue-bullet">●</span> ${t.truckOwner || t.ownerName || 'Panchuram Gurjar'}`);
 
     setHtml('op-owner-mobile', `<span class="blue-bullet">●</span> ${ownMob}`);
@@ -1277,33 +1320,35 @@ const TripsModule = {
       counter.innerText = `Trip ${this.activeTripIndex + 1} of ${this.filteredTrips.length}`;
     }
 
-    // VIEW ROUTING: Open trips show the authentic full-width workspace view matching wa_0.png
-    if (this.workflowTab === 'open') {
-      document.getElementById('trips-view-dashboard')?.classList.add('d-none');
-      document.getElementById('trips-view-register')?.classList.add('d-none');
-      document.getElementById('trip-detail-view')?.classList.add('d-none');
-      document.getElementById('trip-open-party-view')?.classList.add('d-none');
-      document.getElementById('trip-payment-details-view')?.classList.add('d-none');
-      document.getElementById('trip-open-detail-view')?.classList.remove('d-none');
+    // VIEW ROUTING: Open & Trips cards show the authentic full-width workspace view matching wa_0.png
+    document.getElementById('trips-view-dashboard')?.classList.add('d-none');
+    document.getElementById('trips-view-register')?.classList.add('d-none');
+    document.getElementById('trip-detail-view')?.classList.add('d-none');
+    document.getElementById('trip-open-party-view')?.classList.add('d-none');
+    document.getElementById('trip-payment-details-view')?.classList.add('d-none');
+    document.getElementById('trip-settled-detail-view')?.classList.add('d-none');
+    document.getElementById('trip-open-debts-view')?.classList.add('d-none');
+    document.getElementById('trip-open-detail-view')?.classList.remove('d-none');
 
-      const breadcrumbStatus = document.getElementById('active-breadcrumb-status');
-      const breadcrumbSep = document.getElementById('breadcrumb-sep');
-      if (breadcrumbSep) breadcrumbSep.classList.remove('d-none');
-      if (breadcrumbStatus) {
-        breadcrumbStatus.classList.remove('d-none');
-        breadcrumbStatus.innerHTML = `
-          <a href="javascript:void(0)" onclick="TripsModule.setWorkflowTab('open')">Open</a>
-          <span class="sep text-muted mx-1">&gt;</span>
-          <span class="active text-dark fw-bold">Open Trip Details</span>
-        `;
-      }
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else {
-      document.getElementById('trips-view-register')?.classList.add('d-none');
-      document.getElementById('trip-open-detail-view')?.classList.add('d-none');
-      document.getElementById('trip-detail-view')?.classList.remove('d-none');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    const themeColor = this.getRowColorTheme(t);
+    const openDetailContainer = document.getElementById('trip-open-detail-view');
+    if (openDetailContainer) {
+      openDetailContainer.style.setProperty('--trip-theme-color', themeColor);
     }
+
+    const breadcrumbStatus = document.getElementById('active-breadcrumb-status');
+    const breadcrumbSep = document.getElementById('breadcrumb-sep');
+    if (breadcrumbSep) breadcrumbSep.classList.remove('d-none');
+    if (breadcrumbStatus) {
+      breadcrumbStatus.classList.remove('d-none');
+      const tabLabel = this.workflowTab === 'open' ? 'Open' : 'Trips';
+      breadcrumbStatus.innerHTML = `
+        <a href="javascript:void(0)" onclick="TripsModule.setWorkflowTab('${this.workflowTab}')">${tabLabel}</a>
+        <span class="sep text-muted mx-1">&gt;</span>
+        <span class="active text-dark fw-bold">Open Trip Details</span>
+      `;
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   },
 
   // ----------------------------------------------------
@@ -2536,10 +2581,18 @@ const TripsModule = {
       target.status = newStatus;
     }
 
-    if (typeof dbService !== 'undefined' && dbService.update) {
+    const newTheme = this.getRowColorTheme(this.activeTrip);
+    const openDetailContainer = document.getElementById('trip-open-detail-view');
+    if (openDetailContainer) {
+      openDetailContainer.style.setProperty('--trip-theme-color', newTheme);
+    }
+
+    if (typeof dbService !== 'undefined' && dbService.update && this.activeTrip.id) {
       dbService.update('trips', this.activeTrip.id, { tripStatus: newStatus, status: newStatus })
         .catch(err => console.warn('Status sync error:', err));
     }
+
+    this.renderTable();
 
     if (typeof AppUI !== 'undefined' && AppUI.showToast) {
       AppUI.showToast(`Trip status updated to: "${newStatus}"`, 'success');
@@ -2905,15 +2958,473 @@ const TripsModule = {
   },
 
   // ----------------------------------------------------
-  // ADDITIONAL APPSHEET ACTIONS
+  // LEVEL 4C: UPDATE TRIP DETAILS CONTROLLER (AppSheet Modal)
+  // Matching WhatsApp Image 2026-10-16 at 3.09.48 PM.jpeg & 3.09.49 PM.jpeg
   // ----------------------------------------------------
-  expandConsignorDetails() {
-    const t = this.activeTrip;
-    if (typeof AppUI !== 'undefined') {
-      AppUI.showToast(`Consignor: ${t?.consignor || 'Megha Mineral'} | Address: ${t?.consignorAddress || t?.origin || 'Paonta Sahib'} | GSTIN: ${t?.consignorGstin || '02BLAPS4407D1ZO'}`, 'info');
+  openUpdateTripDetailsModal(tripId) {
+    const t = (tripId ? this.allTrips.find(x => x.id === tripId || x.grNo === tripId) : null) || this.activeTrip;
+    if (!t) return;
+    this.activeTrip = t;
+
+    const setVal = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.value = (val !== undefined && val !== null) ? val : '';
+    };
+
+    setVal('utd-trip-id', t.id || t.grNo);
+    setVal('utd-gr-no', t.grNo || t.shortGrNo || '');
+    setVal('utd-bilty-amount', t.biltyAmount || t.freight || '');
+    setVal('utd-billing-type', t.billingType || 'Per Tonne');
+    setVal('utd-rate', t.rate || '');
+    setVal('utd-weight', t.weight || '');
+    setVal('utd-freight', t.freight || t.biltyAmount || '');
+    setVal('utd-hault-charges', t.haultCharges || 0);
+    setVal('utd-loading-charges', t.loadingCharges || 0);
+    setVal('utd-consignee', t.consignee || '');
+
+    // POD Target (Shipper vs Buyer)
+    this.setUtdPodTarget(t.podTarget || 'Shipper');
+    setVal('utd-pod-date', t.podDate || '');
+    setVal('utd-pod-weight', t.podWeight || '');
+    setVal('utd-pod-handed-over', t.podHandedOverTo || '');
+
+    setVal('utd-reference', t.reference || t.consignor || '');
+    setVal('utd-reference-mobile', t.referenceMobile || t.driverMobile || '');
+    setVal('utd-driver', t.driver || t.driverName || '');
+    setVal('utd-driver-mobile', t.driverMobile || '');
+    setVal('utd-owner', t.ownerName || t.truckOwner || '');
+    setVal('utd-owner-mobile', t.ownerMobile || '');
+
+    const modalEl = document.getElementById('modal-update-trip-details');
+    if (modalEl && typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+      bootstrap.Modal.getOrCreateInstance(modalEl).show();
     }
   },
 
+  calcUtdFreight() {
+    const bType = document.getElementById('utd-billing-type')?.value || 'Per Tonne';
+    const rate = parseFloat(document.getElementById('utd-rate')?.value) || 0;
+    const weight = parseFloat(document.getElementById('utd-weight')?.value) || 0;
+    const hault = parseFloat(document.getElementById('utd-hault-charges')?.value) || 0;
+    const loading = parseFloat(document.getElementById('utd-loading-charges')?.value) || 0;
+
+    let freight = 0;
+    if (bType === 'Fixed') {
+      freight = rate;
+    } else {
+      freight = Math.round(rate * weight * 100) / 100;
+    }
+    const freightEl = document.getElementById('utd-freight');
+    if (freightEl) freightEl.value = freight;
+
+    const biltyEl = document.getElementById('utd-bilty-amount');
+    if (biltyEl && (!biltyEl.value || parseFloat(biltyEl.value) === 0)) {
+      biltyEl.value = freight + hault + loading;
+    }
+  },
+
+  setUtdPodTarget(target) {
+    const sBtn = document.getElementById('utd-pod-shipper');
+    const bBtn = document.getElementById('utd-pod-buyer');
+    const input = document.getElementById('utd-pod-target');
+    if (input) input.value = target;
+
+    if (target === 'Shipper') {
+      sBtn?.classList.add('active', 'btn-light');
+      bBtn?.classList.remove('active');
+    } else {
+      bBtn?.classList.add('active', 'btn-light');
+      sBtn?.classList.remove('active');
+    }
+  },
+
+  async saveTripDetailsUpdate() {
+    if (!this.activeTrip) return;
+    const t = this.activeTrip;
+
+    const getVal = (id) => document.getElementById(id)?.value?.trim() || '';
+    const getNum = (id) => parseFloat(document.getElementById(id)?.value) || 0;
+
+    const biltyAmount = getNum('utd-bilty-amount');
+    const billingType = getVal('utd-billing-type');
+    const rate = getNum('utd-rate');
+    const weight = getNum('utd-weight');
+    const freight = getNum('utd-freight');
+    const haultCharges = getNum('utd-hault-charges');
+    const loadingCharges = getNum('utd-loading-charges');
+    const consignee = getVal('utd-consignee');
+    const podTarget = getVal('utd-pod-target');
+    const podDate = getVal('utd-pod-date');
+    const podWeight = getNum('utd-pod-weight');
+    const podHandedOverTo = getVal('utd-pod-handed-over');
+    const reference = getVal('utd-reference');
+    const referenceMobile = getVal('utd-reference-mobile');
+    const driver = getVal('utd-driver');
+    const driverMobile = getVal('utd-driver-mobile');
+    const owner = getVal('utd-owner');
+    const ownerMobile = getVal('utd-owner-mobile');
+
+    const totalFreight = freight + haultCharges + loadingCharges;
+    const partyPaid = Number(t.partyPaid) || 0;
+    const partyDue = Math.max(0, totalFreight - partyPaid);
+
+    // Update in-memory active trip object
+    Object.assign(t, {
+      biltyAmount: biltyAmount || totalFreight,
+      billingType,
+      rate,
+      weight,
+      freight: totalFreight,
+      haultCharges,
+      loadingCharges,
+      consignee,
+      podTarget,
+      podDate,
+      podWeight,
+      podHandedOverTo,
+      reference,
+      referenceMobile,
+      driver,
+      driverName: driver,
+      driverMobile,
+      truckOwner: owner,
+      ownerName: owner,
+      ownerMobile,
+      partyDue
+    });
+
+    // Update in allTrips master cache
+    const master = this.allTrips.find(x => x.id === t.id || x.grNo === t.grNo);
+    if (master) {
+      Object.assign(master, t);
+    }
+
+    // Direct Firestore update
+    if (typeof dbService !== 'undefined' && dbService.update && t.id) {
+      try {
+        await dbService.update('trips', t.id, {
+          biltyAmount: t.biltyAmount,
+          billingType: t.billingType,
+          rate: t.rate,
+          weight: t.weight,
+          freight: t.freight,
+          haultCharges: t.haultCharges,
+          loadingCharges: t.loadingCharges,
+          consignee: t.consignee,
+          podTarget: t.podTarget,
+          podDate: t.podDate,
+          podWeight: t.podWeight,
+          podHandedOverTo: t.podHandedOverTo,
+          reference: t.reference,
+          referenceMobile: t.referenceMobile,
+          driver: t.driver,
+          driverName: t.driver,
+          driverMobile: t.driverMobile,
+          truckOwner: t.truckOwner,
+          ownerName: t.ownerName,
+          ownerMobile: t.ownerMobile,
+          partyDue: t.partyDue
+        });
+      } catch (err) {
+        console.warn('Firestore trip update error:', err);
+      }
+    }
+
+    // Hide modal
+    const modalEl = document.getElementById('modal-update-trip-details');
+    if (modalEl && typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+      bootstrap.Modal.getInstance(modalEl)?.hide();
+    }
+
+    // Live update UI in workspace view and master register
+    this.openTripDetails(t.id || t.grNo);
+    this.renderTable();
+    if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+      AppUI.showToast('Trip details updated & saved to Cloud Firestore!', 'success');
+    }
+  },
+
+  // ----------------------------------------------------
+  // LEVEL 4D: OPEN DEBTS WORKSPACE VIEW CONTROLLER
+  // Matching screencapture-appsheet-start-...-2026-10-16-14_06_00.png
+  // ----------------------------------------------------
+  debtsActiveFY: 'All',
+  debtsSearchQuery: '',
+  allOpenDebtsList: null,
+
+  initOpenDebtsData() {
+    if (this.allOpenDebtsList) return;
+    const authenticSeed = [
+      {
+        id: 'DEBT_2026_01',
+        date: '2026-10-10',
+        displayDate: '10/10/2026',
+        fy: '2026-2027',
+        grNo: '2428_TTC',
+        truckNo: 'RJ52GB5147',
+        to: 'Prayagraj (U.P.)',
+        debtType: 'Commission',
+        dueAmount: 1500,
+        debtAmount: 1500,
+        debtMode: 'Cash',
+        borrowerName: 'Kailash Dhabas',
+        receiverName: 'Driver 2169 8690472589',
+        description: ''
+      },
+      {
+        id: 'DEBT_2026_02',
+        date: '2026-10-03',
+        displayDate: '03/10/2026',
+        fy: '2026-2027',
+        grNo: '209_SMTC',
+        truckNo: 'RJ52GA7906',
+        to: 'Sandila (U.P.)',
+        debtType: 'Commission',
+        dueAmount: 2000,
+        debtAmount: 2000,
+        debtMode: 'Cash',
+        borrowerName: 'Kailash Dhabas',
+        receiverName: 'Deepu Meena 7906 6377609...',
+        description: ''
+      },
+      {
+        id: 'DEBT_2026_03',
+        date: '2026-10-03',
+        displayDate: '03/10/2026',
+        fy: '2026-2027',
+        grNo: '209_SMTC',
+        truckNo: 'RJ52GA7906',
+        to: 'Sandila (U.P.)',
+        debtType: 'Other',
+        dueAmount: 3900,
+        debtAmount: 3900,
+        debtMode: 'Cash',
+        borrowerName: 'Kailash Dhabas',
+        receiverName: 'Deepu Meena 7906 6377609...',
+        description: ''
+      },
+      {
+        id: 'DEBT_2026_04',
+        date: '2026-08-25',
+        displayDate: '25/08/2026',
+        fy: '2026-2027',
+        grNo: '1867_TTC',
+        truckNo: 'RJ52GA7296',
+        to: 'Sandila (U.P.)',
+        debtType: 'Commission',
+        dueAmount: 2000,
+        debtAmount: 2000,
+        debtMode: 'Cash',
+        borrowerName: 'Kailash Dhabas',
+        receiverName: 'Raju 9438 9571232766',
+        description: ''
+      },
+      {
+        id: 'DEBT_2026_05',
+        date: '2026-08-25',
+        displayDate: '25/08/2026',
+        fy: '2026-2027',
+        grNo: '1867_TTC',
+        truckNo: 'RJ52GA7296',
+        to: 'Sandila (U.P.)',
+        debtType: 'Other',
+        dueAmount: 3900,
+        debtAmount: 3900,
+        debtMode: 'Cash',
+        borrowerName: 'Kailash Dhabas',
+        receiverName: 'Raju 9438 9571232766',
+        description: ''
+      },
+      {
+        id: 'DEBT_2021_01',
+        date: '2021-09-30',
+        displayDate: '30/09/2021',
+        fy: '2021-2022',
+        grNo: '',
+        truckNo: 'RJ52GA7296',
+        to: '',
+        debtType: 'Old',
+        dueAmount: 30000,
+        debtAmount: 30000,
+        debtMode: 'Cash',
+        borrowerName: 'Kailash Dhabas',
+        receiverName: 'Kailash Dhabas',
+        description: 'Cash'
+      },
+      {
+        id: 'DEBT_2021_02',
+        date: '2021-09-16',
+        displayDate: '16/09/2021',
+        fy: '2021-2022',
+        grNo: '',
+        truckNo: 'RJ52GA7296',
+        to: '',
+        debtType: 'Old',
+        dueAmount: 9900,
+        debtAmount: 9900,
+        debtMode: 'Cash',
+        borrowerName: 'Kailash Dhabas',
+        receiverName: 'Kailash Dhabas',
+        description: 'Advance Cash Agra'
+      }
+    ];
+
+    let extra = [];
+    if (typeof window !== 'undefined' && Array.isArray(window.SAMPLE_DEBTS_DATA)) {
+      extra = window.SAMPLE_DEBTS_DATA.filter(x => (Number(x.dueAmount) || 0) > 0).slice(0, 100);
+    }
+    this.allOpenDebtsList = [...authenticSeed, ...extra];
+  },
+
+  openTripDebtsView() {
+    this.initOpenDebtsData();
+    document.getElementById('trip-open-detail-view')?.classList.add('d-none');
+    document.getElementById('trip-open-debts-view')?.classList.remove('d-none');
+    this.renderOpenDebtsTable();
+  },
+
+  closeOpenDebtsView() {
+    document.getElementById('trip-open-debts-view')?.classList.add('d-none');
+    document.getElementById('trip-open-detail-view')?.classList.remove('d-none');
+  },
+
+  filterOpenDebtsFY(fy) {
+    this.debtsActiveFY = fy;
+    document.querySelectorAll('#debts-fy-list .appsheet-trips-sidebar-item').forEach(el => {
+      if (el.getAttribute('data-fy') === fy) {
+        el.classList.add('active');
+      } else {
+        el.classList.remove('active');
+      }
+    });
+    this.renderOpenDebtsTable();
+  },
+
+  filterOpenDebtsSearch(query) {
+    this.debtsSearchQuery = (query || '').toLowerCase().trim();
+    this.renderOpenDebtsTable();
+  },
+
+  refreshOpenDebts() {
+    this.initOpenDebtsData();
+    this.renderOpenDebtsTable();
+    if (typeof AppUI !== 'undefined') {
+      AppUI.showToast('Open Debts refreshed from database', 'info');
+    }
+  },
+
+  renderOpenDebtsTable() {
+    const tbody = document.getElementById('open-debts-tbody');
+    if (!tbody) return;
+    this.initOpenDebtsData();
+
+    let items = this.allOpenDebtsList || [];
+    if (this.debtsActiveFY !== 'All') {
+      items = items.filter(x => x.fy === this.debtsActiveFY);
+    }
+    if (this.debtsSearchQuery) {
+      items = items.filter(x =>
+        (x.grNo || '').toLowerCase().includes(this.debtsSearchQuery) ||
+        (x.truckNo || '').toLowerCase().includes(this.debtsSearchQuery) ||
+        (x.borrowerName || '').toLowerCase().includes(this.debtsSearchQuery) ||
+        (x.receiverName || '').toLowerCase().includes(this.debtsSearchQuery) ||
+        (x.debtType || '').toLowerCase().includes(this.debtsSearchQuery)
+      );
+    }
+
+    if (items.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="12" class="text-center py-4 text-muted">No open debts found</td></tr>`;
+      return;
+    }
+
+    const dateGroups = new Map();
+    items.forEach(item => {
+      const dKey = item.displayDate || this.formatDateDMY(item.date);
+      if (!dateGroups.has(dKey)) {
+        dateGroups.set(dKey, []);
+      }
+      dateGroups.get(dKey).push(item);
+    });
+
+    let html = '';
+    const themeColor = '#a07e2a';
+
+    dateGroups.forEach((groupItems, dateKey) => {
+      const groupSubtotal = groupItems.reduce((acc, cur) => acc + (Number(cur.dueAmount || cur.debtAmount) || 0), 0);
+      html += `
+        <tr class="appsheet-date-divider">
+          <td colspan="12" style="background-color: #fafafa; padding: 6px 12px;">
+            <span class="appsheet-bullet theme-bullet" style="color: ${themeColor};">●</span>
+            <span class="fw-bold ms-1" style="color: #202124;">${dateKey}</span>
+            <span class="badge bg-light text-dark border ms-2" style="font-weight: 600;">₹${groupSubtotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+          </td>
+        </tr>
+      `;
+
+      groupItems.forEach(d => {
+        const due = Number(d.dueAmount) || 0;
+        const amt = Number(d.debtAmount) || 0;
+        html += `
+          <tr class="appsheet-row" style="color: ${themeColor};">
+            <!-- 1. G.R.No. -->
+            <td style="color: ${themeColor}; font-weight: 600;">
+              <span style="color: ${themeColor};">●</span> ${d.grNo || ''}
+            </td>
+            <!-- 2. Truck No. -->
+            <td style="color: ${themeColor}; font-weight: 600;">
+              <span style="color: ${themeColor};">●</span> ${d.truckNo || ''}
+            </td>
+            <!-- 3. To -->
+            <td style="color: ${themeColor};">
+              ${d.to ? `<span style="color: ${themeColor};">●</span> ${d.to}` : ''}
+            </td>
+            <!-- 4. Debt Type -->
+            <td style="color: ${themeColor};">
+              <span style="color: ${themeColor};">●</span> ${d.debtType || 'Commission'}
+            </td>
+            <!-- 5. Due Amount (RED) -->
+            <td class="text-end fw-bold" style="color: #d90429;">
+              <span style="color: #d90429;">●</span> ₹${due.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            </td>
+            <!-- 6. Debt Amount -->
+            <td class="text-end" style="color: ${themeColor};">
+              <span style="color: ${themeColor};">●</span> ₹${amt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            </td>
+            <!-- 7. Debt Mode -->
+            <td style="color: ${themeColor};">
+              <span style="color: ${themeColor};">●</span> ${d.debtMode || 'Cash'}
+            </td>
+            <!-- 8. Borrower Name -->
+            <td style="color: ${themeColor};">
+              <span style="color: ${themeColor};">●</span> ${d.borrowerName || ''}
+            </td>
+            <!-- 9. Receiver Name -->
+            <td style="color: ${themeColor};">
+              <span style="color: ${themeColor};">●</span> ${d.receiverName || ''}
+            </td>
+            <!-- 10. Description -->
+            <td style="color: ${themeColor};">
+              ${d.description ? `<span style="color: ${themeColor};">●</span> ${d.description}` : '<span style="color: ' + themeColor + ';">●</span>'}
+            </td>
+            <!-- 11. Date -->
+            <td style="color: ${themeColor};">
+              <span style="color: ${themeColor};">●</span> ${d.displayDate || dateKey}
+            </td>
+            <!-- 12. Chevron -->
+            <td class="text-center text-muted">
+              <span class="appsheet-chevron">&gt;</span>
+            </td>
+          </tr>
+        `;
+      });
+    });
+
+    tbody.innerHTML = html;
+  },
+
+  // ----------------------------------------------------
+  // ADDITIONAL APPSHEET ACTIONS
+  // ----------------------------------------------------
   openTripFiles() {
     if (typeof AppUI !== 'undefined') {
       AppUI.showToast('Trip POD / e-Way Bill documents viewer opened', 'info');
@@ -2944,6 +3455,7 @@ const TripsModule = {
     document.getElementById('trip-settled-party-view')?.classList.add('d-none');
     document.getElementById('trip-settled-payment-view')?.classList.add('d-none');
     document.getElementById('trip-settled-owner-payment-view')?.classList.add('d-none');
+    document.getElementById('trip-open-debts-view')?.classList.add('d-none');
     if (this.mainViewMode === 'dashboard') {
       this.goToDashboardView();
     } else {

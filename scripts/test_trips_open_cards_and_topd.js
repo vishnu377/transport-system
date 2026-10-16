@@ -87,7 +87,10 @@ function mock(id) {
       value: '',
       options: [],
       appendChild(opt) { this.options.push(opt); },
-      style: {},
+      style: {
+        setProperty(k, v) { this[k] = v; },
+        getPropertyValue(k) { return this[k]; }
+      },
       placeholder: '',
       classList: {
         classes: new Set(),
@@ -102,7 +105,9 @@ function mock(id) {
         },
         contains(c) { return this.classes.has(c); }
       },
-      querySelectorAll() { return []; }
+      querySelectorAll() { return []; },
+      addEventListener() {},
+      removeEventListener() {}
     };
   }
   return dom[id];
@@ -110,8 +115,9 @@ function mock(id) {
 
 global.document = {
   getElementById: mock,
+  querySelector: (sel) => mock(sel),
   querySelectorAll: () => [],
-  createElement: (tag) => ({ tag, value: '', innerText: '' })
+  createElement: (tag) => ({ tag, value: '', innerText: '', addEventListener() {} })
 };
 global.alert = console.log;
 global.prompt = (msg) => 'POD sent';
@@ -132,7 +138,8 @@ vm.runInThisContext(tripsCode);
 
 console.log('✓ trips.js evaluated successfully');
 
-// Initialize module with trips
+// Initialize module with trips and open tab
+TripsModule.workflowTab = 'open';
 TripsModule.allTrips = window.INITIAL_EXCEL_TRIPS.slice(0, 50);
 TripsModule.filteredTrips = [...TripsModule.allTrips];
 TripsModule.activeTrip = TripsModule.allTrips[0];

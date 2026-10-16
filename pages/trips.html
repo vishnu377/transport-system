@@ -807,8 +807,11 @@
       flex-shrink: 0;
       width: 195px;
     }
+    #trip-open-detail-view {
+      --trip-theme-color: #0077c2;
+    }
     .appsheet-open-field-value {
-      color: #202124;
+      color: var(--trip-theme-color, #202124);
       font-weight: 600;
       text-align: right;
       display: flex;
@@ -817,14 +820,19 @@
       gap: 6px;
       word-break: break-word;
     }
-    .appsheet-open-field-value .blue-bullet {
-      color: #1a73e8;
+    .appsheet-open-field-value .blue-bullet,
+    .appsheet-open-field-value .theme-bullet {
+      color: var(--trip-theme-color, #1a73e8);
     }
-    .appsheet-open-field-value .red-bullet {
-      color: #d90429;
+    .appsheet-open-field-value .red-bullet,
+    .appsheet-open-field-value.text-danger,
+    .appsheet-open-field-value.text-danger .red-bullet {
+      color: #d90429 !important;
     }
-    .appsheet-open-field-value .green-bullet {
-      color: #137333;
+    .appsheet-open-field-value .green-bullet,
+    .appsheet-open-field-value.text-success,
+    .appsheet-open-field-value.text-success .green-bullet {
+      color: #008a38 !important;
     }
     .appsheet-open-field-value .dark-bullet {
       color: #202124;
@@ -833,13 +841,20 @@
       color: #202124;
     }
     .appsheet-open-phone-link {
-      color: #0088cc;
+      color: var(--trip-theme-color, #0088cc);
       text-decoration: none;
       margin-left: 6px;
       font-size: 13.5px;
     }
     .appsheet-open-phone-link:hover {
-      color: #005580;
+      opacity: 0.8;
+    }
+    #trip-open-detail-view .appsheet-open-subcard-header {
+      color: var(--trip-theme-color, #202124);
+    }
+    #trip-open-detail-view .appsheet-open-subcard-header .blue-bullet,
+    #trip-open-detail-view .appsheet-open-subcard-header .theme-bullet {
+      color: var(--trip-theme-color, #1a73e8);
     }
 
     /* Open Details Right Tables (Consignor / Payment) */
@@ -1439,31 +1454,27 @@
           <span id="open-view-title-text">Open Trip Details</span>
         </div>
         <div class="appsheet-open-actions">
-          <!-- Download Bilty Button -->
-          <button type="button" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 py-1 px-2" id="open-btn-download-bilty" title="Download Bilty" onclick="TripsModule.downloadBilty(TripsModule.activeTrip?.id)">
-            <i class="bi bi-download"></i> <span class="d-none d-sm-inline">Download Bilty</span>
-          </button>
-          <!-- Truck Action Icon -> Truck Owner Payment Details -->
-          <button type="button" class="appsheet-open-action-btn" title="Truck Owner Payment" onclick="TripsModule.openTruckOwnerPaymentModal(TripsModule.activeTrip?.id)">
+          <!-- Truck Action Icon -> Truck Debts Detail -->
+          <button type="button" class="appsheet-open-action-btn" title="Truck Debts Detail" onclick="TripsModule.openTruckOwnerPaymentModal(TripsModule.activeTrip?.id)">
             <i class="bi bi-truck fs-5"></i>
           </button>
-          <!-- Red Bilty Icon -> Generate Bill Modal -->
-          <button type="button" class="appsheet-open-action-btn" title="Generate Bill" onclick="TripsModule.openGenerateBillModal(TripsModule.activeTrip?.id)">
-            <i class="bi bi-file-earmark-text text-danger fs-5"></i>
+          <!-- Ruled File Icon -> All Debts Detail -->
+          <button type="button" class="appsheet-open-action-btn" title="All Debts Detail" onclick="TripsModule.openTripDebtsView()">
+            <i class="bi bi-file-earmark-ruled fs-5"></i>
           </button>
-          <!-- Folder Icon -> Archive / Files -->
-          <button type="button" class="appsheet-open-action-btn" title="Files / POD" onclick="TripsModule.openTripFiles()">
-            <i class="bi bi-folder2-open fs-5"></i>
+          <!-- Download Bilty Button -->
+          <button type="button" class="appsheet-open-action-btn" id="open-btn-download-bilty" title="Download Bilty" onclick="TripsModule.downloadBilty(TripsModule.activeTrip?.id)">
+            <i class="bi bi-download fs-5"></i>
           </button>
-          <!-- Edit Button (AppSheet pill) -->
-          <button type="button" class="appsheet-open-action-btn btn-edit-badge" title="Edit Trip" onclick="TripsModule.editActiveTrip()">
+          <!-- Edit Button (AppSheet pill) -> opens Update Trip Details modal -->
+          <button type="button" class="appsheet-open-action-btn btn-edit-badge" title="Edit" onclick="TripsModule.openUpdateTripDetailsModal(TripsModule.activeTrip?.id)">
             <i class="bi bi-pencil me-1"></i> Edit
           </button>
           <!-- Expand View toggle -->
           <button type="button" class="appsheet-open-action-btn" title="Expand View" onclick="TripsModule.toggleDetailFullscreen()">
             <i class="bi bi-arrows-fullscreen"></i>
           </button>
-          <!-- Close Button -> Returns to Open Register -->
+          <!-- Close Button -> Returns to Active Register -->
           <button type="button" class="appsheet-open-action-btn" title="Close" onclick="TripsModule.goToTripsList()">
             <i class="bi bi-x-lg fs-5"></i>
           </button>
@@ -1537,11 +1548,18 @@
               <span class="appsheet-open-field-label">Driver</span>
               <span class="appsheet-open-field-value" id="op-driver"><span class="blue-bullet">●</span> -</span>
             </div>
-            <div class="appsheet-open-field-row border-0">
+            <div class="appsheet-open-field-row">
               <span class="appsheet-open-field-label">Driver Mobile No.</span>
               <span class="appsheet-open-field-value">
                 <span id="op-driver-mobile"><span class="blue-bullet">●</span> -</span>
                 <a href="javascript:void(0)" id="op-driver-tel" class="appsheet-open-phone-link" title="Call Driver"><i class="bi bi-telephone"></i></a>
+              </span>
+            </div>
+            <div class="appsheet-open-field-row border-0 d-none" id="op-driver-mobile2-row">
+              <span class="appsheet-open-field-label">Driver Mobile No.</span>
+              <span class="appsheet-open-field-value">
+                <span id="op-driver-mobile2"><span class="blue-bullet">●</span> -</span>
+                <a href="javascript:void(0)" id="op-driver-tel2" class="appsheet-open-phone-link" title="Call Driver"><i class="bi bi-telephone"></i></a>
               </span>
             </div>
           </div>
@@ -1555,6 +1573,20 @@
             <div class="appsheet-open-field-row">
               <span class="appsheet-open-field-label">Consignee</span>
               <span class="appsheet-open-field-value" id="op-consignee"><span class="blue-bullet">●</span> -</span>
+            </div>
+            <div class="appsheet-open-field-row" id="op-consignee-mobile-row">
+              <span class="appsheet-open-field-label">Consignee Mobile No.</span>
+              <span class="appsheet-open-field-value">
+                <span id="op-consignee-mobile"><span class="blue-bullet">●</span> -</span>
+                <a href="javascript:void(0)" id="op-consignee-tel" class="appsheet-open-phone-link" title="Call Consignee"><i class="bi bi-telephone"></i></a>
+              </span>
+            </div>
+            <div class="appsheet-open-field-row d-none" id="op-consignee-mobile2-row">
+              <span class="appsheet-open-field-label">Consignee Mobile No.</span>
+              <span class="appsheet-open-field-value">
+                <span id="op-consignee-mobile2"><span class="blue-bullet">●</span> -</span>
+                <a href="javascript:void(0)" id="op-consignee-tel2" class="appsheet-open-phone-link" title="Call Consignee"><i class="bi bi-telephone"></i></a>
+              </span>
             </div>
             <div class="appsheet-open-field-row">
               <span class="appsheet-open-field-label">Owner</span>
@@ -1619,12 +1651,14 @@
               <span class="appsheet-open-field-label">Status</span>
               <div class="appsheet-open-field-value d-flex align-items-center gap-2">
                 <span id="op-status-bullet" class="blue-bullet">●</span>
-                <select id="op-trip-status-select" class="form-select form-select-sm border-0 bg-light py-1 px-2 fw-semibold" style="width: auto; min-width: 160px;" onchange="TripsModule.updateActiveTripStatus(this.value)">
+                <select id="op-trip-status-select" class="form-select form-select-sm border-0 bg-light py-1 px-2 fw-semibold" style="width: auto; min-width: 170px;" onchange="TripsModule.updateActiveTripStatus(this.value)">
                   <option value="Transit">Transit</option>
                   <option value="Off loading">Off loading</option>
                   <option value="Cheque due">Cheque due</option>
                   <option value="POD sent">POD sent</option>
                   <option value="Bill generated">Bill generated</option>
+                  <option value="Party Payment Pending">Party Payment Pending</option>
+                  <option value="Settled">Settled</option>
                 </select>
                 <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2" title="Edit/Type Status" onclick="TripsModule.promptCustomTripStatus()"><i class="bi bi-pencil"></i></button>
               </div>
@@ -1945,6 +1979,82 @@
         </div>
       </div>
 
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 4F. OPEN DEBTS WORKSPACE VIEW (screencapture-appsheet-start-...-2026-10-16-14_06_00.png) -->
+    <!-- ========================================== -->
+    <div id="trip-open-debts-view" class="d-none appsheet-open-view-container">
+      <!-- Top Action Toolbar -->
+      <div class="appsheet-open-header-bar">
+        <div class="appsheet-open-title d-flex align-items-center gap-2">
+          <span style="cursor: pointer;" onclick="TripsModule.closeOpenDebtsView()" title="Back to Trip Details">
+            <i class="bi bi-arrow-left fs-5"></i>
+          </span>
+          <span class="text-muted small">Trips &gt; Trips &gt; Open Trip Details &gt;</span>
+          <span class="fw-bold" id="open-debts-title-text">Open Debts</span>
+        </div>
+        <div class="appsheet-open-actions d-flex align-items-center gap-2">
+          <div class="input-group input-group-sm" style="max-width: 250px;">
+            <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
+            <input type="text" class="form-control border-start-0" id="search-open-debts" placeholder="Search Open Debts" oninput="TripsModule.filterOpenDebtsSearch(this.value)">
+          </div>
+          <button type="button" class="appsheet-open-action-btn" title="Refresh" onclick="TripsModule.refreshOpenDebts()">
+            <i class="bi bi-arrow-clockwise fs-5"></i>
+          </button>
+          <button type="button" class="appsheet-open-action-btn" title="Close" onclick="TripsModule.closeOpenDebtsView()">
+            <i class="bi bi-x-lg fs-5"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Layout: Left FY Tree Sidebar + Right Debts Table -->
+      <div class="appsheet-trips-layout mt-2">
+        <!-- FY Sidebar -->
+        <div class="appsheet-trips-sidebar" style="min-width: 200px; max-width: 220px;">
+          <div class="p-2 border-bottom fw-bold text-muted small text-uppercase">Fiscal Year</div>
+          <div id="debts-fy-list" class="py-1">
+            <div class="appsheet-trips-sidebar-item active" data-fy="All" onclick="TripsModule.filterOpenDebtsFY('All')">
+              <span>All</span>
+            </div>
+            <div class="appsheet-trips-sidebar-item" data-fy="2026-2027" onclick="TripsModule.filterOpenDebtsFY('2026-2027')">
+              <span class="d-flex align-items-center"><span class="appsheet-bullet theme-bullet">●</span> 2026-2027</span>
+              <span class="badge bg-light text-dark border" id="debts-fy-badge-2026">₹ 13,300.00</span>
+            </div>
+            <div class="appsheet-trips-sidebar-item" data-fy="2021-2022" onclick="TripsModule.filterOpenDebtsFY('2021-2022')">
+              <span class="d-flex align-items-center"><span class="appsheet-bullet theme-bullet">●</span> 2021-2022</span>
+              <span class="badge bg-light text-dark border" id="debts-fy-badge-2021">₹ 39,900.00</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Main Table -->
+        <div class="appsheet-trips-content flex-grow-1">
+          <div class="table-responsive" style="max-height: 700px; overflow-y: auto;">
+            <table class="appsheet-table w-100" id="open-debts-table">
+              <thead class="sticky-top bg-white" style="z-index: 5;">
+                <tr>
+                  <th>G.R.No.</th>
+                  <th>Truck No.</th>
+                  <th>To</th>
+                  <th>Debt Type</th>
+                  <th class="text-end">Due Amount</th>
+                  <th class="text-end">Debt Amount</th>
+                  <th>Debt Mode</th>
+                  <th>Borrower Name</th>
+                  <th>Receiver Name</th>
+                  <th>Description</th>
+                  <th>Date</th>
+                  <th style="width: 30px;"></th>
+                </tr>
+              </thead>
+              <tbody id="open-debts-tbody">
+                <!-- Dynamically populated rows and date divider ribbons -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- ========================================== -->
@@ -2698,6 +2808,213 @@
           </div>
         </div>
 
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- APPSHEET MODAL: UPDATE TRIP DETAILS -->
+    <!-- (Matching WhatsApp Image 2026-10-16 at 3.09.48 PM.jpeg, 3.09.48 PM (1).jpeg, 3.09.49 PM.jpeg) -->
+    <!-- ========================================== -->
+    <div class="modal fade" id="modal-update-trip-details" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow">
+          <!-- Modal Header (AppSheet Style with Cancel & Save) -->
+          <div class="modal-header py-2 px-3 bg-light border-bottom d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-2">
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <h6 class="modal-title fw-bold text-dark mb-0">Update Trip Details</h6>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-3" data-bs-dismiss="modal">Cancel</button>
+              <button type="button" class="btn btn-sm py-1 px-3 text-white fw-semibold" style="background-color: #a07e2a;" onclick="TripsModule.saveTripDetailsUpdate()">Save</button>
+            </div>
+          </div>
+          <!-- Modal Body (Form with 19 AppSheet fields) -->
+          <div class="modal-body p-3 bg-white">
+            <form id="form-update-trip-details" onsubmit="event.preventDefault(); TripsModule.saveTripDetailsUpdate();">
+              <input type="hidden" id="utd-trip-id">
+
+              <!-- G.R.No.* -->
+              <div class="row align-items-center mb-3">
+                <label class="col-sm-4 col-form-label text-muted fw-semibold small">G.R.No. *</label>
+                <div class="col-sm-8">
+                  <input type="text" id="utd-gr-no" class="form-control form-control-sm bg-light" readonly>
+                </div>
+              </div>
+
+              <!-- Bilty Amount -->
+              <div class="row align-items-center mb-3">
+                <label class="col-sm-4 col-form-label text-muted fw-semibold small">Bilty Amount</label>
+                <div class="col-sm-8">
+                  <div class="input-group input-group-sm">
+                    <span class="input-group-text">₹</span>
+                    <input type="number" step="0.01" id="utd-bilty-amount" class="form-control form-control-sm">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Consignee Billing Type -->
+              <div class="row align-items-center mb-3">
+                <label class="col-sm-4 col-form-label text-muted fw-semibold small">Consignee Billing Type</label>
+                <div class="col-sm-8">
+                  <select id="utd-billing-type" class="form-select form-select-sm" onchange="TripsModule.calcUtdFreight()">
+                    <option value="Per Tonne">● Per Tonne</option>
+                    <option value="Fixed">● Fixed</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Rate* -->
+              <div class="row align-items-center mb-3">
+                <label class="col-sm-4 col-form-label text-muted fw-semibold small">Rate *</label>
+                <div class="col-sm-8">
+                  <div class="input-group input-group-sm">
+                    <span class="input-group-text">₹</span>
+                    <input type="number" step="0.01" id="utd-rate" class="form-control form-control-sm" oninput="TripsModule.calcUtdFreight()">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Weight* -->
+              <div class="row align-items-center mb-3">
+                <label class="col-sm-4 col-form-label text-muted fw-semibold small">Weight *</label>
+                <div class="col-sm-8">
+                  <input type="number" step="0.001" id="utd-weight" class="form-control form-control-sm" oninput="TripsModule.calcUtdFreight()">
+                </div>
+              </div>
+
+              <!-- Freight -->
+              <div class="row align-items-center mb-3">
+                <label class="col-sm-4 col-form-label text-muted fw-semibold small">Freight</label>
+                <div class="col-sm-8">
+                  <div class="input-group input-group-sm">
+                    <span class="input-group-text">₹</span>
+                    <input type="number" step="0.01" id="utd-freight" class="form-control form-control-sm">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Hault Charges -->
+              <div class="row align-items-center mb-3">
+                <label class="col-sm-4 col-form-label text-muted fw-semibold small">Hault Charges</label>
+                <div class="col-sm-8">
+                  <div class="input-group input-group-sm">
+                    <span class="input-group-text">₹</span>
+                    <input type="number" step="0.01" id="utd-hault-charges" class="form-control form-control-sm" value="0">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Loading Charges -->
+              <div class="row align-items-center mb-3">
+                <label class="col-sm-4 col-form-label text-muted fw-semibold small">Loading Charges</label>
+                <div class="col-sm-8">
+                  <div class="input-group input-group-sm">
+                    <span class="input-group-text">₹</span>
+                    <input type="number" step="0.01" id="utd-loading-charges" class="form-control form-control-sm" value="0">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Consignee -->
+              <div class="row align-items-center mb-3">
+                <label class="col-sm-4 col-form-label text-muted fw-semibold small">Consignee</label>
+                <div class="col-sm-8">
+                  <input type="text" id="utd-consignee" class="form-control form-control-sm">
+                </div>
+              </div>
+
+              <!-- POD to Shipper/Buyer -->
+              <div class="row align-items-center mb-3">
+                <label class="col-sm-4 col-form-label text-muted fw-semibold small">POD to Shipper/Buyer</label>
+                <div class="col-sm-8">
+                  <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-sm flex-fill border btn-light active" id="utd-pod-shipper" onclick="TripsModule.setUtdPodTarget('Shipper')">
+                      <span class="appsheet-bullet theme-bullet">●</span> Shipper
+                    </button>
+                    <button type="button" class="btn btn-sm flex-fill border btn-light" id="utd-pod-buyer" onclick="TripsModule.setUtdPodTarget('Buyer')">
+                      <span class="appsheet-bullet theme-bullet">●</span> Buyer
+                    </button>
+                  </div>
+                  <input type="hidden" id="utd-pod-target" value="Shipper">
+                </div>
+              </div>
+
+              <!-- POD Date -->
+              <div class="row align-items-center mb-3">
+                <label class="col-sm-4 col-form-label text-muted fw-semibold small">POD Date</label>
+                <div class="col-sm-8">
+                  <input type="date" id="utd-pod-date" class="form-control form-control-sm">
+                </div>
+              </div>
+
+              <!-- POD Weight -->
+              <div class="row align-items-center mb-3">
+                <label class="col-sm-4 col-form-label text-muted fw-semibold small">POD Weight</label>
+                <div class="col-sm-8">
+                  <input type="number" step="0.001" id="utd-pod-weight" class="form-control form-control-sm" placeholder="0.000">
+                </div>
+              </div>
+
+              <!-- POD Handed Over To -->
+              <div class="row align-items-center mb-3">
+                <label class="col-sm-4 col-form-label text-muted fw-semibold small">POD Handed Over To</label>
+                <div class="col-sm-8">
+                  <input type="text" id="utd-pod-handed-over" class="form-control form-control-sm">
+                </div>
+              </div>
+
+              <!-- Reference -->
+              <div class="row align-items-center mb-3">
+                <label class="col-sm-4 col-form-label text-muted fw-semibold small">Reference</label>
+                <div class="col-sm-8">
+                  <input type="text" id="utd-reference" class="form-control form-control-sm">
+                </div>
+              </div>
+
+              <!-- Reference Mobile No. -->
+              <div class="row align-items-center mb-3">
+                <label class="col-sm-4 col-form-label text-muted fw-semibold small">Reference Mobile No.</label>
+                <div class="col-sm-8">
+                  <input type="text" id="utd-reference-mobile" class="form-control form-control-sm">
+                </div>
+              </div>
+
+              <!-- Driver -->
+              <div class="row align-items-center mb-3">
+                <label class="col-sm-4 col-form-label text-muted fw-semibold small">Driver</label>
+                <div class="col-sm-8">
+                  <input type="text" id="utd-driver" class="form-control form-control-sm">
+                </div>
+              </div>
+
+              <!-- Driver Mobile No. -->
+              <div class="row align-items-center mb-3">
+                <label class="col-sm-4 col-form-label text-muted fw-semibold small">Driver Mobile No.</label>
+                <div class="col-sm-8">
+                  <input type="text" id="utd-driver-mobile" class="form-control form-control-sm">
+                </div>
+              </div>
+
+              <!-- Owner -->
+              <div class="row align-items-center mb-3">
+                <label class="col-sm-4 col-form-label text-muted fw-semibold small">Owner</label>
+                <div class="col-sm-8">
+                  <input type="text" id="utd-owner" class="form-control form-control-sm">
+                </div>
+              </div>
+
+              <!-- Owner Mobile No. -->
+              <div class="row align-items-center mb-3">
+                <label class="col-sm-4 col-form-label text-muted fw-semibold small">Owner Mobile No.</label>
+                <div class="col-sm-8">
+                  <input type="text" id="utd-owner-mobile" class="form-control form-control-sm">
+                </div>
+              </div>
+
+            </form>
+          </div>
+        </div>
       </div>
     </div>
 
