@@ -677,14 +677,14 @@ const TripsModule = {
     dateGroups.forEach((items, dateKey) => {
       const dayTotalFreight = items.reduce((sum, i) => sum + (Number(i.biltyAmount || i.freight) || 0), 0);
       const isSettledTab = this.workflowTab === 'settled';
-      const ribbonBulletColor = isSettledTab ? '#137333' : this.getDateRibbonBulletColor(dateKey);
+      const ribbonBulletColor = isSettledTab ? '#00a638' : this.getDateRibbonBulletColor(dateKey);
 
       // Date Group Divider Ribbon (Matching open_sc_top.png & settled_table_crop1.png)
       html += `
         <tr class="appsheet-date-divider">
           <td colspan="15">
             <span class="appsheet-bullet ${isSettledTab ? 'green-bullet' : ''}" style="color: ${ribbonBulletColor};">●</span>
-            <span class="fw-bold ms-1 text-dark">${dateKey}</span>
+            <span class="fw-bold ms-1" style="color: ${isSettledTab ? '#008a38' : '#202124'};">${dateKey}</span>
             <span class="appsheet-drill-badge ms-2" style="background: #f1f3f4; color: #202124;">₹ ${dayTotalFreight.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
             ${(this.workflowTab === 'open' || isSettledTab) ? '' : `<span class="text-muted ms-1 small">(${items.length} ${items.length === 1 ? 'bilty' : 'bilties'})</span>`}
           </td>
@@ -793,18 +793,22 @@ const TripsModule = {
         } else if (this.workflowTab === 'settled') {
           // Authentic Settled Register Rows (Matching settled_table_crop1.png & settled_table_crop_right.png)
           const shortGr = t.shortGrNo || t.grNo || '-';
+          const settledGreen = '#008a38';
           const biltyDisplay = biltyAmt > 0 ? `<span class="green-bullet">●</span> ₹ ${biltyAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '';
           const weightDisplay = weight > 0 ? `<span class="green-bullet">●</span> ${weight.toFixed(3)}` : '';
           const rateDisplay = rate > 0 ? `<span class="green-bullet">●</span> ₹ ${rate.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '';
           const totalFreightDisplay = totalFreight > 0 ? `<span class="green-bullet">●</span> ₹ ${totalFreight.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '';
+          const consigneeDisplay = (t.consignee && t.consignee.trim() !== '' && t.consignee !== '-') ? `<span class="green-bullet">●</span> ${t.consignee}` : '';
+          const ownerDisplay = (ownerName && ownerName.trim() !== '' && ownerName !== '-') ? `<span class="green-bullet">●</span> ${ownerName}` : '';
+          const refDisplay = (consignorRef && consignorRef.trim() !== '' && consignorRef !== '-') ? `<span class="green-bullet">●</span> ${consignorRef}` : '';
 
-          let billBadge = '-';
+          let billBadge = '';
           if (t.billNo) {
             billBadge = `<span class="badge" style="background:#bca057; color:#fff; font-size:11px; font-weight:600;">${t.billNo}</span>`;
           }
 
           html += `
-            <tr class="appsheet-row" onclick="TripsModule.openSettledTripDetails('${t.id || t.grNo}')">
+            <tr class="appsheet-row settled-row" onclick="TripsModule.openSettledTripDetails('${t.id || t.grNo}')">
               <!-- 1. Action Icons: Refresh / Bill -->
               <td class="text-center" style="width: 50px;" onclick="event.stopPropagation()">
                 <div class="d-flex align-items-center justify-content-center gap-2">
@@ -822,57 +826,57 @@ const TripsModule = {
               <td class="text-center" style="font-size: 11px;">${billBadge}</td>
 
               <!-- 4. G.R.No. -->
-              <td class="fw-bold">
+              <td class="fw-bold" style="color: ${settledGreen};">
                 <span class="green-bullet">●</span> ${shortGr}
               </td>
 
               <!-- 5. Truck No. -->
-              <td class="fw-bold">
+              <td class="fw-bold" style="color: ${settledGreen};">
                 <span class="green-bullet">●</span> ${t.truckNo || '-'}
               </td>
 
               <!-- 6. Destination -->
-              <td>
+              <td style="color: ${settledGreen};">
                 <span class="green-bullet">●</span> ${t.destination || '-'}
               </td>
 
               <!-- 7. Reference -->
-              <td class="text-truncate" style="max-width: 150px;" title="${consignorRef}">
-                <span class="green-bullet">●</span> ${consignorRef}
+              <td class="text-truncate" style="max-width: 150px; color: ${settledGreen};" title="${consignorRef}">
+                ${refDisplay}
               </td>
 
               <!-- 8. Bilty Amount -->
-              <td class="text-end">
+              <td class="text-end" style="color: ${settledGreen};">
                 ${biltyDisplay}
               </td>
 
               <!-- 9. Weight -->
-              <td class="text-end">
+              <td class="text-end" style="color: ${settledGreen};">
                 ${weightDisplay}
               </td>
 
               <!-- 10. Rate -->
-              <td class="text-end">
+              <td class="text-end" style="color: ${settledGreen};">
                 ${rateDisplay}
               </td>
 
               <!-- 11. Total Freight -->
-              <td class="text-end fw-semibold">
+              <td class="text-end fw-semibold" style="color: ${settledGreen};">
                 ${totalFreightDisplay}
               </td>
 
               <!-- 12. Consignee -->
-              <td class="text-truncate" style="max-width: 150px;" title="${t.consignee || '-'}">
-                <span class="green-bullet">●</span> ${t.consignee || '-'}
+              <td class="text-truncate" style="max-width: 150px; color: ${settledGreen};" title="${t.consignee || '-'}">
+                ${consigneeDisplay}
               </td>
 
               <!-- 13. Owner -->
-              <td class="text-truncate" style="max-width: 140px;" title="${ownerName}">
-                <span class="green-bullet">●</span> ${ownerName}
+              <td class="text-truncate" style="max-width: 140px; color: ${settledGreen};" title="${ownerName}">
+                ${ownerDisplay}
               </td>
 
               <!-- 14. Trip Start Date -->
-              <td>
+              <td style="color: ${settledGreen};">
                 <span class="green-bullet">●</span> ${tripDate}
               </td>
 
@@ -904,7 +908,7 @@ const TripsModule = {
           const grDisplay = t.grNo || t.shortGrNo || '-';
 
           html += `
-            <tr class="appsheet-row" onclick="TripsModule.openTripDetails('${t.id || t.grNo}')">
+            <tr class="appsheet-row ${isSettled ? 'settled-row' : ''}" onclick="TripsModule.openTripDetails('${t.id || t.grNo}')">
               <!-- 1. Bill NO. -->
               <td class="text-muted">
                 ${t.billNo ? t.billNo : '-'}

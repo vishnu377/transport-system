@@ -25,8 +25,8 @@
       --appsheet-gold-hover: #b0914e;
       --appsheet-gold-text: #967b2c;
       --appsheet-gold-dot: #bfa15f;
-      --appsheet-green-dot: #137333;
-      --appsheet-green-text: #137333;
+      --appsheet-green-dot: #00a638;
+      --appsheet-green-text: #008a38;
       --appsheet-red-text: #d90429;
       --appsheet-red-dot: #d90429;
       --appsheet-blue-text: #0066cc;
@@ -584,6 +584,47 @@
     .cell-gold { color: var(--appsheet-gold-text); }
     .cell-blue { color: var(--appsheet-blue-text); }
     .cell-red { color: var(--appsheet-red-text); font-weight: 700; }
+
+    /* Settled Row Full-Text Color & Dot Alignment (Matching settled_table_crop1.png) */
+    .appsheet-row.settled-row td {
+      color: #008a38 !important;
+    }
+    .appsheet-row.settled-row td.text-muted,
+    .appsheet-row.settled-row td .text-muted {
+      color: #5f6368 !important;
+    }
+    .appsheet-row.settled-row td .text-danger {
+      color: #d90429 !important;
+    }
+    .appsheet-row.settled-row td .gold-bullet {
+      color: #d4a017 !important;
+    }
+    .appsheet-row.settled-row td .green-bullet {
+      color: #00a638 !important;
+    }
+
+    /* Settled Detail View Green Text (Matching WhatsApp Image 2026-10-14 at 12.51.44 PM.jpeg) */
+    #trip-settled-detail-view .appsheet-open-field-value {
+      color: #008a38;
+    }
+    #trip-settled-detail-view .appsheet-open-field-value.text-muted {
+      color: #008a38 !important;
+    }
+    #trip-settled-detail-view #sp-gr-no,
+    #trip-settled-detail-view #sp-truck-no {
+      color: #202124 !important;
+    }
+    #trip-settled-detail-view .appsheet-open-phone-link {
+      color: #008a38;
+    }
+    #trip-settled-detail-view #sp-payments-tbody td,
+    #trip-settled-detail-view #sp-owner-payments-tbody td,
+    #trip-settled-payment-view tbody td,
+    #trip-settled-owner-payment-view tbody td,
+    #trip-settled-payment-view .appsheet-open-field-value,
+    #trip-settled-owner-payment-view .appsheet-open-field-value {
+      color: #008a38;
+    }
 
     .appsheet-chevron {
       color: #5f6368;
