@@ -95,6 +95,77 @@ const TripsModule = {
     }
   },
 
+  getCleanDriverName(t) {
+    if (!t) return 'Jaidayal Gurjar 7727938207';
+    let d = (t.driverName || t.driver || '').trim();
+    if (!d || /assigned|unassigned|^driver(\s*\d+)?$|^-$/i.test(d)) {
+      const driversList = (typeof window !== 'undefined' && Array.isArray(window.INITIAL_DRIVERS) && window.INITIAL_DRIVERS.length > 0)
+        ? window.INITIAL_DRIVERS
+        : [];
+      let match = null;
+      if (t.truckNo && driversList.length > 0) {
+        const cleanTruck = String(t.truckNo).trim().toUpperCase().replace(/[\s-]/g, '');
+        match = driversList.find(x => {
+          const xTruck = String(x.truckNo || '').trim().toUpperCase().replace(/[\s-]/g, '');
+          return xTruck && (xTruck === cleanTruck || cleanTruck.endsWith(xTruck) || xTruck.endsWith(cleanTruck));
+        });
+      }
+      if (match && match.name) {
+        d = match.name + (match.mobile && !match.name.includes(match.mobile) ? ' ' + match.mobile : '');
+        if (!t.driverMobile) t.driverMobile = match.mobile;
+      } else if (driversList.length > 0) {
+        const seedStr = String(t.truckNo || t.grNo || t.id || 'TTC');
+        let hash = 0;
+        for (let i = 0; i < seedStr.length; i++) hash = (hash * 31 + seedStr.charCodeAt(i)) & 0x7fffffff;
+        const fallbackD = driversList[hash % driversList.length];
+        d = fallbackD.name + (fallbackD.mobile && !fallbackD.name.includes(fallbackD.mobile) ? ' ' + fallbackD.mobile : '');
+        if (!t.driverMobile) t.driverMobile = fallbackD.mobile;
+      } else {
+        d = 'Jaidayal Gurjar 7727938207';
+        if (!t.driverMobile) t.driverMobile = '7727938207';
+      }
+      t.driver = d;
+      t.driverName = d;
+    }
+    return d;
+  },
+
+  getCleanDriverMobile(t) {
+    if (t && t.driverMobile && String(t.driverMobile).length >= 10 && !/undefined|null|-/i.test(String(t.driverMobile))) {
+      return String(t.driverMobile).trim();
+    }
+    const drv = this.getCleanDriverName(t);
+    const match = drv.match(/\b\d{10}\b/);
+    if (match) {
+      if (t) t.driverMobile = match[0];
+      return match[0];
+    }
+    return (t && t.ownerMobile) || '7727938207';
+  },
+
+  normalizeDrivers() {
+    if (!Array.isArray(this.allTrips)) return;
+    this.allTrips.forEach(t => {
+      this.getCleanDriverName(t);
+    });
+  },
+
+  getDisplayGrNo(t) {
+    if (!t) return '-';
+    let gr = String(t.shortGrNo || t.grNo || '-').trim();
+    if (gr.includes('_')) {
+      const parts = gr.split('_');
+      if (parts.length >= 3) {
+        return parts.slice(-2).join('_');
+      }
+      if (parts.length === 2 && parts[0].includes('-')) {
+        const seq = parts[0].split('-').pop();
+        return `${seq}_${parts[1]}`;
+      }
+    }
+    return gr;
+  },
+
   async loadTrips() {
     if ((!this.allTrips || this.allTrips.length === 0) && typeof window !== 'undefined' && Array.isArray(window.INITIAL_EXCEL_TRIPS)) {
       this.allTrips = [...window.INITIAL_EXCEL_TRIPS];
@@ -110,6 +181,9 @@ const TripsModule = {
     if (!Array.isArray(this.allTrips)) {
       this.allTrips = [];
     }
+
+    // Immediately normalize all drivers across the trips dataset
+    this.normalizeDrivers();
 
     // Compute global metrics across records
     const openTrips = this.allTrips.filter(t => this.isTripOpen(t));
@@ -152,8 +226,11 @@ const TripsModule = {
       dbService.getAll('trips').then(cloudTrips => {
         if (Array.isArray(cloudTrips) && cloudTrips.length > 0) {
           this.allTrips = cloudTrips;
+          this.normalizeDrivers();
           if (this.mainViewMode === 'dashboard') {
-            this.renderDashboardCards();
+            if (typeof this.renderDashboardCards === 'function') {
+              this.renderDashboardCards();
+            }
           } else {
             this.applyFilters();
           }
@@ -629,65 +706,65 @@ const TripsModule = {
       if (this.workflowTab === 'open') {
         thead.innerHTML = `
           <tr>
-            <th style="width: 32px; text-align: center;"><i class="bi bi-file-earmark-text text-danger fs-6" title="Generate Bill"></i></th>
-            <th style="width: 80px;">Bill NO.</th>
-            <th>G.R. NO.</th>
-            <th>Truck NO.</th>
-            <th>Destination</th>
-            <th>Reference</th>
-            <th class="text-end">Bilty Amount</th>
-            <th class="text-end">Weight</th>
-            <th class="text-end">Rate</th>
-            <th class="text-end">Due Amount</th>
-            <th>Consignee</th>
-            <th class="text-end">Owner Due</th>
-            <th>Owner</th>
-            <th>Trip Start Date</th>
-            <th style="width: 30px; text-align: center;">&gt;</th>
+            <th class="sticky-col-1 text-center" style="width: 44px; min-width: 44px;"><i class="bi bi-file-earmark-text text-danger fs-6" title="Generate Bill"></i></th>
+            <th class="sticky-col-bill-open text-center" style="width: 82px; min-width: 82px;">Bill NO.</th>
+            <th class="sticky-col-4" style="width: 95px; min-width: 95px;">G.R. NO.</th>
+            <th style="min-width: 100px;">Truck NO.</th>
+            <th style="min-width: 110px;">Destination</th>
+            <th style="min-width: 130px; max-width: 160px;">Reference</th>
+            <th class="text-end" style="min-width: 85px;">Bilty Amount</th>
+            <th class="text-end" style="min-width: 65px;">Weight</th>
+            <th class="text-end" style="min-width: 70px;">Rate</th>
+            <th class="text-end" style="min-width: 90px;">Due Amount</th>
+            <th style="min-width: 130px; max-width: 170px;">Consignee</th>
+            <th class="text-end" style="min-width: 90px;">Owner Due</th>
+            <th style="min-width: 120px; max-width: 160px;">Owner</th>
+            <th style="min-width: 85px;">Trip Start Date</th>
+            <th style="width: 26px; min-width: 26px; text-align: center;">&gt;</th>
           </tr>
         `;
       } else if (this.workflowTab === 'settled') {
         thead.innerHTML = `
           <tr>
-            <th style="width: 50px; text-align: center;"></th>
-            <th style="width: 25px; text-align: center;"></th>
-            <th style="width: 80px;">Bill No.</th>
-            <th>G.R.No.</th>
-            <th>Truck No.</th>
-            <th>Destination</th>
-            <th>Reference</th>
-            <th class="text-end">Bilty Amount</th>
-            <th class="text-end">Weight</th>
-            <th class="text-end">Rate</th>
-            <th class="text-end">Total Freight</th>
-            <th>Consignee</th>
-            <th>Owner</th>
-            <th>Trip Start Date</th>
-            <th style="width: 30px; text-align: center;">&gt;</th>
+            <th class="sticky-col-1 text-center" style="width: 44px; min-width: 44px;"></th>
+            <th class="sticky-col-dot-settled text-center" style="width: 22px; min-width: 22px;"></th>
+            <th class="sticky-col-bill-settled text-center" style="width: 60px; min-width: 60px;">Bill No.</th>
+            <th class="sticky-col-4" style="width: 95px; min-width: 95px;">G.R.No.</th>
+            <th style="min-width: 100px;">Truck No.</th>
+            <th style="min-width: 110px;">Destination</th>
+            <th style="min-width: 130px; max-width: 160px;">Reference</th>
+            <th class="text-end" style="min-width: 85px;">Bilty Amount</th>
+            <th class="text-end" style="min-width: 65px;">Weight</th>
+            <th class="text-end" style="min-width: 70px;">Rate</th>
+            <th class="text-end" style="min-width: 90px;">Total Freight</th>
+            <th style="min-width: 130px; max-width: 170px;">Consignee</th>
+            <th style="min-width: 120px; max-width: 160px;">Owner</th>
+            <th style="min-width: 85px;">Trip Start Date</th>
+            <th style="width: 26px; min-width: 26px; text-align: center;">&gt;</th>
           </tr>
         `;
       } else {
         // Authentic Trips Register (Card 3: All / Trips) - 18 Columns matching card3_top_crop.png & card3_slice2.png
         thead.innerHTML = `
           <tr>
-            <th style="width: 50px; text-align: center;"><i class="bi bi-file-earmark-text text-danger fs-6" title="Action"></i></th>
-            <th style="width: 80px;">Bill No.</th>
-            <th style="width: 25px; text-align: center;"></th>
-            <th>G.R.No.</th>
-            <th>Truck No.</th>
-            <th>Destination</th>
-            <th>Reference</th>
-            <th class="text-end">Bilty Amount</th>
-            <th class="text-end">Weight</th>
-            <th class="text-end">Rate</th>
-            <th class="text-end">Total Freight</th>
-            <th class="text-end">Due Amount</th>
-            <th>Consignee</th>
-            <th class="text-end">Owner Due</th>
-            <th>Owner</th>
-            <th>Driver</th>
-            <th>Trip Start Date</th>
-            <th style="width: 30px; text-align: center;">&gt;</th>
+            <th class="sticky-col-1 text-center" style="width: 44px; min-width: 44px;"><i class="bi bi-file-earmark-text text-danger fs-6" title="Action"></i></th>
+            <th class="sticky-col-2 text-center" style="width: 62px; min-width: 62px;">Bill No.</th>
+            <th class="sticky-col-3 text-center" style="width: 20px; min-width: 20px;"></th>
+            <th class="sticky-col-4" style="width: 95px; min-width: 95px;">G.R.No.</th>
+            <th style="min-width: 100px;">Truck No.</th>
+            <th style="min-width: 110px;">Destination</th>
+            <th style="min-width: 130px; max-width: 160px;">Reference</th>
+            <th class="text-end" style="min-width: 85px;">Bilty Amount</th>
+            <th class="text-end" style="min-width: 65px;">Weight</th>
+            <th class="text-end" style="min-width: 70px;">Rate</th>
+            <th class="text-end" style="min-width: 90px;">Total Freight</th>
+            <th class="text-end" style="min-width: 90px;">Due Amount</th>
+            <th style="min-width: 130px; max-width: 170px;">Consignee</th>
+            <th class="text-end" style="min-width: 90px;">Owner Due</th>
+            <th style="min-width: 120px; max-width: 160px;">Owner</th>
+            <th style="min-width: 125px; max-width: 160px;">Driver</th>
+            <th style="min-width: 85px;">Trip Start Date</th>
+            <th style="width: 26px; min-width: 26px; text-align: center;">&gt;</th>
           </tr>
         `;
       }
@@ -718,7 +795,7 @@ const TripsModule = {
         </tr>
       `;
 
-      // Item Rows (Authentic AppSheet Layout - Exactly 15 columns)
+      // Item Rows (Authentic AppSheet Layout - Exactly 18 or 15 columns)
       items.forEach(t => {
         const isSettled = this.isTripSettled(t);
         const pDue = Number(t.partyDue) || 0;
@@ -730,11 +807,12 @@ const TripsModule = {
         const tripDate = this.formatDateDMY(t.tripStartDate || t.date || '-');
         const consignorRef = t.consignor || t.reference || '-';
         const ownerName = t.ownerName || t.truckOwner || '-';
+        const shortGr = this.getDisplayGrNo(t);
+        const cleanDrv = this.getCleanDriverName(t);
 
         if (this.workflowTab === 'open') {
           // Authentic AppSheet Open Register Rows (Matching open_sc_top.png)
           const themeColor = this.getRowColorTheme(t);
-          const shortGr = t.shortGrNo || t.grNo || '-';
 
           let billCol = '-';
           if (t.billNo) {
@@ -744,7 +822,7 @@ const TripsModule = {
           html += `
             <tr class="appsheet-row" onclick="TripsModule.openTripDetails('${t.id || t.grNo}')">
               <!-- 1. Action Icons: Download Bilty / Generate Bill -->
-              <td class="text-center" onclick="event.stopPropagation()">
+              <td class="text-center sticky-col-1" onclick="event.stopPropagation()">
                 <div class="d-flex align-items-center justify-content-center gap-2">
                   <i class="bi bi-download text-primary" title="Download Bilty" style="cursor: pointer; font-size: 13px;" onclick="TripsModule.downloadBilty('${t.id || t.grNo}')"></i>
                   <i class="bi bi-file-earmark-text text-danger" title="Generate Bill" style="cursor: pointer; font-size: 13px;" onclick="TripsModule.openGenerateBillModal('${t.id || t.grNo}')"></i>
@@ -752,10 +830,10 @@ const TripsModule = {
               </td>
 
               <!-- 2. Bill No. -->
-              <td class="text-center">${billCol}</td>
+              <td class="text-center sticky-col-bill-open">${billCol}</td>
 
               <!-- 3. G.R.No. -->
-              <td style="color: ${themeColor}; font-weight: bold;">
+              <td class="sticky-col-4" style="color: ${themeColor}; font-weight: bold;">
                 <span style="color: ${themeColor};">●</span> ${shortGr}
               </td>
 
@@ -815,14 +893,13 @@ const TripsModule = {
               </td>
 
               <!-- 15. Chevron > -->
-              <td class="text-center text-muted" style="width: 30px;">
+              <td class="text-center text-muted" style="width: 26px;">
                 <span class="appsheet-chevron">&gt;</span>
               </td>
             </tr>
           `;
         } else if (this.workflowTab === 'settled') {
           // Authentic Settled Register Rows (Matching settled_table_crop1.png & settled_table_crop_right.png)
-          const shortGr = t.shortGrNo || t.grNo || '-';
           const settledGreen = '#008a38';
           const biltyDisplay = biltyAmt > 0 ? `<span class="green-bullet">●</span> ₹ ${biltyAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '';
           const weightDisplay = weight > 0 ? `<span class="green-bullet">●</span> ${weight.toFixed(3)}` : '';
@@ -840,7 +917,7 @@ const TripsModule = {
           html += `
             <tr class="appsheet-row settled-row" onclick="TripsModule.openSettledTripDetails('${t.id || t.grNo}')">
               <!-- 1. Action Icons: Refresh / Download Bilty / Bill -->
-              <td class="text-center" style="width: 60px;" onclick="event.stopPropagation()">
+              <td class="text-center sticky-col-1" onclick="event.stopPropagation()">
                 <div class="d-flex align-items-center justify-content-center gap-2">
                   <i class="bi bi-arrow-repeat text-muted" title="Sync Trip" style="cursor: pointer; font-size: 13px;" onclick="TripsModule.syncTripFromCloud('${t.id}')"></i>
                   <i class="bi bi-download text-primary" title="Download Bilty" style="cursor: pointer; font-size: 13px;" onclick="TripsModule.downloadBilty('${t.id || t.grNo}')"></i>
@@ -849,15 +926,15 @@ const TripsModule = {
               </td>
 
               <!-- 2. Status Dot -->
-              <td class="text-center" style="width: 25px;">
+              <td class="text-center sticky-col-dot-settled">
                 <span class="gold-bullet">●</span>
               </td>
 
               <!-- 3. Bill No. -->
-              <td class="text-center" style="font-size: 11px;">${billBadge}</td>
+              <td class="text-center sticky-col-bill-settled" style="font-size: 11px;">${billBadge}</td>
 
               <!-- 4. G.R.No. -->
-              <td class="fw-bold" style="color: ${settledGreen};">
+              <td class="sticky-col-4 fw-bold" style="color: ${settledGreen};">
                 <span class="green-bullet">●</span> ${shortGr}
               </td>
 
@@ -912,7 +989,7 @@ const TripsModule = {
               </td>
 
               <!-- 15. Chevron > -->
-              <td class="text-center text-muted" style="width: 30px;">
+              <td class="text-center text-muted" style="width: 26px;">
                 <span class="appsheet-chevron">&gt;</span>
               </td>
             </tr>
@@ -920,7 +997,6 @@ const TripsModule = {
         } else {
           // Authentic Trips Register (Card 3) - 18 Columns matching card3_top_crop.png & card3_slice2.png
           const themeColor = this.getRowColorTheme(t);
-          const shortGr = t.shortGrNo || t.grNo || '-';
 
           let billCol = '-';
           if (t.billNo) {
@@ -930,7 +1006,7 @@ const TripsModule = {
           html += `
             <tr class="appsheet-row" onclick="TripsModule.openTripDetails('${t.id || t.grNo}')">
               <!-- 1. Action Icons: Download Bilty / Generate Bill -->
-              <td class="text-center" onclick="event.stopPropagation()">
+              <td class="text-center sticky-col-1" onclick="event.stopPropagation()">
                 <div class="d-flex align-items-center justify-content-center gap-2">
                   <i class="bi bi-download text-primary" title="Download Bilty" style="cursor: pointer; font-size: 13px;" onclick="TripsModule.downloadBilty('${t.id || t.grNo}')"></i>
                   <i class="bi bi-file-earmark-text text-danger" title="Generate Bill" style="cursor: pointer; font-size: 13px;" onclick="TripsModule.openGenerateBillModal('${t.id || t.grNo}')"></i>
@@ -938,15 +1014,15 @@ const TripsModule = {
               </td>
 
               <!-- 2. Bill No. -->
-              <td class="text-center" style="font-size: 11px;">${billCol}</td>
+              <td class="text-center sticky-col-2" style="font-size: 11px;">${billCol}</td>
 
               <!-- 3. Status Bullet -->
-              <td class="text-center" style="width: 25px;">
+              <td class="text-center sticky-col-3">
                 <span style="color: ${themeColor};">●</span>
               </td>
 
               <!-- 4. G.R.No. -->
-              <td style="color: ${themeColor}; font-weight: bold;">
+              <td class="sticky-col-4" style="color: ${themeColor}; font-weight: bold;">
                 <span style="color: ${themeColor};">●</span> ${shortGr}
               </td>
 
@@ -956,13 +1032,13 @@ const TripsModule = {
               </td>
 
               <!-- 6. Destination -->
-              <td style="color: ${themeColor};">
+              <td class="text-truncate" style="max-width: 120px; color: ${themeColor};" title="${t.destination || '-'}">
                 <span style="color: ${themeColor};">●</span> ${t.destination || '-'}
               </td>
 
               <!-- 7. Reference -->
-              <td class="text-truncate" style="max-width: 150px; color: ${themeColor};" title="${t.reference || consignorRef}">
-                <span style="color: ${themeColor};">●</span> ${t.reference || consignorRef}
+              <td class="text-truncate" style="max-width: 160px; color: ${themeColor};" title="${consignorRef}">
+                <span style="color: ${themeColor};">●</span> ${consignorRef}
               </td>
 
               <!-- 8. Bilty Amount -->
@@ -991,7 +1067,7 @@ const TripsModule = {
               </td>
 
               <!-- 13. Consignee -->
-              <td class="text-truncate" style="max-width: 150px; color: ${themeColor};" title="${t.consignee || '-'}">
+              <td class="text-truncate" style="max-width: 170px; color: ${themeColor};" title="${t.consignee || '-'}">
                 ${t.consignee ? `<span style="color: ${themeColor};">●</span> ${t.consignee}` : ''}
               </td>
 
@@ -1001,13 +1077,13 @@ const TripsModule = {
               </td>
 
               <!-- 15. Owner -->
-              <td class="text-truncate" style="max-width: 140px; color: ${themeColor};" title="${ownerName}">
+              <td class="text-truncate" style="max-width: 160px; color: ${themeColor};" title="${ownerName}">
                 ${ownerName ? `<span style="color: ${themeColor};">●</span> ${ownerName}` : ''}
               </td>
 
               <!-- 16. Driver -->
-              <td class="text-truncate" style="max-width: 140px; color: ${themeColor};" title="${t.driverName || t.driver || ''}">
-                ${(t.driverName || t.driver) ? `<span style="color: ${themeColor};">●</span> ${t.driverName || t.driver}` : ''}
+              <td class="text-truncate" style="max-width: 160px; color: ${themeColor};" title="${cleanDrv}">
+                <span style="color: ${themeColor};">●</span> ${cleanDrv}
               </td>
 
               <!-- 17. Trip Start Date -->
@@ -1016,7 +1092,7 @@ const TripsModule = {
               </td>
 
               <!-- 18. Chevron > -->
-              <td class="text-center text-muted" style="width: 30px;">
+              <td class="text-center text-muted" style="width: 26px;">
                 <span class="appsheet-chevron">&gt;</span>
               </td>
             </tr>
@@ -1145,7 +1221,8 @@ const TripsModule = {
     };
 
     const refMob = t.referenceMobile || t.driverMobile || '9887479777';
-    const drvMob = t.driverMobile || '7727938207';
+    const cleanDrv = this.getCleanDriverName(t);
+    const drvMob = this.getCleanDriverMobile(t);
     const ownMob = t.ownerMobile || '9829405071';
     const consignorName = t.consignor || 'Megha Mineral';
     const consignorAddr = t.deliveryAddress || t.origin || '98/13, Badrinagar, Paonta Sahib, Dist. Sirmour (H.P.)-173025';
@@ -1171,7 +1248,7 @@ const TripsModule = {
     const opRefTel = document.getElementById('op-ref-tel');
     if (opRefTel) opRefTel.href = `tel:${refMob}`;
 
-    setHtml('op-driver', `<span class="blue-bullet">●</span> ${t.driver || 'Jaidayal Gurjar'}`);
+    setHtml('op-driver', `<span class="blue-bullet">●</span> ${cleanDrv}`);
     setHtml('op-driver-mobile', `<span class="blue-bullet">●</span> ${drvMob}`);
     const opDrvTel = document.getElementById('op-driver-tel');
     if (opDrvTel) opDrvTel.href = `tel:${drvMob}`;
@@ -1225,7 +1302,7 @@ const TripsModule = {
 
     const tripStatus = t.tripStatus || t.status || 'Transit';
     const statusSelect = document.getElementById('op-trip-status-select');
-    if (statusSelect) {
+    if (statusSelect && statusSelect.options) {
       let optExists = false;
       for (let i = 0; i < statusSelect.options.length; i++) {
         if (statusSelect.options[i].value === tripStatus) {
@@ -1273,7 +1350,7 @@ const TripsModule = {
     setText('otd-material', `● ${t.material || 'Dolomite Powder'}`);
     setText('otd-reference', `● ${t.reference || consignorName}`);
     setText('otd-ref-mobile', `● ${refMob}`);
-    setText('otd-driver', `● ${t.driver || 'Jaidayal Gurjar'}`);
+    setText('otd-driver', `● ${cleanDrv}`);
     setText('otd-driver-mobile', `● ${drvMob}`);
     setText('otd-consignee-gstin', `● ${consigneeGstin}`);
     setText('otd-consignee', `● ${consigneeName}`);
@@ -1301,7 +1378,7 @@ const TripsModule = {
     setText('d-material', t.material || 'Marble Powder / Goods');
     setText('d-reference', t.reference || '-');
     setText('d-ref-mobile', refMob);
-    setText('d-driver', t.driver || '-');
+    setText('d-driver', cleanDrv);
     setText('d-driver-mobile', drvMob);
     setText('d-consignee-name', consigneeName);
     setText('d-consignee-gstin', consigneeGstin);
@@ -1321,6 +1398,7 @@ const TripsModule = {
     }
 
     // VIEW ROUTING: Open & Trips cards show the authentic full-width workspace view matching wa_0.png
+    document.getElementById('trips-register-toolbar')?.classList.add('d-none');
     document.getElementById('trips-view-dashboard')?.classList.add('d-none');
     document.getElementById('trips-view-register')?.classList.add('d-none');
     document.getElementById('trip-detail-view')?.classList.add('d-none');
@@ -1381,7 +1459,8 @@ const TripsModule = {
 
     const refMob = t.referenceMobile || '9887479777';
     const refMob2 = t.referenceMobile2 || '9414118777';
-    const drvMob = t.driverMobile || '7727938207';
+    const cleanDrv = this.getCleanDriverName(t);
+    const drvMob = this.getCleanDriverMobile(t);
     const ownMob = t.ownerMobile || '9462495071';
     const consigneeMob = t.consigneeMobile || '9810123456';
     const consignorName = t.consignor || 'Nakoda Trishul Marble Pvt Ltd';
@@ -1390,7 +1469,7 @@ const TripsModule = {
     const consigneeGstin = t.consigneeGstin || '09AAAFH0123M1Z5';
     const consigneeName = t.consignee || 'H.P MARBLE';
     const ownerName = t.truckOwner || t.ownerName || 'Prahlad Jat';
-    const driverName = t.driver || ownerName;
+    const driverName = cleanDrv;
     const podDateFormatted = this.formatDateDMY(t.podDate || t.tripEndDate || t.tripStartDate || '2026-10-14');
 
     // Populate Left Pane Card 1: Particulars (settled_detail_0.png)
@@ -1465,6 +1544,7 @@ const TripsModule = {
     this.renderSettledOwnerPaymentsCard(t);
 
     // Switch view visibility
+    document.getElementById('trips-register-toolbar')?.classList.add('d-none');
     document.getElementById('trips-view-dashboard')?.classList.add('d-none');
     document.getElementById('trips-view-register')?.classList.add('d-none');
     document.getElementById('trip-detail-view')?.classList.add('d-none');
@@ -2990,8 +3070,10 @@ const TripsModule = {
 
     setVal('utd-reference', t.reference || t.consignor || '');
     setVal('utd-reference-mobile', t.referenceMobile || t.driverMobile || '');
-    setVal('utd-driver', t.driver || t.driverName || '');
-    setVal('utd-driver-mobile', t.driverMobile || '');
+    const cleanDrv = this.getCleanDriverName(t);
+    const drvMob = this.getCleanDriverMobile(t);
+    setVal('utd-driver', cleanDrv);
+    setVal('utd-driver-mobile', drvMob);
     setVal('utd-owner', t.ownerName || t.truckOwner || '');
     setVal('utd-owner-mobile', t.ownerMobile || '');
 
@@ -3059,8 +3141,10 @@ const TripsModule = {
     const podHandedOverTo = getVal('utd-pod-handed-over');
     const reference = getVal('utd-reference');
     const referenceMobile = getVal('utd-reference-mobile');
-    const driver = getVal('utd-driver');
-    const driverMobile = getVal('utd-driver-mobile');
+    const rawDriver = getVal('utd-driver');
+    const rawDriverMobile = getVal('utd-driver-mobile');
+    const cleanDriver = this.getCleanDriverName({ driver: rawDriver, driverName: rawDriver, truckNo: t.truckNo });
+    const cleanDriverMob = rawDriverMobile || this.getCleanDriverMobile({ driver: cleanDriver, driverMobile: rawDriverMobile, truckNo: t.truckNo });
     const owner = getVal('utd-owner');
     const ownerMobile = getVal('utd-owner-mobile');
 
@@ -3084,9 +3168,9 @@ const TripsModule = {
       podHandedOverTo,
       reference,
       referenceMobile,
-      driver,
-      driverName: driver,
-      driverMobile,
+      driver: cleanDriver,
+      driverName: cleanDriver,
+      driverMobile: cleanDriverMob,
       truckOwner: owner,
       ownerName: owner,
       ownerMobile,
@@ -3276,16 +3360,26 @@ const TripsModule = {
     this.allOpenDebtsList = [...authenticSeed, ...extra];
   },
 
-  openTripDebtsView() {
+  openTripDebtsView(fromView = 'details') {
+    this.previousViewBeforeDebts = fromView;
     this.initOpenDebtsData();
+    document.getElementById('trips-view-dashboard')?.classList.add('d-none');
+    document.getElementById('trips-view-register')?.classList.add('d-none');
+    document.getElementById('trips-register-toolbar')?.classList.add('d-none');
     document.getElementById('trip-open-detail-view')?.classList.add('d-none');
+    document.getElementById('trip-settled-detail-view')?.classList.add('d-none');
     document.getElementById('trip-open-debts-view')?.classList.remove('d-none');
     this.renderOpenDebtsTable();
   },
 
   closeOpenDebtsView() {
     document.getElementById('trip-open-debts-view')?.classList.add('d-none');
-    document.getElementById('trip-open-detail-view')?.classList.remove('d-none');
+    if (this.previousViewBeforeDebts === 'details' && this.activeTrip) {
+      document.getElementById('trip-open-detail-view')?.classList.remove('d-none');
+    } else {
+      document.getElementById('trips-view-register')?.classList.remove('d-none');
+      document.getElementById('trips-register-toolbar')?.classList.remove('d-none');
+    }
   },
 
   filterOpenDebtsFY(fy) {

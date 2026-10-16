@@ -526,27 +526,32 @@
       min-width: 0;
     }
 
-    /* AppSheet Trips Table - 15 Columns Matching AppSheet */
+    /* AppSheet Trips Table - Responsive, Compact & High-Performance */
     .appsheet-table {
       width: 100%;
+      min-width: 1420px;
       margin: 0;
-      border-collapse: collapse;
+      border-collapse: separate;
+      border-spacing: 0;
       table-layout: auto;
     }
     .appsheet-table th {
       background: #ffffff;
       color: #5f6368;
       font-weight: 600;
-      font-size: 11.5px;
-      padding: 9px 10px;
+      font-size: 11px;
+      padding: 6px 8px;
       border-bottom: 1px solid #e0e0e0;
       white-space: nowrap;
       user-select: none;
+      position: sticky;
+      top: 0;
+      z-index: 5;
     }
     .appsheet-table td {
-      padding: 8px 10px;
-      border-bottom: 1px solid #f0f0f0;
-      font-size: 12px;
+      padding: 5px 8px;
+      border-bottom: 1px solid #f1f3f4;
+      font-size: 11.5px;
       vertical-align: middle;
       white-space: nowrap;
     }
@@ -558,11 +563,122 @@
       background-color: #f8f9fa;
     }
 
-    /* Date divider ribbon - Full width across 15 columns */
+    /* Sticky columns for seamless horizontal review on all screens */
+    .sticky-col-1 {
+      position: sticky;
+      left: 0;
+      width: 44px;
+      min-width: 44px;
+      max-width: 44px;
+      z-index: 2;
+      background: #ffffff;
+    }
+    .sticky-col-2 {
+      position: sticky;
+      left: 44px;
+      width: 62px;
+      min-width: 62px;
+      z-index: 2;
+      background: #ffffff;
+    }
+    .sticky-col-3 {
+      position: sticky;
+      left: 106px;
+      width: 20px;
+      min-width: 20px;
+      z-index: 2;
+      background: #ffffff;
+    }
+    .sticky-col-dot-settled {
+      position: sticky;
+      left: 44px;
+      width: 22px;
+      min-width: 22px;
+      z-index: 2;
+      background: #ffffff;
+    }
+    .sticky-col-bill-settled {
+      position: sticky;
+      left: 66px;
+      width: 60px;
+      min-width: 60px;
+      z-index: 2;
+      background: #ffffff;
+    }
+    .sticky-col-bill-open {
+      position: sticky;
+      left: 44px;
+      width: 82px;
+      min-width: 82px;
+      z-index: 2;
+      background: #ffffff;
+    }
+    .sticky-col-4 {
+      position: sticky;
+      left: 126px;
+      width: 95px;
+      min-width: 95px;
+      z-index: 2;
+      background: #ffffff;
+      box-shadow: 2px 0 4px rgba(0,0,0,0.06);
+    }
+    .appsheet-table thead th.sticky-col-1,
+    .appsheet-table thead th.sticky-col-2,
+    .appsheet-table thead th.sticky-col-3,
+    .appsheet-table thead th.sticky-col-dot-settled,
+    .appsheet-table thead th.sticky-col-bill-settled,
+    .appsheet-table thead th.sticky-col-bill-open,
+    .appsheet-table thead th.sticky-col-4 {
+      z-index: 6;
+      background: #ffffff;
+    }
+    .appsheet-row:hover td.sticky-col-1,
+    .appsheet-row:hover td.sticky-col-2,
+    .appsheet-row:hover td.sticky-col-3,
+    .appsheet-row:hover td.sticky-col-dot-settled,
+    .appsheet-row:hover td.sticky-col-bill-settled,
+    .appsheet-row:hover td.sticky-col-bill-open,
+    .appsheet-row:hover td.sticky-col-4 {
+      background: #f8f9fa;
+    }
+
+    /* Smooth Thin Scrollbar for Register Tables */
+    .table-responsive {
+      scrollbar-width: thin;
+      scrollbar-color: #bdc1c6 #f8f9fa;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .table-responsive::-webkit-scrollbar {
+      height: 7px;
+      width: 7px;
+    }
+    .table-responsive::-webkit-scrollbar-track {
+      background: #f8f9fa;
+      border-radius: 4px;
+    }
+    .table-responsive::-webkit-scrollbar-thumb {
+      background: #bdc1c6;
+      border-radius: 4px;
+    }
+    .table-responsive::-webkit-scrollbar-thumb:hover {
+      background: #80868b;
+    }
+
+    /* Open Debts FY list active styling (Matching AppSheet screencapture) */
+    #debts-fy-list .appsheet-trips-sidebar-item.active {
+      background: #fdf6e2;
+      color: #a07e2a;
+      border-left: none;
+      border-radius: 6px;
+      font-weight: 700;
+    }
+
+    /* Date divider ribbon */
     .appsheet-date-divider td {
       background: #fcfcfc;
-      padding: 8px 12px;
-      font-size: 12px;
+      padding: 6px 10px;
+      font-size: 11.5px;
       font-weight: 700;
       color: var(--appsheet-green-text);
       border-bottom: 1px solid #ebebeb;
