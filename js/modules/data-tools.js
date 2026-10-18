@@ -270,8 +270,9 @@ const DataToolsModule = {
       }
 
       const mergedList = Array.from(tripMap.values());
-      localStorage.setItem('tms_custom_trips', JSON.stringify(mergedList));
-      localStorage.removeItem('tms_trips');
+      for (let j = 0; j < mergedList.length; j++) {
+        await dbService.add('trips', mergedList[j]);
+      }
       progressBar.style.width = '100%';
       const msg = isReplaceMode 
         ? `पुरानी फाइल हटा दी गई और नई फ़ाइल की ${total} बिल्टियां लोड हो गईं!` 
@@ -361,13 +362,12 @@ const DataToolsModule = {
     }
 
     try {
-      localStorage.removeItem('tms_base_trips_cleared');
-      localStorage.removeItem('tms_trips');
+      dbService.restoreBaseTrips();
       if (window.INITIAL_EXCEL_TRUCKS) {
-        const existingOwners = JSON.parse(localStorage.getItem('tms_truckOwners') || '[]');
-        localStorage.setItem('tms_truckOwners', JSON.stringify([...existingOwners, ...window.INITIAL_EXCEL_TRUCKS]));
+        for (const trk of window.INITIAL_EXCEL_TRUCKS) {
+          await dbService.add('truckOwners', trk);
+        }
       }
-      localStorage.setItem('tms_excel_imported_v1', 'true');
 
       AppUI.showToast(`Success! ${tripsCount.toLocaleString('en-IN')} Bilties and ${trucksCount} Trucks loaded into the system!`, "success");
       await this.updateRecordCounts();
@@ -468,9 +468,12 @@ const DataToolsModule = {
           throw new Error("Invalid backup structure");
         }
 
-        if (confirm("Restore will overwrite your current local records with this backup. Do you want to proceed?")) {
+        if (confirm("Restore will overwrite your current cloud/session records with this backup. Do you want to proceed?")) {
           for (const col in backup.data) {
-            localStorage.setItem(`tms_${col}`, JSON.stringify(backup.data[col]));
+            const arr = Array.isArray(backup.data[col]) ? backup.data[col] : [];
+            for (const item of arr) {
+              await dbService.add(col, item);
+            }
           }
           AppUI.showToast("Database restored successfully!", "success");
           await this.updateRecordCounts();

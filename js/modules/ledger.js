@@ -7519,11 +7519,9 @@ const LedgerModule = {
     try {
       if (mode === 'replace') {
         dbService.clearAllDebts();
-        localStorage.setItem('tms_custom_debts', JSON.stringify(this.stagedImportDebts));
-      } else {
-        const existing = JSON.parse(localStorage.getItem('tms_custom_debts') || '[]');
-        const combined = [...existing, ...this.stagedImportDebts];
-        localStorage.setItem('tms_custom_debts', JSON.stringify(combined));
+      }
+      for (let i = 0; i < this.stagedImportDebts.length; i++) {
+        await dbService.add('debts', this.stagedImportDebts[i]);
       }
 
       await this.loadData();

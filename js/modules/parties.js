@@ -18,21 +18,6 @@ const PartiesModule = {
       AppUI.renderSidebar('parties');
     }
 
-    // Auto-clean any legacy corrupted 'Unnamed Party' entries from localStorage
-    try {
-      ['tms_custom_parties', 'tms_parties'].forEach(key => {
-        const val = localStorage.getItem(key);
-        if (val) {
-          const arr = JSON.parse(val);
-          if (Array.isArray(arr)) {
-            const cleaned = arr.filter(p => p && p.name && p.name !== 'Unnamed Party');
-            if (cleaned.length !== arr.length) {
-              localStorage.setItem(key, JSON.stringify(cleaned));
-            }
-          }
-        }
-      });
-    } catch (e) {}
 
     await this.loadParties();
     this.bindEvents();

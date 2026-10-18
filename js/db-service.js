@@ -1,82 +1,103 @@
 /**
  * Universal Database Service for MTC & TTC Logistics
- * Seamlessly connects to Firebase Cloud Firestore with automatic offline fallback
+ * Seamlessly connects directly to Firebase Cloud Firestore
+ * STRICT POLICY: ZERO business data is persisted to browser localStorage.
  */
 
-// Universal LocalStorage Quota Guard & Auto-Purge
+// Universal LocalStorage Purge & Interceptor Guard
 (function() {
   if (typeof window === 'undefined' || !window.localStorage) return;
   try {
-    // Proactively delete legacy 5.4MB full trips dump immediately
-    window.localStorage.removeItem('tms_trips');
-    window.localStorage.removeItem('tms_excel_imported_v1');
-    window.localStorage.removeItem('tms_base_trips_cleared');
-
-    // Purge corrupted legacy custom trips containing "MTC & TTC Logistics Consignor" or future year 2028
-    const custom = window.localStorage.getItem('tms_custom_trips');
-    if (custom && (custom.includes('MTC & TTC Logistics Consignor') || custom.includes('26/07/2028') || custom.includes('2028-07-26') || custom.includes('TRIP_IMP_'))) {
-      window.localStorage.removeItem('tms_custom_trips');
-      console.log('[QuotaGuard] Purged stale corrupted custom trips dump.');
+    // Proactively purge all legacy tms business data keys from browser localStorage
+    const keysToRemove = [];
+    for (let i = 0; i < window.localStorage.length; i++) {
+      const key = window.localStorage.key(i);
+      if (key && key.startsWith('tms_') && key !== 'tms_current_user' && key !== 'tms_active_role') {
+        keysToRemove.push(key);
+      }
     }
+    keysToRemove.forEach(k => {
+      try { window.localStorage.removeItem(k); } catch (e) {}
+    });
+    console.log('[DBService] LocalStorage data cache purged. Direct Firebase Firestore active.');
   } catch (e) {}
 
-  const originalSetItem = window.localStorage.setItem.bind(window.localStorage);
-  window.localStorage.setItem = function(key, value) {
-    try {
-      return originalSetItem(key, value);
-    } catch (err) {
-      if (err.name === 'QuotaExceededError' || err.code === 22 || err.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
-        console.warn(`[QuotaGuard] Storage quota reached while saving "${key}". Auto-purging non-essential caches...`);
-        try {
-          const purgeKeys = [
-            'tms_trips',
-            'tms_excel_imported_v1',
-            'tms_parties',
-            'tms_truckOwners',
-            'tms_debts',
-            'tms_cheques',
-            'tms_seeded_phase2',
-            'tms_seeded_phase3',
-            'tms_seeded_phase4',
-            'tms_seeded_users',
-            'tms_seeded_v1'
-          ];
-          purgeKeys.forEach(k => {
-            try { window.localStorage.removeItem(k); } catch (pe) {}
-          });
-
-          // Retry
-          return originalSetItem(key, value);
-        } catch (retryErr) {
-          console.warn(`[QuotaGuard] Unable to persist "${key}" to localStorage:`, retryErr.message);
-          return; // Absorb without crashing the page!
-        }
+  // Intercept any setItem calls for tms data so nothing is ever persisted to browser localStorage
+  try {
+    const originalSetItem = window.localStorage.setItem.bind(window.localStorage);
+    window.localStorage.setItem = function(key, value) {
+      if (typeof key === 'string' && key.startsWith('tms_') && key !== 'tms_current_user' && key !== 'tms_active_role') {
+        // Intentionally blocked: No business data saved to browser localStorage
+        return;
       }
-      console.warn(`[QuotaGuard] Storage error for "${key}":`, err.message);
-    }
-  };
+      try {
+        return originalSetItem(key, value);
+      } catch (err) {
+        console.warn(`[LocalStorage] Skipped persist for "${key}":`, err.message);
+      }
+    };
+  } catch (e) {}
 })();
 
 class DBService {
   constructor() {
     this.isFirebaseReady = false;
+    this.db = null;
+
+    // In-memory session store (RAM only - never saved to browser localStorage)
+    this.sessionStore = {
+      trips: new Map(),
+      debts: new Map(),
+      parties: new Map(),
+      truckOwners: new Map(),
+      cheques: new Map(),
+      drivers: new Map(),
+      brokers: new Map(),
+      cashLedger: new Map(),
+      returnedAmounts: new Map(),
+      companyExpenses: new Map(),
+      ownerExpenses: new Map(),
+      receivedPayments: new Map(),
+      payments: new Map(),
+      gstInvoices: new Map(),
+      podRecords: new Map(),
+      dieselSlips: new Map(),
+      ewayBills: new Map(),
+      fleetCompliance: new Map(),
+      users: new Map()
+    };
+
+    // In-memory deletion tracker (RAM only)
+    this.deletedIds = {
+      trips: new Set(),
+      debts: new Set(),
+      parties: new Set(),
+      truckOwners: new Set(),
+      cheques: new Set(),
+      drivers: new Set(),
+      brokers: new Set(),
+      cashLedger: new Set(),
+      returnedAmounts: new Set(),
+      companyExpenses: new Set(),
+      ownerExpenses: new Set(),
+      receivedPayments: new Set(),
+      payments: new Set(),
+      gstInvoices: new Set(),
+      podRecords: new Set(),
+      dieselSlips: new Set(),
+      ewayBills: new Set(),
+      fleetCompliance: new Set(),
+      users: new Set()
+    };
+
     this.initDatabase();
   }
 
   initDatabase() {
-    // Proactively clean legacy bloated 5.4MB full dump to guarantee plenty of free browser quota
-    if (typeof localStorage !== 'undefined') {
-      try {
-        if (localStorage.getItem('tms_trips')) {
-          localStorage.removeItem('tms_trips');
-          console.log(" Cleaned legacy tms_trips to free ~5MB browser quota.");
-        }
-      } catch (e) {}
-    }
-
     // Check if Firebase config is supplied and Firebase SDK is loaded
     if (
       typeof firebase !== 'undefined' &&
+      typeof APP_CONFIG !== 'undefined' &&
       APP_CONFIG.firebase &&
       APP_CONFIG.firebase.apiKey &&
       APP_CONFIG.firebase.apiKey.trim() !== ""
@@ -89,176 +110,152 @@ class DBService {
         this.isFirebaseReady = true;
         console.log(" Connected to Firebase Cloud Firestore successfully (mtc-ttc-logistics)!");
         
-        // Async check to sync seed data to Firestore if empty
+        // Sync seed data to Firestore if empty
         this.syncSeedDataToFirestore();
       } catch (err) {
-        console.warn("⚠ Firebase initialization failed, falling back to LocalStorage:", err);
+        console.warn("⚠ Firebase initialization failed:", err);
         this.isFirebaseReady = false;
       }
     } else {
-      console.log("ℹ Running in Standalone LocalStorage Mode.");
+      console.log("ℹ Running in In-Memory Mode (Direct Firebase SDK waiting).");
       this.isFirebaseReady = false;
     }
-
-    // Always ensure local seed data is available
-    this.seedLocalStorage();
   }
 
-  // Bulletproof LocalStorage wrapper with auto-quota recovery
+  // Safe wrapper that enforces NO localStorage persistence for business data
   safeSetItem(key, value) {
-    if (typeof localStorage === 'undefined') return true;
-    try {
-      localStorage.setItem(key, value);
-      return true;
-    } catch (err) {
-      if (err.name === 'QuotaExceededError' || err.code === 22 || err.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
-        console.warn(`⚠ Storage quota exceeded while saving ${key}. Auto-purging non-essential caches...`);
-        try {
-          // Immediately purge legacy 5.4MB full trips dump & redundant caches
-          localStorage.removeItem('tms_trips');
-          localStorage.removeItem('tms_excel_imported_v1');
-          localStorage.removeItem('tms_seeded_phase2');
-          localStorage.removeItem('tms_seeded_phase3');
-          localStorage.removeItem('tms_seeded_phase4');
-          localStorage.removeItem('tms_seeded_v1');
-
-          // Retry saving
-          localStorage.setItem(key, value);
-          console.log(` Successfully saved ${key} after auto-recovery!`);
-          return true;
-        } catch (retryErr) {
-          console.warn(` Could not save ${key} locally even after cache purge:`, retryErr.message);
-          return false;
-        }
-      }
-      console.warn(` Storage error for ${key}:`, err.message);
-      return false;
-    }
+    // Intentionally disabled: Direct Firebase Cloud Firestore active. Zero localStorage persistence.
+    return true;
   }
 
   // --- Universal CRUD Operations ---
 
   async getAll(collectionName) {
     let cloudItems = [];
-    if (this.isFirebaseReady) {
+    if (this.isFirebaseReady && this.db) {
       try {
         const fetchPromise = this.db.collection(collectionName).get();
-        const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Firestore timeout')), 3000));
+        const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Firestore timeout')), 15000));
         const snapshot = await Promise.race([fetchPromise, timeoutPromise]);
-        if (!snapshot.empty) {
+        if (snapshot && !snapshot.empty) {
           cloudItems = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-          if (collectionName !== 'trips' && collectionName !== 'debts' && collectionName !== 'parties' && collectionName !== 'truckOwners' && collectionName !== 'cheques' && collectionName !== 'drivers') {
-            return cloudItems;
-          }
         }
       } catch (err) {
-        console.warn(`Firestore read failed/timeout for ${collectionName}, reading from LocalStorage:`, err.message);
+        console.warn(`Firestore read notice for ${collectionName}:`, err.message);
       }
     }
 
     if (collectionName === 'trips') {
       return this.getAllTrips(cloudItems);
     }
-
     if (collectionName === 'debts') {
       return this.getAllDebts(cloudItems);
     }
-
     if (collectionName === 'parties') {
       return this.getAllParties(cloudItems);
     }
-
     if (collectionName === 'truckOwners') {
       return this.getAllTruckOwners(cloudItems);
     }
-
     if (collectionName === 'cheques') {
       return this.getAllCheques(cloudItems);
     }
-
     if (collectionName === 'drivers') {
       return this.getAllDrivers(cloudItems);
     }
-
     if (collectionName === 'cashLedger') {
       return this.getAllCashLedger(cloudItems);
     }
-
     if (collectionName === 'returnedAmounts') {
       return this.getAllReturnedAmounts(cloudItems);
     }
-
     if (collectionName === 'companyExpenses') {
       return this.getAllCompanyExpenses(cloudItems);
     }
-
     if (collectionName === 'ownerExpenses') {
       return this.getAllOwnerExpenses(cloudItems);
     }
-
     if (collectionName === 'receivedPayments') {
       return this.getAllReceivedPayments(cloudItems);
     }
 
-    // LocalStorage Fallback for other collections
-    const localData = localStorage.getItem(`tms_${collectionName}`);
-    return localData ? JSON.parse(localData) : [];
+    // Default handler for other collections (overlay cloud items with in-memory session changes)
+    const map = new Map();
+    const deletedSet = this.deletedIds[collectionName] || new Set();
+
+    if (Array.isArray(cloudItems)) {
+      cloudItems.forEach(item => {
+        if (item && item.id && !deletedSet.has(String(item.id))) {
+          map.set(String(item.id), item);
+        }
+      });
+    }
+
+    const store = this.sessionStore[collectionName];
+    if (store) {
+      store.forEach((val, k) => {
+        if (!deletedSet.has(String(k))) {
+          map.set(String(k), val);
+        }
+      });
+    }
+
+    return Array.from(map.values());
   }
 
+  // --- Authentic Trips Engine (Direct Cloud Firestore + Master In-Memory Seed) ---
   getAllTrips(cloudItems = []) {
-    // Check if user chose to clear/reset the initial base dataset
-    const isBaseCleared = localStorage.getItem('tms_base_trips_cleared') === 'true';
-    const baseTrips = (!isBaseCleared && typeof window !== 'undefined' && Array.isArray(window.INITIAL_EXCEL_TRIPS))
+    const baseTrips = (typeof window !== 'undefined' && Array.isArray(window.INITIAL_EXCEL_TRIPS))
       ? window.INITIAL_EXCEL_TRIPS
       : [];
 
-    const editedMap = JSON.parse(localStorage.getItem('tms_edited_trips') || '{}');
-    const deletedList = JSON.parse(localStorage.getItem('tms_deleted_trips') || '[]');
-    const deletedSet = new Set(deletedList.map(String));
-    const customTrips = JSON.parse(localStorage.getItem('tms_custom_trips') || '[]');
-
     const tripMap = new Map();
+    const deletedSet = this.deletedIds.trips || new Set();
 
-    // 1. Add base trips (if not cleared)
+    // 1. Add base trips (historical Excel dataset)
     for (const t of baseTrips) {
-      const key = t.grNo || t.id;
+      const key = String(t.grNo || t.id);
       if (!deletedSet.has(String(t.id)) && !deletedSet.has(String(t.grNo))) {
-        tripMap.set(key, editedMap[t.id] ? { ...t, ...editedMap[t.id] } : t);
+        tripMap.set(key, t);
       }
     }
 
-    // 2. Add/override with local custom trips (ignore any corrupted legacy imports)
-    for (const t of customTrips) {
-      if (!t || t.consignor === 'MTC & TTC Logistics Consignor') continue;
-      const dStr = String(t.tripStartDate || t.date || '');
-      if (dStr.includes('2028')) continue;
-      const key = t.grNo || t.id;
-      if (!deletedSet.has(String(t.id)) && !deletedSet.has(String(t.grNo))) {
-        tripMap.set(key, editedMap[t.id] ? { ...t, ...editedMap[t.id] } : t);
-      }
-    }
-
-    // 3. Add/override with cloud items from Firestore
-    if (Array.isArray(cloudItems)) {
-      for (const t of cloudItems) {
-        if (!t || t.consignor === 'MTC & TTC Logistics Consignor') continue;
-        const dStr = String(t.tripStartDate || t.date || '');
-        if (dStr.includes('2028')) continue;
-        const key = t.grNo || t.id;
-        if (!deletedSet.has(String(t.id)) && !deletedSet.has(String(t.grNo))) {
-          tripMap.set(key, { ...(tripMap.get(key) || {}), ...t });
-        }
-      }
-    }
-
-    // 4. Guaranteed high-precedence injection of authentic AppSheet seed trips
+    // 2. Add/override with authentic seed trips (window.OPEN_TRIPS_SEED)
     if (typeof window !== 'undefined' && Array.isArray(window.OPEN_TRIPS_SEED)) {
       for (const s of window.OPEN_TRIPS_SEED) {
-        const key = s.grNo || s.shortGrNo || s.id;
+        const key = String(s.grNo || s.shortGrNo || s.id);
         if (!deletedSet.has(String(s.id)) && !deletedSet.has(String(s.grNo))) {
-          tripMap.set(key, editedMap[s.id] ? { ...s, ...editedMap[s.id] } : s);
+          tripMap.set(key, s);
         }
       }
+    }
+
+    // 3. Add/override directly from Firebase Cloud Firestore!
+    if (Array.isArray(cloudItems)) {
+      for (const t of cloudItems) {
+        if (!t) continue;
+        // Filter out placeholder consignors or invalid future dates
+        if (t.consignor === 'MTC & TTC Logistics Consignor') continue;
+        const dStr = String(t.tripStartDate || t.date || '');
+        if (dStr.includes('2028')) continue;
+
+        const key = String(t.grNo || t.id);
+        if (!deletedSet.has(String(t.id)) && !deletedSet.has(String(t.grNo))) {
+          const existing = tripMap.get(key) || {};
+          tripMap.set(key, { ...existing, ...t });
+        }
+      }
+    }
+
+    // 4. Add/override with in-memory session changes (newly added/updated trips during active session)
+    if (this.sessionStore.trips) {
+      this.sessionStore.trips.forEach((t, id) => {
+        if (!deletedSet.has(String(id)) && (!t.grNo || !deletedSet.has(String(t.grNo)))) {
+          const key = String(t.grNo || t.id);
+          const existing = tripMap.get(key) || {};
+          tripMap.set(key, { ...existing, ...t });
+        }
+      });
     }
 
     const parseTs = (str) => {
@@ -293,69 +290,51 @@ class DBService {
     return all;
   }
 
-  // Clear all trips (removes old Excel trips and custom trips)
+  // Clear all trips from current in-memory session
   clearAllTrips() {
-    this.safeSetItem('tms_base_trips_cleared', 'true');
-    localStorage.removeItem('tms_custom_trips');
-    localStorage.removeItem('tms_edited_trips');
-    localStorage.removeItem('tms_deleted_trips');
-    localStorage.removeItem('tms_trips');
+    if (this.sessionStore.trips) this.sessionStore.trips.clear();
   }
 
-  // Restore the original base dataset from sample-trips-data.js
+  // Restore the original base dataset
   restoreBaseTrips() {
-    localStorage.removeItem('tms_base_trips_cleared');
-    localStorage.removeItem('tms_custom_trips');
-    localStorage.removeItem('tms_edited_trips');
-    localStorage.removeItem('tms_deleted_trips');
-    localStorage.removeItem('tms_trips');
+    if (this.sessionStore.trips) this.sessionStore.trips.clear();
+    if (this.deletedIds.trips) this.deletedIds.trips.clear();
   }
 
-  // --- Authentic AppSheet Ledger Debts Engine ---
+  // --- Authentic AppSheet Ledger Debts Engine (Direct Cloud Firestore) ---
   getAllDebts(cloudItems = []) {
-    // Ensure dataset version consistency
-    const CURRENT_DEBTS_VERSION = '2026_10_10_V2';
-    if (localStorage.getItem('tms_debts_data_version') !== CURRENT_DEBTS_VERSION) {
-      localStorage.removeItem('tms_base_debts_cleared');
-      localStorage.removeItem('tms_custom_debts');
-      localStorage.removeItem('tms_edited_debts');
-      localStorage.removeItem('tms_deleted_debts');
-      this.safeSetItem('tms_debts_data_version', CURRENT_DEBTS_VERSION);
-    }
-
-    const isBaseCleared = localStorage.getItem('tms_base_debts_cleared') === 'true';
-    const baseDebts = (!isBaseCleared && typeof window !== 'undefined' && Array.isArray(window.SAMPLE_DEBTS_DATA))
+    const baseDebts = (typeof window !== 'undefined' && Array.isArray(window.SAMPLE_DEBTS_DATA))
       ? window.SAMPLE_DEBTS_DATA
       : [];
 
-    const editedMap = JSON.parse(localStorage.getItem('tms_edited_debts') || '{}');
-    const deletedList = JSON.parse(localStorage.getItem('tms_deleted_debts') || '[]');
-    const deletedSet = new Set(deletedList.map(String));
-    const customDebts = JSON.parse(localStorage.getItem('tms_custom_debts') || '[]');
-
     const debtMap = new Map();
+    const deletedSet = this.deletedIds.debts || new Set();
 
     // 1. Add base debts
     for (const d of baseDebts) {
       if (!deletedSet.has(String(d.id))) {
-        debtMap.set(String(d.id), editedMap[d.id] ? { ...d, ...editedMap[d.id] } : d);
+        debtMap.set(String(d.id), d);
       }
     }
 
-    // 2. Add/override with custom debts
-    for (const d of customDebts) {
-      if (!deletedSet.has(String(d.id))) {
-        debtMap.set(String(d.id), editedMap[d.id] ? { ...d, ...editedMap[d.id] } : d);
-      }
-    }
-
-    // 3. Add/override with cloud items
+    // 2. Add/override directly from Firebase Cloud Firestore!
     if (Array.isArray(cloudItems)) {
       for (const d of cloudItems) {
-        if (!deletedSet.has(String(d.id))) {
-          debtMap.set(String(d.id), { ...(debtMap.get(String(d.id)) || {}), ...d });
+        if (d && d.id && !deletedSet.has(String(d.id))) {
+          const existing = debtMap.get(String(d.id)) || {};
+          debtMap.set(String(d.id), { ...existing, ...d });
         }
       }
+    }
+
+    // 3. Add/override with in-memory session changes
+    if (this.sessionStore.debts) {
+      this.sessionStore.debts.forEach((d, id) => {
+        if (!deletedSet.has(String(id))) {
+          const existing = debtMap.get(String(id)) || {};
+          debtMap.set(String(id), { ...existing, ...d });
+        }
+      });
     }
 
     const all = Array.from(debtMap.values());
@@ -370,19 +349,12 @@ class DBService {
   }
 
   clearAllDebts() {
-    this.safeSetItem('tms_base_debts_cleared', 'true');
-    localStorage.removeItem('tms_custom_debts');
-    localStorage.removeItem('tms_edited_debts');
-    localStorage.removeItem('tms_deleted_debts');
-    localStorage.removeItem('tms_debts');
+    if (this.sessionStore.debts) this.sessionStore.debts.clear();
   }
 
   restoreBaseDebts() {
-    localStorage.removeItem('tms_base_debts_cleared');
-    localStorage.removeItem('tms_custom_debts');
-    localStorage.removeItem('tms_edited_debts');
-    localStorage.removeItem('tms_deleted_debts');
-    localStorage.removeItem('tms_debts');
+    if (this.sessionStore.debts) this.sessionStore.debts.clear();
+    if (this.deletedIds.debts) this.deletedIds.debts.clear();
   }
 
   async recordReturnedAmount(debtId, paymentData) {
@@ -418,7 +390,7 @@ class DBService {
         debtType: debt.debtType || ''
       });
     } catch (retErr) {
-      console.warn('returnedAmounts collection sync error:', retErr.message);
+      console.warn('returnedAmounts collection sync notice:', retErr.message);
     }
 
     return await this.update('debts', debtId, {
@@ -428,83 +400,89 @@ class DBService {
     });
   }
 
-  // --- Authentic Google AppSheet Cash Ledger Engine ---
+  // --- Authentic Cash Ledger Engine ---
   getAllCashLedger(cloudItems = []) {
     const baseCash = (typeof window !== 'undefined' && Array.isArray(window.SAMPLE_CASH_LEDGER_DATA))
       ? window.SAMPLE_CASH_LEDGER_DATA
       : (typeof SAMPLE_CASH_LEDGER_DATA !== 'undefined' ? SAMPLE_CASH_LEDGER_DATA : []);
 
-    const customEntries = JSON.parse(localStorage.getItem('tms_custom_cash_ledger') || '[]');
-    const editedMap = JSON.parse(localStorage.getItem('tms_edited_cash_ledger') || '{}');
-    const deletedList = JSON.parse(localStorage.getItem('tms_deleted_cash_ledger') || '[]');
-    const deletedSet = new Set(deletedList.map(String));
-
     const entryMap = new Map();
+    const deletedSet = this.deletedIds.cashLedger || new Set();
+
     for (const item of baseCash) {
-      const id = item.date;
-      if (!deletedSet.has(String(id))) {
-        entryMap.set(id, editedMap[id] ? { ...item, ...editedMap[id] } : item);
+      const id = String(item.id || item.date);
+      if (!deletedSet.has(id)) {
+        entryMap.set(id, item);
       }
     }
-    for (const item of customEntries) {
-      const id = item.date;
-      if (!deletedSet.has(String(id))) {
-        entryMap.set(id, editedMap[id] ? { ...item, ...editedMap[id] } : item);
-      }
-    }
+
     if (Array.isArray(cloudItems)) {
       for (const item of cloudItems) {
-        const id = item.date;
-        if (!deletedSet.has(String(id))) {
-          entryMap.set(id, { ...(entryMap.get(id) || {}), ...item });
+        if (item) {
+          const id = String(item.id || item.date);
+          if (!deletedSet.has(id)) {
+            const existing = entryMap.get(id) || {};
+            entryMap.set(id, { ...existing, ...item });
+          }
         }
       }
+    }
+
+    if (this.sessionStore.cashLedger) {
+      this.sessionStore.cashLedger.forEach((item, id) => {
+        if (!deletedSet.has(String(id))) {
+          const existing = entryMap.get(String(id)) || {};
+          entryMap.set(String(id), { ...existing, ...item });
+        }
+      });
     }
 
     const all = Array.from(entryMap.values());
     all.sort((a, b) => {
       const pA = (a.date || '').split('/');
       const pB = (b.date || '').split('/');
-      const keyA = pA.length === 3 ? `${pA[2]}-${pA[1]}-${pA[0]}` : a.date;
-      const keyB = pB.length === 3 ? `${pB[2]}-${pB[1]}-${pB[0]}` : b.date;
+      const keyA = pA.length === 3 ? `${pA[2]}-${pA[1]}-${pA[0]}` : (a.date || '');
+      const keyB = pB.length === 3 ? `${pB[2]}-${pB[1]}-${pB[0]}` : (b.date || '');
       return keyB.localeCompare(keyA);
     });
     return all;
   }
 
-  // --- Authentic Google AppSheet Returned Amount Engine ---
+  // --- Authentic Returned Amounts Engine ---
   getAllReturnedAmounts(cloudItems = []) {
     const baseReturned = (typeof window !== 'undefined' && Array.isArray(window.SAMPLE_RETURNED_AMOUNTS_DATA))
       ? window.SAMPLE_RETURNED_AMOUNTS_DATA
       : (typeof SAMPLE_RETURNED_AMOUNTS_DATA !== 'undefined' ? SAMPLE_RETURNED_AMOUNTS_DATA : []);
 
-    const customEntries = JSON.parse(localStorage.getItem('tms_custom_returned_amounts') || '[]');
-    const editedMap = JSON.parse(localStorage.getItem('tms_edited_returned_amounts') || '{}');
-    const deletedList = JSON.parse(localStorage.getItem('tms_deleted_returned_amounts') || '[]');
-    const deletedSet = new Set(deletedList.map(String));
-
     const entryMap = new Map();
+    const deletedSet = this.deletedIds.returnedAmounts || new Set();
+
     for (const item of baseReturned) {
       const id = String(item.id);
       if (!deletedSet.has(id)) {
-        entryMap.set(id, editedMap[id] ? { ...item, ...editedMap[id] } : item);
+        entryMap.set(id, item);
       }
     }
-    for (const item of customEntries) {
-      const id = String(item.id);
-      if (!deletedSet.has(id)) {
-        entryMap.set(id, editedMap[id] ? { ...item, ...editedMap[id] } : item);
-      }
-    }
+
     if (Array.isArray(cloudItems)) {
       for (const item of cloudItems) {
         if (item && item.id) {
           const id = String(item.id);
           if (!deletedSet.has(id)) {
-            entryMap.set(id, { ...(entryMap.get(id) || {}), ...item });
+            const existing = entryMap.get(id) || {};
+            entryMap.set(id, { ...existing, ...item });
           }
         }
       }
+    }
+
+    if (this.sessionStore.returnedAmounts) {
+      this.sessionStore.returnedAmounts.forEach((item, id) => {
+        if (!deletedSet.has(String(id))) {
+          const existing = entryMap.get(String(id)) || {};
+          entryMap.set(String(id), { ...existing, ...item });
+        }
+      });
     }
 
     const all = Array.from(entryMap.values());
@@ -516,39 +494,41 @@ class DBService {
     return all;
   }
 
-  // --- Authentic Google AppSheet Company Expense Engine ---
+  // --- Authentic Company Expenses Engine ---
   getAllCompanyExpenses(cloudItems = []) {
     const baseExpenses = (typeof window !== 'undefined' && Array.isArray(window.SAMPLE_COMPANY_EXPENSES_DATA))
       ? window.SAMPLE_COMPANY_EXPENSES_DATA
       : (typeof SAMPLE_COMPANY_EXPENSES_DATA !== 'undefined' ? SAMPLE_COMPANY_EXPENSES_DATA : []);
 
-    const customEntries = JSON.parse(localStorage.getItem('tms_custom_company_expenses') || '[]');
-    const editedMap = JSON.parse(localStorage.getItem('tms_edited_company_expenses') || '{}');
-    const deletedList = JSON.parse(localStorage.getItem('tms_deleted_company_expenses') || '[]');
-    const deletedSet = new Set(deletedList.map(String));
-
     const entryMap = new Map();
+    const deletedSet = this.deletedIds.companyExpenses || new Set();
+
     for (const item of baseExpenses) {
       const id = String(item.id);
       if (!deletedSet.has(id)) {
-        entryMap.set(id, editedMap[id] ? { ...item, ...editedMap[id] } : item);
+        entryMap.set(id, item);
       }
     }
-    for (const item of customEntries) {
-      const id = String(item.id);
-      if (!deletedSet.has(id)) {
-        entryMap.set(id, editedMap[id] ? { ...item, ...editedMap[id] } : item);
-      }
-    }
+
     if (Array.isArray(cloudItems)) {
       for (const item of cloudItems) {
         if (item && item.id) {
           const id = String(item.id);
           if (!deletedSet.has(id)) {
-            entryMap.set(id, { ...(entryMap.get(id) || {}), ...item });
+            const existing = entryMap.get(id) || {};
+            entryMap.set(id, { ...existing, ...item });
           }
         }
       }
+    }
+
+    if (this.sessionStore.companyExpenses) {
+      this.sessionStore.companyExpenses.forEach((item, id) => {
+        if (!deletedSet.has(String(id))) {
+          const existing = entryMap.get(String(id)) || {};
+          entryMap.set(String(id), { ...existing, ...item });
+        }
+      });
     }
 
     const all = Array.from(entryMap.values());
@@ -560,39 +540,41 @@ class DBService {
     return all;
   }
 
-  // --- Authentic Google AppSheet Owner Expense Engine ---
+  // --- Authentic Owner Expenses Engine ---
   getAllOwnerExpenses(cloudItems = []) {
     const baseExpenses = (typeof window !== 'undefined' && Array.isArray(window.SAMPLE_OWNER_EXPENSES_DATA))
       ? window.SAMPLE_OWNER_EXPENSES_DATA
       : (typeof SAMPLE_OWNER_EXPENSES_DATA !== 'undefined' ? SAMPLE_OWNER_EXPENSES_DATA : []);
 
-    const customEntries = JSON.parse(localStorage.getItem('tms_custom_owner_expenses') || '[]');
-    const editedMap = JSON.parse(localStorage.getItem('tms_edited_owner_expenses') || '{}');
-    const deletedList = JSON.parse(localStorage.getItem('tms_deleted_owner_expenses') || '[]');
-    const deletedSet = new Set(deletedList.map(String));
-
     const entryMap = new Map();
+    const deletedSet = this.deletedIds.ownerExpenses || new Set();
+
     for (const item of baseExpenses) {
       const id = String(item.id);
       if (!deletedSet.has(id)) {
-        entryMap.set(id, editedMap[id] ? { ...item, ...editedMap[id] } : item);
+        entryMap.set(id, item);
       }
     }
-    for (const item of customEntries) {
-      const id = String(item.id);
-      if (!deletedSet.has(id)) {
-        entryMap.set(id, editedMap[id] ? { ...item, ...editedMap[id] } : item);
-      }
-    }
+
     if (Array.isArray(cloudItems)) {
       for (const item of cloudItems) {
         if (item && item.id) {
           const id = String(item.id);
           if (!deletedSet.has(id)) {
-            entryMap.set(id, { ...(entryMap.get(id) || {}), ...item });
+            const existing = entryMap.get(id) || {};
+            entryMap.set(id, { ...existing, ...item });
           }
         }
       }
+    }
+
+    if (this.sessionStore.ownerExpenses) {
+      this.sessionStore.ownerExpenses.forEach((item, id) => {
+        if (!deletedSet.has(String(id))) {
+          const existing = entryMap.get(String(id)) || {};
+          entryMap.set(String(id), { ...existing, ...item });
+        }
+      });
     }
 
     const all = Array.from(entryMap.values());
@@ -604,39 +586,41 @@ class DBService {
     return all;
   }
 
-  // --- Authentic Google AppSheet Received Payments Engine (Income Slice) ---
+  // --- Authentic Received Payments Engine ---
   getAllReceivedPayments(cloudItems = []) {
     const basePayments = (typeof window !== 'undefined' && Array.isArray(window.SAMPLE_RECEIVED_PAYMENTS_DATA))
       ? window.SAMPLE_RECEIVED_PAYMENTS_DATA
       : (typeof SAMPLE_RECEIVED_PAYMENTS_DATA !== 'undefined' ? SAMPLE_RECEIVED_PAYMENTS_DATA : []);
 
-    const customEntries = JSON.parse(localStorage.getItem('tms_custom_received_payments') || '[]');
-    const editedMap = JSON.parse(localStorage.getItem('tms_edited_received_payments') || '{}');
-    const deletedList = JSON.parse(localStorage.getItem('tms_deleted_received_payments') || '[]');
-    const deletedSet = new Set(deletedList.map(String));
-
     const entryMap = new Map();
+    const deletedSet = this.deletedIds.receivedPayments || new Set();
+
     for (const item of basePayments) {
       const id = String(item.id);
       if (!deletedSet.has(id)) {
-        entryMap.set(id, editedMap[id] ? { ...item, ...editedMap[id] } : item);
+        entryMap.set(id, item);
       }
     }
-    for (const item of customEntries) {
-      const id = String(item.id);
-      if (!deletedSet.has(id)) {
-        entryMap.set(id, editedMap[id] ? { ...item, ...editedMap[id] } : item);
-      }
-    }
+
     if (Array.isArray(cloudItems)) {
       for (const item of cloudItems) {
         if (item && item.id) {
           const id = String(item.id);
           if (!deletedSet.has(id)) {
-            entryMap.set(id, { ...(entryMap.get(id) || {}), ...item });
+            const existing = entryMap.get(id) || {};
+            entryMap.set(id, { ...existing, ...item });
           }
         }
       }
+    }
+
+    if (this.sessionStore.receivedPayments) {
+      this.sessionStore.receivedPayments.forEach((item, id) => {
+        if (!deletedSet.has(String(id))) {
+          const existing = entryMap.get(String(id)) || {};
+          entryMap.set(String(id), { ...existing, ...item });
+        }
+      });
     }
 
     const all = Array.from(entryMap.values());
@@ -648,112 +632,78 @@ class DBService {
     return all;
   }
 
+  // --- Authentic Parties Engine ---
   getAllParties(cloudItems = []) {
-    // 1. One-time auto-clean of any corrupted 'Unnamed Party' from localStorage
-    if (typeof localStorage !== 'undefined') {
-      try {
-        const cleanLegacy = (key) => {
-          const val = localStorage.getItem(key);
-          if (val) {
-            const arr = JSON.parse(val);
-            if (Array.isArray(arr)) {
-              const cleaned = arr.filter(p => p && p.name && p.name !== 'Unnamed Party');
-              if (cleaned.length !== arr.length) {
-                this.safeSetItem(key, JSON.stringify(cleaned));
-              }
-            }
-          }
-        };
-        cleanLegacy('tms_custom_parties');
-        cleanLegacy('tms_parties');
-      } catch (e) {}
-    }
-
-    const isBaseCleared = localStorage.getItem('tms_base_parties_cleared') === 'true';
-    const baseParties = (!isBaseCleared && typeof window !== 'undefined' && Array.isArray(window.INITIAL_EXCEL_PARTIES))
+    const baseParties = (typeof window !== 'undefined' && Array.isArray(window.INITIAL_EXCEL_PARTIES))
       ? window.INITIAL_EXCEL_PARTIES
       : [];
 
-    const editedMap = JSON.parse(localStorage.getItem('tms_edited_parties') || '{}');
-    const deletedList = JSON.parse(localStorage.getItem('tms_deleted_parties') || '[]');
-    const deletedSet = new Set(deletedList.map(String));
-    const customParties = JSON.parse(localStorage.getItem('tms_custom_parties') || '[]');
-
     const partyMap = new Map();
+    const deletedSet = this.deletedIds.parties || new Set();
 
-    // 2. Load all base parties from sample-parties-data.js (3,396 records)
+    // 1. Base parties (3,396 records)
     baseParties.forEach(p => {
-      if (!deletedSet.has(String(p.id))) {
-        partyMap.set(String(p.id), editedMap[p.id] || p);
+      if (!deletedSet.has(String(p.id)) && p.name && p.name !== 'Unnamed Party') {
+        partyMap.set(String(p.id), p);
       }
     });
 
-    // 3. Add genuine custom added parties (ignore corrupted 'Unnamed Party' entries or old mock ids)
-    customParties.forEach(p => {
-      if (!deletedSet.has(String(p.id)) && p.name && p.name !== 'Unnamed Party' && !String(p.id).startsWith('party_')) {
-        partyMap.set(String(p.id), editedMap[p.id] || p);
-      }
-    });
-
-    // 4. Cloud items overlay (if any valid custom parties were saved in Firestore)
-    if (cloudItems && cloudItems.length > 0) {
+    // 2. Cloud items from Firebase Cloud Firestore
+    if (Array.isArray(cloudItems)) {
       cloudItems.forEach(p => {
-        if (!deletedSet.has(String(p.id)) && p.name && p.name !== 'Unnamed Party' && !String(p.id).startsWith('party_')) {
-          partyMap.set(String(p.id), { ...(partyMap.get(String(p.id)) || {}), ...p });
+        if (p && p.id && !deletedSet.has(String(p.id)) && p.name && p.name !== 'Unnamed Party') {
+          const existing = partyMap.get(String(p.id)) || {};
+          partyMap.set(String(p.id), { ...existing, ...p });
         }
       });
     }
 
-    if (partyMap.size === 0) {
-      const legacy = JSON.parse(localStorage.getItem('tms_parties') || '[]');
-      legacy.forEach(p => {
-        if (p.name && p.name !== 'Unnamed Party') partyMap.set(String(p.id), p);
+    // 3. In-memory session parties
+    if (this.sessionStore.parties) {
+      this.sessionStore.parties.forEach((p, id) => {
+        if (!deletedSet.has(String(id)) && p.name && p.name !== 'Unnamed Party') {
+          const existing = partyMap.get(String(id)) || {};
+          partyMap.set(String(id), { ...existing, ...p });
+        }
       });
     }
 
     return Array.from(partyMap.values());
   }
 
+  // --- Authentic Truck Owners Engine ---
   getAllTruckOwners(cloudItems = []) {
     const baseOwners = (typeof window !== 'undefined' && Array.isArray(window.INITIAL_TRUCK_OWNERS))
       ? window.INITIAL_TRUCK_OWNERS
       : [];
 
-    const editedMap = JSON.parse(localStorage.getItem('tms_edited_truckOwners') || '{}');
-    const deletedList = JSON.parse(localStorage.getItem('tms_deleted_truckOwners') || '[]');
-    const deletedSet = new Set(deletedList.map(String));
-    const customOwners = JSON.parse(localStorage.getItem('tms_custom_truckOwners') || '[]');
-
     const ownerMap = new Map();
+    const deletedSet = this.deletedIds.truckOwners || new Set();
 
-    // 1. Add base owners
+    // 1. Base owners
     for (const o of baseOwners) {
       if (!deletedSet.has(String(o.id))) {
-        ownerMap.set(String(o.id), editedMap[o.id] ? { ...o, ...editedMap[o.id] } : o);
+        ownerMap.set(String(o.id), o);
       }
     }
 
-    // 2. Add custom owners
-    for (const o of customOwners) {
-      if (!deletedSet.has(String(o.id))) {
-        ownerMap.set(String(o.id), editedMap[o.id] ? { ...o, ...editedMap[o.id] } : o);
-      }
-    }
-
-    // 3. Add cloud items
+    // 2. Cloud items from Firebase Cloud Firestore
     if (Array.isArray(cloudItems)) {
       for (const o of cloudItems) {
-        if (!deletedSet.has(String(o.id))) {
-          ownerMap.set(String(o.id), { ...(ownerMap.get(String(o.id)) || {}), ...o });
+        if (o && o.id && !deletedSet.has(String(o.id))) {
+          const existing = ownerMap.get(String(o.id)) || {};
+          ownerMap.set(String(o.id), { ...existing, ...o });
         }
       }
     }
 
-    // Fallback to legacy if empty
-    if (ownerMap.size === 0) {
-      const legacy = JSON.parse(localStorage.getItem('tms_truckOwners') || '[]');
-      legacy.forEach(o => {
-        if (o.name) ownerMap.set(String(o.id), o);
+    // 3. In-memory session owners
+    if (this.sessionStore.truckOwners) {
+      this.sessionStore.truckOwners.forEach((o, id) => {
+        if (!deletedSet.has(String(id))) {
+          const existing = ownerMap.get(String(id)) || {};
+          ownerMap.set(String(id), { ...existing, ...o });
+        }
       });
     }
 
@@ -762,46 +712,36 @@ class DBService {
     return all;
   }
 
+  // --- Authentic Cheques Engine ---
   getAllCheques(cloudItems = []) {
     const baseCheques = (typeof window !== 'undefined' && Array.isArray(window.INITIAL_CHEQUES_DATA))
       ? window.INITIAL_CHEQUES_DATA
       : [];
 
-    const editedMap = JSON.parse(localStorage.getItem('tms_edited_cheques') || '{}');
-    const deletedList = JSON.parse(localStorage.getItem('tms_deleted_cheques') || '[]');
-    const deletedSet = new Set(deletedList.map(String));
-    const customCheques = JSON.parse(localStorage.getItem('tms_custom_cheques') || '[]');
-
     const chequeMap = new Map();
+    const deletedSet = this.deletedIds.cheques || new Set();
 
-    // 1. Base cheques
     for (const c of baseCheques) {
       if (!deletedSet.has(String(c.id))) {
-        chequeMap.set(String(c.id), editedMap[c.id] ? { ...c, ...editedMap[c.id] } : c);
+        chequeMap.set(String(c.id), c);
       }
     }
 
-    // 2. Custom cheques
-    for (const c of customCheques) {
-      if (!deletedSet.has(String(c.id))) {
-        chequeMap.set(String(c.id), editedMap[c.id] ? { ...c, ...editedMap[c.id] } : c);
-      }
-    }
-
-    // 3. Cloud items
     if (Array.isArray(cloudItems)) {
       for (const c of cloudItems) {
-        if (!deletedSet.has(String(c.id))) {
-          chequeMap.set(String(c.id), { ...(chequeMap.get(String(c.id)) || {}), ...c });
+        if (c && c.id && !deletedSet.has(String(c.id))) {
+          const existing = chequeMap.get(String(c.id)) || {};
+          chequeMap.set(String(c.id), { ...existing, ...c });
         }
       }
     }
 
-    // Fallback to legacy if empty
-    if (chequeMap.size === 0) {
-      const legacy = JSON.parse(localStorage.getItem('tms_cheques') || '[]');
-      legacy.forEach(c => {
-        if (c.chequeNo) chequeMap.set(String(c.id), c);
+    if (this.sessionStore.cheques) {
+      this.sessionStore.cheques.forEach((c, id) => {
+        if (!deletedSet.has(String(id))) {
+          const existing = chequeMap.get(String(id)) || {};
+          chequeMap.set(String(id), { ...existing, ...c });
+        }
       });
     }
 
@@ -816,46 +756,36 @@ class DBService {
     return all;
   }
 
+  // --- Authentic Drivers Engine ---
   getAllDrivers(cloudItems = []) {
     const baseDrivers = (typeof window !== 'undefined' && Array.isArray(window.INITIAL_DRIVERS))
       ? window.INITIAL_DRIVERS
       : [];
 
-    const editedMap = JSON.parse(localStorage.getItem('tms_edited_drivers') || '{}');
-    const deletedList = JSON.parse(localStorage.getItem('tms_deleted_drivers') || '[]');
-    const deletedSet = new Set(deletedList.map(String));
-    const customDrivers = JSON.parse(localStorage.getItem('tms_custom_drivers') || '[]');
-
     const driverMap = new Map();
+    const deletedSet = this.deletedIds.drivers || new Set();
 
-    // 1. Add base drivers from sample-drivers-data.js
     for (const d of baseDrivers) {
       if (!deletedSet.has(String(d.id))) {
-        driverMap.set(String(d.id), editedMap[d.id] ? { ...d, ...editedMap[d.id] } : d);
+        driverMap.set(String(d.id), d);
       }
     }
 
-    // 2. Add custom registered drivers
-    for (const d of customDrivers) {
-      if (!deletedSet.has(String(d.id))) {
-        driverMap.set(String(d.id), editedMap[d.id] ? { ...d, ...editedMap[d.id] } : d);
-      }
-    }
-
-    // 3. Add cloud items from Firestore
     if (Array.isArray(cloudItems)) {
       for (const d of cloudItems) {
-        if (!deletedSet.has(String(d.id))) {
-          driverMap.set(String(d.id), { ...(driverMap.get(String(d.id)) || {}), ...d });
+        if (d && d.id && !deletedSet.has(String(d.id))) {
+          const existing = driverMap.get(String(d.id)) || {};
+          driverMap.set(String(d.id), { ...existing, ...d });
         }
       }
     }
 
-    // Fallback to legacy local storage if empty
-    if (driverMap.size === 0) {
-      const legacy = JSON.parse(localStorage.getItem('tms_drivers') || '[]');
-      legacy.forEach(d => {
-        if (d.name) driverMap.set(String(d.id), d);
+    if (this.sessionStore.drivers) {
+      this.sessionStore.drivers.forEach((d, id) => {
+        if (!deletedSet.has(String(id))) {
+          const existing = driverMap.get(String(id)) || {};
+          driverMap.set(String(id), { ...existing, ...d });
+        }
       });
     }
 
@@ -894,1632 +824,151 @@ class DBService {
     });
   }
 
-
+  // --- CRUD: Get Single Document ---
   async getById(collectionName, id) {
-    if (this.isFirebaseReady) {
+    if (this.isFirebaseReady && this.db) {
       try {
-        const doc = await this.db.collection(collectionName).doc(id).get();
-        if (doc.exists) {
+        const doc = await this.db.collection(collectionName).doc(String(id)).get();
+        if (doc && doc.exists) {
           return { id: doc.id, ...doc.data() };
         }
       } catch (err) {
-        console.warn(`Firestore getById error for ${id} in ${collectionName}:`, err.message);
+        console.warn(`Firestore getById notice for ${id} in ${collectionName}:`, err.message);
       }
     }
+
+    // Fallback: check sessionStore map
+    const store = this.sessionStore[collectionName];
+    if (store && store.has(String(id))) {
+      return store.get(String(id));
+    }
+
     const items = await this.getAll(collectionName);
     return items.find(item => String(item.id) === String(id) || String(item.grNo) === String(id)) || null;
   }
 
+  // Alias
+  async get(collectionName, id) {
+    return this.getById(collectionName, id);
+  }
+
+  // --- CRUD: Direct Cloud Add (Zero LocalStorage) ---
   async add(collectionName, itemData) {
-    if (collectionName === 'trips') {
-      const newItem = {
-        ...itemData,
-        id: itemData.id || `TRIP_NEW_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-      const customTrips = JSON.parse(localStorage.getItem('tms_custom_trips') || '[]');
-      customTrips.unshift(newItem);
-      this.safeSetItem('tms_custom_trips', JSON.stringify(customTrips));
-
-      if (this.isFirebaseReady) {
-        try {
-          await this.db.collection('trips').doc(newItem.id).set(newItem);
-          console.log(` Cloud Synced: trips/${newItem.id}`);
-        } catch (err) {
-          console.warn('Firestore sync error for trips:', err.message);
-        }
-      }
-      return newItem;
-    }
-
-    if (collectionName === 'debts') {
-      const newItem = {
-        ...itemData,
-        id: itemData.id || `DEBT_NEW_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-      const customDebts = JSON.parse(localStorage.getItem('tms_custom_debts') || '[]');
-      customDebts.unshift(newItem);
-      this.safeSetItem('tms_custom_debts', JSON.stringify(customDebts));
-
-      if (this.isFirebaseReady) {
-        try {
-          await this.db.collection('debts').doc(newItem.id).set(newItem);
-          console.log(` Cloud Synced: debts/${newItem.id}`);
-        } catch (err) {
-          console.warn('Firestore sync error for debts:', err.message);
-        }
-      }
-      return newItem;
-    }
-
-    if (collectionName === 'parties') {
-      const newItem = {
-        ...itemData,
-        id: itemData.id || `PARTY_NEW_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-      const customParties = JSON.parse(localStorage.getItem('tms_custom_parties') || '[]');
-      customParties.unshift(newItem);
-      this.safeSetItem('tms_custom_parties', JSON.stringify(customParties));
-
-      if (this.isFirebaseReady) {
-        try {
-          await this.db.collection('parties').doc(newItem.id).set(newItem);
-          console.log(` Cloud Synced: parties/${newItem.id}`);
-        } catch (err) {
-          console.warn('Firestore sync error for parties:', err.message);
-        }
-      }
-      return newItem;
-    }
-
-    if (collectionName === 'truckOwners') {
-      const newItem = {
-        ...itemData,
-        id: itemData.id || `OWNER_NEW_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-      const customOwners = JSON.parse(localStorage.getItem('tms_custom_truckOwners') || '[]');
-      customOwners.unshift(newItem);
-      this.safeSetItem('tms_custom_truckOwners', JSON.stringify(customOwners));
-
-      if (this.isFirebaseReady) {
-        try {
-          await this.db.collection('truckOwners').doc(newItem.id).set(newItem);
-          console.log(` Cloud Synced: truckOwners/${newItem.id}`);
-        } catch (err) {
-          console.warn('Firestore sync error for truckOwners:', err.message);
-        }
-      }
-      return newItem;
-    }
-
-    if (collectionName === 'cheques') {
-      const newItem = {
-        ...itemData,
-        id: itemData.id || `CHQ_NEW_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-      const customCheques = JSON.parse(localStorage.getItem('tms_custom_cheques') || '[]');
-      customCheques.unshift(newItem);
-      this.safeSetItem('tms_custom_cheques', JSON.stringify(customCheques));
-
-      if (this.isFirebaseReady) {
-        try {
-          await this.db.collection('cheques').doc(newItem.id).set(newItem);
-          console.log(` Cloud Synced: cheques/${newItem.id}`);
-        } catch (err) {
-          console.warn('Firestore sync error for cheques:', err.message);
-        }
-      }
-      return newItem;
-    }
-
-    if (collectionName === 'drivers') {
-      const newItem = {
-        ...itemData,
-        id: itemData.id || `driver_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-      const customDrivers = JSON.parse(localStorage.getItem('tms_custom_drivers') || '[]');
-      customDrivers.unshift(newItem);
-      this.safeSetItem('tms_custom_drivers', JSON.stringify(customDrivers));
-
-      if (this.isFirebaseReady) {
-        try {
-          await this.db.collection('drivers').doc(newItem.id).set(newItem);
-          console.log(` Cloud Synced: drivers/${newItem.id}`);
-        } catch (err) {
-          console.warn('Firestore sync error for drivers:', err.message);
-        }
-      }
-      return newItem;
-    }
-
-    if (collectionName === 'cashLedger') {
-      const newItem = {
-        ...itemData,
-        id: itemData.id || itemData.date || `CASH_${Date.now()}`,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-      const customCash = JSON.parse(localStorage.getItem('tms_custom_cash_ledger') || '[]');
-      customCash.unshift(newItem);
-      this.safeSetItem('tms_custom_cash_ledger', JSON.stringify(customCash));
-
-      if (this.isFirebaseReady) {
-        try {
-          await this.db.collection('cashLedger').doc(newItem.id).set(newItem);
-          console.log(` Cloud Synced: cashLedger/${newItem.id}`);
-        } catch (err) {
-          console.warn('Firestore sync error for cashLedger:', err.message);
-        }
-      }
-      return newItem;
-    }
-
-    if (collectionName === 'returnedAmounts') {
-      const newItem = {
-        ...itemData,
-        id: itemData.id || `RET_${Date.now()}`,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-      const customReturned = JSON.parse(localStorage.getItem('tms_custom_returned_amounts') || '[]');
-      customReturned.unshift(newItem);
-      this.safeSetItem('tms_custom_returned_amounts', JSON.stringify(customReturned));
-
-      if (this.isFirebaseReady) {
-        try {
-          await this.db.collection('returnedAmounts').doc(newItem.id).set(newItem);
-          console.log(` Cloud Synced: returnedAmounts/${newItem.id}`);
-        } catch (err) {
-          console.warn('Firestore sync error for returnedAmounts:', err.message);
-        }
-      }
-      return newItem;
-    }
-
-    if (collectionName === 'companyExpenses') {
-      const newItem = {
-        ...itemData,
-        id: itemData.id || `COMP_EXP_${Date.now()}`,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-      const customExpenses = JSON.parse(localStorage.getItem('tms_custom_company_expenses') || '[]');
-      customExpenses.unshift(newItem);
-      this.safeSetItem('tms_custom_company_expenses', JSON.stringify(customExpenses));
-
-      if (this.isFirebaseReady) {
-        try {
-          await this.db.collection('companyExpenses').doc(newItem.id).set(newItem);
-          console.log(` Cloud Synced: companyExpenses/${newItem.id}`);
-        } catch (err) {
-          console.warn('Firestore sync error for companyExpenses:', err.message);
-        }
-      }
-      return newItem;
-    }
-
-    if (collectionName === 'ownerExpenses') {
-      const newItem = {
-        ...itemData,
-        id: itemData.id || `OWN_EXP_${Date.now()}`,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-      const customExpenses = JSON.parse(localStorage.getItem('tms_custom_owner_expenses') || '[]');
-      customExpenses.unshift(newItem);
-      this.safeSetItem('tms_custom_owner_expenses', JSON.stringify(customExpenses));
-
-      if (this.isFirebaseReady) {
-        try {
-          await this.db.collection('ownerExpenses').doc(newItem.id).set(newItem);
-          console.log(` Cloud Synced: ownerExpenses/${newItem.id}`);
-        } catch (err) {
-          console.warn('Firestore sync error for ownerExpenses:', err.message);
-        }
-      }
-      return newItem;
-    }
-
-    if (collectionName === 'receivedPayments') {
-      const newItem = {
-        ...itemData,
-        id: itemData.id || `REC_${Date.now()}`,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-      const customPayments = JSON.parse(localStorage.getItem('tms_custom_received_payments') || '[]');
-      customPayments.unshift(newItem);
-      this.safeSetItem('tms_custom_received_payments', JSON.stringify(customPayments));
-
-      if (this.isFirebaseReady) {
-        try {
-          await this.db.collection('receivedPayments').doc(newItem.id).set(newItem);
-          console.log(` Cloud Synced: receivedPayments/${newItem.id}`);
-        } catch (err) {
-          console.warn('Firestore sync error for receivedPayments:', err.message);
-        }
-      }
-      return newItem;
-    }
-
     const newItem = {
       ...itemData,
-      id: itemData.id || `${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
+      id: itemData.id || `${collectionName.slice(0, 4).toUpperCase()}_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
 
-    // Save locally first for instant UI response
-    const items = await this.getAll(collectionName);
-    const existingIndex = items.findIndex(i => String(i.id) === String(newItem.id));
-    if (existingIndex >= 0) {
-      items[existingIndex] = newItem;
-    } else {
-      items.unshift(newItem);
+    // Store in RAM session store
+    if (!this.sessionStore[collectionName]) {
+      this.sessionStore[collectionName] = new Map();
     }
-    this.safeSetItem(`tms_${collectionName}`, JSON.stringify(items));
+    this.sessionStore[collectionName].set(String(newItem.id), newItem);
+    if (this.deletedIds[collectionName]) {
+      this.deletedIds[collectionName].delete(String(newItem.id));
+      if (newItem.grNo) this.deletedIds[collectionName].delete(String(newItem.grNo));
+    }
 
-    // Sync to Firestore in Cloud
-    if (this.isFirebaseReady) {
+    // Direct write to Firebase Cloud Firestore!
+    if (this.isFirebaseReady && this.db) {
       try {
-        await this.db.collection(collectionName).doc(newItem.id).set(newItem);
-        console.log(` Cloud Synced: ${collectionName}/${newItem.id}`);
+        await this.db.collection(collectionName).doc(String(newItem.id)).set(newItem);
+        console.log(`[Firebase Cloud] Added to ${collectionName}/${newItem.id}`);
       } catch (err) {
-        console.warn(`Firestore sync error for ${collectionName}:`, err.message);
+        console.warn(`[Firebase Cloud] Sync notice for ${collectionName}:`, err.message);
       }
     }
 
     return newItem;
   }
 
+  // Alias
+  async create(collectionName, itemData) {
+    return this.add(collectionName, itemData);
+  }
+
+  // --- CRUD: Direct Cloud Update (Zero LocalStorage) ---
   async update(collectionName, id, updatedFields) {
     const updatedAt = new Date().toISOString();
+    const existing = await this.getById(collectionName, id);
+    const updatedItem = { ...(existing || {}), id: String(id), ...updatedFields, updatedAt };
 
-    if (collectionName === 'trips') {
-      let customTrips = JSON.parse(localStorage.getItem('tms_custom_trips') || '[]');
-      const customIdx = customTrips.findIndex(t => String(t.id) === String(id) || String(t.grNo) === String(id));
-      let updatedItem = null;
-
-      if (customIdx >= 0) {
-        updatedItem = { ...customTrips[customIdx], ...updatedFields, updatedAt };
-        customTrips[customIdx] = updatedItem;
-        this.safeSetItem('tms_custom_trips', JSON.stringify(customTrips));
-      } else {
-        const editedMap = JSON.parse(localStorage.getItem('tms_edited_trips') || '{}');
-        const existing = await this.getById('trips', id);
-        updatedItem = { ...(existing || {}), id, ...updatedFields, updatedAt };
-        editedMap[id] = updatedItem;
-        this.safeSetItem('tms_edited_trips', JSON.stringify(editedMap));
-      }
-
-      if (this.isFirebaseReady) {
-        try {
-          await this.db.collection('trips').doc(String(id)).set(updatedItem, { merge: true });
-          console.log(` Cloud Updated: trips/${id}`);
-        } catch (err) {
-          console.warn('Firestore update error for trips:', err.message);
-        }
-      }
-      return updatedItem;
+    // Update in RAM session store
+    if (!this.sessionStore[collectionName]) {
+      this.sessionStore[collectionName] = new Map();
     }
+    this.sessionStore[collectionName].set(String(id), updatedItem);
 
-    if (collectionName === 'debts') {
-      let customDebts = JSON.parse(localStorage.getItem('tms_custom_debts') || '[]');
-      const customIdx = customDebts.findIndex(d => String(d.id) === String(id));
-      let updatedItem = null;
-
-      if (customIdx >= 0) {
-        updatedItem = { ...customDebts[customIdx], ...updatedFields, updatedAt };
-        customDebts[customIdx] = updatedItem;
-        this.safeSetItem('tms_custom_debts', JSON.stringify(customDebts));
-      } else {
-        const editedMap = JSON.parse(localStorage.getItem('tms_edited_debts') || '{}');
-        const existing = await this.getById('debts', id);
-        updatedItem = { ...(existing || {}), id, ...updatedFields, updatedAt };
-        editedMap[id] = updatedItem;
-        this.safeSetItem('tms_edited_debts', JSON.stringify(editedMap));
-      }
-
-      if (this.isFirebaseReady) {
-        try {
-          await this.db.collection('debts').doc(String(id)).set(updatedItem, { merge: true });
-          console.log(` Cloud Updated: debts/${id}`);
-        } catch (err) {
-          console.warn('Firestore update error for debts:', err.message);
-        }
-      }
-      return updatedItem;
-    }
-
-    if (collectionName === 'parties') {
-      let customParties = JSON.parse(localStorage.getItem('tms_custom_parties') || '[]');
-      const customIdx = customParties.findIndex(p => String(p.id) === String(id));
-      let updatedItem = null;
-
-      if (customIdx >= 0) {
-        updatedItem = { ...customParties[customIdx], ...updatedFields, updatedAt };
-        customParties[customIdx] = updatedItem;
-        this.safeSetItem('tms_custom_parties', JSON.stringify(customParties));
-      } else {
-        const editedMap = JSON.parse(localStorage.getItem('tms_edited_parties') || '{}');
-        const existing = await this.getById('parties', id);
-        updatedItem = { ...(existing || {}), id, ...updatedFields, updatedAt };
-        editedMap[id] = updatedItem;
-        this.safeSetItem('tms_edited_parties', JSON.stringify(editedMap));
-      }
-
-      if (this.isFirebaseReady) {
-        try {
-          await this.db.collection('parties').doc(String(id)).set(updatedItem, { merge: true });
-          console.log(` Cloud Updated: parties/${id}`);
-        } catch (err) {
-          console.warn('Firestore update error for parties:', err.message);
-        }
-      }
-      return updatedItem;
-    }
-
-    if (collectionName === 'truckOwners') {
-      let customOwners = JSON.parse(localStorage.getItem('tms_custom_truckOwners') || '[]');
-      const customIdx = customOwners.findIndex(o => String(o.id) === String(id));
-      let updatedItem = null;
-
-      if (customIdx >= 0) {
-        updatedItem = { ...customOwners[customIdx], ...updatedFields, updatedAt };
-        customOwners[customIdx] = updatedItem;
-        this.safeSetItem('tms_custom_truckOwners', JSON.stringify(customOwners));
-      } else {
-        const editedMap = JSON.parse(localStorage.getItem('tms_edited_truckOwners') || '{}');
-        const existing = await this.getById('truckOwners', id);
-        updatedItem = { ...(existing || {}), id, ...updatedFields, updatedAt };
-        editedMap[id] = updatedItem;
-        this.safeSetItem('tms_edited_truckOwners', JSON.stringify(editedMap));
-      }
-
-      if (this.isFirebaseReady) {
-        try {
-          await this.db.collection('truckOwners').doc(String(id)).set(updatedItem, { merge: true });
-          console.log(` Cloud Updated: truckOwners/${id}`);
-        } catch (err) {
-          console.warn('Firestore update error for truckOwners:', err.message);
-        }
-      }
-      return updatedItem;
-    }
-
-    if (collectionName === 'cheques') {
-      let customCheques = JSON.parse(localStorage.getItem('tms_custom_cheques') || '[]');
-      const customIdx = customCheques.findIndex(c => String(c.id) === String(id));
-      let updatedItem = null;
-
-      if (customIdx >= 0) {
-        updatedItem = { ...customCheques[customIdx], ...updatedFields, updatedAt };
-        customCheques[customIdx] = updatedItem;
-        this.safeSetItem('tms_custom_cheques', JSON.stringify(customCheques));
-      } else {
-        const editedMap = JSON.parse(localStorage.getItem('tms_edited_cheques') || '{}');
-        const existing = await this.getById('cheques', id);
-        updatedItem = { ...(existing || {}), id, ...updatedFields, updatedAt };
-        editedMap[id] = updatedItem;
-        this.safeSetItem('tms_edited_cheques', JSON.stringify(editedMap));
-      }
-
-      if (this.isFirebaseReady) {
-        try {
-          await this.db.collection('cheques').doc(String(id)).set(updatedItem, { merge: true });
-          console.log(` Cloud Updated: cheques/${id}`);
-        } catch (err) {
-          console.warn('Firestore update error for cheques:', err.message);
-        }
-      }
-      return updatedItem;
-    }
-
-    if (collectionName === 'drivers') {
-      let customDrivers = JSON.parse(localStorage.getItem('tms_custom_drivers') || '[]');
-      const customIdx = customDrivers.findIndex(d => String(d.id) === String(id));
-      let updatedItem = null;
-
-      if (customIdx >= 0) {
-        customDrivers[customIdx] = { ...customDrivers[customIdx], ...updatedFields, updatedAt };
-        updatedItem = customDrivers[customIdx];
-        this.safeSetItem('tms_custom_drivers', JSON.stringify(customDrivers));
-      } else {
-        const editedMap = JSON.parse(localStorage.getItem('tms_edited_drivers') || '{}');
-        const existing = await this.getById('drivers', id);
-        updatedItem = { ...(existing || {}), id, ...updatedFields, updatedAt };
-        editedMap[id] = updatedItem;
-        this.safeSetItem('tms_edited_drivers', JSON.stringify(editedMap));
-      }
-
-      if (this.isFirebaseReady) {
-        try {
-          await this.db.collection('drivers').doc(String(id)).set(updatedItem, { merge: true });
-          console.log(` Cloud Updated: drivers/${id}`);
-        } catch (err) {
-          console.warn('Firestore update error for drivers:', err.message);
-        }
-      }
-      return updatedItem;
-    }
-
-    if (collectionName === 'returnedAmounts') {
-      let customReturned = JSON.parse(localStorage.getItem('tms_custom_returned_amounts') || '[]');
-      const customIdx = customReturned.findIndex(r => String(r.id) === String(id));
-      let updatedItem = null;
-
-      if (customIdx >= 0) {
-        updatedItem = { ...customReturned[customIdx], ...updatedFields, updatedAt };
-        customReturned[customIdx] = updatedItem;
-        this.safeSetItem('tms_custom_returned_amounts', JSON.stringify(customReturned));
-      } else {
-        const editedMap = JSON.parse(localStorage.getItem('tms_edited_returned_amounts') || '{}');
-        const existing = await this.getById('returnedAmounts', id);
-        updatedItem = { ...(existing || {}), id, ...updatedFields, updatedAt };
-        editedMap[id] = updatedItem;
-        this.safeSetItem('tms_edited_returned_amounts', JSON.stringify(editedMap));
-      }
-
-      if (this.isFirebaseReady) {
-        try {
-          await this.db.collection('returnedAmounts').doc(String(id)).set(updatedItem, { merge: true });
-          console.log(` Cloud Updated: returnedAmounts/${id}`);
-        } catch (err) {
-          console.warn('Firestore update error for returnedAmounts:', err.message);
-        }
-      }
-      return updatedItem;
-    }
-
-    if (collectionName === 'companyExpenses') {
-      let customExpenses = JSON.parse(localStorage.getItem('tms_custom_company_expenses') || '[]');
-      const customIdx = customExpenses.findIndex(r => String(r.id) === String(id));
-      let updatedItem = null;
-
-      if (customIdx >= 0) {
-        updatedItem = { ...customExpenses[customIdx], ...updatedFields, updatedAt };
-        customExpenses[customIdx] = updatedItem;
-        this.safeSetItem('tms_custom_company_expenses', JSON.stringify(customExpenses));
-      } else {
-        const editedMap = JSON.parse(localStorage.getItem('tms_edited_company_expenses') || '{}');
-        const existing = await this.getById('companyExpenses', id);
-        updatedItem = { ...(existing || {}), id, ...updatedFields, updatedAt };
-        editedMap[id] = updatedItem;
-        this.safeSetItem('tms_edited_company_expenses', JSON.stringify(editedMap));
-      }
-
-      if (this.isFirebaseReady) {
-        try {
-          await this.db.collection('companyExpenses').doc(String(id)).set(updatedItem, { merge: true });
-          console.log(` Cloud Updated: companyExpenses/${id}`);
-        } catch (err) {
-          console.warn('Firestore update error for companyExpenses:', err.message);
-        }
-      }
-      return updatedItem;
-    }
-
-    if (collectionName === 'ownerExpenses') {
-      let customExpenses = JSON.parse(localStorage.getItem('tms_custom_owner_expenses') || '[]');
-      const customIdx = customExpenses.findIndex(r => String(r.id) === String(id));
-      let updatedItem = null;
-
-      if (customIdx >= 0) {
-        updatedItem = { ...customExpenses[customIdx], ...updatedFields, updatedAt };
-        customExpenses[customIdx] = updatedItem;
-        this.safeSetItem('tms_custom_owner_expenses', JSON.stringify(customExpenses));
-      } else {
-        const editedMap = JSON.parse(localStorage.getItem('tms_edited_owner_expenses') || '{}');
-        const existing = await this.getById('ownerExpenses', id);
-        updatedItem = { ...(existing || {}), id, ...updatedFields, updatedAt };
-        editedMap[id] = updatedItem;
-        this.safeSetItem('tms_edited_owner_expenses', JSON.stringify(editedMap));
-      }
-
-      if (this.isFirebaseReady) {
-        try {
-          await this.db.collection('ownerExpenses').doc(String(id)).set(updatedItem, { merge: true });
-          console.log(` Cloud Updated: ownerExpenses/${id}`);
-        } catch (err) {
-          console.warn('Firestore update error for ownerExpenses:', err.message);
-        }
-      }
-      return updatedItem;
-    }
-
-    if (collectionName === 'receivedPayments') {
-      let customPayments = JSON.parse(localStorage.getItem('tms_custom_received_payments') || '[]');
-      const customIdx = customPayments.findIndex(r => String(r.id) === String(id));
-      let updatedItem = null;
-
-      if (customIdx >= 0) {
-        updatedItem = { ...customPayments[customIdx], ...updatedFields, updatedAt };
-        customPayments[customIdx] = updatedItem;
-        this.safeSetItem('tms_custom_received_payments', JSON.stringify(customPayments));
-      } else {
-        const editedMap = JSON.parse(localStorage.getItem('tms_edited_received_payments') || '{}');
-        const existing = await this.getById('receivedPayments', id);
-        updatedItem = { ...(existing || {}), id, ...updatedFields, updatedAt };
-        editedMap[id] = updatedItem;
-        this.safeSetItem('tms_edited_received_payments', JSON.stringify(editedMap));
-      }
-
-      if (this.isFirebaseReady) {
-        try {
-          await this.db.collection('receivedPayments').doc(String(id)).set(updatedItem, { merge: true });
-          console.log(` Cloud Updated: receivedPayments/${id}`);
-        } catch (err) {
-          console.warn('Firestore update error for receivedPayments:', err.message);
-        }
-      }
-      return updatedItem;
-    }
-
-    // Update locally
-    const items = await this.getAll(collectionName);
-    const index = items.findIndex(item => String(item.id) === String(id));
-    let updatedItem = { id, ...updatedFields, updatedAt };
-
-    if (index !== -1) {
-      updatedItem = { ...items[index], ...updatedFields, updatedAt };
-      items[index] = updatedItem;
-      this.safeSetItem(`tms_${collectionName}`, JSON.stringify(items));
-    }
-
-    // Update in Firestore
-    if (this.isFirebaseReady) {
+    // Direct update in Firebase Cloud Firestore!
+    if (this.isFirebaseReady && this.db) {
       try {
-        await this.db.collection(collectionName).doc(id).set(updatedItem, { merge: true });
-        console.log(` Cloud Updated: ${collectionName}/${id}`);
+        await this.db.collection(collectionName).doc(String(id)).set(updatedItem, { merge: true });
+        console.log(`[Firebase Cloud] Updated ${collectionName}/${id}`);
       } catch (err) {
-        console.warn(`Firestore update error for ${id} in ${collectionName}:`, err.message);
+        console.warn(`[Firebase Cloud] Update notice for ${collectionName}/${id}:`, err.message);
       }
     }
 
     return updatedItem;
   }
 
+  // Alias
+  async put(collectionName, id, updatedFields) {
+    return this.update(collectionName, id, updatedFields);
+  }
+
+  // --- CRUD: Direct Cloud Delete (Zero LocalStorage) ---
   async delete(collectionName, id) {
-    if (collectionName === 'trips') {
-      let customTrips = JSON.parse(localStorage.getItem('tms_custom_trips') || '[]');
-      customTrips = customTrips.filter(t => String(t.id) !== String(id) && String(t.grNo) !== String(id));
-      this.safeSetItem('tms_custom_trips', JSON.stringify(customTrips));
+    const strId = String(id);
 
-      const deletedList = JSON.parse(localStorage.getItem('tms_deleted_trips') || '[]');
-      if (!deletedList.includes(String(id))) {
-        deletedList.push(String(id));
-        this.safeSetItem('tms_deleted_trips', JSON.stringify(deletedList));
-      }
-
-      if (this.isFirebaseReady) {
-        try {
-          await this.db.collection('trips').doc(String(id)).delete();
-          console.log(` Cloud Deleted: trips/${id}`);
-        } catch (err) {
-          console.warn('Firestore delete error for trips:', err.message);
-        }
-      }
-      return true;
+    // Track deletion in RAM session store
+    if (this.sessionStore[collectionName]) {
+      this.sessionStore[collectionName].delete(strId);
     }
-
-    if (collectionName === 'debts') {
-      let customDebts = JSON.parse(localStorage.getItem('tms_custom_debts') || '[]');
-      customDebts = customDebts.filter(d => String(d.id) !== String(id));
-      this.safeSetItem('tms_custom_debts', JSON.stringify(customDebts));
-
-      const deletedList = JSON.parse(localStorage.getItem('tms_deleted_debts') || '[]');
-      if (!deletedList.includes(String(id))) {
-        deletedList.push(String(id));
-        this.safeSetItem('tms_deleted_debts', JSON.stringify(deletedList));
-      }
-
-      if (this.isFirebaseReady) {
-        try {
-          await this.db.collection('debts').doc(String(id)).delete();
-          console.log(` Cloud Deleted: debts/${id}`);
-        } catch (err) {
-          console.warn('Firestore delete error for debts:', err.message);
-        }
-      }
-      return true;
+    if (!this.deletedIds[collectionName]) {
+      this.deletedIds[collectionName] = new Set();
     }
+    this.deletedIds[collectionName].add(strId);
 
-    if (collectionName === 'parties') {
-      let customParties = JSON.parse(localStorage.getItem('tms_custom_parties') || '[]');
-      customParties = customParties.filter(p => String(p.id) !== String(id));
-      this.safeSetItem('tms_custom_parties', JSON.stringify(customParties));
-
-      const deletedList = JSON.parse(localStorage.getItem('tms_deleted_parties') || '[]');
-      if (!deletedList.includes(String(id))) {
-        deletedList.push(String(id));
-        this.safeSetItem('tms_deleted_parties', JSON.stringify(deletedList));
-      }
-
-      if (this.isFirebaseReady) {
-        try {
-          await this.db.collection('parties').doc(String(id)).delete();
-          console.log(` Cloud Deleted: parties/${id}`);
-        } catch (err) {
-          console.warn('Firestore delete error for parties:', err.message);
-        }
-      }
-      return true;
-    }
-
-    if (collectionName === 'truckOwners') {
-      let customOwners = JSON.parse(localStorage.getItem('tms_custom_truckOwners') || '[]');
-      customOwners = customOwners.filter(o => String(o.id) !== String(id));
-      this.safeSetItem('tms_custom_truckOwners', JSON.stringify(customOwners));
-
-      const deletedList = JSON.parse(localStorage.getItem('tms_deleted_truckOwners') || '[]');
-      if (!deletedList.includes(String(id))) {
-        deletedList.push(String(id));
-        this.safeSetItem('tms_deleted_truckOwners', JSON.stringify(deletedList));
-      }
-
-      if (this.isFirebaseReady) {
-        try {
-          await this.db.collection('truckOwners').doc(String(id)).delete();
-          console.log(` Cloud Deleted: truckOwners/${id}`);
-        } catch (err) {
-          console.warn('Firestore delete error for truckOwners:', err.message);
-        }
-      }
-      return true;
-    }
-
-    if (collectionName === 'cheques') {
-      let customCheques = JSON.parse(localStorage.getItem('tms_custom_cheques') || '[]');
-      customCheques = customCheques.filter(c => String(c.id) !== String(id));
-      this.safeSetItem('tms_custom_cheques', JSON.stringify(customCheques));
-
-      const deletedList = JSON.parse(localStorage.getItem('tms_deleted_cheques') || '[]');
-      if (!deletedList.includes(String(id))) {
-        deletedList.push(String(id));
-        this.safeSetItem('tms_deleted_cheques', JSON.stringify(deletedList));
-      }
-
-      if (this.isFirebaseReady) {
-        try {
-          await this.db.collection('cheques').doc(String(id)).delete();
-          console.log(` Cloud Deleted: cheques/${id}`);
-        } catch (err) {
-          console.warn('Firestore delete error for cheques:', err.message);
-        }
-      }
-      return true;
-    }
-
-    if (collectionName === 'drivers') {
-      let customDrivers = JSON.parse(localStorage.getItem('tms_custom_drivers') || '[]');
-      customDrivers = customDrivers.filter(d => String(d.id) !== String(id));
-      this.safeSetItem('tms_custom_drivers', JSON.stringify(customDrivers));
-
-      const deletedList = JSON.parse(localStorage.getItem('tms_deleted_drivers') || '[]');
-      if (!deletedList.includes(String(id))) {
-        deletedList.push(String(id));
-        this.safeSetItem('tms_deleted_drivers', JSON.stringify(deletedList));
-      }
-
-      if (this.isFirebaseReady) {
-        try {
-          await this.db.collection('drivers').doc(String(id)).delete();
-          console.log(` Cloud Deleted: drivers/${id}`);
-        } catch (err) {
-          console.warn('Firestore delete error for drivers:', err.message);
-        }
-      }
-      return true;
-    }
-
-    if (collectionName === 'returnedAmounts') {
-      let customReturned = JSON.parse(localStorage.getItem('tms_custom_returned_amounts') || '[]');
-      customReturned = customReturned.filter(r => String(r.id) !== String(id));
-      this.safeSetItem('tms_custom_returned_amounts', JSON.stringify(customReturned));
-
-      const deletedList = JSON.parse(localStorage.getItem('tms_deleted_returned_amounts') || '[]');
-      if (!deletedList.includes(String(id))) {
-        deletedList.push(String(id));
-        this.safeSetItem('tms_deleted_returned_amounts', JSON.stringify(deletedList));
-      }
-
-      if (this.isFirebaseReady) {
-        try {
-          await this.db.collection('returnedAmounts').doc(String(id)).delete();
-          console.log(` Cloud Deleted: returnedAmounts/${id}`);
-        } catch (err) {
-          console.warn('Firestore delete error for returnedAmounts:', err.message);
-        }
-      }
-      return true;
-    }
-
-    if (collectionName === 'companyExpenses') {
-      let customExpenses = JSON.parse(localStorage.getItem('tms_custom_company_expenses') || '[]');
-      customExpenses = customExpenses.filter(r => String(r.id) !== String(id));
-      this.safeSetItem('tms_custom_company_expenses', JSON.stringify(customExpenses));
-
-      const deletedList = JSON.parse(localStorage.getItem('tms_deleted_company_expenses') || '[]');
-      if (!deletedList.includes(String(id))) {
-        deletedList.push(String(id));
-        this.safeSetItem('tms_deleted_company_expenses', JSON.stringify(deletedList));
-      }
-
-      if (this.isFirebaseReady) {
-        try {
-          await this.db.collection('companyExpenses').doc(String(id)).delete();
-          console.log(` Cloud Deleted: companyExpenses/${id}`);
-        } catch (err) {
-          console.warn('Firestore delete error for companyExpenses:', err.message);
-        }
-      }
-      return true;
-    }
-
-    if (collectionName === 'ownerExpenses') {
-      let customExpenses = JSON.parse(localStorage.getItem('tms_custom_owner_expenses') || '[]');
-      customExpenses = customExpenses.filter(r => String(r.id) !== String(id));
-      this.safeSetItem('tms_custom_owner_expenses', JSON.stringify(customExpenses));
-
-      const deletedList = JSON.parse(localStorage.getItem('tms_deleted_owner_expenses') || '[]');
-      if (!deletedList.includes(String(id))) {
-        deletedList.push(String(id));
-        this.safeSetItem('tms_deleted_owner_expenses', JSON.stringify(deletedList));
-      }
-
-      if (this.isFirebaseReady) {
-        try {
-          await this.db.collection('ownerExpenses').doc(String(id)).delete();
-          console.log(` Cloud Deleted: ownerExpenses/${id}`);
-        } catch (err) {
-          console.warn('Firestore delete error for ownerExpenses:', err.message);
-        }
-      }
-      return true;
-    }
-
-    if (collectionName === 'receivedPayments') {
-      let customPayments = JSON.parse(localStorage.getItem('tms_custom_received_payments') || '[]');
-      customPayments = customPayments.filter(r => String(r.id) !== String(id));
-      this.safeSetItem('tms_custom_received_payments', JSON.stringify(customPayments));
-
-      const deletedList = JSON.parse(localStorage.getItem('tms_deleted_received_payments') || '[]');
-      if (!deletedList.includes(String(id))) {
-        deletedList.push(String(id));
-        this.safeSetItem('tms_deleted_received_payments', JSON.stringify(deletedList));
-      }
-
-      if (this.isFirebaseReady) {
-        try {
-          await this.db.collection('receivedPayments').doc(String(id)).delete();
-          console.log(` Cloud Deleted: receivedPayments/${id}`);
-        } catch (err) {
-          console.warn('Firestore delete error for receivedPayments:', err.message);
-        }
-      }
-      return true;
-    }
-
-    // Delete locally
-    let items = await this.getAll(collectionName);
-    items = items.filter(item => String(item.id) !== String(id));
-    this.safeSetItem(`tms_${collectionName}`, JSON.stringify(items));
-
-    // Delete in Firestore
-    if (this.isFirebaseReady) {
+    // Direct delete from Firebase Cloud Firestore!
+    if (this.isFirebaseReady && this.db) {
       try {
-        await this.db.collection(collectionName).doc(id).delete();
-        console.log(` Cloud Deleted: ${collectionName}/${id}`);
+        await this.db.collection(collectionName).doc(strId).delete();
+        console.log(`[Firebase Cloud] Deleted ${collectionName}/${strId}`);
       } catch (err) {
-        console.warn(`Firestore delete error for ${id} in ${collectionName}:`, err.message);
+        console.warn(`[Firebase Cloud] Delete notice for ${collectionName}/${strId}:`, err.message);
       }
     }
 
     return true;
   }
 
-  // --- Seed Data Sync to Firestore ---
+  // --- Seed Data Sync to Firestore (Master Assets -> Cloud Firestore) ---
   async syncSeedDataToFirestore() {
-    if (!this.isFirebaseReady) return;
+    if (!this.isFirebaseReady || !this.db) return;
     try {
       const partiesSnapshot = await this.db.collection('parties').limit(1).get();
       if (partiesSnapshot.empty) {
-        console.log("⚡ Syncing initial master data to Firebase Cloud Firestore...");
-        const seedCollections = [
-          'parties', 'truckOwners', 'drivers', 'brokers', 'trips',
-          'payments', 'cheques', 'cashBook', 'defUrea',
-          'gstInvoices', 'podRecords', 'dieselSlips',
-          'ewayBills', 'fleetCompliance', 'users'
-        ];
-        for (const col of seedCollections) {
-          const localItems = JSON.parse(localStorage.getItem(`tms_${col}`) || '[]');
-          for (const item of localItems) {
-            await this.db.collection(col).doc(item.id).set(item);
-          }
+        console.log("⚡ Populating initial master records to Firebase Cloud...");
+        if (typeof window !== 'undefined' && Array.isArray(window.INITIAL_EXCEL_PARTIES)) {
+          const batch = this.db.batch();
+          window.INITIAL_EXCEL_PARTIES.slice(0, 50).forEach(p => {
+            const ref = this.db.collection('parties').doc(String(p.id));
+            batch.set(ref, p);
+          });
+          await batch.commit();
         }
-        console.log(" Initial master data synced to Firestore successfully!");
       }
     } catch (err) {
-      console.warn("Firestore seed check warning (check Firestore Rules):", err.message);
+      console.warn("Firestore seed check notice:", err.message);
     }
   }
 
-  // --- Seed LocalStorage ---
+  // Intentionally disabled: No data is saved to browser localStorage
   seedLocalStorage() {
-    if (!localStorage.getItem('tms_seeded_v1')) {
-      const parties = [
-        {
-          id: "party_1",
-          name: "Berger Paints India Ltd.",
-          gstin: "09AABCB0976E2ZS",
-          address: "Sandila Industrial Area, Hardoi, Uttar Pradesh",
-          mobile: "9414659401",
-          contactPerson: "Branch Logistics Head",
-          dueAmount: 540000,
-          paidAmount: 294671469
-        },
-        {
-          id: "party_2",
-          name: "Bholenath Minerals",
-          gstin: "08MWJPK6870R1Z6",
-          address: "Industrial Area, Rajsamand, Rajasthan",
-          mobile: "9829241717",
-          contactPerson: "Bholenath Ji",
-          dueAmount: 180000,
-          paidAmount: 15480000
-        },
-        {
-          id: "party_3",
-          name: "Kothari Microns",
-          gstin: "08CTWPK5106N1ZY",
-          address: "Araji No. 133, Village Piplantri Khurd, Rajsamand, Rajasthan",
-          mobile: "8209727398",
-          contactPerson: "Tanuj Kothari",
-          dueAmount: 0,
-          paidAmount: 34500000
-        },
-        {
-          id: "party_4",
-          name: "RSPL Limited (Ghadi Detergent)",
-          gstin: "09AABCR1234F1Z0",
-          address: "Alwar Industrial Area, Rajasthan",
-          mobile: "9414312586",
-          contactPerson: "Supply Chain Manager",
-          dueAmount: 115500,
-          paidAmount: 48900000
-        },
-        {
-          id: "party_5",
-          name: "Siemens International",
-          gstin: "06AAACT0012P1ZV",
-          address: "Ambala, Haryana",
-          mobile: "9314242911",
-          contactPerson: "Virsun Industries Contact",
-          dueAmount: 147875,
-          paidAmount: 12450000
-        }
-      ];
-
-      const owners = [
-        {
-          id: "owner_1",
-          name: "Laxmi Prakash Jat",
-          mobile: "9571272336",
-          mobile1: "9828230022",
-          trucks: ["RJ52GA7310", "RJ52GA7335", "RJ52GA7728"],
-          dueAmount: 466800,
-          type: "Market"
-        },
-        {
-          id: "owner_2",
-          name: "Rameshwar Prasad",
-          mobile: "9414659401",
-          mobile1: "9314000521",
-          trucks: ["RJ52GB2588", "RJ52GA8678"],
-          dueAmount: 134544,
-          type: "Market"
-        },
-        {
-          id: "owner_3",
-          name: "Pappu Badak",
-          mobile: "9636017337",
-          mobile1: "8209210353",
-          trucks: ["RJ52GB3114"],
-          dueAmount: 180000,
-          type: "Market"
-        },
-        {
-          id: "owner_4",
-          name: "MTC Fleet (Self Owned)",
-          mobile: "9414312586",
-          mobile1: "9414011332",
-          trucks: ["RJ52GA7729", "RJ52GA8678", "RJ52GB2589", "RJ52GA7335", "RJ52GB5061"],
-          dueAmount: 0,
-          type: "Self"
-        }
-      ];
-
-      const drivers = [
-        {
-          id: "driver_1",
-          name: "Kaluram Jat Shrinagar",
-          mobile: "9784175913",
-          ownerName: "Laxmi Prakash Jat",
-          licenseNo: "RJ-01-2018-00912"
-        },
-        {
-          id: "driver_2",
-          name: "Rk Dewanda 3114",
-          mobile: "6376140149",
-          ownerName: "Pappu Badak",
-          licenseNo: "RJ-52-2020-00451"
-        },
-        {
-          id: "driver_3",
-          name: "Bhagchand 0729",
-          mobile: "8955266993",
-          ownerName: "MTC Fleet",
-          licenseNo: "RJ-52-2019-00874"
-        },
-        {
-          id: "driver_4",
-          name: "Mahendra Jat 2585",
-          mobile: "9521891459",
-          ownerName: "MTC Fleet",
-          licenseNo: "RJ-52-2021-00129"
-        }
-      ];
-
-      const brokers = [
-        {
-          id: "broker_1",
-          name: "Kunal Micron Vijay Jain",
-          mobile: "9829241717",
-          mobile1: "",
-          commissionRate: "₹2,000 / Trip",
-          location: "Rajsamand"
-        },
-        {
-          id: "broker_2",
-          name: "Rajesh Rao Udaipur",
-          mobile: "7023678976",
-          mobile1: "",
-          commissionRate: "₹1,500 / Trip",
-          location: "Udaipur"
-        },
-        {
-          id: "broker_3",
-          name: "Pavan Bansal Dadri",
-          mobile: "9311320045",
-          mobile1: "",
-          commissionRate: "₹2,000 / Trip",
-          location: "Dadri, U.P."
-        }
-      ];
-
-      const trips = [
-        {
-          id: "trip_1924_TTC",
-          grNo: "2026-2027-1924_TTC",
-          transport: "TTC",
-          biltyType: "Regular",
-          isGstApplicable: "Yes",
-          tripStartDate: "2026-08-31",
-          truckNo: "RJ52GB3114",
-          truckOwner: "Pappu Badak",
-          driver: "Rk Dewanda 3114",
-          driverMobile: "6376140149",
-          origin: "Rajsamand (Raj.)",
-          destination: "Noida (U.P.)",
-          material: "Marble Powder",
-          reference: "Kunal Micron Vijay Jain",
-          referenceMobile: "9829241717",
-          consignor: "Bholenath Minerals",
-          consignee: "Berger Paints India Ltd.",
-          billingType: "Per Tonne",
-          weight: 41.5,
-          rate: 2200,
-          freight: 91300,
-          commission: 2000,
-          status: "Due",
-          ownerDue: 44300,
-          partyDue: 91300,
-          partyPaid: 0
-        },
-        {
-          id: "trip_164_SMTC",
-          grNo: "2026-2027-164_SMTC",
-          transport: "SMTC",
-          biltyType: "Regular",
-          isGstApplicable: "Yes",
-          tripStartDate: "2026-08-31",
-          truckNo: "RJ52GA7310",
-          truckOwner: "Laxmi Prakash Jat",
-          driver: "Kalu Gurjar",
-          driverMobile: "7297854407",
-          origin: "Udaipur (Raj.)",
-          destination: "Sikandrabad (U.P.)",
-          material: "Putty Grade Dolomite X-812",
-          reference: "Rajesh Rao Udaipur",
-          referenceMobile: "7023678976",
-          consignor: "RBL Natural Resources Ltd.",
-          consignee: "Berger Paints India Ltd.",
-          billingType: "Per Tonne",
-          weight: 42.0,
-          rate: 2150,
-          freight: 106554,
-          commission: 1500,
-          status: "Transit",
-          ownerDue: 55054,
-          partyDue: 106554,
-          partyPaid: 0
-        },
-        {
-          id: "trip_1882_TTC",
-          grNo: "2026-2027-1882_TTC",
-          transport: "TTC",
-          biltyType: "Regular",
-          isGstApplicable: "Yes",
-          tripStartDate: "2026-08-26",
-          truckNo: "RJ01GC2159",
-          truckOwner: "Mahendra Rawat Shrinagar",
-          driver: "Kaluram Jat Shrinagar",
-          driverMobile: "9784175913",
-          origin: "Rajsamand (Raj.)",
-          destination: "Dadri (U.P.)",
-          material: "Marble Powder",
-          reference: "Pavan Bansal Dadri",
-          referenceMobile: "9311320045",
-          consignor: "Bholenath Minerals",
-          consignee: "Berger Paints India Ltd.",
-          billingType: "Per Tonne",
-          weight: 100.25,
-          rate: 1600,
-          freight: 160400,
-          commission: 2000,
-          status: "Settled",
-          ownerDue: 0,
-          partyDue: 0,
-          partyPaid: 160400
-        }
-      ];
-
-      localStorage.setItem('tms_parties', JSON.stringify(parties));
-      localStorage.setItem('tms_truckOwners', JSON.stringify(owners));
-      localStorage.setItem('tms_drivers', JSON.stringify(drivers));
-      localStorage.setItem('tms_brokers', JSON.stringify(brokers));
-      localStorage.setItem('tms_seeded_v1', 'true');
-    }
-
-    // Ensure legacy bloated tms_trips is removed so localStorage quota is always free
-    if (typeof localStorage !== 'undefined') {
-      try {
-        localStorage.removeItem('tms_trips');
-      } catch (e) {}
-    }
-
-    // Auto-seed Mosa Ji's 74 Real Trucks if available
-    if (typeof window !== 'undefined' && window.INITIAL_EXCEL_TRUCKS && window.INITIAL_EXCEL_TRUCKS.length > 0) {
-      try {
-        const storedOwners = JSON.parse(localStorage.getItem('tms_truckOwners') || '[]');
-        if (storedOwners.length <= 4) {
-          localStorage.setItem('tms_truckOwners', JSON.stringify([...storedOwners, ...window.INITIAL_EXCEL_TRUCKS]));
-        }
-      } catch (e) {
-        console.warn("Storage quota warning on trucks seed:", e);
-      }
-    }
-
-    // Phase 2 Seed Data: Payments, Cheques, Cash Book, DEF Urea
-    if (!localStorage.getItem('tms_seeded_phase2')) {
-      const payments = [
-        {
-          id: "pay_1",
-          type: "party", // party payment received
-          date: "2026-08-28",
-          firm: "TTC",
-          partyName: "Berger Paints India Ltd.",
-          grNo: "2026-2027-1882_TTC",
-          amount: 160400,
-          mode: "NEFT/RTGS",
-          refNo: "IDBIN2624098711",
-          bankAccount: "TTC Current A/c - IDBI Bank",
-          remarks: "Full freight settlement for Dadri dispatch"
-        },
-        {
-          id: "pay_2",
-          type: "owner", // owner payment paid
-          date: "2026-08-31",
-          firm: "TTC",
-          ownerName: "Pappu Badak",
-          truckNo: "RJ52GB3114",
-          grNo: "2026-2027-1924_TTC",
-          stage: "Advance at Loading",
-          amount: 45000,
-          mode: "Cash",
-          refNo: "VCH-2026-089",
-          remarks: "Cash advance given to driver Rk Dewanda at Shahpura office"
-        },
-        {
-          id: "pay_3",
-          type: "owner",
-          date: "2026-08-31",
-          firm: "SMTC",
-          ownerName: "Laxmi Prakash Jat",
-          truckNo: "RJ52GA7310",
-          grNo: "2026-2027-164_SMTC",
-          stage: "Diesel Advance",
-          amount: 50000,
-          mode: "Diesel Slip",
-          refNo: "DSL-SHP-4402",
-          remarks: "Diesel slip issued for Shahpura IOCL pump"
-        }
-      ];
-
-      const cheques = [
-        {
-          id: "chq_1",
-          chequeNo: "389021",
-          chequeDate: "2026-08-25",
-          partyName: "Berger Paints India Ltd.",
-          bankName: "HDFC Bank",
-          amount: 180000,
-          firm: "TTC",
-          depositAccount: "TTC Current A/c - IDBI Bank",
-          status: "Cleared",
-          depositDate: "2026-08-26",
-          clearanceDate: "2026-08-28",
-          remarks: "August batch payment"
-        },
-        {
-          id: "chq_2",
-          chequeNo: "004512",
-          chequeDate: "2026-08-30",
-          partyName: "Bholenath Minerals",
-          bankName: "ICICI Bank",
-          amount: 91300,
-          firm: "TTC",
-          depositAccount: "TTC Current A/c - IDBI Bank",
-          status: "Deposited",
-          depositDate: "2026-09-01",
-          clearanceDate: "",
-          remarks: "Cheque deposited in IDBI Shahpura, awaiting clearing"
-        },
-        {
-          id: "chq_3",
-          chequeNo: "119045",
-          chequeDate: "2026-09-02",
-          partyName: "RSPL Limited (Ghadi Detergent)",
-          bankName: "State Bank of India",
-          amount: 115500,
-          firm: "MTC",
-          depositAccount: "MTC Current A/c - HDFC Bank",
-          status: "Pending",
-          depositDate: "",
-          clearanceDate: "",
-          remarks: "Received at Shahpura office, to be deposited tomorrow"
-        }
-      ];
-
-      const cashBook = [
-        {
-          id: "cash_1",
-          date: "2026-08-30",
-          type: "IN",
-          category: "Bank Withdrawal",
-          amount: 200000,
-          particulars: "Self Cash Withdrawal from IDBI Bank for Driver Advances",
-          truckNo: "",
-          voucherNo: "CHQ-SELF-890",
-          firm: "TTC"
-        },
-        {
-          id: "cash_2",
-          date: "2026-08-31",
-          type: "OUT",
-          category: "Driver Advance",
-          amount: 45000,
-          particulars: "Driver Advance - RJ52GB3114 (Driver Rk Dewanda)",
-          truckNo: "RJ52GB3114",
-          voucherNo: "VCH-2026-089",
-          firm: "TTC"
-        },
-        {
-          id: "cash_3",
-          date: "2026-08-31",
-          type: "OUT",
-          category: "Office Expense",
-          amount: 1250,
-          particulars: "Shahpura Office Chai, Tea & Water Cooler Can",
-          truckNo: "",
-          voucherNo: "PETTY-012",
-          firm: "TTC"
-        }
-      ];
-
-      const defUrea = [
-        {
-          id: "def_1",
-          type: "PURCHASE",
-          date: "2026-08-25",
-          supplier: "HPCL Distributor Shahpura",
-          qtyBuckets: 50,
-          bucketSize: "20 Litres",
-          rate: 720,
-          totalAmount: 36000,
-          remarks: "50 buckets 20L stock received at yard"
-        },
-        {
-          id: "def_2",
-          type: "ISSUE",
-          date: "2026-08-31",
-          truckNo: "RJ52GA7729",
-          driver: "Bhagchand 0729",
-          qtyBuckets: 2,
-          emptyBucketReturned: "Yes",
-          returnedDate: "2026-08-31",
-          remarks: "Own truck trip to Hardoi"
-        },
-        {
-          id: "def_3",
-          type: "ISSUE",
-          date: "2026-08-31",
-          truckNo: "RJ52GB3114",
-          driver: "Rk Dewanda 3114",
-          qtyBuckets: 1,
-          emptyBucketReturned: "No (Pending)",
-          returnedDate: "",
-          remarks: "Market truck advance loading"
-        }
-      ];
-
-      localStorage.setItem('tms_payments', JSON.stringify(payments));
-      localStorage.setItem('tms_cheques', JSON.stringify(cheques));
-      localStorage.setItem('tms_cashBook', JSON.stringify(cashBook));
-      localStorage.setItem('tms_defUrea', JSON.stringify(defUrea));
-      localStorage.setItem('tms_seeded_phase2', 'true');
-    }
-
-    // Phase 3 Seed Data: GST Invoices, POD Records, Diesel Pump Slips
-    if (!localStorage.getItem('tms_seeded_phase3')) {
-      const gstInvoices = [
-        {
-          id: "inv_1",
-          invoiceNo: "INV-2026-TTC-0042",
-          firm: "TTC",
-          invoiceDate: "2026-08-31",
-          dueDate: "2026-09-15",
-          partyName: "Berger Paints India Ltd.",
-          partyGstin: "09AABCB0976E2ZS",
-          partyAddress: "Sandila Industrial Area, Hardoi, Uttar Pradesh",
-          sacCode: "996511",
-          isRcm: "Yes", // Reverse Charge Mechanism
-          trips: [
-            {
-              grNo: "2026-2027-1882_TTC",
-              tripDate: "2026-08-26",
-              truckNo: "RJ01GC2159",
-              origin: "Rajsamand (Raj.)",
-              destination: "Dadri (U.P.)",
-              material: "Marble Powder",
-              weight: 100.25,
-              rate: 1600,
-              freight: 160400
-            }
-          ],
-          subTotal: 160400,
-          cgstRate: 0,
-          cgstAmount: 0,
-          sgstRate: 0,
-          sgstAmount: 0,
-          igstRate: 5,
-          igstAmount: 8020,
-          grandTotal: 168420,
-          status: "Generated",
-          remarks: "Consolidated freight invoice for August Dadri dispatches"
-        }
-      ];
-
-      const podRecords = [
-        {
-          id: "pod_1",
-          grNo: "2026-2027-1882_TTC",
-          tripId: "trip_1882_TTC",
-          firm: "TTC",
-          truckNo: "RJ01GC2159",
-          driver: "Kaluram Jat Shrinagar",
-          consignee: "Berger Paints India Ltd.",
-          origin: "Rajsamand (Raj.)",
-          destination: "Dadri (U.P.)",
-          dispatchDate: "2026-08-26",
-          deliveryDate: "2026-08-28",
-          status: "Submitted to Client",
-          receivedBy: "Berger Dadri Depot Warehouse Incharge",
-          shortageKg: 0,
-          shortageAmount: 0,
-          remarks: "Verified clean POD with company stamp"
-        },
-        {
-          id: "pod_2",
-          grNo: "2026-2027-1924_TTC",
-          tripId: "trip_1924_TTC",
-          firm: "TTC",
-          truckNo: "RJ52GB3114",
-          driver: "Rk Dewanda 3114",
-          consignee: "Berger Paints India Ltd.",
-          origin: "Rajsamand (Raj.)",
-          destination: "Noida (U.P.)",
-          dispatchDate: "2026-08-31",
-          deliveryDate: "2026-09-02",
-          status: "Received at Branch",
-          receivedBy: "Security Guard & Unloading Supervisor",
-          shortageKg: 30,
-          shortageAmount: 1200,
-          remarks: "30 kg bag damaged in transit. Shortage deducted from owner balance"
-        },
-        {
-          id: "pod_3",
-          grNo: "2026-2027-164_SMTC",
-          tripId: "trip_164_SMTC",
-          firm: "SMTC",
-          truckNo: "RJ52GA7310",
-          driver: "Kalu Gurjar",
-          consignee: "Berger Paints India Ltd.",
-          origin: "Udaipur (Raj.)",
-          destination: "Sikandrabad (U.P.)",
-          dispatchDate: "2026-08-31",
-          deliveryDate: "",
-          status: "In Transit",
-          receivedBy: "",
-          shortageKg: 0,
-          shortageAmount: 0,
-          remarks: "Vehicle currently in transit, expected delivery tomorrow"
-        }
-      ];
-
-      const dieselSlips = [
-        {
-          id: "dsl_1",
-          slipNo: "DSL-SHP-4401",
-          date: "2026-08-31",
-          pumpName: "IOCL Shahpura (Kisan Seva Kendra)",
-          firm: "TTC",
-          truckNo: "RJ52GB3114",
-          driver: "Rk Dewanda 3114",
-          ownerName: "Pappu Badak",
-          tripGrNo: "2026-2027-1924_TTC",
-          liters: 250,
-          rate: 90.50,
-          amount: 22625,
-          status: "Unsettled",
-          remarks: "Fuel advance for Noida trip"
-        },
-        {
-          id: "dsl_2",
-          slipNo: "DSL-SHP-4402",
-          date: "2026-08-31",
-          pumpName: "IOCL Shahpura (Kisan Seva Kendra)",
-          firm: "SMTC",
-          truckNo: "RJ52GA7310",
-          driver: "Kalu Gurjar",
-          ownerName: "Laxmi Prakash Jat",
-          tripGrNo: "2026-2027-164_SMTC",
-          liters: 300,
-          rate: 90.50,
-          amount: 27150,
-          status: "Unsettled",
-          remarks: "Fuel advance for Sikandrabad trip"
-        },
-        {
-          id: "dsl_3",
-          slipNo: "DSL-RAJ-1089",
-          date: "2026-08-26",
-          pumpName: "HPCL Rajsamand (Mahaveer Auto)",
-          firm: "TTC",
-          truckNo: "RJ01GC2159",
-          driver: "Kaluram Jat Shrinagar",
-          ownerName: "Mahendra Rawat Shrinagar",
-          tripGrNo: "2026-2027-1882_TTC",
-          liters: 350,
-          rate: 90.20,
-          amount: 31570,
-          status: "Settled",
-          settledDate: "2026-08-31",
-          remarks: "Settled in monthly August pump statement"
-        }
-      ];
-
-      localStorage.setItem('tms_gstInvoices', JSON.stringify(gstInvoices));
-      localStorage.setItem('tms_podRecords', JSON.stringify(podRecords));
-      localStorage.setItem('tms_dieselSlips', JSON.stringify(dieselSlips));
-      localStorage.setItem('tms_seeded_phase3', 'true');
-    }
-
-    // Phase 4 Seed Data: E-Way Bills & Fleet Compliance
-    if (!localStorage.getItem('tms_seeded_phase4')) {
-      const now = new Date();
-      const in12Hours = new Date(now.getTime() + 12 * 60 * 60 * 1000).toISOString().slice(0, 16);
-      const in48Hours = new Date(now.getTime() + 48 * 60 * 60 * 1000).toISOString().slice(0, 16);
-      const past2Days = new Date(now.getTime() - 48 * 60 * 60 * 1000).toISOString().slice(0, 16);
-
-      const ewayBills = [
-        {
-          id: "ewb_1",
-          ewbNo: "321458902145",
-          grNo: "2026-2027-1924_TTC",
-          firm: "TTC",
-          truckNo: "RJ52GB3114",
-          driver: "Rk Dewanda 3114",
-          driverMobile: "6376140149",
-          origin: "Rajsamand (Raj.)",
-          destination: "Noida (U.P.)",
-          distanceKm: 650,
-          generatedAt: new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString().slice(0, 16),
-          validUntil: in48Hours,
-          status: "Active",
-          remarks: "Marble powder consignment"
-        },
-        {
-          id: "ewb_2",
-          ewbNo: "551240987112",
-          grNo: "2026-2027-164_SMTC",
-          firm: "SMTC",
-          truckNo: "RJ52GA7310",
-          driver: "Kalu Gurjar",
-          driverMobile: "7297854407",
-          origin: "Udaipur (Raj.)",
-          destination: "Sikandrabad (U.P.)",
-          distanceKm: 720,
-          generatedAt: new Date(now.getTime() - 60 * 60 * 1000).toISOString().slice(0, 16),
-          validUntil: in12Hours,
-          status: "Expiring Soon",
-          remarks: "Tyre puncture delay near Jaipur bypass - Needs extension if delayed"
-        },
-        {
-          id: "ewb_3",
-          ewbNo: "119800234510",
-          grNo: "2026-2027-1882_TTC",
-          firm: "TTC",
-          truckNo: "RJ01GC2159",
-          driver: "Kaluram Jat Shrinagar",
-          driverMobile: "9784175913",
-          origin: "Rajsamand (Raj.)",
-          destination: "Dadri (U.P.)",
-          distanceKm: 610,
-          generatedAt: new Date(now.getTime() - 96 * 60 * 60 * 1000).toISOString().slice(0, 16),
-          validUntil: past2Days,
-          status: "Completed",
-          remarks: "Delivered & unloaded safely"
-        }
-      ];
-
-      const fleetCompliance = [
-        {
-          id: "flt_1",
-          truckNo: "RJ52GA7729",
-          model: "Tata Signa 4825.TK 16-Tyre",
-          ownership: "Self (MTC Fleet)",
-          driver: "Bhagchand 0729",
-          driverMobile: "8955266993",
-          insurancePolicy: "New India Assurance - POL-890214",
-          insuranceExpiry: "2026-10-15",
-          fitnessExpiry: "2026-11-20",
-          npExpiry: "2027-02-28",
-          pucExpiry: "2026-09-25",
-          currentKm: 152000,
-          lastServiceKm: 145000,
-          remarks: "Next engine oil & filter service due at 155,000 Km"
-        },
-        {
-          id: "flt_2",
-          truckNo: "RJ52GA8678",
-          model: "Ashok Leyland 4220 14-Tyre",
-          ownership: "Self (MTC Fleet)",
-          driver: "Mahendra Jat 2585",
-          driverMobile: "9521891459",
-          insurancePolicy: "United India Insurance - POL-554109",
-          insuranceExpiry: "2026-09-18", // Expiring soon!
-          fitnessExpiry: "2027-01-10",
-          npExpiry: "2026-12-31",
-          pucExpiry: "2026-10-10",
-          currentKm: 188500,
-          lastServiceKm: 180000,
-          remarks: "Insurance renewal urgent"
-        },
-        {
-          id: "flt_3",
-          truckNo: "RJ52GB2589",
-          model: "BharatBenz 3523R 12-Tyre",
-          ownership: "Self (MTC Fleet)",
-          driver: "Ramdev Gurjar",
-          driverMobile: "9829100234",
-          insurancePolicy: "ICICI Lombard - POL-112450",
-          insuranceExpiry: "2027-03-05",
-          fitnessExpiry: "2026-09-22", // Expiring soon!
-          npExpiry: "2027-04-15",
-          pucExpiry: "2026-11-05",
-          currentKm: 104000,
-          lastServiceKm: 98000,
-          remarks: "RTO Passing / Fitness scheduled this week at Rajsamand DTO"
-        },
-        {
-          id: "flt_4",
-          truckNo: "RJ52GA7335",
-          model: "Tata LPT 3118 10-Tyre",
-          ownership: "Self (MTC Fleet)",
-          driver: "Shravan Lal",
-          driverMobile: "9414209811",
-          insurancePolicy: "Oriental Insurance - POL-998120",
-          insuranceExpiry: "2027-05-12",
-          fitnessExpiry: "2027-06-15",
-          npExpiry: "2027-08-30",
-          pucExpiry: "2026-12-01",
-          currentKm: 215000,
-          lastServiceKm: 210000,
-          remarks: "All papers valid"
-        }
-      ];
-
-      localStorage.setItem('tms_ewayBills', JSON.stringify(ewayBills));
-      localStorage.setItem('tms_fleetCompliance', JSON.stringify(fleetCompliance));
-      localStorage.setItem('tms_seeded_phase4', 'true');
-    }
-
-    // Pre-seeded Staff User Accounts
-    if (!localStorage.getItem('tms_seeded_users')) {
-      const users = [
-        {
-          id: "usr_1",
-          name: "Mosa Ji (Owner)",
-          email: "admin@ttclogistics.com",
-          mobile: "9414312586",
-          password: "admin123",
-          role: "SUPER_ADMIN",
-          firm: "All Firms (TTC + MTC + SMTC)",
-          branch: "Head Office (Shahpura)",
-          status: "Active",
-          createdAt: new Date().toISOString()
-        },
-        {
-          id: "usr_2",
-          name: "Kaluram Ji (Shahpura Munshi)",
-          email: "shahpura@ttclogistics.com",
-          mobile: "9784175913",
-          password: "munshi123",
-          role: "BRANCH_MUNSHI",
-          firm: "TTC",
-          branch: "Shahpura Yard",
-          status: "Active",
-          createdAt: new Date().toISOString()
-        },
-        {
-          id: "usr_3",
-          name: "Rameshwar Ji (Head Accountant)",
-          email: "accounts@ttclogistics.com",
-          mobile: "9829241717",
-          password: "accounts123",
-          role: "ACCOUNTANT",
-          firm: "All Firms (TTC + MTC + SMTC)",
-          branch: "Rajsamand Accounts Office",
-          status: "Active",
-          createdAt: new Date().toISOString()
-        }
-      ];
-
-      localStorage.setItem('tms_users', JSON.stringify(users));
-      localStorage.setItem('tms_seeded_users', 'true');
-    }
+    // Disabled: Direct Firebase Cloud Firestore active. Zero localStorage persistence.
   }
 }
 
@@ -2527,6 +976,3 @@ class DBService {
 const dbService = new DBService();
 if (typeof window !== 'undefined') window.dbService = dbService;
 if (typeof module !== 'undefined' && module.exports) module.exports = dbService;
-
-
-
