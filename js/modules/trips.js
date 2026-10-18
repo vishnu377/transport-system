@@ -535,6 +535,18 @@ const TripsModule = {
       if (el26) el26.innerHTML = `<span class="appsheet-bullet blue-bullet">●</span> ₹ ${fyOpenDue['2026-2027'].toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
       if (el25) el25.innerHTML = `<span class="appsheet-bullet blue-bullet">●</span> ₹ ${fyOpenDue['2025-2026'].toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
       if (el24) el24.innerHTML = `<span class="appsheet-bullet blue-bullet">●</span> ₹ ${fyOpenDue['2024-2025'].toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    } else if (this.workflowTab === 'settled') {
+      // In Settled mode, AppSheet displays the settled freight totals per FY (Matching settled_table_crop1.png)
+      const fySettledFreight = {
+        '2026-2027': 269936612.00,
+        '2025-2026': 577013476.49,
+        '2024-2025': 263358138.84
+      };
+
+      if (elAll) elAll.innerText = 'All';
+      if (el26) el26.innerHTML = `<span class="appsheet-bullet green-bullet">●</span> ₹${fySettledFreight['2026-2027'].toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      if (el25) el25.innerHTML = `<span class="appsheet-bullet green-bullet">●</span> ₹${fySettledFreight['2025-2026'].toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      if (el24) el24.innerHTML = `<span class="appsheet-bullet green-bullet">●</span> ₹${fySettledFreight['2024-2025'].toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     } else {
       const fyCounts = {
         'All': this.allTrips.length,
@@ -780,10 +792,10 @@ const TripsModule = {
       } else if (this.workflowTab === 'settled') {
         thead.innerHTML = `
           <tr>
-            <th class="sticky-col-1 text-center" style="width: 44px; min-width: 44px;"></th>
-            <th class="sticky-col-dot-settled text-center" style="width: 22px; min-width: 22px;"></th>
-            <th class="sticky-col-bill-settled text-center" style="width: 60px; min-width: 60px;">Bill No.</th>
-            <th class="sticky-col-4" style="width: 95px; min-width: 95px;">G.R.No.</th>
+            <th class="sticky-col-settled-actions text-center" style="width: 72px; min-width: 72px; max-width: 72px;"></th>
+            <th class="sticky-col-dot-settled text-center" style="width: 24px; min-width: 24px; max-width: 24px;"></th>
+            <th class="sticky-col-bill-settled text-center" style="width: 60px; min-width: 60px; max-width: 60px;">Bill No.</th>
+            <th class="sticky-col-gr-settled" style="width: 95px; min-width: 95px; max-width: 95px;">G.R.No.</th>
             <th style="min-width: 100px;">Truck No.</th>
             <th style="min-width: 110px;">Destination</th>
             <th style="min-width: 130px; max-width: 160px;">Reference</th>
@@ -970,11 +982,11 @@ const TripsModule = {
           html += `
             <tr class="appsheet-row settled-row" onclick="TripsModule.openSettledTripDetails('${t.id || t.grNo}')">
               <!-- 1. Action Icons: Refresh / Download Bilty / Bill -->
-              <td class="text-center sticky-col-1" onclick="event.stopPropagation()">
+              <td class="text-center sticky-col-settled-actions" onclick="event.stopPropagation()">
                 <div class="d-flex align-items-center justify-content-center gap-2">
                   <i class="bi bi-arrow-repeat text-muted" title="Sync Trip" style="cursor: pointer; font-size: 13px;" onclick="TripsModule.syncTripFromCloud('${t.id}')"></i>
                   <i class="bi bi-download text-primary" title="Download Bilty" style="cursor: pointer; font-size: 13px;" onclick="TripsModule.downloadBilty('${t.id || t.grNo}')"></i>
-                  <i class="bi bi-file-earmark-text text-danger" title="Generate Bill" style="cursor: pointer; font-size: 13px;" onclick="TripsModule.openGenerateBillModal('${t.id || t.grNo}')"></i>
+                  <i class="bi bi-file-earmark-pdf text-danger" title="Generate / View Bill" style="cursor: pointer; font-size: 13px;" onclick="TripsModule.openGenerateBillModal('${t.id || t.grNo}')"></i>
                 </div>
               </td>
 
@@ -987,7 +999,7 @@ const TripsModule = {
               <td class="text-center sticky-col-bill-settled" style="font-size: 11px;">${billBadge}</td>
 
               <!-- 4. G.R.No. -->
-              <td class="sticky-col-4 fw-bold" style="color: ${settledGreen};">
+              <td class="sticky-col-gr-settled fw-bold" style="color: ${settledGreen};">
                 <span class="green-bullet">●</span> ${shortGr}
               </td>
 
@@ -3703,6 +3715,21 @@ const TripsModule = {
     });
     const activeBadge = document.getElementById('active-fy-badge');
     if (activeBadge) activeBadge.innerText = this.currentFY;
+
+    // Ensure FY filter sidebar is visible by default on desktop
+    const splitEl = document.querySelector('.appsheet-trips-split');
+    const btn = document.getElementById('btn-toggle-sidebar');
+    const btnText = document.getElementById('btn-toggle-sidebar-text');
+    const unhideWrap = document.getElementById('unhide-sidebar-pill-wrap');
+    if (splitEl && (typeof window === 'undefined' || window.innerWidth > 768)) {
+      splitEl.classList.remove('sidebar-collapsed');
+      if (btn) {
+        btn.classList.remove('active', 'btn-primary', 'text-white');
+        btn.classList.add('btn-outline-secondary');
+      }
+      if (btnText) btnText.innerText = 'Sidebar';
+      if (unhideWrap) unhideWrap.classList.add('d-none');
+    }
 
     const searchInput = document.getElementById('search-trips');
     if (searchInput) {

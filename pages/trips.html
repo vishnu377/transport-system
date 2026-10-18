@@ -468,7 +468,7 @@
     .appsheet-trips-split {
       display: flex;
       align-items: stretch;
-      min-height: 620px;
+      min-height: 480px;
     }
 
     .appsheet-trips-sidebar {
@@ -529,7 +529,7 @@
 
     .appsheet-trips-content {
       flex-grow: 1;
-      overflow-x: auto;
+      overflow: visible;
       min-width: 0;
     }
 
@@ -553,7 +553,7 @@
       user-select: none;
       position: sticky;
       top: 0;
-      z-index: 5;
+      z-index: 10;
     }
     .appsheet-table td {
       padding: 5px 6px;
@@ -596,22 +596,46 @@
       z-index: 2;
       background: #ffffff;
     }
+
+    /* Dedicated Settled Trips Sticky Columns (Zero Overlap Guaranteed) */
+    .sticky-col-settled-actions {
+      position: sticky;
+      left: 0;
+      width: 72px;
+      min-width: 72px;
+      max-width: 72px;
+      z-index: 2;
+      background: #ffffff;
+    }
     .sticky-col-dot-settled {
       position: sticky;
-      left: 44px;
-      width: 22px;
-      min-width: 22px;
+      left: 72px;
+      width: 24px;
+      min-width: 24px;
+      max-width: 24px;
       z-index: 2;
       background: #ffffff;
     }
     .sticky-col-bill-settled {
       position: sticky;
-      left: 66px;
+      left: 96px;
       width: 60px;
       min-width: 60px;
+      max-width: 60px;
       z-index: 2;
       background: #ffffff;
     }
+    .sticky-col-gr-settled {
+      position: sticky;
+      left: 156px;
+      width: 95px;
+      min-width: 95px;
+      max-width: 95px;
+      z-index: 2;
+      background: #ffffff;
+      box-shadow: none !important;
+    }
+
     .sticky-col-bill-open {
       position: sticky;
       left: 44px;
@@ -638,22 +662,35 @@
       background: #ffffff;
       box-shadow: none !important;
     }
+
+    .appsheet-table thead th {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: #ffffff;
+    }
     .appsheet-table thead th.sticky-col-1,
     .appsheet-table thead th.sticky-col-2,
     .appsheet-table thead th.sticky-col-3,
+    .appsheet-table thead th.sticky-col-settled-actions,
     .appsheet-table thead th.sticky-col-dot-settled,
     .appsheet-table thead th.sticky-col-bill-settled,
+    .appsheet-table thead th.sticky-col-gr-settled,
     .appsheet-table thead th.sticky-col-bill-open,
     .appsheet-table thead th.sticky-col-4,
     .appsheet-table thead th.sticky-col-gr-card3 {
-      z-index: 6;
+      position: sticky;
+      top: 0;
+      z-index: 25;
       background: #ffffff;
     }
     .appsheet-row:hover td.sticky-col-1,
     .appsheet-row:hover td.sticky-col-2,
     .appsheet-row:hover td.sticky-col-3,
+    .appsheet-row:hover td.sticky-col-settled-actions,
     .appsheet-row:hover td.sticky-col-dot-settled,
     .appsheet-row:hover td.sticky-col-bill-settled,
+    .appsheet-row:hover td.sticky-col-gr-settled,
     .appsheet-row:hover td.sticky-col-bill-open,
     .appsheet-row:hover td.sticky-col-4,
     .appsheet-row:hover td.sticky-col-gr-card3 {
@@ -1533,9 +1570,9 @@
                 <i class="bi bi-layout-sidebar"></i> Show Financial Year Sidebar
               </button>
             </div>
-            <div class="table-responsive" style="max-height: 720px; overflow-y: auto;">
+            <div class="table-responsive" style="max-height: calc(100vh - 195px); overflow: auto;">
               <table class="appsheet-table" id="debts-register-table">
-                <thead class="sticky-top" style="z-index: 5;">
+                <thead>
                   <tr>
                     <th>Bill NO.</th>
                     <th>G.R. NO.</th>
@@ -3914,17 +3951,17 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
   <!-- Core App Scripts with Cache Busting -->
-  <script src="../js/config.js?v=20261018_v6"></script>
+  <script src="../js/config.js?v=20261018_v7"></script>
   <!-- Universal Master Data Assets (Guaranteed 100% Offline & Fresh Git Deploy Resilience) -->
-  <script src="../js/sample-parties-data.js?v=20261018_v6"></script>
-  <script src="../js/sample-truck-owners-data.js?v=20261018_v6"></script>
-  <script src="../js/sample-drivers-data.js?v=20261018_v6"></script>
-  <script src="../js/open-trips-seed.js?v=20261018_v6"></script>
-  <script src="../js/sample-trips-data.js?v=20261018_v6"></script>
-  <script src="../js/sample-debts-data.js?v=20261018_v6"></script>
-  <script src="../js/sample-cheques-data.js?v=20261018_v6"></script>
-  <script src="../js/db-service.js?v=20261018_v6"></script>
-  <script src="../js/app.js?v=20261018_v6"></script>
-  <script src="../js/modules/trips.js?v=20261018_v6"></script>
+  <script src="../js/sample-parties-data.js?v=20261018_v7"></script>
+  <script src="../js/sample-truck-owners-data.js?v=20261018_v7"></script>
+  <script src="../js/sample-drivers-data.js?v=20261018_v7"></script>
+  <script src="../js/open-trips-seed.js?v=20261018_v7"></script>
+  <script src="../js/sample-trips-data.js?v=20261018_v7"></script>
+  <script src="../js/sample-debts-data.js?v=20261018_v7"></script>
+  <script src="../js/sample-cheques-data.js?v=20261018_v7"></script>
+  <script src="../js/db-service.js?v=20261018_v7"></script>
+  <script src="../js/app.js?v=20261018_v7"></script>
+  <script src="../js/modules/trips.js?v=20261018_v7"></script>
 </body>
 </html>
