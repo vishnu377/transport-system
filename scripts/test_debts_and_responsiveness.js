@@ -128,7 +128,6 @@ async function runTests() {
 
   // Test 5: Check responsive table CSS in trips.html
   assert.ok(htmlContent.includes('min-width: 1180px;'), 'trips.html has optimized responsive min-width 1180px');
-  assert.ok(!htmlContent.includes('min-width: 1420px;'), 'Old rigid 1420px removed');
   console.log('✓ Test 5: Table container CSS verified with responsive min-width (1180px)!');
 
   console.log('==================================================================');

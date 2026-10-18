@@ -342,8 +342,6 @@ const TripsModule = {
     if (status.includes('cheque') || status.includes('due')) return '#967b2c'; // Mustard / Gold / Salety
     if (status.includes('pod') || status.includes('bill')) return '#7b1fa2'; // Begani / Purple
     if (status.includes('settled')) {
-      if (this.workflowTab === 'settled') return '#008a38';
-      if (trip.financialYear === '2026-2027') return '#967b2c';
       return '#008a38';
     }
 
@@ -848,14 +846,14 @@ const TripsModule = {
       // Item Rows (Authentic AppSheet Layout - Exactly 18 or 15 columns)
       items.forEach(t => {
         const isSettled = this.isTripSettled(t);
-        const pDue = Number(t.partyDue) || 0;
-        const oDue = Number(t.ownerDue) || 0;
-        const totalFreight = Number(t.freight) || 0;
         const weight = Number(t.weight) || 0;
-        const rate = Number(t.rate) || 0;
-        const biltyAmt = Number(t.biltyAmount || 0);
+        const totalFreight = Number(t.freight || t.biltyAmount || (weight && t.rate ? weight * t.rate : 0));
+        const biltyAmt = Number(t.biltyAmount || t.freight || totalFreight || 0);
+        const rate = Number(t.rate) || (weight > 0 && totalFreight > 0 ? Math.round(totalFreight / weight) : 0);
+        const pDue = Number(t.partyDue !== undefined ? t.partyDue : (t.due !== undefined ? t.due : (t.dueAmount !== undefined ? t.dueAmount : 0)));
+        const oDue = Number(t.ownerDue !== undefined ? t.ownerDue : (t.ownerBalance !== undefined ? t.ownerBalance : 0));
         const tripDate = this.formatDateDMY(t.tripStartDate || t.date || '-');
-        const consignorRef = t.consignor || t.reference || '-';
+        const consignorRef = t.reference || t.consignor || '-';
         const ownerName = t.ownerName || t.truckOwner || '-';
         const shortGr = this.getDisplayGrNo(t);
         const cleanDrv = this.getCleanDriverName(t);

@@ -10,6 +10,14 @@
     // Proactively delete legacy 5.4MB full trips dump immediately
     window.localStorage.removeItem('tms_trips');
     window.localStorage.removeItem('tms_excel_imported_v1');
+    window.localStorage.removeItem('tms_base_trips_cleared');
+
+    // Purge corrupted legacy custom trips containing "MTC & TTC Logistics Consignor" or future year 2028
+    const custom = window.localStorage.getItem('tms_custom_trips');
+    if (custom && (custom.includes('MTC & TTC Logistics Consignor') || custom.includes('26/07/2028') || custom.includes('2028-07-26') || custom.includes('TRIP_IMP_'))) {
+      window.localStorage.removeItem('tms_custom_trips');
+      console.log('[QuotaGuard] Purged stale corrupted custom trips dump.');
+    }
   } catch (e) {}
 
   const originalSetItem = window.localStorage.setItem.bind(window.localStorage);
@@ -219,8 +227,11 @@ class DBService {
       }
     }
 
-    // 2. Add/override with local custom trips
+    // 2. Add/override with local custom trips (ignore any corrupted legacy imports)
     for (const t of customTrips) {
+      if (!t || t.consignor === 'MTC & TTC Logistics Consignor') continue;
+      const dStr = String(t.tripStartDate || t.date || '');
+      if (dStr.includes('2028')) continue;
       const key = t.grNo || t.id;
       if (!deletedSet.has(String(t.id)) && !deletedSet.has(String(t.grNo))) {
         tripMap.set(key, editedMap[t.id] ? { ...t, ...editedMap[t.id] } : t);
@@ -230,6 +241,9 @@ class DBService {
     // 3. Add/override with cloud items from Firestore
     if (Array.isArray(cloudItems)) {
       for (const t of cloudItems) {
+        if (!t || t.consignor === 'MTC & TTC Logistics Consignor') continue;
+        const dStr = String(t.tripStartDate || t.date || '');
+        if (dStr.includes('2028')) continue;
         const key = t.grNo || t.id;
         if (!deletedSet.has(String(t.id)) && !deletedSet.has(String(t.grNo))) {
           tripMap.set(key, { ...(tripMap.get(key) || {}), ...t });
