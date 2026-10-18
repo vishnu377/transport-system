@@ -50,6 +50,8 @@ const TripsModule = {
       this.goToSettledTripsView(fyParam || 'All');
     } else if (viewParam === 'all') {
       this.goToAllTripsView(fyParam || 'All');
+    } else if (viewParam === 'freight') {
+      this.goToFreightTripsView(fyParam || 'All');
     } else if (viewParam === 'gst') {
       this.goToGstAmountView(fyParam || 'All');
     } else {
@@ -349,7 +351,8 @@ const TripsModule = {
     if (transport === 'SMTC' || shortGr.includes('SMTC')) return '#7b1fa2';
 
     const dateDMY = this.formatDateDMY(trip.tripStartDate || trip.date || '');
-    if (dateDMY.startsWith('14/10') || dateDMY.startsWith('13/10') || dateDMY.startsWith('10/10') || dateDMY.startsWith('09/10') || dateDMY.startsWith('05/10')) return '#967b2c';
+    if (dateDMY.startsWith('18/10') || dateDMY.startsWith('17/10') || dateDMY.startsWith('16/10') || dateDMY.startsWith('15/10') || dateDMY.startsWith('13/10') || dateDMY.startsWith('10/10') || dateDMY.startsWith('09/10') || dateDMY.startsWith('05/10')) return '#967b2c';
+    if (dateDMY.startsWith('14/10')) return '#00897b';
     if (dateDMY.startsWith('08/10') || dateDMY.startsWith('04/10') || dateDMY.startsWith('11/10')) return '#e91e63';
     if (dateDMY.startsWith('12/10')) return '#0077c2';
     if (dateDMY.startsWith('01/10') || dateDMY.startsWith('30/09') || dateDMY.startsWith('29/09') || dateDMY.startsWith('28/09') || dateDMY.startsWith('24/09')) return '#7b1fa2';
@@ -362,7 +365,8 @@ const TripsModule = {
 
   getDateRibbonBulletColor(dateKey) {
     if (!dateKey) return '#0077c2';
-    if (dateKey.startsWith('14/10') || dateKey.startsWith('13/10')) return '#967b2c'; // Mustard
+    if (dateKey.startsWith('18/10') || dateKey.startsWith('17/10') || dateKey.startsWith('16/10') || dateKey.startsWith('15/10') || dateKey.startsWith('13/10')) return '#967b2c'; // Mustard
+    if (dateKey.startsWith('14/10')) return '#00897b'; // Teal/Green
     if (dateKey.startsWith('12/10')) return '#0077c2'; // Blue
     if (dateKey.startsWith('31/03/2026')) return '#00acc1'; // Cyan
     if (dateKey.startsWith('30/03/2026') || dateKey.includes('2025') || dateKey.includes('2024')) return '#008a38'; // Green
@@ -458,12 +462,12 @@ const TripsModule = {
 
     const breadcrumbStatus = document.getElementById('active-breadcrumb-status');
     if (breadcrumbStatus) {
-      breadcrumbStatus.innerText = tab === 'open' ? 'Open' : tab === 'settled' ? 'Settled' : tab === 'gst' ? 'GST Amount' : 'All Bilties';
+      breadcrumbStatus.innerText = tab === 'open' ? 'Open' : tab === 'settled' ? 'Settled' : tab === 'freight' ? 'Trips Total Freight' : tab === 'gst' ? 'GST Amount' : 'All Bilties';
     }
 
     const searchInput = document.getElementById('search-trips');
     if (searchInput) {
-      searchInput.placeholder = tab === 'open' ? 'Search Open Trips' : tab === 'settled' ? 'Search Settled' : tab === 'gst' ? 'Search GST Invoices' : 'Search Trips';
+      searchInput.placeholder = tab === 'open' ? 'Search Open Trips' : tab === 'settled' ? 'Search Settled' : tab === 'freight' ? 'Search Trips Total Freight' : tab === 'gst' ? 'Search GST Invoices' : 'Search Trips';
     }
 
     this.currentPage = 1;
@@ -547,6 +551,18 @@ const TripsModule = {
       if (el26) el26.innerHTML = `<span class="appsheet-bullet green-bullet">●</span> ₹${fySettledFreight['2026-2027'].toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
       if (el25) el25.innerHTML = `<span class="appsheet-bullet green-bullet">●</span> ₹${fySettledFreight['2025-2026'].toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
       if (el24) el24.innerHTML = `<span class="appsheet-bullet green-bullet">●</span> ₹${fySettledFreight['2024-2025'].toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    } else if (this.workflowTab === 'freight') {
+      // In Trips Total Freight mode, AppSheet displays authentic total freight per FY (Matching card4_table_top.png)
+      const fyFreightTotals = {
+        '2026-2027': 377880748.00,
+        '2025-2026': 624453100.59,
+        '2024-2025': 264272359.88
+      };
+
+      if (elAll) elAll.innerText = 'All';
+      if (el26) el26.innerHTML = `<span class="appsheet-bullet green-bullet">●</span> ₹ ${fyFreightTotals['2026-2027'].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      if (el25) el25.innerHTML = `<span class="appsheet-bullet green-bullet">●</span> ₹ ${fyFreightTotals['2025-2026'].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      if (el24) el24.innerHTML = `<span class="appsheet-bullet green-bullet">●</span> ₹ ${fyFreightTotals['2024-2025'].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     } else {
       const fyCounts = {
         'All': this.allTrips.length,
@@ -809,6 +825,29 @@ const TripsModule = {
             <th style="width: 26px; min-width: 26px; text-align: center;">&gt;</th>
           </tr>
         `;
+      } else if (this.workflowTab === 'freight') {
+        // Authentic Trips Total Freight Register (Card 4) - 17 Columns matching card4_table_top.png
+        thead.innerHTML = `
+          <tr>
+            <th class="sticky-col-card4-actions text-center" style="width: 72px; min-width: 72px; max-width: 72px;"></th>
+            <th class="sticky-col-card4-bill text-center" style="width: 60px; min-width: 60px; max-width: 60px;">Bill No.</th>
+            <th class="sticky-col-card4-gr" style="width: 95px; min-width: 95px; max-width: 95px;">G.R.No.</th>
+            <th style="min-width: 100px;">Truck No.</th>
+            <th style="min-width: 110px;">Destination</th>
+            <th style="min-width: 130px; max-width: 160px;">Reference</th>
+            <th class="text-end" style="min-width: 85px;">Bilty Amount</th>
+            <th class="text-end" style="min-width: 65px;">Weight</th>
+            <th class="text-end" style="min-width: 70px;">Rate</th>
+            <th class="text-end" style="min-width: 90px;">Total Freight</th>
+            <th class="text-end" style="min-width: 90px;">Due Amount</th>
+            <th style="min-width: 130px; max-width: 170px;">Consignee</th>
+            <th class="text-end" style="min-width: 90px;">Owner Due</th>
+            <th style="min-width: 120px; max-width: 160px;">Owner</th>
+            <th style="min-width: 125px; max-width: 160px;">Driver</th>
+            <th style="min-width: 85px;">Trip Start Date</th>
+            <th style="width: 26px; min-width: 26px; text-align: center;">&gt;</th>
+          </tr>
+        `;
       } else {
         // Authentic Trips Register (Card 3: Trips) - 17 Columns matching crop_check_0.png
         thead.innerHTML = `
@@ -841,18 +880,19 @@ const TripsModule = {
       const dayTotalFreight = items.reduce((sum, i) => sum + (Number(i.biltyAmount || i.freight) || 0), 0);
       const isSettledTab = this.workflowTab === 'settled';
       const isOpenTab = this.workflowTab === 'open';
-      const isCard3 = (!isOpenTab && !isSettledTab);
+      const isFreightTab = this.workflowTab === 'freight';
+      const isCard3 = (this.workflowTab === 'all');
       const ribbonBulletColor = isSettledTab ? '#00a638' : this.getDateRibbonBulletColor(dateKey);
 
-      let dateBadgeHtml = `<span class="appsheet-drill-badge ms-2" style="background: #f1f3f4; color: #202124;">₹ ${dayTotalFreight.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
+      let dateBadgeHtml = `<span class="appsheet-drill-badge ms-2" style="background: #f1f3f4; color: #202124;">₹ ${dayTotalFreight.toLocaleString(isFreightTab ? 'en-US' : 'en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
       if (isCard3) {
         dateBadgeHtml = `<span class="appsheet-drill-badge ms-2" style="background: #e8eaed; color: #202124; font-weight: 600; padding: 2px 8px; border-radius: 12px;">${items.length}</span>`;
       }
 
-      // Date Group Divider Ribbon (Matching card3_top_crop.png, open_sc_top.png & settled_table_crop1.png)
+      // Date Group Divider Ribbon (Matching card4_table_top.png, card3_top_crop.png, open_sc_top.png & settled_table_crop1.png)
       html += `
         <tr class="appsheet-date-divider">
-          <td colspan="${isCard3 ? 17 : 15}">
+          <td colspan="${(isCard3 || isFreightTab) ? 17 : 15}">
             <span class="appsheet-bullet ${isSettledTab ? 'green-bullet' : ''}" style="color: ${ribbonBulletColor};">●</span>
             <span class="fw-bold ms-1" style="color: ${isSettledTab ? '#008a38' : '#202124'};">${dateKey}</span>
             ${dateBadgeHtml}
@@ -1059,6 +1099,127 @@ const TripsModule = {
               </td>
             </tr>
           `;
+        } else if (this.workflowTab === 'freight') {
+          // Authentic Trips Total Freight Register (Card 4) - 17 Columns matching card4_table_top.png
+          const themeColor = this.getRowColorTheme(t);
+          const isSettledTrip = this.isTripSettled(t);
+
+          // Action Column: Red bilty icon if unbilled, else 3 icons (Download + WhatsApp + Bill/Receipt)
+          let actionColHtml = '';
+          if (!t.billNo) {
+            actionColHtml = `
+              <div class="d-flex align-items-center justify-content-center">
+                <i class="bi bi-file-earmark-text text-danger" title="Generate Bill" style="cursor: pointer; font-size: 13px;" onclick="TripsModule.openGenerateBillModal('${t.id || t.grNo}')"></i>
+              </div>
+            `;
+          } else {
+            actionColHtml = `
+              <div class="d-flex align-items-center justify-content-center gap-2">
+                <i class="bi bi-download text-dark" title="Download Bilty" style="cursor: pointer; font-size: 12px;" onclick="TripsModule.downloadBilty('${t.id || t.grNo}')"></i>
+                <i class="bi bi-whatsapp text-success" title="Share on WhatsApp" style="cursor: pointer; font-size: 12px;" onclick="TripsModule.shareTripWhatsApp('${t.id || t.grNo}')"></i>
+                <i class="bi bi-receipt text-secondary" title="View / Update Bill" style="cursor: pointer; font-size: 12px;" onclick="TripsModule.openGenerateBillModal('${t.id || t.grNo}')"></i>
+              </div>
+            `;
+          }
+
+          let billCol = '';
+          if (t.billNo) {
+            billCol = `<span style="color: ${themeColor};">●</span> <span class="badge" style="background:#bca057; color:#fff; font-size:11px; font-weight:600;">${t.billNo}</span>`;
+          }
+
+          // Row click handler: Settled trip -> openSettledTripDetails, Open trip -> openTripDetails
+          const rowClickFn = isSettledTrip
+            ? `TripsModule.openSettledTripDetails('${t.id || t.grNo}', 'freight')`
+            : `TripsModule.openTripDetails('${t.id || t.grNo}', 'freight')`;
+
+          html += `
+            <tr class="appsheet-row" onclick="${rowClickFn}">
+              <!-- 1. Actions -->
+              <td class="text-center sticky-col-card4-actions" onclick="event.stopPropagation()">
+                ${actionColHtml}
+              </td>
+
+              <!-- 2. Bill No. -->
+              <td class="text-center sticky-col-card4-bill" style="font-size: 11px;">
+                ${billCol}
+              </td>
+
+              <!-- 3. G.R.No. -->
+              <td class="sticky-col-card4-gr" style="color: ${themeColor}; font-weight: bold;">
+                <span style="color: ${themeColor};">●</span> ${shortGr}
+              </td>
+
+              <!-- 4. Truck No. -->
+              <td style="color: ${themeColor}; font-weight: bold;">
+                <span style="color: ${themeColor};">●</span> ${t.truckNo || '-'}
+              </td>
+
+              <!-- 5. Destination -->
+              <td class="text-truncate" style="max-width: 115px; color: ${themeColor};" title="${t.destination || '-'}">
+                <span style="color: ${themeColor};">●</span> ${t.destination || '-'}
+              </td>
+
+              <!-- 6. Reference -->
+              <td class="text-truncate" style="max-width: 150px; color: ${themeColor};" title="${consignorRef}">
+                <span style="color: ${themeColor};">●</span> ${consignorRef}
+              </td>
+
+              <!-- 7. Bilty Amount -->
+              <td class="text-end" style="color: ${themeColor};">
+                ${biltyAmt > 0 ? `<span style="color:${themeColor};">●</span> ₹ ${biltyAmt.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : ''}
+              </td>
+
+              <!-- 8. Weight -->
+              <td class="text-end" style="color: ${themeColor};">
+                ${weight > 0 ? `<span style="color:${themeColor};">●</span> ${weight.toFixed(3)}` : ''}
+              </td>
+
+              <!-- 9. Rate -->
+              <td class="text-end" style="color: ${themeColor};">
+                ${rate > 0 ? `<span style="color:${themeColor};">●</span> ₹ ${rate.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : ''}
+              </td>
+
+              <!-- 10. Total Freight -->
+              <td class="text-end fw-semibold" style="color: ${themeColor};">
+                ${totalFreight > 0 ? `<span style="color:${themeColor};">●</span> ₹ ${totalFreight.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : ''}
+              </td>
+
+              <!-- 11. Due Amount (Bold Red if positive, Green if settled) -->
+              <td class="text-end fw-bold" style="color: ${pDue > 0 ? '#d90429' : '#008a38'};">
+                <span style="color: ${pDue > 0 ? '#d90429' : '#008a38'};">●</span> ₹ ${pDue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </td>
+
+              <!-- 12. Consignee -->
+              <td class="text-truncate" style="max-width: 160px; color: ${themeColor};" title="${t.consignee || '-'}">
+                ${t.consignee ? `<span style="color: ${themeColor};">●</span> ${t.consignee}` : ''}
+              </td>
+
+              <!-- 13. Owner Due (Bold Red if positive, Green if settled) -->
+              <td class="text-end fw-bold" style="color: ${oDue > 0 ? '#d90429' : '#008a38'};">
+                <span style="color: ${oDue > 0 ? '#d90429' : '#008a38'};">●</span> ₹ ${oDue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </td>
+
+              <!-- 14. Owner -->
+              <td class="text-truncate" style="max-width: 150px; color: ${themeColor};" title="${ownerName}">
+                ${ownerName ? `<span style="color: ${themeColor};">●</span> ${ownerName}` : ''}
+              </td>
+
+              <!-- 15. Driver -->
+              <td class="text-truncate" style="max-width: 150px; color: ${themeColor};" title="${cleanDrv}">
+                ${cleanDrv ? `<span style="color: ${themeColor};">●</span> ${cleanDrv}` : ''}
+              </td>
+
+              <!-- 16. Trip Start Date -->
+              <td style="color: ${themeColor};">
+                <span style="color: ${themeColor};">●</span> ${tripDate}
+              </td>
+
+              <!-- 17. Chevron > -->
+              <td class="text-center text-muted" style="width: 26px;">
+                <span class="appsheet-chevron">&gt;</span>
+              </td>
+            </tr>
+          `;
         } else {
           // Authentic Trips Register (Card 3: Trips) - 17 Columns matching crop_check_0.png
           const themeColor = this.getRowColorTheme(t);
@@ -1242,7 +1403,10 @@ const TripsModule = {
   // LEVEL 4: APPSHEET OPEN TRIP DETAILS & WORKSPACE HANDLERS
   // Matching wa_0.png through wa_21.png
   // ----------------------------------------------------
-  openTripDetails(tripId) {
+  openTripDetails(tripId, origin = null) {
+    if (origin) this.detailsOrigin = origin;
+    else if (!this.detailsOrigin) this.detailsOrigin = this.workflowTab;
+
     const idx = this.filteredTrips.findIndex(t => (t.id === tripId || t.grNo === tripId));
     if (idx === -1) {
       const found = this.allTrips.find(t => (t.id === tripId || t.grNo === tripId));
@@ -1256,8 +1420,8 @@ const TripsModule = {
 
     const t = this.activeTrip;
     const isSettled = this.isTripSettled(t);
-    if (this.workflowTab === 'settled') {
-      this.openSettledTripDetails(tripId);
+    if (this.workflowTab === 'settled' || (isSettled && (this.workflowTab === 'freight' || origin === 'freight'))) {
+      this.openSettledTripDetails(tripId, origin || this.workflowTab);
       return;
     }
     const pDue = Number(t.partyDue) || 0;
@@ -1476,9 +1640,11 @@ const TripsModule = {
     if (breadcrumbSep) breadcrumbSep.classList.remove('d-none');
     if (breadcrumbStatus) {
       breadcrumbStatus.classList.remove('d-none');
-      const tabLabel = this.workflowTab === 'open' ? 'Open' : 'Trips';
+      const isFromFreight = (origin === 'freight' || this.workflowTab === 'freight' || this.detailsOrigin === 'freight');
+      const tabLabel = isFromFreight ? 'Trips Total Freight' : (this.workflowTab === 'open' ? 'Open' : 'Trips');
+      const returnFn = isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.setWorkflowTab('${this.workflowTab}')`;
       breadcrumbStatus.innerHTML = `
-        <a href="javascript:void(0)" onclick="TripsModule.setWorkflowTab('${this.workflowTab}')">${tabLabel}</a>
+        <a href="javascript:void(0)" onclick="${returnFn}">${tabLabel}</a>
         <span class="sep text-muted mx-1">&gt;</span>
         <span class="active text-dark fw-bold">Open Trip Details</span>
       `;
@@ -1490,7 +1656,10 @@ const TripsModule = {
   // LEVEL 4-SETTLED: SETTLED TRIP DETAILS & WORKSPACE HANDLERS
   // Matching settled_detail_0.png through settled_detail_11.png
   // ----------------------------------------------------
-  openSettledTripDetails(tripId) {
+  openSettledTripDetails(tripId, origin = null) {
+    if (origin) this.detailsOrigin = origin;
+    else if (!this.detailsOrigin) this.detailsOrigin = this.workflowTab;
+
     const idx = this.filteredTrips.findIndex(t => (t.id === tripId || t.grNo === tripId));
     if (idx === -1) {
       const found = this.allTrips.find(t => (t.id === tripId || t.grNo === tripId));
@@ -1620,8 +1789,11 @@ const TripsModule = {
     if (breadcrumbSep) breadcrumbSep.classList.remove('d-none');
     if (breadcrumbStatus) {
       breadcrumbStatus.classList.remove('d-none');
+      const isFromFreight = (origin === 'freight' || this.workflowTab === 'freight' || this.detailsOrigin === 'freight');
+      const tabLabel = isFromFreight ? 'Trips Total Freight' : 'Settled';
+      const returnFn = isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.goToSettledTripsView('${this.currentFY}')`;
       breadcrumbStatus.innerHTML = `
-        <a href="javascript:void(0)" onclick="TripsModule.goToSettledTripsView()">Settled</a>
+        <a href="javascript:void(0)" onclick="${returnFn}">${tabLabel}</a>
         <span class="sep text-muted mx-1">&gt;</span>
         <span class="active text-dark fw-bold">Settled Trip Details</span>
       `;
@@ -1767,10 +1939,14 @@ const TripsModule = {
 
     const breadcrumbStatus = document.getElementById('active-breadcrumb-status');
     if (breadcrumbStatus) {
+      const isFromFreight = (this.workflowTab === 'freight' || this.detailsOrigin === 'freight');
+      const tabLabel = isFromFreight ? 'Trips Total Freight' : 'Settled';
+      const returnFn = isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.goToSettledTripsView()`;
+      const tripDetailsFn = `TripsModule.openSettledTripDetails('${t.id || t.grNo}', '${isFromFreight ? 'freight' : 'settled'}')`;
       breadcrumbStatus.innerHTML = `
-        <a href="javascript:void(0)" onclick="TripsModule.goToSettledTripsView()">Settled</a>
+        <a href="javascript:void(0)" onclick="${returnFn}">${tabLabel}</a>
         <span class="sep text-muted mx-1">&gt;</span>
-        <a href="javascript:void(0)" onclick="TripsModule.openSettledTripDetails('${t.id || t.grNo}')">Settled Trip Details</a>
+        <a href="javascript:void(0)" onclick="${tripDetailsFn}">Settled Trip Details</a>
         <span class="sep text-muted mx-1">&gt;</span>
         <span class="active text-dark fw-bold">Settled Trip Party Details</span>
       `;
@@ -1786,8 +1962,11 @@ const TripsModule = {
 
     const breadcrumbStatus = document.getElementById('active-breadcrumb-status');
     if (breadcrumbStatus) {
+      const isFromFreight = (this.workflowTab === 'freight' || this.detailsOrigin === 'freight');
+      const tabLabel = isFromFreight ? 'Trips Total Freight' : 'Settled';
+      const returnFn = isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.goToSettledTripsView()`;
       breadcrumbStatus.innerHTML = `
-        <a href="javascript:void(0)" onclick="TripsModule.goToSettledTripsView()">Settled</a>
+        <a href="javascript:void(0)" onclick="${returnFn}">${tabLabel}</a>
         <span class="sep text-muted mx-1">&gt;</span>
         <span class="active text-dark fw-bold">Settled Trip Details</span>
       `;
@@ -1809,10 +1988,14 @@ const TripsModule = {
 
     const breadcrumbStatus = document.getElementById('active-breadcrumb-status');
     if (breadcrumbStatus) {
+      const isFromFreight = (this.workflowTab === 'freight' || this.detailsOrigin === 'freight');
+      const tabLabel = isFromFreight ? 'Trips Total Freight' : 'Settled';
+      const returnFn = isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.goToSettledTripsView()`;
+      const tripDetailsFn = `TripsModule.openSettledTripDetails('${t.id || t.grNo}', '${isFromFreight ? 'freight' : 'settled'}')`;
       breadcrumbStatus.innerHTML = `
-        <a href="javascript:void(0)" onclick="TripsModule.goToSettledTripsView()">Settled</a>
+        <a href="javascript:void(0)" onclick="${returnFn}">${tabLabel}</a>
         <span class="sep text-muted mx-1">&gt;</span>
-        <a href="javascript:void(0)" onclick="TripsModule.openSettledTripDetails('${t.id || t.grNo}')">Settled Trip Details</a>
+        <a href="javascript:void(0)" onclick="${tripDetailsFn}">Settled Trip Details</a>
         <span class="sep text-muted mx-1">&gt;</span>
         <span class="active text-dark fw-bold">Trip Payment Details</span>
       `;
@@ -1897,10 +2080,14 @@ const TripsModule = {
 
     const breadcrumbStatus = document.getElementById('active-breadcrumb-status');
     if (breadcrumbStatus) {
+      const isFromFreight = (this.workflowTab === 'freight' || this.detailsOrigin === 'freight');
+      const tabLabel = isFromFreight ? 'Trips Total Freight' : 'Settled';
+      const returnFn = isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.goToSettledTripsView()`;
+      const tripDetailsFn = `TripsModule.openSettledTripDetails('${t.id || t.grNo}', '${isFromFreight ? 'freight' : 'settled'}')`;
       breadcrumbStatus.innerHTML = `
-        <a href="javascript:void(0)" onclick="TripsModule.goToSettledTripsView()">Settled</a>
+        <a href="javascript:void(0)" onclick="${returnFn}">${tabLabel}</a>
         <span class="sep text-muted mx-1">&gt;</span>
-        <a href="javascript:void(0)" onclick="TripsModule.openSettledTripDetails('${t.id || t.grNo}')">Settled Trip Details</a>
+        <a href="javascript:void(0)" onclick="${tripDetailsFn}">Settled Trip Details</a>
         <span class="sep text-muted mx-1">&gt;</span>
         <span class="active text-dark fw-bold">Trip Truck Owner Payment Details</span>
       `;
@@ -2112,8 +2299,11 @@ const TripsModule = {
 
       const breadcrumbStatus = document.getElementById('active-breadcrumb-status');
       if (breadcrumbStatus) {
+        const isFromFreight = (this.workflowTab === 'freight' || this.detailsOrigin === 'freight');
+        const tabLabel = isFromFreight ? 'Trips Total Freight' : (this.workflowTab === 'open' ? 'Open' : 'Trips');
+        const returnFn = isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.setWorkflowTab('${this.workflowTab}')`;
         breadcrumbStatus.innerHTML = `
-          <a href="javascript:void(0)" onclick="TripsModule.setWorkflowTab('open')">Open</a>
+          <a href="javascript:void(0)" onclick="${returnFn}">${tabLabel}</a>
           <span class="sep text-muted mx-1">&gt;</span>
           <a href="javascript:void(0)" onclick="TripsModule.returnToOpenTripDetails()">Open Trip Details</a>
           <span class="sep text-muted mx-1">&gt;</span>
@@ -2158,8 +2348,11 @@ const TripsModule = {
       }
       const breadcrumbStatus = document.getElementById('active-breadcrumb-status');
       if (breadcrumbStatus) {
+        const isFromFreight = (this.workflowTab === 'freight' || this.detailsOrigin === 'freight');
+        const tabLabel = isFromFreight ? 'Trips Total Freight' : (this.workflowTab === 'open' ? 'Open' : 'Trips');
+        const returnFn = isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.setWorkflowTab('${this.workflowTab}')`;
         breadcrumbStatus.innerHTML = `
-          <a href="javascript:void(0)" onclick="TripsModule.setWorkflowTab('open')">Open</a>
+          <a href="javascript:void(0)" onclick="${returnFn}">${tabLabel}</a>
           <span class="sep text-muted mx-1">&gt;</span>
           <a href="javascript:void(0)" onclick="TripsModule.returnToOpenTripDetails()">Open Trip Details</a>
           <span class="sep text-muted mx-1">&gt;</span>
@@ -2197,8 +2390,11 @@ const TripsModule = {
 
     const breadcrumbStatus = document.getElementById('active-breadcrumb-status');
     if (breadcrumbStatus) {
+      const isFromFreight = (this.workflowTab === 'freight' || this.detailsOrigin === 'freight');
+      const tabLabel = isFromFreight ? 'Trips Total Freight' : (this.workflowTab === 'open' ? 'Open' : 'Trips');
+      const returnFn = isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.setWorkflowTab('open')`;
       breadcrumbStatus.innerHTML = `
-        <a href="javascript:void(0)" onclick="TripsModule.setWorkflowTab('open')">Open</a>
+        <a href="javascript:void(0)" onclick="${returnFn}">${tabLabel}</a>
         <span class="sep text-muted mx-1">&gt;</span>
         <span class="active text-dark fw-bold">Open Trip Details</span>
       `;
@@ -3694,6 +3890,7 @@ const TripsModule = {
         open: 'Open',
         settled: 'Settled',
         all: 'Trips',
+        freight: 'Trips Total Freight',
         gst: 'GST Amount'
       };
       activeCrumb.innerText = (titleMap[status] || 'Trips') + (this.currentFY !== 'All' ? ` (${this.currentFY})` : '');
@@ -3733,7 +3930,7 @@ const TripsModule = {
 
     const searchInput = document.getElementById('search-trips');
     if (searchInput) {
-      searchInput.placeholder = status === 'open' ? 'Search Open Trips' : status === 'settled' ? 'Search Settled' : status === 'gst' ? 'Search GST Invoices' : 'Search Trips';
+      searchInput.placeholder = status === 'open' ? 'Search Open Trips' : status === 'settled' ? 'Search Settled' : status === 'freight' ? 'Search Trips Total Freight' : status === 'gst' ? 'Search GST Invoices' : 'Search Trips';
     }
 
     this.currentPage = 1;
@@ -3754,7 +3951,7 @@ const TripsModule = {
   },
 
   goToFreightTripsView(fy = 'All') {
-    this.goToRegisterView('all', fy);
+    this.goToRegisterView('freight', fy);
   },
 
   goToGstAmountView(fy = 'All') {

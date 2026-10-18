@@ -663,6 +663,36 @@
       box-shadow: none !important;
     }
 
+    /* Dedicated Trips Total Freight (Card 4) Sticky Columns (Zero Overlap Guaranteed) */
+    .sticky-col-card4-actions {
+      position: sticky;
+      left: 0;
+      width: 72px;
+      min-width: 72px;
+      max-width: 72px;
+      z-index: 2;
+      background: #ffffff;
+    }
+    .sticky-col-card4-bill {
+      position: sticky;
+      left: 72px;
+      width: 60px;
+      min-width: 60px;
+      max-width: 60px;
+      z-index: 2;
+      background: #ffffff;
+    }
+    .sticky-col-card4-gr {
+      position: sticky;
+      left: 132px;
+      width: 95px;
+      min-width: 95px;
+      max-width: 95px;
+      z-index: 2;
+      background: #ffffff;
+      box-shadow: none !important;
+    }
+
     .appsheet-table thead th {
       position: sticky;
       top: 0;
@@ -678,7 +708,10 @@
     .appsheet-table thead th.sticky-col-gr-settled,
     .appsheet-table thead th.sticky-col-bill-open,
     .appsheet-table thead th.sticky-col-4,
-    .appsheet-table thead th.sticky-col-gr-card3 {
+    .appsheet-table thead th.sticky-col-gr-card3,
+    .appsheet-table thead th.sticky-col-card4-actions,
+    .appsheet-table thead th.sticky-col-card4-bill,
+    .appsheet-table thead th.sticky-col-card4-gr {
       position: sticky;
       top: 0;
       z-index: 25;
@@ -693,7 +726,10 @@
     .appsheet-row:hover td.sticky-col-gr-settled,
     .appsheet-row:hover td.sticky-col-bill-open,
     .appsheet-row:hover td.sticky-col-4,
-    .appsheet-row:hover td.sticky-col-gr-card3 {
+    .appsheet-row:hover td.sticky-col-gr-card3,
+    .appsheet-row:hover td.sticky-col-card4-actions,
+    .appsheet-row:hover td.sticky-col-card4-bill,
+    .appsheet-row:hover td.sticky-col-card4-gr {
       background: #f8f9fa;
     }
 
@@ -1356,7 +1392,7 @@
               <div class="appsheet-drill-left">
                 <span class="appsheet-bullet green-bullet">●</span>
                 <span class="fw-semibold text-success">2026-2027</span>
-                <span class="appsheet-drill-badge" id="card-freight-badge-2026">₹ 361,649,153.00</span>
+                <span class="appsheet-drill-badge" id="card-freight-badge-2026">₹ 377,880,748.00</span>
               </div>
               <span class="appsheet-chevron">&gt;</span>
             </div>
@@ -3962,6 +3998,6 @@
   <script src="../js/sample-cheques-data.js?v=20261018_v7"></script>
   <script src="../js/db-service.js?v=20261018_v7"></script>
   <script src="../js/app.js?v=20261018_v7"></script>
-  <script src="../js/modules/trips.js?v=20261018_v7"></script>
+  <script src="../js/modules/trips.js?v=20261018_v8"></script>
 </body>
 </html>
