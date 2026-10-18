@@ -313,44 +313,74 @@ const TripsModule = {
   // ----------------------------------------------------
   // DYNAMIC COLOR ENGINE (Matching AppSheet open_sc_top.png)
   // ----------------------------------------------------
+  // DYNAMIC COLOR ENGINE (Matching Authentic AppSheet 7-8 Row Colors)
+  // 1. Mustard/Gold (#967b2c): Transit
+  // 2. Cyan/Teal (#00acc1): Truck Owner Payment Pending
+  // 3. Purple/Begani (#7b1fa2): POD Sent / Bill Generated / SMTC
+  // 4. Royal Blue (#0077c2): Cheque Due / Party Payment Pending
+  // 5. Magenta/Pink (#e91e63): Off Loading
+  // 6. Emerald Green (#008a38): Settled / Paid
+  // 7. Bold Red (#d90429): Negative GR / Cancelled / Shortage
+  // 8. Orange/Amber (#e65100): Loading / Advance Due
+  // ----------------------------------------------------
   getRowColorTheme(trip) {
     if (!trip) return '#0077c2';
+
     // 1. Explicit colorTheme
     if (trip.colorTheme) {
-      switch (trip.colorTheme) {
+      switch (String(trip.colorTheme).toLowerCase()) {
         case 'gold':
         case 'mustard':
-        case 'salety': return '#967b2c'; // Mustard / Olive
+        case 'salety': return '#967b2c';
         case 'purple':
-        case 'begani': return '#7b1fa2'; // Begani / Purple
+        case 'begani': return '#7b1fa2';
         case 'magenta':
-        case 'pink': return '#e91e63';   // Pink / Magenta
-        case 'green': return '#008a38';  // Green
-        case 'grey':
-        case 'slate': return '#5f6368';  // Slate Grey
+        case 'pink': return '#e91e63';
+        case 'green':
+        case 'emerald': return '#008a38';
+        case 'cyan':
+        case 'teal':
+        case 'turquoise': return '#00acc1';
         case 'blue':
-        case 'cyan': return '#0077c2';   // Cyan / Blue
-        case 'red': return '#d90429';    // Red
+        case 'royal': return '#0077c2';
+        case 'orange':
+        case 'amber': return '#e65100';
+        case 'grey':
+        case 'slate': return '#5f6368';
+        case 'red': return '#d90429';
       }
     }
 
     const shortGr = String(trip.shortGrNo || trip.grNo || '');
+    // 2. Negative GRs or shortage/cancelled entries are RED
     if (shortGr.startsWith('-')) return '#d90429';
 
-    // 2. Dynamic status mapping (Transit, Off Loading, Cheque Due, POD Sent, Settled)
+    // 3. Dynamic status mapping
     const status = String(trip.tripStatus || trip.status || '').trim().toLowerCase();
-    if (status.includes('transit') || status.includes('party payment pending')) return '#0077c2'; // Bright Cyan / Blue
-    if (status.includes('off loading') || status.includes('offloading')) return '#e91e63'; // Pink / Magenta
-    if (status.includes('cheque') || status.includes('due')) return '#967b2c'; // Mustard / Gold / Salety
-    if (status.includes('pod') || status.includes('bill')) return '#7b1fa2'; // Begani / Purple
-    if (status.includes('settled')) {
-      return '#008a38';
-    }
+    if (status.includes('settled') || status === 'paid' || status === 'closed') return '#008a38';
+    if (status.includes('cancel') || status.includes('dispute') || status.includes('shortage')) return '#d90429';
+    if (status.includes('off loading') || status.includes('offloading') || status.includes('off-loading')) return '#e91e63';
+    if (status.includes('pod') || status.includes('bill generat') || status.includes('bill sent')) return '#7b1fa2';
+    if (status.includes('truck owner payment') || status.includes('owner payment pending') || status.includes('owner due')) return '#00acc1';
+    if (status.includes('transit')) return '#967b2c';
+    if (status.includes('cheque')) return '#0077c2';
+    if (status.includes('loading') || status.includes('advance')) return '#e65100';
+    if (status.includes('party payment')) return '#0077c2';
 
+    // 4. SMTC transport
     const transport = String(trip.transport || '').toUpperCase();
     if (transport === 'SMTC' || shortGr.includes('SMTC')) return '#7b1fa2';
 
-    const dateDMY = this.formatDateDMY(trip.tripStartDate || trip.date || '');
+    // 5. Inferred payment state
+    const pDue = Number(trip.partyDue ?? trip.dueAmount ?? trip.balance ?? 0);
+    const oDue = Number(trip.ownerDue ?? 0);
+
+    if (pDue <= 0 && oDue <= 0 && (trip.status === 'Settled' || trip.paid > 0)) return '#008a38';
+    if (pDue <= 0 && oDue > 0) return '#00acc1';
+    if (trip.billNo) return '#0077c2';
+
+    // 6. Date-based defaults matching authentic AppSheet date clusters
+    const dateDMY = this.formatDateDMY(trip.tripStartDate || trip.date || trip.biltyDate || '');
     if (dateDMY.startsWith('18/10') || dateDMY.startsWith('17/10') || dateDMY.startsWith('16/10') || dateDMY.startsWith('15/10') || dateDMY.startsWith('13/10') || dateDMY.startsWith('10/10') || dateDMY.startsWith('09/10') || dateDMY.startsWith('05/10')) return '#967b2c';
     if (dateDMY.startsWith('14/10')) return '#00897b';
     if (dateDMY.startsWith('08/10') || dateDMY.startsWith('04/10') || dateDMY.startsWith('11/10')) return '#e91e63';
@@ -360,7 +390,8 @@ const TripsModule = {
     if (dateDMY.startsWith('31/03/2026')) return '#00acc1';
     if (dateDMY.startsWith('30/03/2026')) return '#008a38';
     if (dateDMY.startsWith('02/10')) return '#5f6368';
-    return '#0077c2';
+
+    return '#967b2c';
   },
 
   getDateRibbonBulletColor(dateKey) {
@@ -1518,8 +1549,12 @@ const TripsModule = {
 
     // CARD 3: Owner Total Payment, Owner Due & Status (wa_3.png)
     const ownerTotalPay = Number(t.ownerFreight || t.ownerTotalPayment || (totalFreight * 0.95)) || 0;
-    setHtml('op-owner-total-payment', `<span class="blue-bullet">●</span> ₹ ${ownerTotalPay.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
-    setHtml('op-owner-due', `<span class="red-bullet">●</span> ₹ ${oDue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+    setHtml('op-owner-total-payment', `<span class="theme-bullet">●</span> ₹ ${ownerTotalPay.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+    const opOwnerDueEl = document.getElementById('op-owner-due');
+    if (opOwnerDueEl) {
+      opOwnerDueEl.innerHTML = `<span class="${oDue > 0 ? 'red-bullet' : 'green-bullet'}">●</span> ₹ ${oDue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      opOwnerDueEl.className = oDue > 0 ? 'appsheet-open-field-value text-danger fw-bold' : 'appsheet-open-field-value text-success fw-bold';
+    }
 
     const tripStatus = t.tripStatus || t.status || 'Transit';
     const statusSelect = document.getElementById('op-trip-status-select');
@@ -1633,6 +1668,16 @@ const TripsModule = {
     const openDetailContainer = document.getElementById('trip-open-detail-view');
     if (openDetailContainer) {
       openDetailContainer.style.setProperty('--trip-theme-color', themeColor);
+    }
+
+    const opStatusBullet = document.getElementById('op-status-bullet');
+    if (opStatusBullet) opStatusBullet.style.color = themeColor;
+
+    const editBtn = document.querySelector('#trip-open-detail-view .btn-edit-badge');
+    if (editBtn) {
+      editBtn.style.backgroundColor = themeColor;
+      editBtn.style.borderColor = themeColor;
+      editBtn.style.color = '#ffffff';
     }
 
     const breadcrumbStatus = document.getElementById('active-breadcrumb-status');
@@ -2919,6 +2964,14 @@ const TripsModule = {
     if (openDetailContainer) {
       openDetailContainer.style.setProperty('--trip-theme-color', newTheme);
     }
+    const opStatusBullet = document.getElementById('op-status-bullet');
+    if (opStatusBullet) opStatusBullet.style.color = newTheme;
+
+    const editBtn = document.querySelector('#trip-open-detail-view .btn-edit-badge');
+    if (editBtn) {
+      editBtn.style.backgroundColor = newTheme;
+      editBtn.style.borderColor = newTheme;
+    }
 
     if (typeof dbService !== 'undefined' && dbService.update && this.activeTrip.id) {
       dbService.update('trips', this.activeTrip.id, { tripStatus: newStatus, status: newStatus })
@@ -3818,6 +3871,29 @@ const TripsModule = {
 
     const crumbTail = document.getElementById('appsheet-crumb-tail');
     if (crumbTail) crumbTail.innerHTML = '';
+
+    const breadcrumbStatus = document.getElementById('active-breadcrumb-status');
+    const breadcrumbSep = document.getElementById('breadcrumb-sep');
+    if (this.workflowTab === 'freight' || this.detailsOrigin === 'freight') {
+      this.workflowTab = 'freight';
+      if (breadcrumbSep) breadcrumbSep.classList.remove('d-none');
+      if (breadcrumbStatus) {
+        breadcrumbStatus.classList.remove('d-none');
+        breadcrumbStatus.innerHTML = `<span class="active text-dark fw-bold">Trips Total Freight</span>`;
+      }
+    } else if (this.workflowTab === 'settled') {
+      if (breadcrumbSep) breadcrumbSep.classList.remove('d-none');
+      if (breadcrumbStatus) {
+        breadcrumbStatus.classList.remove('d-none');
+        breadcrumbStatus.innerHTML = `<span class="active text-dark fw-bold">Settled</span>`;
+      }
+    } else if (this.workflowTab === 'open') {
+      if (breadcrumbSep) breadcrumbSep.classList.remove('d-none');
+      if (breadcrumbStatus) {
+        breadcrumbStatus.classList.remove('d-none');
+        breadcrumbStatus.innerHTML = `<span class="active text-dark fw-bold">Open</span>`;
+      }
+    }
   },
 
   // ----------------------------------------------------

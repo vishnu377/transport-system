@@ -984,12 +984,19 @@
       color: #202124;
     }
     .appsheet-open-action-btn.btn-edit-badge {
-      border: 1px solid #dadce0;
+      border: 1px solid var(--trip-theme-color, #a07e2a);
+      background: var(--trip-theme-color, #a07e2a);
       font-size: 12px;
       font-weight: 600;
       padding: 3px 12px;
-      border-radius: 14px;
-      color: #202124;
+      border-radius: 4px;
+      color: #ffffff;
+      transition: opacity 0.15s ease-in-out;
+    }
+    .appsheet-open-action-btn.btn-edit-badge:hover {
+      background: var(--trip-theme-color, #a07e2a);
+      color: #ffffff;
+      opacity: 0.9;
     }
 
     /* Open Details Left Particulars Card */
@@ -1873,8 +1880,12 @@
                   <option value="Cheque due">Cheque due</option>
                   <option value="POD sent">POD sent</option>
                   <option value="Bill generated">Bill generated</option>
+                  <option value="POD Sent/Bill Generated">POD Sent/Bill Generated</option>
+                  <option value="Truck Owner Payment Pending">Truck Owner Payment Pending</option>
                   <option value="Party Payment Pending">Party Payment Pending</option>
+                  <option value="Advance Due">Advance Due</option>
                   <option value="Settled">Settled</option>
+                  <option value="Cancelled / Shortage">Cancelled / Shortage</option>
                 </select>
                 <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2" title="Edit/Type Status" onclick="TripsModule.promptCustomTripStatus()"><i class="bi bi-pencil"></i></button>
               </div>
@@ -3987,17 +3998,17 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
   <!-- Core App Scripts with Cache Busting -->
-  <script src="../js/config.js?v=20261018_v7"></script>
+  <script src="../js/config.js?v=20261018_v9"></script>
   <!-- Universal Master Data Assets (Guaranteed 100% Offline & Fresh Git Deploy Resilience) -->
-  <script src="../js/sample-parties-data.js?v=20261018_v7"></script>
-  <script src="../js/sample-truck-owners-data.js?v=20261018_v7"></script>
-  <script src="../js/sample-drivers-data.js?v=20261018_v7"></script>
-  <script src="../js/open-trips-seed.js?v=20261018_v7"></script>
-  <script src="../js/sample-trips-data.js?v=20261018_v7"></script>
-  <script src="../js/sample-debts-data.js?v=20261018_v7"></script>
-  <script src="../js/sample-cheques-data.js?v=20261018_v7"></script>
-  <script src="../js/db-service.js?v=20261018_v7"></script>
-  <script src="../js/app.js?v=20261018_v7"></script>
-  <script src="../js/modules/trips.js?v=20261018_v8"></script>
+  <script src="../js/sample-parties-data.js?v=20261018_v9"></script>
+  <script src="../js/sample-truck-owners-data.js?v=20261018_v9"></script>
+  <script src="../js/sample-drivers-data.js?v=20261018_v9"></script>
+  <script src="../js/open-trips-seed.js?v=20261018_v9"></script>
+  <script src="../js/sample-trips-data.js?v=20261018_v9"></script>
+  <script src="../js/sample-debts-data.js?v=20261018_v9"></script>
+  <script src="../js/sample-cheques-data.js?v=20261018_v9"></script>
+  <script src="../js/db-service.js?v=20261018_v9"></script>
+  <script src="../js/app.js?v=20261018_v9"></script>
+  <script src="../js/modules/trips.js?v=20261018_v9"></script>
 </body>
 </html>
