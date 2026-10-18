@@ -627,7 +627,7 @@
       min-width: 95px;
       z-index: 2;
       background: #ffffff;
-      box-shadow: 2px 0 4px rgba(0,0,0,0.06);
+      box-shadow: none !important;
     }
     .sticky-col-gr-card3 {
       position: sticky;
@@ -636,7 +636,7 @@
       min-width: 95px;
       z-index: 2;
       background: #ffffff;
-      box-shadow: 2px 0 4px rgba(0,0,0,0.06);
+      box-shadow: none !important;
     }
     .appsheet-table thead th.sticky-col-1,
     .appsheet-table thead th.sticky-col-2,
@@ -1060,7 +1060,7 @@
     <!-- Top AppSheet Navbar -->
     <header class="appsheet-top-bar">
       <div class="d-flex align-items-center gap-2">
-        <button class="btn btn-sm btn-light border-0 d-md-none" onclick="TripsModule.toggleNavDrawer()">
+        <button class="btn btn-sm btn-light border-0" id="top-nav-hamburger-btn" onclick="TripsModule.toggleSidebar()" title="Toggle Sidebar Filter">
           <i class="bi bi-list fs-5"></i>
         </button>
         <a href="javascript:void(0)" onclick="TripsModule.goToTripsList()" class="appsheet-brand">
@@ -1151,8 +1151,8 @@
           <button type="button" class="btn-appsheet-alert py-0 px-2" id="toolbar-btn-truck-owner" onclick="TripsModule.openTruckOwnerAlert('open')" title="Truck Owner Alert">
             <span style="display:inline-block; width:12px; height:12px; background:#202124; color:#bfa15f; font-size:9px; line-height:12px; text-align:center; border-radius:2px; font-weight:bold;">!</span> Truck Own...
           </button>
-          <button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2" id="btn-toggle-sidebar" onclick="TripsModule.toggleSidebar()" title="Toggle Sidebar Filter">
-            <i class="bi bi-funnel"></i> <span id="btn-toggle-sidebar-text" class="d-none d-md-inline" style="font-size: 11px;">Filter</span>
+          <button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2 fw-semibold" id="btn-toggle-sidebar" onclick="TripsModule.toggleSidebar()" title="Hide / Show Sidebar Filter">
+            <i class="bi bi-layout-sidebar-inset"></i> <span id="btn-toggle-sidebar-text" class="d-none d-md-inline" style="font-size: 11px;">Sidebar</span>
           </button>
           <button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2" onclick="TripsModule.toggleBulkSelect()" title="Select Multiple"><i class="bi bi-check2-square"></i></button>
 
@@ -1474,6 +1474,12 @@
           
           <!-- LEFT FY HIERARCHY PANEL (Authentic AppSheet Style matching crop_check_0.png) -->
           <div class="appsheet-trips-sidebar" id="trips-fy-sidebar">
+            <div class="appsheet-trips-sidebar-header d-flex align-items-center justify-content-between px-3 py-2 mb-1 border-bottom">
+              <span class="text-uppercase fw-bold text-muted" style="font-size: 11px; letter-spacing: 0.5px;">Financial Year</span>
+              <button type="button" class="btn btn-sm btn-light py-0 px-1 border-0 text-secondary" id="btn-collapse-sidebar-inner" onclick="TripsModule.toggleSidebar()" title="Hide Sidebar (Collapse)" style="font-size: 13px; line-height: 1;">
+                <i class="bi bi-layout-sidebar-inset"></i>
+              </button>
+            </div>
             <div id="fy-pill-group">
               <div class="appsheet-trips-sidebar-item active" data-fy="All" onclick="TripsModule.filterByFY('All')">
                 <span class="fw-semibold">All</span>
@@ -1521,6 +1527,12 @@
 
           <!-- RIGHT MAIN TABLE CONTENT -->
           <div class="appsheet-trips-content">
+            <!-- Unhide Sidebar Filter Button (Visible when sidebar is collapsed) -->
+            <div id="unhide-sidebar-pill-wrap" class="d-none mb-2 pt-1">
+              <button type="button" class="btn btn-outline-secondary btn-sm py-1 px-2 fw-semibold d-inline-flex align-items-center gap-1 shadow-sm" onclick="TripsModule.toggleSidebar()" title="Show FY Filter Sidebar" style="font-size: 11px; border-radius: 4px; background: #ffffff;">
+                <i class="bi bi-layout-sidebar"></i> Show Financial Year Sidebar
+              </button>
+            </div>
             <div class="table-responsive" style="max-height: 720px; overflow-y: auto;">
               <table class="appsheet-table" id="debts-register-table">
                 <thead class="sticky-top" style="z-index: 5;">
@@ -3902,17 +3914,17 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
   <!-- Core App Scripts with Cache Busting -->
-  <script src="../js/config.js?v=20261018_v5"></script>
+  <script src="../js/config.js?v=20261018_v6"></script>
   <!-- Universal Master Data Assets (Guaranteed 100% Offline & Fresh Git Deploy Resilience) -->
-  <script src="../js/sample-parties-data.js?v=20261018_v5"></script>
-  <script src="../js/sample-truck-owners-data.js?v=20261018_v5"></script>
-  <script src="../js/sample-drivers-data.js?v=20261018_v5"></script>
-  <script src="../js/open-trips-seed.js?v=20261018_v5"></script>
-  <script src="../js/sample-trips-data.js?v=20261018_v5"></script>
-  <script src="../js/sample-debts-data.js?v=20261018_v5"></script>
-  <script src="../js/sample-cheques-data.js?v=20261018_v5"></script>
-  <script src="../js/db-service.js?v=20261018_v5"></script>
-  <script src="../js/app.js?v=20261018_v5"></script>
-  <script src="../js/modules/trips.js?v=20261018_v5"></script>
+  <script src="../js/sample-parties-data.js?v=20261018_v6"></script>
+  <script src="../js/sample-truck-owners-data.js?v=20261018_v6"></script>
+  <script src="../js/sample-drivers-data.js?v=20261018_v6"></script>
+  <script src="../js/open-trips-seed.js?v=20261018_v6"></script>
+  <script src="../js/sample-trips-data.js?v=20261018_v6"></script>
+  <script src="../js/sample-debts-data.js?v=20261018_v6"></script>
+  <script src="../js/sample-cheques-data.js?v=20261018_v6"></script>
+  <script src="../js/db-service.js?v=20261018_v6"></script>
+  <script src="../js/app.js?v=20261018_v6"></script>
+  <script src="../js/modules/trips.js?v=20261018_v6"></script>
 </body>
 </html>

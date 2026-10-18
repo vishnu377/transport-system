@@ -422,17 +422,22 @@ const TripsModule = {
     const sidebar = document.getElementById('trips-fy-sidebar');
     const btn = document.getElementById('btn-toggle-sidebar');
     const btnText = document.getElementById('btn-toggle-sidebar-text');
+    const unhideWrap = document.getElementById('unhide-sidebar-pill-wrap');
 
     if (splitEl) {
       splitEl.classList.toggle('sidebar-collapsed');
       const isCollapsed = splitEl.classList.contains('sidebar-collapsed');
       if (btn) {
         btn.classList.toggle('active', isCollapsed);
-        btn.classList.toggle('btn-dark', isCollapsed);
+        btn.classList.toggle('btn-primary', isCollapsed);
+        btn.classList.toggle('text-white', isCollapsed);
         btn.classList.toggle('btn-outline-secondary', !isCollapsed);
       }
       if (btnText) {
-        btnText.innerText = isCollapsed ? 'Show Filter' : 'Filter';
+        btnText.innerText = isCollapsed ? 'Show Sidebar' : 'Sidebar';
+      }
+      if (unhideWrap) {
+        unhideWrap.classList.toggle('d-none', !isCollapsed);
       }
       if (typeof AppUI !== 'undefined' && AppUI.showToast) {
         AppUI.showToast(isCollapsed ? 'Sidebar filter hidden. Showing full table width.' : 'Sidebar filter restored.', 'info');
