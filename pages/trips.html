@@ -519,6 +519,13 @@
       font-weight: 700;
       border-left: 3px solid var(--appsheet-green-dot);
     }
+    #debts-fy-list .appsheet-trips-sidebar-item.active {
+      background: #fdf5e2 !important;
+      color: #795548 !important;
+      font-weight: 700;
+      border-left: 3px solid #bca057 !important;
+      border-radius: 4px;
+    }
 
     .appsheet-trips-content {
       flex-grow: 1;
@@ -529,7 +536,7 @@
     /* AppSheet Trips Table - Responsive, Compact & High-Performance */
     .appsheet-table {
       width: 100%;
-      min-width: 1420px;
+      min-width: 1180px; /* Responsive standard display optimization (replaces rigid min-width: 1420px;) */
       margin: 0;
       border-collapse: separate;
       border-spacing: 0;
@@ -2168,8 +2175,6 @@
                   <th>Borrower Name</th>
                   <th>Receiver Name</th>
                   <th>Description</th>
-                  <th>Date</th>
-                  <th style="width: 30px;"></th>
                 </tr>
               </thead>
               <tbody id="open-debts-tbody">

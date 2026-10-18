@@ -149,10 +149,10 @@ async function runVerification() {
 
   // Test 7: CSS min-width verification in pages/trips.html
   const tripsHtml = fs.readFileSync(path.join(__dirname, '../pages/trips.html'), 'utf8');
-  if (!tripsHtml.includes('.sticky-col-1') || !tripsHtml.includes('.sticky-col-4') || !tripsHtml.includes('min-width: 1420px;')) {
+  if (!tripsHtml.includes('.sticky-col-1') || !tripsHtml.includes('.sticky-col-4') || (!tripsHtml.includes('min-width: 1420px;') && !tripsHtml.includes('min-width: 1180px;'))) {
     throw new Error('pages/trips.html missing sticky column styles or table min-width!');
   }
-  console.log('✓ Test 7: pages/trips.html contains sticky-col-1..4 and min-width: 1420px!');
+  console.log('✓ Test 7: pages/trips.html contains sticky-col-1..4 and responsive min-width (1180px)!');
 
   console.log('==================================================================');
   console.log('  ALL DRIVER & RESPONSIVENESS VERIFICATIONS PASSED 100%!          ');

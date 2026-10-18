@@ -237,11 +237,42 @@ class DBService {
       }
     }
 
+    // 4. Guaranteed high-precedence injection of authentic AppSheet seed trips
+    if (typeof window !== 'undefined' && Array.isArray(window.OPEN_TRIPS_SEED)) {
+      for (const s of window.OPEN_TRIPS_SEED) {
+        const key = s.grNo || s.shortGrNo || s.id;
+        if (!deletedSet.has(String(s.id)) && !deletedSet.has(String(s.grNo))) {
+          tripMap.set(key, editedMap[s.id] ? { ...s, ...editedMap[s.id] } : s);
+        }
+      }
+    }
+
+    const parseTs = (str) => {
+      if (!str || str === 'Undated' || str === '-') return 0;
+      const s = String(str).trim();
+      if (/^\d{4}-\d{2}-\d{2}/.test(s)) return new Date(s.slice(0, 10)).getTime() || 0;
+      const dmy = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
+      if (dmy) {
+        let p1 = parseInt(dmy[1], 10);
+        let p2 = parseInt(dmy[2], 10);
+        let year = parseInt(dmy[3], 10);
+        // Detect MM/DD/YYYY
+        let day = p1, month = p2 - 1;
+        if (p1 <= 12 && p2 > 12) {
+          day = p2;
+          month = p1 - 1;
+        }
+        return new Date(year, month, day).getTime() || 0;
+      }
+      const t = new Date(s).getTime();
+      return isNaN(t) ? 0 : t;
+    };
+
     const all = Array.from(tripMap.values());
     all.sort((a, b) => {
-      const dateA = a.tripStartDate || '';
-      const dateB = b.tripStartDate || '';
-      if (dateA !== dateB) return dateB.localeCompare(dateA);
+      const timeA = parseTs(a.tripStartDate || a.date || a.biltyDate);
+      const timeB = parseTs(b.tripStartDate || b.date || b.biltyDate);
+      if (timeA !== timeB) return timeB - timeA;
       return String(b.grNo || '').localeCompare(String(a.grNo || ''));
     });
 

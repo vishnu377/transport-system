@@ -225,8 +225,15 @@ const TripsModule = {
     if (typeof dbService !== 'undefined' && dbService.getAll) {
       dbService.getAll('trips').then(cloudTrips => {
         if (Array.isArray(cloudTrips) && cloudTrips.length > 0) {
-          this.allTrips = cloudTrips;
+          if (typeof window !== 'undefined' && Array.isArray(window.OPEN_TRIPS_SEED)) {
+            const seedGrNos = new Set(window.OPEN_TRIPS_SEED.map(s => s.grNo || s.shortGrNo || s.id));
+            const filteredCloud = cloudTrips.filter(t => !seedGrNos.has(t.grNo) && !seedGrNos.has(t.shortGrNo) && !seedGrNos.has(t.id));
+            this.allTrips = [...window.OPEN_TRIPS_SEED, ...filteredCloud];
+          } else {
+            this.allTrips = cloudTrips;
+          }
           this.normalizeDrivers();
+          this.renderFYSidebar();
           if (this.mainViewMode === 'dashboard') {
             if (typeof this.renderDashboardCards === 'function') {
               this.renderDashboardCards();
@@ -375,13 +382,30 @@ const TripsModule = {
     }
     const dmy = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
     if (dmy) {
-      const day = parseInt(dmy[1], 10);
-      const month = parseInt(dmy[2], 10) - 1;
-      const year = parseInt(dmy[3], 10);
+      let p1 = parseInt(dmy[1], 10);
+      let p2 = parseInt(dmy[2], 10);
+      let year = parseInt(dmy[3], 10);
+      let day = p1, month = p2 - 1;
+      if (p1 <= 12 && p2 > 12) {
+        day = p2;
+        month = p1 - 1;
+      }
       return new Date(year, month, day).getTime() || 0;
     }
     const t = new Date(s).getTime();
     return isNaN(t) ? 0 : t;
+  },
+
+  getTripFinancialYear(t) {
+    if (!t) return '2026-2027';
+    const ts = this.parseDateToTimestamp(t.tripStartDate || t.date || t.biltyDate);
+    if (ts > 0) {
+      const d = new Date(ts);
+      const y = d.getFullYear();
+      const m = d.getMonth() + 1; // 1 to 12
+      return m >= 4 ? `${y}-${y + 1}` : `${y - 1}-${y}`;
+    }
+    return t.financialYear || '2026-2027';
   },
 
   toggleNavDrawer() {
@@ -511,9 +535,9 @@ const TripsModule = {
     } else {
       const fyCounts = {
         'All': this.allTrips.length,
-        '2026-2027': this.allTrips.filter(t => t.financialYear === '2026-2027').length,
-        '2025-2026': this.allTrips.filter(t => t.financialYear === '2025-2026').length,
-        '2024-2025': this.allTrips.filter(t => t.financialYear === '2024-2025').length
+        '2026-2027': this.allTrips.filter(t => this.getTripFinancialYear(t) === '2026-2027').length,
+        '2025-2026': this.allTrips.filter(t => this.getTripFinancialYear(t) === '2025-2026').length,
+        '2024-2025': this.allTrips.filter(t => this.getTripFinancialYear(t) === '2024-2025').length
       };
 
       if (elAll) elAll.innerText = fyCounts['All'].toLocaleString('en-IN');
@@ -528,7 +552,7 @@ const TripsModule = {
       if (this.currentFY === 'All') {
         drilldownContainer.innerHTML = '';
       } else {
-        const fyTrips = this.allTrips.filter(t => t.financialYear === this.currentFY);
+        const fyTrips = this.allTrips.filter(t => this.getTripFinancialYear(t) === this.currentFY);
         const dateMap = new Map();
         fyTrips.forEach(t => {
           const dStr = this.formatDateDMY(t.tripStartDate || t.date || 'Undated');
@@ -592,7 +616,7 @@ const TripsModule = {
       }
 
       // 3. Financial Year Filter
-      if (this.currentFY !== 'All' && t.financialYear !== this.currentFY) {
+      if (this.currentFY !== 'All' && this.getTripFinancialYear(t) !== this.currentFY) {
         return false;
       }
 
@@ -641,7 +665,7 @@ const TripsModule = {
     // Compute live metrics for the FY / Active view
     let scopeTrips = this.allTrips;
     if (this.currentFY !== 'All') {
-      scopeTrips = this.allTrips.filter(t => t.financialYear === this.currentFY);
+      scopeTrips = this.allTrips.filter(t => this.getTripFinancialYear(t) === this.currentFY);
     }
 
     let openDueSum = 0;
@@ -1061,7 +1085,7 @@ const TripsModule = {
 
               <!-- 7. Bilty Amount -->
               <td class="text-end" style="color: ${themeColor};">
-                ${biltyAmt > 0 ? `<span style="color:${themeColor};">●</span> ₹ ${biltyAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : ''}
+                ${biltyAmt > 0 ? `<span style="color:${themeColor};">●</span> ${biltyAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : ''}
               </td>
 
               <!-- 8. Weight -->
@@ -1071,17 +1095,17 @@ const TripsModule = {
 
               <!-- 9. Rate -->
               <td class="text-end" style="color: ${themeColor};">
-                ${rate > 0 ? `<span style="color:${themeColor};">●</span> ₹ ${rate.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : ''}
+                ${rate > 0 ? `<span style="color:${themeColor};">●</span> ${rate.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : ''}
               </td>
 
               <!-- 10. Total Freight -->
               <td class="text-end" style="color: ${themeColor}; font-weight: 500;">
-                ${totalFreight > 0 ? `<span style="color:${themeColor};">●</span> ₹ ${totalFreight.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : ''}
+                ${totalFreight > 0 ? `<span style="color:${themeColor};">●</span> ${totalFreight.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : ''}
               </td>
 
               <!-- 11. Due Amount (Bold Red if positive, Green if settled) -->
               <td class="text-end fw-bold" style="color: ${pDue > 0 ? '#d90429' : '#008a38'};">
-                <span style="color: ${pDue > 0 ? '#d90429' : '#008a38'};">●</span> ₹ ${pDue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                <span style="color: ${pDue > 0 ? '#d90429' : '#008a38'};">●</span> ${pDue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </td>
 
               <!-- 12. Consignee -->
@@ -1091,7 +1115,7 @@ const TripsModule = {
 
               <!-- 13. Owner Due (Bold Red if positive, Green if settled) -->
               <td class="text-end fw-bold" style="color: ${oDue > 0 ? '#d90429' : '#008a38'};">
-                <span style="color: ${oDue > 0 ? '#d90429' : '#008a38'};">●</span> ₹ ${oDue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                <span style="color: ${oDue > 0 ? '#d90429' : '#008a38'};">●</span> ${oDue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </td>
 
               <!-- 14. Owner -->
@@ -3387,6 +3411,12 @@ const TripsModule = {
     document.getElementById('trip-open-detail-view')?.classList.add('d-none');
     document.getElementById('trip-settled-detail-view')?.classList.add('d-none');
     document.getElementById('trip-open-debts-view')?.classList.remove('d-none');
+
+    const activeBreadcrumb = document.getElementById('active-breadcrumb-status');
+    if (activeBreadcrumb) {
+      activeBreadcrumb.innerText = 'Open Trip Details';
+    }
+
     this.renderOpenDebtsTable();
   },
 
@@ -3394,9 +3424,17 @@ const TripsModule = {
     document.getElementById('trip-open-debts-view')?.classList.add('d-none');
     if (this.previousViewBeforeDebts === 'details' && this.activeTrip) {
       document.getElementById('trip-open-detail-view')?.classList.remove('d-none');
+      const activeBreadcrumb = document.getElementById('active-breadcrumb-status');
+      if (activeBreadcrumb) {
+        activeBreadcrumb.innerText = 'Open Trip Details';
+      }
     } else {
       document.getElementById('trips-view-register')?.classList.remove('d-none');
       document.getElementById('trips-register-toolbar')?.classList.remove('d-none');
+      const activeBreadcrumb = document.getElementById('active-breadcrumb-status');
+      if (activeBreadcrumb) {
+        activeBreadcrumb.innerText = this.workflowTab === 'open' ? 'Open' : this.workflowTab === 'settled' ? 'Settled' : 'Trips';
+      }
     }
   },
 
@@ -3445,7 +3483,7 @@ const TripsModule = {
     }
 
     if (items.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="12" class="text-center py-4 text-muted">No open debts found</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="10" class="text-center py-4 text-muted">No open debts found</td></tr>`;
       return;
     }
 
@@ -3465,7 +3503,7 @@ const TripsModule = {
       const groupSubtotal = groupItems.reduce((acc, cur) => acc + (Number(cur.dueAmount || cur.debtAmount) || 0), 0);
       html += `
         <tr class="appsheet-date-divider">
-          <td colspan="12" style="background-color: #fafafa; padding: 6px 12px;">
+          <td colspan="10" style="background-color: #fafafa; padding: 6px 12px;">
             <span class="appsheet-bullet theme-bullet" style="color: ${themeColor};">●</span>
             <span class="fw-bold ms-1" style="color: #202124;">${dateKey}</span>
             <span class="badge bg-light text-dark border ms-2" style="font-weight: 600;">₹${groupSubtotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
@@ -3517,14 +3555,6 @@ const TripsModule = {
             <!-- 10. Description -->
             <td style="color: ${themeColor};">
               ${d.description ? `<span style="color: ${themeColor};">●</span> ${d.description}` : '<span style="color: ' + themeColor + ';">●</span>'}
-            </td>
-            <!-- 11. Date -->
-            <td style="color: ${themeColor};">
-              <span style="color: ${themeColor};">●</span> ${d.displayDate || dateKey}
-            </td>
-            <!-- 12. Chevron -->
-            <td class="text-center text-muted">
-              <span class="appsheet-chevron">&gt;</span>
             </td>
           </tr>
         `;
@@ -3908,10 +3938,17 @@ const TripsModule = {
     if (isoParts.length === 3 && isoParts[0].length === 4) {
       return `${isoParts[2].slice(0, 2).padStart(2, '0')}/${isoParts[1].padStart(2, '0')}/${isoParts[0]}`;
     }
-    // If format is DD/MM/YYYY or D/M/YYYY
+    // If format is DD/MM/YYYY or MM/DD/YYYY
     const slashParts = s.split('/');
     if (slashParts.length === 3 && slashParts[2].length === 4) {
-      return `${slashParts[0].padStart(2, '0')}/${slashParts[1].padStart(2, '0')}/${slashParts[2]}`;
+      let p1 = parseInt(slashParts[0], 10);
+      let p2 = parseInt(slashParts[1], 10);
+      let y = slashParts[2];
+      if (p1 <= 12 && p2 > 12) {
+        // MM/DD/YYYY -> DD/MM/YYYY
+        return `${String(p2).padStart(2, '0')}/${String(p1).padStart(2, '0')}/${y}`;
+      }
+      return `${String(p1).padStart(2, '0')}/${String(p2).padStart(2, '0')}/${y}`;
     }
     return s;
   }
