@@ -484,6 +484,7 @@ const TripsModule = {
 
   setWorkflowTab(tab) {
     this.workflowTab = tab;
+    this.selectedDateFilter = null; // Clear date filter when switching tabs
 
     // Update active pill UI
     document.getElementById('wtab-open')?.classList.toggle('active', tab === 'open');
@@ -502,6 +503,7 @@ const TripsModule = {
     }
 
     this.currentPage = 1;
+    this.renderFYSidebar();
     this.goToTripsList();
     this.applyFilters();
   },
@@ -557,6 +559,30 @@ const TripsModule = {
     const el26 = document.getElementById('fy-count-2026');
     const el25 = document.getElementById('fy-count-2025');
     const el24 = document.getElementById('fy-count-2024');
+
+    // Update bullet colors on left FY labels (Blue for Open, Green for Settled/Trips/Freight/GST)
+    const isBlueMode = (this.workflowTab === 'open');
+    ['2026-2027', '2025-2026', '2024-2025'].forEach(fy => {
+      const itemEl = (typeof document !== 'undefined' && typeof document.querySelector === 'function')
+        ? document.querySelector(`#fy-pill-group .appsheet-trips-sidebar-item[data-fy="${fy}"]`)
+        : null;
+      if (itemEl && typeof itemEl.querySelector === 'function') {
+        const bulletEl = itemEl.querySelector('.appsheet-bullet');
+        const textEl = itemEl.querySelector('.fw-semibold');
+        if (bulletEl) {
+          bulletEl.className = `appsheet-bullet ${isBlueMode ? 'blue-bullet' : 'green-bullet'} me-1`;
+        }
+        if (textEl) {
+          if (isBlueMode) {
+            if (textEl.classList) textEl.classList.remove('text-success');
+            if (textEl.style) textEl.style.color = '#1a73e8';
+          } else {
+            if (textEl.classList) textEl.classList.add('text-success');
+            if (textEl.style) textEl.style.color = '';
+          }
+        }
+      }
+    });
 
     if (this.workflowTab === 'open') {
       // In Open mode, AppSheet displays the outstanding due amounts per FY (Matching open_sc_top.png)
@@ -614,7 +640,13 @@ const TripsModule = {
       if (this.currentFY === 'All') {
         drilldownContainer.innerHTML = '';
       } else {
-        const fyTrips = this.allTrips.filter(t => this.getTripFinancialYear(t) === this.currentFY);
+        const fyTrips = this.allTrips.filter(t => {
+          if (this.currentFY !== 'All' && this.getTripFinancialYear(t) !== this.currentFY) return false;
+          if (this.workflowTab === 'settled') return this.isTripSettled(t);
+          if (this.workflowTab === 'open') return this.isTripOpen(t);
+          if (this.workflowTab === 'gst') return Number(t.gstAmount) > 0 || t.isGstPaidByParty === 'Yes';
+          return true;
+        });
         const dateMap = new Map();
         fyTrips.forEach(t => {
           const dStr = this.formatDateDMY(t.tripStartDate || t.date || 'Undated');
@@ -924,9 +956,11 @@ const TripsModule = {
       html += `
         <tr class="appsheet-date-divider">
           <td colspan="${(isCard3 || isFreightTab) ? 17 : 15}">
-            <span class="appsheet-bullet ${isSettledTab ? 'green-bullet' : ''}" style="color: ${ribbonBulletColor};">●</span>
-            <span class="fw-bold ms-1" style="color: ${isSettledTab ? '#008a38' : '#202124'};">${dateKey}</span>
-            ${dateBadgeHtml}
+            <div class="appsheet-date-divider-sticky">
+              <span class="appsheet-bullet ${isSettledTab ? 'green-bullet' : ''}" style="color: ${ribbonBulletColor};">●</span>
+              <span class="fw-bold ms-1" style="color: ${isSettledTab ? '#008a38' : '#202124'};">${dateKey}</span>
+              ${dateBadgeHtml}
+            </div>
           </td>
         </tr>
       `;
@@ -3887,13 +3921,20 @@ const TripsModule = {
         breadcrumbStatus.classList.remove('d-none');
         breadcrumbStatus.innerHTML = `<span class="active text-dark fw-bold">Settled</span>`;
       }
-    } else if (this.workflowTab === 'open') {
+    } else if (this.workflowTab === 'all') {
       if (breadcrumbSep) breadcrumbSep.classList.remove('d-none');
       if (breadcrumbStatus) {
         breadcrumbStatus.classList.remove('d-none');
-        breadcrumbStatus.innerHTML = `<span class="active text-dark fw-bold">Open</span>`;
+        breadcrumbStatus.innerHTML = `<span class="active text-dark fw-bold">Trips</span>`;
+      }
+    } else if (this.workflowTab === 'gst') {
+      if (breadcrumbSep) breadcrumbSep.classList.remove('d-none');
+      if (breadcrumbStatus) {
+        breadcrumbStatus.classList.remove('d-none');
+        breadcrumbStatus.innerHTML = `<span class="active text-dark fw-bold">GST Amount</span>`;
       }
     }
+    this.renderFYSidebar();
   },
 
   // ----------------------------------------------------
@@ -4010,6 +4051,8 @@ const TripsModule = {
     }
 
     this.currentPage = 1;
+    this.selectedDateFilter = null; // Clear date filter when switching view
+    this.renderFYSidebar();
     this.applyFilters();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   },

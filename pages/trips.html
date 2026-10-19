@@ -579,22 +579,27 @@
       max-width: 44px;
       z-index: 2;
       background: #ffffff;
+      box-sizing: border-box;
     }
     .sticky-col-2 {
       position: sticky;
       left: 44px;
       width: 60px;
       min-width: 60px;
+      max-width: 60px;
       z-index: 2;
       background: #ffffff;
+      box-sizing: border-box;
     }
     .sticky-col-3 {
       position: sticky;
       left: 104px;
       width: 20px;
       min-width: 20px;
+      max-width: 20px;
       z-index: 2;
       background: #ffffff;
+      box-sizing: border-box;
     }
 
     /* Dedicated Settled Trips Sticky Columns (Zero Overlap Guaranteed) */
@@ -606,6 +611,7 @@
       max-width: 72px;
       z-index: 2;
       background: #ffffff;
+      box-sizing: border-box;
     }
     .sticky-col-dot-settled {
       position: sticky;
@@ -615,6 +621,7 @@
       max-width: 24px;
       z-index: 2;
       background: #ffffff;
+      box-sizing: border-box;
     }
     .sticky-col-bill-settled {
       position: sticky;
@@ -624,6 +631,7 @@
       max-width: 60px;
       z-index: 2;
       background: #ffffff;
+      box-sizing: border-box;
     }
     .sticky-col-gr-settled {
       position: sticky;
@@ -633,7 +641,9 @@
       max-width: 95px;
       z-index: 2;
       background: #ffffff;
-      box-shadow: none !important;
+      box-sizing: border-box;
+      border-right: 1px solid #dadce0 !important;
+      box-shadow: 2px 0 4px rgba(0, 0, 0, 0.03) !important;
     }
 
     .sticky-col-bill-open {
@@ -641,26 +651,34 @@
       left: 44px;
       width: 82px;
       min-width: 82px;
+      max-width: 82px;
       z-index: 2;
       background: #ffffff;
+      box-sizing: border-box;
     }
     .sticky-col-4 {
       position: sticky;
       left: 126px;
       width: 95px;
       min-width: 95px;
+      max-width: 95px;
       z-index: 2;
       background: #ffffff;
-      box-shadow: none !important;
+      box-sizing: border-box;
+      border-right: 1px solid #dadce0 !important;
+      box-shadow: 2px 0 4px rgba(0, 0, 0, 0.03) !important;
     }
     .sticky-col-gr-card3 {
       position: sticky;
-      left: 104px;
-      width: 95px;
-      min-width: 95px;
+      left: 104px !important;
+      width: 95px !important;
+      min-width: 95px !important;
+      max-width: 95px !important;
       z-index: 2;
       background: #ffffff;
-      box-shadow: none !important;
+      box-sizing: border-box;
+      border-right: 1px solid #dadce0 !important;
+      box-shadow: 2px 0 4px rgba(0, 0, 0, 0.03) !important;
     }
 
     /* Dedicated Trips Total Freight (Card 4) Sticky Columns (Zero Overlap Guaranteed) */
@@ -672,6 +690,7 @@
       max-width: 72px;
       z-index: 2;
       background: #ffffff;
+      box-sizing: border-box;
     }
     .sticky-col-card4-bill {
       position: sticky;
@@ -681,6 +700,7 @@
       max-width: 60px;
       z-index: 2;
       background: #ffffff;
+      box-sizing: border-box;
     }
     .sticky-col-card4-gr {
       position: sticky;
@@ -690,7 +710,9 @@
       max-width: 95px;
       z-index: 2;
       background: #ffffff;
-      box-shadow: none !important;
+      box-sizing: border-box;
+      border-right: 1px solid #dadce0 !important;
+      box-shadow: 2px 0 4px rgba(0, 0, 0, 0.03) !important;
     }
 
     .appsheet-table thead th {
@@ -716,6 +738,14 @@
       top: 0;
       z-index: 25;
       background: #ffffff;
+      box-sizing: border-box;
+    }
+    .appsheet-table thead th.sticky-col-gr-settled,
+    .appsheet-table thead th.sticky-col-4,
+    .appsheet-table thead th.sticky-col-gr-card3,
+    .appsheet-table thead th.sticky-col-card4-gr {
+      border-right: 1px solid #dadce0 !important;
+      box-shadow: 2px 0 4px rgba(0, 0, 0, 0.03) !important;
     }
     .appsheet-row:hover td.sticky-col-1,
     .appsheet-row:hover td.sticky-col-2,
@@ -765,7 +795,7 @@
       font-weight: 700;
     }
 
-    /* Date divider ribbon */
+    /* Date divider ribbon with sticky pinning on horizontal scroll */
     .appsheet-date-divider td {
       background: #fcfcfc;
       padding: 6px 10px;
@@ -774,6 +804,15 @@
       color: var(--appsheet-green-text);
       border-bottom: 1px solid #ebebeb;
       border-top: 1px solid #ebebeb;
+      position: relative;
+    }
+    .appsheet-date-divider-sticky {
+      position: sticky;
+      left: 12px;
+      display: inline-flex;
+      align-items: center;
+      z-index: 5;
+      white-space: nowrap;
     }
 
     .appsheet-bullet {
@@ -3998,17 +4037,17 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
   <!-- Core App Scripts with Cache Busting -->
-  <script src="../js/config.js?v=20261018_v9"></script>
+  <script src="../js/config.js?v=20261019_v1"></script>
   <!-- Universal Master Data Assets (Guaranteed 100% Offline & Fresh Git Deploy Resilience) -->
-  <script src="../js/sample-parties-data.js?v=20261018_v9"></script>
-  <script src="../js/sample-truck-owners-data.js?v=20261018_v9"></script>
-  <script src="../js/sample-drivers-data.js?v=20261018_v9"></script>
-  <script src="../js/open-trips-seed.js?v=20261018_v9"></script>
-  <script src="../js/sample-trips-data.js?v=20261018_v9"></script>
-  <script src="../js/sample-debts-data.js?v=20261018_v9"></script>
-  <script src="../js/sample-cheques-data.js?v=20261018_v9"></script>
-  <script src="../js/db-service.js?v=20261018_v9"></script>
-  <script src="../js/app.js?v=20261018_v9"></script>
-  <script src="../js/modules/trips.js?v=20261018_v9"></script>
+  <script src="../js/sample-parties-data.js?v=20261019_v1"></script>
+  <script src="../js/sample-truck-owners-data.js?v=20261019_v1"></script>
+  <script src="../js/sample-drivers-data.js?v=20261019_v1"></script>
+  <script src="../js/open-trips-seed.js?v=20261019_v1"></script>
+  <script src="../js/sample-trips-data.js?v=20261019_v1"></script>
+  <script src="../js/sample-debts-data.js?v=20261019_v1"></script>
+  <script src="../js/sample-cheques-data.js?v=20261019_v1"></script>
+  <script src="../js/db-service.js?v=20261019_v1"></script>
+  <script src="../js/app.js?v=20261019_v1"></script>
+  <script src="../js/modules/trips.js?v=20261019_v1"></script>
 </body>
 </html>
