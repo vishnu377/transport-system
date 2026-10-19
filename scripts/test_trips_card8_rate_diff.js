@@ -22,7 +22,7 @@ const htmlContent = fs.readFileSync('pages/trips.html', 'utf8');
 
 assert(htmlContent.includes('id="card-ratediff-badge-2026"'), 'Badge element for Card 8 FY 2026-2027 must exist');
 assert(htmlContent.includes('id="card-ratediff-badge-2025"'), 'Badge element for Card 8 FY 2025-2026 must exist');
-assert(htmlContent.includes('₹ 1,131,684.00'), 'Card 8 FY 2026-2027 badge must display authentic amount ₹ 1,131,684.00');
+assert(htmlContent.includes('₹ 1,117,284.00'), 'Card 8 FY 2026-2027 badge must display authentic amount ₹ 1,117,284.00');
 assert(htmlContent.includes('₹ 778,900.00'), 'Card 8 FY 2025-2026 badge must display authentic amount ₹ 778,900.00');
 assert(htmlContent.includes("TripsModule.goToRateDiffView('2026-2027')"), 'Card 8 row must hook to goToRateDiffView(2026-2027)');
 assert(htmlContent.includes("TripsModule.goToRateDiffView('2025-2026')"), 'Card 8 row must hook to goToRateDiffView(2025-2026)');
@@ -34,7 +34,7 @@ assert(htmlContent.includes('.sticky-col-card8-bill'), 'Must define .sticky-col-
 assert(htmlContent.includes('.sticky-col-card8-gr'), 'Must define .sticky-col-card8-gr CSS rule');
 assert(htmlContent.includes('.teal-bullet'), 'Must define .teal-bullet CSS rule');
 assert(htmlContent.includes('color: #01cebc;'), 'Must define teal color #01cebc in CSS');
-console.log('✔ pages/trips.html: Card 8 UI badges (₹ 1,131,684.00 & ₹ 778,900.00), sticky CSS, and hooks verified.');
+console.log('✔ pages/trips.html: Card 8 UI badges (₹ 1,117,284.00 & ₹ 778,900.00), sticky CSS, and hooks verified.');
 
 // 2. Verify Sample Data in js/open-trips-seed.js
 global.window = {};
@@ -43,7 +43,15 @@ const allSeedTrips = window.OPEN_TRIPS_SEED;
 assert(Array.isArray(allSeedTrips) && allSeedTrips.length > 80, `Expected >80 seed trips, found ${allSeedTrips ? allSeedTrips.length : 0}`);
 
 const rateDiffTrips = allSeedTrips.filter(t => t.isRateDiff === true);
-assert(rateDiffTrips.length >= 25, `Expected at least 25 authentic Rate Difference trips, found ${rateDiffTrips.length}`);
+assert(rateDiffTrips.length >= 280, `Expected at least 280 authentic Rate Difference trips (39 + 245), found ${rateDiffTrips.length}`);
+
+const rateDiff2026 = rateDiffTrips.filter(t => t.financialYear === '2026-2027');
+const rateDiff2025 = rateDiffTrips.filter(t => t.financialYear === '2025-2026');
+assert.strictEqual(rateDiff2026.length, 39, `FY 2026-2027 must have 39 trips, found ${rateDiff2026.length}`);
+assert.strictEqual(rateDiff2025.length, 245, `FY 2025-2026 must have 245 trips, found ${rateDiff2025.length}`);
+
+const sum2026 = rateDiff2026.reduce((s, t) => s + (t.ownerDue || 0), 0);
+assert.strictEqual(sum2026, 1117284, `FY 2026-2027 Owner Due sum must be exactly ₹ 1,117,284.00, got ${sum2026}`);
 
 // Verify trip 2460_TTC
 const trip2460 = rateDiffTrips.find(t => t.shortGrNo === '2460_TTC' || t.grNo === '2026-2027-2460_TTC');
@@ -56,7 +64,7 @@ assert.strictEqual(trip2460.ownerDue, 5800, 'Trip 2460 ownerDue must be 5800');
 assert(Array.isArray(trip2460.payments) && trip2460.payments.length === 2, 'Trip 2460 must have 2 payment entries');
 assert.strictEqual(trip2460.payments[0].amount, 114840, 'First payment must be ₹114,840.00');
 assert.strictEqual(trip2460.payments[1].amount, 4600, 'Second payment must be ₹4,600.00');
-console.log('✔ js/open-trips-seed.js: Trip 2460_TTC and authentic Rate Difference dataset verified.');
+console.log('✔ js/open-trips-seed.js: Trip 2460_TTC, 39 trips for 2026-2027 (sum: 1,117,284) and 245 trips for 2025-2026 (sum: 778,900) verified.');
 
 // Group Rate Difference trips by date and verify authentic day ribbon sums matching card8_table_top.png
 const dateMap = new Map();
@@ -83,10 +91,10 @@ assert.strictEqual(dateMap.get('2026-09-23'), 17170, '23/09/2026 Owner Due sum m
 assert.strictEqual(dateMap.get('2026-09-20'), 22880, '20/09/2026 Owner Due sum must be 22880 (11440 + 11440)');
 
 // FY 2025-2026 sum
-const sum2025 = rateDiffTrips.filter(t => t.financialYear === '2025-2026').reduce((s, t) => s + (t.ownerDue || 0), 0);
+const sum2025 = rateDiff2025.reduce((s, t) => s + (t.ownerDue || 0), 0);
 assert.strictEqual(sum2025, 778900, 'FY 2025-2026 Owner Due sum must be exactly ₹ 778,900.00');
 
-console.log('✔ Daily Owner Due sums (12/10: 5,800, 08/10: 7,397, 28/09: 5,837, 25/09: 16,486, 20/09: 22,880) match AppSheet screenshots with 100% precision.');
+console.log('✔ Daily Owner Due sums match AppSheet screenshots with 100% precision.');
 
 // 3. Verify trips.js logic
 const tripsJs = fs.readFileSync('js/modules/trips.js', 'utf8');
@@ -101,8 +109,11 @@ assert(tripsJs.includes("this.goToRegisterView('rate-diff', fy)"), 'goToRateDiff
 
 // Check sidebar FY hiding of 2024-2025 in Rate Difference mode
 assert(tripsJs.includes("this.workflowTab === 'rate-diff'"), 'trips.js must check workflowTab === "rate-diff"');
-assert(tripsJs.includes("'2026-2027': 1131684.00"), 'trips.js must set 1131684.00 for FY 2026-2027 in rate-diff mode');
+assert(tripsJs.includes("'2026-2027': 1117284.00"), 'trips.js must set 1117284.00 for FY 2026-2027 in rate-diff mode');
 assert(tripsJs.includes("'2025-2026': 778900.00"), 'trips.js must set 778900.00 for FY 2025-2026 in rate-diff mode');
+
+// Check gold bullet in Bill No column
+assert(tripsJs.includes('<span style="color: #c3b15a;">●</span>'), 'trips.js must render gold bullet in Bill No column');
 
 // Check day ribbon total for Rate Difference shows sum of ownerDue
 assert(tripsJs.includes('isRateDiffTab'), 'trips.js must define isRateDiffTab for table rendering');

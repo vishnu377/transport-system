@@ -684,7 +684,7 @@ const TripsModule = {
     } else if (this.workflowTab === 'rate-diff') {
       // In Rate Difference mode, AppSheet displays authentic Rate Difference totals per FY (Matching card8_table_top.png and card8_sidebar.png)
       const fyRateDiffTotals = {
-        '2026-2027': 1131684.00,
+        '2026-2027': 1117284.00,
         '2025-2026': 778900.00,
         '2024-2025': 0.00
       };
@@ -1527,10 +1527,10 @@ const TripsModule = {
           // Authentic Rate Difference Register (Card 8) - 14 Columns matching card8_columns.png and card8_table_top.png
           const rowClickFn = `TripsModule.openTripDetails('${t.id || t.grNo}', 'rate-diff')`;
 
-          // Bill No column with gold bullet if billed
-          let billCol = '';
+          // Bill No column with gold bullet (Always present in AppSheet, with number if billed)
+          let billCol = `<span style="color: #c3b15a;">●</span>`;
           if (t.billNo) {
-            billCol = `<span style="color: #c3b15a;">●</span> <span class="fw-bold" style="color: #202124;">${t.billNo}</span>`;
+            billCol += ` <span class="fw-bold" style="color: #202124;">${t.billNo}</span>`;
           }
 
           // Action column: Red doc icon if unbilled, or download/whatsapp/print if billed
@@ -1601,9 +1601,9 @@ const TripsModule = {
                 <span style="color: #01cebc;">●</span> ${t.consignee || '-'}
               </td>
 
-              <!-- 11. Owner Due (Bold Red ● #cc0b0b) -->
-              <td class="text-end fw-bold" style="color: #cc0b0b;">
-                <span style="color: #cc0b0b;">●</span> ₹ ${oDue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              <!-- 11. Owner Due (Bold Red ● #cc0b0b or negative) -->
+              <td class="text-end ${oDue < 0 ? 'text-muted' : 'fw-bold'}" style="${oDue >= 0 ? 'color: #cc0b0b;' : ''}">
+                ${oDue >= 0 ? '<span style="color: #cc0b0b;">●</span> ' : ''}₹ ${oDue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </td>
 
               <!-- 12. Owner (Teal ● #01cebc) -->
