@@ -681,6 +681,32 @@
       box-shadow: none !important;
     }
 
+    /* Dedicated GST Amount (Card 6) Columns */
+    .sticky-col-card6-actions {
+      width: 44px;
+      min-width: 44px;
+      max-width: 44px;
+      box-sizing: border-box;
+      border-right: none !important;
+      box-shadow: none !important;
+    }
+    .sticky-col-card6-bill {
+      width: 65px;
+      min-width: 65px;
+      max-width: 65px;
+      box-sizing: border-box;
+      border-right: none !important;
+      box-shadow: none !important;
+    }
+    .sticky-col-card6-gr {
+      width: 95px;
+      min-width: 95px;
+      max-width: 95px;
+      box-sizing: border-box;
+      border-right: none !important;
+      box-shadow: none !important;
+    }
+
     .appsheet-table thead th {
       position: sticky;
       top: 0;
@@ -702,7 +728,10 @@
     .appsheet-table thead th.sticky-col-gr-card3,
     .appsheet-table thead th.sticky-col-card4-actions,
     .appsheet-table thead th.sticky-col-card4-bill,
-    .appsheet-table thead th.sticky-col-card4-gr {
+    .appsheet-table thead th.sticky-col-card4-gr,
+    .appsheet-table thead th.sticky-col-card6-actions,
+    .appsheet-table thead th.sticky-col-card6-bill,
+    .appsheet-table thead th.sticky-col-card6-gr {
       background: #ffffff;
       box-sizing: border-box;
       border-right: none !important;
@@ -1443,7 +1472,7 @@
               <div class="appsheet-drill-left">
                 <span class="appsheet-bullet green-bullet">●</span>
                 <span class="fw-semibold text-success">2026-2027</span>
-                <span class="appsheet-drill-badge" id="card-gstamt-badge-2026">₹ 4,887,692.00</span>
+                <span class="appsheet-drill-badge" id="card-gstamt-badge-2026">₹ 5,300,734.00</span>
               </div>
               <span class="appsheet-chevron">&gt;</span>
             </div>
@@ -3986,17 +4015,17 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
   <!-- Core App Scripts with Cache Busting -->
-  <script src="../js/config.js?v=20261019_v2"></script>
+  <script src="../js/config.js?v=20261019_v3"></script>
   <!-- Universal Master Data Assets (Guaranteed 100% Offline & Fresh Git Deploy Resilience) -->
-  <script src="../js/sample-parties-data.js?v=20261019_v2"></script>
-  <script src="../js/sample-truck-owners-data.js?v=20261019_v2"></script>
-  <script src="../js/sample-drivers-data.js?v=20261019_v2"></script>
-  <script src="../js/open-trips-seed.js?v=20261019_v2"></script>
-  <script src="../js/sample-trips-data.js?v=20261019_v2"></script>
-  <script src="../js/sample-debts-data.js?v=20261019_v2"></script>
-  <script src="../js/sample-cheques-data.js?v=20261019_v2"></script>
-  <script src="../js/db-service.js?v=20261019_v2"></script>
-  <script src="../js/app.js?v=20261019_v2"></script>
-  <script src="../js/modules/trips.js?v=20261019_v2"></script>
+  <script src="../js/sample-parties-data.js?v=20261019_v3"></script>
+  <script src="../js/sample-truck-owners-data.js?v=20261019_v3"></script>
+  <script src="../js/sample-drivers-data.js?v=20261019_v3"></script>
+  <script src="../js/open-trips-seed.js?v=20261019_v3"></script>
+  <script src="../js/sample-trips-data.js?v=20261019_v3"></script>
+  <script src="../js/sample-debts-data.js?v=20261019_v3"></script>
+  <script src="../js/sample-cheques-data.js?v=20261019_v3"></script>
+  <script src="../js/db-service.js?v=20261019_v3"></script>
+  <script src="../js/app.js?v=20261019_v3"></script>
+  <script src="../js/modules/trips.js?v=20261019_v3"></script>
 </body>
 </html>

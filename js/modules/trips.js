@@ -620,6 +620,23 @@ const TripsModule = {
       if (el26) el26.innerHTML = `<span class="appsheet-bullet green-bullet">●</span> ₹ ${fyFreightTotals['2026-2027'].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
       if (el25) el25.innerHTML = `<span class="appsheet-bullet green-bullet">●</span> ₹ ${fyFreightTotals['2025-2026'].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
       if (el24) el24.innerHTML = `<span class="appsheet-bullet green-bullet">●</span> ₹ ${fyFreightTotals['2024-2025'].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    } else if (this.workflowTab === 'gst') {
+      // In GST Amount mode, AppSheet displays authentic GST Amount totals per FY (Matching card6_img2_top.png)
+      const fyGstTotals = {
+        '2026-2027': 5300734.00,
+        '2025-2026': 11841075.38,
+        '2024-2025': 0.00
+      };
+
+      if (elAll) elAll.innerText = 'All';
+      if (el26) el26.innerHTML = `<span class="appsheet-bullet green-bullet">●</span> ₹ ${fyGstTotals['2026-2027'].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      if (el25) el25.innerHTML = `<span class="appsheet-bullet green-bullet">●</span> ₹ ${fyGstTotals['2025-2026'].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      if (el24) el24.innerHTML = `<span class="appsheet-bullet green-bullet">●</span> ₹ ${fyGstTotals['2024-2025'].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    } else if (this.workflowTab === 'gst-not-paid') {
+      if (elAll) elAll.innerText = 'All';
+      if (el26) el26.innerHTML = `<span class="appsheet-bullet green-bullet">●</span> ₹ 0.00`;
+      if (el25) el25.innerHTML = `<span class="appsheet-bullet green-bullet">●</span> ₹ 0.00`;
+      if (el24) el24.innerHTML = `<span class="appsheet-bullet green-bullet">●</span> ₹ 0.00`;
     } else {
       const fyCounts = {
         'All': this.allTrips.length,
@@ -689,6 +706,14 @@ const TripsModule = {
     this.applyFilters();
   },
 
+  isTripGstNotPaid(t) {
+    if (!t) return false;
+    if (t.gstPaid === false || t.gstStatus === 'Not Paid' || t.gstStatus === 'Pending') return true;
+    if (t.isGstPaidByParty === 'No' && Number(t.gstAmount) > 0) return true;
+    if (t.gstNotPaid === true) return true;
+    return false;
+  },
+
   // ----------------------------------------------------
   // FILTER ENGINE & METRIC CALCULATION
   // ----------------------------------------------------
@@ -700,6 +725,7 @@ const TripsModule = {
       if (this.workflowTab === 'settled' && !this.isTripSettled(t)) return false;
       if (this.workflowTab === 'open' && !this.isTripOpen(t)) return false;
       if (this.workflowTab === 'gst' && (Number(t.gstAmount) <= 0 && t.isGstPaidByParty !== 'Yes')) return false;
+      if (this.workflowTab === 'gst-not-paid' && !this.isTripGstNotPaid(t)) return false;
 
       // 2. Firm Filter
       const firm = (t.transport || '').toUpperCase();
@@ -716,7 +742,7 @@ const TripsModule = {
 
       // 4. Date Sub-filter (if clicked in left sidebar drilldown)
       if (this.selectedDateFilter) {
-        const tripDateDMY = this.formatDateDMY(t.tripStartDate || t.date || '');
+        const tripDateDMY = this.formatDateDMY((this.workflowTab === 'gst' && t.billDate) ? t.billDate : (t.tripStartDate || t.date || ''));
         if (tripDateDMY !== this.selectedDateFilter) return false;
       }
 
@@ -739,7 +765,8 @@ const TripsModule = {
           t.material || '',
           t.billNo || '',
           t.tripStartDate || '',
-          t.biltyDate || ''
+          t.biltyDate || '',
+          t.billDate || ''
         ].join(' ').toLowerCase();
 
         if (!target.includes(q)) return false;
@@ -748,11 +775,16 @@ const TripsModule = {
       return true;
     });
 
-    // Sort: Start Date descending (true chronological), GR sequence descending
+    // Sort: Start Date / Bill Date descending (true chronological), GR sequence / Bill No descending
     this.filteredTrips.sort((a, b) => {
-      const timeA = this.parseDateToTimestamp(a.tripStartDate || a.date || a.biltyDate);
-      const timeB = this.parseDateToTimestamp(b.tripStartDate || b.date || b.biltyDate);
+      const dateValA = (this.workflowTab === 'gst' && a.billDate) ? a.billDate : (a.tripStartDate || a.date || a.biltyDate);
+      const dateValB = (this.workflowTab === 'gst' && b.billDate) ? b.billDate : (b.tripStartDate || b.date || b.biltyDate);
+      const timeA = this.parseDateToTimestamp(dateValA);
+      const timeB = this.parseDateToTimestamp(dateValB);
       if (timeA !== timeB) return timeB - timeA;
+      if (this.workflowTab === 'gst' && a.billNo && b.billNo && a.billNo !== b.billNo) {
+        return Number(a.billNo) - Number(b.billNo);
+      }
       return String(b.grNo || '').localeCompare(String(a.grNo || ''));
     });
 
@@ -835,9 +867,10 @@ const TripsModule = {
     }
 
     // Group items by trip start date (Authentic AppSheet Grouping)
+    // Group items by trip start date or bill date for GST (Authentic AppSheet Grouping)
     const dateGroups = new Map();
     displayItems.forEach(item => {
-      const rawDate = item.tripStartDate || item.date || item.biltyDate || 'Undated';
+      const rawDate = (this.workflowTab === 'gst' && item.billDate) ? item.billDate : (item.tripStartDate || item.date || item.biltyDate || 'Undated');
       const dateKey = this.formatDateDMY(rawDate);
       if (!dateGroups.has(dateKey)) {
         dateGroups.set(dateKey, []);
@@ -845,7 +878,7 @@ const TripsModule = {
       dateGroups.get(dateKey).push(item);
     });
 
-    // Dynamically adjust table headers based on Open vs Settled workflow
+    // Dynamically adjust table headers based on Open vs Settled vs Freight vs GST workflow
     const thead = document.querySelector('#debts-register-table thead');
     if (thead) {
       if (this.workflowTab === 'open') {
@@ -911,6 +944,27 @@ const TripsModule = {
             <th style="width: 26px; min-width: 26px; text-align: center;">&gt;</th>
           </tr>
         `;
+      } else if (this.workflowTab === 'gst') {
+        // Authentic GST Amount Register (Card 6) - 14 Columns matching card6_table_header.png
+        thead.innerHTML = `
+          <tr>
+            <th class="sticky-col-card6-actions text-center" style="width: 44px; min-width: 44px; max-width: 44px;"><i class="bi bi-download text-success" title="Download"></i></th>
+            <th class="sticky-col-card6-bill" style="min-width: 65px;">Bill No.</th>
+            <th class="sticky-col-card6-gr" style="min-width: 95px;">G.R.No.</th>
+            <th style="min-width: 90px;">Bill Date</th>
+            <th style="min-width: 105px;">Truck No.</th>
+            <th style="min-width: 120px;">Destination</th>
+            <th style="min-width: 140px; max-width: 170px;">Reference</th>
+            <th style="min-width: 140px; max-width: 180px;">Consignor</th>
+            <th style="min-width: 140px; max-width: 180px;">Consignee</th>
+            <th class="text-end" style="min-width: 75px;">Weight</th>
+            <th class="text-end" style="min-width: 85px;">Rate</th>
+            <th class="text-end" style="min-width: 100px;">Freight</th>
+            <th class="text-end" style="min-width: 100px;">GST Amount</th>
+            <th class="text-end" style="min-width: 110px;">Total</th>
+            <th style="width: 26px; min-width: 26px; text-align: center;">&gt;</th>
+          </tr>
+        `;
       } else {
         // Authentic Trips Register (Card 3: Trips) - 17 Columns matching crop_check_0.png
         thead.innerHTML = `
@@ -944,25 +998,28 @@ const TripsModule = {
       const isSettledTab = this.workflowTab === 'settled';
       const isOpenTab = this.workflowTab === 'open';
       const isFreightTab = this.workflowTab === 'freight';
+      const isGstTab = this.workflowTab === 'gst';
       const isCard3 = (this.workflowTab === 'all');
-      const ribbonBulletColor = isSettledTab ? '#00a638' : this.getDateRibbonBulletColor(dateKey);
+      const ribbonBulletColor = (isSettledTab || isGstTab) ? '#00a638' : this.getDateRibbonBulletColor(dateKey);
 
       let dateBadgeHtml = `<span class="appsheet-drill-badge ms-2" style="background: #f1f3f4; color: #202124;">₹ ${dayTotalFreight.toLocaleString(isFreightTab ? 'en-US' : 'en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
       if (isCard3) {
         dateBadgeHtml = `<span class="appsheet-drill-badge ms-2" style="background: #e8eaed; color: #202124; font-weight: 600; padding: 2px 8px; border-radius: 12px;">${items.length}</span>`;
+      } else if (isGstTab) {
+        const dayTotalGst = items.reduce((sum, i) => sum + (Number(i.gstAmount) || 0), 0);
+        dateBadgeHtml = `<span class="appsheet-drill-badge ms-2" style="background: #e8eaed; color: #202124; font-weight: 600; padding: 2px 8px; border-radius: 4px;">₹ ${dayTotalGst.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
       }
 
-      // Date Group Divider Ribbon (Matching card4_table_top.png, card3_top_crop.png, open_sc_top.png & settled_table_crop1.png)
+      // Date Group Divider Ribbon (Matching card6_img2_top.png, card4_table_top.png, card3_top_crop.png, open_sc_top.png & settled_table_crop1.png)
       html += `
         <tr class="appsheet-date-divider">
           <td colspan="${(isCard3 || isFreightTab) ? 17 : 15}">
             <div class="appsheet-date-divider-sticky">
-              <span class="appsheet-bullet ${isSettledTab ? 'green-bullet' : ''}" style="color: ${ribbonBulletColor};">●</span>
-              <span class="fw-bold ms-1" style="color: ${isSettledTab ? '#008a38' : '#202124'};">${dateKey}</span>
+              <span class="appsheet-bullet ${(isSettledTab || isGstTab) ? 'green-bullet' : ''}" style="color: ${ribbonBulletColor};">●</span>
+              <span class="fw-bold ms-1" style="color: ${(isSettledTab || isGstTab) ? '#008a38' : '#202124'};">${dateKey}</span>
               ${dateBadgeHtml}
             </div>
           </td>
-        </tr>
       `;
 
       // Item Rows (Authentic AppSheet Layout - Exactly 18 or 15 columns)
@@ -1285,6 +1342,94 @@ const TripsModule = {
               </td>
             </tr>
           `;
+        } else if (this.workflowTab === 'gst') {
+          // Authentic GST Amount Register (Card 6) - 14 Columns matching card6_table_header.png & card6_rows_sample.png
+          const gstAmt = Number(t.gstAmount) || 0;
+          const totalWithGst = Number(t.total) || (totalFreight + gstAmt);
+          const billDateFormatted = this.formatDateDMY(t.billDate || t.tripStartDate || t.date || '-');
+          const isSettledTrip = this.isTripSettled(t);
+          const rowClickFn = isSettledTrip
+            ? `TripsModule.openSettledTripDetails('${t.id || t.grNo}', 'gst')`
+            : `TripsModule.openTripDetails('${t.id || t.grNo}', 'gst')`;
+
+          html += `
+            <tr class="appsheet-row" onclick="${rowClickFn}">
+              <!-- 1. Action: Download Invoice (Green Icon matching card6_rows_sample.png) -->
+              <td class="text-center sticky-col-card6-actions" onclick="event.stopPropagation()">
+                <i class="bi bi-download text-success" title="Download Invoice" style="cursor: pointer; font-size: 13px;" onclick="TripsModule.downloadGstInvoice('${t.id || t.grNo}')"></i>
+              </td>
+
+              <!-- 2. Bill No. -->
+              <td class="sticky-col-card6-bill fw-bold" style="color: #008a38;">
+                <span style="color: #008a38;">●</span> ${t.billNo || '-'}
+              </td>
+
+              <!-- 3. G.R.No. -->
+              <td class="sticky-col-card6-gr fw-bold" style="color: #008a38;">
+                <span style="color: #008a38;">●</span> ${shortGr}
+              </td>
+
+              <!-- 4. Bill Date -->
+              <td class="fw-bold" style="color: #008a38;">
+                <span style="color: #008a38;">●</span> ${billDateFormatted}
+              </td>
+
+              <!-- 5. Truck No. -->
+              <td class="fw-bold" style="color: #008a38;">
+                <span style="color: #008a38;">●</span> ${t.truckNo || '-'}
+              </td>
+
+              <!-- 6. Destination -->
+              <td class="text-truncate fw-bold" style="max-width: 130px; color: #008a38;" title="${t.destination || '-'}">
+                <span style="color: #008a38;">●</span> ${t.destination || '-'}
+              </td>
+
+              <!-- 7. Reference -->
+              <td class="text-truncate fw-bold" style="max-width: 160px; color: #008a38;" title="${consignorRef}">
+                <span style="color: #008a38;">●</span> ${consignorRef}
+              </td>
+
+              <!-- 8. Consignor -->
+              <td class="text-truncate fw-bold" style="max-width: 170px; color: #008a38;" title="${t.consignor || '-'}">
+                <span style="color: #008a38;">●</span> ${t.consignor || '-'}
+              </td>
+
+              <!-- 9. Consignee -->
+              <td class="text-truncate fw-bold" style="max-width: 170px; color: #008a38;" title="${t.consignee || '-'}">
+                <span style="color: #008a38;">●</span> ${t.consignee || '-'}
+              </td>
+
+              <!-- 10. Weight -->
+              <td class="text-end fw-bold" style="color: #008a38;">
+                ${weight > 0 ? `<span style="color: #008a38;">●</span> ${weight.toFixed(3)}` : ''}
+              </td>
+
+              <!-- 11. Rate -->
+              <td class="text-end fw-bold" style="color: #008a38;">
+                ${rate > 0 ? `<span style="color: #008a38;">●</span> ₹ ${rate.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : ''}
+              </td>
+
+              <!-- 12. Freight -->
+              <td class="text-end fw-bold" style="color: #008a38;">
+                ${totalFreight > 0 ? `<span style="color: #008a38;">●</span> ₹ ${totalFreight.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : ''}
+              </td>
+
+              <!-- 13. GST Amount (Black bullet ● and black bold text matching card6_rows_sample.png) -->
+              <td class="text-end fw-bold" style="color: #202124;">
+                ${gstAmt > 0 ? `<span style="color: #202124;">●</span> ₹ ${gstAmt.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : ''}
+              </td>
+
+              <!-- 14. Total (Freight + GST) -->
+              <td class="text-end fw-bold" style="color: #008a38;">
+                ${totalWithGst > 0 ? `<span style="color: #008a38;">●</span> ₹ ${totalWithGst.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : ''}
+              </td>
+
+              <!-- 15. Chevron > -->
+              <td class="text-center text-muted" style="width: 26px;">
+                <span class="appsheet-chevron">&gt;</span>
+              </td>
+            </tr>
+          `;
         } else {
           // Authentic Trips Register (Card 3: Trips) - 17 Columns matching crop_check_0.png
           const themeColor = this.getRowColorTheme(t);
@@ -1485,7 +1630,7 @@ const TripsModule = {
 
     const t = this.activeTrip;
     const isSettled = this.isTripSettled(t);
-    if (this.workflowTab === 'settled' || (isSettled && (this.workflowTab === 'freight' || origin === 'freight'))) {
+    if (this.workflowTab === 'settled' || (isSettled && (this.workflowTab === 'freight' || origin === 'freight' || this.workflowTab === 'gst' || origin === 'gst'))) {
       this.openSettledTripDetails(tripId, origin || this.workflowTab);
       return;
     }
@@ -1719,9 +1864,10 @@ const TripsModule = {
     if (breadcrumbSep) breadcrumbSep.classList.remove('d-none');
     if (breadcrumbStatus) {
       breadcrumbStatus.classList.remove('d-none');
+      const isFromGst = (origin === 'gst' || this.workflowTab === 'gst' || this.detailsOrigin === 'gst');
       const isFromFreight = (origin === 'freight' || this.workflowTab === 'freight' || this.detailsOrigin === 'freight');
-      const tabLabel = isFromFreight ? 'Trips Total Freight' : (this.workflowTab === 'open' ? 'Open' : 'Trips');
-      const returnFn = isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.setWorkflowTab('${this.workflowTab}')`;
+      const tabLabel = isFromGst ? 'GST Amount' : (isFromFreight ? 'Trips Total Freight' : (this.workflowTab === 'open' ? 'Open' : 'Trips'));
+      const returnFn = isFromGst ? `TripsModule.goToGstAmountView('${this.currentFY}')` : (isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.setWorkflowTab('${this.workflowTab}')`);
       breadcrumbStatus.innerHTML = `
         <a href="javascript:void(0)" onclick="${returnFn}">${tabLabel}</a>
         <span class="sep text-muted mx-1">&gt;</span>
@@ -1868,9 +2014,10 @@ const TripsModule = {
     if (breadcrumbSep) breadcrumbSep.classList.remove('d-none');
     if (breadcrumbStatus) {
       breadcrumbStatus.classList.remove('d-none');
+      const isFromGst = (origin === 'gst' || this.workflowTab === 'gst' || this.detailsOrigin === 'gst');
       const isFromFreight = (origin === 'freight' || this.workflowTab === 'freight' || this.detailsOrigin === 'freight');
-      const tabLabel = isFromFreight ? 'Trips Total Freight' : 'Settled';
-      const returnFn = isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.goToSettledTripsView('${this.currentFY}')`;
+      const tabLabel = isFromGst ? 'GST Amount' : (isFromFreight ? 'Trips Total Freight' : 'Settled');
+      const returnFn = isFromGst ? `TripsModule.goToGstAmountView('${this.currentFY}')` : (isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.goToSettledTripsView('${this.currentFY}')`);
       breadcrumbStatus.innerHTML = `
         <a href="javascript:void(0)" onclick="${returnFn}">${tabLabel}</a>
         <span class="sep text-muted mx-1">&gt;</span>
@@ -2018,10 +2165,11 @@ const TripsModule = {
 
     const breadcrumbStatus = document.getElementById('active-breadcrumb-status');
     if (breadcrumbStatus) {
+      const isFromGst = (this.workflowTab === 'gst' || this.detailsOrigin === 'gst');
       const isFromFreight = (this.workflowTab === 'freight' || this.detailsOrigin === 'freight');
-      const tabLabel = isFromFreight ? 'Trips Total Freight' : 'Settled';
-      const returnFn = isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.goToSettledTripsView()`;
-      const tripDetailsFn = `TripsModule.openSettledTripDetails('${t.id || t.grNo}', '${isFromFreight ? 'freight' : 'settled'}')`;
+      const tabLabel = isFromGst ? 'GST Amount' : (isFromFreight ? 'Trips Total Freight' : 'Settled');
+      const returnFn = isFromGst ? `TripsModule.goToGstAmountView('${this.currentFY}')` : (isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.goToSettledTripsView()`);
+      const tripDetailsFn = `TripsModule.openSettledTripDetails('${t.id || t.grNo}', '${isFromGst ? 'gst' : (isFromFreight ? 'freight' : 'settled')}')`;
       breadcrumbStatus.innerHTML = `
         <a href="javascript:void(0)" onclick="${returnFn}">${tabLabel}</a>
         <span class="sep text-muted mx-1">&gt;</span>
@@ -2041,9 +2189,10 @@ const TripsModule = {
 
     const breadcrumbStatus = document.getElementById('active-breadcrumb-status');
     if (breadcrumbStatus) {
+      const isFromGst = (this.workflowTab === 'gst' || this.detailsOrigin === 'gst');
       const isFromFreight = (this.workflowTab === 'freight' || this.detailsOrigin === 'freight');
-      const tabLabel = isFromFreight ? 'Trips Total Freight' : 'Settled';
-      const returnFn = isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.goToSettledTripsView()`;
+      const tabLabel = isFromGst ? 'GST Amount' : (isFromFreight ? 'Trips Total Freight' : 'Settled');
+      const returnFn = isFromGst ? `TripsModule.goToGstAmountView('${this.currentFY}')` : (isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.goToSettledTripsView()`);
       breadcrumbStatus.innerHTML = `
         <a href="javascript:void(0)" onclick="${returnFn}">${tabLabel}</a>
         <span class="sep text-muted mx-1">&gt;</span>
@@ -2067,10 +2216,11 @@ const TripsModule = {
 
     const breadcrumbStatus = document.getElementById('active-breadcrumb-status');
     if (breadcrumbStatus) {
+      const isFromGst = (this.workflowTab === 'gst' || this.detailsOrigin === 'gst');
       const isFromFreight = (this.workflowTab === 'freight' || this.detailsOrigin === 'freight');
-      const tabLabel = isFromFreight ? 'Trips Total Freight' : 'Settled';
-      const returnFn = isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.goToSettledTripsView()`;
-      const tripDetailsFn = `TripsModule.openSettledTripDetails('${t.id || t.grNo}', '${isFromFreight ? 'freight' : 'settled'}')`;
+      const tabLabel = isFromGst ? 'GST Amount' : (isFromFreight ? 'Trips Total Freight' : 'Settled');
+      const returnFn = isFromGst ? `TripsModule.goToGstAmountView('${this.currentFY}')` : (isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.goToSettledTripsView()`);
+      const tripDetailsFn = `TripsModule.openSettledTripDetails('${t.id || t.grNo}', '${isFromGst ? 'gst' : (isFromFreight ? 'freight' : 'settled')}')`;
       breadcrumbStatus.innerHTML = `
         <a href="javascript:void(0)" onclick="${returnFn}">${tabLabel}</a>
         <span class="sep text-muted mx-1">&gt;</span>
@@ -2159,10 +2309,11 @@ const TripsModule = {
 
     const breadcrumbStatus = document.getElementById('active-breadcrumb-status');
     if (breadcrumbStatus) {
+      const isFromGst = (this.workflowTab === 'gst' || this.detailsOrigin === 'gst');
       const isFromFreight = (this.workflowTab === 'freight' || this.detailsOrigin === 'freight');
-      const tabLabel = isFromFreight ? 'Trips Total Freight' : 'Settled';
-      const returnFn = isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.goToSettledTripsView()`;
-      const tripDetailsFn = `TripsModule.openSettledTripDetails('${t.id || t.grNo}', '${isFromFreight ? 'freight' : 'settled'}')`;
+      const tabLabel = isFromGst ? 'GST Amount' : (isFromFreight ? 'Trips Total Freight' : 'Settled');
+      const returnFn = isFromGst ? `TripsModule.goToGstAmountView('${this.currentFY}')` : (isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.goToSettledTripsView()`);
+      const tripDetailsFn = `TripsModule.openSettledTripDetails('${t.id || t.grNo}', '${isFromGst ? 'gst' : (isFromFreight ? 'freight' : 'settled')}')`;
       breadcrumbStatus.innerHTML = `
         <a href="javascript:void(0)" onclick="${returnFn}">${tabLabel}</a>
         <span class="sep text-muted mx-1">&gt;</span>
@@ -2378,9 +2529,10 @@ const TripsModule = {
 
       const breadcrumbStatus = document.getElementById('active-breadcrumb-status');
       if (breadcrumbStatus) {
+        const isFromGst = (this.workflowTab === 'gst' || this.detailsOrigin === 'gst');
         const isFromFreight = (this.workflowTab === 'freight' || this.detailsOrigin === 'freight');
-        const tabLabel = isFromFreight ? 'Trips Total Freight' : (this.workflowTab === 'open' ? 'Open' : 'Trips');
-        const returnFn = isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.setWorkflowTab('${this.workflowTab}')`;
+        const tabLabel = isFromGst ? 'GST Amount' : (isFromFreight ? 'Trips Total Freight' : (this.workflowTab === 'open' ? 'Open' : 'Trips'));
+        const returnFn = isFromGst ? `TripsModule.goToGstAmountView('${this.currentFY}')` : (isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.setWorkflowTab('${this.workflowTab}')`);
         breadcrumbStatus.innerHTML = `
           <a href="javascript:void(0)" onclick="${returnFn}">${tabLabel}</a>
           <span class="sep text-muted mx-1">&gt;</span>
@@ -2427,9 +2579,10 @@ const TripsModule = {
       }
       const breadcrumbStatus = document.getElementById('active-breadcrumb-status');
       if (breadcrumbStatus) {
+        const isFromGst = (this.workflowTab === 'gst' || this.detailsOrigin === 'gst');
         const isFromFreight = (this.workflowTab === 'freight' || this.detailsOrigin === 'freight');
-        const tabLabel = isFromFreight ? 'Trips Total Freight' : (this.workflowTab === 'open' ? 'Open' : 'Trips');
-        const returnFn = isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.setWorkflowTab('${this.workflowTab}')`;
+        const tabLabel = isFromGst ? 'GST Amount' : (isFromFreight ? 'Trips Total Freight' : (this.workflowTab === 'open' ? 'Open' : 'Trips'));
+        const returnFn = isFromGst ? `TripsModule.goToGstAmountView('${this.currentFY}')` : (isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.setWorkflowTab('${this.workflowTab}')`);
         breadcrumbStatus.innerHTML = `
           <a href="javascript:void(0)" onclick="${returnFn}">${tabLabel}</a>
           <span class="sep text-muted mx-1">&gt;</span>
@@ -2469,9 +2622,10 @@ const TripsModule = {
 
     const breadcrumbStatus = document.getElementById('active-breadcrumb-status');
     if (breadcrumbStatus) {
+      const isFromGst = (this.workflowTab === 'gst' || this.detailsOrigin === 'gst');
       const isFromFreight = (this.workflowTab === 'freight' || this.detailsOrigin === 'freight');
-      const tabLabel = isFromFreight ? 'Trips Total Freight' : (this.workflowTab === 'open' ? 'Open' : 'Trips');
-      const returnFn = isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.setWorkflowTab('open')`;
+      const tabLabel = isFromGst ? 'GST Amount' : (isFromFreight ? 'Trips Total Freight' : (this.workflowTab === 'open' ? 'Open' : 'Trips'));
+      const returnFn = isFromGst ? `TripsModule.goToGstAmountView('${this.currentFY}')` : (isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.setWorkflowTab('open')`);
       breadcrumbStatus.innerHTML = `
         <a href="javascript:void(0)" onclick="${returnFn}">${tabLabel}</a>
         <span class="sep text-muted mx-1">&gt;</span>
@@ -3927,11 +4081,19 @@ const TripsModule = {
         breadcrumbStatus.classList.remove('d-none');
         breadcrumbStatus.innerHTML = `<span class="active text-dark fw-bold">Trips</span>`;
       }
-    } else if (this.workflowTab === 'gst') {
+    } else if (this.workflowTab === 'gst' || this.detailsOrigin === 'gst') {
+      this.workflowTab = 'gst';
       if (breadcrumbSep) breadcrumbSep.classList.remove('d-none');
       if (breadcrumbStatus) {
         breadcrumbStatus.classList.remove('d-none');
         breadcrumbStatus.innerHTML = `<span class="active text-dark fw-bold">GST Amount</span>`;
+      }
+    } else if (this.workflowTab === 'gst-not-paid' || this.detailsOrigin === 'gst-not-paid') {
+      this.workflowTab = 'gst-not-paid';
+      if (breadcrumbSep) breadcrumbSep.classList.remove('d-none');
+      if (breadcrumbStatus) {
+        breadcrumbStatus.classList.remove('d-none');
+        breadcrumbStatus.innerHTML = `<span class="active text-dark fw-bold">GST not Paid</span>`;
       }
     }
     this.renderFYSidebar();
@@ -4008,7 +4170,8 @@ const TripsModule = {
         settled: 'Settled',
         all: 'Trips',
         freight: 'Trips Total Freight',
-        gst: 'GST Amount'
+        gst: 'GST Amount',
+        'gst-not-paid': 'GST not Paid'
       };
       activeCrumb.innerText = (titleMap[status] || 'Trips') + (this.currentFY !== 'All' ? ` (${this.currentFY})` : '');
     }
@@ -4047,7 +4210,7 @@ const TripsModule = {
 
     const searchInput = document.getElementById('search-trips');
     if (searchInput) {
-      searchInput.placeholder = status === 'open' ? 'Search Open Trips' : status === 'settled' ? 'Search Settled' : status === 'freight' ? 'Search Trips Total Freight' : status === 'gst' ? 'Search GST Invoices' : 'Search Trips';
+      searchInput.placeholder = status === 'open' ? 'Search Open Trips' : status === 'settled' ? 'Search Settled' : status === 'freight' ? 'Search Trips Total Freight' : status === 'gst' ? 'Search GST Amount' : status === 'gst-not-paid' ? 'Search GST not Paid' : 'Search Trips';
     }
 
     this.currentPage = 1;
@@ -4081,10 +4244,8 @@ const TripsModule = {
     this.goToRegisterView('gst', fy);
   },
 
-  goToGstNotPaidView() {
-    if (typeof AppUI !== 'undefined') {
-      AppUI.showToast('GST Not Paid: All current GST records are fully audited and settled.', 'info');
-    }
+  goToGstNotPaidView(fy = 'All') {
+    this.goToRegisterView('gst-not-paid', fy);
   },
 
   goToRateDiffView(fy = 'All') {
@@ -4111,6 +4272,23 @@ const TripsModule = {
   // ----------------------------------------------------
   // ACTIONS: PRINT, EDIT, WHATSAPP, PAYMENT MODAL
   // ----------------------------------------------------
+  downloadGstInvoice(tripId) {
+    const id = tripId || (this.activeTrip ? (this.activeTrip.id || this.activeTrip.grNo) : null);
+    if (!id) return;
+    const t = this.allTrips.find(x => x.id === id || x.grNo === id) || (this.activeTrip && (this.activeTrip.id === id || this.activeTrip.grNo === id) ? this.activeTrip : null);
+    const targetId = t ? (t.id || t.grNo) : id;
+    if (t && t.billNo) {
+      if (typeof window !== 'undefined' && window.open) {
+        window.open(`./bills.html?billNo=${encodeURIComponent(t.billNo)}&print=1`, '_blank');
+      }
+      if (typeof AppUI !== 'undefined') {
+        AppUI.showToast(`Downloading GST Invoice for Bill #${t.billNo}`, 'success');
+      }
+    } else {
+      this.printBiltyRow(targetId);
+    }
+  },
+
   downloadBilty(tripId) {
     const id = tripId || (this.activeTrip ? (this.activeTrip.id || this.activeTrip.grNo) : null);
     if (!id) return;
