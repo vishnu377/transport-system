@@ -17,7 +17,7 @@
       --appsheet-card-bg: #ffffff;
       --appsheet-text: #202124;
       --appsheet-muted: #5f6368;
-      --appsheet-border: #e0e0e0;
+      --appsheet-border: #dadce0;
       --appsheet-gold: #bfa15f;
       --appsheet-gold-hover: #b0914e;
       --appsheet-chip-bg: #dadce0;
@@ -27,144 +27,173 @@
       background-color: var(--appsheet-bg);
       color: var(--appsheet-text);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Left Slim Rail */
+    .appsheet-rail {
+      width: 48px;
+      min-width: 48px;
+      background: #ffffff;
+      border-right: 1px solid var(--appsheet-border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 8px 0;
+      z-index: 1020;
+    }
+
+    /* Main Workspace */
+    .appsheet-main-workspace {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      background: #f8f9fa;
+      min-width: 0;
     }
 
     /* Top AppSheet Nav */
     .appsheet-top-bar {
       background: #ffffff;
       border-bottom: 1px solid var(--appsheet-border);
-      padding: 0.5rem 1.25rem;
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 52px;
+    }
+
+    .appsheet-brand {
+      font-size: 15px;
+      font-weight: 500;
+      color: #202124;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
     }
 
     .appsheet-search-box {
       background: #f1f3f4;
       border: 1px solid transparent;
       border-radius: 8px;
-      padding: 0.45rem 1rem;
+      padding: 5px 12px;
       width: 100%;
-      max-width: 480px;
+      max-width: 460px;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 8px;
     }
     .appsheet-search-box input {
       background: transparent;
       border: none;
       outline: none;
       width: 100%;
-      font-size: 0.95rem;
+      font-size: 13.5px;
       color: var(--appsheet-text);
     }
 
-    /* AppSheet Breadcrumbs */
+    /* User Avatar */
+    .appsheet-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #8d6e63;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 13px;
+      user-select: none;
+    }
+
+    /* AppSheet Subheader & Breadcrumbs */
+    .appsheet-subheader {
+      background: #ffffff;
+      border-bottom: 1px solid #e0e0e0;
+      padding: 7px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 42px;
+    }
+
     .appsheet-breadcrumb {
-      font-size: 0.95rem;
+      font-size: 13px;
       color: var(--appsheet-muted);
       font-weight: 500;
       display: flex;
       align-items: center;
-      gap: 0.35rem;
+      gap: 5px;
+    }
+    .appsheet-breadcrumb a {
+      color: var(--appsheet-muted);
+      text-decoration: none;
+    }
+    .appsheet-breadcrumb a:hover {
+      text-decoration: underline;
+    }
+    .appsheet-breadcrumb .sep {
+      color: #80868b;
+      font-size: 11px;
     }
     .appsheet-breadcrumb span.active {
       color: var(--appsheet-text);
       font-weight: 600;
     }
 
-    /* AppSheet Gold Button */
+    /* View Toggle Grid Button */
+    .btn-view-toggle {
+      background: transparent;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      color: #5f6368;
+      font-size: 15px;
+      padding: 2px 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1.2;
+      transition: all 0.15s ease;
+    }
+    .btn-view-toggle:hover {
+      background: #f1f3f4;
+      color: #202124;
+    }
+
+    /* AppSheet Gold Action Button */
     .btn-appsheet-add {
       background-color: var(--appsheet-gold);
       color: #1a1a1a;
       font-weight: 600;
-      font-size: 0.85rem;
+      font-size: 12px;
       border-radius: 4px;
-      padding: 0.35rem 0.9rem;
+      padding: 4px 10px;
       border: none;
       display: inline-flex;
       align-items: center;
-      gap: 0.3rem;
+      gap: 4px;
       transition: background 0.15s ease-in-out;
+      text-decoration: none;
     }
     .btn-appsheet-add:hover {
       background-color: var(--appsheet-gold-hover);
       color: #000000;
     }
 
-    /* AppSheet Card Panels */
-    .appsheet-panel {
-      background: var(--appsheet-card-bg);
-      border: 1px solid var(--appsheet-border);
-      border-radius: 6px;
-      box-shadow: 0 1px 2px rgba(60,64,67,0.08);
-      height: 100%;
-    }
-
-    .appsheet-panel-header {
-      padding: 0.75rem 1rem;
-      border-bottom: 1px solid var(--appsheet-border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .appsheet-panel-title {
-      font-size: 1.05rem;
-      font-weight: 600;
-      color: var(--appsheet-text);
-      margin: 0;
-    }
-
-    /* AppSheet Table */
-    .appsheet-table {
-      width: 100%;
-      margin: 0;
-      border-collapse: collapse;
-    }
-    .appsheet-table th {
-      background: #ffffff;
-      color: var(--appsheet-muted);
-      font-weight: 500;
-      font-size: 0.85rem;
-      padding: 0.65rem 0.85rem;
-      border-bottom: 1px solid var(--appsheet-border);
-      white-space: nowrap;
-    }
-    .appsheet-table td {
-      padding: 0.7rem 0.85rem;
-      border-bottom: 1px solid #f1f3f4;
-      font-size: 0.9rem;
-      vertical-align: middle;
-      color: var(--appsheet-text);
-      white-space: nowrap;
-    }
-    .appsheet-row {
-      cursor: pointer;
-      transition: background-color 0.1s ease;
-    }
-    .appsheet-row:hover {
-      background-color: #f8f9fa;
-    }
-
-    /* Subheader chip */
-    .appsheet-chip-number {
-      background: var(--appsheet-chip-bg);
-      color: #202124;
-      font-size: 0.8rem;
-      font-weight: 600;
-      padding: 0.15rem 0.55rem;
-      border-radius: 12px;
-      margin-left: 0.35rem;
-    }
-
-    /* Dots */
-    .dot-bounced { color: #d90429; font-size: 0.85rem; }
-    .dot-cleared { color: #2a9d8f; font-size: 0.85rem; }
-    .dot-pending { color: #f59e0b; font-size: 0.85rem; }
-    .dot-deposited { color: #0284c7; font-size: 0.85rem; }
-
     /* Filter pills */
     .appsheet-pill {
-      font-size: 0.82rem;
-      padding: 0.3rem 0.75rem;
+      font-size: 12px;
+      padding: 3px 10px;
       border-radius: 16px;
       border: 1px solid #dadce0;
       background: #ffffff;
@@ -179,149 +208,565 @@
       border-color: #202124;
     }
 
-    .appsheet-summary-item {
-      padding: 0.75rem 1rem;
+    /* ======================================================== */
+    /* 5-CARDS CHEQUES DASHBOARD GRID (Matching screenshot)     */
+    /* Row 1: Due (2fr), Bounced (1fr), Cleared (1fr)           */
+    /* Row 2: Not Used (2fr), All Cheques (1fr), (Empty 1fr)    */
+    /* ======================================================== */
+    .cheques-dashboard-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 16px;
+      padding: 16px;
+    }
+    @media (max-width: 1200px) {
+      .cheques-dashboard-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .chq-card-due, .chq-card-not-used {
+        grid-column: span 2;
+      }
+    }
+    @media (max-width: 768px) {
+      .cheques-dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+      .chq-card-due, .chq-card-not-used {
+        grid-column: span 1;
+      }
+    }
+
+    .appsheet-dash-card {
+      background: #ffffff;
+      border: 1px solid #dadce0;
+      border-radius: 6px;
+      box-shadow: 0 1px 2px rgba(60,64,67,0.06);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .appsheet-dash-card-header {
+      padding: 10px 14px;
       border-bottom: 1px solid #f1f3f4;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      cursor: pointer;
-      font-size: 0.9rem;
-      transition: background 0.1s;
     }
-    .appsheet-summary-item:hover {
+    .appsheet-dash-card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #202124;
+    }
+    .appsheet-dash-card-tools {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .appsheet-tool-icon {
+      cursor: pointer;
+      color: #5f6368;
+      font-size: 13px;
+      transition: color 0.15s;
+    }
+    .appsheet-tool-icon:hover {
+      color: #202124;
+    }
+
+    .appsheet-drill-section-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #5f6368;
+      padding: 8px 14px 4px 14px;
+      letter-spacing: 0.3px;
+    }
+    .appsheet-drill-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 14px;
+      border-bottom: 1px solid #f8f9fa;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    .appsheet-drill-row:hover {
       background: #f8f9fa;
+    }
+    .appsheet-drill-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .appsheet-drill-badge {
+      background: #f1f3f4;
+      border-radius: 4px;
+      padding: 2px 7px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #202124;
+      font-family: inherit;
+    }
+    .appsheet-chevron {
+      color: #80868b;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    /* Bullet Dots */
+    .chq-bullet {
+      font-size: 12px;
+      line-height: 1;
+    }
+    .chq-bullet-red { color: #d90429; }
+    .chq-bullet-green { color: #198754; }
+    .chq-bullet-amber { color: #d97706; }
+    .chq-bullet-pink { color: #e91e63; }
+    .chq-bullet-mustard { color: #b59a2a; }
+
+    /* Due Mini-Table inside Card 1 */
+    .chq-due-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    .chq-due-table th {
+      padding: 7px 10px;
+      color: #5f6368;
+      font-weight: 600;
+      font-size: 11px;
+      white-space: nowrap;
+      border-bottom: 1px solid #e0e0e0;
+      background: #ffffff;
+      text-transform: none;
+    }
+    .chq-due-table td {
+      padding: 8px 10px;
+      white-space: nowrap;
+      border-bottom: 1px solid #f1f3f4;
+      vertical-align: middle;
+      font-size: 12px;
+    }
+    .chq-due-row {
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+    .chq-due-row:hover {
+      background: #fdfdfd;
+    }
+    
+    /* Authentic Pink Theme Row (Row 1) */
+    .chq-theme-pink td {
+      color: #e91e63 !important;
+      font-weight: 600;
+    }
+    .chq-theme-pink .chq-bullet {
+      color: #e91e63;
+    }
+
+    /* Authentic Mustard / Gold Theme Row (Row 2) */
+    .chq-theme-mustard td {
+      color: #b59a2a !important;
+      font-weight: 600;
+    }
+    .chq-theme-mustard .chq-bullet {
+      color: #b59a2a;
+    }
+
+    /* Register Table Styling */
+    .appsheet-panel {
+      background: var(--appsheet-card-bg);
+      border: 1px solid var(--appsheet-border);
+      border-radius: 6px;
+      box-shadow: 0 1px 2px rgba(60,64,67,0.08);
+      height: 100%;
+    }
+    .appsheet-table {
+      width: 100%;
+      margin: 0;
+      border-collapse: collapse;
+    }
+    .appsheet-table th {
+      background: #ffffff;
+      color: var(--appsheet-muted);
+      font-weight: 500;
+      font-size: 12px;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--appsheet-border);
+      white-space: nowrap;
+    }
+    .appsheet-table td {
+      padding: 8px 12px;
+      border-bottom: 1px solid #f1f3f4;
+      font-size: 12.5px;
+      vertical-align: middle;
+      color: var(--appsheet-text);
+      white-space: nowrap;
+    }
+    .appsheet-row {
+      cursor: pointer;
+      transition: background-color 0.1s ease;
+    }
+    .appsheet-row:hover {
+      background-color: #f8f9fa;
     }
   </style>
 </head>
 <body>
 
-  <!-- Sidebar Navigation -->
-  <nav id="sidebar"></nav>
+  <!-- Left Slim AppSheet Rail -->
+  <nav id="sidebar" class="appsheet-rail"></nav>
 
   <!-- Main Workspace -->
-  <div id="main-content">
+  <div class="appsheet-main-workspace" id="main-content">
     
-    <!-- Top AppSheet Navbar -->
-    <header class="appsheet-top-bar d-flex align-items-center justify-content-between flex-wrap gap-2">
-      <div class="d-flex align-items-center gap-3">
-        <button id="sidebar-toggle" class="btn btn-light d-lg-none">
+    <!-- Top AppSheet Navbar (Matching media_1792434204882_c18d5945.png) -->
+    <header class="appsheet-top-bar">
+      <div class="d-flex align-items-center gap-2">
+        <button class="btn btn-sm btn-light border-0" id="top-nav-hamburger-btn" onclick="AppUI.toggleNavDrawer()" title="Toggle Navigation Drawer">
           <i class="bi bi-list fs-5"></i>
         </button>
-        <div class="d-flex align-items-center gap-2">
-          <span class="fs-5">💳</span>
-          <span class="fw-bold fs-6 text-dark">MTC And TTC - Trips</span>
-        </div>
+        <a href="javascript:void(0)" onclick="ChequesModule.goToDashboardView()" class="appsheet-brand">
+          <i class="bi bi-truck fs-5 text-secondary"></i>
+          <span>MTC And TTC - Trips</span>
+        </a>
       </div>
 
       <!-- AppSheet Centered Search -->
       <div class="appsheet-search-box">
-        <i class="bi bi-search text-muted"></i>
-        <input type="text" id="cheque-search" placeholder="Search Cheques (Cheque No, Party, Bank, GR No, Truck)..." onkeyup="ChequesModule.handleSearch(this.value)">
+        <i class="bi bi-search text-muted" style="font-size: 0.85rem;"></i>
+        <input type="text" id="cheque-search" placeholder="Search Cheques" oninput="ChequesModule.onSearchInput(this.value)">
+        <i class="bi bi-x text-muted" id="btn-clear-search" style="cursor: pointer; font-size: 1.1rem; display: none;" onclick="ChequesModule.clearSearch()" title="Clear"></i>
       </div>
 
+      <!-- AppSheet Right Controls (Refresh + Avatar) -->
       <div class="d-flex align-items-center gap-2">
-        <button class="btn btn-sm btn-light border" title="Refresh" onclick="ChequesModule.loadData()">
-          <i class="bi bi-arrow-clockwise"></i>
-        </button>
-        <button class="btn btn-sm btn-outline-secondary" onclick="ChequesModule.exportCSV()">
-          <i class="bi bi-download me-1"></i> CSV
-        </button>
-        <button class="btn-appsheet-add" onclick="ChequesModule.openAddChequeModal()">
-          <i class="bi bi-plus"></i> Add
-        </button>
+        <div class="btn-group btn-group-sm">
+          <button class="btn btn-outline-secondary btn-sm py-1 px-2 border" onclick="location.reload()" title="Sync / Refresh">
+            <i class="bi bi-arrow-clockwise"></i>
+          </button>
+          <button type="button" class="btn btn-outline-secondary btn-sm py-1 px-1 border dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="visually-hidden">Toggle Dropdown</span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm" style="font-size: 0.85rem;">
+            <li><a class="dropdown-item" href="javascript:void(0)" onclick="ChequesModule.openAddChequeModal()"><i class="bi bi-plus-circle me-2 text-primary"></i> Add Cheque</a></li>
+            <li><a class="dropdown-item" href="javascript:void(0)" onclick="ChequesModule.exportCSV()"><i class="bi bi-file-earmark-excel me-2 text-success"></i> Export Cheques CSV</a></li>
+          </ul>
+        </div>
+        <!-- AppSheet Brown Circle Avatar 'M' -->
+        <div class="appsheet-avatar" title="Mahaveer Transport Co">
+          M
+        </div>
       </div>
     </header>
 
-    <!-- Page Content Container -->
-    <main class="p-3">
+    <!-- Subheader with Breadcrumbs and View Toggle -->
+    <div class="appsheet-subheader">
+      <div class="appsheet-breadcrumb" id="appsheet-breadcrumb">
+        <a href="javascript:void(0)" onclick="ChequesModule.goToDashboardView()">Home</a>
+        <span class="sep">&gt;</span>
+        <a href="javascript:void(0)" onclick="ChequesModule.goToDashboardView()">Cheques</a>
+        <span class="sep d-none" id="breadcrumb-sep">&gt;</span>
+        <span class="active d-none" id="active-breadcrumb-status">Due</span>
+      </div>
 
-      <!-- Breadcrumbs & Status Tabs (Matching AppSheet sample_51.png) -->
-      <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
-        <div class="appsheet-breadcrumb">
-          <span>Home</span>
-          <i class="bi bi-chevron-right text-muted small"></i>
-          <span>Cheques</span>
-          <i class="bi bi-chevron-right text-muted small"></i>
-          <span class="active" id="breadcrumb-current-view">All Cheques</span>
-        </div>
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <!-- View Toggle Grid Icon ⊞ -->
+        <button type="button" class="btn-view-toggle" id="btn-view-toggle" onclick="ChequesModule.toggleViewMode()" title="Toggle Dashboard / Register">
+          ⊞
+        </button>
 
-        <!-- AppSheet Status Filter Pills -->
-        <div class="d-flex align-items-center gap-1 flex-wrap">
-          <button class="appsheet-pill active" onclick="ChequesModule.setStatusFilter('ALL', this)">
-            All Cheques <span class="badge bg-secondary ms-1" id="tab-count-all">724</span>
+        <!-- Register Toolbar Actions (Hidden on Dashboard) -->
+        <div id="cheques-register-toolbar" class="d-none d-flex align-items-center gap-2 flex-wrap">
+          <div class="vr mx-1"></div>
+          <!-- Status Filter Pills -->
+          <button type="button" class="appsheet-pill active" id="tab-pill-all" onclick="ChequesModule.setStatusFilter('ALL', this)">
+            All Cheques <span class="badge bg-secondary ms-1" id="tab-count-all">726</span>
           </button>
-          <button class="appsheet-pill" onclick="ChequesModule.setStatusFilter('Cleared', this)">
-            <span class="dot-cleared me-1">●</span> Cleared <span class="badge bg-success ms-1" id="tab-count-cleared">676</span>
+          <button type="button" class="appsheet-pill" id="tab-pill-due" onclick="ChequesModule.setStatusFilter('Due', this)">
+            <span style="color: #e91e63;">●</span> Due <span class="badge bg-danger ms-1" id="tab-count-due">2</span>
           </button>
-          <button class="appsheet-pill" onclick="ChequesModule.setStatusFilter('Bounced', this)">
-            <span class="dot-bounced me-1">●</span> Bounced <span class="badge bg-danger ms-1" id="tab-count-bounced">42</span>
+          <button type="button" class="appsheet-pill" id="tab-pill-cleared" onclick="ChequesModule.setStatusFilter('Cleared', this)">
+            <span class="chq-bullet-green me-1">●</span> Cleared <span class="badge bg-success ms-1" id="tab-count-cleared">676</span>
           </button>
-          <button class="appsheet-pill" onclick="ChequesModule.setStatusFilter('Pending', this)">
-            <span class="dot-pending me-1">●</span> Pending in Hand <span class="badge bg-warning text-dark ms-1" id="tab-count-pending">3</span>
+          <button type="button" class="appsheet-pill" id="tab-pill-bounced" onclick="ChequesModule.setStatusFilter('Bounced', this)">
+            <span class="chq-bullet-red me-1">●</span> Bounced <span class="badge bg-danger ms-1" id="tab-count-bounced">42</span>
           </button>
-          <button class="appsheet-pill" onclick="ChequesModule.setStatusFilter('Deposited', this)">
-            <span class="dot-deposited me-1">●</span> Deposited <span class="badge bg-info text-dark ms-1" id="tab-count-deposited">3</span>
+          <button type="button" class="appsheet-pill" id="tab-pill-notused" onclick="ChequesModule.setStatusFilter('Not Used', this)">
+            <span style="color: #d97706;">●</span> Not Used <span class="badge bg-warning text-dark ms-1" id="tab-count-notused">6</span>
+          </button>
+
+          <div class="vr mx-1"></div>
+          <button type="button" class="btn-appsheet-add" onclick="ChequesModule.openAddChequeModal()">
+            <i class="bi bi-plus-lg"></i> + Add Cheque
           </button>
         </div>
       </div>
+    </div>
 
-      <!-- Main Layout: Side Year Summary + Main Table (Matching sample_51.png) -->
-      <div class="row g-3">
+    <!-- ======================================================== -->
+    <!-- 5-CARDS CHEQUES DASHBOARD VIEW (Default on Open)          -->
+    <!-- Matching media_1792434204882_c18d5945.png                -->
+    <!-- ======================================================== -->
+    <div id="cheques-view-dashboard">
+      <div class="cheques-dashboard-grid">
         
-        <!-- LEFT: Year Filter Panel (Exact AppSheet screenshot match) -->
+        <!-- CARD 1: Due (Top Left - Span 2fr with Mini-Table) -->
+        <div class="appsheet-dash-card chq-card-due" id="card-cheques-due">
+          <div class="appsheet-dash-card-header" style="cursor: pointer;" onclick="ChequesModule.goToDueView()">
+            <span class="appsheet-dash-card-title">Due</span>
+            <div class="appsheet-dash-card-tools" onclick="event.stopPropagation()">
+              <span class="appsheet-tool-icon" title="Filter"><i class="bi bi-funnel"></i></span>
+              <span class="appsheet-tool-icon" title="Select Rows"><i class="bi bi-check2-square"></i></span>
+              <span class="appsheet-tool-icon" onclick="ChequesModule.goToDueView()" title="Expand Due">↗</span>
+            </div>
+          </div>
+          <div class="table-responsive" style="max-height: 280px; overflow-x: auto; overflow-y: auto;">
+            <table class="chq-due-table">
+              <thead>
+                <tr>
+                  <th style="white-space: nowrap;">Cheque Due Date <i class="bi bi-arrow-down small text-muted"></i></th>
+                  <th style="width: 22px; padding: 7px 2px; text-align: center;"></th>
+                  <th style="white-space: nowrap;">Cheque No.</th>
+                  <th style="white-space: nowrap;">Pay to</th>
+                  <th style="white-space: nowrap;">Bank</th>
+                  <th style="white-space: nowrap;" class="text-end">Amount</th>
+                  <th style="white-space: nowrap;">Party</th>
+                  <th style="white-space: nowrap;">G.R.No.</th>
+                  <th style="white-space: nowrap;">Truck No.</th>
+                  <th style="white-space: nowrap;">To</th>
+                  <th style="width: 22px; text-align: center;"></th>
+                </tr>
+              </thead>
+              <tbody id="chq-due-tbody">
+                <!-- Row 1: Pink Theme (17/10/2026, 000144, Bandhan Bank, ₹20,000, SHRI SHYAM MARBLE TIL...) -->
+                <!-- Row 2: Mustard Theme (14/10/2026, 217365, Ujjivan Small Fina..., ₹25,000, New Indian Marbles) -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- CARD 2: Bounced (Top Middle - Red Theme) -->
+        <div class="appsheet-dash-card chq-card-bounced" id="card-cheques-bounced">
+          <div class="appsheet-dash-card-header" style="cursor: pointer;" onclick="ChequesModule.goToBouncedView()">
+            <span class="appsheet-dash-card-title">Bounced</span>
+            <div class="appsheet-dash-card-tools" onclick="event.stopPropagation()">
+              <span class="appsheet-tool-icon" title="Filter"><i class="bi bi-funnel"></i></span>
+              <span class="appsheet-tool-icon" onclick="ChequesModule.goToBouncedView()" title="Expand Bounced">↗</span>
+            </div>
+          </div>
+          <div class="appsheet-drill-section-label">Year</div>
+          <div class="appsheet-drill-row" onclick="ChequesModule.goToBouncedView('ALL')">
+            <span class="fw-semibold text-dark">All</span>
+            <span class="appsheet-chevron">&gt;</span>
+          </div>
+          <div class="appsheet-drill-row" onclick="ChequesModule.goToBouncedView('2026-2027')">
+            <div class="appsheet-drill-left">
+              <span class="chq-bullet chq-bullet-red">●</span>
+              <span class="fw-semibold" style="color: #d90429;">2026-2027</span>
+              <span class="appsheet-drill-badge" id="card-bounced-badge-2026">₹ 255,000.00</span>
+            </div>
+            <span class="appsheet-chevron">&gt;</span>
+          </div>
+          <div class="appsheet-drill-row" onclick="ChequesModule.goToBouncedView('2025-2026')">
+            <div class="appsheet-drill-left">
+              <span class="chq-bullet chq-bullet-red">●</span>
+              <span class="fw-semibold" style="color: #d90429;">2025-2026</span>
+              <span class="appsheet-drill-badge" id="card-bounced-badge-2025">₹ 467,450.00</span>
+            </div>
+            <span class="appsheet-chevron">&gt;</span>
+          </div>
+          <div class="appsheet-drill-row" onclick="ChequesModule.goToBouncedView('2024-2025')">
+            <div class="appsheet-drill-left">
+              <span class="chq-bullet chq-bullet-red">●</span>
+              <span class="fw-semibold" style="color: #d90429;">2024-2025</span>
+              <span class="appsheet-drill-badge" id="card-bounced-badge-2024">₹ 454,735.00</span>
+            </div>
+            <span class="appsheet-chevron">&gt;</span>
+          </div>
+        </div>
+
+        <!-- CARD 3: Cleared (Top Right - Green Theme) -->
+        <div class="appsheet-dash-card chq-card-cleared" id="card-cheques-cleared">
+          <div class="appsheet-dash-card-header" style="cursor: pointer;" onclick="ChequesModule.goToClearedView()">
+            <span class="appsheet-dash-card-title">Cleared</span>
+            <div class="appsheet-dash-card-tools" onclick="event.stopPropagation()">
+              <span class="appsheet-tool-icon" title="Filter"><i class="bi bi-funnel"></i></span>
+              <span class="appsheet-tool-icon" onclick="ChequesModule.goToClearedView()" title="Expand Cleared">↗</span>
+            </div>
+          </div>
+          <div class="appsheet-drill-section-label">Year</div>
+          <div class="appsheet-drill-row" onclick="ChequesModule.goToClearedView('ALL')">
+            <span class="fw-semibold text-dark">All</span>
+            <span class="appsheet-chevron">&gt;</span>
+          </div>
+          <div class="appsheet-drill-row" onclick="ChequesModule.goToClearedView('2026-2027')">
+            <div class="appsheet-drill-left">
+              <span class="chq-bullet chq-bullet-green">●</span>
+              <span class="fw-semibold text-success">2026-2027</span>
+              <span class="appsheet-drill-badge" id="card-cleared-badge-2026">₹ 5,124,183.00</span>
+            </div>
+            <span class="appsheet-chevron">&gt;</span>
+          </div>
+          <div class="appsheet-drill-row" onclick="ChequesModule.goToClearedView('2025-2026')">
+            <div class="appsheet-drill-left">
+              <span class="chq-bullet chq-bullet-green">●</span>
+              <span class="fw-semibold text-success">2025-2026</span>
+              <span class="appsheet-drill-badge" id="card-cleared-badge-2025">₹ 10,154,004.00</span>
+            </div>
+            <span class="appsheet-chevron">&gt;</span>
+          </div>
+          <div class="appsheet-drill-row" onclick="ChequesModule.goToClearedView('2024-2025')">
+            <div class="appsheet-drill-left">
+              <span class="chq-bullet chq-bullet-green">●</span>
+              <span class="fw-semibold text-success">2024-2025</span>
+              <span class="appsheet-drill-badge" id="card-cleared-badge-2024">₹ 4,947,105.80</span>
+            </div>
+            <span class="appsheet-chevron">&gt;</span>
+          </div>
+        </div>
+
+        <!-- CARD 4: Not Used (Bottom Left - Amber/Orange Theme) -->
+        <div class="appsheet-dash-card chq-card-not-used" id="card-cheques-notused">
+          <div class="appsheet-dash-card-header" style="cursor: pointer;" onclick="ChequesModule.goToNotUsedView()">
+            <span class="appsheet-dash-card-title">Not Used</span>
+            <div class="appsheet-dash-card-tools" onclick="event.stopPropagation()">
+              <span class="appsheet-tool-icon" title="Filter"><i class="bi bi-funnel"></i></span>
+              <span class="appsheet-tool-icon" onclick="ChequesModule.goToNotUsedView()" title="Expand Not Used">↗</span>
+            </div>
+          </div>
+          <div class="appsheet-drill-section-label">Year</div>
+          <div class="appsheet-drill-row" onclick="ChequesModule.goToNotUsedView('ALL')">
+            <span class="fw-semibold text-dark">All</span>
+            <span class="appsheet-chevron">&gt;</span>
+          </div>
+          <div class="appsheet-drill-row" onclick="ChequesModule.goToNotUsedView('2026-2027')">
+            <div class="appsheet-drill-left">
+              <span class="chq-bullet chq-bullet-amber">●</span>
+              <span class="fw-semibold" style="color: #d97706;">2026-2027</span>
+              <span class="appsheet-drill-badge" id="card-notused-badge-2026">₹ 80,000.00</span>
+            </div>
+            <span class="appsheet-chevron">&gt;</span>
+          </div>
+          <div class="appsheet-drill-row" onclick="ChequesModule.goToNotUsedView('2025-2026')">
+            <div class="appsheet-drill-left">
+              <span class="chq-bullet chq-bullet-amber">●</span>
+              <span class="fw-semibold" style="color: #d97706;">2025-2026</span>
+              <span class="appsheet-drill-badge" id="card-notused-badge-2025">₹ 487,809.00</span>
+            </div>
+            <span class="appsheet-chevron">&gt;</span>
+          </div>
+          <div class="appsheet-drill-row" onclick="ChequesModule.goToNotUsedView('2024-2025')">
+            <div class="appsheet-drill-left">
+              <span class="chq-bullet chq-bullet-amber">●</span>
+              <span class="fw-semibold" style="color: #d97706;">2024-2025</span>
+              <span class="appsheet-drill-badge" id="card-notused-badge-2024">₹ 171,500.00</span>
+            </div>
+            <span class="appsheet-chevron">&gt;</span>
+          </div>
+        </div>
+
+        <!-- CARD 5: All Cheques (Bottom Middle - Green Theme) -->
+        <div class="appsheet-dash-card chq-card-all" id="card-cheques-all">
+          <div class="appsheet-dash-card-header" style="cursor: pointer;" onclick="ChequesModule.goToAllChequesView()">
+            <span class="appsheet-dash-card-title">All Cheques</span>
+            <div class="appsheet-dash-card-tools" onclick="event.stopPropagation()">
+              <span class="appsheet-tool-icon" title="Filter"><i class="bi bi-funnel"></i></span>
+              <span class="appsheet-tool-icon" onclick="ChequesModule.goToAllChequesView()" title="Expand All Cheques">↗</span>
+            </div>
+          </div>
+          <div class="appsheet-drill-section-label">Year</div>
+          <div class="appsheet-drill-row" onclick="ChequesModule.goToAllChequesView('ALL')">
+            <span class="fw-semibold text-dark">All</span>
+            <span class="appsheet-chevron">&gt;</span>
+          </div>
+          <div class="appsheet-drill-row" onclick="ChequesModule.goToAllChequesView('2026-2027')">
+            <div class="appsheet-drill-left">
+              <span class="chq-bullet chq-bullet-green">●</span>
+              <span class="fw-semibold text-success">2026-2027</span>
+              <span class="appsheet-drill-badge" id="card-allchq-badge-2026">₹ 5,504,183.00</span>
+            </div>
+            <span class="appsheet-chevron">&gt;</span>
+          </div>
+          <div class="appsheet-drill-row" onclick="ChequesModule.goToAllChequesView('2025-2026')">
+            <div class="appsheet-drill-left">
+              <span class="chq-bullet chq-bullet-green">●</span>
+              <span class="fw-semibold text-success">2025-2026</span>
+              <span class="appsheet-drill-badge" id="card-allchq-badge-2025">₹ 11,909,263.00</span>
+            </div>
+            <span class="appsheet-chevron">&gt;</span>
+          </div>
+          <div class="appsheet-drill-row" onclick="ChequesModule.goToAllChequesView('2024-2025')">
+            <div class="appsheet-drill-left">
+              <span class="chq-bullet chq-bullet-green">●</span>
+              <span class="fw-semibold text-success">2024-2025</span>
+              <span class="appsheet-drill-badge" id="card-allchq-badge-2024">₹ 5,573,340.80</span>
+            </div>
+            <span class="appsheet-chevron">&gt;</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- REGISTER TABLE VIEW (Hidden by Default, toggled on click)-->
+    <!-- ======================================================== -->
+    <div id="cheques-view-register" class="d-none p-3">
+      <div class="row g-3">
+        <!-- LEFT: Year Filter Panel -->
         <div class="col-12 col-md-3 col-xl-2">
           <div class="appsheet-panel">
-            <div class="appsheet-panel-header">
-              <span class="fw-semibold text-dark small">Financial Year</span>
+            <div class="appsheet-dash-card-header">
+              <span class="fw-semibold text-dark small text-uppercase" style="letter-spacing: 0.3px;">Financial Year</span>
             </div>
 
-            <div class="appsheet-summary-item" onclick="ChequesModule.filterByYear('ALL')">
+            <div class="appsheet-drill-row" onclick="ChequesModule.filterByYear('ALL')">
               <span class="fw-semibold text-dark">All</span>
-              <i class="bi bi-chevron-right text-muted small"></i>
+              <span class="appsheet-chevron">&gt;</span>
             </div>
 
-            <div class="appsheet-summary-item" onclick="ChequesModule.filterByYear('2026-2027')">
-              <div>
-                <span class="dot-bounced me-1" id="dot-year-2026">●</span>
+            <div class="appsheet-drill-row" onclick="ChequesModule.filterByYear('2026-2027')">
+              <div class="appsheet-drill-left">
+                <span class="chq-bullet chq-bullet-red">●</span>
                 <span class="small fw-semibold text-dark">2026-2027</span>
               </div>
-              <span class="badge bg-light text-dark border font-monospace" style="font-size: 0.72rem;">₹ 1.25 Cr</span>
+              <span class="appsheet-drill-badge" id="reg-fy-2026">₹ 5,504,183.00</span>
             </div>
 
-            <div class="appsheet-summary-item" onclick="ChequesModule.filterByYear('2025-2026')">
-              <div>
-                <span class="dot-bounced me-1" id="dot-year-2025">●</span>
+            <div class="appsheet-drill-row" onclick="ChequesModule.filterByYear('2025-2026')">
+              <div class="appsheet-drill-left">
+                <span class="chq-bullet chq-bullet-red">●</span>
                 <span class="small fw-semibold text-dark">2025-2026</span>
               </div>
-              <span class="badge bg-light text-dark border font-monospace" style="font-size: 0.72rem;">₹ 46.7 L</span>
+              <span class="appsheet-drill-badge" id="reg-fy-2025">₹ 11,909,263.00</span>
             </div>
 
-            <div class="appsheet-summary-item" onclick="ChequesModule.filterByYear('2024-2025')">
-              <div>
-                <span class="dot-bounced me-1" id="dot-year-2024">●</span>
+            <div class="appsheet-drill-row" onclick="ChequesModule.filterByYear('2024-2025')">
+              <div class="appsheet-drill-left">
+                <span class="chq-bullet chq-bullet-red">●</span>
                 <span class="small fw-semibold text-dark">2024-2025</span>
               </div>
-              <span class="badge bg-light text-dark border font-monospace" style="font-size: 0.72rem;">₹ 45.4 L</span>
+              <span class="appsheet-drill-badge" id="reg-fy-2024">₹ 5,573,340.80</span>
             </div>
           </div>
         </div>
 
-        <!-- RIGHT: Main Cheques Table (Matching sample_51.png) -->
+        <!-- RIGHT: Main Cheques Table -->
         <div class="col-12 col-md-9 col-xl-10">
           <div class="appsheet-panel">
-            <div class="appsheet-panel-header">
+            <div class="appsheet-dash-card-header">
               <div class="d-flex align-items-center gap-2">
-                <h6 class="appsheet-panel-title" id="cheque-table-heading">Customer Cheques Ledger</h6>
-                <span class="appsheet-chip-number" id="cheque-header-count">724</span>
+                <h6 class="appsheet-dash-card-title mb-0" id="cheque-table-heading">Customer Cheques Ledger</h6>
+                <span class="badge bg-light text-dark border" id="cheque-header-count">726</span>
               </div>
               <div class="d-flex align-items-center gap-3 text-muted small">
-                <span id="cheque-showing-text">Showing 724 records</span>
-                <span class="fw-bold text-dark" id="cheque-total-amount">₹ 2,16,65,642.80</span>
+                <span id="cheque-showing-text">Showing 726 records</span>
+                <span class="fw-bold text-dark font-monospace" id="cheque-total-amount">₹ 2,30,31,786.80</span>
               </div>
             </div>
 
-            <!-- Table (Exact columns from sample_51.png) -->
+            <!-- Table -->
             <div class="table-responsive" style="max-height: 720px; overflow-y: auto;">
               <table class="appsheet-table">
                 <thead class="sticky-top shadow-sm">
@@ -339,11 +784,7 @@
                   </tr>
                 </thead>
                 <tbody id="cheques-tbody">
-                  <tr>
-                    <td colspan="10" class="text-center py-5 text-muted">
-                      <div class="spinner-border spinner-border-sm text-secondary me-2"></div> Loading cheques ledger...
-                    </td>
-                  </tr>
+                  <!-- Rendered dynamically -->
                 </tbody>
               </table>
             </div>
@@ -352,8 +793,8 @@
         </div>
 
       </div>
+    </div>
 
-    </main>
   </div>
 
   <!-- Modal: Cheque Details / Audit Trail -->
@@ -363,9 +804,9 @@
         <div class="modal-header border-bottom">
           <div class="appsheet-breadcrumb mb-0">
             <span>Home</span>
-            <i class="bi bi-chevron-right text-muted small"></i>
+            <span class="sep">&gt;</span>
             <span>Cheques</span>
-            <i class="bi bi-chevron-right text-muted small"></i>
+            <span class="sep">&gt;</span>
             <span class="active">Details</span>
           </div>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -438,10 +879,12 @@
               <div class="col-md-4">
                 <label class="form-label fw-semibold small">Initial Status *</label>
                 <select id="chq-status" class="form-select" required>
+                  <option value="Due">Due (पेंडिंग देय)</option>
                   <option value="Cleared">Cleared (खाते में पास)</option>
                   <option value="Pending">Pending in Hand (हाथ में)</option>
                   <option value="Deposited">Deposited (बैंक में)</option>
                   <option value="Bounced">Bounced (बाउंस)</option>
+                  <option value="Not Used">Not Used (अप्रयुक्त)</option>
                 </select>
               </div>
             </div>
@@ -463,17 +906,17 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
-  <!-- Core App Scripts -->
-  <script src="../js/config.js"></script>
+  <!-- Core App Scripts with Cache Busting -->
+  <script src="../js/config.js?v=20261020_v1"></script>
   <!-- Universal Master Data Assets (Guaranteed 100% Offline & Fresh Git Deploy Resilience) -->
-  <script src="../js/sample-parties-data.js"></script>
-  <script src="../js/sample-truck-owners-data.js"></script>
-  <script src="../js/sample-drivers-data.js"></script>
-  <script src="../js/sample-trips-data.js"></script>
-  <script src="../js/sample-debts-data.js"></script>
-  <script src="../js/sample-cheques-data.js"></script>
-  <script src="../js/db-service.js"></script>
-  <script src="../js/app.js"></script>
-  <script src="../js/modules/cheques.js"></script>
+  <script src="../js/sample-parties-data.js?v=20261020_v1"></script>
+  <script src="../js/sample-truck-owners-data.js?v=20261020_v1"></script>
+  <script src="../js/sample-drivers-data.js?v=20261020_v1"></script>
+  <script src="../js/sample-trips-data.js?v=20261020_v1"></script>
+  <script src="../js/sample-debts-data.js?v=20261020_v1"></script>
+  <script src="../js/sample-cheques-data.js?v=20261020_v1"></script>
+  <script src="../js/db-service.js?v=20261020_v1"></script>
+  <script src="../js/app.js?v=20261020_v1"></script>
+  <script src="../js/modules/cheques.js?v=20261020_v1"></script>
 </body>
 </html>
