@@ -107,5 +107,44 @@ assert(htmlContent.includes('id="chq-detail-card-body"'), '#chq-detail-card-body
 assert(htmlContent.includes('id="offcanvasEditCheque"'), '#offcanvasEditCheque must exist');
 assert(htmlContent.includes('id="due-detail-actions"'), '#due-detail-actions must exist');
 
-console.log('✔ js/modules/cheques.js: All authentic amounts, Due Level 1-4 methods, and zero localStorage verified.');
-console.log('✔ All Cheques Dashboard & Card 1 Due tests PASSED 100%!');
+// 4. Verify Card 2 (Bounced) HTML Elements & Views (Levels 1 to 5)
+assert(htmlContent.includes('id="cheques-view-bounced-list"'), '#cheques-view-bounced-list must exist');
+assert(htmlContent.includes('id="cheques-view-bounced-trip-detail"'), '#cheques-view-bounced-trip-detail must exist');
+assert(htmlContent.includes('id="cheques-view-bounced-cheque-detail"'), '#cheques-view-bounced-cheque-detail must exist');
+assert(htmlContent.includes('id="cheques-view-bounced-open-debts"'), '#cheques-view-bounced-open-debts must exist');
+assert(htmlContent.includes('id="offcanvasUpdateTripDetails"'), '#offcanvasUpdateTripDetails drawer must exist');
+assert(htmlContent.includes('id="bounced-table-tbody"'), '#bounced-table-tbody must exist');
+assert(htmlContent.includes('id="bounced-trip-details-content"'), '#bounced-trip-details-content must exist');
+assert(htmlContent.includes('id="bounced-trip-cheques-tbody"'), '#bounced-trip-cheques-tbody must exist');
+assert(htmlContent.includes('id="bounced-open-debts-tbody"'), '#bounced-open-debts-tbody must exist');
+assert(htmlContent.includes('id="bounced-list-actions"'), '#bounced-list-actions must exist');
+assert(htmlContent.includes('id="bounced-trip-actions"'), '#bounced-trip-actions must exist');
+assert(htmlContent.includes('id="bounced-debts-actions"'), '#bounced-debts-actions must exist');
+
+// 5. Verify Cheque 000004 and Bounced Cheques in Sample Data
+const bouncedCheques = chequesData.filter(c => c.status === 'Bounced');
+assert.strictEqual(bouncedCheques.length, 43, `Expected 43 bounced cheques, found ${bouncedCheques.length}`);
+
+const chq000004 = bouncedCheques.find(c => c.chequeNo === '000004');
+assert(chq000004, 'Cheque 000004 must exist in Bounced cheques');
+assert.strictEqual(chq000004.amount, 20000, 'Cheque 000004 amount must be 20000');
+assert.strictEqual(chq000004.bankName, 'UCO Bank', 'Cheque 000004 bank must be UCO Bank');
+assert.strictEqual(chq000004.shortGrNo, '-207', 'Cheque 000004 shortGrNo must be -207');
+assert.strictEqual(chq000004.truckNo, 'RJ52GB5529', 'Cheque 000004 truckNo must be RJ52GB5529');
+assert.strictEqual(chq000004.destination, 'Manjhanpur (U.P.)', 'Cheque 000004 destination must be Manjhanpur (U.P.)');
+
+// 6. Verify Bounced Methods in cheques.js
+assert(chequesJs.includes('goToBouncedView('), 'Must define goToBouncedView()');
+assert(chequesJs.includes('filterBouncedByYear('), 'Must define filterBouncedByYear()');
+assert(chequesJs.includes('renderBouncedTable()'), 'Must define renderBouncedTable()');
+assert(chequesJs.includes('viewBouncedTripDetails('), 'Must define viewBouncedTripDetails()');
+assert(chequesJs.includes('viewBouncedChequeDetails('), 'Must define viewBouncedChequeDetails()');
+assert(chequesJs.includes('viewBouncedOpenDebts()'), 'Must define viewBouncedOpenDebts()');
+assert(chequesJs.includes('renderBouncedOpenDebts()'), 'Must define renderBouncedOpenDebts()');
+assert(chequesJs.includes('openUpdateTripDrawer()'), 'Must define openUpdateTripDrawer()');
+assert(chequesJs.includes('saveTripDetailsEdit()'), 'Must define saveTripDetailsEdit()');
+assert(chequesJs.includes('updateTripStatusFromSelect('), 'Must define updateTripStatusFromSelect()');
+
+console.log('✔ Card 2 Bounced: All 5 levels (split view, trip details, cheque details, edit drawer, open debts) verified.');
+console.log('✔ All Cheques Dashboard, Card 1 Due & Card 2 Bounced tests PASSED 100%!');
+

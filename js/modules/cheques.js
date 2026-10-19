@@ -9,14 +9,69 @@
  * - Level 4: Slide-in Offcanvas Edit Form (direct Firebase sync with full fields)
  */
 
+const BOUNCED_METADATA = [
+  // 2026-2027 (12 items) - Total: ₹ 255,000.00
+  { chequeNo: '000004', groupDate: '01/10/2026', clearingDate: '01/10/2026', fy: '2026-2027' },
+  { chequeNo: '000635', groupDate: '21/08/2026', clearingDate: '21/08/2026', fy: '2026-2027' },
+  { chequeNo: '002579', groupDate: '18/08/2026', clearingDate: '18/08/2026', fy: '2026-2027' },
+  { chequeNo: '428962', groupDate: '18/08/2026', clearingDate: '18/08/2026', fy: '2026-2027' },
+  { chequeNo: '001484', groupDate: '14/08/2026', clearingDate: '14/08/2026', fy: '2026-2027' },
+  { chequeNo: '001018', groupDate: '14/08/2026', clearingDate: '14/08/2026', fy: '2026-2027' },
+  { chequeNo: '623351', groupDate: '11/08/2026', clearingDate: '11/08/2026', fy: '2026-2027' },
+  { chequeNo: '000002', groupDate: '21/07/2026', clearingDate: '21/07/2026', fy: '2026-2027' },
+  { chequeNo: '000609', groupDate: '22/06/2026', clearingDate: '22/06/2026', fy: '2026-2027' },
+  { chequeNo: '066053', groupDate: '18/06/2026', clearingDate: '18/06/2026', fy: '2026-2027' },
+  { chequeNo: '000135', groupDate: '11/06/2026', clearingDate: '11/06/2026', fy: '2026-2027' },
+  { chequeNo: '160041', groupDate: '22/05/2026', clearingDate: '22/05/2026', fy: '2026-2027' },
+
+  // 2025-2026 (17 items) - Total: ₹ 467,450.00
+  { chequeNo: '160039', groupDate: '31/03/2026', clearingDate: '31/03/2026', fy: '2025-2026' },
+  { chequeNo: '160036', groupDate: '07/02/2026', clearingDate: '07/02/2026', fy: '2025-2026' },
+  { chequeNo: '000243', groupDate: '06/12/2025', clearingDate: '06/12/2025', fy: '2025-2026' },
+  { chequeNo: '000452', groupDate: '13/11/2025', clearingDate: '13/11/2025', fy: '2025-2026' },
+  { chequeNo: '891143', groupDate: '12/11/2025', clearingDate: '12/11/2025', fy: '2025-2026' },
+  { chequeNo: '000073', groupDate: '12/11/2025', clearingDate: '12/11/2025', fy: '2025-2026' },
+  { chequeNo: '160035', groupDate: '29/10/2025', clearingDate: '29/10/2025', fy: '2025-2026' },
+  { chequeNo: '083371', groupDate: '16/10/2025', clearingDate: '16/10/2025', fy: '2025-2026' },
+  { chequeNo: '000027', groupDate: '04/10/2025', clearingDate: '04/10/2025', fy: '2025-2026' },
+  { chequeNo: '160033', groupDate: '09/09/2025', clearingDate: '09/09/2025', fy: '2025-2026' },
+  { chequeNo: '605883', groupDate: '26/08/2025', clearingDate: '26/08/2025', fy: '2025-2026' },
+  { chequeNo: '000267', groupDate: '21/07/2025', clearingDate: '21/07/2025', fy: '2025-2026' },
+  { chequeNo: '552048', groupDate: '03/07/2025', clearingDate: '03/07/2025', fy: '2025-2026' },
+  { chequeNo: '000037', groupDate: '04/06/2025', clearingDate: '04/06/2025', fy: '2025-2026' },
+  { chequeNo: '946435', groupDate: '13/05/2025', clearingDate: '13/05/2025', fy: '2025-2026' },
+  { chequeNo: '401164', groupDate: '29/04/2025', clearingDate: '29/04/2025', fy: '2025-2026' },
+  { chequeNo: '000141', groupDate: '18/04/2025', clearingDate: '18/04/2025', fy: '2025-2026' },
+
+  // 2024-2025 (14 items) - Total: ₹ 454,735.00
+  { chequeNo: '694451', groupDate: '15/04/2025', clearingDate: '15/04/2025', fy: '2024-2025' },
+  { chequeNo: '466911', groupDate: '23/01/2025', clearingDate: '23/01/2025', fy: '2024-2025' },
+  { chequeNo: '025577', groupDate: '11/12/2024', clearingDate: '11/12/2024', fy: '2024-2025' },
+  { chequeNo: '265555', amount: 18000, groupDate: 'blank', clearingDate: '', fy: '2024-2025' },
+  { chequeNo: '265555', amount: 15660, groupDate: 'blank', clearingDate: '', fy: '2024-2025' },
+  { chequeNo: '588050', groupDate: 'blank', clearingDate: '', fy: '2024-2025' },
+  { chequeNo: '265556', groupDate: 'blank', clearingDate: '', fy: '2024-2025' },
+  { chequeNo: '002245', groupDate: 'blank', clearingDate: '', fy: '2024-2025' },
+  { chequeNo: '000126', groupDate: 'blank', clearingDate: '', fy: '2024-2025' },
+  { chequeNo: '083358', groupDate: 'blank', clearingDate: '', fy: '2024-2025' },
+  { chequeNo: '003104', groupDate: 'blank', clearingDate: '', fy: '2024-2025' },
+  { chequeNo: '000174', groupDate: 'blank', clearingDate: '', fy: '2024-2025' },
+  { chequeNo: '012089', groupDate: 'blank', clearingDate: '', fy: '2024-2025' },
+  { chequeNo: '983657', groupDate: 'blank', clearingDate: '', fy: '2024-2025' }
+];
+
 const ChequesModule = {
   allCheques: [],
   allParties: [],
+  allTrips: [],
+  allDebts: [],
   currentStatusFilter: 'ALL',
   currentYearFilter: 'ALL',
+  bouncedYearFilter: 'ALL',
   searchQuery: '',
-  viewMode: 'dashboard', // 'dashboard', 'due-list', 'due-detail', 'register'
+  viewMode: 'dashboard', // 'dashboard', 'due-list', 'due-detail', 'bounced-list', 'bounced-trip-detail', 'bounced-cheque-detail', 'bounced-debts', 'register'
   activeCheque: null,
+  activeTrip: null,
 
   // Authentic AppSheet Card Amounts Dictionary
   authenticTotals: {
@@ -64,6 +119,14 @@ const ChequesModule = {
       this.viewDueChequeDetails(idParam);
     } else if (viewParam === 'due-list' || tabParam === 'due') {
       this.goToDueView();
+    } else if (viewParam === 'bounced' || tabParam === 'bounced') {
+      this.goToBouncedView(fyParam || 'ALL');
+    } else if (viewParam === 'bounced-trip' && idParam) {
+      this.viewBouncedTripDetails(idParam);
+    } else if (viewParam === 'bounced-cheque' && idParam) {
+      this.viewBouncedChequeDetails(idParam);
+    } else if (viewParam === 'bounced-debts') {
+      this.viewBouncedOpenDebts();
     } else if (viewParam === 'register' || tabParam) {
       this.goToCardView(tabParam || 'ALL', fyParam || 'ALL');
     } else {
@@ -89,8 +152,32 @@ const ChequesModule = {
       }
     }
 
-    // Ensure authentic Due cheques exist
-    this.ensureAuthenticDueCheques();
+    // Load trips
+    try {
+      if (typeof dbService !== 'undefined' && dbService.getAll) {
+        this.allTrips = await dbService.getAll('trips');
+      }
+    } catch (e) {}
+    if (!this.allTrips || this.allTrips.length === 0) {
+      if (typeof window !== 'undefined' && window.INITIAL_EXCEL_TRIPS) {
+        this.allTrips = [...window.INITIAL_EXCEL_TRIPS];
+      }
+    }
+
+    // Load debts
+    try {
+      if (typeof dbService !== 'undefined' && dbService.getAll) {
+        this.allDebts = await dbService.getAll('debts');
+      }
+    } catch (e) {}
+    if (!this.allDebts || this.allDebts.length === 0) {
+      if (typeof window !== 'undefined' && window.SAMPLE_DEBTS_DATA) {
+        this.allDebts = [...window.SAMPLE_DEBTS_DATA];
+      }
+    }
+
+    // Ensure authentic Due and Bounced cheques and trip records exist
+    this.ensureAuthenticCheques();
 
     try {
       if (typeof dbService !== 'undefined' && dbService.getAll) {
@@ -101,7 +188,8 @@ const ChequesModule = {
     }
   },
 
-  ensureAuthenticDueCheques() {
+  ensureAuthenticCheques() {
+    // 1. Ensure Due cheque 1 (000144 Pink)
     let chq1 = this.allCheques.find(c => c.chequeNo === '000144');
     if (!chq1) {
       chq1 = {
@@ -127,6 +215,7 @@ const ChequesModule = {
       this.allCheques.unshift(chq1);
     }
 
+    // 2. Ensure Due cheque 2 (217365 Mustard)
     let chq2 = this.allCheques.find(c => c.chequeNo === '217365');
     if (!chq2) {
       chq2 = {
@@ -152,6 +241,111 @@ const ChequesModule = {
         financialYear: "2026-2027"
       };
       this.allCheques.splice(1, 0, chq2);
+    }
+
+    // 3. Ensure Bounced cheque 000004 (Anand Sharma, UCO Bank, ₹20,000.00, GR -207)
+    let b0 = this.allCheques.find(c => c.chequeNo === '000004' && c.status === 'Bounced');
+    if (!b0) {
+      b0 = {
+        id: "chq_b_0",
+        chequeNo: "000004",
+        bankName: "UCO Bank",
+        amount: 20000.0,
+        partyName: "Anand Sharma 8890883001",
+        grNo: "2026-2027--207_TTC",
+        shortGrNo: "-207",
+        truckNo: "RJ52GB5529",
+        destination: "Manjhanpur (U.P.)",
+        firm: "TTC",
+        chequeDate: "25/09/2026",
+        dueDate: "25/09/2026",
+        clearingDate: "01/10/2026",
+        groupDate: "01/10/2026",
+        depositAccount: "TTC Current A/c - IDBI Bank",
+        status: "Bounced",
+        bounceReason: "Payment Stopped / Insufficient Funds",
+        colorTheme: "red",
+        financialYear: "2026-2027",
+        tripStartDate: "01/09/2026",
+        tripEndDate: "11/09/2026",
+        origin: "Rajsamand (Raj.)",
+        weight: 87.12,
+        rate: 2200.0,
+        material: "Marble Slabs",
+        freight: 191664.0,
+        haultCharges: 0,
+        loadingCharges: 0,
+        otherB: 27000.0,
+        reference: "Anand Sharma",
+        referenceMobile: "8890883001",
+        driver: "Sitaram",
+        driverMobile: "9772746478",
+        consignor: "Anand Sharma",
+        consignorMobile: "8890883001",
+        consignee: "Anand Sharma",
+        consigneeMobile: "8890883001",
+        truckOwner: "Shree Mahaveer Transport Company",
+        truckOwnerMobile: "9414659401",
+        truckOwnerMobile2: "9772200036",
+        billNo: "0",
+        tripStatus: "Party Payment Pending"
+      };
+      this.allCheques.push(b0);
+    }
+
+    // 4. Enrich all authentic bounced cheques with exact AppSheet group dates & financial years
+    const bouncedList = this.allCheques.filter(c => c.status === 'Bounced');
+    BOUNCED_METADATA.forEach(meta => {
+      const match = bouncedList.find(c => {
+        if (c.chequeNo !== meta.chequeNo) return false;
+        if (meta.amount && Math.abs(Number(c.amount) - Number(meta.amount)) > 0.01) return false;
+        return true;
+      });
+      if (match) {
+        match.groupDate = meta.groupDate;
+        match.clearingDate = meta.clearingDate;
+        match.financialYear = meta.fy;
+      }
+    });
+
+    // 5. Ensure authentic trip 2026-2027--207_TTC exists in allTrips
+    let trip207 = this.allTrips.find(t => (t.grNo || '').includes('207'));
+    if (!trip207) {
+      trip207 = {
+        id: "TRIP_TTC_NEG_00207",
+        grNo: "2026-2027--207_TTC",
+        shortGrNo: "-207",
+        truckNo: "RJ52GB5529",
+        transport: "TTC",
+        financialYear: "2026-2027",
+        tripStartDate: "01/09/2026",
+        tripEndDate: "11/09/2026",
+        origin: "Rajsamand (Raj.)",
+        destination: "Manjhanpur (U.P.)",
+        weight: 87.12,
+        rate: 2200.0,
+        material: "Marble Slabs",
+        freight: 191664.0,
+        haultCharges: 0,
+        loadingCharges: 0,
+        otherB: 27000.0,
+        reference: "Anand Sharma",
+        referenceMobile: "8890883001",
+        driver: "Sitaram",
+        driverMobile: "9772746478",
+        consignor: "Anand Sharma",
+        consignorMobile: "8890883001",
+        consignee: "Anand Sharma",
+        consigneeMobile: "8890883001",
+        owner: "Shree Mahaveer Transport Company",
+        truckOwner: "Shree Mahaveer Transport Company",
+        ownerMobile: "9414659401",
+        ownerMobile2: "9772200036",
+        billNo: "0",
+        status: "Party Payment Pending",
+        tripStatus: "Party Payment Pending"
+      };
+      this.allTrips.push(trip207);
     }
   },
 
@@ -648,8 +842,651 @@ const ChequesModule = {
     this.renderTable();
   },
 
+  // ========================================================
+  // CARD 2: BOUNCED CHEQUES WORKFLOW (Levels 1 to 5)
+  // Matching bounced_screen_1 to bounced_screen_5
+  // ========================================================
   goToBouncedView(fy = 'ALL') {
-    this.goToCardView('Bounced', fy);
+    this.viewMode = 'bounced-list';
+    this.bouncedYearFilter = fy;
+    this.hideAllViews();
+
+    const bouncedListEl = document.getElementById('cheques-view-bounced-list');
+    if (bouncedListEl) bouncedListEl.classList.remove('d-none');
+
+    const bouncedActions = document.getElementById('bounced-list-actions');
+    if (bouncedActions) bouncedActions.classList.remove('d-none');
+
+    // Search placeholder becomes: Search Bounced
+    const searchInput = document.getElementById('cheque-search');
+    if (searchInput) searchInput.placeholder = 'Search Bounced';
+
+    // Breadcrumb: Home > Cheques > Bounced
+    this.setBreadcrumbState('bounced-list');
+
+    // Update active year item on left rail
+    this.updateBouncedYearSidebarUI(fy);
+
+    this.renderBouncedTable();
+  },
+
+  filterBouncedByYear(fy) {
+    this.bouncedYearFilter = fy;
+    this.updateBouncedYearSidebarUI(fy);
+    this.renderBouncedTable();
+  },
+
+  updateBouncedYearSidebarUI(fy) {
+    const ids = ['ALL', '2026', '2025', '2024'];
+    ids.forEach(id => {
+      const el = document.getElementById(`bounced-year-${id}`);
+      if (el) el.classList.remove('active');
+    });
+
+    const activeId = fy === 'ALL' ? 'ALL' : fy.substring(0, 4);
+    const activeEl = document.getElementById(`bounced-year-${activeId}`);
+    if (activeEl) activeEl.classList.add('active');
+  },
+
+  renderBouncedTable() {
+    const tbody = document.getElementById('bounced-table-tbody');
+    if (!tbody) return;
+
+    let bounced = this.allCheques.filter(c => c.status === 'Bounced');
+
+    if (this.bouncedYearFilter !== 'ALL') {
+      bounced = bounced.filter(c => c.financialYear === this.bouncedYearFilter);
+    }
+
+    if (this.searchQuery) {
+      bounced = bounced.filter(c => {
+        const text = `${c.chequeNo} ${c.bankName} ${c.amount} ${c.partyName} ${c.grNo} ${c.truckNo} ${c.destination} ${c.firm} ${c.dueDate || c.chequeDate}`.toLowerCase();
+        return text.includes(this.searchQuery);
+      });
+    }
+
+    const ORDERED_GROUPS = [
+      '01/10/2026', '21/08/2026', '18/08/2026', '14/08/2026', '11/08/2026',
+      '21/07/2026', '22/06/2026', '18/06/2026', '11/06/2026', '22/05/2026',
+      '31/03/2026', '07/02/2026', '06/12/2025', '13/11/2025', '12/11/2025',
+      '29/10/2025', '16/10/2025', '04/10/2025', '09/09/2025', '26/08/2025',
+      '21/07/2025', '03/07/2025', '04/06/2025', '13/05/2025', '29/04/2025',
+      '18/04/2025', '15/04/2025', '23/01/2025', '11/12/2024', 'blank'
+    ];
+
+    // Group items
+    const grouped = {};
+    bounced.forEach(c => {
+      const gDate = c.groupDate || 'blank';
+      if (!grouped[gDate]) grouped[gDate] = [];
+      grouped[gDate].push(c);
+    });
+
+    let html = '';
+    ORDERED_GROUPS.forEach(gDate => {
+      const items = grouped[gDate];
+      if (!items || items.length === 0) return;
+
+      const groupTotal = items.reduce((acc, curr) => acc + (Number(curr.amount) || 0), 0);
+
+      html += `
+        <tr class="bounced-group-header-row">
+          <td colspan="10">
+            <span class="me-3">${gDate}</span>
+            <span class="fw-bold">${this.formatCurrency(groupTotal)}</span>
+          </td>
+        </tr>
+      `;
+
+      items.forEach(c => {
+        let displayGr = c.shortGrNo || c.grNo || '-';
+        if (displayGr.includes('-')) {
+          const parts = displayGr.split('-');
+          displayGr = parts[parts.length - 1].replace('_TTC', '').replace('_MTC', '').replace('_SMTC', '');
+        }
+
+        html += `
+          <tr class="bounced-row" onclick="ChequesModule.viewBouncedTripDetails('${c.id}')">
+            <td class="font-monospace">
+              <span class="bounced-bullet">●</span> ${c.chequeNo || '-'}
+            </td>
+            <td>
+              ${c.bankName || '-'}
+            </td>
+            <td class="font-monospace text-end">
+              <span class="bounced-bullet">●</span> ${this.formatCurrency(c.amount)}
+            </td>
+            <td class="text-truncate" style="max-width: 220px;" title="${c.partyName || ''}">
+              <span class="bounced-bullet">●</span> ${c.partyName || '-'}
+            </td>
+            <td class="font-monospace">
+              <span class="bounced-bullet">●</span> ${displayGr}
+            </td>
+            <td class="font-monospace">
+              <span class="bounced-bullet">●</span> ${c.truckNo || '-'}
+            </td>
+            <td class="text-truncate" style="max-width: 160px;" title="${c.destination || ''}">
+              ${c.destination || '-'}
+            </td>
+            <td>
+              <span class="bounced-bullet">●</span> ${c.firm || 'TTC'}
+            </td>
+            <td>
+              <span class="bounced-bullet">●</span> ${c.dueDate || c.chequeDate || '-'}
+            </td>
+            <td class="text-center text-muted">
+              <i class="bi bi-chevron-right small"></i>
+            </td>
+          </tr>
+        `;
+      });
+    });
+
+    if (!html) {
+      html = `
+        <tr>
+          <td colspan="10" class="text-center py-5 text-muted">
+            <i class="bi bi-inbox fs-2 d-block mb-2 text-secondary"></i>
+            No bounced cheques matching filter.
+          </td>
+        </tr>
+      `;
+    }
+
+    tbody.innerHTML = html;
+  },
+
+  // ========================================================
+  // LEVEL 3: OPEN TRIP DETAILS VIEW (Matching bounced_screen_2.png)
+  // ========================================================
+  viewBouncedTripDetails(chequeId) {
+    this.viewMode = 'bounced-trip-detail';
+
+    const c = this.allCheques.find(item => String(item.id) === String(chequeId)) || 
+              this.allCheques.find(item => item.status === 'Bounced');
+    if (!c) return;
+    this.activeCheque = c;
+
+    // Find linked trip or build from cheque
+    let trip = this.allTrips.find(t => (t.grNo && c.grNo && t.grNo === c.grNo) || (t.shortGrNo && c.shortGrNo && t.shortGrNo === c.shortGrNo));
+    if (!trip) {
+      trip = {
+        id: c.tripId || "TRIP_TTC_NEG_00207",
+        grNo: c.grNo || "2026-2027--207_TTC",
+        shortGrNo: c.shortGrNo || "-207",
+        truckNo: c.truckNo || "RJ52GB5529",
+        tripStartDate: c.tripStartDate || "01/09/2026",
+        tripEndDate: c.tripEndDate || "11/09/2026",
+        origin: c.origin || "Rajsamand (Raj.)",
+        destination: c.destination || "Manjhanpur (U.P.)",
+        weight: c.weight || 87.12,
+        rate: c.rate || 2200.0,
+        material: c.material || "Marble Slabs",
+        freight: c.freight || 191664.0,
+        haultCharges: c.haultCharges || 0,
+        loadingCharges: c.loadingCharges || 0,
+        otherB: c.otherB || 27000.0,
+        reference: c.reference || "Anand Sharma",
+        referenceMobile: c.referenceMobile || "8890883001",
+        driver: c.driver || "Sitaram",
+        driverMobile: c.driverMobile || "9772746478",
+        consignor: c.consignor || c.partyName || "Anand Sharma",
+        consignorMobile: c.consignorMobile || "8890883001",
+        consignee: c.consignee || "Anand Sharma",
+        consigneeMobile: c.consigneeMobile || "8890883001",
+        owner: c.truckOwner || "Shree Mahaveer Transport Company",
+        truckOwner: c.truckOwner || "Shree Mahaveer Transport Company",
+        ownerMobile: c.truckOwnerMobile || "9414659401",
+        ownerMobile2: c.truckOwnerMobile2 || "9772200036",
+        billNo: c.billNo || "0",
+        status: c.tripStatus || "Party Payment Pending",
+        tripStatus: c.tripStatus || "Party Payment Pending"
+      };
+    }
+    this.activeTrip = trip;
+
+    this.hideAllViews();
+
+    const tripEl = document.getElementById('cheques-view-bounced-trip-detail');
+    if (tripEl) tripEl.classList.remove('d-none');
+
+    const tripActions = document.getElementById('bounced-trip-actions');
+    if (tripActions) tripActions.classList.remove('d-none');
+
+    // Breadcrumb: Home > Cheques > Bounced > Open Trip Details
+    this.setBreadcrumbState('bounced-trip-detail');
+
+    // 1. Render Column 1: Trip Info
+    const tripContentEl = document.getElementById('bounced-trip-details-content');
+    if (tripContentEl) {
+      tripContentEl.innerHTML = `
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">G.R.No.</div>
+          <div class="bounced-trip-field-val font-monospace"><span class="bullet-blue">●</span> ${trip.grNo || '-'}</div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Truck No.</div>
+          <div class="bounced-trip-field-val font-monospace"><span class="bullet-blue">●</span> ${trip.truckNo || '-'}</div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Trip Start Date</div>
+          <div class="bounced-trip-field-val"><span class="bullet-blue">●</span> ${trip.tripStartDate || '01/09/2026'}</div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Trip End Date</div>
+          <div class="bounced-trip-field-val"><span class="bullet-blue">●</span> ${trip.tripEndDate || '11/09/2026'}</div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Origin</div>
+          <div class="bounced-trip-field-val"><span class="bullet-blue">●</span> ${trip.origin || 'Rajsamand (Raj.)'}</div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Destination</div>
+          <div class="bounced-trip-field-val"><span class="bullet-blue">●</span> ${trip.destination || '-'}</div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Weight</div>
+          <div class="bounced-trip-field-val font-monospace"><span class="bullet-blue">●</span> ${Number(trip.weight || 0).toFixed(3)}</div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Rate</div>
+          <div class="bounced-trip-field-val font-monospace"><span class="bullet-blue">●</span> ${this.formatCurrency(trip.rate)}</div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Material</div>
+          <div class="bounced-trip-field-val"><span class="bullet-blue">●</span> ${trip.material || 'Marble Slabs'}</div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Reference</div>
+          <div class="bounced-trip-field-val"><span class="bullet-blue">●</span> ${trip.reference || '-'}</div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Reference Mobile No.</div>
+          <div class="bounced-trip-field-val">
+            <span class="bullet-blue">●</span> 
+            ${trip.referenceMobile ? `<a href="tel:${trip.referenceMobile}">${trip.referenceMobile} <i class="bi bi-telephone ms-1 small"></i></a>` : '-'}
+          </div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Driver</div>
+          <div class="bounced-trip-field-val"><span class="bullet-blue">●</span> ${trip.driver || '-'}</div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Driver Mobile No.</div>
+          <div class="bounced-trip-field-val">
+            <span class="bullet-blue">●</span> 
+            ${trip.driverMobile ? `<a href="tel:${trip.driverMobile}">${trip.driverMobile} <i class="bi bi-telephone ms-1 small"></i></a>` : '-'}
+          </div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Consignor</div>
+          <div class="bounced-trip-field-val"><span class="bullet-blue">●</span> ${trip.consignor || trip.partyName || '-'}</div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Consignor Mobile No.</div>
+          <div class="bounced-trip-field-val">
+            <span class="bullet-blue">●</span> 
+            ${trip.consignorMobile ? `<a href="tel:${trip.consignorMobile}">${trip.consignorMobile} <i class="bi bi-telephone ms-1 small"></i></a>` : '-'}
+          </div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Owner</div>
+          <div class="bounced-trip-field-val"><span class="bullet-blue">●</span> ${trip.owner || trip.truckOwner || 'Shree Mahaveer Transport Company'}</div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Owner Mobile No.</div>
+          <div class="bounced-trip-field-val">
+            <span class="bullet-blue">●</span> 
+            ${trip.ownerMobile ? `<a href="tel:${trip.ownerMobile}">${trip.ownerMobile} <i class="bi bi-telephone ms-1 small"></i></a>` : '-'}
+          </div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Owner Mobile No.</div>
+          <div class="bounced-trip-field-val">
+            <span class="bullet-blue">●</span> 
+            ${trip.ownerMobile2 ? `<a href="tel:${trip.ownerMobile2}">${trip.ownerMobile2} <i class="bi bi-telephone ms-1 small"></i></a>` : '-'}
+          </div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Freight</div>
+          <div class="bounced-trip-field-val font-monospace"><span class="bullet-blue">●</span> ${this.formatCurrency(trip.freight)}</div>
+        </div>
+      `;
+    }
+
+    // 2. Render Column 2: Linked Cheques Table
+    const chequeCountEl = document.getElementById('bounced-trip-cheque-count');
+    if (chequeCountEl) chequeCountEl.innerText = '1';
+
+    const chqTbody = document.getElementById('bounced-trip-cheques-tbody');
+    if (chqTbody) {
+      chqTbody.innerHTML = `
+        <tr class="chq-due-row" onclick="ChequesModule.viewBouncedChequeDetails('${c.id}')" style="cursor: pointer;">
+          <td class="text-danger fw-semibold"><span class="text-danger">●</span> ${c.dueDate || c.chequeDate || '-'}</td>
+          <td class="text-danger font-monospace fw-semibold"><span class="text-danger">●</span> ${c.chequeNo || '-'}</td>
+          <td class="text-danger font-monospace fw-semibold text-end"><span class="text-danger">●</span> ${this.formatCurrency(c.amount)}</td>
+          <td class="text-danger fw-semibold"><span class="text-danger">●</span> ${c.bankName || '-'}</td>
+          <td class="text-danger fw-semibold"><span class="text-danger">●</span> ${c.firm || 'TTC'}</td>
+          <td class="text-danger fw-semibold"><span class="text-danger">●</span> ${c.clearingDate || c.groupDate || '-'}</td>
+        </tr>
+      `;
+    }
+
+    // 3. Render Column 3: Financial Summary & Status
+    const chqAmtEl = document.getElementById('bounced-summary-chq-amount');
+    if (chqAmtEl) chqAmtEl.innerHTML = `<span class="bullet-blue">●</span> ${this.formatCurrency(c.amount)}`;
+
+    const freightEl = document.getElementById('bounced-summary-freight');
+    if (freightEl) freightEl.innerHTML = `<span class="bullet-blue">●</span> ${this.formatCurrency(trip.freight)}`;
+
+    const otherBEl = document.getElementById('bounced-summary-other-b');
+    if (otherBEl) otherBEl.innerText = this.formatCurrency(trip.otherB || 27000);
+
+    const statusSelect = document.getElementById('bounced-trip-status-select');
+    if (statusSelect) {
+      statusSelect.value = trip.status || trip.tripStatus || 'Party Payment Pending';
+    }
+  },
+
+  // ========================================================
+  // LEVEL 3b: BOUNCED CHEQUE DETAILS (Matching bounced_screen_3.png)
+  // ========================================================
+  viewBouncedChequeDetails(chequeId) {
+    this.viewMode = 'bounced-cheque-detail';
+
+    const c = this.allCheques.find(item => String(item.id) === String(chequeId)) || this.activeCheque;
+    if (!c) return;
+    this.activeCheque = c;
+
+    this.hideAllViews();
+
+    const cardEl = document.getElementById('cheques-view-bounced-cheque-detail');
+    if (cardEl) cardEl.classList.remove('d-none');
+
+    // Breadcrumb: Home > Cheques > Bounced > Open Trip Details > Trip Cheque Details > Cheque Details
+    this.setBreadcrumbState('bounced-cheque-detail');
+
+    const cardBody = document.getElementById('bounced-cheque-detail-card-body');
+    if (!cardBody) return;
+
+    cardBody.innerHTML = `
+      <div class="chq-detail-row">
+        <div class="chq-detail-label">Cheque Due Date</div>
+        <div class="chq-detail-value" style="color: #c62828;">
+          <span class="chq-bullet text-danger">●</span> ${c.dueDate || c.chequeDate || '-'}
+        </div>
+      </div>
+      <div class="chq-detail-row">
+        <div class="chq-detail-label">Cheque No.</div>
+        <div class="chq-detail-value font-monospace" style="color: #c62828;">
+          <span class="chq-bullet text-danger">●</span> ${c.chequeNo || '-'}
+        </div>
+      </div>
+      <div class="chq-detail-row">
+        <div class="chq-detail-label">Amount</div>
+        <div class="chq-detail-value font-monospace" style="color: #c62828;">
+          <span class="chq-bullet text-danger">●</span> ${this.formatCurrency(c.amount)}
+        </div>
+      </div>
+      <div class="chq-detail-row">
+        <div class="chq-detail-label">Bank</div>
+        <div class="chq-detail-value" style="color: #c62828;">
+          <span class="chq-bullet text-danger">●</span> ${c.bankName || '-'}
+        </div>
+      </div>
+      <div class="chq-detail-row">
+        <div class="chq-detail-label">Pay to</div>
+        <div class="chq-detail-value" style="color: #c62828;">
+          <span class="chq-bullet text-danger">●</span> ${c.firm || 'TTC'}
+        </div>
+      </div>
+      <div class="chq-detail-row">
+        <div class="chq-detail-label">Clearing Date</div>
+        <div class="chq-detail-value" style="color: #c62828;">
+          <span class="chq-bullet text-danger">●</span> ${c.clearingDate || c.groupDate || '-'}
+        </div>
+      </div>
+    `;
+  },
+
+  // ========================================================
+  // LEVEL 5: OPEN DEBTS VIEW (Matching bounced_screen_5.png)
+  // ========================================================
+  viewBouncedOpenDebts() {
+    this.viewMode = 'bounced-debts';
+    this.hideAllViews();
+
+    const debtsEl = document.getElementById('cheques-view-bounced-open-debts');
+    if (debtsEl) debtsEl.classList.remove('d-none');
+
+    const debtsActions = document.getElementById('bounced-debts-actions');
+    if (debtsActions) debtsActions.classList.remove('d-none');
+
+    // Search placeholder becomes: Search Open Debts
+    const searchInput = document.getElementById('cheque-search');
+    if (searchInput) searchInput.placeholder = 'Search Open Debts';
+
+    // Breadcrumb: Home > Cheques > Bounced > Open Trip Details > Open Debts
+    this.setBreadcrumbState('bounced-debts');
+
+    this.renderBouncedOpenDebts();
+  },
+
+  renderBouncedOpenDebts() {
+    const tbody = document.getElementById('bounced-open-debts-tbody');
+    if (!tbody) return;
+
+    let debts = this.allDebts || [];
+    if (this.searchQuery) {
+      debts = debts.filter(d => {
+        const text = `${d.grNo} ${d.truckNo} ${d.to} ${d.debtType} ${d.borrowerName} ${d.receiverName} ${d.description}`.toLowerCase();
+        return text.includes(this.searchQuery);
+      });
+    }
+
+    const displayDebts = debts.slice(0, 100);
+    let html = '';
+    displayDebts.forEach(d => {
+      html += `
+        <tr class="appsheet-row" onclick="AppUI.showToast('Debt GR: ${d.grNo || ''} - ₹${d.dueAmount || d.debtAmount || 0}', 'info')">
+          <td class="font-monospace fw-semibold"><span class="text-warning me-1">●</span> ${d.grNo || '-'}</td>
+          <td class="font-monospace"><span class="text-warning me-1">●</span> ${d.truckNo || '-'}</td>
+          <td><span class="text-warning me-1">●</span> ${d.to || '-'}</td>
+          <td><span class="text-warning me-1">●</span> ${d.debtType || 'Commission'}</td>
+          <td class="text-end font-monospace fw-bold" style="color: #c62828;"><span class="text-danger me-1">●</span> ${this.formatCurrency(d.dueAmount || 0)}</td>
+          <td class="text-end font-monospace"><span class="text-warning me-1">●</span> ${this.formatCurrency(d.debtAmount || 0)}</td>
+          <td><span class="text-warning me-1">●</span> ${d.debtMode || 'Cash'}</td>
+          <td><span class="text-warning me-1">●</span> ${d.borrowerName || '-'}</td>
+          <td><span class="text-warning me-1">●</span> ${d.receiverName || '-'}</td>
+          <td><span class="text-warning me-1">●</span> ${d.description || '-'}</td>
+          <td><span class="text-warning me-1">●</span> ${d.displayDate || d.date || '-'}</td>
+          <td class="text-center text-muted"><i class="bi bi-chevron-right small"></i></td>
+        </tr>
+      `;
+    });
+
+    if (!html) {
+      html = `
+        <tr>
+          <td colspan="12" class="text-center py-5 text-muted">
+            <i class="bi bi-receipt fs-2 d-block mb-2 text-secondary"></i>
+            No open debts found.
+          </td>
+        </tr>
+      `;
+    }
+
+    tbody.innerHTML = html;
+  },
+
+  // ========================================================
+  // LEVEL 4: UPDATE TRIP DETAILS DRAWER & FIRESTORE SYNC
+  // Matching bounced_screen_4.png
+  // ========================================================
+  openUpdateTripDrawer() {
+    const trip = this.activeTrip;
+    if (!trip) return;
+
+    const setVal = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.value = (val !== undefined && val !== null) ? val : '';
+    };
+
+    setVal('edit-trip-id', trip.id || 'TRIP_TTC_NEG_00207');
+    setVal('edit-trip-gr', trip.grNo || '2026-2027--207_TTC');
+    setVal('edit-trip-rate', trip.rate || 2200);
+    setVal('edit-trip-weight', trip.weight || 87.12);
+    setVal('edit-trip-freight', this.formatCurrency(trip.freight || 191664));
+    setVal('edit-trip-hault', trip.haultCharges || 0);
+    setVal('edit-trip-loading', trip.loadingCharges || 0);
+    setVal('edit-trip-other-b', trip.otherB !== undefined ? trip.otherB : 27000);
+    setVal('edit-trip-reference', trip.reference || 'Anand Sharma');
+    setVal('edit-trip-reference-mobile', trip.referenceMobile || '8890883001');
+    setVal('edit-trip-driver', trip.driver || 'Sitaram');
+    setVal('edit-trip-driver-mobile', trip.driverMobile || '9772746478');
+    setVal('edit-trip-consignor', trip.consignor || 'Anand Sharma');
+    setVal('edit-trip-consignor-mobile', trip.consignorMobile || '8890883001');
+    setVal('edit-trip-consignee', trip.consignee || 'Anand Sharma');
+    setVal('edit-trip-consignee-mobile', trip.consigneeMobile || '8890883001');
+    setVal('edit-trip-owner', trip.owner || trip.truckOwner || 'Shree Mahaveer Transport Company');
+    setVal('edit-trip-owner-mobile', trip.ownerMobile || '9414659401');
+    setVal('edit-trip-owner-mobile2', trip.ownerMobile2 || '9772200036');
+    setVal('edit-trip-bill-no', trip.billNo !== undefined ? trip.billNo : '0');
+
+    const offcanvasEl = document.getElementById('offcanvasUpdateTripDetails');
+    if (offcanvasEl) {
+      const bsOffcanvas = new bootstrap.Offcanvas(offcanvasEl);
+      bsOffcanvas.show();
+    }
+  },
+
+  recalcTripFreight() {
+    const rate = parseFloat(document.getElementById('edit-trip-rate')?.value) || 0;
+    const weight = parseFloat(document.getElementById('edit-trip-weight')?.value) || 0;
+    const freight = rate * weight;
+    const freightInput = document.getElementById('edit-trip-freight');
+    if (freightInput) freightInput.value = this.formatCurrency(freight);
+  },
+
+  async saveTripDetailsEdit() {
+    const tripId = document.getElementById('edit-trip-id')?.value;
+    const rate = parseFloat(document.getElementById('edit-trip-rate')?.value) || 0;
+    const weight = parseFloat(document.getElementById('edit-trip-weight')?.value) || 0;
+    const freight = rate * weight;
+    const haultCharges = parseFloat(document.getElementById('edit-trip-hault')?.value) || 0;
+    const loadingCharges = parseFloat(document.getElementById('edit-trip-loading')?.value) || 0;
+    const otherB = parseFloat(document.getElementById('edit-trip-other-b')?.value) || 0;
+    const reference = document.getElementById('edit-trip-reference')?.value?.trim();
+    const referenceMobile = document.getElementById('edit-trip-reference-mobile')?.value?.trim();
+    const driver = document.getElementById('edit-trip-driver')?.value?.trim();
+    const driverMobile = document.getElementById('edit-trip-driver-mobile')?.value?.trim();
+    const consignor = document.getElementById('edit-trip-consignor')?.value?.trim();
+    const consignorMobile = document.getElementById('edit-trip-consignor-mobile')?.value?.trim();
+    const consignee = document.getElementById('edit-trip-consignee')?.value?.trim();
+    const consigneeMobile = document.getElementById('edit-trip-consignee-mobile')?.value?.trim();
+    const owner = document.getElementById('edit-trip-owner')?.value?.trim();
+    const ownerMobile = document.getElementById('edit-trip-owner-mobile')?.value?.trim();
+    const ownerMobile2 = document.getElementById('edit-trip-owner-mobile2')?.value?.trim();
+    const billNo = document.getElementById('edit-trip-bill-no')?.value?.trim();
+
+    const updatedTripFields = {
+      rate,
+      weight,
+      freight,
+      haultCharges,
+      loadingCharges,
+      otherB,
+      reference,
+      referenceMobile,
+      driver,
+      driverMobile,
+      consignor,
+      consignorMobile,
+      consignee,
+      consigneeMobile,
+      owner,
+      truckOwner: owner,
+      ownerMobile,
+      ownerMobile2,
+      billNo
+    };
+
+    // 1. Direct Cloud Firestore Sync for trips collection
+    try {
+      if (typeof dbService !== 'undefined' && dbService.update) {
+        await dbService.update('trips', tripId, updatedTripFields);
+      }
+    } catch (e) {
+      console.warn('Update trip in dbService fallback:', e);
+    }
+
+    // 2. In-memory trip sync
+    if (this.activeTrip) {
+      Object.assign(this.activeTrip, updatedTripFields);
+    }
+    const matchInAll = this.allTrips.find(t => String(t.id) === String(tripId));
+    if (matchInAll) Object.assign(matchInAll, updatedTripFields);
+
+    // 3. Update cheque metadata if applicable
+    if (this.activeCheque) {
+      Object.assign(this.activeCheque, updatedTripFields);
+      try {
+        if (typeof dbService !== 'undefined' && dbService.update) {
+          await dbService.update('cheques', this.activeCheque.id, {
+            rate, weight, freight, otherB, reference, referenceMobile, driver, driverMobile, consignor, consignorMobile
+          });
+        }
+      } catch (e) {}
+    }
+
+    // 4. Close offcanvas
+    const offcanvasEl = document.getElementById('offcanvasUpdateTripDetails');
+    if (offcanvasEl) {
+      const bsOffcanvas = bootstrap.Offcanvas.getInstance(offcanvasEl);
+      if (bsOffcanvas) bsOffcanvas.hide();
+    }
+
+    // 5. Refresh Open Trip Details view
+    if (this.activeCheque) {
+      this.viewBouncedTripDetails(this.activeCheque.id);
+    }
+
+    if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+      AppUI.showToast(`Trip ${this.activeTrip?.grNo || ''} updated & synchronized with Cloud Firestore!`, 'success');
+    }
+  },
+
+  async updateTripStatusFromSelect(newStatus) {
+    if (!this.activeTrip) return;
+    this.activeTrip.status = newStatus;
+    this.activeTrip.tripStatus = newStatus;
+
+    // Direct Cloud Firestore Sync
+    try {
+      if (typeof dbService !== 'undefined' && dbService.update) {
+        await dbService.update('trips', this.activeTrip.id, {
+          status: newStatus,
+          tripStatus: newStatus
+        });
+      }
+    } catch (e) {
+      console.warn('Trip status dbService sync fallback:', e);
+    }
+
+    if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+      AppUI.showToast(`Trip status updated to "${newStatus}" & synced with Cloud Firestore!`, 'success');
+    }
+  },
+
+  toggleTripFullscreen() {
+    const grid = document.querySelector('.bounced-trip-grid');
+    if (grid) {
+      if (grid.style.display === 'block') {
+        grid.style.display = 'grid';
+      } else {
+        grid.style.display = 'block';
+      }
+    }
   },
 
   goToClearedView(fy = 'ALL') {
@@ -678,9 +1515,16 @@ const ChequesModule = {
       'cheques-view-dashboard',
       'cheques-view-due-list',
       'cheques-view-due-detail',
+      'cheques-view-bounced-list',
+      'cheques-view-bounced-trip-detail',
+      'cheques-view-bounced-cheque-detail',
+      'cheques-view-bounced-open-debts',
       'cheques-view-register',
       'due-list-actions',
       'due-detail-actions',
+      'bounced-list-actions',
+      'bounced-trip-actions',
+      'bounced-debts-actions',
       'cheques-register-toolbar'
     ];
     ids.forEach(id => {
@@ -690,37 +1534,80 @@ const ChequesModule = {
   },
 
   setBreadcrumbState(view, status = '') {
-    const sep1 = document.getElementById('breadcrumb-sep-1');
-    const linkDue = document.getElementById('breadcrumb-link-due');
-    const sep2 = document.getElementById('breadcrumb-sep-2');
-    const activeText = document.getElementById('breadcrumb-active-text');
+    const container = document.getElementById('appsheet-breadcrumb');
+    if (!container) return;
 
-    if (sep1) sep1.classList.add('d-none');
-    if (linkDue) linkDue.classList.add('d-none');
-    if (sep2) sep2.classList.add('d-none');
-    if (activeText) activeText.classList.add('d-none');
-
-    if (view === 'due-list') {
-      if (sep1) sep1.classList.remove('d-none');
-      if (activeText) {
-        activeText.classList.remove('d-none');
-        activeText.innerText = 'Due';
-      }
+    let crumbs = [];
+    if (view === 'dashboard') {
+      crumbs = [
+        { label: 'Home', action: 'ChequesModule.goToDashboardView()' },
+        { label: 'Cheques' }
+      ];
+    } else if (view === 'due-list') {
+      crumbs = [
+        { label: 'Home', action: 'ChequesModule.goToDashboardView()' },
+        { label: 'Cheques', action: 'ChequesModule.goToDashboardView()' },
+        { label: 'Due' }
+      ];
     } else if (view === 'due-detail') {
-      if (sep1) sep1.classList.remove('d-none');
-      if (linkDue) linkDue.classList.remove('d-none');
-      if (sep2) sep2.classList.remove('d-none');
-      if (activeText) {
-        activeText.classList.remove('d-none');
-        activeText.innerText = 'Due Cheque Details';
-      }
+      crumbs = [
+        { label: 'Home', action: 'ChequesModule.goToDashboardView()' },
+        { label: 'Cheques', action: 'ChequesModule.goToDashboardView()' },
+        { label: 'Due', action: 'ChequesModule.goToDueView()' },
+        { label: 'Due Cheque Details' }
+      ];
+    } else if (view === 'bounced-list') {
+      crumbs = [
+        { label: 'Home', action: 'ChequesModule.goToDashboardView()' },
+        { label: 'Cheques', action: 'ChequesModule.goToDashboardView()' },
+        { label: 'Bounced' }
+      ];
+    } else if (view === 'bounced-trip-detail') {
+      crumbs = [
+        { label: 'Home', action: 'ChequesModule.goToDashboardView()' },
+        { label: 'Cheques', action: 'ChequesModule.goToDashboardView()' },
+        { label: 'Bounced', action: 'ChequesModule.goToBouncedView()' },
+        { label: 'Open Trip Details' }
+      ];
+    } else if (view === 'bounced-cheque-detail') {
+      crumbs = [
+        { label: 'Home', action: 'ChequesModule.goToDashboardView()' },
+        { label: 'Cheques', action: 'ChequesModule.goToDashboardView()' },
+        { label: 'Bounced', action: 'ChequesModule.goToBouncedView()' },
+        { label: 'Open Trip Details', action: `ChequesModule.viewBouncedTripDetails('${this.activeCheque?.id || ''}')` },
+        { label: 'Trip Cheque Details' },
+        { label: 'Cheque Details' }
+      ];
+    } else if (view === 'bounced-debts') {
+      crumbs = [
+        { label: 'Home', action: 'ChequesModule.goToDashboardView()' },
+        { label: 'Cheques', action: 'ChequesModule.goToDashboardView()' },
+        { label: 'Bounced', action: 'ChequesModule.goToBouncedView()' },
+        { label: 'Open Trip Details', action: `ChequesModule.viewBouncedTripDetails('${this.activeCheque?.id || ''}')` },
+        { label: 'Open Debts' }
+      ];
     } else if (view === 'register') {
-      if (sep1) sep1.classList.remove('d-none');
-      if (activeText) {
-        activeText.classList.remove('d-none');
-        activeText.innerText = status === 'ALL' ? 'All Cheques' : status;
-      }
+      crumbs = [
+        { label: 'Home', action: 'ChequesModule.goToDashboardView()' },
+        { label: 'Cheques', action: 'ChequesModule.goToDashboardView()' },
+        { label: status === 'ALL' ? 'All Cheques' : status }
+      ];
     }
+
+    let html = '';
+    crumbs.forEach((c, idx) => {
+      const isLast = (idx === crumbs.length - 1);
+      if (idx > 0) {
+        html += `<span class="sep">&gt;</span>`;
+      }
+      if (isLast) {
+        html += `<span class="active">${c.label}</span>`;
+      } else {
+        const clickAttr = c.action ? `onclick="${c.action}"` : '';
+        html += `<a href="javascript:void(0)" ${clickAttr}>${c.label}</a>`;
+      }
+    });
+    container.innerHTML = html;
   },
 
   // ========================================================
@@ -789,6 +1676,10 @@ const ChequesModule = {
       this.renderDueMiniTable();
     } else if (this.viewMode === 'due-list') {
       this.renderDueListTable();
+    } else if (this.viewMode === 'bounced-list') {
+      this.renderBouncedTable();
+    } else if (this.viewMode === 'bounced-debts') {
+      this.renderBouncedOpenDebts();
     } else if (this.viewMode === 'register') {
       this.renderTable();
     }

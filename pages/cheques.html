@@ -428,6 +428,174 @@
         width: 100% !important;
       }
     }
+
+    /* ======================================================== */
+    /* CARD 2: BOUNCED CHEQUES STYLES                           */
+    /* Matching bounced_screen_1 to bounced_screen_5             */
+    /* ======================================================== */
+    .bounced-split-container {
+      display: flex;
+      gap: 16px;
+      min-height: calc(100vh - 120px);
+    }
+    .bounced-year-sidebar {
+      width: 220px;
+      min-width: 220px;
+      background: #ffffff;
+      border: 1px solid var(--appsheet-border);
+      border-radius: 6px;
+      padding: 12px 0;
+      height: fit-content;
+    }
+    @media (max-width: 768px) {
+      .bounced-split-container {
+        flex-direction: column;
+      }
+      .bounced-year-sidebar {
+        width: 100%;
+        display: flex;
+        overflow-x: auto;
+        padding: 8px;
+        gap: 8px;
+      }
+    }
+    .bounced-year-item {
+      padding: 9px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      font-size: 13px;
+      color: #202124;
+      transition: background 0.12s;
+    }
+    .bounced-year-item:hover {
+      background: #f1f3f4;
+    }
+    .bounced-year-item.active {
+      background: #fde8e8;
+      color: #c62828;
+      font-weight: 600;
+    }
+    .bounced-table-container {
+      flex: 1;
+      background: #ffffff;
+      border: 1px solid var(--appsheet-border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .bounced-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0;
+    }
+    .bounced-table th {
+      background: #ffffff;
+      color: var(--appsheet-muted);
+      font-weight: 500;
+      font-size: 12px;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--appsheet-border);
+      white-space: nowrap;
+    }
+    .bounced-table td {
+      padding: 8px 12px;
+      border-bottom: 1px solid #f1f3f4;
+      font-size: 12.5px;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+    .bounced-group-header-row td {
+      background: #fdfdfd;
+      color: #c62828 !important;
+      font-weight: 700;
+      font-size: 13px;
+      padding: 10px 14px;
+      border-top: 1px solid #f1f3f4;
+      border-bottom: 1px solid #f1f3f4;
+    }
+    .bounced-row {
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+    .bounced-row:hover {
+      background: #fff8f8;
+    }
+    .bounced-row td {
+      color: #c62828 !important;
+      font-weight: 600;
+    }
+    .bounced-row .bounced-bullet {
+      color: #d32f2f;
+      margin-right: 4px;
+    }
+    
+    /* LEVEL 3: OPEN TRIP DETAILS (Matching bounced_screen_2.png) */
+    .bounced-trip-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr 340px;
+      gap: 16px;
+      padding: 16px;
+      align-items: flex-start;
+    }
+    @media (max-width: 1200px) {
+      .bounced-trip-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    @media (max-width: 768px) {
+      .bounced-trip-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .bounced-trip-card {
+      background: #ffffff;
+      border: 1px solid #dadce0;
+      border-radius: 6px;
+      padding: 20px;
+      box-shadow: 0 1px 2px rgba(60,64,67,0.06);
+    }
+    .bounced-trip-field {
+      display: flex;
+      align-items: baseline;
+      margin-bottom: 12px;
+      font-size: 13px;
+    }
+    .bounced-trip-field-label {
+      width: 155px;
+      min-width: 155px;
+      color: #5f6368;
+      font-weight: 500;
+    }
+    .bounced-trip-field-val {
+      flex: 1;
+      font-weight: 600;
+      color: #1a73e8;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .bounced-trip-field-val .bullet-blue {
+      color: #1a73e8;
+    }
+    .bounced-trip-field-val a {
+      color: #1a73e8;
+      text-decoration: none;
+    }
+    .bounced-trip-field-val a:hover {
+      text-decoration: underline;
+    }
+
+    /* Offcanvas Update Trip Details */
+    .offcanvas-trip-edit {
+      width: 480px !important;
+      border-left: 1px solid #dadce0;
+    }
+    @media (max-width: 576px) {
+      .offcanvas-trip-edit {
+        width: 100% !important;
+      }
+    }
     .chq-form-group {
       margin-bottom: 16px;
     }
@@ -570,6 +738,27 @@
             <i class="bi bi-pencil me-1"></i> Edit
           </button>
           <span class="appsheet-tool-icon" onclick="ChequesModule.toggleDetailFullscreen()" title="Expand view">↗</span>
+        </div>
+
+        <!-- Bounced List Top Actions matching bounced_screen_1.png -->
+        <div id="bounced-list-actions" class="d-none d-flex align-items-center gap-2">
+          <span class="appsheet-tool-icon" title="Filter"><i class="bi bi-funnel"></i></span>
+        </div>
+
+        <!-- Bounced Trip Details Top Actions (Receipt/Debts icon, Edit, Expand) matching bounced_screen_2.png -->
+        <div id="bounced-trip-actions" class="d-none d-flex align-items-center gap-2">
+          <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2 border" onclick="ChequesModule.viewBouncedOpenDebts()" title="Open Debts">
+            <i class="bi bi-receipt text-warning-emphasis"></i>
+          </button>
+          <button type="button" class="btn-appsheet-add py-1 px-3" onclick="ChequesModule.openUpdateTripDrawer()" title="Update Trip Details">
+            <i class="bi bi-pencil me-1"></i> Edit
+          </button>
+          <span class="appsheet-tool-icon" onclick="ChequesModule.toggleTripFullscreen()" title="Expand view">↗</span>
+        </div>
+
+        <!-- Bounced Open Debts Top Actions matching bounced_screen_5.png -->
+        <div id="bounced-debts-actions" class="d-none d-flex align-items-center gap-2">
+          <span class="appsheet-tool-icon" title="Filter"><i class="bi bi-funnel"></i></span>
         </div>
 
         <!-- Register Toolbar Actions (Hidden on Dashboard) -->
@@ -849,6 +1038,199 @@
     </div>
 
     <!-- ======================================================== -->
+    <!-- CARD 2: LEVEL 2 - BOUNCED CHEQUES LIST VIEW             -->
+    <!-- Matching bounced_screen_1.png                            -->
+    <!-- ======================================================== -->
+    <div id="cheques-view-bounced-list" class="d-none p-3">
+      <div class="bounced-split-container">
+        <!-- LEFT: Year Selector Rail -->
+        <div class="bounced-year-sidebar shadow-sm">
+          <div class="px-3 pb-2 pt-1 border-bottom mb-2 text-uppercase fw-semibold text-muted small" style="font-size: 11px; letter-spacing: 0.5px;">
+            Financial Year
+          </div>
+          <div class="bounced-year-item active" id="bounced-year-ALL" onclick="ChequesModule.filterBouncedByYear('ALL')">
+            <span class="fw-semibold">All</span>
+            <i class="bi bi-chevron-right small text-muted"></i>
+          </div>
+          <div class="bounced-year-item" id="bounced-year-2026" onclick="ChequesModule.filterBouncedByYear('2026-2027')">
+            <span class="fw-semibold">2026-2027</span>
+            <span class="badge bg-danger-subtle text-danger border border-danger-subtle fw-semibold" id="bounced-rail-badge-2026">₹ 255,000.00</span>
+          </div>
+          <div class="bounced-year-item" id="bounced-year-2025" onclick="ChequesModule.filterBouncedByYear('2025-2026')">
+            <span class="fw-semibold">2025-2026</span>
+            <span class="badge bg-danger-subtle text-danger border border-danger-subtle fw-semibold" id="bounced-rail-badge-2025">₹ 467,450.00</span>
+          </div>
+          <div class="bounced-year-item" id="bounced-year-2024" onclick="ChequesModule.filterBouncedByYear('2024-2025')">
+            <span class="fw-semibold">2024-2025</span>
+            <span class="badge bg-danger-subtle text-danger border border-danger-subtle fw-semibold" id="bounced-rail-badge-2024">₹ 454,735.00</span>
+          </div>
+        </div>
+
+        <!-- RIGHT: Date-Grouped Table -->
+        <div class="bounced-table-container shadow-sm">
+          <div class="table-responsive" style="max-height: calc(100vh - 140px); overflow-x: auto; overflow-y: auto;">
+            <table class="bounced-table">
+              <thead class="sticky-top shadow-sm">
+                <tr>
+                  <th style="white-space: nowrap;">Cheque No.</th>
+                  <th style="white-space: nowrap;">Bank</th>
+                  <th style="white-space: nowrap;" class="text-end">Amount</th>
+                  <th style="white-space: nowrap;">Party</th>
+                  <th style="white-space: nowrap;">G.R.No.</th>
+                  <th style="white-space: nowrap;">Truck No.</th>
+                  <th style="white-space: nowrap;">To</th>
+                  <th style="white-space: nowrap;">Pay to</th>
+                  <th style="white-space: nowrap;">Cheque Due Date</th>
+                  <th style="width: 24px; text-align: center;"></th>
+                </tr>
+              </thead>
+              <tbody id="bounced-table-tbody">
+                <!-- Rendered dynamically with date group headers & red bullets -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- CARD 2: LEVEL 3 - OPEN TRIP DETAILS VIEW                 -->
+    <!-- Matching bounced_screen_2.png                            -->
+    <!-- ======================================================== -->
+    <div id="cheques-view-bounced-trip-detail" class="d-none">
+      <div class="bounced-trip-grid">
+        <!-- COLUMN 1: Trip Details -->
+        <div class="bounced-trip-card">
+          <div id="bounced-trip-details-content">
+            <!-- Rendered dynamically with blue bullets and telephone links -->
+          </div>
+          <div class="mt-3 pt-3 border-top">
+            <div class="d-flex align-items-center justify-content-between">
+              <span class="small text-muted fw-semibold">Add Records for</span>
+              <div class="dropdown">
+                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                  Cheque
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm" style="font-size: 13px;">
+                  <li><a class="dropdown-item" href="javascript:void(0)" onclick="ChequesModule.openAddChequeModal()"><i class="bi bi-plus-circle me-2"></i> Cheque</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- COLUMN 2: Linked Cheques Table -->
+        <div class="bounced-trip-card">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <span class="fw-bold fs-6" style="color: #1a73e8;">
+              <span style="color: #1a73e8;">●</span> Cheque <span class="badge bg-primary-subtle text-primary ms-1" id="bounced-trip-cheque-count">1</span>
+            </span>
+          </div>
+          <div class="table-responsive border rounded" style="overflow-x: auto;">
+            <table class="table table-sm table-hover mb-0" style="font-size: 12.5px;">
+              <thead class="table-light">
+                <tr>
+                  <th style="white-space: nowrap;">Cheque Due Date</th>
+                  <th style="white-space: nowrap;">Cheque No.</th>
+                  <th style="white-space: nowrap;" class="text-end">Amount</th>
+                  <th style="white-space: nowrap;">Bank</th>
+                  <th style="white-space: nowrap;">Pay to</th>
+                  <th style="white-space: nowrap;">Clearing Date</th>
+                </tr>
+              </thead>
+              <tbody id="bounced-trip-cheques-tbody">
+                <!-- Rendered dynamically with red bullets -->
+              </tbody>
+            </table>
+          </div>
+          <div class="d-flex align-items-center justify-content-between mt-3 pt-2 border-top">
+            <button type="button" class="btn btn-sm btn-link p-0 text-decoration-none fw-semibold" onclick="ChequesModule.goToBouncedView()">Expand</button>
+            <button type="button" class="btn btn-sm btn-link p-0 text-decoration-none fw-semibold" onclick="ChequesModule.openAddChequeModal()">Add</button>
+          </div>
+        </div>
+
+        <!-- COLUMN 3: Financial Summary & Status -->
+        <div class="bounced-trip-card">
+          <div class="bounced-trip-field">
+            <div class="bounced-trip-field-label">Total Cheque Amount</div>
+            <div class="bounced-trip-field-val" id="bounced-summary-chq-amount">
+              <span class="bullet-blue">●</span> ₹ 20,000.00
+            </div>
+          </div>
+          <div class="bounced-trip-field">
+            <div class="bounced-trip-field-label">Total Freight</div>
+            <div class="bounced-trip-field-val" id="bounced-summary-freight">
+              <span class="bullet-blue">●</span> ₹ 191,664.00
+            </div>
+          </div>
+          <div class="bounced-trip-field">
+            <div class="bounced-trip-field-label">Other B</div>
+            <div class="bounced-trip-field-val" id="bounced-summary-other-b">
+              ₹ 27,000.00
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-top">
+            <div class="fw-semibold text-muted small mb-2">Status</div>
+            <label class="form-label small text-muted mb-1">Status *</label>
+            <div class="input-group input-group-sm">
+              <select class="form-select form-select-sm fw-semibold" id="bounced-trip-status-select" onchange="ChequesModule.updateTripStatusFromSelect(this.value)" style="color: #1a73e8; border-color: #dadce0;">
+                <option value="Party Payment Pending">● Party Payment Pending</option>
+                <option value="Completed">● Completed</option>
+                <option value="In Transit">● In Transit</option>
+                <option value="Disputed">● Disputed</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- CARD 2: LEVEL 3b - CHEQUE DETAILS VIEW                   -->
+    <!-- Matching bounced_screen_3.png                            -->
+    <!-- ======================================================== -->
+    <div id="cheques-view-bounced-cheque-detail" class="d-none">
+      <div class="chq-detail-container">
+        <div class="chq-detail-card" id="bounced-cheque-detail-card-body">
+          <!-- Filled dynamically with red bullets: Cheque Due Date, Cheque No, Amount, Bank, Pay to, Clearing Date -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- CARD 2: LEVEL 5 - OPEN DEBTS VIEW                        -->
+    <!-- Matching bounced_screen_5.png                            -->
+    <!-- ======================================================== -->
+    <div id="cheques-view-bounced-open-debts" class="d-none p-3">
+      <div class="appsheet-panel shadow-sm">
+        <div class="table-responsive" style="max-height: calc(100vh - 140px); overflow-x: auto; overflow-y: auto;">
+          <table class="appsheet-table">
+            <thead class="sticky-top shadow-sm">
+              <tr>
+                <th style="white-space: nowrap;">G.R.No.</th>
+                <th style="white-space: nowrap;">Truck No.</th>
+                <th style="white-space: nowrap;">To</th>
+                <th style="white-space: nowrap;">Debt Type</th>
+                <th style="white-space: nowrap;" class="text-end">Due Amount</th>
+                <th style="white-space: nowrap;" class="text-end">Debt Amount</th>
+                <th style="white-space: nowrap;">Debt Mode</th>
+                <th style="white-space: nowrap;">Borrower Name</th>
+                <th style="white-space: nowrap;">Receiver Name</th>
+                <th style="white-space: nowrap;">Description</th>
+                <th style="white-space: nowrap;">Date</th>
+                <th style="width: 24px; text-align: center;"></th>
+              </tr>
+            </thead>
+            <tbody id="bounced-open-debts-tbody">
+              <!-- Rendered dynamically from SAMPLE_DEBTS_DATA with gold bullets -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
     <!-- 4. LEVEL 4: REGISTER TABLE VIEW (For Other Tabs & Toggle) -->
     <!-- ======================================================== -->
     <div id="cheques-view-register" class="d-none p-3">
@@ -1023,6 +1405,126 @@
             <option value="Bounced">Bounced</option>
             <option value="Cleared">Cleared</option>
           </select>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- CARD 2: LEVEL 4 - SLIDE-IN OFFCANVAS UPDATE TRIP DETAILS -->
+  <!-- Matching bounced_screen_4.png                            -->
+  <!-- ======================================================== -->
+  <div class="offcanvas offcanvas-end offcanvas-trip-edit" tabindex="-1" id="offcanvasUpdateTripDetails" aria-labelledby="offcanvasTripLabel">
+    <div class="offcanvas-header border-bottom py-2 px-3">
+      <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn btn-sm btn-light border-0 p-0 text-muted" data-bs-dismiss="offcanvas" aria-label="Close" style="font-size: 1.1rem;">
+          <i class="bi bi-x-lg"></i>
+        </button>
+        <span class="fw-semibold fs-6 text-dark" id="offcanvasTripLabel">Update Trip Details</span>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn btn-sm btn-outline-secondary px-3" data-bs-dismiss="offcanvas">Cancel</button>
+        <button type="button" class="btn btn-sm btn-appsheet-add px-3" onclick="ChequesModule.saveTripDetailsEdit()">Save</button>
+      </div>
+    </div>
+
+    <div class="offcanvas-body p-3">
+      <form id="form-update-trip-details" onsubmit="event.preventDefault(); ChequesModule.saveTripDetailsEdit();">
+        <input type="hidden" id="edit-trip-id">
+
+        <div class="chq-form-group">
+          <label class="chq-form-label">G.R.No. *</label>
+          <input type="text" class="chq-form-control bg-light" id="edit-trip-gr" readonly>
+        </div>
+
+        <div class="chq-form-group">
+          <label class="chq-form-label">Rate *</label>
+          <input type="number" step="any" class="chq-form-control" id="edit-trip-rate" oninput="ChequesModule.recalcTripFreight()" required>
+        </div>
+
+        <div class="chq-form-group">
+          <label class="chq-form-label">Weight *</label>
+          <input type="number" step="any" class="chq-form-control" id="edit-trip-weight" oninput="ChequesModule.recalcTripFreight()" required>
+        </div>
+
+        <div class="chq-form-group">
+          <label class="chq-form-label">Freight</label>
+          <input type="text" class="chq-form-control bg-light" id="edit-trip-freight" readonly>
+        </div>
+
+        <div class="chq-form-group">
+          <label class="chq-form-label">Hault Charges</label>
+          <input type="number" step="any" class="chq-form-control" id="edit-trip-hault" value="0">
+        </div>
+
+        <div class="chq-form-group">
+          <label class="chq-form-label">Loading Charges</label>
+          <input type="number" step="any" class="chq-form-control" id="edit-trip-loading" value="0">
+        </div>
+
+        <div class="chq-form-group">
+          <label class="chq-form-label">Other B *</label>
+          <input type="number" step="any" class="chq-form-control" id="edit-trip-other-b" value="27000">
+        </div>
+
+        <div class="chq-form-group">
+          <label class="chq-form-label">Reference</label>
+          <input type="text" class="chq-form-control" id="edit-trip-reference">
+        </div>
+
+        <div class="chq-form-group">
+          <label class="chq-form-label">Reference Mobile No.</label>
+          <input type="tel" class="chq-form-control" id="edit-trip-reference-mobile">
+        </div>
+
+        <div class="chq-form-group">
+          <label class="chq-form-label">Driver</label>
+          <input type="text" class="chq-form-control" id="edit-trip-driver">
+        </div>
+
+        <div class="chq-form-group">
+          <label class="chq-form-label">Driver Mobile No.</label>
+          <input type="tel" class="chq-form-control" id="edit-trip-driver-mobile">
+        </div>
+
+        <div class="chq-form-group">
+          <label class="chq-form-label">Consignor</label>
+          <input type="text" class="chq-form-control" id="edit-trip-consignor">
+        </div>
+
+        <div class="chq-form-group">
+          <label class="chq-form-label">Consignor Mobile No.</label>
+          <input type="tel" class="chq-form-control" id="edit-trip-consignor-mobile">
+        </div>
+
+        <div class="chq-form-group">
+          <label class="chq-form-label">Consignee</label>
+          <input type="text" class="chq-form-control" id="edit-trip-consignee">
+        </div>
+
+        <div class="chq-form-group">
+          <label class="chq-form-label">Consignee Mobile No.</label>
+          <input type="tel" class="chq-form-control" id="edit-trip-consignee-mobile">
+        </div>
+
+        <div class="chq-form-group">
+          <label class="chq-form-label">Owner</label>
+          <input type="text" class="chq-form-control" id="edit-trip-owner">
+        </div>
+
+        <div class="chq-form-group">
+          <label class="chq-form-label">Owner Mobile No.</label>
+          <input type="tel" class="chq-form-control" id="edit-trip-owner-mobile">
+        </div>
+
+        <div class="chq-form-group">
+          <label class="chq-form-label">Owner Mobile No.</label>
+          <input type="tel" class="chq-form-control" id="edit-trip-owner-mobile2">
+        </div>
+
+        <div class="chq-form-group">
+          <label class="chq-form-label">Bill No.</label>
+          <input type="text" class="chq-form-control" id="edit-trip-bill-no" value="0">
         </div>
       </form>
     </div>
