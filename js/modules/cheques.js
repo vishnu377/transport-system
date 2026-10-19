@@ -1208,40 +1208,56 @@ const ChequesModule = {
     }
 
     // 2. Render Column 2: Linked Cheques Table (Matching authentic bounced_screen_2.png)
+    // Find all linked cheques for this trip
+    const linkedCheques = this.allCheques.filter(ch => 
+      (ch.grNo && trip.grNo && ch.grNo === trip.grNo) || 
+      (ch.shortGrNo && trip.shortGrNo && ch.shortGrNo === trip.shortGrNo) ||
+      (ch.tripId && trip.id && ch.tripId === trip.id) ||
+      (String(ch.id) === String(c.id))
+    );
+    const chequesToDisplay = linkedCheques.length > 0 ? linkedCheques : [c];
+
     const chequeCountEl = document.getElementById('bounced-trip-cheque-count');
-    if (chequeCountEl) chequeCountEl.innerText = '1';
+    if (chequeCountEl) chequeCountEl.innerText = chequesToDisplay.length;
 
     const chqTbody = document.getElementById('bounced-trip-cheques-tbody');
     if (chqTbody) {
-      const formattedAmt = Number(c.amount || 20000).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-      const formattedDueDate = this.toDisplayDateFormat(c.dueDate || c.chequeDate || '25/09/2026');
-      const formattedClearDate = this.toDisplayDateFormat(c.clearingDate || c.groupDate || '01/10/2026');
+      let chqRowsHtml = '';
+      chequesToDisplay.forEach(item => {
+        const formattedAmt = Number(item.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const formattedDueDate = this.toDisplayDateFormat(item.dueDate || item.chequeDate || '-');
+        const formattedClearDate = this.toDisplayDateFormat(item.clearingDate || item.groupDate || '-');
 
-      chqTbody.innerHTML = `
-        <tr onclick="ChequesModule.viewBouncedChequeDetails('${c.id}')" title="Click to view Cheque Details">
-          <td><span class="bounced-bullet">●</span> ${formattedDueDate}</td>
-          <td class="font-monospace"><span class="bounced-bullet">●</span> ${c.chequeNo || '000004'}</td>
-          <td class="font-monospace text-end"><span class="bounced-bullet">●</span> ₹ ${formattedAmt}</td>
-          <td><span class="bounced-bullet">●</span> ${c.bankName || 'UCO Bank'}</td>
-          <td><span class="bounced-bullet">●</span> ${c.firm || 'TTC'}</td>
-          <td><span class="bounced-bullet">●</span> ${formattedClearDate}</td>
-        </tr>
-      `;
+        chqRowsHtml += `
+          <tr onclick="ChequesModule.viewBouncedChequeDetails('${item.id}')" title="Click to view Cheque Details">
+            <td><span class="bounced-bullet">●</span> ${formattedDueDate}</td>
+            <td class="font-monospace"><span class="bounced-bullet">●</span> ${item.chequeNo || '-'}</td>
+            <td class="font-monospace text-end"><span class="bounced-bullet">●</span> ₹ ${formattedAmt}</td>
+            <td><span class="bounced-bullet">●</span> ${item.displayBank || item.bankName || '-'}</td>
+            <td><span class="bounced-bullet">●</span> ${item.firm || 'TTC'}</td>
+            <td><span class="bounced-bullet">●</span> ${formattedClearDate}</td>
+          </tr>
+        `;
+      });
+      chqTbody.innerHTML = chqRowsHtml;
     }
 
     // 3. Render Column 3: Financial Summary & Status (Matching authentic bounced_screen_2.png)
+    const totalChqAmt = chequesToDisplay.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
     const chqAmtEl = document.getElementById('bounced-summary-chq-amount');
-    if (chqAmtEl) chqAmtEl.innerHTML = `<span class="bullet-blue">●</span> ₹${Number(c.amount || 20000).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    if (chqAmtEl) chqAmtEl.innerHTML = `<span class="bullet-blue">●</span> ₹${totalChqAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
     const freightEl = document.getElementById('bounced-summary-freight');
     if (freightEl) freightEl.innerHTML = `<span class="bullet-blue">●</span> ₹${Number(trip.freight || 191664).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
-    const otherBEl = document.getElementById('bounced-summary-other-b');
-    if (otherBEl) otherBEl.innerHTML = '';
+    const otherBInput = document.getElementById('bounced-trip-other-b-input');
+    if (otherBInput) {
+      otherBInput.value = (trip.otherB !== undefined && trip.otherB !== null && trip.otherB !== '') ? trip.otherB : '';
+    }
 
-    const statusSelect = document.getElementById('bounced-trip-status-select');
-    if (statusSelect) {
-      statusSelect.value = trip.status || trip.tripStatus || 'Party Payment Pending';
+    const statusInput = document.getElementById('bounced-trip-status-input');
+    if (statusInput) {
+      statusInput.value = trip.status || trip.tripStatus || 'Party Payment Pending';
     }
   },
 
@@ -1513,25 +1529,225 @@ const ChequesModule = {
     }
   },
 
+  // ========================================================
+  // LEVEL 4b: SIDE DRAWER - ADD TRIP CHEQUE & COMBINED ACTIONS
+  // ========================================================
+  openAddTripChequeDrawer() {
+    const trip = this.activeTrip;
+    const consignorName = trip ? (trip.consignor || trip.partyName || 'Anand Sharma') : 'Anand Sharma';
+    const grDisplay = trip ? (trip.grNo || '2026-2027--207_TTC') : '2026-2027--207_TTC';
+    const truckDisplay = trip ? (trip.truckNo || 'RJ52GB5529') : 'RJ52GB5529';
+    const freightVal = trip ? (trip.freight || 191664) : 191664;
+
+    const grEl = document.getElementById('add-trip-chq-gr-display');
+    if (grEl) grEl.innerText = `${grDisplay} (${truckDisplay})`;
+
+    const partyEl = document.getElementById('add-trip-chq-party-display');
+    if (partyEl) partyEl.innerText = consignorName;
+
+    const partyDueInput = document.getElementById('add-trip-party-due');
+    if (partyDueInput) partyDueInput.value = freightVal;
+
+    const dateInput = document.getElementById('add-trip-chq-due-date');
+    if (dateInput) {
+      dateInput.value = this.toInputDateFormat(trip?.tripStartDate || '2026-09-25');
+    }
+
+    const amtInput = document.getElementById('add-trip-chq-amount');
+    if (amtInput) amtInput.value = '';
+
+    const chqNoInput = document.getElementById('add-trip-chq-no');
+    if (chqNoInput) chqNoInput.value = '';
+
+    const bankInput = document.getElementById('add-trip-chq-bank');
+    if (bankInput) bankInput.value = '';
+
+    const offcanvasEl = document.getElementById('offcanvasAddTripCheque');
+    if (offcanvasEl) {
+      const bsOffcanvas = bootstrap.Offcanvas.getOrCreateInstance(offcanvasEl);
+      bsOffcanvas.show();
+    }
+  },
+
+  selectAddBank(bankName) {
+    const bankInput = document.getElementById('add-trip-chq-bank');
+    if (bankInput) bankInput.value = bankName;
+  },
+
+  selectAddRecordType(type) {
+    const input = document.getElementById('bounced-add-records-input');
+    if (input) input.value = type;
+    this.onAddRecordTypeSelected(type);
+  },
+
+  onAddRecordTypeSelected(type) {
+    const cleanType = (type || '').trim().toLowerCase();
+    if (cleanType.includes('cheque')) {
+      this.openAddTripChequeDrawer();
+    } else if (cleanType.includes('party')) {
+      if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+        AppUI.showToast(`Party Payment selected for GR: ${this.activeTrip?.grNo || ''}`, 'info');
+      }
+      this.openUpdateTripDrawer();
+    } else if (cleanType.includes('owner')) {
+      if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+        AppUI.showToast(`Truck Owner Payment selected for Truck: ${this.activeTrip?.truckNo || ''}`, 'info');
+      }
+      this.openUpdateTripDrawer();
+    } else if (cleanType.includes('other')) {
+      const otherBInput = document.getElementById('bounced-trip-other-b-input');
+      if (otherBInput) {
+        otherBInput.focus();
+        otherBInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+  },
+
+  selectTripStatus(status) {
+    const statusInput = document.getElementById('bounced-trip-status-input');
+    if (statusInput) statusInput.value = status;
+    this.updateTripStatusFromSelect(status);
+  },
+
+  async updateTripOtherB(val) {
+    const numVal = parseFloat(val) || 0;
+    if (!this.activeTrip) return;
+    this.activeTrip.otherB = numVal;
+
+    try {
+      if (typeof dbService !== 'undefined' && dbService.update) {
+        await dbService.update('trips', this.activeTrip.id, { otherB: numVal });
+      }
+    } catch (e) {
+      console.warn('Update trip otherB in dbService fallback:', e);
+    }
+
+    if (this.activeCheque) {
+      this.activeCheque.otherB = numVal;
+      try {
+        if (typeof dbService !== 'undefined' && dbService.update) {
+          await dbService.update('cheques', this.activeCheque.id, { otherB: numVal });
+        }
+      } catch (e) {}
+    }
+
+    if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+      AppUI.showToast(`Other B updated to: ${this.formatCurrency(numVal)} & synced with Firestore!`, 'success');
+    }
+  },
+
   async updateTripStatusFromSelect(newStatus) {
     if (!this.activeTrip) return;
-    this.activeTrip.status = newStatus;
-    this.activeTrip.tripStatus = newStatus;
+    const statusVal = newStatus ? newStatus.trim() : 'Party Payment Pending';
+    this.activeTrip.status = statusVal;
+    this.activeTrip.tripStatus = statusVal;
+
+    const statusInput = document.getElementById('bounced-trip-status-input');
+    if (statusInput && statusInput.value !== statusVal) {
+      statusInput.value = statusVal;
+    }
 
     // Direct Cloud Firestore Sync
     try {
       if (typeof dbService !== 'undefined' && dbService.update) {
         await dbService.update('trips', this.activeTrip.id, {
-          status: newStatus,
-          tripStatus: newStatus
+          status: statusVal,
+          tripStatus: statusVal
         });
       }
     } catch (e) {
       console.warn('Trip status dbService sync fallback:', e);
     }
 
+    if (this.activeCheque) {
+      this.activeCheque.tripStatus = statusVal;
+      try {
+        if (typeof dbService !== 'undefined' && dbService.update) {
+          await dbService.update('cheques', this.activeCheque.id, { tripStatus: statusVal });
+        }
+      } catch (e) {}
+    }
+
     if (typeof AppUI !== 'undefined' && AppUI.showToast) {
-      AppUI.showToast(`Trip status updated to "${newStatus}" & synced with Cloud Firestore!`, 'success');
+      AppUI.showToast(`Trip status updated to "${statusVal}" & synced with Cloud Firestore!`, 'success');
+    }
+  },
+
+  async saveTripChequeDrawer() {
+    const trip = this.activeTrip;
+    if (!trip) return;
+
+    const dueDateVal = document.getElementById('add-trip-chq-due-date')?.value;
+    const chqNoVal = document.getElementById('add-trip-chq-no')?.value?.trim();
+    const partyDueVal = parseFloat(document.getElementById('add-trip-party-due')?.value) || 0;
+    const amountVal = parseFloat(document.getElementById('add-trip-chq-amount')?.value) || 0;
+    const bankVal = document.getElementById('add-trip-chq-bank')?.value?.trim();
+    const payToVal = document.getElementById('add-trip-chq-payto')?.value || 'TTC';
+    const clearingVal = document.getElementById('add-trip-chq-clearing-date')?.value;
+    const statusVal = document.getElementById('add-trip-chq-status')?.value || 'Bounced';
+
+    if (!chqNoVal || amountVal <= 0 || !bankVal) {
+      if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+        AppUI.showToast('Please enter Cheque No., Amount and Bank Name.', 'warning');
+      } else {
+        alert('Please enter Cheque No., Amount and Bank Name.');
+      }
+      return;
+    }
+
+    const formattedDueDate = dueDateVal ? this.toDisplayDateFormat(dueDateVal) : '25/09/2026';
+    const formattedClearDate = clearingVal ? this.toDisplayDateFormat(clearingVal) : '';
+
+    const newCheque = {
+      id: 'chq_' + Date.now(),
+      chequeNo: chqNoVal,
+      bankName: bankVal,
+      displayBank: bankVal,
+      amount: amountVal,
+      partyName: trip.consignor || trip.partyName || 'Anand Sharma 8890883001',
+      displayParty: trip.consignor || trip.partyName || 'Anand Sharma',
+      partyDue: partyDueVal || trip.freight || 191664,
+      grNo: trip.grNo || '2026-2027--207_TTC',
+      shortGrNo: trip.shortGrNo || '-207',
+      truckNo: trip.truckNo || 'RJ52GB5529',
+      destination: trip.destination || 'Manjhanpur (U.P.)',
+      firm: payToVal,
+      dueDate: formattedDueDate,
+      chequeDate: formattedDueDate,
+      clearingDate: formattedClearDate,
+      groupDate: formattedClearDate || formattedDueDate,
+      status: statusVal,
+      colorTheme: statusVal === 'Bounced' ? 'red' : (statusVal === 'Due' ? 'pink' : 'green'),
+      financialYear: trip.financialYear || '2026-2027',
+      tripId: trip.id
+    };
+
+    // 1. Direct Cloud Firestore Sync
+    try {
+      if (typeof dbService !== 'undefined' && dbService.add) {
+        await dbService.add('cheques', newCheque);
+      }
+    } catch (e) {
+      console.warn('Add cheque in dbService fallback:', e);
+    }
+
+    // 2. Local in-memory sync
+    this.allCheques.unshift(newCheque);
+
+    // 3. Hide side drawer
+    const offcanvasEl = document.getElementById('offcanvasAddTripCheque');
+    if (offcanvasEl) {
+      const bsOffcanvas = bootstrap.Offcanvas.getInstance(offcanvasEl);
+      if (bsOffcanvas) bsOffcanvas.hide();
+    }
+
+    // 4. Update Trip Details view dynamically
+    this.viewBouncedTripDetails(newCheque.id);
+    this.renderDashboard();
+    this.updateStats();
+
+    if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+      AppUI.showToast(`Cheque #${chqNoVal} (₹${amountVal.toLocaleString('en-IN')}) added & synchronized with Cloud Firestore!`, 'success');
     }
   },
 

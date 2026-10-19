@@ -163,7 +163,44 @@ assert(chequesJs.includes('Sitaram'), 'Must define authentic driver Sitaram');
 assert(chequesJs.includes('Anand Sharma'), 'Must define authentic consignor Anand Sharma');
 assert(chequesJs.includes('Marble Slabs'), 'Must define authentic material Marble Slabs');
 
-console.log('✔ Card 2 Bounced: Sidebar toggle, middle card table, scroll track, and authentic trip 207 verified.');
+// 9. Verify Card 1 "Add Records for" Combobox
+assert(htmlContent.includes('id="bounced-add-records-input"'), 'Card 1 must have bounced-add-records-input');
+assert(htmlContent.includes('id="add-records-for-list"'), 'Card 1 must have add-records-for-list datalist');
+assert(htmlContent.includes('Party Payment'), 'Card 1 must support Party Payment');
+assert(htmlContent.includes('Truck Owner Payment'), 'Card 1 must support Truck Owner Payment');
+assert(chequesJs.includes('selectAddRecordType('), 'ChequesModule must define selectAddRecordType');
+assert(chequesJs.includes('onAddRecordTypeSelected('), 'ChequesModule must define onAddRecordTypeSelected');
+
+// 10. Verify Card 2 Side Drawer for Adding Cheque
+assert(htmlContent.includes('id="offcanvasAddTripCheque"'), 'Must define offcanvasAddTripCheque side drawer');
+assert(htmlContent.includes('id="add-trip-chq-due-date"'), 'Side drawer must have due date input');
+assert(htmlContent.includes('id="add-trip-party-due"'), 'Side drawer must have party due payment input');
+assert(htmlContent.includes('id="add-trip-chq-amount"'), 'Side drawer must have amount input');
+assert(htmlContent.includes('id="add-trip-chq-bank"'), 'Side drawer must have bank input with datalist');
+assert(htmlContent.includes('id="all-banks-datalist"'), 'Side drawer must have all-banks-datalist');
+assert(htmlContent.includes('Punjab & Sind Bank'), 'All banks datalist must include Punjab & Sind Bank');
+assert(htmlContent.includes('Canara Bank'), 'All banks datalist must include Canara Bank');
+assert(htmlContent.includes('Bandhan Bank'), 'All banks datalist must include Bandhan Bank');
+assert(htmlContent.includes('The National Bank'), 'All banks datalist must include The National Bank');
+assert(chequesJs.includes('openAddTripChequeDrawer()'), 'ChequesModule must define openAddTripChequeDrawer');
+assert(chequesJs.includes('saveTripChequeDrawer()'), 'ChequesModule must define saveTripChequeDrawer');
+assert(chequesJs.includes('selectAddBank('), 'ChequesModule must define selectAddBank');
+
+// 11. Verify Card 3 Other B and Status Combobox
+assert(htmlContent.includes('id="bounced-trip-other-b-input"'), 'Card 3 must have bounced-trip-other-b-input');
+assert(htmlContent.includes('id="bounced-trip-status-input"'), 'Card 3 must have bounced-trip-status-input');
+assert(htmlContent.includes('id="trip-status-options-list"'), 'Card 3 must have trip-status-options-list');
+assert(htmlContent.includes('In Transit'), 'Status must include In Transit');
+assert(htmlContent.includes('Off Loading'), 'Status must include Off Loading');
+assert(htmlContent.includes('POD Sent / Bill Generated'), 'Status must include POD Sent / Bill Generated');
+assert(htmlContent.includes('Party Payment Pending'), 'Status must include Party Payment Pending');
+assert(chequesJs.includes('updateTripOtherB('), 'ChequesModule must define updateTripOtherB');
+assert(chequesJs.includes('selectTripStatus('), 'ChequesModule must define selectTripStatus');
+
+console.log('✔ Card 1 Combobox: Add Records for (Cheque, Party Payment, Truck Owner Payment, Other B) verified.');
+console.log('✔ Card 2 Side Drawer: Add Trip Cheque with Party Due, Amount, Banks datalist verified.');
+console.log('✔ Card 3 Financials: Other B typable input & Status combobox verified.');
 console.log('✔ All Cheques Dashboard, Card 1 Due & Card 2 Bounced tests PASSED 100%!');
+
 
 
