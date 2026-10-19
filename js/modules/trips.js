@@ -56,6 +56,8 @@ const TripsModule = {
       this.goToGstAmountView(fyParam || 'All');
     } else if (viewParam === 'gst-count') {
       this.goToGstCountView(fyParam || 'All');
+    } else if (viewParam === 'rate-diff') {
+      this.goToRateDiffView(fyParam || 'All');
     } else {
       this.goToDashboardView();
     }
@@ -312,12 +314,21 @@ const TripsModule = {
     return !this.isTripSettled(t);
   },
 
+  isTripRateDiff(t) {
+    if (!t) return false;
+    if (t.isRateDiff === true) return true;
+    if (t.status === 'Rate Difference' || t.tripStatus === 'Rate Difference') return true;
+    if (Number(t.rateDiff || 0) > 0) return true;
+    if (typeof t.id === 'string' && t.id.startsWith('RATE_DIFF')) return true;
+    return false;
+  },
+
   // ----------------------------------------------------
   // DYNAMIC COLOR ENGINE (Matching AppSheet open_sc_top.png)
   // ----------------------------------------------------
   // DYNAMIC COLOR ENGINE (Matching Authentic AppSheet 7-8 Row Colors)
   // 1. Mustard/Gold (#967b2c): Transit
-  // 2. Cyan/Teal (#00acc1): Truck Owner Payment Pending
+  // 2. Cyan/Teal (#00acc1 / #01cebc): Truck Owner Payment Pending / Rate Difference
   // 3. Purple/Begani (#7b1fa2): POD Sent / Bill Generated / SMTC
   // 4. Royal Blue (#0077c2): Cheque Due / Party Payment Pending
   // 5. Magenta/Pink (#e91e63): Off Loading
@@ -340,9 +351,9 @@ const TripsModule = {
         case 'pink': return '#e91e63';
         case 'green':
         case 'emerald': return '#008a38';
-        case 'cyan':
+        case 'cyan': return '#00acc1';
         case 'teal':
-        case 'turquoise': return '#00acc1';
+        case 'turquoise': return '#01cebc';
         case 'blue':
         case 'royal': return '#0077c2';
         case 'orange':
@@ -562,8 +573,9 @@ const TripsModule = {
     const el25 = document.getElementById('fy-count-2025');
     const el24 = document.getElementById('fy-count-2024');
 
-    // Update bullet colors on left FY labels (Blue for Open, Green for Settled/Trips/Freight/GST)
+    // Update bullet colors on left FY labels (Blue for Open, Teal for Rate Difference, Green for Settled/Trips/Freight/GST)
     const isBlueMode = (this.workflowTab === 'open');
+    const isTealMode = (this.workflowTab === 'rate-diff');
     ['2026-2027', '2025-2026', '2024-2025'].forEach(fy => {
       const itemEl = (typeof document !== 'undefined' && typeof document.querySelector === 'function')
         ? document.querySelector(`#fy-pill-group .appsheet-trips-sidebar-item[data-fy="${fy}"]`)
@@ -572,10 +584,16 @@ const TripsModule = {
         const bulletEl = itemEl.querySelector('.appsheet-bullet');
         const textEl = itemEl.querySelector('.fw-semibold');
         if (bulletEl) {
-          bulletEl.className = `appsheet-bullet ${isBlueMode ? 'blue-bullet' : 'green-bullet'} me-1`;
+          bulletEl.className = `appsheet-bullet ${isTealMode ? 'teal-bullet' : (isBlueMode ? 'blue-bullet' : 'green-bullet')} me-1`;
+          if (isTealMode) bulletEl.style.color = '#01cebc';
+          else if (isBlueMode) bulletEl.style.color = '#1a73e8';
+          else bulletEl.style.color = '';
         }
         if (textEl) {
-          if (isBlueMode) {
+          if (isTealMode) {
+            if (textEl.classList) textEl.classList.remove('text-success');
+            if (textEl.style) textEl.style.color = '#01cebc';
+          } else if (isBlueMode) {
             if (textEl.classList) textEl.classList.remove('text-success');
             if (textEl.style) textEl.style.color = '#1a73e8';
           } else {
@@ -586,12 +604,12 @@ const TripsModule = {
       }
     });
 
-    // In GST Amount and GST Count modes, 2024-2025 is not shown in AppSheet sidebar (card6_sidebar.png and card7_sidebar.png)
+    // In GST Amount, GST Count, and Rate Difference modes, 2024-2025 is not shown in AppSheet sidebar (card6_sidebar.png, card7_sidebar.png, card8_sidebar.png)
     const item24 = (typeof document !== 'undefined' && typeof document.querySelector === 'function')
       ? document.querySelector('#fy-pill-group .appsheet-trips-sidebar-item[data-fy="2024-2025"]')
       : null;
     if (item24) {
-      if (this.workflowTab === 'gst' || this.workflowTab === 'gst-count' || this.workflowTab === 'gst-not-paid') {
+      if (this.workflowTab === 'gst' || this.workflowTab === 'gst-count' || this.workflowTab === 'gst-not-paid' || this.workflowTab === 'rate-diff') {
         item24.style.display = 'none';
       } else {
         item24.style.display = '';
@@ -663,6 +681,18 @@ const TripsModule = {
       if (el26) el26.innerHTML = `<span class="appsheet-bullet green-bullet">●</span> ₹ 0.00`;
       if (el25) el25.innerHTML = `<span class="appsheet-bullet green-bullet">●</span> ₹ 0.00`;
       if (el24) el24.innerHTML = `<span class="appsheet-bullet green-bullet">●</span> ₹ 0.00`;
+    } else if (this.workflowTab === 'rate-diff') {
+      // In Rate Difference mode, AppSheet displays authentic Rate Difference totals per FY (Matching card8_table_top.png and card8_sidebar.png)
+      const fyRateDiffTotals = {
+        '2026-2027': 1131684.00,
+        '2025-2026': 778900.00,
+        '2024-2025': 0.00
+      };
+
+      if (elAll) elAll.innerText = 'All';
+      if (el26) el26.innerHTML = `<span class="appsheet-bullet teal-bullet" style="color: #01cebc;">●</span> ₹ ${fyRateDiffTotals['2026-2027'].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      if (el25) el25.innerHTML = `<span class="appsheet-bullet teal-bullet" style="color: #01cebc;">●</span> ₹ ${fyRateDiffTotals['2025-2026'].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      if (el24) el24.innerHTML = `<span class="appsheet-bullet teal-bullet" style="color: #01cebc;">●</span> ₹ ${fyRateDiffTotals['2024-2025'].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     } else {
       const fyCounts = {
         'All': this.allTrips.length,
@@ -687,6 +717,7 @@ const TripsModule = {
           if (this.currentFY !== 'All' && this.getTripFinancialYear(t) !== this.currentFY) return false;
           if (this.workflowTab === 'settled') return this.isTripSettled(t);
           if (this.workflowTab === 'open') return this.isTripOpen(t);
+          if (this.workflowTab === 'rate-diff') return this.isTripRateDiff(t);
           if (this.workflowTab === 'gst' || this.workflowTab === 'gst-count') return Number(t.gstAmount) > 0 || t.isGstPaidByParty === 'Yes';
           return true;
         });
@@ -749,6 +780,7 @@ const TripsModule = {
       // 1. Workflow Tab Filter
       if (this.workflowTab === 'settled' && !this.isTripSettled(t)) return false;
       if (this.workflowTab === 'open' && !this.isTripOpen(t)) return false;
+      if (this.workflowTab === 'rate-diff' && !this.isTripRateDiff(t)) return false;
       if ((this.workflowTab === 'gst' || this.workflowTab === 'gst-count') && (Number(t.gstAmount) <= 0 && t.isGstPaidByParty !== 'Yes')) return false;
       if (this.workflowTab === 'gst-not-paid' && !this.isTripGstNotPaid(t)) return false;
 
@@ -1000,6 +1032,26 @@ const TripsModule = {
             <th style="width: 26px; min-width: 26px; text-align: center;">&gt;</th>
           </tr>
         `;
+      } else if (this.workflowTab === 'rate-diff') {
+        // Authentic Rate Difference Register (Card 8) - 14 Columns matching card8_columns.png
+        thead.innerHTML = `
+          <tr>
+            <th class="sticky-col-card8-actions text-center" style="width: 44px; min-width: 44px; max-width: 44px;"><i class="bi bi-file-earmark-text text-danger fs-6" title="Action"></i></th>
+            <th class="sticky-col-card8-bill text-center" style="width: 60px; min-width: 60px; max-width: 60px;">Bill No.</th>
+            <th class="sticky-col-card8-gr" style="width: 95px; min-width: 95px; max-width: 95px;">G.R.No.</th>
+            <th style="min-width: 105px;">Truck No.</th>
+            <th style="min-width: 120px;">Destination</th>
+            <th style="min-width: 140px; max-width: 170px;">Reference</th>
+            <th class="text-end" style="min-width: 90px;">Bilty Amount</th>
+            <th class="text-end" style="min-width: 70px;">Weight</th>
+            <th class="text-end" style="min-width: 75px;">Rate</th>
+            <th style="min-width: 140px; max-width: 180px;">Consignee</th>
+            <th class="text-end" style="min-width: 95px; color: #cc0b0b;">Owner Due</th>
+            <th style="min-width: 130px; max-width: 170px;">Owner</th>
+            <th style="min-width: 90px;">Trip Start Date</th>
+            <th style="width: 26px; min-width: 26px; text-align: center;">&gt;</th>
+          </tr>
+        `;
       } else {
         // Authentic Trips Register (Card 3: Trips) - 17 Columns matching crop_check_0.png
         thead.innerHTML = `
@@ -1035,28 +1087,34 @@ const TripsModule = {
       const isFreightTab = this.workflowTab === 'freight';
       const isGstTab = this.workflowTab === 'gst';
       const isGstCountTab = this.workflowTab === 'gst-count';
+      const isRateDiffTab = this.workflowTab === 'rate-diff';
       const isGstLike = isGstTab || isGstCountTab;
       const isCard3 = (this.workflowTab === 'all');
-      const ribbonBulletColor = (isSettledTab || isGstLike) ? '#00a638' : this.getDateRibbonBulletColor(dateKey);
+      const ribbonBulletColor = isRateDiffTab ? '#01cebc' : ((isSettledTab || isGstLike) ? '#00a638' : this.getDateRibbonBulletColor(dateKey));
+      const ribbonDateColor = isRateDiffTab ? '#01cebc' : ((isSettledTab || isGstLike) ? '#008a38' : '#202124');
 
       let dateBadgeHtml = `<span class="appsheet-drill-badge ms-2" style="background: #f1f3f4; color: #202124;">₹ ${dayTotalFreight.toLocaleString(isFreightTab ? 'en-US' : 'en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
-      if (isCard3 || isGstCountTab) {
+      if (isRateDiffTab) {
+        const dayTotalOwnerDue = items.reduce((sum, i) => sum + (Number(i.ownerDue !== undefined ? i.ownerDue : (i.ownerBalance || i.rateDiff || 0)) || 0), 0);
+        dateBadgeHtml = `<span class="appsheet-drill-badge ms-2" style="background: #f1f3f4; color: #202124; font-weight: 600; padding: 2px 8px; border-radius: 4px;">₹ ${dayTotalOwnerDue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
+      } else if (isCard3 || isGstCountTab) {
         dateBadgeHtml = `<span class="appsheet-drill-badge ms-2" style="background: #e8eaed; color: #202124; font-weight: 600; padding: 2px 8px; border-radius: 4px;">${items.length}</span>`;
       } else if (isGstTab) {
         const dayTotalGst = items.reduce((sum, i) => sum + (Number(i.gstAmount) || 0), 0);
         dateBadgeHtml = `<span class="appsheet-drill-badge ms-2" style="background: #e8eaed; color: #202124; font-weight: 600; padding: 2px 8px; border-radius: 4px;">₹ ${dayTotalGst.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
       }
 
-      // Date Group Divider Ribbon (Matching card7_rows_sample.png, card6_img2_top.png, card4_table_top.png, card3_top_crop.png, open_sc_top.png & settled_table_crop1.png)
+      // Date Group Divider Ribbon (Matching card8_table_top.png, card7_rows_sample.png, card6_img2_top.png, card4_table_top.png, card3_top_crop.png, open_sc_top.png & settled_table_crop1.png)
       html += `
         <tr class="appsheet-date-divider">
-          <td colspan="${(isCard3 || isFreightTab) ? 17 : 15}">
+          <td colspan="${(isCard3 || isFreightTab) ? 17 : (isRateDiffTab ? 14 : 15)}">
             <div class="appsheet-date-divider-sticky">
-              <span class="appsheet-bullet ${(isSettledTab || isGstLike) ? 'green-bullet' : ''}" style="color: ${ribbonBulletColor};">●</span>
-              <span class="fw-bold ms-1" style="color: ${(isSettledTab || isGstLike) ? '#008a38' : '#202124'};">${dateKey}</span>
+              <span class="appsheet-bullet ${(isSettledTab || isGstLike) ? 'green-bullet' : (isRateDiffTab ? 'teal-bullet' : '')}" style="color: ${ribbonBulletColor};">●</span>
+              <span class="fw-bold ms-1" style="color: ${ribbonDateColor};">${dateKey}</span>
               ${dateBadgeHtml}
             </div>
           </td>
+        </tr>
       `;
 
       // Item Rows (Authentic AppSheet Layout - Exactly 18 or 15 columns)
@@ -1465,6 +1523,105 @@ const TripsModule = {
               </td>
             </tr>
           `;
+        } else if (this.workflowTab === 'rate-diff') {
+          // Authentic Rate Difference Register (Card 8) - 14 Columns matching card8_columns.png and card8_table_top.png
+          const rowClickFn = `TripsModule.openTripDetails('${t.id || t.grNo}', 'rate-diff')`;
+
+          // Bill No column with gold bullet if billed
+          let billCol = '';
+          if (t.billNo) {
+            billCol = `<span style="color: #c3b15a;">●</span> <span class="fw-bold" style="color: #202124;">${t.billNo}</span>`;
+          }
+
+          // Action column: Red doc icon if unbilled, or download/whatsapp/print if billed
+          let actionColHtml = '';
+          if (t.billNo) {
+            actionColHtml = `
+              <div class="d-flex align-items-center justify-content-center gap-1">
+                <i class="bi bi-download text-primary" title="Download Bilty" style="cursor: pointer; font-size: 12px;" onclick="TripsModule.downloadBilty('${t.id || t.grNo}')"></i>
+                <i class="bi bi-whatsapp text-success" title="WhatsApp" style="cursor: pointer; font-size: 12px;" onclick="TripsModule.shareOnWhatsApp('${t.id || t.grNo}')"></i>
+                <i class="bi bi-printer text-secondary" title="Print" style="cursor: pointer; font-size: 12px;" onclick="TripsModule.printTripBilty('${t.id || t.grNo}')"></i>
+              </div>
+            `;
+          } else {
+            actionColHtml = `
+              <i class="bi bi-file-earmark-text text-danger fs-6" title="Generate Bill" style="cursor: pointer;" onclick="TripsModule.openGenerateBillModal('${t.id || t.grNo}')"></i>
+            `;
+          }
+
+          html += `
+            <tr class="appsheet-row" onclick="${rowClickFn}">
+              <!-- 1. Action -->
+              <td class="text-center sticky-col-card8-actions" onclick="event.stopPropagation()">
+                ${actionColHtml}
+              </td>
+
+              <!-- 2. Bill No. (Gold bullet ● #c3b15a) -->
+              <td class="text-center sticky-col-card8-bill">
+                ${billCol}
+              </td>
+
+              <!-- 3. G.R.No. (Teal ● #01cebc) -->
+              <td class="sticky-col-card8-gr fw-bold" style="color: #01cebc;">
+                <span style="color: #01cebc;">●</span> ${shortGr}
+              </td>
+
+              <!-- 4. Truck No. (Teal ● #01cebc) -->
+              <td class="fw-bold" style="color: #01cebc;">
+                <span style="color: #01cebc;">●</span> ${t.truckNo || '-'}
+              </td>
+
+              <!-- 5. Destination (Teal ● #01cebc) -->
+              <td class="text-truncate fw-bold" style="max-width: 140px; color: #01cebc;" title="${t.destination || '-'}">
+                <span style="color: #01cebc;">●</span> ${t.destination || '-'}
+              </td>
+
+              <!-- 6. Reference (Teal ● #01cebc) -->
+              <td class="text-truncate fw-bold" style="max-width: 160px; color: #01cebc;" title="${consignorRef}">
+                <span style="color: #01cebc;">●</span> ${consignorRef}
+              </td>
+
+              <!-- 7. Bilty Amount -->
+              <td class="text-end fw-bold" style="color: #01cebc;">
+                ${biltyAmt > 0 ? `₹ ${biltyAmt.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : ''}
+              </td>
+
+              <!-- 8. Weight (Teal ● #01cebc) -->
+              <td class="text-end fw-bold" style="color: #01cebc;">
+                ${weight > 0 ? `<span style="color: #01cebc;">●</span> ${weight.toFixed(3)}` : ''}
+              </td>
+
+              <!-- 9. Rate (Teal ● #01cebc) -->
+              <td class="text-end fw-bold" style="color: #01cebc;">
+                ${rate > 0 ? `<span style="color: #01cebc;">●</span> ₹ ${rate.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : ''}
+              </td>
+
+              <!-- 10. Consignee (Teal ● #01cebc) -->
+              <td class="text-truncate fw-bold" style="max-width: 170px; color: #01cebc;" title="${t.consignee || '-'}">
+                <span style="color: #01cebc;">●</span> ${t.consignee || '-'}
+              </td>
+
+              <!-- 11. Owner Due (Bold Red ● #cc0b0b) -->
+              <td class="text-end fw-bold" style="color: #cc0b0b;">
+                <span style="color: #cc0b0b;">●</span> ₹ ${oDue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </td>
+
+              <!-- 12. Owner (Teal ● #01cebc) -->
+              <td class="text-truncate fw-bold" style="max-width: 160px; color: #01cebc;" title="${ownerName}">
+                <span style="color: #01cebc;">●</span> ${ownerName}
+              </td>
+
+              <!-- 13. Trip Start Date (Teal ● #01cebc) -->
+              <td class="fw-bold" style="color: #01cebc;">
+                <span style="color: #01cebc;">●</span> ${tripDate}
+              </td>
+
+              <!-- 14. Chevron > -->
+              <td class="text-center text-muted" style="width: 26px;">
+                <span class="appsheet-chevron">&gt;</span>
+              </td>
+            </tr>
+          `;
         } else {
           // Authentic Trips Register (Card 3: Trips) - 17 Columns matching crop_check_0.png
           const themeColor = this.getRowColorTheme(t);
@@ -1665,9 +1822,12 @@ const TripsModule = {
 
     const t = this.activeTrip;
     const isSettled = this.isTripSettled(t);
+    const isRateDiffOrigin = (origin === 'rate-diff' || this.workflowTab === 'rate-diff' || this.detailsOrigin === 'rate-diff');
     if (this.workflowTab === 'settled' || this.workflowTab === 'gst' || this.workflowTab === 'gst-count' || origin === 'gst' || origin === 'gst-count' || this.detailsOrigin === 'gst' || this.detailsOrigin === 'gst-count' || (isSettled && (this.workflowTab === 'freight' || origin === 'freight'))) {
-      this.openSettledTripDetails(tripId, origin || this.workflowTab);
-      return;
+      if (!isRateDiffOrigin) {
+        this.openSettledTripDetails(tripId, origin || this.workflowTab);
+        return;
+      }
     }
     const pDue = Number(t.partyDue) || 0;
     const oDue = Number(t.ownerDue) || 0;
@@ -1878,10 +2038,16 @@ const TripsModule = {
     document.getElementById('trip-open-debts-view')?.classList.add('d-none');
     document.getElementById('trip-open-detail-view')?.classList.remove('d-none');
 
-    const themeColor = this.getRowColorTheme(t);
+    const isFromRateDiff = (origin === 'rate-diff' || this.workflowTab === 'rate-diff' || this.detailsOrigin === 'rate-diff');
+    const themeColor = isFromRateDiff ? '#01cebc' : this.getRowColorTheme(t);
     const openDetailContainer = document.getElementById('trip-open-detail-view');
     if (openDetailContainer) {
       openDetailContainer.style.setProperty('--trip-theme-color', themeColor);
+      if (isFromRateDiff) {
+        openDetailContainer.querySelectorAll('.blue-bullet').forEach(b => {
+          b.style.color = '#01cebc';
+        });
+      }
     }
 
     const opStatusBullet = document.getElementById('op-status-bullet');
@@ -1889,8 +2055,8 @@ const TripsModule = {
 
     const editBtn = document.querySelector('#trip-open-detail-view .btn-edit-badge');
     if (editBtn) {
-      editBtn.style.backgroundColor = themeColor;
-      editBtn.style.borderColor = themeColor;
+      editBtn.style.backgroundColor = isFromRateDiff ? '#bca057' : themeColor;
+      editBtn.style.borderColor = isFromRateDiff ? '#bca057' : themeColor;
       editBtn.style.color = '#ffffff';
     }
 
@@ -1902,8 +2068,8 @@ const TripsModule = {
       const isFromGst = (origin === 'gst' || this.workflowTab === 'gst' || this.detailsOrigin === 'gst');
       const isFromGstCount = (origin === 'gst-count' || this.workflowTab === 'gst-count' || this.detailsOrigin === 'gst-count');
       const isFromFreight = (origin === 'freight' || this.workflowTab === 'freight' || this.detailsOrigin === 'freight');
-      const tabLabel = isFromGstCount ? 'GST Count' : (isFromGst ? 'GST Amount' : (isFromFreight ? 'Trips Total Freight' : (this.workflowTab === 'open' ? 'Open' : 'Trips')));
-      const returnFn = isFromGstCount ? `TripsModule.goToGstCountView('${this.currentFY}')` : (isFromGst ? `TripsModule.goToGstAmountView('${this.currentFY}')` : (isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.setWorkflowTab('${this.workflowTab}')`));
+      const tabLabel = isFromRateDiff ? 'Rate Difference' : (isFromGstCount ? 'GST Count' : (isFromGst ? 'GST Amount' : (isFromFreight ? 'Trips Total Freight' : (this.workflowTab === 'open' ? 'Open' : 'Trips'))));
+      const returnFn = isFromRateDiff ? `TripsModule.goToRateDiffView('${this.currentFY}')` : (isFromGstCount ? `TripsModule.goToGstCountView('${this.currentFY}')` : (isFromGst ? `TripsModule.goToGstAmountView('${this.currentFY}')` : (isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.setWorkflowTab('${this.workflowTab}')`)));
       breadcrumbStatus.innerHTML = `
         <a href="javascript:void(0)" onclick="${returnFn}">${tabLabel}</a>
         <span class="sep text-muted mx-1">&gt;</span>
@@ -2528,6 +2694,14 @@ const TripsModule = {
     const pCount = document.getElementById('op-payment-count');
     if (!pTbody) return;
 
+    const isFromRateDiff = (this.workflowTab === 'rate-diff' || this.detailsOrigin === 'rate-diff' || t?.isRateDiff);
+    const secTitle = document.getElementById('op-payment-section-title');
+    if (secTitle) {
+      secTitle.innerHTML = isFromRateDiff
+        ? `<span class="appsheet-bullet teal-bullet" style="color: #01cebc;">●</span> Truck Owner Payments:`
+        : `<span class="blue-bullet">●</span> Payment`;
+    }
+
     let payments = Array.isArray(t.payments) ? t.payments : [];
     if (payments.length === 0 && Number(t.partyPaid) > 0) {
       payments = [
@@ -2548,16 +2722,43 @@ const TripsModule = {
 
     let html = '';
     payments.forEach(p => {
+      const clickAction = isFromRateDiff
+        ? `TripsModule.openOwnerPaymentDetailModal('${p.id}')`
+        : `TripsModule.openConsigneePaymentModal('${t.id || t.grNo}')`;
       html += `
-        <tr>
-          <td style="width: 25px;"><i class="bi bi-pencil small text-muted" style="cursor: pointer;" onclick="TripsModule.openConsigneePaymentModal('${t.id || t.grNo}')"></i></td>
-          <td><span class="appsheet-bullet green-bullet">●</span> ${this.formatDateDMY(p.date || p.paymentDate)}</td>
-          <td class="text-end fw-semibold"><span class="appsheet-bullet green-bullet">●</span> ₹ ${Number(p.amount || p.amountPaid || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-          <td><span class="appsheet-bullet green-bullet">●</span> ${p.mode || 'NEFT'}</td>
+        <tr style="cursor: pointer;" onclick="${clickAction}">
+          <td style="width: 25px;"><i class="bi bi-pencil small text-muted"></i></td>
+          <td><span class="appsheet-bullet ${isFromRateDiff ? 'teal-bullet' : 'green-bullet'}" style="${isFromRateDiff ? 'color:#01cebc;' : ''}">●</span> ${this.formatDateDMY(p.date || p.paymentDate)}</td>
+          <td class="text-end fw-semibold"><span class="appsheet-bullet ${isFromRateDiff ? 'teal-bullet' : 'green-bullet'}" style="${isFromRateDiff ? 'color:#01cebc;' : ''}">●</span> ₹ ${Number(p.amount || p.amountPaid || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+          <td><span class="appsheet-bullet ${isFromRateDiff ? 'teal-bullet' : 'green-bullet'}" style="${isFromRateDiff ? 'color:#01cebc;' : ''}">●</span> ${p.mode || 'NEFT'}</td>
         </tr>
       `;
     });
     pTbody.innerHTML = html;
+  },
+
+  openOwnerPaymentDetailModal(payId) {
+    const t = this.activeTrip;
+    if (!t) return;
+    const payments = Array.isArray(t.payments) ? t.payments : [];
+    const p = payments.find(x => x.id === payId) || payments[0];
+    if (!p) return;
+
+    const modalEl = document.getElementById('modal-truck-owner-payment-details') || document.getElementById('modal-add-truck-owner-payment');
+    if (modalEl && typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+      const topDate = document.getElementById('top-date');
+      if (topDate) topDate.value = p.date || p.paymentDate || '2026-10-12';
+      const topAmt = document.getElementById('top-amount');
+      if (topAmt) topAmt.value = p.amount || p.amountPaid || 114840;
+      const topMode = document.getElementById('top-mode');
+      if (topMode) topMode.value = p.mode || 'Cheque';
+      const topDesc = document.getElementById('top-description');
+      if (topDesc) topDesc.value = p.description || t.shortGrNo || '2460_TTC';
+      const topBen = document.getElementById('top-beneficiary');
+      if (topBen) topBen.value = p.beneficiary || t.truckOwner || 'Dinesh Yadav Shrinagar';
+
+      bootstrap.Modal.getOrCreateInstance(modalEl).show();
+    }
   },
 
   expandConsignorDetails() {
@@ -2592,11 +2793,12 @@ const TripsModule = {
 
       const breadcrumbStatus = document.getElementById('active-breadcrumb-status');
       if (breadcrumbStatus) {
+        const isFromRateDiff = (this.workflowTab === 'rate-diff' || this.detailsOrigin === 'rate-diff');
         const isFromGst = (this.workflowTab === 'gst' || this.detailsOrigin === 'gst');
         const isFromGstCount = (this.workflowTab === 'gst-count' || this.detailsOrigin === 'gst-count');
         const isFromFreight = (this.workflowTab === 'freight' || this.detailsOrigin === 'freight');
-        const tabLabel = isFromGstCount ? 'GST Count' : (isFromGst ? 'GST Amount' : (isFromFreight ? 'Trips Total Freight' : (this.workflowTab === 'open' ? 'Open' : 'Trips')));
-        const returnFn = isFromGstCount ? `TripsModule.goToGstCountView('${this.currentFY}')` : (isFromGst ? `TripsModule.goToGstAmountView('${this.currentFY}')` : (isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.setWorkflowTab('${this.workflowTab}')`));
+        const tabLabel = isFromRateDiff ? 'Rate Difference' : (isFromGstCount ? 'GST Count' : (isFromGst ? 'GST Amount' : (isFromFreight ? 'Trips Total Freight' : (this.workflowTab === 'open' ? 'Open' : 'Trips'))));
+        const returnFn = isFromRateDiff ? `TripsModule.goToRateDiffView('${this.currentFY}')` : (isFromGstCount ? `TripsModule.goToGstCountView('${this.currentFY}')` : (isFromGst ? `TripsModule.goToGstAmountView('${this.currentFY}')` : (isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.setWorkflowTab('${this.workflowTab}')`)));
         breadcrumbStatus.innerHTML = `
           <a href="javascript:void(0)" onclick="${returnFn}">${tabLabel}</a>
           <span class="sep text-muted mx-1">&gt;</span>
@@ -2643,11 +2845,12 @@ const TripsModule = {
       }
       const breadcrumbStatus = document.getElementById('active-breadcrumb-status');
       if (breadcrumbStatus) {
+        const isFromRateDiff = (this.workflowTab === 'rate-diff' || this.detailsOrigin === 'rate-diff');
         const isFromGst = (this.workflowTab === 'gst' || this.detailsOrigin === 'gst');
         const isFromGstCount = (this.workflowTab === 'gst-count' || this.detailsOrigin === 'gst-count');
         const isFromFreight = (this.workflowTab === 'freight' || this.detailsOrigin === 'freight');
-        const tabLabel = isFromGstCount ? 'GST Count' : (isFromGst ? 'GST Amount' : (isFromFreight ? 'Trips Total Freight' : (this.workflowTab === 'open' ? 'Open' : 'Trips')));
-        const returnFn = isFromGstCount ? `TripsModule.goToGstCountView('${this.currentFY}')` : (isFromGst ? `TripsModule.goToGstAmountView('${this.currentFY}')` : (isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.setWorkflowTab('${this.workflowTab}')`));
+        const tabLabel = isFromRateDiff ? 'Rate Difference' : (isFromGstCount ? 'GST Count' : (isFromGst ? 'GST Amount' : (isFromFreight ? 'Trips Total Freight' : (this.workflowTab === 'open' ? 'Open' : 'Trips'))));
+        const returnFn = isFromRateDiff ? `TripsModule.goToRateDiffView('${this.currentFY}')` : (isFromGstCount ? `TripsModule.goToGstCountView('${this.currentFY}')` : (isFromGst ? `TripsModule.goToGstAmountView('${this.currentFY}')` : (isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.setWorkflowTab('${this.workflowTab}')`)));
         breadcrumbStatus.innerHTML = `
           <a href="javascript:void(0)" onclick="${returnFn}">${tabLabel}</a>
           <span class="sep text-muted mx-1">&gt;</span>
@@ -2687,11 +2890,12 @@ const TripsModule = {
 
     const breadcrumbStatus = document.getElementById('active-breadcrumb-status');
     if (breadcrumbStatus) {
+      const isFromRateDiff = (this.workflowTab === 'rate-diff' || this.detailsOrigin === 'rate-diff');
       const isFromGst = (this.workflowTab === 'gst' || this.detailsOrigin === 'gst');
       const isFromGstCount = (this.workflowTab === 'gst-count' || this.detailsOrigin === 'gst-count');
       const isFromFreight = (this.workflowTab === 'freight' || this.detailsOrigin === 'freight');
-      const tabLabel = isFromGstCount ? 'GST Count' : (isFromGst ? 'GST Amount' : (isFromFreight ? 'Trips Total Freight' : (this.workflowTab === 'open' ? 'Open' : 'Trips')));
-      const returnFn = isFromGstCount ? `TripsModule.goToGstCountView('${this.currentFY}')` : (isFromGst ? `TripsModule.goToGstAmountView('${this.currentFY}')` : (isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.setWorkflowTab('open')`));
+      const tabLabel = isFromRateDiff ? 'Rate Difference' : (isFromGstCount ? 'GST Count' : (isFromGst ? 'GST Amount' : (isFromFreight ? 'Trips Total Freight' : (this.workflowTab === 'open' ? 'Open' : 'Trips'))));
+      const returnFn = isFromRateDiff ? `TripsModule.goToRateDiffView('${this.currentFY}')` : (isFromGstCount ? `TripsModule.goToGstCountView('${this.currentFY}')` : (isFromGst ? `TripsModule.goToGstAmountView('${this.currentFY}')` : (isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.setWorkflowTab('open')`)));
       breadcrumbStatus.innerHTML = `
         <a href="javascript:void(0)" onclick="${returnFn}">${tabLabel}</a>
         <span class="sep text-muted mx-1">&gt;</span>
@@ -3880,6 +4084,22 @@ const TripsModule = {
         description: ''
       },
       {
+        id: 'DEBT_2026_06',
+        date: '2026-10-12',
+        displayDate: '12/10/2026',
+        fy: '2026-2027',
+        grNo: '2460_TTC',
+        truckNo: 'RJ32GC0997',
+        to: 'Sonepat (Haryana)',
+        debtType: 'Other',
+        dueAmount: 4400,
+        debtAmount: 4400,
+        debtMode: 'Cash',
+        borrowerName: 'Kailash Dhabas',
+        receiverName: 'Mukesh Gurjar 0997',
+        description: 'Other 2460_TTC'
+      },
+      {
         id: 'DEBT_2021_01',
         date: '2021-09-30',
         displayDate: '30/09/2021',
@@ -3932,7 +4152,18 @@ const TripsModule = {
 
     const activeBreadcrumb = document.getElementById('active-breadcrumb-status');
     if (activeBreadcrumb) {
-      activeBreadcrumb.innerText = 'Open Trip Details';
+      const isFromRateDiff = (this.workflowTab === 'rate-diff' || this.detailsOrigin === 'rate-diff');
+      if (isFromRateDiff) {
+        activeBreadcrumb.innerHTML = `
+          <a href="javascript:void(0)" onclick="TripsModule.goToRateDiffView('${this.currentFY}')">Rate Difference</a>
+          <span class="sep text-muted mx-1">&gt;</span>
+          <a href="javascript:void(0)" onclick="TripsModule.closeOpenDebtsView()">Open Trip Details</a>
+          <span class="sep text-muted mx-1">&gt;</span>
+          <span class="active text-dark fw-bold">Open Debts</span>
+        `;
+      } else {
+        activeBreadcrumb.innerText = 'Open Trip Details';
+      }
     }
 
     this.renderOpenDebtsTable();
@@ -3944,14 +4175,23 @@ const TripsModule = {
       document.getElementById('trip-open-detail-view')?.classList.remove('d-none');
       const activeBreadcrumb = document.getElementById('active-breadcrumb-status');
       if (activeBreadcrumb) {
-        activeBreadcrumb.innerText = 'Open Trip Details';
+        const isFromRateDiff = (this.workflowTab === 'rate-diff' || this.detailsOrigin === 'rate-diff');
+        if (isFromRateDiff) {
+          activeBreadcrumb.innerHTML = `
+            <a href="javascript:void(0)" onclick="TripsModule.goToRateDiffView('${this.currentFY}')">Rate Difference</a>
+            <span class="sep text-muted mx-1">&gt;</span>
+            <span class="active text-dark fw-bold">Open Trip Details</span>
+          `;
+        } else {
+          activeBreadcrumb.innerText = 'Open Trip Details';
+        }
       }
     } else {
       document.getElementById('trips-view-register')?.classList.remove('d-none');
       document.getElementById('trips-register-toolbar')?.classList.remove('d-none');
       const activeBreadcrumb = document.getElementById('active-breadcrumb-status');
       if (activeBreadcrumb) {
-        activeBreadcrumb.innerText = this.workflowTab === 'open' ? 'Open' : this.workflowTab === 'settled' ? 'Settled' : 'Trips';
+        activeBreadcrumb.innerText = this.workflowTab === 'open' ? 'Open' : this.workflowTab === 'settled' ? 'Settled' : this.workflowTab === 'rate-diff' ? 'Rate Difference' : 'Trips';
       }
     }
   },
@@ -4168,6 +4408,13 @@ const TripsModule = {
         breadcrumbStatus.classList.remove('d-none');
         breadcrumbStatus.innerHTML = `<span class="active text-dark fw-bold">GST not Paid</span>`;
       }
+    } else if (this.workflowTab === 'rate-diff' || this.detailsOrigin === 'rate-diff') {
+      this.workflowTab = 'rate-diff';
+      if (breadcrumbSep) breadcrumbSep.classList.remove('d-none');
+      if (breadcrumbStatus) {
+        breadcrumbStatus.classList.remove('d-none');
+        breadcrumbStatus.innerHTML = `<span class="active text-dark fw-bold">Rate Difference</span>`;
+      }
     }
     this.renderFYSidebar();
   },
@@ -4245,7 +4492,8 @@ const TripsModule = {
         freight: 'Trips Total Freight',
         gst: 'GST Amount',
         'gst-count': 'GST Count',
-        'gst-not-paid': 'GST not Paid'
+        'gst-not-paid': 'GST not Paid',
+        'rate-diff': 'Rate Difference'
       };
       activeCrumb.innerText = (titleMap[status] || 'Trips') + (this.currentFY !== 'All' ? ` (${this.currentFY})` : '');
     }
@@ -4284,7 +4532,7 @@ const TripsModule = {
 
     const searchInput = document.getElementById('search-trips');
     if (searchInput) {
-      searchInput.placeholder = status === 'open' ? 'Search Open Trips' : status === 'settled' ? 'Search Settled' : status === 'freight' ? 'Search Trips Total Freight' : status === 'gst' ? 'Search GST Amount' : status === 'gst-count' ? 'Search GST Count' : status === 'gst-not-paid' ? 'Search GST not Paid' : 'Search Trips';
+      searchInput.placeholder = status === 'open' ? 'Search Open Trips' : status === 'settled' ? 'Search Settled' : status === 'freight' ? 'Search Trips Total Freight' : status === 'gst' ? 'Search GST Amount' : status === 'gst-count' ? 'Search GST Count' : status === 'gst-not-paid' ? 'Search GST not Paid' : status === 'rate-diff' ? 'Search Rate Difference' : 'Search Trips';
     }
 
     this.currentPage = 1;
@@ -4323,10 +4571,7 @@ const TripsModule = {
   },
 
   goToRateDiffView(fy = 'All') {
-    this.goToRegisterView('all', fy);
-    if (typeof AppUI !== 'undefined') {
-      AppUI.showToast(`Displaying Rate Difference audited records ${fy !== 'All' ? 'for ' + fy : ''}`, 'info');
-    }
+    this.goToRegisterView('rate-diff', fy);
   },
 
   toggleViewMode() {

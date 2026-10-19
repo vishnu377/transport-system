@@ -430,7 +430,10 @@
       color: #137333;
     }
     .cyan-bullet {
-      color: #00acc1;
+      color: #01cebc;
+    }
+    .teal-bullet {
+      color: #01cebc;
     }
     .gold-bullet {
       color: #bfa15f;
@@ -707,6 +710,32 @@
       box-shadow: none !important;
     }
 
+    /* Dedicated Rate Difference (Card 8) Columns */
+    .sticky-col-card8-actions {
+      width: 44px;
+      min-width: 44px;
+      max-width: 44px;
+      box-sizing: border-box;
+      border-right: none !important;
+      box-shadow: none !important;
+    }
+    .sticky-col-card8-bill {
+      width: 60px;
+      min-width: 60px;
+      max-width: 60px;
+      box-sizing: border-box;
+      border-right: none !important;
+      box-shadow: none !important;
+    }
+    .sticky-col-card8-gr {
+      width: 95px;
+      min-width: 95px;
+      max-width: 95px;
+      box-sizing: border-box;
+      border-right: none !important;
+      box-shadow: none !important;
+    }
+
     .appsheet-table thead th {
       position: sticky;
       top: 0;
@@ -731,7 +760,10 @@
     .appsheet-table thead th.sticky-col-card4-gr,
     .appsheet-table thead th.sticky-col-card6-actions,
     .appsheet-table thead th.sticky-col-card6-bill,
-    .appsheet-table thead th.sticky-col-card6-gr {
+    .appsheet-table thead th.sticky-col-card6-gr,
+    .appsheet-table thead th.sticky-col-card8-actions,
+    .appsheet-table thead th.sticky-col-card8-bill,
+    .appsheet-table thead th.sticky-col-card8-gr {
       background: #ffffff;
       box-sizing: border-box;
       border-right: none !important;
@@ -1542,15 +1574,15 @@
             <div class="appsheet-drill-row" onclick="TripsModule.goToRateDiffView('2026-2027')">
               <div class="appsheet-drill-left">
                 <span class="appsheet-bullet cyan-bullet">●</span>
-                <span class="fw-semibold" style="color: #009688;">2026-2027</span>
-                <span class="appsheet-drill-badge" id="card-ratediff-badge-2026">₹ 1,016,713.00</span>
+                <span class="fw-semibold" style="color: #01cebc;">2026-2027</span>
+                <span class="appsheet-drill-badge" id="card-ratediff-badge-2026">₹ 1,131,684.00</span>
               </div>
               <span class="appsheet-chevron">&gt;</span>
             </div>
             <div class="appsheet-drill-row" onclick="TripsModule.goToRateDiffView('2025-2026')">
               <div class="appsheet-drill-left">
                 <span class="appsheet-bullet cyan-bullet">●</span>
-                <span class="fw-semibold" style="color: #009688;">2025-2026</span>
+                <span class="fw-semibold" style="color: #01cebc;">2025-2026</span>
                 <span class="appsheet-drill-badge" id="card-ratediff-badge-2025">₹ 778,900.00</span>
               </div>
               <span class="appsheet-chevron">&gt;</span>
@@ -4015,17 +4047,17 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
   <!-- Core App Scripts with Cache Busting -->
-  <script src="../js/config.js?v=20261019_v4"></script>
+  <script src="../js/config.js?v=20261019_v5"></script>
   <!-- Universal Master Data Assets (Guaranteed 100% Offline & Fresh Git Deploy Resilience) -->
-  <script src="../js/sample-parties-data.js?v=20261019_v4"></script>
-  <script src="../js/sample-truck-owners-data.js?v=20261019_v4"></script>
-  <script src="../js/sample-drivers-data.js?v=20261019_v4"></script>
-  <script src="../js/open-trips-seed.js?v=20261019_v4"></script>
-  <script src="../js/sample-trips-data.js?v=20261019_v4"></script>
-  <script src="../js/sample-debts-data.js?v=20261019_v4"></script>
-  <script src="../js/sample-cheques-data.js?v=20261019_v4"></script>
-  <script src="../js/db-service.js?v=20261019_v4"></script>
-  <script src="../js/app.js?v=20261019_v4"></script>
-  <script src="../js/modules/trips.js?v=20261019_v4"></script>
+  <script src="../js/sample-parties-data.js?v=20261019_v5"></script>
+  <script src="../js/sample-truck-owners-data.js?v=20261019_v5"></script>
+  <script src="../js/sample-drivers-data.js?v=20261019_v5"></script>
+  <script src="../js/open-trips-seed.js?v=20261019_v5"></script>
+  <script src="../js/sample-trips-data.js?v=20261019_v5"></script>
+  <script src="../js/sample-debts-data.js?v=20261019_v5"></script>
+  <script src="../js/sample-cheques-data.js?v=20261019_v5"></script>
+  <script src="../js/db-service.js?v=20261019_v5"></script>
+  <script src="../js/app.js?v=20261019_v5"></script>
+  <script src="../js/modules/trips.js?v=20261019_v5"></script>
 </body>
 </html>

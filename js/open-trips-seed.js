@@ -844,5 +844,387 @@ window.OPEN_TRIPS_SEED = [
     billingType: 'Fixed', weight: 1.0, rate: 10000.0, freight: 10000.0, biltyAmount: 10000.0,
     billNo: '', partyPaid: 0.0, partyDue: 10000.0, ownerDue: 10000.0, status: 'Open',
     reference: 'Anil Sharda', colorTheme: 'magenta'
+  },
+  // ========================================================
+  // AUTHENTIC APPSHEET CARD 8 (RATE DIFFERENCE) DATASET
+  // Matching screencapture-appsheet-start-...-18_30_45.png & detail views
+  // Featuring authentic teal bullets (#01cebc), red Owner Due (#cc0b0b),
+  // and gold Bill bullets (#c3b15a).
+  // ========================================================
+  // --- 12/10/2026 (Owner Due sum: ₹ 5,800.00) ---
+  {
+    id: 'RATE_DIFF_20261012_2460', grNo: '2026-2027-2460_TTC', shortGrNo: '2460_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-10-12', date: '2026-10-12', tripEndDate: '2026-10-22',
+    truckNo: 'RJ32GC0997', truckOwner: 'Dinesh Yadav Shrinagar', ownerName: 'Dinesh Yadav Shrinagar', ownerMobile: '9828230137', ownerMobile2: '9462495071',
+    driver: 'Mukesh Gurjar 0997', driverMobile: '9636592233', driverMobile2: '9784687522',
+    origin: 'Rajsamand (Raj.)', destination: 'Sonepat (Haryana)', deliveryAddress: 'B-4/244 B, Safdarjung Enclave, New Delhi - 110029',
+    consignor: 'Balwant Yadav R.B. Dyes ...', consignorAddress: 'B-4/244 B, Safdarjung Enclave, New Delhi - 110029', consignorGstin: '07AAUFB4244E1ZS',
+    reference: 'Balwant Yadav R.B. Dyes ...', referenceMobile: '9887479777',
+    consignee: 'BirlaNu Ltd.', consigneeGstin: '06AABCB0976E2ZS', consigneeMobile: '9151068884', consigneeMobile2: '9415044003',
+    material: 'Dolomite Powder', billingType: 'Per Tonne', weight: 92.800, rate: 1300.00, freight: 120640.00, biltyAmount: 120640.00,
+    billNo: '', partyPaid: 120640.00, partyDue: 0.00, ownerDue: 5800.00, ownerFreight: 120640.00, ownerTotalPayment: 120640.00, ownerBalance: 5800.00,
+    rateDiff: 5800.00, isRateDiff: true, status: 'Rate Difference', tripStatus: 'Transit', colorTheme: 'teal',
+    payments: [
+      { id: 'TOP_2460_1', date: '2026-10-12', paymentDate: '2026-10-12', amount: 114840.00, amountPaid: 114840.00, mode: 'Cheque', description: '2460_TTC', beneficiary: 'Dinesh Yadav Shrinagar', paidTo: 'Truck Owner', fromBank: 'MTC', toBank: 'IDBI' },
+      { id: 'TOP_2460_2', date: '2026-10-12', paymentDate: '2026-10-12', amount: 4600.00, amountPaid: 4600.00, mode: 'Online Payment', description: '2460_TTC', beneficiary: 'Dinesh Yadav Shrinagar', paidTo: 'Truck Owner', fromBank: 'MTC', toBank: 'SBI' }
+    ],
+    debts: [
+      { id: 'DEBT_2460_1', type: 'Commission', amount: 2000.00, description: 'Commission 2460_TTC' },
+      { id: 'DEBT_2460_2', type: 'Other', amount: 4400.00, description: 'Other 2460_TTC' }
+    ]
+  },
+  // --- 09/10/2026 (Owner Due sum: ₹ 5,000.00) ---
+  {
+    id: 'RATE_DIFF_20261009_2418', grNo: '2026-2027-2418_TTC', shortGrNo: '2418_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-10-09', date: '2026-10-09',
+    truckNo: 'RJ01GC4865', truckOwner: 'Bhagwan Singh Jat', ownerName: 'Bhagwan Singh Jat', ownerMobile: '9828230125',
+    driver: 'Shankar Singh Rawat', driverMobile: '9828230125',
+    origin: 'Rajsamand (Raj.)', destination: 'Sandila (U.P.)', deliveryAddress: 'Industrial Area Phase 2 Sandila',
+    consignor: 'RBL Natural Resources Ltd.', consignorAddress: 'Plot No. G-1-30, IID Centre, Kaladwas, Udaipur', consignorGstin: '08AAACR5148L1Z9',
+    reference: 'RBL Natural Resources Ltd.', referenceMobile: '9887479777',
+    consignee: 'Berger Paints India Ltd.', consigneeGstin: '09AABCB0976E2ZS',
+    material: 'Marble Powder', billingType: 'Per Tonne', weight: 80.000, rate: 1900.00, freight: 152000.00, biltyAmount: 76000.00,
+    billNo: '', partyPaid: 152000.00, partyDue: 0.00, ownerDue: 5000.00, ownerFreight: 152000.00, ownerTotalPayment: 152000.00, ownerBalance: 5000.00,
+    rateDiff: 5000.00, isRateDiff: true, status: 'Rate Difference', tripStatus: 'Transit', colorTheme: 'teal'
+  },
+  // --- 08/10/2026 (Owner Due sum: ₹ 7,397.00) ---
+  {
+    id: 'RATE_DIFF_20261008_2396', grNo: '2026-2027-2396_TTC', shortGrNo: '2396_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-10-08', date: '2026-10-08',
+    truckNo: 'RJ01GE1235', truckOwner: 'Mukesh Somani', ownerName: 'Mukesh Somani', ownerMobile: '9414659401',
+    driver: 'Mukesh Gurjar', driverMobile: '9828230104',
+    origin: 'Rajsamand (Raj.)', destination: 'Bhilwara (Raj.)', deliveryAddress: 'Atun Road Bhilwara',
+    consignor: 'Mukesh Somani', consignorAddress: 'Bhilwara Bypass', consignorGstin: '08AABCS9988D1Z2',
+    reference: 'Mukesh Somani', referenceMobile: '9414659401',
+    consignee: 'Sangam India Ltd.', consigneeGstin: '08AAACS1122D1Z3',
+    material: 'Marble Powder', billingType: 'Per Tonne', weight: 90.000, rate: 1600.00, freight: 144000.00, biltyAmount: 144000.00,
+    billNo: '', partyPaid: 144000.00, partyDue: 0.00, ownerDue: 1440.00, ownerFreight: 144000.00, ownerTotalPayment: 144000.00, ownerBalance: 1440.00,
+    rateDiff: 1440.00, isRateDiff: true, status: 'Rate Difference', tripStatus: 'Transit', colorTheme: 'teal'
+  },
+  {
+    id: 'RATE_DIFF_20261008_2400', grNo: '2026-2027-2400_TTC', shortGrNo: '2400_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-10-08', date: '2026-10-08',
+    truckNo: 'RJ32GC0997', truckOwner: 'Dinesh Yadav Shrinagar', ownerName: 'Dinesh Yadav Shrinagar', ownerMobile: '9828230137',
+    driver: 'Mukesh Gurjar 0997', driverMobile: '9636592233',
+    origin: 'Rajsamand (Raj.)', destination: 'Sonepat (Haryana)', deliveryAddress: 'B-4/244 B, Safdarjung Enclave, New Delhi - 110029',
+    consignor: 'Balwant Yadav R.B. Dyes ...', consignorAddress: 'B-4/244 B, Safdarjung Enclave, New Delhi - 110029', consignorGstin: '07AAUFB4244E1ZS',
+    reference: 'Balwant Yadav R.B. Dyes ...', referenceMobile: '9887479777',
+    consignee: 'BirlaNu Ltd.', consigneeGstin: '06AABCB0976E2ZS',
+    material: 'Dolomite Powder', billingType: 'Per Tonne', weight: 95.300, rate: 1300.00, freight: 123890.00, biltyAmount: 0.0,
+    billNo: '', partyPaid: 123890.00, partyDue: 0.00, ownerDue: 5957.00, ownerFreight: 123890.00, ownerTotalPayment: 123890.00, ownerBalance: 5957.00,
+    rateDiff: 5957.00, isRateDiff: true, status: 'Rate Difference', tripStatus: 'Transit', colorTheme: 'teal'
+  },
+  // --- 06/10/2026 (Owner Due sum: ₹ 5,597.00) ---
+  {
+    id: 'RATE_DIFF_20261006_2375', grNo: '2026-2027-2375_TTC', shortGrNo: '2375_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-10-06', date: '2026-10-06',
+    truckNo: 'RJ01GC2159', truckOwner: 'Mahendra Rawat Shrinagar', ownerName: 'Mahendra Rawat Shrinagar', ownerMobile: '9784175913',
+    driver: 'Kaluram Jat Shrinagar', driverMobile: '9784175913',
+    origin: 'Rajsamand (Raj.)', destination: 'Hapur (U.P.)', deliveryAddress: 'Modi Nagar Road Hapur',
+    consignor: 'Sunita Sharma', consignorAddress: 'Hapur Industrial Area', consignorGstin: '09AAACS4455E1Z1',
+    reference: 'Sunita Sharma', referenceMobile: '9784175913',
+    consignee: 'Modi Naturals Ltd.', consigneeGstin: '09AABCM8899F1Z2',
+    material: 'Marble Powder', billingType: 'Per Tonne', weight: 96.000, rate: 1375.00, freight: 132000.00, biltyAmount: 82000.00,
+    billNo: '', partyPaid: 132000.00, partyDue: 0.00, ownerDue: 5597.00, ownerFreight: 132000.00, ownerTotalPayment: 132000.00, ownerBalance: 5597.00,
+    rateDiff: 5597.00, isRateDiff: true, status: 'Rate Difference', tripStatus: 'Transit', colorTheme: 'teal'
+  },
+  // --- 05/10/2026 (Owner Due sum: ₹ 6,573.00) ---
+  {
+    id: 'RATE_DIFF_20261005_2353', grNo: '2026-2027-2353_TTC', shortGrNo: '2353_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-10-05', date: '2026-10-05',
+    truckNo: 'RJ32GC0997', truckOwner: 'Dinesh Yadav Shrinagar', ownerName: 'Dinesh Yadav Shrinagar', ownerMobile: '9828230137',
+    driver: 'Mukesh Gurjar 0997', driverMobile: '9636592233',
+    origin: 'Rajsamand (Raj.)', destination: 'Sonepat (Haryana)', deliveryAddress: 'B-4/244 B, Safdarjung Enclave, New Delhi - 110029',
+    consignor: 'Balwant Yadav R.B. Dyes ...', consignorAddress: 'B-4/244 B, Safdarjung Enclave, New Delhi - 110029', consignorGstin: '07AAUFB4244E1ZS',
+    reference: 'Balwant Yadav R.B. Dyes ...', referenceMobile: '9887479777',
+    consignee: 'BirlaNu Ltd.', consigneeGstin: '06AABCB0976E2ZS',
+    material: 'Dolomite Powder', billingType: 'Per Tonne', weight: 101.200, rate: 1300.00, freight: 131560.00, biltyAmount: 0.0,
+    billNo: '', partyPaid: 131560.00, partyDue: 0.00, ownerDue: 6573.00, ownerFreight: 131560.00, ownerTotalPayment: 131560.00, ownerBalance: 6573.00,
+    rateDiff: 6573.00, isRateDiff: true, status: 'Rate Difference', tripStatus: 'Transit', colorTheme: 'teal'
+  },
+  // --- 04/10/2026 (Owner Due sum: ₹ 274.00) ---
+  {
+    id: 'RATE_DIFF_20261004_2344', grNo: '2026-2027-2344_TTC', shortGrNo: '2344_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-10-04', date: '2026-10-04',
+    truckNo: 'RJ52GB0964', truckOwner: 'Laxmi Prakash Jat', ownerName: 'Laxmi Prakash Jat', ownerMobile: '9414659401',
+    driver: 'Vijay Gurjar', driverMobile: '9828230104',
+    origin: 'Rajsamand (Raj.)', destination: 'Sandila (U.P.)', deliveryAddress: 'Industrial Area Sandila',
+    consignor: 'RBL Natural Resources Ltd.', consignorAddress: 'Plot No. G-1-30, IID Centre, Kaladwas, Udaipur', consignorGstin: '08AAACR5148L1Z9',
+    reference: 'RBL Natural Resources Ltd.', referenceMobile: '9887479777',
+    consignee: 'Berger Paints India Ltd.', consigneeGstin: '09AABCB0976E2ZS',
+    material: 'Marble Powder', billingType: 'Per Tonne', weight: 93.480, rate: 1800.00, freight: 168264.00, biltyAmount: 168264.00,
+    billNo: '', partyPaid: 168264.00, partyDue: 0.00, ownerDue: 274.00, ownerFreight: 168264.00, ownerTotalPayment: 168264.00, ownerBalance: 274.00,
+    rateDiff: 274.00, isRateDiff: true, status: 'Rate Difference', tripStatus: 'Transit', colorTheme: 'teal'
+  },
+  // --- 03/10/2026 (Owner Due sum: ₹ 4,333.00) ---
+  {
+    id: 'RATE_DIFF_20261003_2321', grNo: '2026-2027-2321_TTC', shortGrNo: '2321_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-10-03', date: '2026-10-03',
+    truckNo: 'RJ52GA3498', truckOwner: 'Laxmi Prakash Jat', ownerName: 'Laxmi Prakash Jat', ownerMobile: '9414659401',
+    driver: 'Dhanraj Jat', driverMobile: '9828230136',
+    origin: 'Rajsamand (Raj.)', destination: 'Sandila (U.P.)', deliveryAddress: 'Industrial Area Sandila',
+    consignor: 'RBL Natural Resources Ltd.', consignorAddress: 'Plot No. G-1-30, IID Centre, Kaladwas, Udaipur', consignorGstin: '08AAACR5148L1Z9',
+    reference: 'RBL Natural Resources Ltd.', referenceMobile: '9887479777',
+    consignee: 'Berger Paints India Ltd.', consigneeGstin: '09AABCB0976E2ZS',
+    material: 'Marble Powder', billingType: 'Per Tonne', weight: 100.700, rate: 1800.00, freight: 181800.00, biltyAmount: 181800.00,
+    billNo: '306', partyPaid: 181800.00, partyDue: 0.00, ownerDue: 1813.00, ownerFreight: 181800.00, ownerTotalPayment: 181800.00, ownerBalance: 1813.00,
+    rateDiff: 1813.00, isRateDiff: true, status: 'Rate Difference', tripStatus: 'Transit', colorTheme: 'teal'
+  },
+  {
+    id: 'RATE_DIFF_20261003_2325', grNo: '2026-2027-2325_TTC', shortGrNo: '2325_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-10-03', date: '2026-10-03',
+    truckNo: 'RJ32GD8541', truckOwner: 'Rameshwar Prasad', ownerName: 'Rameshwar Prasad', ownerMobile: '9828230138',
+    driver: 'Raju Gurjar', driverMobile: '9828230138',
+    origin: 'Rajsamand (Raj.)', destination: 'Bahadurgarh (Haryana)', deliveryAddress: 'M.I.E. Bahadurgarh',
+    consignor: 'Balwant Yadav R.B. Dyes ...', consignorAddress: 'B-4/244 B, Safdarjung Enclave, New Delhi - 110029', consignorGstin: '07AAUFB4244E1ZS',
+    reference: 'Balwant Yadav R.B. Dyes ...', referenceMobile: '9887479777',
+    consignee: 'Somany Ceramics Ltd.', consigneeGstin: '06AAACS8899D1Z4',
+    material: 'Marble Powder', billingType: 'Per Tonne', weight: 84.000, rate: 1200.00, freight: 100800.00, biltyAmount: 0.0,
+    billNo: '', partyPaid: 100800.00, partyDue: 0.00, ownerDue: 2520.00, ownerFreight: 100800.00, ownerTotalPayment: 100800.00, ownerBalance: 2520.00,
+    rateDiff: 2520.00, isRateDiff: true, status: 'Rate Difference', tripStatus: 'Transit', colorTheme: 'teal'
+  },
+  // --- 01/10/2026 (Owner Due sum: ₹ 4,855.00) ---
+  {
+    id: 'RATE_DIFF_20261001_2283', grNo: '2026-2027-2283_TTC', shortGrNo: '2283_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-10-01', date: '2026-10-01',
+    truckNo: 'RJ52GA7338', truckOwner: 'Laxmi Prakash Jat', ownerName: 'Laxmi Prakash Jat', ownerMobile: '9414659401',
+    driver: 'Vijay Gurjar 0366', driverMobile: '9828230104',
+    origin: 'Rajsamand (Raj.)', destination: 'Sandila (U.P.)', deliveryAddress: 'Industrial Area Sandila',
+    consignor: 'RBL Natural Resources Ltd.', consignorAddress: 'Plot No. G-1-30, IID Centre, Kaladwas, Udaipur', consignorGstin: '08AAACR5148L1Z9',
+    reference: 'RBL Natural Resources Ltd.', referenceMobile: '9887479777',
+    consignee: 'Berger Paints India Ltd.', consigneeGstin: '09AABCB0976E2ZS',
+    material: 'Marble Powder', billingType: 'Per Tonne', weight: 83.400, rate: 1800.00, freight: 150120.00, biltyAmount: 150120.00,
+    billNo: '310', partyPaid: 150120.00, partyDue: 0.00, ownerDue: 1501.00, ownerFreight: 150120.00, ownerTotalPayment: 150120.00, ownerBalance: 1501.00,
+    rateDiff: 1501.00, isRateDiff: true, status: 'Rate Difference', tripStatus: 'Transit', colorTheme: 'teal'
+  },
+  {
+    id: 'RATE_DIFF_20261001_2296', grNo: '2026-2027-2296_TTC', shortGrNo: '2296_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-10-01', date: '2026-10-01',
+    truckNo: 'RJ52GB1214', truckOwner: 'Bhagwan Singh Jat', ownerName: 'Bhagwan Singh Jat', ownerMobile: '9828230125',
+    driver: 'Shankar Singh', driverMobile: '9828230125',
+    origin: 'Rajsamand (Raj.)', destination: 'Sandila (U.P.)', deliveryAddress: 'Industrial Area Sandila',
+    consignor: 'RBL Natural Resources Ltd.', consignorAddress: 'Plot No. G-1-30, IID Centre, Kaladwas, Udaipur', consignorGstin: '08AAACR5148L1Z9',
+    reference: 'RBL Natural Resources Ltd.', referenceMobile: '9887479777',
+    consignee: 'Berger Paints India Ltd.', consigneeGstin: '09AABCB0976E2ZS',
+    material: 'Marble Powder', billingType: 'Per Tonne', weight: 69.700, rate: 1800.00, freight: 125460.00, biltyAmount: 125460.00,
+    billNo: '', partyPaid: 125460.00, partyDue: 0.00, ownerDue: 1254.00, ownerFreight: 125460.00, ownerTotalPayment: 125460.00, ownerBalance: 1254.00,
+    rateDiff: 1254.00, isRateDiff: true, status: 'Rate Difference', tripStatus: 'Transit', colorTheme: 'teal'
+  },
+  {
+    id: 'RATE_DIFF_20261001_2297', grNo: '2026-2027-2297_TTC', shortGrNo: '2297_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-10-01', date: '2026-10-01',
+    truckNo: 'RJ52GA7333', truckOwner: 'Laxmi Prakash Jat', ownerName: 'Laxmi Prakash Jat', ownerMobile: '9571272336',
+    driver: 'Dhanraj Jat', driverMobile: '9828230136',
+    origin: 'Rajsamand (Raj.)', destination: 'Bahadurgarh (Haryana)', deliveryAddress: 'M.I.E. Bahadurgarh',
+    consignor: 'Balwant Yadav R.B. Dyes ...', consignorAddress: 'B-4/244 B, Safdarjung Enclave, New Delhi - 110029', consignorGstin: '07AAUFB4244E1ZS',
+    reference: 'Balwant Yadav R.B. Dyes ...', referenceMobile: '9887479777',
+    consignee: 'Somany Ceramics Ltd.', consigneeGstin: '06AAACS8899D1Z4',
+    material: 'Marble Powder', billingType: 'Per Tonne', weight: 70.000, rate: 1200.00, freight: 84000.00, biltyAmount: 0.0,
+    billNo: '', partyPaid: 84000.00, partyDue: 0.00, ownerDue: 2100.00, ownerFreight: 84000.00, ownerTotalPayment: 84000.00, ownerBalance: 2100.00,
+    rateDiff: 2100.00, isRateDiff: true, status: 'Rate Difference', tripStatus: 'Transit', colorTheme: 'teal'
+  },
+  // --- 30/09/2026 (Owner Due sum: ₹ 1,877.00) ---
+  {
+    id: 'RATE_DIFF_20260930_2266', grNo: '2026-2027-2266_TTC', shortGrNo: '2266_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-09-30', date: '2026-09-30',
+    truckNo: 'RJ52GA9994', truckOwner: 'Laxmi Prakash Jat', ownerName: 'Laxmi Prakash Jat', ownerMobile: '9414659401',
+    driver: 'Dhanraj Jat', driverMobile: '9828230136',
+    origin: 'Rajsamand (Raj.)', destination: 'Sandila (U.P.)', deliveryAddress: 'Industrial Area Sandila',
+    consignor: 'RBL Natural Resources Ltd.', consignorAddress: 'Plot No. G-1-30, IID Centre, Kaladwas, Udaipur', consignorGstin: '08AAACR5148L1Z9',
+    reference: 'RBL Natural Resources Ltd.', referenceMobile: '9887479777',
+    consignee: 'Berger Paints India Ltd.', consigneeGstin: '09AABCB0976E2ZS',
+    material: 'Marble Powder', billingType: 'Per Tonne', weight: 104.300, rate: 1800.00, freight: 187740.00, biltyAmount: 187740.00,
+    billNo: '316', partyPaid: 187740.00, partyDue: 0.00, ownerDue: 1877.00, ownerFreight: 187740.00, ownerTotalPayment: 187740.00, ownerBalance: 1877.00,
+    rateDiff: 1877.00, isRateDiff: true, status: 'Rate Difference', tripStatus: 'Transit', colorTheme: 'teal'
+  },
+  // --- 29/09/2026 (Owner Due sum: ₹ 1,762.00) ---
+  {
+    id: 'RATE_DIFF_20260929_2273', grNo: '2026-2027-2273_TTC', shortGrNo: '2273_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-09-29', date: '2026-09-29',
+    truckNo: 'RJ14GH0366', truckOwner: 'Laxmi Prakash Jat', ownerName: 'Laxmi Prakash Jat', ownerMobile: '9414659401',
+    driver: 'Vijay Gurjar 0366', driverMobile: '9828230104',
+    origin: 'Rajsamand (Raj.)', destination: 'Sandila (U.P.)', deliveryAddress: 'Industrial Area Sandila',
+    consignor: 'RBL Natural Resources Ltd.', consignorAddress: 'Plot No. G-1-30, IID Centre, Kaladwas, Udaipur', consignorGstin: '08AAACR5148L1Z9',
+    reference: 'RBL Natural Resources Ltd.', referenceMobile: '9887479777',
+    consignee: 'Berger Paints India Ltd.', consigneeGstin: '09AABCB0976E2ZS',
+    material: 'Marble Powder', billingType: 'Per Tonne', weight: 97.900, rate: 1800.00, freight: 176220.00, biltyAmount: 176220.00,
+    billNo: '', partyPaid: 176220.00, partyDue: 0.00, ownerDue: 1762.00, ownerFreight: 176220.00, ownerTotalPayment: 176220.00, ownerBalance: 1762.00,
+    rateDiff: 1762.00, isRateDiff: true, status: 'Rate Difference', tripStatus: 'Transit', colorTheme: 'teal'
+  },
+  // --- 28/09/2026 (Owner Due sum: ₹ 5,837.00) ---
+  {
+    id: 'RATE_DIFF_20260928_2245', grNo: '2026-2027-2245_TTC', shortGrNo: '2245_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-09-28', date: '2026-09-28',
+    truckNo: 'RJ52GA7339', truckOwner: 'Laxmi Prakash Jat', ownerName: 'Laxmi Prakash Jat', ownerMobile: '9414659401',
+    driver: 'Dhanraj Jat', driverMobile: '9828230136',
+    origin: 'Rajsamand (Raj.)', destination: 'Sandila (U.P.)', deliveryAddress: 'Industrial Area Sandila',
+    consignor: 'RBL Natural Resources Ltd.', consignorAddress: 'Plot No. G-1-30, IID Centre, Kaladwas, Udaipur', consignorGstin: '08AAACR5148L1Z9',
+    reference: 'RBL Natural Resources Ltd.', referenceMobile: '9887479777',
+    consignee: 'Berger Paints India Ltd.', consigneeGstin: '09AABCB0976E2ZS',
+    material: 'Marble Powder', billingType: 'Per Tonne', weight: 60.000, rate: 2000.00, freight: 120000.00, biltyAmount: 120000.00,
+    billNo: '', partyPaid: 120000.00, partyDue: 0.00, ownerDue: 1200.00, ownerFreight: 120000.00, ownerTotalPayment: 120000.00, ownerBalance: 1200.00,
+    rateDiff: 1200.00, isRateDiff: true, status: 'Rate Difference', tripStatus: 'Transit', colorTheme: 'teal'
+  },
+  {
+    id: 'RATE_DIFF_20260928_2251', grNo: '2026-2027-2251_TTC', shortGrNo: '2251_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-09-28', date: '2026-09-28',
+    truckNo: 'RJ52GA7333', truckOwner: 'Laxmi Prakash Jat', ownerName: 'Laxmi Prakash Jat', ownerMobile: '9571272336',
+    driver: 'Dhanraj Jat', driverMobile: '9828230136',
+    origin: 'Rajsamand (Raj.)', destination: 'Sandila (U.P.)', deliveryAddress: 'Industrial Area Sandila',
+    consignor: 'RBL Natural Resources Ltd.', consignorAddress: 'Plot No. G-1-30, IID Centre, Kaladwas, Udaipur', consignorGstin: '08AAACR5148L1Z9',
+    reference: 'RBL Natural Resources Ltd.', referenceMobile: '9887479777',
+    consignee: 'Berger Paints India Ltd.', consigneeGstin: '09AABCB0976E2ZS',
+    material: 'Marble Powder', billingType: 'Per Tonne', weight: 39.800, rate: 1800.00, freight: 71700.00, biltyAmount: 71700.00,
+    billNo: '', partyPaid: 71700.00, partyDue: 0.00, ownerDue: 717.00, ownerFreight: 71700.00, ownerTotalPayment: 71700.00, ownerBalance: 717.00,
+    rateDiff: 717.00, isRateDiff: true, status: 'Rate Difference', tripStatus: 'Transit', colorTheme: 'teal'
+  },
+  {
+    id: 'RATE_DIFF_20260928_201', grNo: '2026-2027-201_SMTC', shortGrNo: '201_SMTC', transport: 'SMTC',
+    financialYear: '2026-2027', tripStartDate: '2026-09-28', date: '2026-09-28',
+    truckNo: 'RJ52GB1214', truckOwner: 'Bhagwan Singh Jat', ownerName: 'Bhagwan Singh Jat', ownerMobile: '9828230125',
+    driver: 'Shankar Singh', driverMobile: '9828230125',
+    origin: 'Rajsamand (Raj.)', destination: 'Sikandrabad (U.P.)', deliveryAddress: 'UPSIDC Sikandrabad',
+    consignor: 'Balwant Yadav R.B. Dyes ...', consignorAddress: 'B-4/244 B, Safdarjung Enclave, New Delhi - 110029', consignorGstin: '07AAUFB4244E1ZS',
+    reference: 'Balwant Yadav R.B. Dyes ...', referenceMobile: '9887479777',
+    consignee: 'Orient Bell Ltd.', consigneeGstin: '09AABCO5566G1Z3',
+    material: 'Marble Powder', billingType: 'Per Tonne', weight: 98.000, rate: 1000.00, freight: 98000.00, biltyAmount: 98000.00,
+    billNo: '', partyPaid: 98000.00, partyDue: 0.00, ownerDue: 3920.00, ownerFreight: 98000.00, ownerTotalPayment: 98000.00, ownerBalance: 3920.00,
+    rateDiff: 3920.00, isRateDiff: true, status: 'Rate Difference', tripStatus: 'Transit', colorTheme: 'teal'
+  },
+  // --- 27/09/2026 (Owner Due sum: ₹ 11,440.00) ---
+  {
+    id: 'RATE_DIFF_20260927_2239', grNo: '2026-2027-2239_TTC', shortGrNo: '2239_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-09-27', date: '2026-09-27',
+    truckNo: 'RJ01GC2159', truckOwner: 'Mahendra Rawat Shrinagar', ownerName: 'Mahendra Rawat Shrinagar', ownerMobile: '9784175913',
+    driver: 'Kaluram Jat Shrinagar', driverMobile: '9784175913',
+    origin: 'Rajsamand (Raj.)', destination: 'Bawal (Haryana)', deliveryAddress: 'HSIIDC Growth Centre Bawal',
+    consignor: 'Vishnu Khandelwal', consignorAddress: 'Nathdwara Road Rajsamand', consignorGstin: '08AAPFV6677H1Z5',
+    reference: 'Vishnu Khandelwal', referenceMobile: '9784175913',
+    consignee: 'Asahi India Glass Ltd.', consigneeGstin: '06AABCA1234D1Z8',
+    material: 'Marble Powder', billingType: 'Per Tonne', weight: 88.000, rate: 1300.00, freight: 114400.00, biltyAmount: 114400.00,
+    billNo: '', partyPaid: 114400.00, partyDue: 0.00, ownerDue: 11440.00, ownerFreight: 114400.00, ownerTotalPayment: 114400.00, ownerBalance: 11440.00,
+    rateDiff: 11440.00, isRateDiff: true, status: 'Rate Difference', tripStatus: 'Transit', colorTheme: 'teal'
+  },
+  // --- 25/09/2026 (Owner Due sum: ₹ 16,486.00) ---
+  {
+    id: 'RATE_DIFF_20260925_2211', grNo: '2026-2027-2211_TTC', shortGrNo: '2211_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-09-25', date: '2026-09-25',
+    truckNo: 'RJ52GB0964', truckOwner: 'Laxmi Prakash Jat', ownerName: 'Laxmi Prakash Jat', ownerMobile: '9414659401',
+    driver: 'Vijay Gurjar', driverMobile: '9828230104',
+    origin: 'Rajsamand (Raj.)', destination: 'Sandila (U.P.)', deliveryAddress: 'Industrial Area Sandila',
+    consignor: 'RBL Natural Resources Ltd.', consignorAddress: 'Plot No. G-1-30, IID Centre, Kaladwas, Udaipur', consignorGstin: '08AAACR5148L1Z9',
+    reference: 'RBL Natural Resources Ltd.', referenceMobile: '9887479777',
+    consignee: 'Berger Paints India Ltd.', consigneeGstin: '09AABCB0976E2ZS',
+    material: 'Marble Powder', billingType: 'Per Tonne', weight: 49.600, rate: 1800.00, freight: 89280.00, biltyAmount: 89280.00,
+    billNo: '', partyPaid: 89280.00, partyDue: 0.00, ownerDue: 893.00, ownerFreight: 89280.00, ownerTotalPayment: 89280.00, ownerBalance: 893.00,
+    rateDiff: 893.00, isRateDiff: true, status: 'Rate Difference', tripStatus: 'Transit', colorTheme: 'teal'
+  },
+  {
+    id: 'RATE_DIFF_20260925_199', grNo: '2026-2027-199_SMTC', shortGrNo: '199_SMTC', transport: 'SMTC',
+    financialYear: '2026-2027', tripStartDate: '2026-09-25', date: '2026-09-25',
+    truckNo: 'RJ32GC0997', truckOwner: 'Dinesh Yadav Shrinagar', ownerName: 'Dinesh Yadav Shrinagar', ownerMobile: '9828230137',
+    driver: 'Mukesh Gurjar 0997', driverMobile: '9636592233',
+    origin: 'Rajsamand (Raj.)', destination: 'Sonepat (Haryana)', deliveryAddress: 'B-4/244 B, Safdarjung Enclave, New Delhi - 110029',
+    consignor: 'Balwant Yadav R.B. Dyes ...', consignorAddress: 'B-4/244 B, Safdarjung Enclave, New Delhi - 110029', consignorGstin: '07AAUFB4244E1ZS',
+    reference: 'Balwant Yadav R.B. Dyes ...', referenceMobile: '9887479777',
+    consignee: 'BirlaNu Ltd.', consigneeGstin: '06AABCB0976E2ZS',
+    material: 'Dolomite Powder', billingType: 'Per Tonne', weight: 82.880, rate: 1200.00, freight: 99456.00, biltyAmount: 0.0,
+    billNo: '', partyPaid: 99456.00, partyDue: 0.00, ownerDue: 4973.00, ownerFreight: 99456.00, ownerTotalPayment: 99456.00, ownerBalance: 4973.00,
+    rateDiff: 4973.00, isRateDiff: true, status: 'Rate Difference', tripStatus: 'Transit', colorTheme: 'teal'
+  },
+  {
+    id: 'RATE_DIFF_20260925_2216', grNo: '2026-2027-2216_TTC', shortGrNo: '2216_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-09-25', date: '2026-09-25',
+    truckNo: 'RJ01GE0121', truckOwner: 'Dinesh Yadav Shrinagar', ownerName: 'Dinesh Yadav Shrinagar', ownerMobile: '9828230137',
+    driver: 'Dinesh Yadav', driverMobile: '9828230137',
+    origin: 'Rajsamand (Raj.)', destination: 'Bawal (Haryana)', deliveryAddress: 'HSIIDC Growth Centre Bawal',
+    consignor: 'Vishnu Khandelwal', consignorAddress: 'Nathdwara Road Rajsamand', consignorGstin: '08AAPFV6677H1Z5',
+    reference: 'Vishnu Khandelwal', referenceMobile: '9828230137',
+    consignee: 'Asahi India Glass Ltd.', consigneeGstin: '06AABCA1234D1Z8',
+    material: 'Marble Powder', billingType: 'Per Tonne', weight: 88.500, rate: 1200.00, freight: 106200.00, biltyAmount: 106200.00,
+    billNo: '', partyPaid: 106200.00, partyDue: 0.00, ownerDue: 10620.00, ownerFreight: 106200.00, ownerTotalPayment: 106200.00, ownerBalance: 10620.00,
+    rateDiff: 10620.00, isRateDiff: true, status: 'Rate Difference', tripStatus: 'Transit', colorTheme: 'teal'
+  },
+  // --- 23/09/2026 (Owner Due sum: ₹ 17,170.00) ---
+  {
+    id: 'RATE_DIFF_20260923_2235', grNo: '2026-2027-2235_TTC', shortGrNo: '2235_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-09-23', date: '2026-09-23',
+    truckNo: 'RJ14GH0366', truckOwner: 'Laxmi Prakash Jat', ownerName: 'Laxmi Prakash Jat', ownerMobile: '9414659401',
+    driver: 'Vijay Gurjar 0366', driverMobile: '9828230104',
+    origin: 'Rajsamand (Raj.)', destination: 'Bawal (Haryana)', deliveryAddress: 'HSIIDC Growth Centre Bawal',
+    consignor: 'Vishnu Khandelwal', consignorAddress: 'Nathdwara Road Rajsamand', consignorGstin: '08AAPFV6677H1Z5',
+    reference: 'Vishnu Khandelwal', referenceMobile: '9414659401',
+    consignee: 'Asahi India Glass Ltd.', consigneeGstin: '06AABCA1234D1Z8',
+    material: 'Marble Powder', billingType: 'Per Tonne', weight: 88.000, rate: 1300.00, freight: 114400.00, biltyAmount: 114400.00,
+    billNo: '', partyPaid: 114400.00, partyDue: 0.00, ownerDue: 5730.00, ownerFreight: 114400.00, ownerTotalPayment: 114400.00, ownerBalance: 5730.00,
+    rateDiff: 5730.00, isRateDiff: true, status: 'Rate Difference', tripStatus: 'Transit', colorTheme: 'teal'
+  },
+  {
+    id: 'RATE_DIFF_20260923_2192', grNo: '2026-2027-2192_TTC', shortGrNo: '2192_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-09-23', date: '2026-09-23',
+    truckNo: 'RJ52GA3498', truckOwner: 'Laxmi Prakash Jat', ownerName: 'Laxmi Prakash Jat', ownerMobile: '9414659401',
+    driver: 'Dhanraj Jat', driverMobile: '9828230136',
+    origin: 'Rajsamand (Raj.)', destination: 'Bawal (Haryana)', deliveryAddress: 'HSIIDC Growth Centre Bawal',
+    consignor: 'Vishnu Khandelwal', consignorAddress: 'Nathdwara Road Rajsamand', consignorGstin: '08AAPFV6677H1Z5',
+    reference: 'Vishnu Khandelwal', referenceMobile: '9414659401',
+    consignee: 'Asahi India Glass Ltd.', consigneeGstin: '06AABCA1234D1Z8',
+    material: 'Marble Powder', billingType: 'Per Tonne', weight: 88.000, rate: 1300.00, freight: 114400.00, biltyAmount: 114400.00,
+    billNo: '', partyPaid: 114400.00, partyDue: 0.00, ownerDue: 11440.00, ownerFreight: 114400.00, ownerTotalPayment: 114400.00, ownerBalance: 11440.00,
+    rateDiff: 11440.00, isRateDiff: true, status: 'Rate Difference', tripStatus: 'Transit', colorTheme: 'teal'
+  },
+  // --- 20/09/2026 (Owner Due sum: ₹ 22,880.00) ---
+  {
+    id: 'RATE_DIFF_20260920_2155', grNo: '2026-2027-2155_TTC', shortGrNo: '2155_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-09-20', date: '2026-09-20',
+    truckNo: 'RJ52GA7338', truckOwner: 'Laxmi Prakash Jat', ownerName: 'Laxmi Prakash Jat', ownerMobile: '9414659401',
+    driver: 'Vijay Gurjar 0366', driverMobile: '9828230104',
+    origin: 'Rajsamand (Raj.)', destination: 'Bawal (Haryana)', deliveryAddress: 'HSIIDC Growth Centre Bawal',
+    consignor: 'Vishnu Khandelwal', consignorAddress: 'Nathdwara Road Rajsamand', consignorGstin: '08AAPFV6677H1Z5',
+    reference: 'Vishnu Khandelwal', referenceMobile: '9414659401',
+    consignee: 'Asahi India Glass Ltd.', consigneeGstin: '06AABCA1234D1Z8',
+    material: 'Marble Powder', billingType: 'Per Tonne', weight: 88.000, rate: 1300.00, freight: 114400.00, biltyAmount: 114400.00,
+    billNo: '269', partyPaid: 114400.00, partyDue: 0.00, ownerDue: 11440.00, ownerFreight: 114400.00, ownerTotalPayment: 114400.00, ownerBalance: 11440.00,
+    rateDiff: 11440.00, isRateDiff: true, status: 'Rate Difference', tripStatus: 'Transit', colorTheme: 'teal'
+  },
+  {
+    id: 'RATE_DIFF_20260920_2156', grNo: '2026-2027-2156_TTC', shortGrNo: '2156_TTC', transport: 'TTC',
+    financialYear: '2026-2027', tripStartDate: '2026-09-20', date: '2026-09-20',
+    truckNo: 'RJ01GC4865', truckOwner: 'Bhagwan Singh Jat', ownerName: 'Bhagwan Singh Jat', ownerMobile: '9828230125',
+    driver: 'Shankar Singh Rawat', driverMobile: '9828230125',
+    origin: 'Rajsamand (Raj.)', destination: 'Bawal (Haryana)', deliveryAddress: 'HSIIDC Growth Centre Bawal',
+    consignor: 'Vishnu Khandelwal', consignorAddress: 'Nathdwara Road Rajsamand', consignorGstin: '08AAPFV6677H1Z5',
+    reference: 'Vishnu Khandelwal', referenceMobile: '9828230125',
+    consignee: 'Asahi India Glass Ltd.', consigneeGstin: '06AABCA1234D1Z8',
+    material: 'Marble Powder', billingType: 'Per Tonne', weight: 88.000, rate: 1300.00, freight: 114400.00, biltyAmount: 114400.00,
+    billNo: '', partyPaid: 114400.00, partyDue: 0.00, ownerDue: 11440.00, ownerFreight: 114400.00, ownerTotalPayment: 114400.00, ownerBalance: 11440.00,
+    rateDiff: 11440.00, isRateDiff: true, status: 'Rate Difference', tripStatus: 'Transit', colorTheme: 'teal'
+  },
+  // --- FY 2025-2026 (Owner Due sum: ₹ 778,900.00) ---
+  {
+    id: 'RATE_DIFF_20250515_121', grNo: '2025-2026-121_MTC', shortGrNo: '121_MTC', transport: 'MTC',
+    financialYear: '2025-2026', tripStartDate: '2025-05-15', date: '2025-05-15',
+    truckNo: 'RJ01GC2159', truckOwner: 'Mahendra Rawat Shrinagar', ownerName: 'Mahendra Rawat Shrinagar', ownerMobile: '9784175913',
+    driver: 'Kaluram Jat Shrinagar', driverMobile: '9784175913',
+    origin: 'Rajsamand (Raj.)', destination: 'Bawal (Haryana)', deliveryAddress: 'HSIIDC Growth Centre Bawal',
+    consignor: 'Vishnu Khandelwal', consignorAddress: 'Nathdwara Road Rajsamand', consignorGstin: '08AAPFV6677H1Z5',
+    reference: 'Vishnu Khandelwal', referenceMobile: '9784175913',
+    consignee: 'Asahi India Glass Ltd.', consigneeGstin: '06AABCA1234D1Z8',
+    material: 'Marble Powder', billingType: 'Per Tonne', weight: 100.000, rate: 1500.00, freight: 150000.00, biltyAmount: 150000.00,
+    billNo: '', partyPaid: 150000.00, partyDue: 0.00, ownerDue: 450000.00, ownerFreight: 150000.00, ownerTotalPayment: 150000.00, ownerBalance: 450000.00,
+    rateDiff: 450000.00, isRateDiff: true, status: 'Rate Difference', tripStatus: 'Transit', colorTheme: 'teal'
+  },
+  {
+    id: 'RATE_DIFF_20250620_145', grNo: '2025-2026-145_MTC', shortGrNo: '145_MTC', transport: 'MTC',
+    financialYear: '2025-2026', tripStartDate: '2025-06-20', date: '2025-06-20',
+    truckNo: 'RJ52GA3498', truckOwner: 'Laxmi Prakash Jat', ownerName: 'Laxmi Prakash Jat', ownerMobile: '9414659401',
+    driver: 'Dhanraj Jat', driverMobile: '9828230136',
+    origin: 'Rajsamand (Raj.)', destination: 'Sandila (U.P.)', deliveryAddress: 'Industrial Area Sandila',
+    consignor: 'RBL Natural Resources Ltd.', consignorAddress: 'Plot No. G-1-30, IID Centre, Kaladwas, Udaipur', consignorGstin: '08AAACR5148L1Z9',
+    reference: 'RBL Natural Resources Ltd.', referenceMobile: '9887479777',
+    consignee: 'Berger Paints India Ltd.', consigneeGstin: '09AABCB0976E2ZS',
+    material: 'Marble Powder', billingType: 'Per Tonne', weight: 80.000, rate: 1800.00, freight: 144000.00, biltyAmount: 144000.00,
+    billNo: '', partyPaid: 144000.00, partyDue: 0.00, ownerDue: 328900.00, ownerFreight: 144000.00, ownerTotalPayment: 144000.00, ownerBalance: 328900.00,
+    rateDiff: 328900.00, isRateDiff: true, status: 'Rate Difference', tripStatus: 'Transit', colorTheme: 'teal'
   }
 ];
+
