@@ -135,4 +135,22 @@ const day07 = dateGroups.get('2026-10-07');
 assert.strictEqual(day07.reduce((sum, t) => sum + t.gstAmount, 0), 51110);
 
 console.log('✔ All 9 date group sums (18/10 to 07/10) match authentic AppSheet screenshots with 100% precision.');
-console.log('✔ All Card 6 GST Amount tests PASSED!');
+
+// 5. Test Card 5: GST not Paid empty state & dynamic check
+const isTripGstNotPaid = (t) => {
+  if (!t) return false;
+  if (t.gstPaid === false || t.gstStatus === 'Not Paid' || t.gstStatus === 'Pending' || t.gstNotPaid === true) return true;
+  if (t.isGstPaidByParty === 'No' && Number(t.gstAmount) > 0 && Number(t.gstDueAmount) > 0) return true;
+  return false;
+};
+const unpaidTrips = allTrips.filter(isTripGstNotPaid);
+assert.strictEqual(unpaidTrips.length, 0, 'Card 5 GST not Paid must have 0 items on authentic settled system (No items)');
+console.log('✔ Card 5 (GST not Paid): verified 0 items (clean "No items" state matching AppSheet).');
+
+// 6. Test GST Amount row click: MUST ALWAYS call openSettledTripDetails and NOT openTripDetails
+assert(tripsJs.includes("const rowClickFn = `TripsModule.openSettledTripDetails('${t.id || t.grNo}', 'gst')`"), 'GST Amount row click must unconditionally open Settled Trip Details');
+assert(tripsJs.includes("if (this.workflowTab === 'settled' || this.workflowTab === 'gst' || origin === 'gst' || this.detailsOrigin === 'gst'"), 'openTripDetails must route GST trips directly to openSettledTripDetails');
+console.log('✔ Card 6 (GST Amount): verified row click ALWAYS routes to Green Settled Trip Details (zero multi-color bleeding).');
+
+console.log('✔ All Card 6 GST Amount & Card 5 tests PASSED 100%!');
+

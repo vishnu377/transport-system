@@ -708,9 +708,8 @@ const TripsModule = {
 
   isTripGstNotPaid(t) {
     if (!t) return false;
-    if (t.gstPaid === false || t.gstStatus === 'Not Paid' || t.gstStatus === 'Pending') return true;
-    if (t.isGstPaidByParty === 'No' && Number(t.gstAmount) > 0) return true;
-    if (t.gstNotPaid === true) return true;
+    if (t.gstPaid === false || t.gstStatus === 'Not Paid' || t.gstStatus === 'Pending' || t.gstNotPaid === true) return true;
+    if (t.isGstPaidByParty === 'No' && Number(t.gstAmount) > 0 && Number(t.gstDueAmount) > 0) return true;
     return false;
   },
 
@@ -845,15 +844,25 @@ const TripsModule = {
     if (!tbody) return;
 
     if (this.filteredTrips.length === 0) {
-      tbody.innerHTML = `
-        <tr>
-          <td colspan="15" class="text-center py-5 text-muted">
-            <i class="bi bi-inbox fs-2 d-block mb-2 text-secondary"></i>
-            <div class="fw-semibold">No matching trip consignments found</div>
-            <small class="text-muted">Try clearing your search query or selecting a different year/status tab.</small>
-          </td>
-        </tr>
-      `;
+      if (this.workflowTab === 'gst-not-paid') {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="15" class="text-center py-5 text-muted" style="font-size: 13.5px;">
+              No items
+            </td>
+          </tr>
+        `;
+      } else {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="15" class="text-center py-5 text-muted">
+              <i class="bi bi-inbox fs-2 d-block mb-2 text-secondary"></i>
+              <div class="fw-semibold">No matching trip consignments found</div>
+              <small class="text-muted">Try clearing your search query or selecting a different year/status tab.</small>
+            </td>
+          </tr>
+        `;
+      }
       this.renderPagination(0);
       return;
     }
@@ -1347,10 +1356,7 @@ const TripsModule = {
           const gstAmt = Number(t.gstAmount) || 0;
           const totalWithGst = Number(t.total) || (totalFreight + gstAmt);
           const billDateFormatted = this.formatDateDMY(t.billDate || t.tripStartDate || t.date || '-');
-          const isSettledTrip = this.isTripSettled(t);
-          const rowClickFn = isSettledTrip
-            ? `TripsModule.openSettledTripDetails('${t.id || t.grNo}', 'gst')`
-            : `TripsModule.openTripDetails('${t.id || t.grNo}', 'gst')`;
+          const rowClickFn = `TripsModule.openSettledTripDetails('${t.id || t.grNo}', 'gst')`;
 
           html += `
             <tr class="appsheet-row" onclick="${rowClickFn}">
@@ -1630,7 +1636,7 @@ const TripsModule = {
 
     const t = this.activeTrip;
     const isSettled = this.isTripSettled(t);
-    if (this.workflowTab === 'settled' || (isSettled && (this.workflowTab === 'freight' || origin === 'freight' || this.workflowTab === 'gst' || origin === 'gst'))) {
+    if (this.workflowTab === 'settled' || this.workflowTab === 'gst' || origin === 'gst' || this.detailsOrigin === 'gst' || (isSettled && (this.workflowTab === 'freight' || origin === 'freight'))) {
       this.openSettledTripDetails(tripId, origin || this.workflowTab);
       return;
     }
@@ -1923,9 +1929,14 @@ const TripsModule = {
     const driverName = cleanDrv;
     const podDateFormatted = this.formatDateDMY(t.podDate || t.tripEndDate || t.tripStartDate || '2026-10-14');
 
+    const isFromGst = (origin === 'gst' || this.workflowTab === 'gst' || this.detailsOrigin === 'gst');
+    const bulletGr = isFromGst ? `<span class="green-bullet" style="color: #008a38 !important;">●</span>` : `<span class="dark-bullet">●</span>`;
+    const bulletTruck = isFromGst ? `<span class="green-bullet" style="color: #008a38 !important;">●</span>` : `<span class="dark-bullet">●</span>`;
+    const grStyle = isFromGst ? `style="color: #008a38 !important; font-weight: bold;"` : ``;
+
     // Populate Left Pane Card 1: Particulars (settled_detail_0.png)
-    setHtml('sp-gr-no', `<span class="dark-bullet">●</span> ${t.grNo || t.shortGrNo}`);
-    setHtml('sp-truck-no', `<span class="dark-bullet">●</span> ${t.truckNo || '-'}`);
+    setHtml('sp-gr-no', `${bulletGr} <span ${grStyle}>${t.grNo || t.shortGrNo}</span>`);
+    setHtml('sp-truck-no', `${bulletTruck} <span ${grStyle}>${t.truckNo || '-'}</span>`);
     setHtml('sp-start-date', `<span class="green-bullet">●</span> ${this.formatDateDMY(t.tripStartDate || t.date || '-')}`);
     setHtml('sp-end-date', `<span class="green-bullet">●</span> ${this.formatDateDMY(t.tripEndDate || t.tripStartDate || t.date || '-')}`);
     setHtml('sp-origin', `<span class="green-bullet">●</span> ${t.origin || 'Rajsamand (Raj.)'}`);
@@ -2023,6 +2034,21 @@ const TripsModule = {
         <span class="sep text-muted mx-1">&gt;</span>
         <span class="active text-dark fw-bold">Settled Trip Details</span>
       `;
+
+      const closeBtn = document.querySelector('#trip-settled-detail-view .bi-x-lg')?.closest('button');
+      if (closeBtn) {
+        closeBtn.setAttribute('onclick', returnFn);
+      }
+      const downloadBtn = document.getElementById('settled-btn-download-bilty');
+      if (downloadBtn) {
+        if (isFromGst) {
+          downloadBtn.innerHTML = `<i class="bi bi-download"></i> <span class="d-none d-sm-inline">Download Invoice</span>`;
+          downloadBtn.onclick = () => TripsModule.downloadGstInvoice(t.id || t.grNo);
+        } else {
+          downloadBtn.innerHTML = `<i class="bi bi-download"></i> <span class="d-none d-sm-inline">Download Bilty</span>`;
+          downloadBtn.onclick = () => TripsModule.downloadBilty(t.id || t.grNo);
+        }
+      }
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   },
