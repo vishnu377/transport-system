@@ -437,6 +437,8 @@
       display: flex;
       gap: 16px;
       min-height: calc(100vh - 120px);
+      width: 100%;
+      align-items: flex-start;
     }
     .bounced-year-sidebar {
       width: 220px;
@@ -444,8 +446,12 @@
       background: #ffffff;
       border: 1px solid var(--appsheet-border);
       border-radius: 6px;
-      padding: 12px 0;
+      padding: 10px 0;
       height: fit-content;
+      transition: all 0.2s ease;
+    }
+    .bounced-year-sidebar.d-none {
+      display: none !important;
     }
     @media (max-width: 768px) {
       .bounced-split-container {
@@ -479,10 +485,12 @@
     }
     .bounced-table-container {
       flex: 1;
+      min-width: 0;
       background: #ffffff;
       border: 1px solid var(--appsheet-border);
       border-radius: 6px;
       overflow: hidden;
+      width: 100%;
     }
     .bounced-table {
       width: 100%;
@@ -532,21 +540,11 @@
     
     /* LEVEL 3: OPEN TRIP DETAILS (Matching bounced_screen_2.png) */
     .bounced-trip-grid {
-      display: grid;
-      grid-template-columns: 1.1fr 1fr 340px;
+      display: flex;
+      flex-wrap: wrap;
       gap: 16px;
       padding: 16px;
       align-items: flex-start;
-    }
-    @media (max-width: 1200px) {
-      .bounced-trip-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-    }
-    @media (max-width: 768px) {
-      .bounced-trip-grid {
-        grid-template-columns: 1fr;
-      }
     }
     .bounced-trip-card {
       background: #ffffff;
@@ -554,6 +552,145 @@
       border-radius: 6px;
       padding: 20px;
       box-shadow: 0 1px 2px rgba(60,64,67,0.06);
+    }
+    .bounced-trip-card-left {
+      flex: 0 0 350px;
+      width: 350px;
+      max-width: 100%;
+    }
+    .bounced-trip-card-mid {
+      flex: 1 1 540px;
+      min-width: 500px;
+      max-width: 100%;
+    }
+    .bounced-trip-card-right {
+      flex: 0 0 320px;
+      width: 320px;
+      max-width: 100%;
+    }
+    @media (max-width: 1250px) {
+      .bounced-trip-card-mid {
+        order: 3;
+        flex: 1 1 100%;
+        min-width: 100%;
+      }
+      .bounced-trip-card-left {
+        flex: 1 1 340px;
+      }
+      .bounced-trip-card-right {
+        flex: 1 1 300px;
+      }
+    }
+    @media (max-width: 768px) {
+      .bounced-trip-card-left,
+      .bounced-trip-card-mid,
+      .bounced-trip-card-right {
+        flex: 1 1 100%;
+        width: 100%;
+      }
+    }
+    .bounced-trip-mid-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .bounced-trip-mid-title {
+      font-weight: 700;
+      font-size: 14px;
+      color: #1a73e8;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .bounced-trip-pill {
+      background: #e8f0fe;
+      color: #1a73e8;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 12px;
+      margin-left: 4px;
+    }
+    .bounced-linked-chq-table-wrap {
+      overflow-x: auto;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      background: #ffffff;
+    }
+    .bounced-linked-chq-table {
+      width: 100%;
+      min-width: 520px;
+      border-collapse: collapse;
+      font-size: 12.5px;
+      margin: 0;
+    }
+    .bounced-linked-chq-table th {
+      background: #ffffff;
+      color: #3c4043;
+      font-weight: 600;
+      padding: 8px 12px;
+      border: 1px solid #e0e0e0;
+      white-space: nowrap !important;
+      text-align: left;
+    }
+    .bounced-linked-chq-table td {
+      padding: 8px 12px;
+      border: 1px solid #e0e0e0;
+      color: #c62828 !important;
+      font-weight: 600;
+      white-space: nowrap !important;
+      vertical-align: middle;
+    }
+    .bounced-linked-chq-table tr {
+      cursor: pointer;
+      transition: background 0.1s ease;
+    }
+    .bounced-linked-chq-table tr:hover {
+      background-color: #fff8f8;
+    }
+    .bounced-scroll-track-wrapper {
+      margin-top: 10px;
+      padding: 2px 0;
+    }
+    .bounced-scroll-track {
+      display: flex;
+      align-items: center;
+      background: #f1f3f4;
+      border-radius: 3px;
+      height: 10px;
+      padding: 0 4px;
+      gap: 4px;
+    }
+    .bounced-scroll-track .scroll-arrow {
+      font-size: 8px;
+      color: #78909c;
+      line-height: 1;
+      user-select: none;
+    }
+    .bounced-scroll-track .scroll-bar-thumb {
+      flex: 1;
+      height: 6px;
+      background: #80868b;
+      border-radius: 3px;
+    }
+    .bounced-chq-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 16px;
+      margin-top: 10px;
+      padding-top: 4px;
+    }
+    .bounced-chq-actions a {
+      color: #1a73e8;
+      font-weight: 600;
+      font-size: 13px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .bounced-chq-actions a:hover {
+      text-decoration: underline;
     }
     .bounced-trip-field {
       display: flex;
@@ -742,7 +879,10 @@
 
         <!-- Bounced List Top Actions matching bounced_screen_1.png -->
         <div id="bounced-list-actions" class="d-none d-flex align-items-center gap-2">
-          <span class="appsheet-tool-icon" title="Filter"><i class="bi bi-funnel"></i></span>
+          <button type="button" class="btn btn-sm btn-outline-secondary d-none py-1 px-2" id="btn-show-bounced-sidebar" onclick="ChequesModule.toggleBouncedSidebar()" title="Show Financial Year Sidebar" style="font-size: 12px; border-radius: 4px;">
+            <i class="bi bi-layout-sidebar-inset me-1"></i> Financial Year
+          </button>
+          <span class="appsheet-tool-icon" id="btn-toggle-bounced-sidebar-tool" onclick="ChequesModule.toggleBouncedSidebar()" title="Toggle Financial Year Sidebar"><i class="bi bi-funnel"></i></span>
         </div>
 
         <!-- Bounced Trip Details Top Actions (Receipt/Debts icon, Edit, Expand) matching bounced_screen_2.png -->
@@ -1043,10 +1183,13 @@
     <!-- ======================================================== -->
     <div id="cheques-view-bounced-list" class="d-none p-3">
       <div class="bounced-split-container">
-        <!-- LEFT: Year Selector Rail -->
-        <div class="bounced-year-sidebar shadow-sm">
-          <div class="px-3 pb-2 pt-1 border-bottom mb-2 text-uppercase fw-semibold text-muted small" style="font-size: 11px; letter-spacing: 0.5px;">
-            Financial Year
+        <!-- LEFT: Year Selector Rail (Toggleable) -->
+        <div class="bounced-year-sidebar shadow-sm" id="bounced-year-sidebar">
+          <div class="d-flex align-items-center justify-content-between px-3 pb-2 pt-1 border-bottom mb-2">
+            <span class="text-uppercase fw-semibold text-muted small" style="font-size: 11px; letter-spacing: 0.5px;">Financial Year</span>
+            <button type="button" class="btn btn-sm btn-link p-0 text-secondary text-decoration-none" onclick="ChequesModule.toggleBouncedSidebar()" title="Hide Financial Year Sidebar" style="font-size: 13px;">
+              <i class="bi bi-chevron-left"></i>
+            </button>
           </div>
           <div class="bounced-year-item active" id="bounced-year-ALL" onclick="ChequesModule.filterBouncedByYear('ALL')">
             <span class="fw-semibold">All</span>
@@ -1067,7 +1210,7 @@
         </div>
 
         <!-- RIGHT: Date-Grouped Table -->
-        <div class="bounced-table-container shadow-sm">
+        <div class="bounced-table-container shadow-sm" id="bounced-table-container">
           <div class="table-responsive" style="max-height: calc(100vh - 140px); overflow-x: auto; overflow-y: auto;">
             <table class="bounced-table">
               <thead class="sticky-top shadow-sm">
@@ -1100,7 +1243,7 @@
     <div id="cheques-view-bounced-trip-detail" class="d-none">
       <div class="bounced-trip-grid">
         <!-- COLUMN 1: Trip Details -->
-        <div class="bounced-trip-card">
+        <div class="bounced-trip-card bounced-trip-card-left">
           <div id="bounced-trip-details-content">
             <!-- Rendered dynamically with blue bullets and telephone links -->
           </div>
@@ -1119,23 +1262,23 @@
           </div>
         </div>
 
-        <!-- COLUMN 2: Linked Cheques Table -->
-        <div class="bounced-trip-card">
-          <div class="d-flex align-items-center justify-content-between mb-3">
-            <span class="fw-bold fs-6" style="color: #1a73e8;">
-              <span style="color: #1a73e8;">●</span> Cheque <span class="badge bg-primary-subtle text-primary ms-1" id="bounced-trip-cheque-count">1</span>
+        <!-- COLUMN 2: Linked Cheques Table (Matching bounced_screen_2.png) -->
+        <div class="bounced-trip-card bounced-trip-card-mid">
+          <div class="bounced-trip-mid-header">
+            <span class="bounced-trip-mid-title">
+              <span style="color: #1a73e8;">●</span> Cheque <span class="bounced-trip-pill" id="bounced-trip-cheque-count">1</span>
             </span>
           </div>
-          <div class="table-responsive border rounded" style="overflow-x: auto;">
-            <table class="table table-sm table-hover mb-0" style="font-size: 12.5px;">
-              <thead class="table-light">
+          <div class="bounced-linked-chq-table-wrap">
+            <table class="bounced-linked-chq-table">
+              <thead>
                 <tr>
-                  <th style="white-space: nowrap;">Cheque Due Date</th>
-                  <th style="white-space: nowrap;">Cheque No.</th>
-                  <th style="white-space: nowrap;" class="text-end">Amount</th>
-                  <th style="white-space: nowrap;">Bank</th>
-                  <th style="white-space: nowrap;">Pay to</th>
-                  <th style="white-space: nowrap;">Clearing Date</th>
+                  <th>Cheque Due Date</th>
+                  <th>Cheque No.</th>
+                  <th class="text-end">Amount</th>
+                  <th>Bank</th>
+                  <th>Pay to</th>
+                  <th>Clearing Date</th>
                 </tr>
               </thead>
               <tbody id="bounced-trip-cheques-tbody">
@@ -1143,14 +1286,22 @@
               </tbody>
             </table>
           </div>
-          <div class="d-flex align-items-center justify-content-between mt-3 pt-2 border-top">
-            <button type="button" class="btn btn-sm btn-link p-0 text-decoration-none fw-semibold" onclick="ChequesModule.goToBouncedView()">Expand</button>
-            <button type="button" class="btn btn-sm btn-link p-0 text-decoration-none fw-semibold" onclick="ChequesModule.openAddChequeModal()">Add</button>
+          <!-- Authentic AppSheet Horizontal Scroll Track -->
+          <div class="bounced-scroll-track-wrapper">
+            <div class="bounced-scroll-track">
+              <span class="scroll-arrow">◀</span>
+              <div class="scroll-bar-thumb"></div>
+              <span class="scroll-arrow">▶</span>
+            </div>
+          </div>
+          <div class="bounced-chq-actions">
+            <a href="javascript:void(0)" onclick="ChequesModule.goToBouncedView()">Expand</a>
+            <a href="javascript:void(0)" onclick="ChequesModule.openAddChequeModal()">Add</a>
           </div>
         </div>
 
         <!-- COLUMN 3: Financial Summary & Status -->
-        <div class="bounced-trip-card">
+        <div class="bounced-trip-card bounced-trip-card-right">
           <div class="bounced-trip-field">
             <div class="bounced-trip-field-label">Total Cheque Amount</div>
             <div class="bounced-trip-field-val" id="bounced-summary-chq-amount">
@@ -1166,7 +1317,7 @@
           <div class="bounced-trip-field">
             <div class="bounced-trip-field-label">Other B</div>
             <div class="bounced-trip-field-val" id="bounced-summary-other-b">
-              ₹ 27,000.00
+              <!-- Blank in authentic bounced_screen_2.png -->
             </div>
           </div>
           <div class="mt-4 pt-3 border-top">

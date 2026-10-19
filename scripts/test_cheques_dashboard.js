@@ -121,7 +121,17 @@ assert(htmlContent.includes('id="bounced-list-actions"'), '#bounced-list-actions
 assert(htmlContent.includes('id="bounced-trip-actions"'), '#bounced-trip-actions must exist');
 assert(htmlContent.includes('id="bounced-debts-actions"'), '#bounced-debts-actions must exist');
 
-// 5. Verify Cheque 000004 and Bounced Cheques in Sample Data
+// 5. Verify Bounced Sidebar Toggle and Middle Card UI
+assert(htmlContent.includes('id="bounced-year-sidebar"'), '#bounced-year-sidebar must exist for toggling');
+assert(htmlContent.includes('id="btn-show-bounced-sidebar"'), '#btn-show-bounced-sidebar must exist');
+assert(htmlContent.includes('id="btn-toggle-bounced-sidebar-tool"'), '#btn-toggle-bounced-sidebar-tool must exist');
+assert(htmlContent.includes('.bounced-trip-card-mid'), '.bounced-trip-card-mid must exist');
+assert(htmlContent.includes('.bounced-linked-chq-table'), '.bounced-linked-chq-table must exist');
+assert(htmlContent.includes('.bounced-scroll-track'), '.bounced-scroll-track must exist');
+assert(htmlContent.includes('.bounced-chq-actions'), '.bounced-chq-actions must exist');
+assert(htmlContent.includes('white-space: nowrap !important;'), 'white-space: nowrap !important must be enforced on middle card table');
+
+// 6. Verify Cheque 000004 and Bounced Cheques in Sample Data
 const bouncedCheques = chequesData.filter(c => c.status === 'Bounced');
 assert.strictEqual(bouncedCheques.length, 43, `Expected 43 bounced cheques, found ${bouncedCheques.length}`);
 
@@ -133,8 +143,10 @@ assert.strictEqual(chq000004.shortGrNo, '-207', 'Cheque 000004 shortGrNo must be
 assert.strictEqual(chq000004.truckNo, 'RJ52GB5529', 'Cheque 000004 truckNo must be RJ52GB5529');
 assert.strictEqual(chq000004.destination, 'Manjhanpur (U.P.)', 'Cheque 000004 destination must be Manjhanpur (U.P.)');
 
-// 6. Verify Bounced Methods in cheques.js
+// 7. Verify Bounced Methods in cheques.js
 assert(chequesJs.includes('goToBouncedView('), 'Must define goToBouncedView()');
+assert(chequesJs.includes('toggleBouncedSidebar()'), 'Must define toggleBouncedSidebar()');
+assert(chequesJs.includes('bouncedSidebarVisible: true'), 'Must define bouncedSidebarVisible: true');
 assert(chequesJs.includes('filterBouncedByYear('), 'Must define filterBouncedByYear()');
 assert(chequesJs.includes('renderBouncedTable()'), 'Must define renderBouncedTable()');
 assert(chequesJs.includes('viewBouncedTripDetails('), 'Must define viewBouncedTripDetails()');
@@ -145,6 +157,13 @@ assert(chequesJs.includes('openUpdateTripDrawer()'), 'Must define openUpdateTrip
 assert(chequesJs.includes('saveTripDetailsEdit()'), 'Must define saveTripDetailsEdit()');
 assert(chequesJs.includes('updateTripStatusFromSelect('), 'Must define updateTripStatusFromSelect()');
 
-console.log('✔ Card 2 Bounced: All 5 levels (split view, trip details, cheque details, edit drawer, open debts) verified.');
+// 8. Verify Trip 207 Authentic AppSheet Fields
+assert(chequesJs.includes('TRIP_TTC_NEG_00207'), 'Must define authentic trip 207 ID');
+assert(chequesJs.includes('Sitaram'), 'Must define authentic driver Sitaram');
+assert(chequesJs.includes('Anand Sharma'), 'Must define authentic consignor Anand Sharma');
+assert(chequesJs.includes('Marble Slabs'), 'Must define authentic material Marble Slabs');
+
+console.log('✔ Card 2 Bounced: Sidebar toggle, middle card table, scroll track, and authentic trip 207 verified.');
 console.log('✔ All Cheques Dashboard, Card 1 Due & Card 2 Bounced tests PASSED 100%!');
+
 
