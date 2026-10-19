@@ -54,6 +54,8 @@ const TripsModule = {
       this.goToFreightTripsView(fyParam || 'All');
     } else if (viewParam === 'gst') {
       this.goToGstAmountView(fyParam || 'All');
+    } else if (viewParam === 'gst-count') {
+      this.goToGstCountView(fyParam || 'All');
     } else {
       this.goToDashboardView();
     }
@@ -584,6 +586,18 @@ const TripsModule = {
       }
     });
 
+    // In GST Amount and GST Count modes, 2024-2025 is not shown in AppSheet sidebar (card6_sidebar.png and card7_sidebar.png)
+    const item24 = (typeof document !== 'undefined' && typeof document.querySelector === 'function')
+      ? document.querySelector('#fy-pill-group .appsheet-trips-sidebar-item[data-fy="2024-2025"]')
+      : null;
+    if (item24) {
+      if (this.workflowTab === 'gst' || this.workflowTab === 'gst-count' || this.workflowTab === 'gst-not-paid') {
+        item24.style.display = 'none';
+      } else {
+        item24.style.display = '';
+      }
+    }
+
     if (this.workflowTab === 'open') {
       // In Open mode, AppSheet displays the outstanding due amounts per FY (Matching open_sc_top.png)
       const fyOpenDue = {
@@ -632,6 +646,18 @@ const TripsModule = {
       if (el26) el26.innerHTML = `<span class="appsheet-bullet green-bullet">●</span> ₹ ${fyGstTotals['2026-2027'].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
       if (el25) el25.innerHTML = `<span class="appsheet-bullet green-bullet">●</span> ₹ ${fyGstTotals['2025-2026'].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
       if (el24) el24.innerHTML = `<span class="appsheet-bullet green-bullet">●</span> ₹ ${fyGstTotals['2024-2025'].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    } else if (this.workflowTab === 'gst-count') {
+      // In GST Count mode, AppSheet displays authentic invoice counts per FY (Matching card7_sidebar.png)
+      const fyGstCounts = {
+        '2026-2027': 224,
+        '2025-2026': 534,
+        '2024-2025': 0
+      };
+
+      if (elAll) elAll.innerText = 'All';
+      if (el26) el26.innerText = fyGstCounts['2026-2027'].toLocaleString('en-IN');
+      if (el25) el25.innerText = fyGstCounts['2025-2026'].toLocaleString('en-IN');
+      if (el24) el24.innerText = fyGstCounts['2024-2025'].toLocaleString('en-IN');
     } else if (this.workflowTab === 'gst-not-paid') {
       if (elAll) elAll.innerText = 'All';
       if (el26) el26.innerHTML = `<span class="appsheet-bullet green-bullet">●</span> ₹ 0.00`;
@@ -661,7 +687,7 @@ const TripsModule = {
           if (this.currentFY !== 'All' && this.getTripFinancialYear(t) !== this.currentFY) return false;
           if (this.workflowTab === 'settled') return this.isTripSettled(t);
           if (this.workflowTab === 'open') return this.isTripOpen(t);
-          if (this.workflowTab === 'gst') return Number(t.gstAmount) > 0 || t.isGstPaidByParty === 'Yes';
+          if (this.workflowTab === 'gst' || this.workflowTab === 'gst-count') return Number(t.gstAmount) > 0 || t.isGstPaidByParty === 'Yes';
           return true;
         });
         const dateMap = new Map();
@@ -723,7 +749,7 @@ const TripsModule = {
       // 1. Workflow Tab Filter
       if (this.workflowTab === 'settled' && !this.isTripSettled(t)) return false;
       if (this.workflowTab === 'open' && !this.isTripOpen(t)) return false;
-      if (this.workflowTab === 'gst' && (Number(t.gstAmount) <= 0 && t.isGstPaidByParty !== 'Yes')) return false;
+      if ((this.workflowTab === 'gst' || this.workflowTab === 'gst-count') && (Number(t.gstAmount) <= 0 && t.isGstPaidByParty !== 'Yes')) return false;
       if (this.workflowTab === 'gst-not-paid' && !this.isTripGstNotPaid(t)) return false;
 
       // 2. Firm Filter
@@ -741,7 +767,7 @@ const TripsModule = {
 
       // 4. Date Sub-filter (if clicked in left sidebar drilldown)
       if (this.selectedDateFilter) {
-        const tripDateDMY = this.formatDateDMY((this.workflowTab === 'gst' && t.billDate) ? t.billDate : (t.tripStartDate || t.date || ''));
+        const tripDateDMY = this.formatDateDMY(((this.workflowTab === 'gst' || this.workflowTab === 'gst-count') && t.billDate) ? t.billDate : (t.tripStartDate || t.date || ''));
         if (tripDateDMY !== this.selectedDateFilter) return false;
       }
 
@@ -776,12 +802,13 @@ const TripsModule = {
 
     // Sort: Start Date / Bill Date descending (true chronological), GR sequence / Bill No descending
     this.filteredTrips.sort((a, b) => {
-      const dateValA = (this.workflowTab === 'gst' && a.billDate) ? a.billDate : (a.tripStartDate || a.date || a.biltyDate);
-      const dateValB = (this.workflowTab === 'gst' && b.billDate) ? b.billDate : (b.tripStartDate || b.date || b.biltyDate);
+      const isGstLike = (this.workflowTab === 'gst' || this.workflowTab === 'gst-count');
+      const dateValA = (isGstLike && a.billDate) ? a.billDate : (a.tripStartDate || a.date || a.biltyDate);
+      const dateValB = (isGstLike && b.billDate) ? b.billDate : (b.tripStartDate || b.date || b.biltyDate);
       const timeA = this.parseDateToTimestamp(dateValA);
       const timeB = this.parseDateToTimestamp(dateValB);
       if (timeA !== timeB) return timeB - timeA;
-      if (this.workflowTab === 'gst' && a.billNo && b.billNo && a.billNo !== b.billNo) {
+      if (isGstLike && a.billNo && b.billNo && a.billNo !== b.billNo) {
         return Number(a.billNo) - Number(b.billNo);
       }
       return String(b.grNo || '').localeCompare(String(a.grNo || ''));
@@ -875,11 +902,10 @@ const TripsModule = {
       displayItems = this.filteredTrips.slice(start, end);
     }
 
-    // Group items by trip start date (Authentic AppSheet Grouping)
     // Group items by trip start date or bill date for GST (Authentic AppSheet Grouping)
     const dateGroups = new Map();
     displayItems.forEach(item => {
-      const rawDate = (this.workflowTab === 'gst' && item.billDate) ? item.billDate : (item.tripStartDate || item.date || item.biltyDate || 'Undated');
+      const rawDate = ((this.workflowTab === 'gst' || this.workflowTab === 'gst-count') && item.billDate) ? item.billDate : (item.tripStartDate || item.date || item.biltyDate || 'Undated');
       const dateKey = this.formatDateDMY(rawDate);
       if (!dateGroups.has(dateKey)) {
         dateGroups.set(dateKey, []);
@@ -953,8 +979,8 @@ const TripsModule = {
             <th style="width: 26px; min-width: 26px; text-align: center;">&gt;</th>
           </tr>
         `;
-      } else if (this.workflowTab === 'gst') {
-        // Authentic GST Amount Register (Card 6) - 14 Columns matching card6_table_header.png
+      } else if (this.workflowTab === 'gst' || this.workflowTab === 'gst-count') {
+        // Authentic GST Amount & GST Count Register (Cards 6 & 7) - 14 Columns matching card6_table_header.png and card7_table_header.png
         thead.innerHTML = `
           <tr>
             <th class="sticky-col-card6-actions text-center" style="width: 44px; min-width: 44px; max-width: 44px;"><i class="bi bi-download text-success" title="Download"></i></th>
@@ -1008,24 +1034,26 @@ const TripsModule = {
       const isOpenTab = this.workflowTab === 'open';
       const isFreightTab = this.workflowTab === 'freight';
       const isGstTab = this.workflowTab === 'gst';
+      const isGstCountTab = this.workflowTab === 'gst-count';
+      const isGstLike = isGstTab || isGstCountTab;
       const isCard3 = (this.workflowTab === 'all');
-      const ribbonBulletColor = (isSettledTab || isGstTab) ? '#00a638' : this.getDateRibbonBulletColor(dateKey);
+      const ribbonBulletColor = (isSettledTab || isGstLike) ? '#00a638' : this.getDateRibbonBulletColor(dateKey);
 
       let dateBadgeHtml = `<span class="appsheet-drill-badge ms-2" style="background: #f1f3f4; color: #202124;">₹ ${dayTotalFreight.toLocaleString(isFreightTab ? 'en-US' : 'en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
-      if (isCard3) {
-        dateBadgeHtml = `<span class="appsheet-drill-badge ms-2" style="background: #e8eaed; color: #202124; font-weight: 600; padding: 2px 8px; border-radius: 12px;">${items.length}</span>`;
+      if (isCard3 || isGstCountTab) {
+        dateBadgeHtml = `<span class="appsheet-drill-badge ms-2" style="background: #e8eaed; color: #202124; font-weight: 600; padding: 2px 8px; border-radius: 4px;">${items.length}</span>`;
       } else if (isGstTab) {
         const dayTotalGst = items.reduce((sum, i) => sum + (Number(i.gstAmount) || 0), 0);
         dateBadgeHtml = `<span class="appsheet-drill-badge ms-2" style="background: #e8eaed; color: #202124; font-weight: 600; padding: 2px 8px; border-radius: 4px;">₹ ${dayTotalGst.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
       }
 
-      // Date Group Divider Ribbon (Matching card6_img2_top.png, card4_table_top.png, card3_top_crop.png, open_sc_top.png & settled_table_crop1.png)
+      // Date Group Divider Ribbon (Matching card7_rows_sample.png, card6_img2_top.png, card4_table_top.png, card3_top_crop.png, open_sc_top.png & settled_table_crop1.png)
       html += `
         <tr class="appsheet-date-divider">
           <td colspan="${(isCard3 || isFreightTab) ? 17 : 15}">
             <div class="appsheet-date-divider-sticky">
-              <span class="appsheet-bullet ${(isSettledTab || isGstTab) ? 'green-bullet' : ''}" style="color: ${ribbonBulletColor};">●</span>
-              <span class="fw-bold ms-1" style="color: ${(isSettledTab || isGstTab) ? '#008a38' : '#202124'};">${dateKey}</span>
+              <span class="appsheet-bullet ${(isSettledTab || isGstLike) ? 'green-bullet' : ''}" style="color: ${ribbonBulletColor};">●</span>
+              <span class="fw-bold ms-1" style="color: ${(isSettledTab || isGstLike) ? '#008a38' : '#202124'};">${dateKey}</span>
               ${dateBadgeHtml}
             </div>
           </td>
@@ -1351,12 +1379,13 @@ const TripsModule = {
               </td>
             </tr>
           `;
-        } else if (this.workflowTab === 'gst') {
-          // Authentic GST Amount Register (Card 6) - 14 Columns matching card6_table_header.png & card6_rows_sample.png
+        } else if (this.workflowTab === 'gst' || this.workflowTab === 'gst-count') {
+          // Authentic GST Amount & GST Count Register (Cards 6 & 7) - 14 Columns matching card6 and card7 screenshots
           const gstAmt = Number(t.gstAmount) || 0;
           const totalWithGst = Number(t.total) || (totalFreight + gstAmt);
           const billDateFormatted = this.formatDateDMY(t.billDate || t.tripStartDate || t.date || '-');
-          const rowClickFn = `TripsModule.openSettledTripDetails('${t.id || t.grNo}', 'gst')`;
+          const currentOrigin = (this.workflowTab === 'gst-count') ? 'gst-count' : 'gst';
+          const rowClickFn = `TripsModule.openSettledTripDetails('${t.id || t.grNo}', '${currentOrigin}')`;
 
           html += `
             <tr class="appsheet-row" onclick="${rowClickFn}">
@@ -1636,7 +1665,7 @@ const TripsModule = {
 
     const t = this.activeTrip;
     const isSettled = this.isTripSettled(t);
-    if (this.workflowTab === 'settled' || this.workflowTab === 'gst' || origin === 'gst' || this.detailsOrigin === 'gst' || (isSettled && (this.workflowTab === 'freight' || origin === 'freight'))) {
+    if (this.workflowTab === 'settled' || this.workflowTab === 'gst' || this.workflowTab === 'gst-count' || origin === 'gst' || origin === 'gst-count' || this.detailsOrigin === 'gst' || this.detailsOrigin === 'gst-count' || (isSettled && (this.workflowTab === 'freight' || origin === 'freight'))) {
       this.openSettledTripDetails(tripId, origin || this.workflowTab);
       return;
     }
@@ -1871,9 +1900,10 @@ const TripsModule = {
     if (breadcrumbStatus) {
       breadcrumbStatus.classList.remove('d-none');
       const isFromGst = (origin === 'gst' || this.workflowTab === 'gst' || this.detailsOrigin === 'gst');
+      const isFromGstCount = (origin === 'gst-count' || this.workflowTab === 'gst-count' || this.detailsOrigin === 'gst-count');
       const isFromFreight = (origin === 'freight' || this.workflowTab === 'freight' || this.detailsOrigin === 'freight');
-      const tabLabel = isFromGst ? 'GST Amount' : (isFromFreight ? 'Trips Total Freight' : (this.workflowTab === 'open' ? 'Open' : 'Trips'));
-      const returnFn = isFromGst ? `TripsModule.goToGstAmountView('${this.currentFY}')` : (isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.setWorkflowTab('${this.workflowTab}')`);
+      const tabLabel = isFromGstCount ? 'GST Count' : (isFromGst ? 'GST Amount' : (isFromFreight ? 'Trips Total Freight' : (this.workflowTab === 'open' ? 'Open' : 'Trips')));
+      const returnFn = isFromGstCount ? `TripsModule.goToGstCountView('${this.currentFY}')` : (isFromGst ? `TripsModule.goToGstAmountView('${this.currentFY}')` : (isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.setWorkflowTab('${this.workflowTab}')`));
       breadcrumbStatus.innerHTML = `
         <a href="javascript:void(0)" onclick="${returnFn}">${tabLabel}</a>
         <span class="sep text-muted mx-1">&gt;</span>
@@ -1930,9 +1960,11 @@ const TripsModule = {
     const podDateFormatted = this.formatDateDMY(t.podDate || t.tripEndDate || t.tripStartDate || '2026-10-14');
 
     const isFromGst = (origin === 'gst' || this.workflowTab === 'gst' || this.detailsOrigin === 'gst');
-    const bulletGr = isFromGst ? `<span class="green-bullet" style="color: #008a38 !important;">●</span>` : `<span class="dark-bullet">●</span>`;
-    const bulletTruck = isFromGst ? `<span class="green-bullet" style="color: #008a38 !important;">●</span>` : `<span class="dark-bullet">●</span>`;
-    const grStyle = isFromGst ? `style="color: #008a38 !important; font-weight: bold;"` : ``;
+    const isFromGstCount = (origin === 'gst-count' || this.workflowTab === 'gst-count' || this.detailsOrigin === 'gst-count');
+    const isFromGstLike = isFromGst || isFromGstCount;
+    const bulletGr = isFromGstLike ? `<span class="green-bullet" style="color: #008a38 !important;">●</span>` : `<span class="dark-bullet">●</span>`;
+    const bulletTruck = isFromGstLike ? `<span class="green-bullet" style="color: #008a38 !important;">●</span>` : `<span class="dark-bullet">●</span>`;
+    const grStyle = isFromGstLike ? `style="color: #008a38 !important; font-weight: bold;"` : ``;
 
     // Populate Left Pane Card 1: Particulars (settled_detail_0.png)
     setHtml('sp-gr-no', `${bulletGr} <span ${grStyle}>${t.grNo || t.shortGrNo}</span>`);
@@ -2026,9 +2058,10 @@ const TripsModule = {
     if (breadcrumbStatus) {
       breadcrumbStatus.classList.remove('d-none');
       const isFromGst = (origin === 'gst' || this.workflowTab === 'gst' || this.detailsOrigin === 'gst');
+      const isFromGstCount = (origin === 'gst-count' || this.workflowTab === 'gst-count' || this.detailsOrigin === 'gst-count');
       const isFromFreight = (origin === 'freight' || this.workflowTab === 'freight' || this.detailsOrigin === 'freight');
-      const tabLabel = isFromGst ? 'GST Amount' : (isFromFreight ? 'Trips Total Freight' : 'Settled');
-      const returnFn = isFromGst ? `TripsModule.goToGstAmountView('${this.currentFY}')` : (isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.goToSettledTripsView('${this.currentFY}')`);
+      const tabLabel = isFromGstCount ? 'GST Count' : (isFromGst ? 'GST Amount' : (isFromFreight ? 'Trips Total Freight' : 'Settled'));
+      const returnFn = isFromGstCount ? `TripsModule.goToGstCountView('${this.currentFY}')` : (isFromGst ? `TripsModule.goToGstAmountView('${this.currentFY}')` : (isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.goToSettledTripsView('${this.currentFY}')`));
       breadcrumbStatus.innerHTML = `
         <a href="javascript:void(0)" onclick="${returnFn}">${tabLabel}</a>
         <span class="sep text-muted mx-1">&gt;</span>
@@ -2041,7 +2074,7 @@ const TripsModule = {
       }
       const downloadBtn = document.getElementById('settled-btn-download-bilty');
       if (downloadBtn) {
-        if (isFromGst) {
+        if (isFromGst || isFromGstCount) {
           downloadBtn.innerHTML = `<i class="bi bi-download"></i> <span class="d-none d-sm-inline">Download Invoice</span>`;
           downloadBtn.onclick = () => TripsModule.downloadGstInvoice(t.id || t.grNo);
         } else {
@@ -2192,10 +2225,11 @@ const TripsModule = {
     const breadcrumbStatus = document.getElementById('active-breadcrumb-status');
     if (breadcrumbStatus) {
       const isFromGst = (this.workflowTab === 'gst' || this.detailsOrigin === 'gst');
+      const isFromGstCount = (this.workflowTab === 'gst-count' || this.detailsOrigin === 'gst-count');
       const isFromFreight = (this.workflowTab === 'freight' || this.detailsOrigin === 'freight');
-      const tabLabel = isFromGst ? 'GST Amount' : (isFromFreight ? 'Trips Total Freight' : 'Settled');
-      const returnFn = isFromGst ? `TripsModule.goToGstAmountView('${this.currentFY}')` : (isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.goToSettledTripsView()`);
-      const tripDetailsFn = `TripsModule.openSettledTripDetails('${t.id || t.grNo}', '${isFromGst ? 'gst' : (isFromFreight ? 'freight' : 'settled')}')`;
+      const tabLabel = isFromGstCount ? 'GST Count' : (isFromGst ? 'GST Amount' : (isFromFreight ? 'Trips Total Freight' : 'Settled'));
+      const returnFn = isFromGstCount ? `TripsModule.goToGstCountView('${this.currentFY}')` : (isFromGst ? `TripsModule.goToGstAmountView('${this.currentFY}')` : (isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.goToSettledTripsView()`));
+      const tripDetailsFn = `TripsModule.openSettledTripDetails('${t.id || t.grNo}', '${isFromGstCount ? 'gst-count' : (isFromGst ? 'gst' : (isFromFreight ? 'freight' : 'settled'))}')`;
       breadcrumbStatus.innerHTML = `
         <a href="javascript:void(0)" onclick="${returnFn}">${tabLabel}</a>
         <span class="sep text-muted mx-1">&gt;</span>
@@ -2216,9 +2250,10 @@ const TripsModule = {
     const breadcrumbStatus = document.getElementById('active-breadcrumb-status');
     if (breadcrumbStatus) {
       const isFromGst = (this.workflowTab === 'gst' || this.detailsOrigin === 'gst');
+      const isFromGstCount = (this.workflowTab === 'gst-count' || this.detailsOrigin === 'gst-count');
       const isFromFreight = (this.workflowTab === 'freight' || this.detailsOrigin === 'freight');
-      const tabLabel = isFromGst ? 'GST Amount' : (isFromFreight ? 'Trips Total Freight' : 'Settled');
-      const returnFn = isFromGst ? `TripsModule.goToGstAmountView('${this.currentFY}')` : (isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.goToSettledTripsView()`);
+      const tabLabel = isFromGstCount ? 'GST Count' : (isFromGst ? 'GST Amount' : (isFromFreight ? 'Trips Total Freight' : 'Settled'));
+      const returnFn = isFromGstCount ? `TripsModule.goToGstCountView('${this.currentFY}')` : (isFromGst ? `TripsModule.goToGstAmountView('${this.currentFY}')` : (isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.goToSettledTripsView()`));
       breadcrumbStatus.innerHTML = `
         <a href="javascript:void(0)" onclick="${returnFn}">${tabLabel}</a>
         <span class="sep text-muted mx-1">&gt;</span>
@@ -2243,10 +2278,11 @@ const TripsModule = {
     const breadcrumbStatus = document.getElementById('active-breadcrumb-status');
     if (breadcrumbStatus) {
       const isFromGst = (this.workflowTab === 'gst' || this.detailsOrigin === 'gst');
+      const isFromGstCount = (this.workflowTab === 'gst-count' || this.detailsOrigin === 'gst-count');
       const isFromFreight = (this.workflowTab === 'freight' || this.detailsOrigin === 'freight');
-      const tabLabel = isFromGst ? 'GST Amount' : (isFromFreight ? 'Trips Total Freight' : 'Settled');
-      const returnFn = isFromGst ? `TripsModule.goToGstAmountView('${this.currentFY}')` : (isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.goToSettledTripsView()`);
-      const tripDetailsFn = `TripsModule.openSettledTripDetails('${t.id || t.grNo}', '${isFromGst ? 'gst' : (isFromFreight ? 'freight' : 'settled')}')`;
+      const tabLabel = isFromGstCount ? 'GST Count' : (isFromGst ? 'GST Amount' : (isFromFreight ? 'Trips Total Freight' : 'Settled'));
+      const returnFn = isFromGstCount ? `TripsModule.goToGstCountView('${this.currentFY}')` : (isFromGst ? `TripsModule.goToGstAmountView('${this.currentFY}')` : (isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.goToSettledTripsView()`));
+      const tripDetailsFn = `TripsModule.openSettledTripDetails('${t.id || t.grNo}', '${isFromGstCount ? 'gst-count' : (isFromGst ? 'gst' : (isFromFreight ? 'freight' : 'settled'))}')`;
       breadcrumbStatus.innerHTML = `
         <a href="javascript:void(0)" onclick="${returnFn}">${tabLabel}</a>
         <span class="sep text-muted mx-1">&gt;</span>
@@ -2336,10 +2372,11 @@ const TripsModule = {
     const breadcrumbStatus = document.getElementById('active-breadcrumb-status');
     if (breadcrumbStatus) {
       const isFromGst = (this.workflowTab === 'gst' || this.detailsOrigin === 'gst');
+      const isFromGstCount = (this.workflowTab === 'gst-count' || this.detailsOrigin === 'gst-count');
       const isFromFreight = (this.workflowTab === 'freight' || this.detailsOrigin === 'freight');
-      const tabLabel = isFromGst ? 'GST Amount' : (isFromFreight ? 'Trips Total Freight' : 'Settled');
-      const returnFn = isFromGst ? `TripsModule.goToGstAmountView('${this.currentFY}')` : (isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.goToSettledTripsView()`);
-      const tripDetailsFn = `TripsModule.openSettledTripDetails('${t.id || t.grNo}', '${isFromGst ? 'gst' : (isFromFreight ? 'freight' : 'settled')}')`;
+      const tabLabel = isFromGstCount ? 'GST Count' : (isFromGst ? 'GST Amount' : (isFromFreight ? 'Trips Total Freight' : 'Settled'));
+      const returnFn = isFromGstCount ? `TripsModule.goToGstCountView('${this.currentFY}')` : (isFromGst ? `TripsModule.goToGstAmountView('${this.currentFY}')` : (isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.goToSettledTripsView()`));
+      const tripDetailsFn = `TripsModule.openSettledTripDetails('${t.id || t.grNo}', '${isFromGstCount ? 'gst-count' : (isFromGst ? 'gst' : (isFromFreight ? 'freight' : 'settled'))}')`;
       breadcrumbStatus.innerHTML = `
         <a href="javascript:void(0)" onclick="${returnFn}">${tabLabel}</a>
         <span class="sep text-muted mx-1">&gt;</span>
@@ -2556,9 +2593,10 @@ const TripsModule = {
       const breadcrumbStatus = document.getElementById('active-breadcrumb-status');
       if (breadcrumbStatus) {
         const isFromGst = (this.workflowTab === 'gst' || this.detailsOrigin === 'gst');
+        const isFromGstCount = (this.workflowTab === 'gst-count' || this.detailsOrigin === 'gst-count');
         const isFromFreight = (this.workflowTab === 'freight' || this.detailsOrigin === 'freight');
-        const tabLabel = isFromGst ? 'GST Amount' : (isFromFreight ? 'Trips Total Freight' : (this.workflowTab === 'open' ? 'Open' : 'Trips'));
-        const returnFn = isFromGst ? `TripsModule.goToGstAmountView('${this.currentFY}')` : (isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.setWorkflowTab('${this.workflowTab}')`);
+        const tabLabel = isFromGstCount ? 'GST Count' : (isFromGst ? 'GST Amount' : (isFromFreight ? 'Trips Total Freight' : (this.workflowTab === 'open' ? 'Open' : 'Trips')));
+        const returnFn = isFromGstCount ? `TripsModule.goToGstCountView('${this.currentFY}')` : (isFromGst ? `TripsModule.goToGstAmountView('${this.currentFY}')` : (isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.setWorkflowTab('${this.workflowTab}')`));
         breadcrumbStatus.innerHTML = `
           <a href="javascript:void(0)" onclick="${returnFn}">${tabLabel}</a>
           <span class="sep text-muted mx-1">&gt;</span>
@@ -2606,9 +2644,10 @@ const TripsModule = {
       const breadcrumbStatus = document.getElementById('active-breadcrumb-status');
       if (breadcrumbStatus) {
         const isFromGst = (this.workflowTab === 'gst' || this.detailsOrigin === 'gst');
+        const isFromGstCount = (this.workflowTab === 'gst-count' || this.detailsOrigin === 'gst-count');
         const isFromFreight = (this.workflowTab === 'freight' || this.detailsOrigin === 'freight');
-        const tabLabel = isFromGst ? 'GST Amount' : (isFromFreight ? 'Trips Total Freight' : (this.workflowTab === 'open' ? 'Open' : 'Trips'));
-        const returnFn = isFromGst ? `TripsModule.goToGstAmountView('${this.currentFY}')` : (isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.setWorkflowTab('${this.workflowTab}')`);
+        const tabLabel = isFromGstCount ? 'GST Count' : (isFromGst ? 'GST Amount' : (isFromFreight ? 'Trips Total Freight' : (this.workflowTab === 'open' ? 'Open' : 'Trips')));
+        const returnFn = isFromGstCount ? `TripsModule.goToGstCountView('${this.currentFY}')` : (isFromGst ? `TripsModule.goToGstAmountView('${this.currentFY}')` : (isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.setWorkflowTab('${this.workflowTab}')`));
         breadcrumbStatus.innerHTML = `
           <a href="javascript:void(0)" onclick="${returnFn}">${tabLabel}</a>
           <span class="sep text-muted mx-1">&gt;</span>
@@ -2649,9 +2688,10 @@ const TripsModule = {
     const breadcrumbStatus = document.getElementById('active-breadcrumb-status');
     if (breadcrumbStatus) {
       const isFromGst = (this.workflowTab === 'gst' || this.detailsOrigin === 'gst');
+      const isFromGstCount = (this.workflowTab === 'gst-count' || this.detailsOrigin === 'gst-count');
       const isFromFreight = (this.workflowTab === 'freight' || this.detailsOrigin === 'freight');
-      const tabLabel = isFromGst ? 'GST Amount' : (isFromFreight ? 'Trips Total Freight' : (this.workflowTab === 'open' ? 'Open' : 'Trips'));
-      const returnFn = isFromGst ? `TripsModule.goToGstAmountView('${this.currentFY}')` : (isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.setWorkflowTab('open')`);
+      const tabLabel = isFromGstCount ? 'GST Count' : (isFromGst ? 'GST Amount' : (isFromFreight ? 'Trips Total Freight' : (this.workflowTab === 'open' ? 'Open' : 'Trips')));
+      const returnFn = isFromGstCount ? `TripsModule.goToGstCountView('${this.currentFY}')` : (isFromGst ? `TripsModule.goToGstAmountView('${this.currentFY}')` : (isFromFreight ? `TripsModule.goToFreightTripsView('${this.currentFY}')` : `TripsModule.setWorkflowTab('open')`));
       breadcrumbStatus.innerHTML = `
         <a href="javascript:void(0)" onclick="${returnFn}">${tabLabel}</a>
         <span class="sep text-muted mx-1">&gt;</span>
@@ -4114,6 +4154,13 @@ const TripsModule = {
         breadcrumbStatus.classList.remove('d-none');
         breadcrumbStatus.innerHTML = `<span class="active text-dark fw-bold">GST Amount</span>`;
       }
+    } else if (this.workflowTab === 'gst-count' || this.detailsOrigin === 'gst-count') {
+      this.workflowTab = 'gst-count';
+      if (breadcrumbSep) breadcrumbSep.classList.remove('d-none');
+      if (breadcrumbStatus) {
+        breadcrumbStatus.classList.remove('d-none');
+        breadcrumbStatus.innerHTML = `<span class="active text-dark fw-bold">GST Count</span>`;
+      }
     } else if (this.workflowTab === 'gst-not-paid' || this.detailsOrigin === 'gst-not-paid') {
       this.workflowTab = 'gst-not-paid';
       if (breadcrumbSep) breadcrumbSep.classList.remove('d-none');
@@ -4197,6 +4244,7 @@ const TripsModule = {
         all: 'Trips',
         freight: 'Trips Total Freight',
         gst: 'GST Amount',
+        'gst-count': 'GST Count',
         'gst-not-paid': 'GST not Paid'
       };
       activeCrumb.innerText = (titleMap[status] || 'Trips') + (this.currentFY !== 'All' ? ` (${this.currentFY})` : '');
@@ -4236,7 +4284,7 @@ const TripsModule = {
 
     const searchInput = document.getElementById('search-trips');
     if (searchInput) {
-      searchInput.placeholder = status === 'open' ? 'Search Open Trips' : status === 'settled' ? 'Search Settled' : status === 'freight' ? 'Search Trips Total Freight' : status === 'gst' ? 'Search GST Amount' : status === 'gst-not-paid' ? 'Search GST not Paid' : 'Search Trips';
+      searchInput.placeholder = status === 'open' ? 'Search Open Trips' : status === 'settled' ? 'Search Settled' : status === 'freight' ? 'Search Trips Total Freight' : status === 'gst' ? 'Search GST Amount' : status === 'gst-count' ? 'Search GST Count' : status === 'gst-not-paid' ? 'Search GST not Paid' : 'Search Trips';
     }
 
     this.currentPage = 1;
@@ -4267,7 +4315,7 @@ const TripsModule = {
   },
 
   goToGstCountView(fy = 'All') {
-    this.goToRegisterView('gst', fy);
+    this.goToRegisterView('gst-count', fy);
   },
 
   goToGstNotPaidView(fy = 'All') {

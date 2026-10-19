@@ -148,8 +148,8 @@ assert.strictEqual(unpaidTrips.length, 0, 'Card 5 GST not Paid must have 0 items
 console.log('✔ Card 5 (GST not Paid): verified 0 items (clean "No items" state matching AppSheet).');
 
 // 6. Test GST Amount row click: MUST ALWAYS call openSettledTripDetails and NOT openTripDetails
-assert(tripsJs.includes("const rowClickFn = `TripsModule.openSettledTripDetails('${t.id || t.grNo}', 'gst')`"), 'GST Amount row click must unconditionally open Settled Trip Details');
-assert(tripsJs.includes("if (this.workflowTab === 'settled' || this.workflowTab === 'gst' || origin === 'gst' || this.detailsOrigin === 'gst'"), 'openTripDetails must route GST trips directly to openSettledTripDetails');
+assert(tripsJs.includes("TripsModule.openSettledTripDetails('${t.id || t.grNo}', '${currentOrigin}')"), 'GST Amount row click must unconditionally open Settled Trip Details');
+assert(tripsJs.includes("if (this.workflowTab === 'settled' || this.workflowTab === 'gst' || this.workflowTab === 'gst-count'"), 'openTripDetails must route GST trips directly to openSettledTripDetails');
 console.log('✔ Card 6 (GST Amount): verified row click ALWAYS routes to Green Settled Trip Details (zero multi-color bleeding).');
 
 console.log('✔ All Card 6 GST Amount & Card 5 tests PASSED 100%!');
