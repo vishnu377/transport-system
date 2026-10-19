@@ -570,149 +570,115 @@
       background-color: #f8f9fa;
     }
 
-    /* Sticky columns for seamless horizontal review on all screens */
+    /* Clean AppSheet Columns (Zero Vertical Lines, Zero Blur, Zero Overlap Clipping) */
     .sticky-col-1 {
-      position: sticky;
-      left: 0;
       width: 44px;
       min-width: 44px;
       max-width: 44px;
-      z-index: 2;
-      background: #ffffff;
       box-sizing: border-box;
+      border-right: none !important;
+      box-shadow: none !important;
     }
     .sticky-col-2 {
-      position: sticky;
-      left: 44px;
       width: 60px;
       min-width: 60px;
       max-width: 60px;
-      z-index: 2;
-      background: #ffffff;
       box-sizing: border-box;
+      border-right: none !important;
+      box-shadow: none !important;
     }
     .sticky-col-3 {
-      position: sticky;
-      left: 104px;
       width: 20px;
       min-width: 20px;
       max-width: 20px;
-      z-index: 2;
-      background: #ffffff;
       box-sizing: border-box;
+      border-right: none !important;
+      box-shadow: none !important;
     }
 
-    /* Dedicated Settled Trips Sticky Columns (Zero Overlap Guaranteed) */
+    /* Dedicated Settled Trips Columns */
     .sticky-col-settled-actions {
-      position: sticky;
-      left: 0;
       width: 72px;
       min-width: 72px;
       max-width: 72px;
-      z-index: 2;
-      background: #ffffff;
       box-sizing: border-box;
+      border-right: none !important;
+      box-shadow: none !important;
     }
     .sticky-col-dot-settled {
-      position: sticky;
-      left: 72px;
       width: 24px;
       min-width: 24px;
       max-width: 24px;
-      z-index: 2;
-      background: #ffffff;
       box-sizing: border-box;
+      border-right: none !important;
+      box-shadow: none !important;
     }
     .sticky-col-bill-settled {
-      position: sticky;
-      left: 96px;
       width: 60px;
       min-width: 60px;
       max-width: 60px;
-      z-index: 2;
-      background: #ffffff;
       box-sizing: border-box;
+      border-right: none !important;
+      box-shadow: none !important;
     }
     .sticky-col-gr-settled {
-      position: sticky;
-      left: 156px;
       width: 95px;
       min-width: 95px;
       max-width: 95px;
-      z-index: 2;
-      background: #ffffff;
       box-sizing: border-box;
-      border-right: 1px solid #dadce0 !important;
-      box-shadow: 2px 0 4px rgba(0, 0, 0, 0.03) !important;
+      border-right: none !important;
+      box-shadow: none !important;
     }
 
     .sticky-col-bill-open {
-      position: sticky;
-      left: 44px;
       width: 82px;
       min-width: 82px;
       max-width: 82px;
-      z-index: 2;
-      background: #ffffff;
       box-sizing: border-box;
+      border-right: none !important;
+      box-shadow: none !important;
     }
     .sticky-col-4 {
-      position: sticky;
-      left: 126px;
       width: 95px;
       min-width: 95px;
       max-width: 95px;
-      z-index: 2;
-      background: #ffffff;
       box-sizing: border-box;
-      border-right: 1px solid #dadce0 !important;
-      box-shadow: 2px 0 4px rgba(0, 0, 0, 0.03) !important;
+      border-right: none !important;
+      box-shadow: none !important;
     }
     .sticky-col-gr-card3 {
-      position: sticky;
-      left: 104px !important;
       width: 95px !important;
       min-width: 95px !important;
       max-width: 95px !important;
-      z-index: 2;
-      background: #ffffff;
       box-sizing: border-box;
-      border-right: 1px solid #dadce0 !important;
-      box-shadow: 2px 0 4px rgba(0, 0, 0, 0.03) !important;
+      border-right: none !important;
+      box-shadow: none !important;
     }
 
-    /* Dedicated Trips Total Freight (Card 4) Sticky Columns (Zero Overlap Guaranteed) */
+    /* Dedicated Trips Total Freight (Card 4) Columns */
     .sticky-col-card4-actions {
-      position: sticky;
-      left: 0;
       width: 72px;
       min-width: 72px;
       max-width: 72px;
-      z-index: 2;
-      background: #ffffff;
       box-sizing: border-box;
+      border-right: none !important;
+      box-shadow: none !important;
     }
     .sticky-col-card4-bill {
-      position: sticky;
-      left: 72px;
       width: 60px;
       min-width: 60px;
       max-width: 60px;
-      z-index: 2;
-      background: #ffffff;
       box-sizing: border-box;
+      border-right: none !important;
+      box-shadow: none !important;
     }
     .sticky-col-card4-gr {
-      position: sticky;
-      left: 132px;
       width: 95px;
       min-width: 95px;
       max-width: 95px;
-      z-index: 2;
-      background: #ffffff;
       box-sizing: border-box;
-      border-right: 1px solid #dadce0 !important;
-      box-shadow: 2px 0 4px rgba(0, 0, 0, 0.03) !important;
+      border-right: none !important;
+      box-shadow: none !important;
     }
 
     .appsheet-table thead th {
@@ -720,6 +686,9 @@
       top: 0;
       z-index: 10;
       background: #ffffff;
+      border-bottom: 1px solid #e0e0e0;
+      border-right: none !important;
+      box-shadow: none !important;
     }
     .appsheet-table thead th.sticky-col-1,
     .appsheet-table thead th.sticky-col-2,
@@ -734,32 +703,12 @@
     .appsheet-table thead th.sticky-col-card4-actions,
     .appsheet-table thead th.sticky-col-card4-bill,
     .appsheet-table thead th.sticky-col-card4-gr {
-      position: sticky;
-      top: 0;
-      z-index: 25;
       background: #ffffff;
       box-sizing: border-box;
+      border-right: none !important;
+      box-shadow: none !important;
     }
-    .appsheet-table thead th.sticky-col-gr-settled,
-    .appsheet-table thead th.sticky-col-4,
-    .appsheet-table thead th.sticky-col-gr-card3,
-    .appsheet-table thead th.sticky-col-card4-gr {
-      border-right: 1px solid #dadce0 !important;
-      box-shadow: 2px 0 4px rgba(0, 0, 0, 0.03) !important;
-    }
-    .appsheet-row:hover td.sticky-col-1,
-    .appsheet-row:hover td.sticky-col-2,
-    .appsheet-row:hover td.sticky-col-3,
-    .appsheet-row:hover td.sticky-col-settled-actions,
-    .appsheet-row:hover td.sticky-col-dot-settled,
-    .appsheet-row:hover td.sticky-col-bill-settled,
-    .appsheet-row:hover td.sticky-col-gr-settled,
-    .appsheet-row:hover td.sticky-col-bill-open,
-    .appsheet-row:hover td.sticky-col-4,
-    .appsheet-row:hover td.sticky-col-gr-card3,
-    .appsheet-row:hover td.sticky-col-card4-actions,
-    .appsheet-row:hover td.sticky-col-card4-bill,
-    .appsheet-row:hover td.sticky-col-card4-gr {
+    .appsheet-row:hover td {
       background: #f8f9fa;
     }
 
@@ -4037,17 +3986,17 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
   <!-- Core App Scripts with Cache Busting -->
-  <script src="../js/config.js?v=20261019_v1"></script>
+  <script src="../js/config.js?v=20261019_v2"></script>
   <!-- Universal Master Data Assets (Guaranteed 100% Offline & Fresh Git Deploy Resilience) -->
-  <script src="../js/sample-parties-data.js?v=20261019_v1"></script>
-  <script src="../js/sample-truck-owners-data.js?v=20261019_v1"></script>
-  <script src="../js/sample-drivers-data.js?v=20261019_v1"></script>
-  <script src="../js/open-trips-seed.js?v=20261019_v1"></script>
-  <script src="../js/sample-trips-data.js?v=20261019_v1"></script>
-  <script src="../js/sample-debts-data.js?v=20261019_v1"></script>
-  <script src="../js/sample-cheques-data.js?v=20261019_v1"></script>
-  <script src="../js/db-service.js?v=20261019_v1"></script>
-  <script src="../js/app.js?v=20261019_v1"></script>
-  <script src="../js/modules/trips.js?v=20261019_v1"></script>
+  <script src="../js/sample-parties-data.js?v=20261019_v2"></script>
+  <script src="../js/sample-truck-owners-data.js?v=20261019_v2"></script>
+  <script src="../js/sample-drivers-data.js?v=20261019_v2"></script>
+  <script src="../js/open-trips-seed.js?v=20261019_v2"></script>
+  <script src="../js/sample-trips-data.js?v=20261019_v2"></script>
+  <script src="../js/sample-debts-data.js?v=20261019_v2"></script>
+  <script src="../js/sample-cheques-data.js?v=20261019_v2"></script>
+  <script src="../js/db-service.js?v=20261019_v2"></script>
+  <script src="../js/app.js?v=20261019_v2"></script>
+  <script src="../js/modules/trips.js?v=20261019_v2"></script>
 </body>
 </html>
