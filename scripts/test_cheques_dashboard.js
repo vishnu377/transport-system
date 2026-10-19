@@ -73,10 +73,14 @@ const chequesJs = fs.readFileSync('js/modules/cheques.js', 'utf8');
 assert(!chequesJs.includes('localStorage.setItem'), 'Zero localStorage: cheques.js must not persist to localStorage');
 assert(chequesJs.includes('viewMode: \'dashboard\''), 'Default viewMode must be dashboard');
 assert(chequesJs.includes('renderDashboard()'), 'Must define renderDashboard()');
-assert(chequesJs.includes('renderDueTable()'), 'Must define renderDueTable()');
 assert(chequesJs.includes('goToDashboardView()'), 'Must define goToDashboardView()');
 assert(chequesJs.includes('goToCardView('), 'Must define goToCardView()');
 assert(chequesJs.includes('goToDueView('), 'Must define goToDueView()');
+assert(chequesJs.includes('renderDueMiniTable()'), 'Must define renderDueMiniTable()');
+assert(chequesJs.includes('renderDueListTable()'), 'Must define renderDueListTable()');
+assert(chequesJs.includes('viewDueChequeDetails('), 'Must define viewDueChequeDetails()');
+assert(chequesJs.includes('openEditDrawer('), 'Must define openEditDrawer()');
+assert(chequesJs.includes('saveDrawerEdit()'), 'Must define saveDrawerEdit()');
 assert(chequesJs.includes('goToBouncedView('), 'Must define goToBouncedView()');
 assert(chequesJs.includes('goToClearedView('), 'Must define goToClearedView()');
 assert(chequesJs.includes('goToNotUsedView('), 'Must define goToNotUsedView()');
@@ -96,5 +100,12 @@ assert(chequesJs.includes('5504183.00'), 'Must define authentic All Cheques 2026
 assert(chequesJs.includes('11909263.00'), 'Must define authentic All Cheques 2025 amount 11909263.00');
 assert(chequesJs.includes('5573340.80'), 'Must define authentic All Cheques 2024 amount 5573340.80');
 
-console.log('✔ js/modules/cheques.js: All authentic amounts, dashboard methods, and zero localStorage verified.');
-console.log('✔ All Cheques Dashboard tests PASSED 100%!');
+// Verify HTML contains Due List, Due Details, and Edit drawer
+assert(htmlContent.includes('id="cheques-view-due-list"'), '#cheques-view-due-list must exist');
+assert(htmlContent.includes('id="cheques-view-due-detail"'), '#cheques-view-due-detail must exist');
+assert(htmlContent.includes('id="chq-detail-card-body"'), '#chq-detail-card-body must exist');
+assert(htmlContent.includes('id="offcanvasEditCheque"'), '#offcanvasEditCheque must exist');
+assert(htmlContent.includes('id="due-detail-actions"'), '#due-detail-actions must exist');
+
+console.log('✔ js/modules/cheques.js: All authentic amounts, Due Level 1-4 methods, and zero localStorage verified.');
+console.log('✔ All Cheques Dashboard & Card 1 Due tests PASSED 100%!');

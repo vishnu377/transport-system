@@ -34,7 +34,7 @@
       overflow: hidden;
     }
 
-    /* Left Slim Rail */
+    /* Left Slim AppSheet Rail */
     .appsheet-rail {
       width: 48px;
       min-width: 48px;
@@ -184,6 +184,7 @@
       gap: 4px;
       transition: background 0.15s ease-in-out;
       text-decoration: none;
+      cursor: pointer;
     }
     .btn-appsheet-add:hover {
       background-color: var(--appsheet-gold-hover);
@@ -315,8 +316,10 @@
 
     /* Bullet Dots */
     .chq-bullet {
-      font-size: 12px;
+      font-size: 11px;
       line-height: 1;
+      display: inline-block;
+      margin-right: 4px;
     }
     .chq-bullet-red { color: #d90429; }
     .chq-bullet-green { color: #198754; }
@@ -324,28 +327,28 @@
     .chq-bullet-pink { color: #e91e63; }
     .chq-bullet-mustard { color: #b59a2a; }
 
-    /* Due Mini-Table inside Card 1 */
+    /* Due Tables (both Mini-Table in Card 1 & Full Table in Level 2) */
     .chq-due-table {
       width: 100%;
       border-collapse: collapse;
       font-size: 12px;
     }
     .chq-due-table th {
-      padding: 7px 10px;
+      padding: 8px 12px;
       color: #5f6368;
       font-weight: 600;
-      font-size: 11px;
+      font-size: 11.5px;
       white-space: nowrap;
       border-bottom: 1px solid #e0e0e0;
       background: #ffffff;
       text-transform: none;
     }
     .chq-due-table td {
-      padding: 8px 10px;
+      padding: 8px 12px;
       white-space: nowrap;
       border-bottom: 1px solid #f1f3f4;
       vertical-align: middle;
-      font-size: 12px;
+      font-size: 12.5px;
     }
     .chq-due-row {
       cursor: pointer;
@@ -371,6 +374,83 @@
     }
     .chq-theme-mustard .chq-bullet {
       color: #b59a2a;
+    }
+
+    /* ======================================================== */
+    /* LEVEL 3: DUE CHEQUE DETAILS VIEW (Matching screenshot 2&4)*/
+    /* ======================================================== */
+    .chq-detail-container {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 30px 16px;
+      min-height: calc(100vh - 120px);
+    }
+    .chq-detail-card {
+      background: #ffffff;
+      border: 1px solid #dadce0;
+      border-radius: 6px;
+      width: 100%;
+      max-width: 620px;
+      padding: 32px 36px;
+      box-shadow: 0 1px 3px rgba(60,64,67,0.06);
+    }
+    .chq-detail-row {
+      display: flex;
+      margin-bottom: 18px;
+      font-size: 13.5px;
+      align-items: baseline;
+    }
+    .chq-detail-label {
+      width: 170px;
+      min-width: 170px;
+      color: #5f6368;
+      font-weight: 500;
+      font-size: 13px;
+    }
+    .chq-detail-value {
+      flex: 1;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* ======================================================== */
+    /* LEVEL 4: SLIDE-IN EDIT FORM (Matching screenshots 3 & 5) */
+    /* ======================================================== */
+    .offcanvas-cheque-edit {
+      width: 440px !important;
+      border-left: 1px solid #dadce0;
+    }
+    @media (max-width: 576px) {
+      .offcanvas-cheque-edit {
+        width: 100% !important;
+      }
+    }
+    .chq-form-group {
+      margin-bottom: 16px;
+    }
+    .chq-form-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: #5f6368;
+      margin-bottom: 4px;
+      display: block;
+    }
+    .chq-form-control {
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      padding: 7px 12px;
+      font-size: 13.5px;
+      color: #202124;
+      width: 100%;
+      outline: none;
+      background: #ffffff;
+    }
+    .chq-form-control:focus {
+      border-color: #1a73e8;
+      box-shadow: 0 0 0 1px #1a73e8;
     }
 
     /* Register Table Styling */
@@ -420,7 +500,7 @@
   <!-- Main Workspace -->
   <div class="appsheet-main-workspace" id="main-content">
     
-    <!-- Top AppSheet Navbar (Matching media_1792434204882_c18d5945.png) -->
+    <!-- Top AppSheet Navbar (Matching media_1792434204882_c18d5945.png & due_screen_1.png) -->
     <header class="appsheet-top-bar">
       <div class="d-flex align-items-center gap-2">
         <button class="btn btn-sm btn-light border-0" id="top-nav-hamburger-btn" onclick="AppUI.toggleNavDrawer()" title="Toggle Navigation Drawer">
@@ -460,21 +540,37 @@
       </div>
     </header>
 
-    <!-- Subheader with Breadcrumbs and View Toggle -->
+    <!-- Subheader with Breadcrumbs, Tools, and View Toggle -->
     <div class="appsheet-subheader">
       <div class="appsheet-breadcrumb" id="appsheet-breadcrumb">
         <a href="javascript:void(0)" onclick="ChequesModule.goToDashboardView()">Home</a>
         <span class="sep">&gt;</span>
         <a href="javascript:void(0)" onclick="ChequesModule.goToDashboardView()">Cheques</a>
-        <span class="sep d-none" id="breadcrumb-sep">&gt;</span>
-        <span class="active d-none" id="active-breadcrumb-status">Due</span>
+        <span class="sep d-none" id="breadcrumb-sep-1">&gt;</span>
+        <a href="javascript:void(0)" class="d-none" id="breadcrumb-link-due" onclick="ChequesModule.goToDueView()">Due</a>
+        <span class="sep d-none" id="breadcrumb-sep-2">&gt;</span>
+        <span class="active d-none" id="breadcrumb-active-text">Due</span>
       </div>
 
       <div class="d-flex align-items-center gap-2 flex-wrap">
-        <!-- View Toggle Grid Icon ⊞ -->
+        <!-- View Toggle Grid Icon ⊞ (Visible on Dashboard and Register) -->
         <button type="button" class="btn-view-toggle" id="btn-view-toggle" onclick="ChequesModule.toggleViewMode()" title="Toggle Dashboard / Register">
           ⊞
         </button>
+
+        <!-- Due List Top Actions (Filter & Select Multi) matching due_screen_1.png -->
+        <div id="due-list-actions" class="d-none d-flex align-items-center gap-2">
+          <span class="appsheet-tool-icon" title="Filter"><i class="bi bi-funnel"></i></span>
+          <span class="appsheet-tool-icon" title="Select Multiple Rows"><i class="bi bi-check2-square"></i></span>
+        </div>
+
+        <!-- Due Details Top Actions (Edit & Expand) matching due_screen_2.png -->
+        <div id="due-detail-actions" class="d-none d-flex align-items-center gap-2">
+          <button type="button" class="btn-appsheet-add py-1 px-3" onclick="ChequesModule.openEditDrawer(ChequesModule.activeCheque?.id)" title="Edit Cheque">
+            <i class="bi bi-pencil me-1"></i> Edit
+          </button>
+          <span class="appsheet-tool-icon" onclick="ChequesModule.toggleDetailFullscreen()" title="Expand view">↗</span>
+        </div>
 
         <!-- Register Toolbar Actions (Hidden on Dashboard) -->
         <div id="cheques-register-toolbar" class="d-none d-flex align-items-center gap-2 flex-wrap">
@@ -505,7 +601,7 @@
     </div>
 
     <!-- ======================================================== -->
-    <!-- 5-CARDS CHEQUES DASHBOARD VIEW (Default on Open)          -->
+    <!-- 1. LEVEL 1: 5-CARDS CHEQUES DASHBOARD VIEW (Default View) -->
     <!-- Matching media_1792434204882_c18d5945.png                -->
     <!-- ======================================================== -->
     <div id="cheques-view-dashboard">
@@ -526,7 +622,7 @@
               <thead>
                 <tr>
                   <th style="white-space: nowrap;">Cheque Due Date <i class="bi bi-arrow-down small text-muted"></i></th>
-                  <th style="width: 22px; padding: 7px 2px; text-align: center;"></th>
+                  <th style="width: 24px; padding: 7px 2px; text-align: center;"></th>
                   <th style="white-space: nowrap;">Cheque No.</th>
                   <th style="white-space: nowrap;">Pay to</th>
                   <th style="white-space: nowrap;">Bank</th>
@@ -539,8 +635,8 @@
                 </tr>
               </thead>
               <tbody id="chq-due-tbody">
-                <!-- Row 1: Pink Theme (17/10/2026, 000144, Bandhan Bank, ₹20,000, SHRI SHYAM MARBLE TIL...) -->
-                <!-- Row 2: Mustard Theme (14/10/2026, 217365, Ujjivan Small Fina..., ₹25,000, New Indian Marbles) -->
+                <!-- Row 1: Pink Theme (17/10/2026, 000144, Bandhan Bank, ₹20,000, SHRI SHYAM MARBLE TILE HOUSE) -->
+                <!-- Row 2: Mustard Theme (14/10/2026, 217365, Ujjivan Small Finanace Bank, ₹25,000, New Indian Marbles) -->
               </tbody>
             </table>
           </div>
@@ -710,7 +806,50 @@
     </div>
 
     <!-- ======================================================== -->
-    <!-- REGISTER TABLE VIEW (Hidden by Default, toggled on click)-->
+    <!-- 2. LEVEL 2: DUE LIST VIEW (Expanded Full Table)          -->
+    <!-- Matching due_screen_1.png                                -->
+    <!-- ======================================================== -->
+    <div id="cheques-view-due-list" class="d-none p-3">
+      <div class="appsheet-panel">
+        <div class="table-responsive" style="max-height: calc(100vh - 140px); overflow-x: auto; overflow-y: auto;">
+          <table class="chq-due-table">
+            <thead>
+              <tr>
+                <th style="white-space: nowrap;">Cheque Due Date <i class="bi bi-arrow-down small text-muted"></i></th>
+                <th style="width: 28px; padding: 8px 4px; text-align: center;"></th>
+                <th style="white-space: nowrap;">Cheque No.</th>
+                <th style="white-space: nowrap;">Pay to</th>
+                <th style="white-space: nowrap;">Bank</th>
+                <th style="white-space: nowrap;" class="text-end">Amount</th>
+                <th style="white-space: nowrap;">Party</th>
+                <th style="white-space: nowrap;">G.R.No.</th>
+                <th style="white-space: nowrap;">Truck No.</th>
+                <th style="white-space: nowrap;">To</th>
+                <th style="width: 24px; text-align: center;"></th>
+              </tr>
+            </thead>
+            <tbody id="chq-due-list-tbody">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- 3. LEVEL 3: DUE CHEQUE DETAILS VIEW (Centered Card)      -->
+    <!-- Matching due_screen_2.png and due_screen_4.png          -->
+    <!-- ======================================================== -->
+    <div id="cheques-view-due-detail" class="d-none">
+      <div class="chq-detail-container">
+        <div class="chq-detail-card" id="chq-detail-card-body">
+          <!-- Filled dynamically with 9 fields and colored bullets -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- 4. LEVEL 4: REGISTER TABLE VIEW (For Other Tabs & Toggle) -->
     <!-- ======================================================== -->
     <div id="cheques-view-register" class="d-none p-3">
       <div class="row g-3">
@@ -797,27 +936,95 @@
 
   </div>
 
-  <!-- Modal: Cheque Details / Audit Trail -->
-  <div class="modal fade" id="modalChequeDetails" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content border-0 shadow">
-        <div class="modal-header border-bottom">
-          <div class="appsheet-breadcrumb mb-0">
-            <span>Home</span>
-            <span class="sep">&gt;</span>
-            <span>Cheques</span>
-            <span class="sep">&gt;</span>
-            <span class="active">Details</span>
-          </div>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body p-4" id="detail-modal-body">
-          <!-- Filled dynamically -->
-        </div>
-        <div class="modal-footer bg-light" id="detail-modal-actions">
-          <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
-        </div>
+  <!-- ======================================================== -->
+  <!-- 5. RIGHT SLIDE-IN OFFCANVAS FOR EDITING CHEQUE           -->
+  <!-- Matching due_screen_3.png, due_screen_5.png, and wa pics -->
+  <!-- ======================================================== -->
+  <div class="offcanvas offcanvas-end offcanvas-cheque-edit" tabindex="-1" id="offcanvasEditCheque" aria-labelledby="offcanvasEditLabel">
+    <div class="offcanvas-header border-bottom py-2 px-3">
+      <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn btn-sm btn-light border-0 p-0 text-muted" data-bs-dismiss="offcanvas" aria-label="Close" style="font-size: 1.1rem;">
+          <i class="bi bi-x-lg"></i>
+        </button>
+        <span class="fw-semibold fs-6 text-dark" id="offcanvasEditLabel">Cheque Details</span>
       </div>
+      <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn btn-sm btn-link text-muted text-decoration-none p-0" data-bs-dismiss="offcanvas">Cancel</button>
+        <button type="button" class="btn-appsheet-add py-1 px-3" onclick="ChequesModule.saveDrawerEdit()">Save</button>
+      </div>
+    </div>
+    <div class="offcanvas-body p-3">
+      <form id="form-edit-cheque" onsubmit="event.preventDefault(); ChequesModule.saveDrawerEdit();">
+        <input type="hidden" id="edit-chq-id">
+        
+        <!-- 1. Cheque Due Date * -->
+        <div class="chq-form-group">
+          <label class="chq-form-label">Cheque Due Date *</label>
+          <input type="date" id="edit-chq-due-date" class="chq-form-control" required>
+        </div>
+
+        <!-- 2. Amount * -->
+        <div class="chq-form-group">
+          <label class="chq-form-label">Amount *</label>
+          <input type="number" id="edit-chq-amount" class="chq-form-control font-monospace fw-bold" step="any" min="1" required>
+        </div>
+
+        <!-- 3. Bank * -->
+        <div class="chq-form-group">
+          <label class="chq-form-label">Bank *</label>
+          <select id="edit-chq-bank" class="form-select form-select-sm chq-form-control" required>
+            <option value="Bandhan Bank">Bandhan Bank</option>
+            <option value="Ujjivan Small Finanace Bank">Ujjivan Small Finanace Bank</option>
+            <option value="ICICI">ICICI</option>
+            <option value="HDFC">HDFC</option>
+            <option value="SBI">SBI</option>
+            <option value="Axis">Axis</option>
+            <option value="IDBI">IDBI</option>
+            <option value="UOB">UOB</option>
+            <option value="PNB">PNB</option>
+            <option value="AU">AU</option>
+            <option value="BOB">BOB</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <!-- 4. Cheque No. * -->
+        <div class="chq-form-group">
+          <label class="chq-form-label">Cheque No. *</label>
+          <input type="text" id="edit-chq-number" class="chq-form-control font-monospace fw-bold" required>
+        </div>
+
+        <!-- 5. Pay to * -->
+        <div class="chq-form-group">
+          <label class="chq-form-label">Pay to *</label>
+          <select id="edit-chq-payto" class="form-select form-select-sm chq-form-control" required>
+            <option value="TTC">TTC</option>
+            <option value="MTC">MTC</option>
+            <option value="SMTC">SMTC</option>
+            <option value="Laxmi Prakash Jat">Laxmi Prakash Jat</option>
+            <option value="Rameshwar Prasad">Rameshwar Prasad</option>
+            <option value="Truck Owner">Truck Owner</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <!-- 6. Clearing Date -->
+        <div class="chq-form-group">
+          <label class="chq-form-label">Clearing Date</label>
+          <input type="date" id="edit-chq-clearing-date" class="chq-form-control">
+        </div>
+
+        <!-- 7. Status * (Due, In Bank, Bounced, Cleared) -->
+        <div class="chq-form-group">
+          <label class="chq-form-label">Status *</label>
+          <select id="edit-chq-status" class="form-select form-select-sm chq-form-control" required>
+            <option value="Due">Due</option>
+            <option value="In Bank">In Bank</option>
+            <option value="Bounced">Bounced</option>
+            <option value="Cleared">Cleared</option>
+          </select>
+        </div>
+      </form>
     </div>
   </div>
 
@@ -907,16 +1114,16 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
   <!-- Core App Scripts with Cache Busting -->
-  <script src="../js/config.js?v=20261020_v1"></script>
+  <script src="../js/config.js?v=20261020_v2"></script>
   <!-- Universal Master Data Assets (Guaranteed 100% Offline & Fresh Git Deploy Resilience) -->
-  <script src="../js/sample-parties-data.js?v=20261020_v1"></script>
-  <script src="../js/sample-truck-owners-data.js?v=20261020_v1"></script>
-  <script src="../js/sample-drivers-data.js?v=20261020_v1"></script>
-  <script src="../js/sample-trips-data.js?v=20261020_v1"></script>
-  <script src="../js/sample-debts-data.js?v=20261020_v1"></script>
-  <script src="../js/sample-cheques-data.js?v=20261020_v1"></script>
-  <script src="../js/db-service.js?v=20261020_v1"></script>
-  <script src="../js/app.js?v=20261020_v1"></script>
-  <script src="../js/modules/cheques.js?v=20261020_v1"></script>
+  <script src="../js/sample-parties-data.js?v=20261020_v2"></script>
+  <script src="../js/sample-truck-owners-data.js?v=20261020_v2"></script>
+  <script src="../js/sample-drivers-data.js?v=20261020_v2"></script>
+  <script src="../js/sample-trips-data.js?v=20261020_v2"></script>
+  <script src="../js/sample-debts-data.js?v=20261020_v2"></script>
+  <script src="../js/sample-cheques-data.js?v=20261020_v2"></script>
+  <script src="../js/db-service.js?v=20261020_v2"></script>
+  <script src="../js/app.js?v=20261020_v2"></script>
+  <script src="../js/modules/cheques.js?v=20261020_v2"></script>
 </body>
 </html>

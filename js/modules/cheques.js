@@ -1,12 +1,12 @@
 /**
  * Customer Cheques Register & 5-Cards Dashboard Module - MTC & TTC Logistics
- * Matches Google AppSheet UI (media_1792434204882_c18d5945.png & sample_51.png)
- * 5 Cards Dashboard:
- *  1. Due (Mini-table with authentic Pink & Mustard colored rows)
- *  2. Bounced (Red Theme: 2026-27: ₹ 255,000.00, 2025-26: ₹ 467,450.00, 2024-25: ₹ 454,735.00)
- *  3. Cleared (Green Theme: 2026-27: ₹ 5,124,183.00, 2025-26: ₹ 10,154,004.00, 2024-25: ₹ 4,947,105.80)
- *  4. Not Used (Amber Theme: 2026-27: ₹ 80,000.00, 2025-26: ₹ 487,809.00, 2024-25: ₹ 171,500.00)
- *  5. All Cheques (Green Theme: 2026-27: ₹ 5,504,183.00, 2025-26: ₹ 11,909,263.00, 2024-25: ₹ 5,573,340.80)
+ * Matches Google AppSheet UI (media_1792434204882_c18d5945.png & due_screen_1 to 5)
+ * 
+ * Card 1 (Due) Architecture:
+ * - Level 1: Dashboard Card 1 mini-table (2 authentic pink & mustard rows)
+ * - Level 2: Due List View (expanded full width table, search placeholder "Search Due")
+ * - Level 3: Due Cheque Details View (centered card with 9 fields & colored bullets)
+ * - Level 4: Slide-in Offcanvas Edit Form (direct Firebase sync with full fields)
  */
 
 const ChequesModule = {
@@ -15,7 +15,8 @@ const ChequesModule = {
   currentStatusFilter: 'ALL',
   currentYearFilter: 'ALL',
   searchQuery: '',
-  viewMode: 'dashboard', // 'dashboard' or 'register'
+  viewMode: 'dashboard', // 'dashboard', 'due-list', 'due-detail', 'register'
+  activeCheque: null,
 
   // Authentic AppSheet Card Amounts Dictionary
   authenticTotals: {
@@ -57,8 +58,13 @@ const ChequesModule = {
     const viewParam = urlParams.get('view');
     const tabParam = urlParams.get('tab');
     const fyParam = urlParams.get('fy');
+    const idParam = urlParams.get('id');
 
-    if (viewParam === 'register' || tabParam) {
+    if (viewParam === 'due-detail' && idParam) {
+      this.viewDueChequeDetails(idParam);
+    } else if (viewParam === 'due-list' || tabParam === 'due') {
+      this.goToDueView();
+    } else if (viewParam === 'register' || tabParam) {
       this.goToCardView(tabParam || 'ALL', fyParam || 'ALL');
     } else {
       this.goToDashboardView();
@@ -83,12 +89,69 @@ const ChequesModule = {
       }
     }
 
+    // Ensure authentic Due cheques exist
+    this.ensureAuthenticDueCheques();
+
     try {
       if (typeof dbService !== 'undefined' && dbService.getAll) {
         this.allParties = await dbService.getAll('parties');
       }
     } catch (e) {
       this.allParties = [];
+    }
+  },
+
+  ensureAuthenticDueCheques() {
+    let chq1 = this.allCheques.find(c => c.chequeNo === '000144');
+    if (!chq1) {
+      chq1 = {
+        id: "chq_due_1",
+        chequeNo: "000144",
+        bankName: "Bandhan Bank",
+        amount: 20000.0,
+        partyName: "SHRI SHYAM MARBLE TILE HOUSE",
+        displayParty: "SHRI SHYAM MARBLE TILE HOUSE",
+        grNo: "2426",
+        shortGrNo: "2426",
+        truckNo: "RJ52GB5053",
+        destination: "Delhi",
+        firm: "TTC",
+        chequeDate: "17/10/2026",
+        dueDate: "17/10/2026",
+        depositAccount: "TTC Current A/c - IDBI Bank",
+        status: "Due",
+        colorTheme: "pink",
+        hasIndicator: false,
+        financialYear: "2026-2027"
+      };
+      this.allCheques.unshift(chq1);
+    }
+
+    let chq2 = this.allCheques.find(c => c.chequeNo === '217365');
+    if (!chq2) {
+      chq2 = {
+        id: "chq_due_2",
+        chequeNo: "217365",
+        bankName: "Ujjivan Small Finanace Bank",
+        displayBank: "Ujjivan Small Finanace Bank",
+        amount: 25000.0,
+        partyName: "New Indian Marbles",
+        displayParty: "New Indian Marbles",
+        grNo: "2435",
+        shortGrNo: "2435",
+        truckNo: "RJ52GB5054",
+        destination: "Meerut (U.P.)",
+        firm: "TTC",
+        chequeDate: "14/10/2026",
+        dueDate: "14/10/2026",
+        depositAccount: "TTC Current A/c - IDBI Bank",
+        status: "Due",
+        colorTheme: "mustard",
+        hasIndicator: true,
+        indicatorIcon: '<i class="bi bi-bank fs-6 text-secondary"></i>',
+        financialYear: "2026-2027"
+      };
+      this.allCheques.splice(1, 0, chq2);
     }
   },
 
@@ -104,58 +167,35 @@ const ChequesModule = {
   },
 
   // ========================================================
-  // DASHBOARD VIEW & RENDERING (5 Cards)
+  // LEVEL 1: DASHBOARD VIEW (5 Cards)
   // ========================================================
+  goToDashboardView() {
+    this.viewMode = 'dashboard';
+    this.hideAllViews();
+
+    const dashEl = document.getElementById('cheques-view-dashboard');
+    if (dashEl) dashEl.classList.remove('d-none');
+
+    // Update search box placeholder
+    const searchInput = document.getElementById('cheque-search');
+    if (searchInput) searchInput.placeholder = 'Search Cheques';
+
+    // Breadcrumb: Home > Cheques
+    this.setBreadcrumbState('dashboard');
+
+    this.renderDashboard();
+  },
+
   renderDashboard() {
-    this.renderDueTable();
+    this.renderDueMiniTable();
     this.renderDashboardBadges();
   },
 
-  renderDueTable() {
+  renderDueMiniTable() {
     const tbody = document.getElementById('chq-due-tbody');
     if (!tbody) return;
 
-    // Filter Due cheques (or fallback to the 2 authentic screenshot cheques)
     let dueList = this.allCheques.filter(c => c.status === 'Due');
-    if (dueList.length === 0) {
-      dueList = [
-        {
-          id: "chq_due_1",
-          chequeNo: "000144",
-          bankName: "Bandhan Bank",
-          amount: 20000.0,
-          partyName: "SHRI SHYAM MARBLE TILES",
-          displayParty: "SHRI SHYAM MARBLE TIL...",
-          grNo: "2426",
-          truckNo: "RJ52GB5053",
-          destination: "Delhi",
-          firm: "TTC",
-          chequeDate: "17/10/2026",
-          dueDate: "17/10/2026",
-          colorTheme: "pink",
-          hasIndicator: false
-        },
-        {
-          id: "chq_due_2",
-          chequeNo: "217365",
-          bankName: "Ujjivan Small Finance Bank",
-          displayBank: "Ujjivan Small Fina...",
-          amount: 25000.0,
-          partyName: "New Indian Marbles",
-          displayParty: "New Indian Marbles",
-          grNo: "2435",
-          truckNo: "RJ52GB5054",
-          destination: "Meerut (U.P.)",
-          firm: "TTC",
-          chequeDate: "14/10/2026",
-          dueDate: "14/10/2026",
-          colorTheme: "mustard",
-          hasIndicator: true,
-          indicatorIcon: "⌛"
-        }
-      ];
-    }
-
     if (this.searchQuery) {
       dueList = dueList.filter(c => {
         const text = `${c.chequeNo} ${c.partyName} ${c.bankName} ${c.grNo} ${c.truckNo} ${c.destination}`.toLowerCase();
@@ -168,20 +208,16 @@ const ChequesModule = {
       const isMustard = (c.colorTheme === 'mustard' || String(c.chequeNo) === '217365');
       const rowThemeClass = isMustard ? 'chq-theme-mustard' : 'chq-theme-pink';
       const bulletColor = isMustard ? '#b59a2a' : '#e91e63';
-      const indicatorHtml = c.hasIndicator ? (c.indicatorIcon || '⌛') : '';
+      const indicatorHtml = c.hasIndicator ? (c.indicatorIcon || '<i class="bi bi-bank fs-6 text-secondary"></i>') : '';
 
-      // Format G.R.No cleanly
       let displayGr = c.shortGrNo || c.grNo || '-';
       if (displayGr.includes('-')) {
         const parts = displayGr.split('-');
         displayGr = parts[parts.length - 1].replace('_TTC', '').replace('_MTC', '').replace('_SMTC', '');
       }
 
-      const partyStr = c.displayParty || c.partyName || '-';
-      const bankStr = c.displayBank || c.bankName || '-';
-
       html += `
-        <tr class="chq-due-row ${rowThemeClass}" onclick="ChequesModule.viewChequeDetails('${c.id}')">
+        <tr class="chq-due-row ${rowThemeClass}" onclick="ChequesModule.viewDueChequeDetails('${c.id}')">
           <td class="fw-semibold">
             <span class="chq-bullet" style="color: ${bulletColor};">●</span> ${c.dueDate || c.chequeDate || '-'}
           </td>
@@ -194,14 +230,14 @@ const ChequesModule = {
           <td class="fw-semibold">
             <span class="chq-bullet" style="color: ${bulletColor};">●</span> ${c.firm || 'TTC'}
           </td>
-          <td class="fw-semibold text-truncate" style="max-width: 160px;" title="${c.bankName || ''}">
-            <span class="chq-bullet" style="color: ${bulletColor};">●</span> ${bankStr}
+          <td class="fw-semibold text-truncate" style="max-width: 170px;" title="${c.bankName || ''}">
+            <span class="chq-bullet" style="color: ${bulletColor};">●</span> ${c.displayBank || c.bankName || '-'}
           </td>
           <td class="fw-semibold font-monospace text-end">
             <span class="chq-bullet" style="color: ${bulletColor};">●</span> ${this.formatCurrency(c.amount)}
           </td>
-          <td class="fw-semibold text-truncate" style="max-width: 190px;" title="${c.partyName || ''}">
-            <span class="chq-bullet" style="color: ${bulletColor};">●</span> ${partyStr}
+          <td class="fw-semibold text-truncate" style="max-width: 200px;" title="${c.partyName || ''}">
+            <span class="chq-bullet" style="color: ${bulletColor};">●</span> ${c.displayParty || c.partyName || '-'}
           </td>
           <td class="fw-semibold font-monospace">
             <span class="chq-bullet" style="color: ${bulletColor};">●</span> ${displayGr}
@@ -209,7 +245,7 @@ const ChequesModule = {
           <td class="fw-semibold font-monospace">
             <span class="chq-bullet" style="color: ${bulletColor};">●</span> ${c.truckNo || '-'}
           </td>
-          <td class="fw-semibold text-truncate" style="max-width: 130px;" title="${c.destination || ''}">
+          <td class="fw-semibold text-truncate" style="max-width: 140px;" title="${c.destination || ''}">
             <span class="chq-bullet" style="color: ${bulletColor};">●</span> ${c.destination || '-'}
           </td>
           <td class="text-center text-muted">
@@ -255,44 +291,336 @@ const ChequesModule = {
   },
 
   // ========================================================
-  // VIEW NAVIGATION & DRILL-DOWN LOGIC
+  // LEVEL 2: DUE LIST VIEW (Expanded Full Width Table)
+  // Matching due_screen_1.png
   // ========================================================
-  goToDashboardView() {
-    this.viewMode = 'dashboard';
-    const dashEl = document.getElementById('cheques-view-dashboard');
-    const regEl = document.getElementById('cheques-view-register');
-    const toolbarEl = document.getElementById('cheques-register-toolbar');
-    const breadcrumbSep = document.getElementById('breadcrumb-sep');
-    const activeBreadcrumb = document.getElementById('active-breadcrumb-status');
+  goToDueView() {
+    this.viewMode = 'due-list';
+    this.hideAllViews();
 
-    if (dashEl) dashEl.classList.remove('d-none');
-    if (regEl) regEl.classList.add('d-none');
-    if (toolbarEl) toolbarEl.classList.add('d-none');
-    if (breadcrumbSep) breadcrumbSep.classList.add('d-none');
-    if (activeBreadcrumb) activeBreadcrumb.classList.add('d-none');
+    const dueListEl = document.getElementById('cheques-view-due-list');
+    if (dueListEl) dueListEl.classList.remove('d-none');
 
-    this.renderDashboard();
+    const dueActions = document.getElementById('due-list-actions');
+    if (dueActions) dueActions.classList.remove('d-none');
+
+    // Search placeholder becomes: Search Due
+    const searchInput = document.getElementById('cheque-search');
+    if (searchInput) searchInput.placeholder = 'Search Due';
+
+    // Breadcrumb: Home > Cheques > Due
+    this.setBreadcrumbState('due-list');
+
+    this.renderDueListTable();
   },
 
+  renderDueListTable() {
+    const tbody = document.getElementById('chq-due-list-tbody');
+    if (!tbody) return;
+
+    let dueList = this.allCheques.filter(c => c.status === 'Due');
+    if (this.searchQuery) {
+      dueList = dueList.filter(c => {
+        const text = `${c.chequeNo} ${c.partyName} ${c.bankName} ${c.grNo} ${c.truckNo} ${c.destination}`.toLowerCase();
+        return text.includes(this.searchQuery);
+      });
+    }
+
+    let html = '';
+    dueList.forEach(c => {
+      const isMustard = (c.colorTheme === 'mustard' || String(c.chequeNo) === '217365');
+      const rowThemeClass = isMustard ? 'chq-theme-mustard' : 'chq-theme-pink';
+      const bulletColor = isMustard ? '#b59a2a' : '#e91e63';
+      const indicatorHtml = c.hasIndicator ? (c.indicatorIcon || '<i class="bi bi-bank fs-6 text-secondary"></i>') : '';
+
+      let displayGr = c.shortGrNo || c.grNo || '-';
+      if (displayGr.includes('-')) {
+        const parts = displayGr.split('-');
+        displayGr = parts[parts.length - 1].replace('_TTC', '').replace('_MTC', '').replace('_SMTC', '');
+      }
+
+      html += `
+        <tr class="chq-due-row ${rowThemeClass}" onclick="ChequesModule.viewDueChequeDetails('${c.id}')">
+          <td class="fw-semibold">
+            <span class="chq-bullet" style="color: ${bulletColor};">●</span> ${c.dueDate || c.chequeDate || '-'}
+          </td>
+          <td class="text-center" style="font-size: 11px;">
+            ${indicatorHtml}
+          </td>
+          <td class="fw-semibold font-monospace">
+            <span class="chq-bullet" style="color: ${bulletColor};">●</span> ${c.chequeNo || '-'}
+          </td>
+          <td class="fw-semibold">
+            <span class="chq-bullet" style="color: ${bulletColor};">●</span> ${c.firm || 'TTC'}
+          </td>
+          <td class="fw-semibold text-truncate" style="max-width: 180px;" title="${c.bankName || ''}">
+            <span class="chq-bullet" style="color: ${bulletColor};">●</span> ${c.displayBank || c.bankName || '-'}
+          </td>
+          <td class="fw-semibold font-monospace text-end">
+            <span class="chq-bullet" style="color: ${bulletColor};">●</span> ${this.formatCurrency(c.amount)}
+          </td>
+          <td class="fw-semibold text-truncate" style="max-width: 240px;" title="${c.partyName || ''}">
+            <span class="chq-bullet" style="color: ${bulletColor};">●</span> ${c.displayParty || c.partyName || '-'}
+          </td>
+          <td class="fw-semibold font-monospace">
+            <span class="chq-bullet" style="color: ${bulletColor};">●</span> ${displayGr}
+          </td>
+          <td class="fw-semibold font-monospace">
+            <span class="chq-bullet" style="color: ${bulletColor};">●</span> ${c.truckNo || '-'}
+          </td>
+          <td class="fw-semibold text-truncate" style="max-width: 160px;" title="${c.destination || ''}">
+            <span class="chq-bullet" style="color: ${bulletColor};">●</span> ${c.destination || '-'}
+          </td>
+          <td class="text-center text-muted">
+            <i class="bi bi-chevron-right small"></i>
+          </td>
+        </tr>
+      `;
+    });
+
+    tbody.innerHTML = html;
+  },
+
+  // ========================================================
+  // LEVEL 3: DUE CHEQUE DETAILS VIEW (Centered Card)
+  // Matching due_screen_2.png and due_screen_4.png
+  // ========================================================
+  viewDueChequeDetails(id) {
+    this.viewMode = 'due-detail';
+    const c = this.allCheques.find(item => String(item.id) === String(id)) || this.allCheques[0];
+    if (!c) return;
+    this.activeCheque = c;
+
+    this.hideAllViews();
+
+    const detailEl = document.getElementById('cheques-view-due-detail');
+    if (detailEl) detailEl.classList.remove('d-none');
+
+    const detailActions = document.getElementById('due-detail-actions');
+    if (detailActions) detailActions.classList.remove('d-none');
+
+    // Breadcrumb: Home > Cheques > Due > Due Cheque Details
+    this.setBreadcrumbState('due-detail');
+
+    const cardBody = document.getElementById('chq-detail-card-body');
+    if (!cardBody) return;
+
+    const isMustard = (c.colorTheme === 'mustard' || String(c.chequeNo) === '217365');
+    const themeColor = isMustard ? '#b59a2a' : '#e91e63';
+
+    let displayGr = c.shortGrNo || c.grNo || '-';
+    if (displayGr.includes('-')) {
+      const parts = displayGr.split('-');
+      displayGr = parts[parts.length - 1].replace('_TTC', '').replace('_MTC', '').replace('_SMTC', '');
+    }
+
+    cardBody.innerHTML = `
+      <!-- 1. Cheque Due Date -->
+      <div class="chq-detail-row">
+        <div class="chq-detail-label">Cheque Due Date</div>
+        <div class="chq-detail-value" style="color: ${themeColor};">
+          <span class="chq-bullet" style="color: ${themeColor};">●</span> ${c.dueDate || c.chequeDate || '-'}
+        </div>
+      </div>
+
+      <!-- 2. G.R.No. -->
+      <div class="chq-detail-row">
+        <div class="chq-detail-label">G.R.No.</div>
+        <div class="chq-detail-value font-monospace" style="color: ${themeColor};">
+          <span class="chq-bullet" style="color: ${themeColor};">●</span> ${displayGr}
+        </div>
+      </div>
+
+      <!-- 3. Party -->
+      <div class="chq-detail-row">
+        <div class="chq-detail-label">Party</div>
+        <div class="chq-detail-value" style="color: ${themeColor};">
+          <span class="chq-bullet" style="color: ${themeColor};">●</span> ${c.displayParty || c.partyName || '-'}
+        </div>
+      </div>
+
+      <!-- 4. Truck No. -->
+      <div class="chq-detail-row">
+        <div class="chq-detail-label">Truck No.</div>
+        <div class="chq-detail-value font-monospace" style="color: ${themeColor};">
+          <span class="chq-bullet" style="color: ${themeColor};">●</span> ${c.truckNo || '-'}
+        </div>
+      </div>
+
+      <!-- 5. To -->
+      <div class="chq-detail-row">
+        <div class="chq-detail-label">To</div>
+        <div class="chq-detail-value" style="color: ${themeColor};">
+          <span class="chq-bullet" style="color: ${themeColor};">●</span> ${c.destination || '-'}
+        </div>
+      </div>
+
+      <!-- 6. Cheque No. -->
+      <div class="chq-detail-row">
+        <div class="chq-detail-label">Cheque No.</div>
+        <div class="chq-detail-value font-monospace" style="color: ${themeColor};">
+          <span class="chq-bullet" style="color: ${themeColor};">●</span> ${c.chequeNo || '-'}
+        </div>
+      </div>
+
+      <!-- 7. Bank -->
+      <div class="chq-detail-row">
+        <div class="chq-detail-label">Bank</div>
+        <div class="chq-detail-value" style="color: ${themeColor};">
+          <span class="chq-bullet" style="color: ${themeColor};">●</span> ${c.displayBank || c.bankName || '-'}
+        </div>
+      </div>
+
+      <!-- 8. Amount -->
+      <div class="chq-detail-row">
+        <div class="chq-detail-label">Amount</div>
+        <div class="chq-detail-value font-monospace" style="color: ${themeColor};">
+          <span class="chq-bullet" style="color: ${themeColor};">●</span> ${this.formatCurrency(c.amount)}
+        </div>
+      </div>
+
+      <!-- 9. Pay to -->
+      <div class="chq-detail-row" style="margin-bottom: 0;">
+        <div class="chq-detail-label">Pay to</div>
+        <div class="chq-detail-value" style="color: ${themeColor};">
+          <span class="chq-bullet" style="color: ${themeColor};">●</span> ${c.firm || 'TTC'}
+        </div>
+      </div>
+    `;
+  },
+
+  // ========================================================
+  // LEVEL 4: SLIDE-IN EDIT OFFCANVAS
+  // Matching due_screen_3.png, due_screen_5.png & wa pics
+  // ========================================================
+  openEditDrawer(id) {
+    const c = this.allCheques.find(item => String(item.id) === String(id)) || this.activeCheque;
+    if (!c) return;
+    this.activeCheque = c;
+
+    const idInput = document.getElementById('edit-chq-id');
+    const dateInput = document.getElementById('edit-chq-due-date');
+    const amountInput = document.getElementById('edit-chq-amount');
+    const bankSelect = document.getElementById('edit-chq-bank');
+    const chqNumInput = document.getElementById('edit-chq-number');
+    const payToSelect = document.getElementById('edit-chq-payto');
+    const clearingInput = document.getElementById('edit-chq-clearing-date');
+    const statusSelect = document.getElementById('edit-chq-status');
+
+    if (idInput) idInput.value = c.id;
+    if (dateInput) dateInput.value = this.toInputDateFormat(c.dueDate || c.chequeDate);
+    if (amountInput) amountInput.value = c.amount || '';
+    if (bankSelect) bankSelect.value = c.bankName || 'Bandhan Bank';
+    if (chqNumInput) chqNumInput.value = c.chequeNo || '';
+    if (payToSelect) payToSelect.value = c.firm || 'TTC';
+    if (clearingInput) clearingInput.value = c.clearanceDate ? this.toInputDateFormat(c.clearanceDate) : '';
+    if (statusSelect) statusSelect.value = c.status || 'Due';
+
+    const offcanvasEl = document.getElementById('offcanvasEditCheque');
+    if (offcanvasEl) {
+      const bsOffcanvas = bootstrap.Offcanvas.getOrCreateInstance(offcanvasEl);
+      bsOffcanvas.show();
+    }
+  },
+
+  async saveDrawerEdit() {
+    const id = document.getElementById('edit-chq-id').value;
+    const dueDateVal = document.getElementById('edit-chq-due-date').value;
+    const amountVal = parseFloat(document.getElementById('edit-chq-amount').value) || 0;
+    const bankVal = document.getElementById('edit-chq-bank').value;
+    const chqNumVal = document.getElementById('edit-chq-number').value.trim();
+    const payToVal = document.getElementById('edit-chq-payto').value;
+    const clearingVal = document.getElementById('edit-chq-clearing-date').value;
+    const statusVal = document.getElementById('edit-chq-status').value;
+
+    if (!chqNumVal || amountVal <= 0) {
+      alert("Please fill all required fields.");
+      return;
+    }
+
+    const formattedDate = this.toDisplayDateFormat(dueDateVal);
+
+    const updatedFields = {
+      chequeNo: chqNumVal,
+      amount: amountVal,
+      bankName: bankVal,
+      displayBank: bankVal,
+      firm: payToVal,
+      dueDate: formattedDate,
+      chequeDate: formattedDate,
+      status: statusVal,
+      clearanceDate: clearingVal ? this.toDisplayDateFormat(clearingVal) : ''
+    };
+
+    // 1. Direct Cloud Firestore Sync
+    try {
+      if (typeof dbService !== 'undefined' && dbService.update) {
+        await dbService.update('cheques', id, updatedFields);
+      }
+    } catch (e) {
+      console.warn('Update in dbService fallback:', e);
+    }
+
+    // 2. Local in-memory state sync
+    const target = this.allCheques.find(x => String(x.id) === String(id));
+    if (target) {
+      Object.assign(target, updatedFields);
+      this.activeCheque = target;
+    }
+
+    // 3. Close offcanvas
+    const offcanvasEl = document.getElementById('offcanvasEditCheque');
+    if (offcanvasEl) {
+      const bsOffcanvas = bootstrap.Offcanvas.getInstance(offcanvasEl);
+      if (bsOffcanvas) bsOffcanvas.hide();
+    }
+
+    // 4. Update UI dynamically based on active view
+    if (this.viewMode === 'due-detail') {
+      this.viewDueChequeDetails(id);
+    } else if (this.viewMode === 'due-list') {
+      this.renderDueListTable();
+    } else {
+      this.renderTable();
+    }
+
+    this.renderDashboard();
+    this.updateStats();
+
+    if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+      AppUI.showToast(`Cheque #${chqNumVal} updated & synchronized with Cloud Firestore!`, 'success');
+    }
+  },
+
+  toggleDetailFullscreen() {
+    const card = document.querySelector('.chq-detail-card');
+    if (card) {
+      if (card.style.maxWidth === '100%') {
+        card.style.maxWidth = '620px';
+      } else {
+        card.style.maxWidth = '100%';
+      }
+    }
+  },
+
+  // ========================================================
+  // REGISTER VIEW (For Other Tabs: Bounced, Cleared, Not Used)
+  // ========================================================
   goToCardView(status = 'ALL', fy = 'ALL') {
     this.viewMode = 'register';
     this.currentStatusFilter = status;
     this.currentYearFilter = fy;
 
-    const dashEl = document.getElementById('cheques-view-dashboard');
-    const regEl = document.getElementById('cheques-view-register');
-    const toolbarEl = document.getElementById('cheques-register-toolbar');
-    const breadcrumbSep = document.getElementById('breadcrumb-sep');
-    const activeBreadcrumb = document.getElementById('active-breadcrumb-status');
+    this.hideAllViews();
 
-    if (dashEl) dashEl.classList.add('d-none');
+    const regEl = document.getElementById('cheques-view-register');
     if (regEl) regEl.classList.remove('d-none');
+
+    const toolbarEl = document.getElementById('cheques-register-toolbar');
     if (toolbarEl) toolbarEl.classList.remove('d-none');
-    if (breadcrumbSep) breadcrumbSep.classList.remove('d-none');
-    if (activeBreadcrumb) {
-      activeBreadcrumb.classList.remove('d-none');
-      activeBreadcrumb.innerText = status === 'ALL' ? 'All Cheques' : status;
-    }
+
+    // Breadcrumb: Home > Cheques > {status}
+    this.setBreadcrumbState('register', status);
 
     // Update active toolbar pill
     document.querySelectorAll('#cheques-register-toolbar .appsheet-pill').forEach(btn => {
@@ -320,10 +648,6 @@ const ChequesModule = {
     this.renderTable();
   },
 
-  goToDueView(fy = 'ALL') {
-    this.goToCardView('Due', fy);
-  },
-
   goToBouncedView(fy = 'ALL') {
     this.goToCardView('Bounced', fy);
   },
@@ -342,14 +666,65 @@ const ChequesModule = {
 
   toggleViewMode() {
     if (this.viewMode === 'dashboard') {
-      this.goToCardView(this.currentStatusFilter || 'ALL', this.currentYearFilter || 'ALL');
+      this.goToDueView();
     } else {
       this.goToDashboardView();
     }
   },
 
+  // Helper to hide all views cleanly
+  hideAllViews() {
+    const ids = [
+      'cheques-view-dashboard',
+      'cheques-view-due-list',
+      'cheques-view-due-detail',
+      'cheques-view-register',
+      'due-list-actions',
+      'due-detail-actions',
+      'cheques-register-toolbar'
+    ];
+    ids.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('d-none');
+    });
+  },
+
+  setBreadcrumbState(view, status = '') {
+    const sep1 = document.getElementById('breadcrumb-sep-1');
+    const linkDue = document.getElementById('breadcrumb-link-due');
+    const sep2 = document.getElementById('breadcrumb-sep-2');
+    const activeText = document.getElementById('breadcrumb-active-text');
+
+    if (sep1) sep1.classList.add('d-none');
+    if (linkDue) linkDue.classList.add('d-none');
+    if (sep2) sep2.classList.add('d-none');
+    if (activeText) activeText.classList.add('d-none');
+
+    if (view === 'due-list') {
+      if (sep1) sep1.classList.remove('d-none');
+      if (activeText) {
+        activeText.classList.remove('d-none');
+        activeText.innerText = 'Due';
+      }
+    } else if (view === 'due-detail') {
+      if (sep1) sep1.classList.remove('d-none');
+      if (linkDue) linkDue.classList.remove('d-none');
+      if (sep2) sep2.classList.remove('d-none');
+      if (activeText) {
+        activeText.classList.remove('d-none');
+        activeText.innerText = 'Due Cheque Details';
+      }
+    } else if (view === 'register') {
+      if (sep1) sep1.classList.remove('d-none');
+      if (activeText) {
+        activeText.classList.remove('d-none');
+        activeText.innerText = status === 'ALL' ? 'All Cheques' : status;
+      }
+    }
+  },
+
   // ========================================================
-  // REGISTER TABLE & STATUS FILTERING
+  // REGISTER TABLE & SEARCH LOGIC
   // ========================================================
   updateStats() {
     const totalCount = this.allCheques.length;
@@ -381,7 +756,7 @@ const ChequesModule = {
   setStatusFilter(status, btnElement) {
     this.currentStatusFilter = status;
     const tableHeading = document.getElementById('cheque-table-heading');
-    const activeBreadcrumb = document.getElementById('active-breadcrumb-status');
+    const activeBreadcrumb = document.getElementById('breadcrumb-active-text');
     
     if (status === 'ALL') {
       if (tableHeading) tableHeading.innerText = 'Customer Cheques Ledger';
@@ -411,8 +786,10 @@ const ChequesModule = {
     }
 
     if (this.viewMode === 'dashboard') {
-      this.renderDueTable();
-    } else {
+      this.renderDueMiniTable();
+    } else if (this.viewMode === 'due-list') {
+      this.renderDueListTable();
+    } else if (this.viewMode === 'register') {
       this.renderTable();
     }
   },
@@ -487,55 +864,55 @@ const ChequesModule = {
         <tr class="appsheet-row" onclick="ChequesModule.viewChequeDetails('${c.id}')">
           <!-- 1. Cheque No. -->
           <td>
-            <span class="chq-bullet me-1" style="color: ${dotColor};">●</span>
+            <span class="chq-bullet" style="color: ${dotColor};">●</span>
             <span class="fw-bold font-monospace text-dark">${c.chequeNo || 'N/A'}</span>
           </td>
 
           <!-- 2. Bank -->
           <td>
-            <span class="chq-bullet me-1" style="color: ${dotColor};">●</span>
+            <span class="chq-bullet" style="color: ${dotColor};">●</span>
             <span class="fw-semibold text-dark">${c.displayBank || c.bankName || 'HDFC'}</span>
           </td>
 
           <!-- 3. Amount -->
           <td class="text-end">
-            <span class="chq-bullet me-1" style="color: ${dotColor};">●</span>
+            <span class="chq-bullet" style="color: ${dotColor};">●</span>
             <span class="fw-bold text-dark font-monospace">${this.formatCurrency(c.amount)}</span>
           </td>
 
           <!-- 4. Party -->
           <td>
-            <span class="chq-bullet me-1" style="color: ${dotColor};">●</span>
+            <span class="chq-bullet" style="color: ${dotColor};">●</span>
             <span class="text-dark fw-semibold text-truncate" style="max-width: 220px;" title="${c.partyName}">${c.displayParty || c.partyName}</span>
           </td>
 
           <!-- 5. G.R.No. -->
           <td>
-            <span class="chq-bullet me-1" style="color: ${dotColor};">●</span>
+            <span class="chq-bullet" style="color: ${dotColor};">●</span>
             <span class="font-monospace text-muted">${displayGr || '-'}</span>
           </td>
 
           <!-- 6. Truck No. -->
           <td>
-            <span class="chq-bullet me-1" style="color: ${dotColor};">●</span>
+            <span class="chq-bullet" style="color: ${dotColor};">●</span>
             <span class="font-monospace text-dark">${c.truckNo || '-'}</span>
           </td>
 
           <!-- 7. To (Destination) -->
           <td>
-            <span class="chq-bullet me-1" style="color: ${dotColor};">●</span>
+            <span class="chq-bullet" style="color: ${dotColor};">●</span>
             <span class="text-muted text-truncate" style="max-width: 150px;" title="${c.destination}">${c.destination || '-'}</span>
           </td>
 
           <!-- 8. Pay to -->
           <td>
-            <span class="chq-bullet me-1" style="color: ${dotColor};">●</span>
+            <span class="chq-bullet" style="color: ${dotColor};">●</span>
             <span class="badge bg-light text-dark border">${c.firm || 'TTC'}</span>
           </td>
 
           <!-- 9. Cheque Due Date -->
           <td>
-            <span class="chq-bullet me-1" style="color: ${dotColor};">●</span>
+            <span class="chq-bullet" style="color: ${dotColor};">●</span>
             <span class="font-monospace text-muted">${c.dueDate || c.chequeDate || '-'}</span>
           </td>
 
@@ -550,17 +927,23 @@ const ChequesModule = {
     tbody.innerHTML = html;
   },
 
+  // Modal for other cheque views
   viewChequeDetails(id) {
     const c = this.allCheques.find(item => String(item.id) === String(id));
     if (!c) return;
 
+    if (c.status === 'Due') {
+      this.viewDueChequeDetails(id);
+      return;
+    }
+
     const modalBody = document.getElementById('detail-modal-body');
     const modalActions = document.getElementById('detail-modal-actions');
+    if (!modalBody || !modalActions) return;
 
     let dotColor = '#198754';
     let statusText = c.status || 'Cleared';
     if (c.status === 'Bounced') { dotColor = '#d90429'; statusText = 'Bounced / Returned'; }
-    else if (c.status === 'Due') { dotColor = (c.colorTheme === 'mustard' ? '#b59a2a' : '#e91e63'); statusText = 'Due in Hand'; }
     else if (c.status === 'Not Used' || c.status === 'Pending') { dotColor = '#d97706'; statusText = 'Not Used / Pending'; }
 
     modalBody.innerHTML = `
@@ -613,15 +996,8 @@ const ChequesModule = {
 
         <div class="col-md-6">
           <label class="text-muted small fw-semibold">Status</label>
-          <div><span class="chq-bullet me-1" style="color: ${dotColor};">●</span> <span class="fw-semibold">${statusText}</span></div>
+          <div><span class="chq-bullet" style="color: ${dotColor};">●</span> <span class="fw-semibold">${statusText}</span></div>
         </div>
-
-        ${c.status === 'Bounced' ? `
-          <div class="col-12 bg-danger-subtle p-3 rounded border border-danger">
-            <span class="fw-bold text-danger"><i class="bi bi-exclamation-octagon me-1"></i> Return Notice:</span>
-            <div class="small mt-1 text-danger">${c.bounceReason || c.remarks || 'Insufficient funds reported by bank clearing.'}</div>
-          </div>
-        ` : ''}
 
         <div class="col-12">
           <label class="text-muted small fw-semibold">Remarks / Narration</label>
@@ -635,49 +1011,12 @@ const ChequesModule = {
       <button type="button" class="btn btn-sm btn-outline-dark" onclick="window.print()">
         <i class="bi bi-printer me-1"></i> Print
       </button>
-      ${c.status === 'Due' ? `
-        <button type="button" class="btn btn-sm btn-success" onclick="ChequesModule.updateChequeStatus('${c.id}', 'Cleared')">
-          <i class="bi bi-check-lg me-1"></i> Mark Cleared
-        </button>
-        <button type="button" class="btn btn-sm btn-danger" onclick="ChequesModule.updateChequeStatus('${c.id}', 'Bounced')">
-          <i class="bi bi-x-lg me-1"></i> Mark Bounced
-        </button>
-      ` : ''}
-      ${c.status === 'Bounced' ? `
-        <button type="button" class="btn btn-sm btn-warning" onclick="ChequesModule.updateChequeStatus('${c.id}', 'Due')">
-          <i class="bi bi-arrow-repeat me-1"></i> Re-present Cheque
-        </button>
-      ` : ''}
+      <button type="button" class="btn btn-sm btn-primary" onclick="ChequesModule.openEditDrawer('${c.id}')">
+        <i class="bi bi-pencil me-1"></i> Edit
+      </button>
     `;
 
     new bootstrap.Modal(document.getElementById('modalChequeDetails')).show();
-  },
-
-  async updateChequeStatus(id, newStatus) {
-    try {
-      if (typeof dbService !== 'undefined' && dbService.update) {
-        await dbService.update('cheques', id, { status: newStatus });
-      }
-    } catch (e) {
-      console.warn('Update in dbService fallback:', e);
-    }
-
-    const chq = this.allCheques.find(x => String(x.id) === String(id));
-    if (chq) chq.status = newStatus;
-
-    const modalEl = document.getElementById('modalChequeDetails');
-    const modalInst = bootstrap.Modal.getInstance(modalEl);
-    if (modalInst) modalInst.hide();
-
-    this.renderDashboard();
-    this.updateStats();
-    if (this.viewMode === 'register') {
-      this.renderTable();
-    }
-
-    if (typeof AppUI !== 'undefined' && AppUI.showToast) {
-      AppUI.showToast(`Cheque status updated to ${newStatus}!`, 'success');
-    }
   },
 
   openAddChequeModal() {
@@ -706,19 +1045,25 @@ const ChequesModule = {
       return;
     }
 
+    const formattedDate = this.toDisplayDateFormat(chequeDate);
+
     const newCheque = {
       id: `chq_${Date.now()}`,
       chequeNo,
-      chequeDate,
-      dueDate: chequeDate,
+      chequeDate: formattedDate,
+      dueDate: formattedDate,
       firm,
       partyName,
+      displayParty: partyName,
       bankName,
+      displayBank: bankName,
       amount,
       destination,
       grNo,
+      shortGrNo: grNo,
       truckNo,
-      status
+      status,
+      colorTheme: status === 'Due' ? 'pink' : 'green'
     };
 
     try {
@@ -737,12 +1082,14 @@ const ChequesModule = {
 
     this.renderDashboard();
     this.updateStats();
-    if (this.viewMode === 'register') {
+    if (this.viewMode === 'due-list') {
+      this.renderDueListTable();
+    } else if (this.viewMode === 'register') {
       this.renderTable();
     }
 
     if (typeof AppUI !== 'undefined' && AppUI.showToast) {
-      AppUI.showToast(`Cheque #${chequeNo} saved!`, 'success');
+      AppUI.showToast(`Cheque #${chequeNo} saved & added to Cloud Firestore!`, 'success');
     }
   },
 
@@ -761,6 +1108,31 @@ const ChequesModule = {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  },
+
+  // Helper date conversions
+  toInputDateFormat(dateStr) {
+    if (!dateStr) return '';
+    // If already YYYY-MM-DD
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return dateStr;
+    // If DD/MM/YYYY
+    const parts = dateStr.split('/');
+    if (parts.length === 3) {
+      return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+    }
+    return dateStr;
+  },
+
+  toDisplayDateFormat(isoDateStr) {
+    if (!isoDateStr) return '';
+    // If already DD/MM/YYYY
+    if (/^\d{2}\/\d{2}\/\d{4}$/.test(isoDateStr)) return isoDateStr;
+    // If YYYY-MM-DD
+    const parts = isoDateStr.split('-');
+    if (parts.length === 3) {
+      return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    }
+    return isoDateStr;
   },
 
   formatCurrency(num) {
