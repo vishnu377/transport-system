@@ -239,6 +239,9 @@ assert(htmlContent.includes('debt-loading-row'), 'Must define debt-loading-row')
 assert(chequesJs.includes('toggleDebtsSidebar()'), 'ChequesModule must define toggleDebtsSidebar');
 assert(chequesJs.includes('filterDebtsByYear('), 'ChequesModule must define filterDebtsByYear');
 assert(chequesJs.includes('renderBouncedOpenDebts()'), 'ChequesModule must define renderBouncedOpenDebts');
+assert(htmlContent.includes('₹ 304,100.00'), 'Open Debts FY 2026-2027 must display ₹ 304,100.00');
+assert(htmlContent.includes('₹ 364,500.00'), 'Open Debts FY 2025-2026 must display ₹ 364,500.00');
+assert(htmlContent.includes('₹ 668,600.00'), 'Open Debts FY All must display ₹ 668,600.00');
 
 console.log('✔ Card 1 Combobox: Add Records for (Cheque, Party Payment, Truck Owner Payment, Other B) verified.');
 console.log('✔ Card 1 Values Color: Full text colored #6200ea (matching AppSheet screenshot) verified.');

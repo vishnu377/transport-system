@@ -166,6 +166,12 @@ const ChequesModule = {
       '2026-2027': 5504183.00,
       '2025-2026': 11909263.00,
       '2024-2025': 5573340.80
+    },
+    debts: {
+      'ALL': 668600.00,
+      '2026-2027': 304100.00,
+      '2025-2026': 364500.00,
+      '2024-2025': 0.00
     }
   },
 
@@ -1461,13 +1467,13 @@ const ChequesModule = {
 
     const setBadge = (id, amt) => {
       const el = document.getElementById(id);
-      if (el) el.innerText = `₹ ${Number(amt).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      if (el) el.innerText = `₹ ${Number(amt).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     };
 
-    setBadge('debts-rail-badge-ALL', sumAll || 368600.00);
-    setBadge('debts-rail-badge-2026', sum2026 || 304100.00);
-    setBadge('debts-rail-badge-2025', sum2025 || 64500.00);
-    setBadge('debts-rail-badge-2024', sum2024 || 0.00);
+    setBadge('debts-rail-badge-ALL', this.authenticTotals?.debts?.['ALL'] || 668600.00);
+    setBadge('debts-rail-badge-2026', this.authenticTotals?.debts?.['2026-2027'] || 304100.00);
+    setBadge('debts-rail-badge-2025', this.authenticTotals?.debts?.['2025-2026'] || 364500.00);
+    setBadge('debts-rail-badge-2024', this.authenticTotals?.debts?.['2024-2025'] || 0.00);
   },
 
   viewBouncedOpenDebts() {

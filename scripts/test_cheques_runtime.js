@@ -177,6 +177,11 @@ async function run() {
   assert(debtsTbody.innerHTML.includes('2546-TTC'), 'Must include 2546-TTC row');
   assert(debtsTbody.innerHTML.includes('debt-loading-row'), 'Must style loading debts in blue');
 
+  // Verify Open Debts FY Badges matching user request
+  assert.strictEqual(document.getElementById('debts-rail-badge-2026').innerText, '₹ 304,100.00');
+  assert.strictEqual(document.getElementById('debts-rail-badge-2025').innerText, '₹ 364,500.00');
+  assert.strictEqual(document.getElementById('debts-rail-badge-ALL').innerText, '₹ 668,600.00');
+
   // Verify FY filter
   mod.filterDebtsByYear('2026-2027');
   assert.strictEqual(mod.debtsYearFilter, '2026-2027');
