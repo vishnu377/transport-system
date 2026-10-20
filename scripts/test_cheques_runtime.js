@@ -212,36 +212,58 @@ async function run() {
   mod.toggleClearedSidebar();
   assert.strictEqual(mod.clearedSidebarVisible, true);
 
-  console.log('Step 15: Testing Cleared Open Trip Details (3 Columns)...');
+  console.log('Step 15: Testing Cleared Open Trip Details (3 Exact AppSheet Cards)...');
   mod.viewClearedTripDetails('000004');
   assert.strictEqual(mod.viewMode, 'cleared-trip-detail');
   assert(!document.getElementById('cheques-view-cleared-trip-detail').classList.contains('d-none'), 'Cleared Trip Details must be visible');
 
-  // Col 1: Trip Info
-  const col1 = document.getElementById('cleared-trip-details-content');
-  assert(col1.innerHTML.includes('2026-2027--2418_TTC'), 'Col 1 must include GR 2026-2027--2418_TTC');
-  assert(col1.innerHTML.includes('RJ01GC4865'), 'Col 1 must include truck RJ01GC4865');
-  assert(col1.innerHTML.includes('Mohali (Punjab)'), 'Col 1 must include destination Mohali (Punjab)');
-  assert(col1.innerHTML.includes('tel:9829043728'), 'Col 1 must include tel call link');
-  assert(col1.innerHTML.includes('GOYAL INDUSTRIES'), 'Col 1 must include consignee GOYAL INDUSTRIES');
+  // Card 1: Trip Info & Cheque 1 Table
+  const card1 = document.getElementById('cleared-card1-trip-fields');
+  assert(card1.innerHTML.includes('2026-2027-2418_TTC'), 'Card 1 must include GR 2026-2027-2418_TTC');
+  assert(card1.innerHTML.includes('RJ01GC4865'), 'Card 1 must include truck RJ01GC4865');
+  assert(card1.innerHTML.includes('Mohali (Punjab)'), 'Card 1 must include destination Mohali (Punjab)');
+  assert(card1.innerHTML.includes('tel:9829043728'), 'Card 1 must include tel call link');
+  assert(card1.innerHTML.includes('Nilesh Malani'), 'Card 1 must include reference Nilesh Malani');
+  assert(card1.innerHTML.includes('Birdi Chand Gurjar Shrinagar'), 'Card 1 must include driver Birdi Chand Gurjar');
 
-  // Col 2: Linked Cheques
+  // Card 1 Bottom: Cheque 1 Table
   const chqCountHeader = document.getElementById('cleared-trip-cheques-count-header');
-  assert(chqCountHeader.innerText.includes('Cheque 1'), 'Card 2 header must be Cheque 1');
+  assert(chqCountHeader.innerText.includes('Cheque 1'), 'Card 1 table header must be Cheque 1');
   const col2Tbody = document.getElementById('cleared-trip-cheques-tbody');
-  assert(col2Tbody.innerHTML.includes('000004'), 'Col 2 table must include cheque 000004');
-  assert(col2Tbody.innerHTML.includes('HDFC'), 'Col 2 table must include bank HDFC');
-  assert(col2Tbody.innerHTML.includes('cleared-green-bullet'), 'Col 2 table must include green bullet');
+  assert(col2Tbody.innerHTML.includes('000004'), 'Card 1 table must include cheque 000004');
+  assert(col2Tbody.innerHTML.includes('76,000.00'), 'Card 1 table must include amount 76,000.00');
+  assert(col2Tbody.innerHTML.includes('cleared-green-bullet'), 'Card 1 table must include green bullet');
 
-  // Col 3: Financial Summary & Status
+  // Card 2: Consignor Info & Totals & Status
+  const consignor = document.getElementById('cleared-consignor-fields');
+  assert(consignor.innerHTML.includes('SHRINATH MICRON'), 'Card 2 must include Consignor SHRINATH MICRON');
+  assert(consignor.innerHTML.includes('08AFSFS6249C1ZJ'), 'Card 2 must include GSTIN 08AFSFS6249C1ZJ');
+  assert(consignor.innerHTML.includes('SUNRISE APPARMENT'), 'Card 2 must include Consignor Address');
+
   const chqSummary = document.getElementById('cleared-summary-chq-amount');
-  assert(chqSummary.innerHTML.includes('76,000.00'), 'Col 3 Cheque amount must be 76,000.00');
+  assert(chqSummary.innerHTML.includes('76,000.00'), 'Card 2 Cheque amount must be 76,000.00');
   const freightSummary = document.getElementById('cleared-summary-freight');
-  assert(freightSummary.innerHTML.includes('1,52,000.00') || freightSummary.innerHTML.includes('152,000.00'), 'Col 3 Freight amount must be 152,000.00');
+  assert(freightSummary.innerHTML.includes('1,52,000.00') || freightSummary.innerHTML.includes('152,000.00'), 'Card 2 Freight amount must be 152,000.00');
   const statusInput = document.getElementById('cleared-trip-status-input');
   assert.strictEqual(statusInput.value, 'Truck Owner Payment Pending');
 
-  console.log('Step 16: Testing Cleared Cheque Details Card...');
+  // Card 3: Consignee & Owner Details & Add Records For
+  const consigneeOwner = document.getElementById('cleared-consignee-owner-fields');
+  assert(consigneeOwner.innerHTML.includes('GOYAL INDUSTRIES'), 'Card 3 must include Consignee GOYAL INDUSTRIES');
+  assert(consigneeOwner.innerHTML.includes('03AAEFG0040N1ZT'), 'Card 3 must include Consignee GSTIN 03AAEFG0040N1ZT');
+  assert(consigneeOwner.innerHTML.includes('Shankar Singh Rawat Shrinagar'), 'Card 3 must include Owner Shankar Singh Rawat');
+  assert(consigneeOwner.innerHTML.includes('8209362551'), 'Card 3 must include Owner Mobile 8209362551');
+
+  console.log('Step 16: Testing Cleared Party Details View (screencapture_13_51_56.png)...');
+  mod.viewClearedPartyDetails();
+  assert.strictEqual(mod.viewMode, 'cleared-party-detail');
+  assert(!document.getElementById('cheques-view-cleared-party-detail').classList.contains('d-none'), 'Party Details view must be visible');
+  const partyCard = document.getElementById('cleared-party-detail-card-body');
+  assert(partyCard.innerHTML.includes('2418'), 'Party card must show GR 2418');
+  assert(partyCard.innerHTML.includes('SHRINATH MICRON'), 'Party card must show Consignor SHRINATH MICRON');
+  assert(partyCard.innerHTML.includes('08AFSFS6249C1Z3') || partyCard.innerHTML.includes('08AFSFS6249C1ZJ'), 'Party card must show GSTIN');
+
+  console.log('Step 17: Testing Cleared Cheque Details Card (screencapture_13_51_30.png)...');
   mod.viewClearedChequeDetails('000004');
   assert.strictEqual(mod.viewMode, 'cleared-cheque-detail');
   assert(!document.getElementById('cheques-view-cleared-cheque-detail').classList.contains('d-none'), 'Cheque details card must be visible');

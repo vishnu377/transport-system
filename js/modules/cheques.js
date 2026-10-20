@@ -128,14 +128,19 @@ const APPSHEET_ADD_RECORDS_LIST = [
 
 const CLEARED_METADATA = [
   // Authentic Cleared Cheques matching screencapture_13_43_15.png
-  { chequeNo: '000004', groupDate: '16/10/2026', clearingDate: '16/10/2026', dueDate: '13/10/2026', bankName: 'HDFC', amount: 76000, partyName: 'GOYAL INDUSTRIES', grNo: '2026-2027--2418_TTC', shortGrNo: '2418', truckNo: 'RJ01GC4865', destination: 'Mohali (Punjab)', firm: 'TTC', fy: '2026-2027', tripId: 'TRIP_2026_2027_2418' },
-  { chequeNo: '848399', groupDate: '15/10/2026', clearingDate: '15/10/2026', dueDate: '12/10/2026', bankName: 'SBI', amount: 63700, partyName: 'KAILASH CHAND GARG', grNo: '2026-2027--2363_TTC', shortGrNo: '2363', truckNo: 'RJ09GC2872', destination: 'Neemrana (Raj.)', firm: 'TTC', fy: '2026-2027' },
-  { chequeNo: '000496', groupDate: '15/10/2026', clearingDate: '15/10/2026', dueDate: '12/10/2026', bankName: 'HDFC', amount: 65000, partyName: 'GOYAL INDUSTRIES', grNo: '2026-2027--2353_TTC', shortGrNo: '2353', truckNo: 'RJ01GB5398', destination: 'Mohali (Punjab)', firm: 'TTC', fy: '2026-2027' },
-  { chequeNo: '000490', groupDate: '15/10/2026', clearingDate: '15/10/2026', dueDate: '12/10/2026', bankName: 'HDFC', amount: 76000, partyName: 'GOYAL INDUSTRIES', grNo: '2026-2027--2351_TTC', shortGrNo: '2351', truckNo: 'RJ01GC2824', destination: 'Mohali (Punjab)', firm: 'TTC', fy: '2026-2027' },
-  { chequeNo: '000423', groupDate: '15/10/2026', clearingDate: '15/10/2026', dueDate: '11/10/2026', bankName: 'HDFC', amount: 70000, partyName: 'GOYAL INDUSTRIES', grNo: '2026-2027--2300_TTC', shortGrNo: '2300', truckNo: 'RJ01GC4865', destination: 'Mohali (Punjab)', firm: 'TTC', fy: '2026-2027' },
-  { chequeNo: '002770', groupDate: '14/10/2026', clearingDate: '14/10/2026', dueDate: '10/10/2026', bankName: 'HDFC', amount: 60000, partyName: 'BALAJI TRADERS', grNo: '2026-2027--2388_TTC', shortGrNo: '2388', truckNo: 'RJ09GC2782', destination: 'Faridabad (Hry.)', firm: 'TTC', fy: '2026-2027' },
-  { chequeNo: '003112', groupDate: '14/10/2026', clearingDate: '14/10/2026', dueDate: '10/10/2026', bankName: 'HDFC', amount: 70000, partyName: 'BALAJI TRADERS', grNo: '2026-2027--2364_TTC', shortGrNo: '2364', truckNo: 'RJ09GC0540', destination: 'Faridabad (Hry.)', firm: 'TTC', fy: '2026-2027' },
-  { chequeNo: '001508', groupDate: '14/10/2026', clearingDate: '14/10/2026', dueDate: '09/10/2026', bankName: 'HDFC', amount: 70000, partyName: 'BALAJI TRADERS', grNo: '2026-2027--2344_TTC', shortGrNo: '2344', truckNo: 'RJ09GC2782', destination: 'Faridabad (Hry.)', firm: 'TTC', fy: '2026-2027' }
+  // Group 16/10/2026: Total ₹ 141,000.00
+  { chequeNo: '000004', groupDate: '16/10/2026', clearingDate: '16/10/2026', dueDate: '13/10/2026', bankName: 'HDFC', amount: 76000, partyName: 'GOYAL INDUSTRIES', grNo: '2026-2027-2418_TTC', shortGrNo: '2418', truckNo: 'RJ01GC4865', destination: 'Mohali (Punjab)', firm: 'TTC', fy: '2026-2027', tripId: 'TRIP_2026_2027_2418' },
+  { chequeNo: '848399', groupDate: '16/10/2026', clearingDate: '16/10/2026', dueDate: '13/10/2026', bankName: 'SBI', amount: 65000, partyName: 'SHREE KRISHNA MARBLES AND TILES', grNo: '2026-2027-2363_TTC', shortGrNo: '2363', truckNo: 'RJ52GB4537', destination: 'Saharanpur (U.P.)', firm: 'TTC', fy: '2026-2027' },
+
+  // Group 15/10/2026: Total ₹ 146,435.00
+  { chequeNo: '000496', groupDate: '15/10/2026', clearingDate: '15/10/2026', dueDate: '12/10/2026', bankName: 'HDFC', amount: 76000, partyName: 'Shreekant Marbles', grNo: '2026-2027-2126_TTC', shortGrNo: '2126', truckNo: 'RJ52GB5057', destination: 'Delhi', firm: 'TTC', fy: '2026-2027' },
+  { chequeNo: '000490', groupDate: '15/10/2026', clearingDate: '15/10/2026', dueDate: '12/10/2026', bankName: 'HDFC', amount: 70435, partyName: 'Shreekant Marbles', grNo: '2026-2027-2188_TTC', shortGrNo: '2188', truckNo: 'RJ52GB5640', destination: 'Delhi', firm: 'TTC', fy: '2026-2027' },
+
+  // Group 12/10/2026: Total ₹ 261,300.00
+  { chequeNo: '002770', groupDate: '12/10/2026', clearingDate: '12/10/2026', dueDate: '10/10/2026', bankName: 'BOB', amount: 76000, partyName: 'Taple Industries', grNo: '2026-2027-2424_TTC', shortGrNo: '2424', truckNo: 'RJ52GB5640', destination: 'Delhi', firm: 'TTC', fy: '2026-2027' },
+  { chequeNo: '003112', groupDate: '12/10/2026', clearingDate: '12/10/2026', dueDate: '10/10/2026', bankName: 'HDFC', amount: 65000, partyName: 'Agarwal Tiles & Granites', grNo: '2026-2027-2384_TTC', shortGrNo: '2384', truckNo: 'RJ52GB2510', destination: 'Delhi', firm: 'TTC', fy: '2026-2027' },
+  { chequeNo: '001508', groupDate: '12/10/2026', clearingDate: '12/10/2026', dueDate: '09/10/2026', bankName: 'HDFC', amount: 70300, partyName: 'Shreekant Marble & Granites', grNo: '2026-2027-2298_TTC', shortGrNo: '2298', truckNo: 'RJ26GA8214', destination: 'Delhi', firm: 'TTC', fy: '2026-2027' },
+  { chequeNo: '000488', groupDate: '12/10/2026', clearingDate: '12/10/2026', dueDate: '09/10/2026', bankName: 'HDFC', amount: 50000, partyName: 'Shreekant Marbles', grNo: '2026-2027-2346_TTC', shortGrNo: '2346', truckNo: 'RJ52GB5641', destination: 'Delhi', firm: 'TTC', fy: '2026-2027' }
 ];
 
 const ChequesModule = {
@@ -2529,7 +2534,7 @@ const ChequesModule = {
     if (!trip) {
       trip = {
         id: c.tripId || "TRIP_2026_2027_2418",
-        grNo: c.grNo || "2026-2027--2418_TTC",
+        grNo: c.grNo || "2026-2027-2418_TTC",
         shortGrNo: c.shortGrNo || "2418",
         truckNo: c.truckNo || "RJ01GC4865",
         tripStartDate: c.tripStartDate || "09/10/2026",
@@ -2540,7 +2545,7 @@ const ChequesModule = {
         destination: c.destination || "Mohali (Punjab)",
         billingType: c.billingType || "Per Tonne",
         consigneeBillingType: c.consigneeBillingType || "Per Tonne",
-        biltyAmount: c.biltyAmount !== undefined ? c.biltyAmount : 6000,
+        biltyAmount: c.biltyAmount !== undefined ? c.biltyAmount : 76000,
         weight: c.weight || 80.0,
         rate: c.rate || 1900,
         material: c.material || "MARBLE GRAINS",
@@ -2552,15 +2557,16 @@ const ChequesModule = {
         referenceMobile: c.referenceMobile || "9829043728",
         driver: c.driver || "Birdi Chand Gurjar Shrinagar",
         driverMobile: c.driverMobile || "7568525599",
-        consignor: c.consignor || "RBL Natural Resources Ltd.",
-        consignorGstin: c.consignorGstin || "08AAACR6392F1ZT",
+        consignor: c.consignor || "SHRINATH MICRON",
+        consignorGstin: c.consignorGstin || "08AFSFS6249C1ZJ",
+        consignorAddress: c.consignorAddress || "202, SUNRISE APPARMENT, BUS STAND, NATHDWARA, RAJSAMAND (RAJ.)-313334",
         consignee: c.consignee || c.partyName || "GOYAL INDUSTRIES",
-        consigneeGstin: c.consigneeGstin || "03AACFG7694H1ZK",
-        consigneeAddress: c.consigneeAddress || "Plot No. 891 Industrial Area Phase-2 Mohali",
-        consigneeMobile: c.consigneeMobile || "9814614414",
-        owner: c.truckOwner || "Durga Enterprises",
-        truckOwner: c.truckOwner || "Durga Enterprises",
-        ownerMobile: c.truckOwnerMobile || "8824326001",
+        consigneeGstin: c.consigneeGstin || "03AAEFG0040N1ZT",
+        consigneeMobile: c.consigneeMobile || "9215072333",
+        consigneeMobile2: c.consigneeMobile2 || "9814115742",
+        owner: c.truckOwner || "Shankar Singh Rawat Shrinagar",
+        truckOwner: c.truckOwner || "Shankar Singh Rawat Shrinagar",
+        ownerMobile: c.truckOwnerMobile || "8209362551",
         billNo: c.billNo || "0",
         status: c.tripStatus || "Truck Owner Payment Pending",
         tripStatus: c.tripStatus || "Truck Owner Payment Pending"
@@ -2584,13 +2590,13 @@ const ChequesModule = {
     const formattedStartDate = this.toDisplayDateFormat(trip.tripStartDate || trip.startDate || '09/10/2026');
     const formattedEndDate = this.toDisplayDateFormat(trip.tripEndDate || trip.endDate || '19/10/2026');
 
-    // 1. Render Column 1: Trip Info (Matching screencapture_13_48_53.png)
-    const tripContentEl = document.getElementById('cleared-trip-details-content');
-    if (tripContentEl) {
-      tripContentEl.innerHTML = `
+    // 1. Render CARD 1 TOP: Trip Basic Info (Matching screencapture_13_48_53.png)
+    const card1Fields = document.getElementById('cleared-card1-trip-fields');
+    if (card1Fields) {
+      card1Fields.innerHTML = `
         <div class="bounced-trip-field">
           <div class="bounced-trip-field-label">G.R.No.</div>
-          <div class="bounced-trip-field-val font-monospace"><span class="bounced-purple-bullet">●</span> ${trip.grNo || '2026-2027--2418_TTC'}</div>
+          <div class="bounced-trip-field-val font-monospace"><span class="bounced-purple-bullet">●</span> ${trip.grNo || '2026-2027-2418_TTC'}</div>
         </div>
         <div class="bounced-trip-field">
           <div class="bounced-trip-field-label">Truck No.</div>
@@ -2618,7 +2624,7 @@ const ChequesModule = {
         </div>
         <div class="bounced-trip-field">
           <div class="bounced-trip-field-label">Bilty Amount</div>
-          <div class="bounced-trip-field-val font-monospace"><span class="bounced-purple-bullet">●</span> ${trip.biltyAmount !== undefined ? trip.biltyAmount : 6000}</div>
+          <div class="bounced-trip-field-val font-monospace"><span class="bounced-purple-bullet">●</span> ₹${Number(trip.biltyAmount || 76000).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
         </div>
         <div class="bounced-trip-field">
           <div class="bounced-trip-field-label">Weight</div>
@@ -2656,58 +2662,10 @@ const ChequesModule = {
             <a href="tel:${trip.driverMobile || '7568525599'}" class="bounced-phone-link" title="Call Driver"><i class="bi bi-telephone-fill"></i></a>
           </div>
         </div>
-        <div class="bounced-trip-field">
-          <div class="bounced-trip-field-label">Consignor</div>
-          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${trip.consignor || 'RBL Natural Resources Ltd.'}</div>
-        </div>
-        <div class="bounced-trip-field">
-          <div class="bounced-trip-field-label">Consignor GSTIN</div>
-          <div class="bounced-trip-field-val font-monospace"><span class="bounced-purple-bullet">●</span> ${trip.consignorGstin || '08AAACR6392F1ZT'}</div>
-        </div>
-        <div class="bounced-trip-field">
-          <div class="bounced-trip-field-label">Consignee</div>
-          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${trip.consignee || 'GOYAL INDUSTRIES'}</div>
-        </div>
-        <div class="bounced-trip-field">
-          <div class="bounced-trip-field-label">Consignee GSTIN</div>
-          <div class="bounced-trip-field-val font-monospace"><span class="bounced-purple-bullet">●</span> ${trip.consigneeGstin || '03AACFG7694H1ZK'}</div>
-        </div>
-        <div class="bounced-trip-field">
-          <div class="bounced-trip-field-label">Consignee Delivery Address</div>
-          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${trip.consigneeAddress || 'Plot No. 891 Industrial Area Phase-2 Mohali'}</div>
-        </div>
-        <div class="bounced-trip-field">
-          <div class="bounced-trip-field-label">Consignee Mobile No.</div>
-          <div class="bounced-trip-field-val">
-            <span class="bounced-purple-bullet">●</span> 
-            ${trip.consigneeMobile || '9814614414'}
-            <a href="tel:${trip.consigneeMobile || '9814614414'}" class="bounced-phone-link" title="Call Consignee"><i class="bi bi-telephone-fill"></i></a>
-          </div>
-        </div>
-        <div class="bounced-trip-field">
-          <div class="bounced-trip-field-label">Owner</div>
-          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${trip.owner || trip.truckOwner || 'Durga Enterprises'}</div>
-        </div>
-        <div class="bounced-trip-field">
-          <div class="bounced-trip-field-label">Owner Mobile No.</div>
-          <div class="bounced-trip-field-val">
-            <span class="bounced-purple-bullet">●</span> 
-            ${trip.ownerMobile || trip.truckOwnerMobile || '8824326001'}
-            <a href="tel:${trip.ownerMobile || trip.truckOwnerMobile || '8824326001'}" class="bounced-phone-link" title="Call Owner"><i class="bi bi-telephone-fill"></i></a>
-          </div>
-        </div>
-        <div class="bounced-trip-field">
-          <div class="bounced-trip-field-label">Freight</div>
-          <div class="bounced-trip-field-val font-monospace"><span class="bounced-purple-bullet">●</span> ₹${Number(trip.freight || 152000).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
-        </div>
-        <div class="bounced-trip-field">
-          <div class="bounced-trip-field-label">Bill No.</div>
-          <div class="bounced-trip-field-val font-monospace"><span class="bounced-purple-bullet">●</span> ${trip.billNo !== undefined ? trip.billNo : '0'}</div>
-        </div>
       `;
     }
 
-    // 2. Render Column 2: Linked Cheques List
+    // 2. Render CARD 1 BOTTOM: Linked Cheques List
     const tripGr = (trip.grNo || '').toLowerCase();
     const tripShort = (trip.shortGrNo || '').toLowerCase();
 
@@ -2739,7 +2697,6 @@ const ChequesModule = {
           <tr onclick="ChequesModule.viewClearedChequeDetails('${item.id}')" title="Click to view Cheque Details" style="cursor: pointer;">
             <td><span class="cleared-green-bullet">●</span> ${formattedDueDate}</td>
             <td class="font-monospace"><span class="cleared-green-bullet">●</span> ${item.chequeNo || '-'}</td>
-            <td><span class="cleared-green-bullet">●</span> ${item.bankName || '-'}</td>
             <td class="font-monospace text-end"><span class="cleared-green-bullet">●</span> ${formattedAmt}</td>
             <td><span class="cleared-green-bullet">●</span> ${item.firm || 'TTC'}</td>
             <td><span class="cleared-green-bullet">●</span> ${formattedClearDate}</td>
@@ -2749,7 +2706,26 @@ const ChequesModule = {
       chqTbody.innerHTML = chqRowsHtml;
     }
 
-    // 3. Render Column 3: Financial Summary & Status
+    // 3. Render CARD 2 TOP: Consignor/s 1
+    const consignorFields = document.getElementById('cleared-consignor-fields');
+    if (consignorFields) {
+      consignorFields.innerHTML = `
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">GSTIN</div>
+          <div class="bounced-trip-field-val font-monospace"><span class="bounced-purple-bullet">●</span> ${trip.consignorGstin || '08AFSFS6249C1ZJ'}</div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Consignor</div>
+          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${trip.consignor || 'SHRINATH MICRON'}</div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Consignor Address</div>
+          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${trip.consignorAddress || '202, SUNRISE APPARMENT, BUS STAND, NATHDWARA, RAJSAMAND (RAJ.)-313334'}</div>
+        </div>
+      `;
+    }
+
+    // 4. Render CARD 2 BOTTOM: Totals & Status
     const totalLinkedAmount = linkedCheques.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
     const sumChqEl = document.getElementById('cleared-summary-chq-amount');
     if (sumChqEl) {
@@ -2768,13 +2744,102 @@ const ChequesModule = {
       otherBInput.value = otherBVal;
     }
 
-    // Status Combobox
     const currentStatus = trip.status || trip.tripStatus || "Truck Owner Payment Pending";
     const statusInput = document.getElementById('cleared-trip-status-input');
     if (statusInput) {
       statusInput.value = currentStatus;
     }
     this.updateClearedStatusDotColor(currentStatus);
+
+    // 5. Render CARD 3 TOP: Consignee & Owner Details
+    const consigneeOwnerFields = document.getElementById('cleared-consignee-owner-fields');
+    if (consigneeOwnerFields) {
+      consigneeOwnerFields.innerHTML = `
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">GSTIN Consignee</div>
+          <div class="bounced-trip-field-val font-monospace"><span class="bounced-purple-bullet">●</span> ${trip.consigneeGstin || '03AAEFG0040N1ZT'}</div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Consignee</div>
+          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${trip.consignee || 'GOYAL INDUSTRIES'}</div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Consignee Mobile No.</div>
+          <div class="bounced-trip-field-val">
+            <span class="bounced-purple-bullet">●</span> 
+            ${trip.consigneeMobile || '9215072333'}
+            <a href="tel:${trip.consigneeMobile || '9215072333'}" class="bounced-phone-link" title="Call Consignee"><i class="bi bi-telephone-fill"></i></a>
+          </div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Consignee Mobile No.</div>
+          <div class="bounced-trip-field-val">
+            <span class="bounced-purple-bullet">●</span> 
+            ${trip.consigneeMobile2 || '9814115742'}
+            <a href="tel:${trip.consigneeMobile2 || '9814115742'}" class="bounced-phone-link" title="Call Consignee"><i class="bi bi-telephone-fill"></i></a>
+          </div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Owner</div>
+          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${trip.owner || trip.truckOwner || 'Shankar Singh Rawat Shrinagar'}</div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Owner Mobile No.</div>
+          <div class="bounced-trip-field-val">
+            <span class="bounced-purple-bullet">●</span> 
+            ${trip.ownerMobile || trip.truckOwnerMobile || '8209362551'}
+            <a href="tel:${trip.ownerMobile || trip.truckOwnerMobile || '8209362551'}" class="bounced-phone-link" title="Call Owner"><i class="bi bi-telephone-fill"></i></a>
+          </div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Freight</div>
+          <div class="bounced-trip-field-val font-monospace"><span class="bounced-purple-bullet">●</span> ₹${Number(trip.freight || 152000).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+        </div>
+      `;
+    }
+  },
+
+  expandFirstClearedCheque() {
+    if (this.activeCheque) {
+      this.viewClearedChequeDetails(this.activeCheque.id);
+    }
+  },
+
+  // Level 4b: Open Trip Party Details (Matching screencapture_13_51_56.png)
+  viewClearedPartyDetails() {
+    const trip = this.activeTrip;
+    if (!trip) return;
+    this.viewMode = 'cleared-party-detail';
+    this.hideAllViews();
+
+    const detailEl = document.getElementById('cheques-view-cleared-party-detail');
+    if (detailEl) detailEl.classList.remove('d-none');
+
+    // Breadcrumb: Home > Cheques > Cleared > Open Trip Details > Open Trip Party Details > Open Trip Party Details
+    this.setBreadcrumbState('cleared-party-detail');
+
+    const cardBody = document.getElementById('cleared-party-detail-card-body');
+    if (cardBody) {
+      let shortGr = trip.shortGrNo || '2418';
+      cardBody.innerHTML = `
+        <div class="chq-field-row">
+          <div class="chq-field-label">G.R.No.</div>
+          <div class="chq-field-val font-monospace"><span class="bounced-purple-bullet">●</span> ${shortGr}</div>
+        </div>
+        <div class="chq-field-row">
+          <div class="chq-field-label">GSTIN</div>
+          <div class="chq-field-val font-monospace"><span class="bounced-purple-bullet">●</span> ${trip.consignorGstin || '08AFSFS6249C1Z3'}</div>
+        </div>
+        <div class="chq-field-row">
+          <div class="chq-field-label">Consignor</div>
+          <div class="chq-field-val"><span class="bounced-purple-bullet">●</span> ${trip.consignor || 'SHRINATH MICRON'}</div>
+        </div>
+        <div class="chq-field-row">
+          <div class="chq-field-label">Consignor Address</div>
+          <div class="chq-field-val"><span class="bounced-purple-bullet">●</span> ${trip.consignorAddress || '202, SUNRISE APPARMENT, BUS STAND NATHDWARA, RAJSAMAND (RAJ.)-313334'}</div>
+        </div>
+      `;
+    }
   },
 
   // Level 4: Cleared Cheque Details (Matching screencapture_13_51_30.png)
@@ -3086,6 +3151,15 @@ const ChequesModule = {
         { label: 'Cheques', action: 'ChequesModule.goToDashboardView()' },
         { label: 'Cleared', action: 'ChequesModule.goToClearedView()' },
         { label: 'Open Trip Details' }
+      ];
+        } else if (view === 'cleared-party-detail') {
+      crumbs = [
+        { label: 'Home', action: 'ChequesModule.goToDashboardView()' },
+        { label: 'Cheques', action: 'ChequesModule.goToDashboardView()' },
+        { label: 'Cleared', action: 'ChequesModule.goToClearedView()' },
+        { label: 'Open Trip Details', action: `ChequesModule.viewClearedTripDetails('${this.activeCheque?.id || ''}')` },
+        { label: 'Open Trip Party Details' },
+        { label: 'Open Trip Party Details' }
       ];
     } else if (view === 'cleared-cheque-detail') {
       crumbs = [
