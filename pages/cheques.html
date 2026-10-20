@@ -699,6 +699,124 @@
       color: #2e7d32 !important;
       font-weight: 600;
     }
+
+    /* ======================================================== */
+    /* Not Used Cheques Styles Matching screencapture 18_07_57  */
+    /* ======================================================== */
+    #notused-table {
+      min-width: 1100px;
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+    }
+    #notused-table th {
+      background: #ffffff !important;
+      color: #5f6368 !important;
+      font-weight: 500;
+      font-size: 12px;
+      padding: 9px 12px !important;
+      border-bottom: 1px solid #e0e0e0;
+      white-space: nowrap !important;
+      user-select: none;
+    }
+    /* Magenta Row (#fb0a82) */
+    .notused-row-magenta {
+      cursor: pointer;
+      transition: background-color 0.12s ease;
+    }
+    .notused-row-magenta td {
+      color: #fb0a82 !important;
+      font-weight: 500;
+      vertical-align: middle;
+      padding: 8px 12px !important;
+      white-space: nowrap !important;
+      border-bottom: 1px solid #fce4ec;
+      line-height: 1.4;
+    }
+    .notused-row-magenta:hover td {
+      background-color: #fff0f6 !important;
+    }
+    .notused-row-magenta.active td {
+      background-color: #fde8ef !important;
+    }
+    .notused-bullet-magenta {
+      color: #fb0a82 !important;
+      font-size: 11px;
+      line-height: 1;
+      display: inline-block;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+    .notused-group-header-magenta td {
+      background: #fdf2f7 !important;
+      color: #fb0a82 !important;
+      font-weight: 700;
+      font-size: 13px;
+      padding: 9px 14px !important;
+      border-top: 1px solid #e0e0e0 !important;
+      border-bottom: 1px solid #fce4ec !important;
+      white-space: nowrap !important;
+    }
+
+    /* Orange Row (#da7a00) */
+    .notused-row-orange {
+      cursor: pointer;
+      transition: background-color 0.12s ease;
+    }
+    .notused-row-orange td {
+      color: #da7a00 !important;
+      font-weight: 500;
+      vertical-align: middle;
+      padding: 8px 12px !important;
+      white-space: nowrap !important;
+      border-bottom: 1px solid #fff3e0;
+      line-height: 1.4;
+    }
+    .notused-row-orange:hover td {
+      background-color: #fff9f0 !important;
+    }
+    .notused-row-orange.active td {
+      background-color: #fef0db !important;
+    }
+    .notused-bullet-orange {
+      color: #da7a00 !important;
+      font-size: 11px;
+      line-height: 1;
+      display: inline-block;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+    .notused-group-header-orange td {
+      background: #fdfaf5 !important;
+      color: #da7a00 !important;
+      font-weight: 700;
+      font-size: 13px;
+      padding: 9px 14px !important;
+      border-top: 1px solid #e0e0e0 !important;
+      border-bottom: 1px solid #fff3e0 !important;
+      white-space: nowrap !important;
+    }
+    .notused-year-item.active {
+      background: #fff8f0 !important;
+      font-weight: 600;
+      border-left: 3px solid #da7a00;
+    }
+
+    /* Settled Trip Cheque Colors matching Not Used Cheque color */
+    .settled-cheque-magenta td {
+      color: #fb0a82 !important;
+      white-space: nowrap !important;
+    }
+    .settled-cheque-magenta .cleared-green-bullet {
+      color: #fb0a82 !important;
+    }
+    .settled-cheque-orange td {
+      color: #da7a00 !important;
+      white-space: nowrap !important;
+    }
+    .settled-cheque-orange .cleared-green-bullet {
+      color: #da7a00 !important;
+    }
     .cleared-trip-grid {
       --trip-theme-color: #01cebc;
       display: grid;
@@ -2195,15 +2313,19 @@
               <table class="table table-hover align-middle mb-1" style="font-size: 11.5px;">
                 <thead class="table-light">
                   <tr>
-                    <th>Cheque Due Date</th>
+                    <th>Clearing Date</th>
                     <th>Cheque No.</th>
                     <th class="text-end">Amount</th>
+                    <th>Bank</th>
                     <th>Pay to</th>
-                    <th>Clearing Date</th>
+                    <th>Cheque Due Date</th>
                   </tr>
                 </thead>
                 <tbody id="settled-trip-cheques-tbody"></tbody>
               </table>
+            </div>
+            <div class="pt-1 text-start" style="font-size: 12px;">
+              <a href="javascript:void(0)" class="text-primary text-decoration-none fw-semibold" onclick="ChequesModule.viewSettledTripChequesList()">Expand</a>
             </div>
             <div class="d-flex align-items-center justify-content-between pt-1" style="font-size: 12px;">
               <a href="javascript:void(0)" class="text-primary text-decoration-none fw-semibold" onclick="ChequesModule.expandFirstClearedCheque()">Expand</a>
@@ -2231,7 +2353,7 @@
               </table>
             </div>
             <div class="pt-1 text-start" style="font-size: 12px;">
-              <a href="javascript:void(0)" class="text-primary text-decoration-none fw-semibold" onclick="ChequesModule.viewSettledPartyDetails()">Expand</a>
+              <a href="javascript:void(0)" class="text-primary text-decoration-none fw-semibold" onclick="ChequesModule.viewSettledPartyList()">Expand</a>
             </div>
           </div>
 
@@ -2303,7 +2425,7 @@
               </table>
             </div>
             <div class="pt-1 text-start" style="font-size: 12px;">
-              <a href="javascript:void(0)" class="text-primary text-decoration-none fw-semibold" onclick="ChequesModule.viewSettledOwnerPaymentDetails()">Expand</a>
+              <a href="javascript:void(0)" class="text-primary text-decoration-none fw-semibold" onclick="ChequesModule.viewSettledOwnerPaymentList()">Expand</a>
             </div>
           </div>
         </div>
@@ -2344,7 +2466,7 @@
               </table>
             </div>
             <div class="pt-1 text-start" style="font-size: 12px;">
-              <a href="javascript:void(0)" class="text-primary text-decoration-none fw-semibold" onclick="ChequesModule.viewSettledTripPaymentDetails()">Expand</a>
+              <a href="javascript:void(0)" class="text-primary text-decoration-none fw-semibold" onclick="ChequesModule.viewSettledTripPaymentList()">Expand</a>
             </div>
           </div>
 
@@ -2406,6 +2528,159 @@
     <div id="cheques-view-settled-trip-payment-detail" class="d-none p-3">
       <div class="chq-detail-container">
         <div class="chq-detail-card" id="settled-trip-payment-detail-card-body"></div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- CARD 4: LEVEL 2 - NOT USED CHEQUES LIST VIEW              -->
+    <!-- Matching screencapture 18_07_57.png                      -->
+    <!-- ======================================================== -->
+    <div id="cheques-view-notused-list" class="d-none p-3">
+      <div class="bounced-split-container">
+        <!-- LEFT: Year Selector Rail (Toggleable) -->
+        <div class="bounced-year-sidebar shadow-sm" id="notused-year-sidebar">
+          <div class="d-flex align-items-center justify-content-between px-3 pb-2 pt-1 border-bottom mb-2">
+            <span class="text-uppercase fw-semibold text-muted small" style="font-size: 11px; letter-spacing: 0.5px;">Financial Year</span>
+            <button type="button" class="btn btn-sm btn-link p-0 text-secondary text-decoration-none" onclick="ChequesModule.toggleNotUsedSidebar()" title="Hide Financial Year Sidebar" style="font-size: 13px;">
+              <i class="bi bi-chevron-left"></i>
+            </button>
+          </div>
+          <div class="bounced-year-item notused-year-item active" id="notused-year-ALL" onclick="ChequesModule.filterNotUsedByYear('ALL')">
+            <span class="fw-semibold">All</span>
+            <span class="badge bg-light text-dark border fw-semibold" id="notused-rail-badge-ALL">₹ 739,309.00</span>
+          </div>
+          <div class="bounced-year-item notused-year-item" id="notused-year-2026" onclick="ChequesModule.filterNotUsedByYear('2026-2027')">
+            <span class="fw-semibold"><span class="notused-bullet-orange">●</span> 2026-2027</span>
+            <span class="badge bg-light text-dark border fw-semibold" id="notused-rail-badge-2026">₹ 80,000.00</span>
+          </div>
+          <div class="bounced-year-item notused-year-item" id="notused-year-2025" onclick="ChequesModule.filterNotUsedByYear('2025-2026')">
+            <span class="fw-semibold"><span class="notused-bullet-orange">●</span> 2025-2026</span>
+            <span class="badge bg-light text-dark border fw-semibold" id="notused-rail-badge-2025">₹ 487,809.00</span>
+          </div>
+          <div class="bounced-year-item notused-year-item" id="notused-year-2024" onclick="ChequesModule.filterNotUsedByYear('2024-2025')">
+            <span class="fw-semibold"><span class="notused-bullet-orange">●</span> 2024-2025</span>
+            <span class="badge bg-light text-dark border fw-semibold" id="notused-rail-badge-2024">₹ 171,500.00</span>
+          </div>
+        </div>
+
+        <!-- RIGHT: Not Used Table Container -->
+        <div class="bounced-table-container shadow-sm" id="notused-table-container">
+          <div class="table-responsive" style="max-height: calc(100vh - 140px); overflow-x: auto; overflow-y: auto;">
+            <table class="table table-hover align-middle mb-0" id="notused-table">
+              <thead class="sticky-top shadow-sm">
+                <tr>
+                  <th style="white-space: nowrap; width: 110px;">Cheque No.</th>
+                  <th style="white-space: nowrap; width: 90px;">Bank</th>
+                  <th style="white-space: nowrap; width: 130px;" class="text-end">Amount</th>
+                  <th style="white-space: nowrap; min-width: 220px;">Party</th>
+                  <th style="white-space: nowrap; width: 85px;">G.R.No.</th>
+                  <th style="white-space: nowrap; width: 130px;">Truck No.</th>
+                  <th style="white-space: nowrap; width: 150px;">To</th>
+                  <th style="white-space: nowrap; width: 85px;">Pay to</th>
+                  <th style="white-space: nowrap; width: 130px;">Cheque Due Date</th>
+                  <th style="width: 28px; text-align: center;"></th>
+                </tr>
+              </thead>
+              <tbody id="notused-table-tbody">
+                <!-- Rendered dynamically with Date Group headers and bullets -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- SETTLED: TRIP CHEQUE DETAILS FULL TABLE (18_08_34.png)     -->
+    <!-- ======================================================== -->
+    <div id="cheques-view-settled-trip-cheques-list" class="d-none p-3">
+      <div class="card shadow-sm border-0">
+        <div class="table-responsive" style="max-height: calc(100vh - 140px); overflow-x: auto;">
+          <table class="table table-hover align-middle mb-0" style="font-size: 12.5px;">
+            <thead class="table-light sticky-top">
+              <tr>
+                <th style="white-space: nowrap; width: 130px;">Clearing Date</th>
+                <th style="white-space: nowrap; width: 110px;">Cheque No.</th>
+                <th style="white-space: nowrap; width: 130px;" class="text-end">Amount</th>
+                <th style="white-space: nowrap; width: 100px;">Bank</th>
+                <th style="white-space: nowrap; width: 90px;">Pay to</th>
+                <th style="white-space: nowrap; width: 130px;">Cheque Due Date</th>
+                <th style="width: 28px; text-align: center;"></th>
+              </tr>
+            </thead>
+            <tbody id="settled-trip-cheques-list-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- SETTLED: TRIP PARTY DETAILS FULL TABLE (18_09_07.png)      -->
+    <!-- ======================================================== -->
+    <div id="cheques-view-settled-party-list" class="d-none p-3">
+      <div class="card shadow-sm border-0">
+        <div class="table-responsive" style="max-height: calc(100vh - 140px); overflow-x: auto;">
+          <table class="table table-hover align-middle mb-0" style="font-size: 12.5px;">
+            <thead class="table-light sticky-top">
+              <tr>
+                <th style="white-space: nowrap; width: 180px;">GSTIN</th>
+                <th style="white-space: nowrap; width: 220px;">Consignor</th>
+                <th style="white-space: nowrap; min-width: 300px;">Consignor Address</th>
+                <th style="width: 28px; text-align: center;"></th>
+              </tr>
+            </thead>
+            <tbody id="settled-party-list-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- SETTLED: TRUCK OWNER PAYMENT DETAILS TABLE (18_09_38.png)  -->
+    <!-- ======================================================== -->
+    <div id="cheques-view-settled-owner-payment-list" class="d-none p-3">
+      <div class="card shadow-sm border-0">
+        <div class="table-responsive" style="max-height: calc(100vh - 140px); overflow-x: auto;">
+          <table class="table table-hover align-middle mb-0" style="font-size: 12.5px;">
+            <thead class="table-light sticky-top">
+              <tr>
+                <th style="white-space: nowrap; width: 130px;">Payment Date &uarr;</th>
+                <th style="white-space: nowrap; width: 130px;" class="text-end">Amount Paid</th>
+                <th style="white-space: nowrap; width: 110px;">Mode</th>
+                <th style="white-space: nowrap; width: 180px;">Beneficiary</th>
+                <th style="white-space: nowrap; width: 110px;">From Bank</th>
+                <th style="white-space: nowrap; width: 110px;">To Bank</th>
+                <th style="white-space: nowrap; min-width: 200px;">Description</th>
+                <th style="width: 28px; text-align: center;"></th>
+              </tr>
+            </thead>
+            <tbody id="settled-owner-payment-list-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- SETTLED: TRIP PAYMENT DETAILS FULL TABLE (18_10_16.png)    -->
+    <!-- ======================================================== -->
+    <div id="cheques-view-settled-trip-payment-list" class="d-none p-3">
+      <div class="card shadow-sm border-0">
+        <div class="table-responsive" style="max-height: calc(100vh - 140px); overflow-x: auto;">
+          <table class="table table-hover align-middle mb-0" style="font-size: 12.5px;">
+            <thead class="table-light sticky-top">
+              <tr>
+                <th style="white-space: nowrap; width: 130px;">Payment Date &uarr;</th>
+                <th style="white-space: nowrap; width: 130px;" class="text-end">Amount Paid</th>
+                <th style="white-space: nowrap; width: 110px;">Mode</th>
+                <th style="white-space: nowrap; width: 160px;">Beneficiary</th>
+                <th style="white-space: nowrap; min-width: 200px;">Description</th>
+                <th style="white-space: nowrap; width: 130px;">Paid To</th>
+                <th style="width: 28px; text-align: center;"></th>
+              </tr>
+            </thead>
+            <tbody id="settled-trip-payment-list-tbody"></tbody>
+          </table>
+        </div>
       </div>
     </div>
 

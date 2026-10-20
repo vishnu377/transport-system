@@ -290,13 +290,56 @@ assert.strictEqual(chq004.amount, 76000, 'Cheque 000004 amount must be 76000');
 assert.strictEqual(chq004.bankName, 'HDFC', 'Cheque 000004 bank must be HDFC');
 assert.strictEqual(chq004.partyName, 'GOYAL INDUSTRIES', 'Cheque 000004 party must be GOYAL INDUSTRIES');
 
+// Verify Card 4 (Not Used) HTML Elements & Views
+assert(htmlContent.includes('id="cheques-view-notused-list"'), '#cheques-view-notused-list must exist');
+assert(htmlContent.includes('id="notused-table"'), '#notused-table must exist');
+assert(htmlContent.includes('id="notused-year-sidebar"'), '#notused-year-sidebar must exist');
+assert(htmlContent.includes('id="cheques-view-settled-trip-cheques-list"'), '#cheques-view-settled-trip-cheques-list must exist');
+assert(htmlContent.includes('id="cheques-view-settled-party-list"'), '#cheques-view-settled-party-list must exist');
+assert(htmlContent.includes('id="cheques-view-settled-owner-payment-list"'), '#cheques-view-settled-owner-payment-list must exist');
+assert(htmlContent.includes('id="cheques-view-settled-trip-payment-list"'), '#cheques-view-settled-trip-payment-list must exist');
+
+// Verify Card 4 Dual Color Styles
+assert(htmlContent.includes('.notused-row-magenta'), '.notused-row-magenta must exist');
+assert(htmlContent.includes('.notused-row-orange'), '.notused-row-orange must exist');
+assert(htmlContent.includes('.notused-group-header-magenta'), '.notused-group-header-magenta must exist');
+assert(htmlContent.includes('.notused-group-header-orange'), '.notused-group-header-orange must exist');
+
+// Verify Card 4 methods in cheques.js
+assert(chequesJs.includes('goToNotUsedView('), 'ChequesModule must define goToNotUsedView');
+assert(chequesJs.includes('filterNotUsedByYear('), 'ChequesModule must define filterNotUsedByYear');
+assert(chequesJs.includes('toggleNotUsedSidebar()'), 'ChequesModule must define toggleNotUsedSidebar');
+assert(chequesJs.includes('updateNotUsedSidebarBadges()'), 'ChequesModule must define updateNotUsedSidebarBadges');
+assert(chequesJs.includes('renderNotUsedTable()'), 'ChequesModule must define renderNotUsedTable');
+assert(chequesJs.includes('viewNotUsedTripDetails('), 'ChequesModule must define viewNotUsedTripDetails');
+assert(chequesJs.includes('viewSettledTripChequesList('), 'ChequesModule must define viewSettledTripChequesList');
+assert(chequesJs.includes('viewNotUsedChequeDetails('), 'ChequesModule must define viewNotUsedChequeDetails');
+assert(chequesJs.includes('viewSettledPartyList('), 'ChequesModule must define viewSettledPartyList');
+assert(chequesJs.includes('viewSettledOwnerPaymentList('), 'ChequesModule must define viewSettledOwnerPaymentList');
+assert(chequesJs.includes('viewSettledTripPaymentList('), 'ChequesModule must define viewSettledTripPaymentList');
+
+// Verify Sample Not Used Cheques count and colors
+const notUsedCheques = chequesData.filter(c => c.status === 'Not Used');
+assert.strictEqual(notUsedCheques.length, 17, `Expected 17 Not Used cheques, found ${notUsedCheques.length}`);
+
+const chqMagenta = notUsedCheques.find(c => c.chequeNo === '117295');
+assert(chqMagenta, 'Cheque 117295 must exist');
+assert.strictEqual(chqMagenta.colorTheme, 'magenta');
+assert.strictEqual(chqMagenta.amount, 25000);
+
+const chqOrange = notUsedCheques.find(c => c.chequeNo === '751768');
+assert(chqOrange, 'Cheque 751768 must exist');
+assert.strictEqual(chqOrange.colorTheme, 'orange');
+assert.strictEqual(chqOrange.amount, 44900);
+
 console.log('✔ Card 1 Combobox: Add Records for (Cheque, Party Payment, Truck Owner Payment, Other B) verified.');
 console.log('✔ Card 1 Values Color: Full text colored #6200ea (matching AppSheet screenshot) verified.');
 console.log('✔ Card 2 Side Drawer: Authentic Cheque Details with 31 Banks, 7 Pay To options & Gold Bullets verified.');
 console.log('✔ Card 3 Financials: Other B typable input & Status combobox with distinct per-status colors verified.');
 console.log('✔ Open Debts: FY Sidebar, 11 exact columns, Date Groups & Loading Blue Rows verified.');
 console.log('✔ Card 3 Cleared Cheques: Table, Green Bullets, 3-Col Trip Details & Cheque Details verified.');
-console.log('✔ All Cheques Dashboard, Card 1 Due, Card 2 Bounced, Card 3 Cleared & Open Debts tests PASSED 100%!');
+console.log('✔ Card 4 Not Used Cheques: Dual-Color System (Magenta/Orange), Dynamic FY Rail Badges, Settled Trip Drilldowns verified.');
+console.log('✔ All Cheques Dashboard, Card 1 Due, Card 2 Bounced, Card 3 Cleared, Card 4 Not Used & Open Debts tests PASSED 100%!');
 
 
 

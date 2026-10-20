@@ -278,6 +278,108 @@ async function run() {
   assert(cardBody.innerHTML.includes('16/10/2026'), 'Card must show Clearing Date 16/10/2026');
   assert(cardBody.innerHTML.includes('cleared-green-bullet'), 'Card must use green bullets');
 
+  console.log('Step 18: Testing Card 4: Not Used Cheques & Dual Color System (screencapture 18_07_57 to 18_14_10)...');
+  mod.goToNotUsedView('ALL');
+  assert.strictEqual(mod.viewMode, 'notused-list');
+  assert(!document.getElementById('cheques-view-notused-list').classList.contains('d-none'), 'Not Used view must be visible');
+
+  // Verify Dynamic FY Badges
+  const badgeAll = document.getElementById('notused-rail-badge-ALL');
+  const badge2026 = document.getElementById('notused-rail-badge-2026');
+  const badge2025 = document.getElementById('notused-rail-badge-2025');
+  const badge2024 = document.getElementById('notused-rail-badge-2024');
+
+  assert(badgeAll && (badgeAll.innerText.includes('7,39,309.00') || badgeAll.innerText.includes('739,309.00')), 'All total must be 739,309.00');
+  assert(badge2026 && badge2026.innerText.includes('80,000.00'), '2026-2027 total must be 80,000.00');
+  assert(badge2025 && (badge2025.innerText.includes('4,87,809.00') || badge2025.innerText.includes('487,809.00')), '2025-2026 total must be 487,809.00');
+  assert(badge2024 && (badge2024.innerText.includes('1,71,500.00') || badge2024.innerText.includes('171,500.00')), '2024-2025 total must be 171,500.00');
+
+  // Verify Table Content & Group Headers
+  const notUsedTbody = document.getElementById('notused-table-tbody');
+  assert(notUsedTbody.innerHTML.includes('notused-group-header-magenta'), 'Must have magenta group header for 22/07/2026');
+  assert(notUsedTbody.innerHTML.includes('notused-group-header-orange'), 'Must have orange group header for 05/05/2026');
+  assert(notUsedTbody.innerHTML.includes('notused-row-magenta'), 'Must have magenta row for 117295');
+  assert(notUsedTbody.innerHTML.includes('notused-row-orange'), 'Must have orange row for 925120');
+  assert(notUsedTbody.innerHTML.includes('117295'), 'Must render cheque 117295');
+  assert(notUsedTbody.innerHTML.includes('SHRI BABA RAMDEV MARBLES'), 'Must render party for 117295');
+  assert(notUsedTbody.innerHTML.includes('751768'), 'Must render cheque 751768');
+  assert(notUsedTbody.innerHTML.includes('ULTRACARE GYPSUM'), 'Must render party for 751768');
+
+  // Verify Sidebar Toggle
+  mod.toggleNotUsedSidebar();
+  assert.strictEqual(mod.notUsedSidebarVisible, false);
+  mod.toggleNotUsedSidebar();
+  assert.strictEqual(mod.notUsedSidebarVisible, true);
+
+  // Test Settled Trip Details for Magenta Cheque 117295
+  console.log('Step 19: Testing Settled Trip Details for Magenta Cheque 117295...');
+  mod.viewNotUsedTripDetails('CHQ_NOTUSED_117295_01');
+  assert.strictEqual(mod.viewMode, 'notused-settled-detail');
+  assert(!document.getElementById('cheques-view-cleared-settled-detail').classList.contains('d-none'), 'Settled Trip Details must be visible');
+  
+  const chq117295Tbody = document.getElementById('settled-trip-cheques-tbody');
+  assert(chq117295Tbody.innerHTML.includes('settled-cheque-magenta'), 'Cheque table must have magenta theme class');
+  assert(chq117295Tbody.innerHTML.includes('#fb0a82'), 'Cheque bullet must have exact magenta color #fb0a82');
+  assert(chq117295Tbody.innerHTML.includes('117295'), 'Cheque table must include 117295');
+
+  // Test Trip Cheque Details Full Table (18_08_34.png)
+  mod.viewSettledTripChequesList();
+  assert.strictEqual(mod.viewMode, 'settled-trip-cheques-list');
+  assert(!document.getElementById('cheques-view-settled-trip-cheques-list').classList.contains('d-none'), 'Trip Cheque Details table must be visible');
+  const chqListTbody = document.getElementById('settled-trip-cheques-list-tbody');
+  assert(chqListTbody.innerHTML.includes('#fb0a82'), 'Trip Cheques table must have magenta bullets');
+
+  // Test Settled Cheque Details Card (18_08_45.png)
+  mod.viewNotUsedChequeDetails('CHQ_NOTUSED_117295_01');
+  assert.strictEqual(mod.viewMode, 'notused-cheque-detail');
+  const chqCardBody = document.getElementById('cleared-cheque-detail-card-body');
+  assert(chqCardBody.innerHTML.includes('#fb0a82'), 'Cheque card must have magenta bullets');
+  assert(chqCardBody.innerHTML.includes('117295'), 'Cheque card must show 117295');
+  assert(chqCardBody.innerHTML.includes('2026-2027-1386_TTC'), 'Cheque card must show GR 2026-2027-1386_TTC');
+
+  // Test Settled Trip Details for Orange Cheque 751768
+  console.log('Step 20: Testing Settled Trip Details for Orange Cheque 751768...');
+  mod.viewNotUsedTripDetails('CHQ_NOTUSED_751768_01');
+  assert.strictEqual(mod.viewMode, 'notused-settled-detail');
+  const chq751768Tbody = document.getElementById('settled-trip-cheques-tbody');
+  assert(chq751768Tbody.innerHTML.includes('settled-cheque-orange'), 'Cheque table must have orange theme class');
+  assert(chq751768Tbody.innerHTML.includes('#da7a00'), 'Cheque bullet must have exact orange color #da7a00');
+  assert(chq751768Tbody.innerHTML.includes('751768'), 'Cheque table must include 751768');
+
+  // Test Settled Cheque Details Card for Orange (18_11_50.png)
+  mod.viewNotUsedChequeDetails('CHQ_NOTUSED_751768_01');
+  assert.strictEqual(mod.viewMode, 'notused-cheque-detail');
+  const chqCard751768 = document.getElementById('cleared-cheque-detail-card-body');
+  assert(chqCard751768.innerHTML.includes('#da7a00'), 'Cheque card must have orange bullets');
+  assert(chqCard751768.innerHTML.includes('751768'), 'Cheque card must show 751768');
+  assert(chqCard751768.innerHTML.includes('2025-2026-1158_TTC'), 'Cheque card must show GR 2025-2026-1158_TTC');
+
+  // Test Consignors & Payments Drilldowns
+  console.log('Step 21: Testing Consignors, Owner Payments & Trip Payments Drilldowns...');
+  mod.viewSettledPartyList();
+  assert.strictEqual(mod.viewMode, 'settled-party-list');
+  assert(!document.getElementById('cheques-view-settled-party-list').classList.contains('d-none'));
+
+  mod.viewSettledPartyDetails();
+  assert.strictEqual(mod.viewMode, 'settled-party-detail');
+  assert(!document.getElementById('cheques-view-settled-party-detail').classList.contains('d-none'));
+
+  mod.viewSettledOwnerPaymentList();
+  assert.strictEqual(mod.viewMode, 'settled-owner-payment-list');
+  assert(!document.getElementById('cheques-view-settled-owner-payment-list').classList.contains('d-none'));
+
+  mod.viewSettledOwnerPaymentDetails(0);
+  assert.strictEqual(mod.viewMode, 'settled-owner-payment-detail');
+  assert(!document.getElementById('cheques-view-settled-owner-payment-detail').classList.contains('d-none'));
+
+  mod.viewSettledTripPaymentList();
+  assert.strictEqual(mod.viewMode, 'settled-trip-payment-list');
+  assert(!document.getElementById('cheques-view-settled-trip-payment-list').classList.contains('d-none'));
+
+  mod.viewSettledTripPaymentDetails(0);
+  assert.strictEqual(mod.viewMode, 'settled-trip-payment-detail');
+  assert(!document.getElementById('cheques-view-settled-trip-payment-detail').classList.contains('d-none'));
+
   console.log('\n🎉 ALL RUNTIME SIMULATION TESTS PASSED 100%! ZERO ERRORS! 🎉\n');
 }
 
