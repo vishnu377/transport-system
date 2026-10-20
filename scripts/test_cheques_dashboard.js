@@ -220,9 +220,17 @@ assert(chequesJs.includes('togglePayToDropdown()'), 'ChequesModule must define t
 assert(chequesJs.includes('toggleStatusDropdown()'), 'ChequesModule must define toggleStatusDropdown');
 assert(chequesJs.includes('toggleAddRecordsDropdown()'), 'ChequesModule must define toggleAddRecordsDropdown');
 
+// 12. Verify Card 1 & Status Styling (User Request: Full text colored in Card 1, distinct colors in Status dropdown)
+assert(htmlContent.includes('.bounced-trip-field-val {'), 'Must style .bounced-trip-field-val in CSS');
+assert(htmlContent.includes('color: #6200ea !important;'), 'Card 1 text must be styled purple #6200ea !important');
+assert(chequesJs.includes('style="color: ${s.color} !important; font-weight: 600;"'), 'Status dropdown options must have distinct colors on text');
+assert(chequesJs.includes('dot.style.color = color;'), 'updateStatusDotColor must update dot color');
+assert(chequesJs.includes('input.style.color = color;'), 'updateStatusDotColor must update input text color');
+
 console.log('✔ Card 1 Combobox: Add Records for (Cheque, Party Payment, Truck Owner Payment, Other B) verified.');
+console.log('✔ Card 1 Values Color: Full text colored #6200ea (matching AppSheet screenshot) verified.');
 console.log('✔ Card 2 Side Drawer: Authentic Cheque Details with 31 Banks, 7 Pay To options & Gold Bullets verified.');
-console.log('✔ Card 3 Financials: Other B typable input & Status combobox verified.');
+console.log('✔ Card 3 Financials: Other B typable input & Status combobox with distinct per-status colors verified.');
 console.log('✔ All Cheques Dashboard, Card 1 Due & Card 2 Bounced tests PASSED 100%!');
 
 

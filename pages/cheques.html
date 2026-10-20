@@ -743,14 +743,17 @@
     .bounced-trip-field-val {
       flex: 1;
       font-weight: 600;
-      color: #202124;
+      color: #6200ea !important;
       display: flex;
       align-items: center;
       gap: 6px;
     }
     .bounced-trip-field-val a {
-      color: inherit;
+      color: #6200ea !important;
       text-decoration: none;
+    }
+    .bounced-trip-field-val a:hover {
+      text-decoration: underline;
     }
 
     /* AppSheet Side Drawer & Header Styles */
@@ -1604,7 +1607,7 @@
               <div class="appsheet-select-trigger" onclick="ChequesModule.toggleStatusDropdown()">
                 <div class="d-flex align-items-center gap-1 flex-grow-1 overflow-hidden">
                   <span id="bounced-trip-status-dot" class="bounced-purple-bullet">●</span>
-                  <input type="text" class="appsheet-select-input fw-semibold" id="bounced-trip-status-input" list="trip-status-options-list" value="POD Sent/Bill Generated" placeholder="Select or type status" oninput="ChequesModule.filterStatusDropdown(this.value)" onchange="ChequesModule.updateTripStatusFromSelect(this.value)" autocomplete="off">
+                  <input type="text" class="appsheet-select-input fw-semibold" id="bounced-trip-status-input" list="trip-status-options-list" value="POD Sent/Bill Generated" placeholder="Select or type status" oninput="ChequesModule.filterStatusDropdown(this.value); ChequesModule.updateStatusDotColor(this.value);" onchange="ChequesModule.updateTripStatusFromSelect(this.value)" autocomplete="off">
                 </div>
                 <datalist id="trip-status-options-list">
                   <option value="Transit"></option>
@@ -2206,16 +2209,16 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
   <!-- Core App Scripts with Cache Busting -->
-  <script src="../js/config.js?v=20261020_v3"></script>
+  <script src="../js/config.js?v=20261020_v4"></script>
   <!-- Universal Master Data Assets (Guaranteed 100% Offline & Fresh Git Deploy Resilience) -->
-  <script src="../js/sample-parties-data.js?v=20261020_v3"></script>
-  <script src="../js/sample-truck-owners-data.js?v=20261020_v3"></script>
-  <script src="../js/sample-drivers-data.js?v=20261020_v3"></script>
-  <script src="../js/sample-trips-data.js?v=20261020_v3"></script>
-  <script src="../js/sample-debts-data.js?v=20261020_v3"></script>
-  <script src="../js/sample-cheques-data.js?v=20261020_v3"></script>
-  <script src="../js/db-service.js?v=20261020_v3"></script>
-  <script src="../js/app.js?v=20261020_v3"></script>
-  <script src="../js/modules/cheques.js?v=20261020_v3"></script>
+  <script src="../js/sample-parties-data.js?v=20261020_v4"></script>
+  <script src="../js/sample-truck-owners-data.js?v=20261020_v4"></script>
+  <script src="../js/sample-drivers-data.js?v=20261020_v4"></script>
+  <script src="../js/sample-trips-data.js?v=20261020_v4"></script>
+  <script src="../js/sample-debts-data.js?v=20261020_v4"></script>
+  <script src="../js/sample-cheques-data.js?v=20261020_v4"></script>
+  <script src="../js/db-service.js?v=20261020_v4"></script>
+  <script src="../js/app.js?v=20261020_v4"></script>
+  <script src="../js/modules/cheques.js?v=20261020_v4"></script>
 </body>
 </html>

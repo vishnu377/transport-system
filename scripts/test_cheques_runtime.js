@@ -133,11 +133,28 @@ async function run() {
   assert(saved, 'Cheque 000999 must be saved');
   assert.strictEqual(saved.amount, 25000, 'Cheque amount must be 25000');
 
-  console.log('Step 10: Testing Status Combobox...');
+  console.log('Step 10: Testing Status Combobox & Dynamic Colors...');
   mod.toggleStatusDropdown();
   mod.filterStatusDropdown('Transit');
   await mod.selectTripStatus('Transit');
   assert.strictEqual(document.getElementById('bounced-trip-status-input').value, 'Transit');
+  assert.strictEqual(document.getElementById('bounced-trip-status-input').style.color, '#bfa136', 'Transit input text must be gold #bfa136');
+  assert.strictEqual(document.getElementById('bounced-trip-status-dot').style.color, '#bfa136', 'Transit dot must be gold #bfa136');
+
+  await mod.selectTripStatus('Off Loading');
+  assert.strictEqual(document.getElementById('bounced-trip-status-input').value, 'Off Loading');
+  assert.strictEqual(document.getElementById('bounced-trip-status-input').style.color, '#e91e63', 'Off Loading input text must be pink #e91e63');
+  assert.strictEqual(document.getElementById('bounced-trip-status-dot').style.color, '#e91e63', 'Off Loading dot must be pink #e91e63');
+
+  await mod.selectTripStatus('Cheque Due');
+  assert.strictEqual(document.getElementById('bounced-trip-status-input').value, 'Cheque Due');
+  assert.strictEqual(document.getElementById('bounced-trip-status-input').style.color, '#1976d2', 'Cheque Due input text must be blue #1976d2');
+  assert.strictEqual(document.getElementById('bounced-trip-status-dot').style.color, '#1976d2', 'Cheque Due dot must be blue #1976d2');
+
+  await mod.selectTripStatus('POD Sent/Bill Generated');
+  assert.strictEqual(document.getElementById('bounced-trip-status-input').value, 'POD Sent/Bill Generated');
+  assert.strictEqual(document.getElementById('bounced-trip-status-input').style.color, '#6200ea', 'POD Sent input text must be purple #6200ea');
+  assert.strictEqual(document.getElementById('bounced-trip-status-dot').style.color, '#6200ea', 'POD Sent dot must be purple #6200ea');
 
   console.log('Step 11: Testing Other B Update...');
   await mod.updateTripOtherB(12000);

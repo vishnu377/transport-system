@@ -1903,17 +1903,17 @@ const ChequesModule = {
     let html = '';
     filtered.forEach(s => {
       html += `
-        <div class="appsheet-dropdown-option" onclick="event.stopPropagation(); ChequesModule.selectTripStatus('${s.label}')">
-          <span style="color: ${s.color}; font-size: 11px; margin-right: 6px;">●</span>
-          <span>${s.label}</span>
+        <div class="appsheet-dropdown-option" style="color: ${s.color} !important; font-weight: 600;" onclick="event.stopPropagation(); ChequesModule.selectTripStatus('${s.label}')">
+          <span style="color: ${s.color} !important; font-size: 11px; margin-right: 6px;">●</span>
+          <span style="color: ${s.color} !important;">${s.label}</span>
         </div>
       `;
     });
     if (cleanQ && !filtered.some(s => s.label.toLowerCase() === cleanQ)) {
       html += `
-        <div class="appsheet-dropdown-option" onclick="event.stopPropagation(); ChequesModule.selectTripStatus('${query}')">
-          <span style="color: #6200ea; font-size: 11px; margin-right: 6px;">●</span>
-          <span>${query}</span>
+        <div class="appsheet-dropdown-option" style="color: #6200ea !important; font-weight: 600;" onclick="event.stopPropagation(); ChequesModule.selectTripStatus('${query}')">
+          <span style="color: #6200ea !important; font-size: 11px; margin-right: 6px;">●</span>
+          <span style="color: #6200ea !important;">${query}</span>
         </div>
       `;
     }
@@ -1930,14 +1930,28 @@ const ChequesModule = {
 
   updateStatusDotColor(status) {
     const dot = document.getElementById('bounced-trip-status-dot');
-    if (!dot) return;
-    const found = APPSHEET_STATUS_LIST.find(s => s.label.toLowerCase() === (status || '').toLowerCase());
-    dot.style.color = found ? found.color : '#6200ea';
+    const input = document.getElementById('bounced-trip-status-input');
+    const clean = (status || '').trim().toLowerCase().replace(/\s*\/\s*/g, '/');
+    const found = APPSHEET_STATUS_LIST.find(s => {
+      const sClean = s.label.toLowerCase().replace(/\s*\/\s*/g, '/');
+      return sClean === clean || 
+             (clean === 'transit' && sClean.includes('transit')) || 
+             (clean === 'in transit' && sClean === 'transit') ||
+             (clean.includes('pod sent') && sClean.includes('pod sent')) ||
+             (clean.includes('off load') && sClean.includes('off load'));
+    });
+    const color = found ? found.color : '#6200ea';
+    if (dot) dot.style.color = color;
+    if (input) {
+      input.style.color = color;
+      input.style.fontWeight = '600';
+    }
   },
 
   clearStatusSelection() {
     const input = document.getElementById('bounced-trip-status-input');
     if (input) input.value = '';
+    this.updateStatusDotColor('');
     this.filterStatusDropdown('');
   },
 
