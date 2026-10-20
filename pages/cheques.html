@@ -641,8 +641,20 @@
       text-align: right;
     }
     /* Cleared Cheques Authentic Styles Matching screencapture_13_43_15.png */
+    .cleared-row {
+      cursor: pointer;
+      transition: background-color 0.15s ease;
+    }
+    .cleared-row td {
+      color: #00b11f !important;
+      font-weight: 500;
+      vertical-align: middle;
+    }
+    .cleared-row:hover td {
+      background-color: #f6fdf7 !important;
+    }
     .cleared-green-bullet {
-      color: #10b52d !important;
+      color: #00b11f !important;
       font-size: 11px;
       line-height: 1;
       display: inline-block;
@@ -650,7 +662,7 @@
     }
     .cleared-group-header-row td {
       background: #fdfdfd !important;
-      color: #10b52d !important;
+      color: #00b11f !important;
       font-weight: 700;
       font-size: 13px;
     }
@@ -675,6 +687,57 @@
       border: 1px solid #e0e0e0;
       border-radius: 8px;
       overflow: hidden;
+    }
+    /* Cleared Open Trip Details Authentic Teal Color (#01cebc) Matching screencapture_13_48_53.png */
+    .cleared-trip-field {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding: 3.5px 0;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+    .cleared-trip-field-label {
+      width: 48%;
+      color: #5f6368;
+      font-weight: 500;
+      flex-shrink: 0;
+      user-select: none;
+    }
+    .cleared-trip-field-val {
+      flex: 1;
+      font-weight: 600;
+      color: #01cebc !important;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      word-break: break-word;
+    }
+    .cleared-trip-field-val a {
+      color: #01cebc !important;
+      text-decoration: none;
+    }
+    .cleared-trip-field-val a:hover {
+      text-decoration: underline;
+    }
+    .cleared-teal-bullet {
+      color: #01cebc !important;
+      font-size: 11px;
+      line-height: 1;
+      display: inline-block;
+      margin-right: 3px;
+    }
+    .cleared-teal-phone-link {
+      color: #01cebc !important;
+      margin-left: auto;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      padding-left: 8px;
+      font-size: 12px;
+    }
+    .cleared-teal-phone-link:hover {
+      color: #009688 !important;
     }
     .bounced-red-bullet {
       color: #d32f2f !important;
@@ -963,46 +1026,68 @@
       width: 100%;
       background: #ffffff;
       border: 1px solid #dadce0;
-      border-radius: 4px;
-      padding: 7px 10px 7px 12px;
+      border-radius: 6px;
+      padding: 6px 10px 6px 12px;
       cursor: pointer;
-      font-size: 13.5px;
+      font-size: 13px;
       color: #202124;
       min-height: 38px;
+      box-shadow: 0 1px 2px rgba(60,64,67,0.05);
+      transition: all 0.15s ease-in-out;
     }
-    .appsheet-select-trigger:focus-within {
-      border-color: #1a73e8;
-      box-shadow: 0 0 0 1px #1a73e8;
+    .appsheet-select-trigger:hover {
+      border-color: #bdc1c6;
+      background: #fafafa;
+    }
+    .appsheet-select-trigger:focus-within,
+    .appsheet-select-trigger.active {
+      border-color: #01cebc;
+      background: #ffffff;
+      box-shadow: 0 0 0 2px rgba(1, 206, 188, 0.22);
     }
     .appsheet-select-input {
       border: none;
       outline: none;
       width: 100%;
-      font-size: 13.5px;
+      font-size: 13px;
       color: inherit;
       background: transparent;
       padding: 0;
+      font-weight: 500;
     }
     .appsheet-select-icons {
       display: flex;
       align-items: center;
       gap: 6px;
       color: #5f6368;
-      font-size: 12px;
+      font-size: 11px;
       user-select: none;
+      flex-shrink: 0;
     }
     .appsheet-select-clear {
       cursor: pointer;
-      padding: 1px 4px;
+      padding: 2px 4px;
       color: #80868b;
-      font-size: 13px;
+      font-size: 12px;
+      border-radius: 50%;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.1s, color 0.1s;
     }
     .appsheet-select-clear:hover {
+      background-color: #f1f3f4;
       color: #202124;
     }
     .appsheet-select-arrow {
       cursor: pointer;
-      font-size: 10px;
+      font-size: 9px;
+      color: #5f6368;
+      transition: transform 0.15s ease;
+    }
+    .appsheet-select-trigger.active .appsheet-select-arrow {
+      transform: rotate(180deg);
     }
     .appsheet-dropdown-card {
       position: absolute;
@@ -1011,58 +1096,64 @@
       right: 0;
       background: #ffffff;
       border: 1px solid #dadce0;
-      border-radius: 4px;
-      margin-top: 3px;
+      border-radius: 6px;
+      margin-top: 4px;
       z-index: 1070;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
       max-height: 250px;
       display: flex;
       flex-direction: column;
+      overflow: hidden;
     }
     .appsheet-dropdown-card.dropdown-upward {
       top: auto;
       bottom: 100%;
       margin-top: 0;
-      margin-bottom: 3px;
+      margin-bottom: 4px;
     }
     .appsheet-dropdown-scroll {
       overflow-y: auto;
       flex: 1;
       padding: 4px 0;
     }
-    .appsheet-dropdown-option {
-      padding: 7px 12px;
+    .appsheet-dropdown-option,
+    .appsheet-dropdown-item {
+      padding: 8px 12px;
       font-size: 13px;
       color: #202124;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       transition: background 0.1s;
     }
-    .appsheet-dropdown-option:hover {
+    .appsheet-dropdown-option:hover,
+    .appsheet-dropdown-item:hover {
       background: #f1f3f4;
+      color: #01cebc;
     }
     .appsheet-dropdown-footer {
       display: flex;
       justify-content: flex-end;
-      padding: 4px 8px;
+      padding: 6px 10px;
       border-top: 1px solid #f1f3f4;
       background: #fcfcfc;
     }
     .appsheet-dropdown-close-btn {
-      background: #5f6368;
-      color: #ffffff;
-      border: none;
-      border-radius: 3px;
+      background: #ffffff;
+      color: #5f6368;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
       font-size: 11.5px;
       font-weight: 500;
-      padding: 2px 10px;
+      padding: 3px 10px;
       cursor: pointer;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+      transition: all 0.12s ease;
     }
     .appsheet-dropdown-close-btn:hover {
-      background: #202124;
+      background: #f1f3f4;
+      color: #202124;
+      border-color: #bdc1c6;
     }
 
     /* Offcanvas Update Trip Details */
@@ -1930,21 +2021,21 @@
 
           <!-- Section 2: Totals & Status -->
           <div class="p-3">
-            <div class="bounced-trip-field mb-2">
-              <div class="bounced-trip-field-label">Total Cheque Amount</div>
-              <div class="bounced-trip-field-val" id="cleared-summary-chq-amount">
-                <span class="bounced-purple-bullet">●</span> ₹ 76,000.00
+            <div class="cleared-trip-field mb-2">
+              <div class="cleared-trip-field-label">Total Cheque Amount</div>
+              <div class="cleared-trip-field-val" id="cleared-summary-chq-amount">
+                <span class="cleared-teal-bullet">●</span> ₹ 76,000.00
               </div>
             </div>
-            <div class="bounced-trip-field mb-2">
-              <div class="bounced-trip-field-label">Total Freight</div>
-              <div class="bounced-trip-field-val" id="cleared-summary-freight">
-                <span class="bounced-purple-bullet">●</span> ₹ 152,000.00
+            <div class="cleared-trip-field mb-2">
+              <div class="cleared-trip-field-label">Total Freight</div>
+              <div class="cleared-trip-field-val" id="cleared-summary-freight">
+                <span class="cleared-teal-bullet">●</span> ₹ 152,000.00
               </div>
             </div>
-            <div class="bounced-trip-field mb-3">
-              <div class="bounced-trip-field-label">Other B</div>
-              <div class="bounced-trip-field-val" id="cleared-summary-other-b">
+            <div class="cleared-trip-field mb-3">
+              <div class="cleared-trip-field-label">Other B</div>
+              <div class="cleared-trip-field-val" id="cleared-summary-other-b">
                 <div class="input-group input-group-sm" style="max-width: 160px;">
                   <span class="input-group-text bg-white border-end-0 text-muted" style="font-size: 12px; border-color: #dadce0;">₹</span>
                   <input type="number" step="any" class="form-control form-control-sm border-start-0 font-monospace fw-semibold" id="cleared-trip-other-b-input" placeholder="0.00" onchange="ChequesModule.updateTripOtherB(this.value)" style="color: #202124; border-color: #dadce0;">

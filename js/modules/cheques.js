@@ -2201,11 +2201,17 @@ const ChequesModule = {
     this.activeTrip.status = statusVal;
     this.activeTrip.tripStatus = statusVal;
 
-    const statusInput = document.getElementById('bounced-trip-status-input');
-    if (statusInput && statusInput.value !== statusVal) {
-      statusInput.value = statusVal;
+    const bouncedStatusInput = document.getElementById('bounced-trip-status-input');
+    if (bouncedStatusInput && bouncedStatusInput.value !== statusVal) {
+      bouncedStatusInput.value = statusVal;
     }
     this.updateStatusDotColor(statusVal);
+
+    const clearedStatusInput = document.getElementById('cleared-trip-status-input');
+    if (clearedStatusInput && clearedStatusInput.value !== statusVal) {
+      clearedStatusInput.value = statusVal;
+    }
+    this.updateClearedStatusDotColor(statusVal);
 
     // Direct Cloud Firestore Sync
     try {
@@ -2594,72 +2600,72 @@ const ChequesModule = {
     const card1Fields = document.getElementById('cleared-card1-trip-fields');
     if (card1Fields) {
       card1Fields.innerHTML = `
-        <div class="bounced-trip-field">
-          <div class="bounced-trip-field-label">G.R.No.</div>
-          <div class="bounced-trip-field-val font-monospace"><span class="bounced-purple-bullet">●</span> ${trip.grNo || '2026-2027-2418_TTC'}</div>
+        <div class="cleared-trip-field">
+          <div class="cleared-trip-field-label">G.R.No.</div>
+          <div class="cleared-trip-field-val font-monospace"><span class="cleared-teal-bullet">●</span> ${trip.grNo || '2026-2027-2418_TTC'}</div>
         </div>
-        <div class="bounced-trip-field">
-          <div class="bounced-trip-field-label">Truck No.</div>
-          <div class="bounced-trip-field-val font-monospace"><span class="bounced-purple-bullet">●</span> ${trip.truckNo || 'RJ01GC4865'}</div>
+        <div class="cleared-trip-field">
+          <div class="cleared-trip-field-label">Truck No.</div>
+          <div class="cleared-trip-field-val font-monospace"><span class="cleared-teal-bullet">●</span> ${trip.truckNo || 'RJ01GC4865'}</div>
         </div>
-        <div class="bounced-trip-field">
-          <div class="bounced-trip-field-label">Trip Start Date</div>
-          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${formattedStartDate}</div>
+        <div class="cleared-trip-field">
+          <div class="cleared-trip-field-label">Trip Start Date</div>
+          <div class="cleared-trip-field-val"><span class="cleared-teal-bullet">●</span> ${formattedStartDate}</div>
         </div>
-        <div class="bounced-trip-field">
-          <div class="bounced-trip-field-label">Trip End Date</div>
-          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${formattedEndDate}</div>
+        <div class="cleared-trip-field">
+          <div class="cleared-trip-field-label">Trip End Date</div>
+          <div class="cleared-trip-field-val"><span class="cleared-teal-bullet">●</span> ${formattedEndDate}</div>
         </div>
-        <div class="bounced-trip-field">
-          <div class="bounced-trip-field-label">Origin</div>
-          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${trip.origin || 'Rajsamand (Raj.)'}</div>
+        <div class="cleared-trip-field">
+          <div class="cleared-trip-field-label">Origin</div>
+          <div class="cleared-trip-field-val"><span class="cleared-teal-bullet">●</span> ${trip.origin || 'Rajsamand (Raj.)'}</div>
         </div>
-        <div class="bounced-trip-field">
-          <div class="bounced-trip-field-label">Destination</div>
-          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${trip.destination || 'Mohali (Punjab)'}</div>
+        <div class="cleared-trip-field">
+          <div class="cleared-trip-field-label">Destination</div>
+          <div class="cleared-trip-field-val"><span class="cleared-teal-bullet">●</span> ${trip.destination || 'Mohali (Punjab)'}</div>
         </div>
-        <div class="bounced-trip-field">
-          <div class="bounced-trip-field-label">Consignee Billing Type</div>
-          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${trip.consigneeBillingType || trip.billingType || 'Per Tonne'}</div>
+        <div class="cleared-trip-field">
+          <div class="cleared-trip-field-label">Consignee Billing Type</div>
+          <div class="cleared-trip-field-val"><span class="cleared-teal-bullet">●</span> ${trip.consigneeBillingType || trip.billingType || 'Per Tonne'}</div>
         </div>
-        <div class="bounced-trip-field">
-          <div class="bounced-trip-field-label">Bilty Amount</div>
-          <div class="bounced-trip-field-val font-monospace"><span class="bounced-purple-bullet">●</span> ₹${Number(trip.biltyAmount || 76000).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+        <div class="cleared-trip-field">
+          <div class="cleared-trip-field-label">Bilty Amount</div>
+          <div class="cleared-trip-field-val font-monospace"><span class="cleared-teal-bullet">●</span> ₹${Number(trip.biltyAmount || 76000).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
         </div>
-        <div class="bounced-trip-field">
-          <div class="bounced-trip-field-label">Weight</div>
-          <div class="bounced-trip-field-val font-monospace"><span class="bounced-purple-bullet">●</span> ${Number(trip.weight || 80.0).toFixed(3)}</div>
+        <div class="cleared-trip-field">
+          <div class="cleared-trip-field-label">Weight</div>
+          <div class="cleared-trip-field-val font-monospace"><span class="cleared-teal-bullet">●</span> ${Number(trip.weight || 80.0).toFixed(3)}</div>
         </div>
-        <div class="bounced-trip-field">
-          <div class="bounced-trip-field-label">Rate</div>
-          <div class="bounced-trip-field-val font-monospace"><span class="bounced-purple-bullet">●</span> ₹${Number(trip.rate || 1900).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+        <div class="cleared-trip-field">
+          <div class="cleared-trip-field-label">Rate</div>
+          <div class="cleared-trip-field-val font-monospace"><span class="cleared-teal-bullet">●</span> ₹${Number(trip.rate || 1900).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
         </div>
-        <div class="bounced-trip-field">
-          <div class="bounced-trip-field-label">Material</div>
-          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${trip.material || 'MARBLE GRAINS'}</div>
+        <div class="cleared-trip-field">
+          <div class="cleared-trip-field-label">Material</div>
+          <div class="cleared-trip-field-val"><span class="cleared-teal-bullet">●</span> ${trip.material || 'MARBLE GRAINS'}</div>
         </div>
-        <div class="bounced-trip-field">
-          <div class="bounced-trip-field-label">Reference</div>
-          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${trip.reference || 'Nilesh Malani'}</div>
+        <div class="cleared-trip-field">
+          <div class="cleared-trip-field-label">Reference</div>
+          <div class="cleared-trip-field-val"><span class="cleared-teal-bullet">●</span> ${trip.reference || 'Nilesh Malani'}</div>
         </div>
-        <div class="bounced-trip-field">
-          <div class="bounced-trip-field-label">Reference Mobile No.</div>
-          <div class="bounced-trip-field-val">
-            <span class="bounced-purple-bullet">●</span> 
+        <div class="cleared-trip-field">
+          <div class="cleared-trip-field-label">Reference Mobile No.</div>
+          <div class="cleared-trip-field-val">
+            <span class="cleared-teal-bullet">●</span> 
             ${trip.referenceMobile || '9829043728'}
-            <a href="tel:${trip.referenceMobile || '9829043728'}" class="bounced-phone-link" title="Call Reference"><i class="bi bi-telephone-fill"></i></a>
+            <a href="tel:${trip.referenceMobile || '9829043728'}" class="cleared-teal-phone-link" title="Call Reference"><i class="bi bi-telephone-fill"></i></a>
           </div>
         </div>
-        <div class="bounced-trip-field">
-          <div class="bounced-trip-field-label">Driver</div>
-          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${trip.driver || 'Birdi Chand Gurjar Shrinagar'}</div>
+        <div class="cleared-trip-field">
+          <div class="cleared-trip-field-label">Driver</div>
+          <div class="cleared-trip-field-val"><span class="cleared-teal-bullet">●</span> ${trip.driver || 'Birdi Chand Gurjar Shrinagar'}</div>
         </div>
-        <div class="bounced-trip-field">
-          <div class="bounced-trip-field-label">Driver Mobile No.</div>
-          <div class="bounced-trip-field-val">
-            <span class="bounced-purple-bullet">●</span> 
+        <div class="cleared-trip-field">
+          <div class="cleared-trip-field-label">Driver Mobile No.</div>
+          <div class="cleared-trip-field-val">
+            <span class="cleared-teal-bullet">●</span> 
             ${trip.driverMobile || '7568525599'}
-            <a href="tel:${trip.driverMobile || '7568525599'}" class="bounced-phone-link" title="Call Driver"><i class="bi bi-telephone-fill"></i></a>
+            <a href="tel:${trip.driverMobile || '7568525599'}" class="cleared-teal-phone-link" title="Call Driver"><i class="bi bi-telephone-fill"></i></a>
           </div>
         </div>
       `;
@@ -2710,17 +2716,17 @@ const ChequesModule = {
     const consignorFields = document.getElementById('cleared-consignor-fields');
     if (consignorFields) {
       consignorFields.innerHTML = `
-        <div class="bounced-trip-field">
-          <div class="bounced-trip-field-label">GSTIN</div>
-          <div class="bounced-trip-field-val font-monospace"><span class="bounced-purple-bullet">●</span> ${trip.consignorGstin || '08AFSFS6249C1ZJ'}</div>
+        <div class="cleared-trip-field">
+          <div class="cleared-trip-field-label">GSTIN</div>
+          <div class="cleared-trip-field-val font-monospace"><span class="cleared-teal-bullet">●</span> ${trip.consignorGstin || '08AFSFS6249C1ZJ'}</div>
         </div>
-        <div class="bounced-trip-field">
-          <div class="bounced-trip-field-label">Consignor</div>
-          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${trip.consignor || 'SHRINATH MICRON'}</div>
+        <div class="cleared-trip-field">
+          <div class="cleared-trip-field-label">Consignor</div>
+          <div class="cleared-trip-field-val"><span class="cleared-teal-bullet">●</span> ${trip.consignor || 'SHRINATH MICRON'}</div>
         </div>
-        <div class="bounced-trip-field">
-          <div class="bounced-trip-field-label">Consignor Address</div>
-          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${trip.consignorAddress || '202, SUNRISE APPARMENT, BUS STAND, NATHDWARA, RAJSAMAND (RAJ.)-313334'}</div>
+        <div class="cleared-trip-field">
+          <div class="cleared-trip-field-label">Consignor Address</div>
+          <div class="cleared-trip-field-val"><span class="cleared-teal-bullet">●</span> ${trip.consignorAddress || '202, SUNRISE APPARMENT, BUS STAND, NATHDWARA, RAJSAMAND (RAJ.)-313334'}</div>
         </div>
       `;
     }
@@ -2729,13 +2735,13 @@ const ChequesModule = {
     const totalLinkedAmount = linkedCheques.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
     const sumChqEl = document.getElementById('cleared-summary-chq-amount');
     if (sumChqEl) {
-      sumChqEl.innerHTML = `<span class="bounced-purple-bullet">●</span> ${this.formatCurrency(totalLinkedAmount > 0 ? totalLinkedAmount : 76000)}`;
+      sumChqEl.innerHTML = `<span class="cleared-teal-bullet">●</span> ${this.formatCurrency(totalLinkedAmount > 0 ? totalLinkedAmount : 76000)}`;
     }
 
     const freightVal = trip.freight || 152000;
     const freightEl = document.getElementById('cleared-summary-freight');
     if (freightEl) {
-      freightEl.innerHTML = `<span class="bounced-purple-bullet">●</span> ${this.formatCurrency(freightVal)}`;
+      freightEl.innerHTML = `<span class="cleared-teal-bullet">●</span> ${this.formatCurrency(freightVal)}`;
     }
 
     const otherBVal = trip.otherB !== undefined ? trip.otherB : 0;
@@ -2755,45 +2761,45 @@ const ChequesModule = {
     const consigneeOwnerFields = document.getElementById('cleared-consignee-owner-fields');
     if (consigneeOwnerFields) {
       consigneeOwnerFields.innerHTML = `
-        <div class="bounced-trip-field">
-          <div class="bounced-trip-field-label">GSTIN Consignee</div>
-          <div class="bounced-trip-field-val font-monospace"><span class="bounced-purple-bullet">●</span> ${trip.consigneeGstin || '03AAEFG0040N1ZT'}</div>
+        <div class="cleared-trip-field">
+          <div class="cleared-trip-field-label">GSTIN Consignee</div>
+          <div class="cleared-trip-field-val font-monospace"><span class="cleared-teal-bullet">●</span> ${trip.consigneeGstin || '03AAEFG0040N1ZT'}</div>
         </div>
-        <div class="bounced-trip-field">
-          <div class="bounced-trip-field-label">Consignee</div>
-          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${trip.consignee || 'GOYAL INDUSTRIES'}</div>
+        <div class="cleared-trip-field">
+          <div class="cleared-trip-field-label">Consignee</div>
+          <div class="cleared-trip-field-val"><span class="cleared-teal-bullet">●</span> ${trip.consignee || 'GOYAL INDUSTRIES'}</div>
         </div>
-        <div class="bounced-trip-field">
-          <div class="bounced-trip-field-label">Consignee Mobile No.</div>
-          <div class="bounced-trip-field-val">
-            <span class="bounced-purple-bullet">●</span> 
+        <div class="cleared-trip-field">
+          <div class="cleared-trip-field-label">Consignee Mobile No.</div>
+          <div class="cleared-trip-field-val">
+            <span class="cleared-teal-bullet">●</span> 
             ${trip.consigneeMobile || '9215072333'}
-            <a href="tel:${trip.consigneeMobile || '9215072333'}" class="bounced-phone-link" title="Call Consignee"><i class="bi bi-telephone-fill"></i></a>
+            <a href="tel:${trip.consigneeMobile || '9215072333'}" class="cleared-teal-phone-link" title="Call Consignee"><i class="bi bi-telephone-fill"></i></a>
           </div>
         </div>
-        <div class="bounced-trip-field">
-          <div class="bounced-trip-field-label">Consignee Mobile No.</div>
-          <div class="bounced-trip-field-val">
-            <span class="bounced-purple-bullet">●</span> 
+        <div class="cleared-trip-field">
+          <div class="cleared-trip-field-label">Consignee Mobile No.</div>
+          <div class="cleared-trip-field-val">
+            <span class="cleared-teal-bullet">●</span> 
             ${trip.consigneeMobile2 || '9814115742'}
-            <a href="tel:${trip.consigneeMobile2 || '9814115742'}" class="bounced-phone-link" title="Call Consignee"><i class="bi bi-telephone-fill"></i></a>
+            <a href="tel:${trip.consigneeMobile2 || '9814115742'}" class="cleared-teal-phone-link" title="Call Consignee"><i class="bi bi-telephone-fill"></i></a>
           </div>
         </div>
-        <div class="bounced-trip-field">
-          <div class="bounced-trip-field-label">Owner</div>
-          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${trip.owner || trip.truckOwner || 'Shankar Singh Rawat Shrinagar'}</div>
+        <div class="cleared-trip-field">
+          <div class="cleared-trip-field-label">Owner</div>
+          <div class="cleared-trip-field-val"><span class="cleared-teal-bullet">●</span> ${trip.owner || trip.truckOwner || 'Shankar Singh Rawat Shrinagar'}</div>
         </div>
-        <div class="bounced-trip-field">
-          <div class="bounced-trip-field-label">Owner Mobile No.</div>
-          <div class="bounced-trip-field-val">
-            <span class="bounced-purple-bullet">●</span> 
+        <div class="cleared-trip-field">
+          <div class="cleared-trip-field-label">Owner Mobile No.</div>
+          <div class="cleared-trip-field-val">
+            <span class="cleared-teal-bullet">●</span> 
             ${trip.ownerMobile || trip.truckOwnerMobile || '8209362551'}
-            <a href="tel:${trip.ownerMobile || trip.truckOwnerMobile || '8209362551'}" class="bounced-phone-link" title="Call Owner"><i class="bi bi-telephone-fill"></i></a>
+            <a href="tel:${trip.ownerMobile || trip.truckOwnerMobile || '8209362551'}" class="cleared-teal-phone-link" title="Call Owner"><i class="bi bi-telephone-fill"></i></a>
           </div>
         </div>
-        <div class="bounced-trip-field">
-          <div class="bounced-trip-field-label">Freight</div>
-          <div class="bounced-trip-field-val font-monospace"><span class="bounced-purple-bullet">●</span> ₹${Number(trip.freight || 152000).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+        <div class="cleared-trip-field">
+          <div class="cleared-trip-field-label">Freight</div>
+          <div class="cleared-trip-field-val font-monospace"><span class="cleared-teal-bullet">●</span> ₹${Number(trip.freight || 152000).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
         </div>
       `;
     }
@@ -2822,21 +2828,21 @@ const ChequesModule = {
     if (cardBody) {
       let shortGr = trip.shortGrNo || '2418';
       cardBody.innerHTML = `
-        <div class="chq-field-row">
-          <div class="chq-field-label">G.R.No.</div>
-          <div class="chq-field-val font-monospace"><span class="bounced-purple-bullet">●</span> ${shortGr}</div>
+        <div class="cleared-trip-field">
+          <div class="cleared-trip-field-label">G.R.No.</div>
+          <div class="cleared-trip-field-val font-monospace"><span class="cleared-teal-bullet">●</span> ${shortGr}</div>
         </div>
-        <div class="chq-field-row">
-          <div class="chq-field-label">GSTIN</div>
-          <div class="chq-field-val font-monospace"><span class="bounced-purple-bullet">●</span> ${trip.consignorGstin || '08AFSFS6249C1Z3'}</div>
+        <div class="cleared-trip-field">
+          <div class="cleared-trip-field-label">GSTIN</div>
+          <div class="cleared-trip-field-val font-monospace"><span class="cleared-teal-bullet">●</span> ${trip.consignorGstin || '08AFSFS6249C1Z3'}</div>
         </div>
-        <div class="chq-field-row">
-          <div class="chq-field-label">Consignor</div>
-          <div class="chq-field-val"><span class="bounced-purple-bullet">●</span> ${trip.consignor || 'SHRINATH MICRON'}</div>
+        <div class="cleared-trip-field">
+          <div class="cleared-trip-field-label">Consignor</div>
+          <div class="cleared-trip-field-val"><span class="cleared-teal-bullet">●</span> ${trip.consignor || 'SHRINATH MICRON'}</div>
         </div>
-        <div class="chq-field-row">
-          <div class="chq-field-label">Consignor Address</div>
-          <div class="chq-field-val"><span class="bounced-purple-bullet">●</span> ${trip.consignorAddress || '202, SUNRISE APPARMENT, BUS STAND NATHDWARA, RAJSAMAND (RAJ.)-313334'}</div>
+        <div class="cleared-trip-field">
+          <div class="cleared-trip-field-label">Consignor Address</div>
+          <div class="cleared-trip-field-val"><span class="cleared-teal-bullet">●</span> ${trip.consignorAddress || '202, SUNRISE APPARMENT, BUS STAND NATHDWARA, RAJSAMAND (RAJ.)-313334'}</div>
         </div>
       `;
     }
@@ -2864,48 +2870,51 @@ const ChequesModule = {
       const formattedClearDate = this.toDisplayDateFormat(c.clearingDate || c.groupDate || '16/10/2026');
 
       cardBody.innerHTML = `
-        <div class="chq-field-row">
-          <div class="chq-field-label">Cheque Due Date</div>
-          <div class="chq-field-val"><span class="cleared-green-bullet">●</span> ${formattedDueDate}</div>
+        <div class="cleared-trip-field">
+          <div class="cleared-trip-field-label">Cheque Due Date</div>
+          <div class="cleared-trip-field-val"><span class="cleared-green-bullet">●</span> ${formattedDueDate}</div>
         </div>
-        <div class="chq-field-row">
-          <div class="chq-field-label">Cheque No.</div>
-          <div class="chq-field-val font-monospace"><span class="cleared-green-bullet">●</span> ${c.chequeNo || '000004'}</div>
+        <div class="cleared-trip-field">
+          <div class="cleared-trip-field-label">Cheque No.</div>
+          <div class="cleared-trip-field-val font-monospace"><span class="cleared-green-bullet">●</span> ${c.chequeNo || '000004'}</div>
         </div>
-        <div class="chq-field-row">
-          <div class="chq-field-label">Amount</div>
-          <div class="chq-field-val font-monospace"><span class="cleared-green-bullet">●</span> ${this.formatCurrency(c.amount || 76000)}</div>
+        <div class="cleared-trip-field">
+          <div class="cleared-trip-field-label">Amount</div>
+          <div class="cleared-trip-field-val font-monospace"><span class="cleared-green-bullet">●</span> ${this.formatCurrency(c.amount || 76000)}</div>
         </div>
-        <div class="chq-field-row">
-          <div class="chq-field-label">Bank</div>
-          <div class="chq-field-val"><span class="cleared-green-bullet">●</span> ${c.bankName || 'HDFC'}</div>
+        <div class="cleared-trip-field">
+          <div class="cleared-trip-field-label">Bank</div>
+          <div class="cleared-trip-field-val"><span class="cleared-green-bullet">●</span> ${c.bankName || 'HDFC'}</div>
         </div>
-        <div class="chq-field-row">
-          <div class="chq-field-label">Pay to</div>
-          <div class="chq-field-val"><span class="cleared-green-bullet">●</span> ${c.firm || 'TTC'}</div>
+        <div class="cleared-trip-field">
+          <div class="cleared-trip-field-label">Pay to</div>
+          <div class="cleared-trip-field-val"><span class="cleared-green-bullet">●</span> ${c.firm || 'TTC'}</div>
         </div>
-        <div class="chq-field-row">
-          <div class="chq-field-label">Clearing Date</div>
-          <div class="chq-field-val"><span class="cleared-green-bullet">●</span> ${formattedClearDate}</div>
+        <div class="cleared-trip-field">
+          <div class="cleared-trip-field-label">Clearing Date</div>
+          <div class="cleared-trip-field-val"><span class="cleared-green-bullet">●</span> ${formattedClearDate}</div>
         </div>
       `;
     }
   },
 
-  // --- Add Records Combobox for Cleared (Card 1 Bottom) ---
+  // --- Add Records Combobox for Cleared (Card 3 Bottom) ---
   toggleClearedAddRecordsDropdown() {
     const menu = document.getElementById('cleared-add-records-dropdown-menu');
     const arrow = document.getElementById('cleared-add-records-arrow-icon');
+    const trigger = document.getElementById('cleared-add-records-combobox-wrap')?.querySelector('.appsheet-select-trigger');
     if (!menu) return;
     const isHidden = menu.classList.contains('d-none');
     this.closeAllAppSheetDropdowns();
     if (isHidden) {
       menu.classList.remove('d-none');
       if (arrow) arrow.innerText = '▲';
+      if (trigger) trigger.classList.add('active');
       this.filterClearedAddRecordsDropdown(document.getElementById('cleared-add-records-input')?.value || '');
     } else {
       menu.classList.add('d-none');
       if (arrow) arrow.innerText = '▼';
+      if (trigger) trigger.classList.remove('active');
     }
   },
 
@@ -2933,8 +2942,10 @@ const ChequesModule = {
   closeClearedAddRecordsDropdown() {
     const menu = document.getElementById('cleared-add-records-dropdown-menu');
     const arrow = document.getElementById('cleared-add-records-arrow-icon');
+    const trigger = document.getElementById('cleared-add-records-combobox-wrap')?.querySelector('.appsheet-select-trigger');
     if (menu) menu.classList.add('d-none');
     if (arrow) arrow.innerText = '▼';
+    if (trigger) trigger.classList.remove('active');
   },
 
   selectClearedAddRecord(type) {
@@ -2964,20 +2975,23 @@ const ChequesModule = {
     }
   },
 
-  // --- Status Combobox for Cleared (Card 3) ---
+  // --- Status Combobox for Cleared (Card 2 Bottom) ---
   toggleClearedStatusDropdown() {
     const menu = document.getElementById('cleared-status-dropdown-menu');
     const arrow = document.getElementById('cleared-status-arrow-icon');
+    const trigger = document.getElementById('cleared-status-combobox-wrap')?.querySelector('.appsheet-select-trigger');
     if (!menu) return;
     const isHidden = menu.classList.contains('d-none');
     this.closeAllAppSheetDropdowns();
     if (isHidden) {
       menu.classList.remove('d-none');
       if (arrow) arrow.innerText = '▲';
+      if (trigger) trigger.classList.add('active');
       this.filterClearedStatusDropdown(document.getElementById('cleared-trip-status-input')?.value || '');
     } else {
       menu.classList.add('d-none');
       if (arrow) arrow.innerText = '▼';
+      if (trigger) trigger.classList.remove('active');
     }
   },
 
@@ -3006,8 +3020,10 @@ const ChequesModule = {
   closeClearedStatusDropdown() {
     const menu = document.getElementById('cleared-status-dropdown-menu');
     const arrow = document.getElementById('cleared-status-arrow-icon');
+    const trigger = document.getElementById('cleared-status-combobox-wrap')?.querySelector('.appsheet-select-trigger');
     if (menu) menu.classList.add('d-none');
     if (arrow) arrow.innerText = '▼';
+    if (trigger) trigger.classList.remove('active');
   },
 
   selectClearedStatus(val) {
