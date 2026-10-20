@@ -641,30 +641,58 @@
       text-align: right;
     }
     /* Cleared Cheques Authentic Styles Matching screencapture_13_43_15.png */
+    #cleared-table {
+      min-width: 1100px;
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+    }
+    #cleared-table th {
+      background: #ffffff !important;
+      color: #5f6368 !important;
+      font-weight: 500;
+      font-size: 12px;
+      padding: 9px 12px !important;
+      border-bottom: 1px solid #e0e0e0;
+      white-space: nowrap !important;
+      user-select: none;
+    }
     .cleared-row {
       cursor: pointer;
-      transition: background-color 0.15s ease;
+      transition: background-color 0.12s ease;
     }
     .cleared-row td {
       color: #00b11f !important;
       font-weight: 500;
       vertical-align: middle;
+      padding: 8px 12px !important;
+      white-space: nowrap !important;
+      border-bottom: 1px solid #f1f3f4;
+      line-height: 1.4;
     }
     .cleared-row:hover td {
-      background-color: #f6fdf7 !important;
+      background-color: #f0fbf2 !important;
+    }
+    .cleared-row.active td {
+      background-color: #e8f5e9 !important;
     }
     .cleared-green-bullet {
       color: #00b11f !important;
       font-size: 11px;
       line-height: 1;
       display: inline-block;
-      margin-right: 5px;
+      margin-right: 6px;
+      vertical-align: middle;
     }
     .cleared-group-header-row td {
-      background: #fdfdfd !important;
+      background: #f7fcf8 !important;
       color: #00b11f !important;
       font-weight: 700;
       font-size: 13px;
+      padding: 9px 14px !important;
+      border-top: 1px solid #e0e0e0 !important;
+      border-bottom: 1px solid #e8f5e9 !important;
+      white-space: nowrap !important;
     }
     .cleared-year-item.active {
       background: #e8f5e9 !important;
@@ -1956,21 +1984,21 @@
         </div>
 
         <!-- RIGHT: Cleared Table Container -->
-        <div class="bounced-table-container">
-          <div class="table-responsive">
+        <div class="bounced-table-container shadow-sm" id="cleared-table-container">
+          <div class="table-responsive" style="max-height: calc(100vh - 140px); overflow-x: auto; overflow-y: auto;">
             <table class="table table-hover align-middle mb-0" id="cleared-table">
-              <thead class="table-light">
+              <thead class="sticky-top shadow-sm">
                 <tr>
-                  <th style="white-space: nowrap;">Cheque No.</th>
-                  <th style="white-space: nowrap;">Bank</th>
-                  <th style="white-space: nowrap;" class="text-end">Amount</th>
-                  <th style="white-space: nowrap;">Party</th>
-                  <th style="white-space: nowrap;">G.R.No.</th>
-                  <th style="white-space: nowrap;">Truck NO.</th>
-                  <th style="white-space: nowrap;">To</th>
-                  <th style="white-space: nowrap;">Pay to</th>
-                  <th style="white-space: nowrap;">Clearing Date</th>
-                  <th style="width: 24px; text-align: center;"></th>
+                  <th style="white-space: nowrap; width: 110px;">Cheque No.</th>
+                  <th style="white-space: nowrap; width: 90px;">Bank</th>
+                  <th style="white-space: nowrap; width: 130px;" class="text-end">Amount</th>
+                  <th style="white-space: nowrap; min-width: 220px;">Party</th>
+                  <th style="white-space: nowrap; width: 85px;">G.R.No.</th>
+                  <th style="white-space: nowrap; width: 130px;">Truck NO.</th>
+                  <th style="white-space: nowrap; width: 150px;">To</th>
+                  <th style="white-space: nowrap; width: 85px;">Pay to</th>
+                  <th style="white-space: nowrap; width: 130px;">Clearing Date</th>
+                  <th style="width: 28px; text-align: center;"></th>
                 </tr>
               </thead>
               <tbody id="cleared-table-tbody">

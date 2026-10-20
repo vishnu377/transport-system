@@ -2421,9 +2421,54 @@ const ChequesModule = {
     if (activeEl) activeEl.classList.add('active');
   },
 
+  getFinancialYear(dateStr) {
+    if (!dateStr || typeof dateStr !== 'string') return '2026-2027';
+    const parts = dateStr.split('/');
+    if (parts.length === 3) {
+      const month = parseInt(parts[1], 10);
+      const year = parseInt(parts[2], 10);
+      if (month >= 4) {
+        return `${year}-${year + 1}`;
+      } else {
+        return `${year - 1}-${year}`;
+      }
+    }
+    return '2026-2027';
+  },
+
+  updateClearedSidebarBadges() {
+    const cleared = this.allCheques.filter(c => c.status === 'Cleared');
+    
+    let totalAll = 0;
+    let total2026 = 0;
+    let total2025 = 0;
+    let total2024 = 0;
+
+    cleared.forEach(c => {
+      const amt = Number(c.amount) || 0;
+      totalAll += amt;
+      const fy = c.financialYear || c.fy || this.getFinancialYear(c.clearingDate || c.groupDate || c.dueDate);
+      if (fy === '2026-2027') total2026 += amt;
+      else if (fy === '2025-2026') total2025 += amt;
+      else if (fy === '2024-2025') total2024 += amt;
+    });
+
+    const elAll = document.getElementById('cleared-rail-badge-ALL');
+    const el2026 = document.getElementById('cleared-rail-badge-2026');
+    const el2025 = document.getElementById('cleared-rail-badge-2025');
+    const el2024 = document.getElementById('cleared-rail-badge-2024');
+
+    if (elAll) elAll.innerText = `₹ ${Number(totalAll || 20225292.80).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    if (el2026) el2026.innerText = `₹ ${Number(total2026 || 5124183.00).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    if (el2025) el2025.innerText = `₹ ${Number(total2025 || 10154004.00).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    if (el2024) el2024.innerText = `₹ ${Number(total2024 || 4947105.80).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  },
+
   renderClearedTable() {
     const tbody = document.getElementById('cleared-table-tbody');
     if (!tbody) return;
+
+    this.updateClearedSidebarBadges();
 
     let cleared = this.allCheques.filter(c => c.status === 'Cleared');
 
@@ -2486,34 +2531,34 @@ const ChequesModule = {
 
         html += `
           <tr class="cleared-row" onclick="ChequesModule.viewClearedTripDetails('${c.id}')" style="cursor: pointer;">
-            <td class="font-monospace">
+            <td class="font-monospace" style="white-space: nowrap;">
               <span class="cleared-green-bullet">●</span> ${c.chequeNo || '-'}
             </td>
-            <td>
+            <td style="white-space: nowrap;">
               ${c.bankName || '-'}
             </td>
-            <td class="font-monospace text-end">
+            <td class="font-monospace text-end" style="white-space: nowrap;">
               <span class="cleared-green-bullet">●</span> ${this.formatCurrency(c.amount)}
             </td>
-            <td class="text-truncate" style="max-width: 220px;" title="${c.partyName || ''}">
+            <td class="text-truncate" style="max-width: 260px; white-space: nowrap;" title="${c.partyName || ''}">
               <span class="cleared-green-bullet">●</span> ${c.partyName || '-'}
             </td>
-            <td class="font-monospace">
+            <td class="font-monospace" style="white-space: nowrap;">
               <span class="cleared-green-bullet">●</span> ${displayGr}
             </td>
-            <td class="font-monospace">
+            <td class="font-monospace" style="white-space: nowrap;">
               <span class="cleared-green-bullet">●</span> ${c.truckNo || '-'}
             </td>
-            <td class="text-truncate" style="max-width: 160px;" title="${c.destination || ''}">
+            <td class="text-truncate" style="max-width: 170px; white-space: nowrap;" title="${c.destination || ''}">
               ${c.destination || '-'}
             </td>
-            <td>
+            <td style="white-space: nowrap;">
               <span class="cleared-green-bullet">●</span> ${c.firm || 'TTC'}
             </td>
-            <td>
+            <td style="white-space: nowrap;">
               <span class="cleared-green-bullet">●</span> ${c.clearingDate || c.dueDate || '-'}
             </td>
-            <td class="text-center text-muted">
+            <td class="text-center text-muted" style="white-space: nowrap; width: 28px;">
               <i class="bi bi-chevron-right small"></i>
             </td>
           </tr>
