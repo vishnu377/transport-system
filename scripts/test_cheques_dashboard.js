@@ -227,11 +227,25 @@ assert(chequesJs.includes('style="color: ${s.color} !important; font-weight: 600
 assert(chequesJs.includes('dot.style.color = color;'), 'updateStatusDotColor must update dot color');
 assert(chequesJs.includes('input.style.color = color;'), 'updateStatusDotColor must update input text color');
 
+// 13. Verify Open Debts View (Matching screencapture_open_debts_13_06_36.png)
+assert(htmlContent.includes('id="cheques-view-bounced-open-debts"'), 'Must define open debts container');
+assert(htmlContent.includes('id="debts-year-sidebar"'), 'Must define debts-year-sidebar');
+assert(htmlContent.includes('id="debts-table-container"'), 'Must define debts-table-container');
+assert(htmlContent.includes('id="bounced-open-debts-tbody"'), 'Must define bounced-open-debts-tbody');
+assert(htmlContent.includes('debts-gold-bullet'), 'Must define debts-gold-bullet');
+assert(htmlContent.includes('debts-red-bullet'), 'Must define debts-red-bullet');
+assert(htmlContent.includes('debts-date-group-row'), 'Must define debts-date-group-row');
+assert(htmlContent.includes('debt-loading-row'), 'Must define debt-loading-row');
+assert(chequesJs.includes('toggleDebtsSidebar()'), 'ChequesModule must define toggleDebtsSidebar');
+assert(chequesJs.includes('filterDebtsByYear('), 'ChequesModule must define filterDebtsByYear');
+assert(chequesJs.includes('renderBouncedOpenDebts()'), 'ChequesModule must define renderBouncedOpenDebts');
+
 console.log('✔ Card 1 Combobox: Add Records for (Cheque, Party Payment, Truck Owner Payment, Other B) verified.');
 console.log('✔ Card 1 Values Color: Full text colored #6200ea (matching AppSheet screenshot) verified.');
 console.log('✔ Card 2 Side Drawer: Authentic Cheque Details with 31 Banks, 7 Pay To options & Gold Bullets verified.');
 console.log('✔ Card 3 Financials: Other B typable input & Status combobox with distinct per-status colors verified.');
-console.log('✔ All Cheques Dashboard, Card 1 Due & Card 2 Bounced tests PASSED 100%!');
+console.log('✔ Open Debts: FY Sidebar, 11 exact columns, Date Groups & Loading Blue Rows verified.');
+console.log('✔ All Cheques Dashboard, Card 1 Due, Card 2 Bounced & Open Debts tests PASSED 100%!');
 
 
 

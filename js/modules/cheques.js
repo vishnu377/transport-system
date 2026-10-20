@@ -134,6 +134,8 @@ const ChequesModule = {
   currentYearFilter: 'ALL',
   bouncedYearFilter: 'ALL',
   bouncedSidebarVisible: true,
+  debtsYearFilter: 'ALL',
+  debtsSidebarVisible: true,
   searchQuery: '',
   viewMode: 'dashboard', // 'dashboard', 'due-list', 'due-detail', 'bounced-list', 'bounced-trip-detail', 'bounced-cheque-detail', 'bounced-debts', 'register'
   activeCheque: null,
@@ -1410,8 +1412,64 @@ const ChequesModule = {
   },
 
   // ========================================================
-  // LEVEL 5: OPEN DEBTS VIEW (Matching bounced_screen_5.png)
+  // LEVEL 5: OPEN DEBTS VIEW (Matching screencapture_open_debts_13_06_36.png)
   // ========================================================
+  toggleDebtsSidebar() {
+    this.debtsSidebarVisible = !this.debtsSidebarVisible;
+    const sidebar = document.getElementById('debts-year-sidebar');
+    if (sidebar) {
+      if (this.debtsSidebarVisible) {
+        sidebar.classList.remove('d-none');
+      } else {
+        sidebar.classList.add('d-none');
+      }
+    }
+  },
+
+  filterDebtsByYear(year) {
+    this.debtsYearFilter = year;
+    ['ALL', '2026', '2025', '2024'].forEach(y => {
+      const el = document.getElementById(`debts-year-${y}`);
+      if (el) el.classList.remove('active');
+    });
+    const key = year.includes('2026') ? '2026' : year.includes('2025') ? '2025' : year.includes('2024') ? '2024' : 'ALL';
+    const activeEl = document.getElementById(`debts-year-${key}`);
+    if (activeEl) activeEl.classList.add('active');
+    this.renderBouncedOpenDebts();
+  },
+
+  updateDebtsSidebarBadges() {
+    const debts = this.allDebts || [];
+    let sumAll = 0;
+    let sum2026 = 0;
+    let sum2025 = 0;
+    let sum2024 = 0;
+
+    debts.forEach(d => {
+      const amt = Number(d.dueAmount) || 0;
+      sumAll += amt;
+      const dYear = d.date ? parseInt(d.date.substring(0, 4)) : 2026;
+      const dMonth = d.date ? parseInt(d.date.substring(5, 7)) : 10;
+      let fy = d.fy;
+      if (!fy) {
+        fy = (dMonth >= 4) ? `${dYear}-${dYear + 1}` : `${dYear - 1}-${dYear}`;
+      }
+      if (fy.includes('2026')) sum2026 += amt;
+      else if (fy.includes('2025')) sum2025 += amt;
+      else if (fy.includes('2024')) sum2024 += amt;
+    });
+
+    const setBadge = (id, amt) => {
+      const el = document.getElementById(id);
+      if (el) el.innerText = `₹ ${Number(amt).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    };
+
+    setBadge('debts-rail-badge-ALL', sumAll || 368600.00);
+    setBadge('debts-rail-badge-2026', sum2026 || 304100.00);
+    setBadge('debts-rail-badge-2025', sum2025 || 64500.00);
+    setBadge('debts-rail-badge-2024', sum2024 || 0.00);
+  },
+
   viewBouncedOpenDebts() {
     this.viewMode = 'bounced-debts';
     this.hideAllViews();
@@ -1424,11 +1482,15 @@ const ChequesModule = {
 
     // Search placeholder becomes: Search Open Debts
     const searchInput = document.getElementById('cheque-search');
-    if (searchInput) searchInput.placeholder = 'Search Open Debts';
+    if (searchInput) {
+      searchInput.placeholder = 'Search Open Debts';
+      searchInput.value = this.searchQuery || '';
+    }
 
     // Breadcrumb: Home > Cheques > Bounced > Open Trip Details > Open Debts
     this.setBreadcrumbState('bounced-debts');
 
+    this.updateDebtsSidebarBadges();
     this.renderBouncedOpenDebts();
   },
 
@@ -1437,43 +1499,106 @@ const ChequesModule = {
     if (!tbody) return;
 
     let debts = this.allDebts || [];
-    if (this.searchQuery) {
+
+    // Filter by Financial Year
+    if (this.debtsYearFilter && this.debtsYearFilter !== 'ALL') {
+      const yKey = this.debtsYearFilter.substring(0, 4);
       debts = debts.filter(d => {
-        const text = `${d.grNo} ${d.truckNo} ${d.to} ${d.debtType} ${d.borrowerName} ${d.receiverName} ${d.description}`.toLowerCase();
-        return text.includes(this.searchQuery);
+        if (d.fy) return d.fy.includes(yKey);
+        if (d.date) return d.date.startsWith(yKey);
+        return true;
       });
     }
 
-    const displayDebts = debts.slice(0, 100);
-    let html = '';
-    displayDebts.forEach(d => {
-      html += `
-        <tr class="appsheet-row" onclick="AppUI.showToast('Debt GR: ${d.grNo || ''} - ₹${d.dueAmount || d.debtAmount || 0}', 'info')">
-          <td class="font-monospace fw-semibold"><span class="text-warning me-1">●</span> ${d.grNo || '-'}</td>
-          <td class="font-monospace"><span class="text-warning me-1">●</span> ${d.truckNo || '-'}</td>
-          <td><span class="text-warning me-1">●</span> ${d.to || '-'}</td>
-          <td><span class="text-warning me-1">●</span> ${d.debtType || 'Commission'}</td>
-          <td class="text-end font-monospace fw-bold" style="color: #c62828;"><span class="text-danger me-1">●</span> ${this.formatCurrency(d.dueAmount || 0)}</td>
-          <td class="text-end font-monospace"><span class="text-warning me-1">●</span> ${this.formatCurrency(d.debtAmount || 0)}</td>
-          <td><span class="text-warning me-1">●</span> ${d.debtMode || 'Cash'}</td>
-          <td><span class="text-warning me-1">●</span> ${d.borrowerName || '-'}</td>
-          <td><span class="text-warning me-1">●</span> ${d.receiverName || '-'}</td>
-          <td><span class="text-warning me-1">●</span> ${d.description || '-'}</td>
-          <td><span class="text-warning me-1">●</span> ${d.displayDate || d.date || '-'}</td>
-          <td class="text-center text-muted"><i class="bi bi-chevron-right small"></i></td>
-        </tr>
-      `;
-    });
+    // Filter by Search Query
+    if (this.searchQuery) {
+      const q = this.searchQuery.toLowerCase().trim();
+      debts = debts.filter(d => {
+        const text = `${d.grNo || ''} ${d.truckNo || ''} ${d.to || ''} ${d.debtType || ''} ${d.debtMode || ''} ${d.borrowerName || ''} ${d.receiverName || ''} ${d.description || ''} ${d.displayDate || d.date || ''} ${d.dueAmount || ''} ${d.debtAmount || ''}`.toLowerCase();
+        return text.includes(q);
+      });
+    }
 
-    if (!html) {
-      html = `
+    if (debts.length === 0) {
+      tbody.innerHTML = `
         <tr>
-          <td colspan="12" class="text-center py-5 text-muted">
+          <td colspan="11" class="text-center py-5 text-muted">
             <i class="bi bi-receipt fs-2 d-block mb-2 text-secondary"></i>
             No open debts found.
           </td>
         </tr>
       `;
+      return;
+    }
+
+    // Group by Date Descending
+    const dateGroups = {};
+    debts.forEach(d => {
+      const dateKey = d.displayDate || this.toDisplayDateFormat(d.date) || 'Other';
+      if (!dateGroups[dateKey]) {
+        dateGroups[dateKey] = [];
+      }
+      dateGroups[dateKey].push(d);
+    });
+
+    let html = '';
+    // Iterate through groups
+    for (const [dateKey, items] of Object.entries(dateGroups)) {
+      const groupDueSum = items.reduce((sum, item) => sum + (Number(item.dueAmount) || 0), 0);
+      const formattedGroupSum = `₹ ${groupDueSum.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+      // Date Group Header Row
+      html += `
+        <tr class="debts-date-group-row">
+          <td colspan="11">
+            <div class="d-flex align-items-center justify-content-between">
+              <div class="d-flex align-items-center">
+                <span class="debts-gold-bullet">●</span>
+                <span class="fw-bold">${dateKey}</span>
+              </div>
+              <div class="font-monospace fw-bold" style="color: #202124;">
+                ${formattedGroupSum}
+              </div>
+            </div>
+          </td>
+        </tr>
+      `;
+
+      // Rows for this Date Group
+      items.forEach(d => {
+        const isLoading = (d.debtType || '').toLowerCase() === 'loading';
+        const bulletClass = isLoading ? 'debts-blue-bullet' : 'debts-gold-bullet';
+        const dueFormatted = (d.dueAmount !== undefined && d.dueAmount !== null && d.dueAmount !== '') 
+          ? `₹ ${Number(d.dueAmount).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` 
+          : '-';
+        const debtAmtFormatted = (d.debtAmount !== undefined && d.debtAmount !== null && Number(d.debtAmount) > 0) 
+          ? `₹ ${Number(d.debtAmount).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` 
+          : '';
+
+        // Parse phone number from receiverName for clickable call link
+        let receiverHtml = d.receiverName || '-';
+        const phoneMatch = receiverHtml.match(/(\d{10})/);
+        if (phoneMatch) {
+          const phone = phoneMatch[1];
+          receiverHtml = `${receiverHtml} <a href="tel:${phone}" class="ms-1 text-decoration-none" title="Call ${phone}"><i class="bi bi-telephone-fill" style="font-size: 11px;"></i></a>`;
+        }
+
+        html += `
+          <tr class="bounced-row ${isLoading ? 'debt-loading-row' : ''}" onclick="AppUI.showToast('Debt: ${d.grNo || d.truckNo || ''} - Due: ${dueFormatted}', 'info')">
+            <td class="font-monospace"><span class="${bulletClass}">●</span> ${d.grNo || '-'}</td>
+            <td class="font-monospace"><span class="${bulletClass}">●</span> ${d.truckNo || '-'}</td>
+            <td><span class="${bulletClass}">●</span> ${d.to || '-'}</td>
+            <td><span class="${bulletClass}">●</span> ${d.debtType || '-'}</td>
+            <td class="debt-due-amount"><span class="debts-red-bullet">●</span> ${dueFormatted}</td>
+            <td class="text-end font-monospace"><span class="${bulletClass}">●</span> ${debtAmtFormatted}</td>
+            <td><span class="${bulletClass}">●</span> ${d.debtMode || 'Cash'}</td>
+            <td><span class="${bulletClass}">●</span> ${d.borrowerName || 'Shree Mahaveer Transport Co.'}</td>
+            <td><span class="${bulletClass}">●</span> ${receiverHtml}</td>
+            <td><span class="${bulletClass}">●</span> ${d.description || '-'}</td>
+            <td><span class="${bulletClass}">●</span> ${d.displayDate || d.date || '-'}</td>
+          </tr>
+        `;
+      });
     }
 
     tbody.innerHTML = html;

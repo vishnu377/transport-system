@@ -596,6 +596,50 @@
       display: inline-block;
       margin-right: 5px;
     }
+    /* Open Debts Authentic Styles Matching screencapture_open_debts_13_06_36.png */
+    .debts-gold-bullet {
+      color: #bfa136 !important;
+      font-size: 11px;
+      line-height: 1;
+      display: inline-block;
+      margin-right: 5px;
+    }
+    .debts-red-bullet {
+      color: #c62828 !important;
+      font-size: 11px;
+      line-height: 1;
+      display: inline-block;
+      margin-right: 5px;
+    }
+    .debts-blue-bullet {
+      color: #037be4 !important;
+      font-size: 11px;
+      line-height: 1;
+      display: inline-block;
+      margin-right: 5px;
+    }
+    .debts-date-group-row td {
+      background: #f8f9fa !important;
+      color: #202124 !important;
+      font-weight: 700 !important;
+      font-size: 13px !important;
+      padding: 7px 12px !important;
+      border-top: 1px solid #e0e0e0 !important;
+      border-bottom: 1px solid #e0e0e0 !important;
+    }
+    .debt-loading-row td {
+      color: #037be4 !important;
+      font-weight: 600;
+    }
+    .debt-loading-row td a {
+      color: #037be4 !important;
+    }
+    .debt-due-amount {
+      color: #c62828 !important;
+      font-weight: 700;
+      font-family: var(--bs-font-monospace);
+      text-align: right;
+    }
     .bounced-red-bullet {
       color: #d32f2f !important;
       font-size: 11px;
@@ -1149,8 +1193,9 @@
 
         <!-- Bounced Trip Details Top Actions (Receipt/Debts icon, Edit, Expand) matching bounced_screen_2.png -->
         <div id="bounced-trip-actions" class="d-none d-flex align-items-center gap-2">
-          <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2 border" onclick="ChequesModule.viewBouncedOpenDebts()" title="Open Debts">
+          <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2 border d-flex align-items-center gap-1" onclick="ChequesModule.viewBouncedOpenDebts()" title="Open Debts">
             <i class="bi bi-receipt text-warning-emphasis"></i>
+            <span class="d-none d-sm-inline small fw-semibold">Open Debts</span>
           </button>
           <button type="button" class="btn-appsheet-add py-1 px-3" onclick="ChequesModule.openUpdateTripDrawer()" title="Update Trip Details">
             <i class="bi bi-pencil me-1"></i> Edit
@@ -1158,9 +1203,12 @@
           <span class="appsheet-tool-icon" onclick="ChequesModule.toggleTripFullscreen()" title="Expand view">↗</span>
         </div>
 
-        <!-- Bounced Open Debts Top Actions matching bounced_screen_5.png -->
+        <!-- Bounced Open Debts Top Actions matching screencapture_open_debts_13_06_36.png -->
         <div id="bounced-debts-actions" class="d-none d-flex align-items-center gap-2">
-          <span class="appsheet-tool-icon" title="Filter"><i class="bi bi-funnel"></i></span>
+          <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2 border" id="debts-sidebar-toggle-btn" onclick="ChequesModule.toggleDebtsSidebar()" title="Toggle Financial Year Sidebar">
+            <i class="bi bi-layout-sidebar-inset"></i>
+          </button>
+          <span class="appsheet-tool-icon" id="debts-sidebar-funnel-tool" onclick="ChequesModule.toggleDebtsSidebar()" title="Filter Financial Year"><i class="bi bi-funnel"></i></span>
         </div>
 
         <!-- Register Toolbar Actions (Hidden on Dashboard) -->
@@ -1654,32 +1702,60 @@
 
     <!-- ======================================================== -->
     <!-- CARD 2: LEVEL 5 - OPEN DEBTS VIEW                        -->
-    <!-- Matching bounced_screen_5.png                            -->
+    <!-- Matching screencapture_open_debts_13_06_36.png           -->
     <!-- ======================================================== -->
     <div id="cheques-view-bounced-open-debts" class="d-none p-3">
-      <div class="appsheet-panel shadow-sm">
-        <div class="table-responsive" style="max-height: calc(100vh - 140px); overflow-x: auto; overflow-y: auto;">
-          <table class="appsheet-table">
-            <thead class="sticky-top shadow-sm">
-              <tr>
-                <th style="white-space: nowrap;">G.R.No.</th>
-                <th style="white-space: nowrap;">Truck No.</th>
-                <th style="white-space: nowrap;">To</th>
-                <th style="white-space: nowrap;">Debt Type</th>
-                <th style="white-space: nowrap;" class="text-end">Due Amount</th>
-                <th style="white-space: nowrap;" class="text-end">Debt Amount</th>
-                <th style="white-space: nowrap;">Debt Mode</th>
-                <th style="white-space: nowrap;">Borrower Name</th>
-                <th style="white-space: nowrap;">Receiver Name</th>
-                <th style="white-space: nowrap;">Description</th>
-                <th style="white-space: nowrap;">Date</th>
-                <th style="width: 24px; text-align: center;"></th>
-              </tr>
-            </thead>
-            <tbody id="bounced-open-debts-tbody">
-              <!-- Rendered dynamically from SAMPLE_DEBTS_DATA with gold bullets -->
-            </tbody>
-          </table>
+      <div class="bounced-split-container">
+        <!-- LEFT: Year Selector Rail (Toggleable) -->
+        <div class="bounced-year-sidebar shadow-sm" id="debts-year-sidebar">
+          <div class="d-flex align-items-center justify-content-between px-3 pb-2 pt-1 border-bottom mb-2">
+            <span class="text-uppercase fw-semibold text-muted small" style="font-size: 11px; letter-spacing: 0.5px;">Financial Year</span>
+            <button type="button" class="btn btn-sm btn-link p-0 text-secondary text-decoration-none" onclick="ChequesModule.toggleDebtsSidebar()" title="Hide Financial Year Sidebar" style="font-size: 13px;">
+              <i class="bi bi-chevron-left"></i>
+            </button>
+          </div>
+          <div class="bounced-year-item active" id="debts-year-ALL" onclick="ChequesModule.filterDebtsByYear('ALL')">
+            <span class="fw-semibold">All</span>
+            <span class="badge bg-danger-subtle text-danger border border-danger-subtle fw-semibold" id="debts-rail-badge-ALL">₹ 368,600.00</span>
+          </div>
+          <div class="bounced-year-item" id="debts-year-2026" onclick="ChequesModule.filterDebtsByYear('2026-2027')">
+            <span class="fw-semibold">2026-2027</span>
+            <span class="badge bg-danger-subtle text-danger border border-danger-subtle fw-semibold" id="debts-rail-badge-2026">₹ 304,100.00</span>
+          </div>
+          <div class="bounced-year-item" id="debts-year-2025" onclick="ChequesModule.filterDebtsByYear('2025-2026')">
+            <span class="fw-semibold">2025-2026</span>
+            <span class="badge bg-danger-subtle text-danger border border-danger-subtle fw-semibold" id="debts-rail-badge-2025">₹ 64,500.00</span>
+          </div>
+          <div class="bounced-year-item" id="debts-year-2024" onclick="ChequesModule.filterDebtsByYear('2024-2025')">
+            <span class="fw-semibold">2024-2025</span>
+            <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle fw-semibold" id="debts-rail-badge-2024">₹ 0.00</span>
+          </div>
+        </div>
+
+        <!-- RIGHT: Date-Grouped Open Debts Table -->
+        <div class="bounced-table-container shadow-sm" id="debts-table-container">
+          <div class="table-responsive" style="max-height: calc(100vh - 140px); overflow-x: auto; overflow-y: auto;">
+            <table class="bounced-table debts-table">
+              <thead class="sticky-top shadow-sm">
+                <tr>
+                  <th style="white-space: nowrap;">G.R.No.</th>
+                  <th style="white-space: nowrap;">Truck NO.</th>
+                  <th style="white-space: nowrap;">To</th>
+                  <th style="white-space: nowrap;">Debt Type</th>
+                  <th style="white-space: nowrap;" class="text-end">Due Amount</th>
+                  <th style="white-space: nowrap;" class="text-end">Debt Amount</th>
+                  <th style="white-space: nowrap;">Debt Mode</th>
+                  <th style="white-space: nowrap;">Borrower Name</th>
+                  <th style="white-space: nowrap;">Receiver Name</th>
+                  <th style="white-space: nowrap;">Description</th>
+                  <th style="white-space: nowrap;">Date</th>
+                </tr>
+              </thead>
+              <tbody id="bounced-open-debts-tbody">
+                <!-- Rendered dynamically with Date Group headers and bullets -->
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
@@ -2209,16 +2285,16 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
   <!-- Core App Scripts with Cache Busting -->
-  <script src="../js/config.js?v=20261020_v4"></script>
+  <script src="../js/config.js?v=20261020_v5"></script>
   <!-- Universal Master Data Assets (Guaranteed 100% Offline & Fresh Git Deploy Resilience) -->
-  <script src="../js/sample-parties-data.js?v=20261020_v4"></script>
-  <script src="../js/sample-truck-owners-data.js?v=20261020_v4"></script>
-  <script src="../js/sample-drivers-data.js?v=20261020_v4"></script>
-  <script src="../js/sample-trips-data.js?v=20261020_v4"></script>
-  <script src="../js/sample-debts-data.js?v=20261020_v4"></script>
-  <script src="../js/sample-cheques-data.js?v=20261020_v4"></script>
-  <script src="../js/db-service.js?v=20261020_v4"></script>
-  <script src="../js/app.js?v=20261020_v4"></script>
-  <script src="../js/modules/cheques.js?v=20261020_v4"></script>
+  <script src="../js/sample-parties-data.js?v=20261020_v5"></script>
+  <script src="../js/sample-truck-owners-data.js?v=20261020_v5"></script>
+  <script src="../js/sample-drivers-data.js?v=20261020_v5"></script>
+  <script src="../js/sample-trips-data.js?v=20261020_v5"></script>
+  <script src="../js/sample-debts-data.js?v=20261020_v5"></script>
+  <script src="../js/sample-cheques-data.js?v=20261020_v5"></script>
+  <script src="../js/db-service.js?v=20261020_v5"></script>
+  <script src="../js/app.js?v=20261020_v5"></script>
+  <script src="../js/modules/cheques.js?v=20261020_v5"></script>
 </body>
 </html>

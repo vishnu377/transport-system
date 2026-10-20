@@ -166,6 +166,27 @@ async function run() {
   mod.selectAddRecordType('Party Payment');
   assert.strictEqual(document.getElementById('bounced-add-records-input').value, 'Party Payment');
 
+  console.log('Step 13: Testing Open Debts View & Date Groups...');
+  mod.viewBouncedOpenDebts();
+  assert.strictEqual(mod.viewMode, 'bounced-debts');
+  assert(!document.getElementById('cheques-view-bounced-open-debts').classList.contains('d-none'), 'Open Debts view must be visible');
+  
+  const debtsTbody = document.getElementById('bounced-open-debts-tbody');
+  assert(debtsTbody.innerHTML.includes('debts-date-group-row'), 'Must render date group header row');
+  assert(debtsTbody.innerHTML.includes('18/10/2026'), 'Must include 18/10/2026 date group');
+  assert(debtsTbody.innerHTML.includes('2546-TTC'), 'Must include 2546-TTC row');
+  assert(debtsTbody.innerHTML.includes('debt-loading-row'), 'Must style loading debts in blue');
+
+  // Verify FY filter
+  mod.filterDebtsByYear('2026-2027');
+  assert.strictEqual(mod.debtsYearFilter, '2026-2027');
+
+  // Verify Sidebar Toggle
+  mod.toggleDebtsSidebar();
+  assert.strictEqual(mod.debtsSidebarVisible, false);
+  mod.toggleDebtsSidebar();
+  assert.strictEqual(mod.debtsSidebarVisible, true);
+
   console.log('\n🎉 ALL RUNTIME SIMULATION TESTS PASSED 100%! ZERO ERRORS! 🎉\n');
 }
 
