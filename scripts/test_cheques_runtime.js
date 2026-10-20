@@ -12,7 +12,9 @@ function createMockElement(id, tagName = 'div') {
     innerText: '',
     innerHTML: '',
     value: '',
-    style: {},
+    style: {
+      setProperty: function(prop, val) { this[prop] = val; }
+    },
     classList: {
       classes: new Set(),
       add: (c) => el.classList.classes.add(c),
@@ -138,23 +140,23 @@ async function run() {
   mod.filterStatusDropdown('Transit');
   await mod.selectTripStatus('Transit');
   assert.strictEqual(document.getElementById('bounced-trip-status-input').value, 'Transit');
-  assert.strictEqual(document.getElementById('bounced-trip-status-input').style.color, '#bfa136', 'Transit input text must be gold #bfa136');
-  assert.strictEqual(document.getElementById('bounced-trip-status-dot').style.color, '#bfa136', 'Transit dot must be gold #bfa136');
+  assert.strictEqual(document.getElementById('bounced-trip-status-input').style.color, '#037be4', 'Transit input text must be blue #037be4');
+  assert.strictEqual(document.getElementById('bounced-trip-status-dot').style.color, '#037be4', 'Transit dot must be blue #037be4');
 
   await mod.selectTripStatus('Off Loading');
   assert.strictEqual(document.getElementById('bounced-trip-status-input').value, 'Off Loading');
-  assert.strictEqual(document.getElementById('bounced-trip-status-input').style.color, '#e91e63', 'Off Loading input text must be pink #e91e63');
-  assert.strictEqual(document.getElementById('bounced-trip-status-dot').style.color, '#e91e63', 'Off Loading dot must be pink #e91e63');
+  assert.strictEqual(document.getElementById('bounced-trip-status-input').style.color, '#fb0a82', 'Off Loading input text must be pink #fb0a82');
+  assert.strictEqual(document.getElementById('bounced-trip-status-dot').style.color, '#fb0a82', 'Off Loading dot must be pink #fb0a82');
 
   await mod.selectTripStatus('Cheque Due');
   assert.strictEqual(document.getElementById('bounced-trip-status-input').value, 'Cheque Due');
-  assert.strictEqual(document.getElementById('bounced-trip-status-input').style.color, '#1976d2', 'Cheque Due input text must be blue #1976d2');
-  assert.strictEqual(document.getElementById('bounced-trip-status-dot').style.color, '#1976d2', 'Cheque Due dot must be blue #1976d2');
+  assert.strictEqual(document.getElementById('bounced-trip-status-input').style.color, '#b59a2a', 'Cheque Due input text must be amber #b59a2a');
+  assert.strictEqual(document.getElementById('bounced-trip-status-dot').style.color, '#b59a2a', 'Cheque Due dot must be amber #b59a2a');
 
-  await mod.selectTripStatus('POD Sent/Bill Generated');
-  assert.strictEqual(document.getElementById('bounced-trip-status-input').value, 'POD Sent/Bill Generated');
-  assert.strictEqual(document.getElementById('bounced-trip-status-input').style.color, '#6200ea', 'POD Sent input text must be purple #6200ea');
-  assert.strictEqual(document.getElementById('bounced-trip-status-dot').style.color, '#6200ea', 'POD Sent dot must be purple #6200ea');
+  await mod.selectTripStatus('POD Sent / Bill Generated');
+  assert.strictEqual(document.getElementById('bounced-trip-status-input').value, 'POD Sent / Bill Generated');
+  assert.strictEqual(document.getElementById('bounced-trip-status-input').style.color, '#10b52d', 'POD Sent input text must be green #10b52d');
+  assert.strictEqual(document.getElementById('bounced-trip-status-dot').style.color, '#10b52d', 'POD Sent dot must be green #10b52d');
 
   console.log('Step 11: Testing Other B Update...');
   await mod.updateTripOtherB(12000);
