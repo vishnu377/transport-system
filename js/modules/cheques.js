@@ -60,6 +60,71 @@ const BOUNCED_METADATA = [
   { chequeNo: '983657', groupDate: 'blank', clearingDate: '', fy: '2024-2025' }
 ];
 
+// ========================================================
+// AUTHENTIC APPSHEET MASTER DROPDOWN LISTS
+// Matching WhatsApp Image 2026-10-20 at 12.04.21 to 12.04.25
+// ========================================================
+const APPSHEET_BANK_LIST = [
+  "ICICI",
+  "HDFC",
+  "SBI",
+  "Axis",
+  "IDBI",
+  "UOB",
+  "PNB",
+  "AU",
+  "BOB",
+  "Punjab And Sind Bank",
+  "Canara Bank",
+  "Bandhan Bank",
+  "BOI",
+  "The Nainital Bank Ltd.",
+  "CBOI",
+  "IOB",
+  "Indian Bank",
+  "Kotak Mahindra Bank",
+  "IDFC First Bank",
+  "Karur Vysya Bank",
+  "Ujjivan Small Finanace Bank",
+  "Bank of Maharashtra",
+  "Baroda U.P. Bank",
+  "Federal Bank",
+  "UCO Bank",
+  "Yes Bank",
+  "IndusInd Bank",
+  "Utkarsh Small Finance Bank",
+  "Indian Overseas Bank",
+  "Prathama U.P. Gramin Bank",
+  "Union Bank"
+];
+
+const APPSHEET_PAYTO_LIST = [
+  "MTC",
+  "TTC",
+  "SMTC",
+  "Laxmi Prakash Jat",
+  "Rameshwar Prasad",
+  "Truck Owner",
+  "Other"
+];
+
+const APPSHEET_STATUS_LIST = [
+  { label: "Transit", color: "#bfa136" },
+  { label: "Off Loading", color: "#e91e63" },
+  { label: "Cheque Due", color: "#1976d2" },
+  { label: "POD Sent/Bill Generated", color: "#6200ea" },
+  { label: "Party Payment Pending", color: "#f57c00" },
+  { label: "Completed", color: "#2e7d32" },
+  { label: "Disputed", color: "#c62828" }
+];
+
+const APPSHEET_ADD_RECORDS_LIST = [
+  "Cheque",
+  "Party Payment",
+  "Truck Owner Payment",
+  "Other B"
+];
+
 const ChequesModule = {
   allCheques: [],
   allParties: [],
@@ -132,6 +197,18 @@ const ChequesModule = {
       this.goToCardView(tabParam || 'ALL', fyParam || 'ALL');
     } else {
       this.goToDashboardView();
+    }
+
+    // Attach global click-outside dismiss for AppSheet dropdowns
+    if (typeof document !== 'undefined') {
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('#bank-combobox-wrap') &&
+            !e.target.closest('#payto-combobox-wrap') &&
+            !e.target.closest('#add-records-combobox-wrap') &&
+            !e.target.closest('#status-combobox-wrap')) {
+          this.closeAllAppSheetDropdowns();
+        }
+      });
     }
 
     this.renderDashboard();
@@ -1109,106 +1186,113 @@ const ChequesModule = {
     const formattedStartDate = this.toDisplayDateFormat(trip.tripStartDate || trip.startDate || '01/09/2026');
     const formattedEndDate = this.toDisplayDateFormat(trip.tripEndDate || trip.endDate || '11/09/2026');
 
-    // 1. Render Column 1: Trip Info (Matching authentic bounced_screen_2.png)
+    // 1. Render Column 1: Trip Info (Matching authentic screencapture-appsheet-start-e89e7720-9941-4e5b-9d6e-492b8b82de3d-2026-10-20-12_00_28.png)
     const tripContentEl = document.getElementById('bounced-trip-details-content');
     if (tripContentEl) {
       tripContentEl.innerHTML = `
         <div class="bounced-trip-field">
           <div class="bounced-trip-field-label">G.R.No.</div>
-          <div class="bounced-trip-field-val font-monospace"><span class="bullet-blue">●</span> ${trip.grNo || '2026-2027--207_TTC'}</div>
+          <div class="bounced-trip-field-val font-monospace"><span class="bounced-purple-bullet">●</span> ${trip.grNo || '2026-2027--207_TTC'}</div>
         </div>
         <div class="bounced-trip-field">
           <div class="bounced-trip-field-label">Truck No.</div>
-          <div class="bounced-trip-field-val font-monospace"><span class="bullet-blue">●</span> ${trip.truckNo || 'RJ52GB5529'}</div>
+          <div class="bounced-trip-field-val font-monospace"><span class="bounced-purple-bullet">●</span> ${trip.truckNo || 'RJ52GB5529'}</div>
         </div>
         <div class="bounced-trip-field">
           <div class="bounced-trip-field-label">Trip Start Date</div>
-          <div class="bounced-trip-field-val"><span class="bullet-blue">●</span> ${formattedStartDate}</div>
+          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${formattedStartDate}</div>
         </div>
         <div class="bounced-trip-field">
           <div class="bounced-trip-field-label">Trip End Date</div>
-          <div class="bounced-trip-field-val"><span class="bullet-blue">●</span> ${formattedEndDate}</div>
+          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${formattedEndDate}</div>
         </div>
         <div class="bounced-trip-field">
           <div class="bounced-trip-field-label">Origin</div>
-          <div class="bounced-trip-field-val"><span class="bullet-blue">●</span> ${trip.origin || 'Rajsamand (Raj.)'}</div>
+          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${trip.origin || 'Rajsamand (Raj.)'}</div>
         </div>
         <div class="bounced-trip-field">
           <div class="bounced-trip-field-label">Destination</div>
-          <div class="bounced-trip-field-val"><span class="bullet-blue">●</span> ${trip.destination || 'Manjhanpur (U.P.)'}</div>
+          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${trip.destination || 'Manjhanpur (U.P.)'}</div>
         </div>
         <div class="bounced-trip-field">
           <div class="bounced-trip-field-label">Weight</div>
-          <div class="bounced-trip-field-val font-monospace"><span class="bullet-blue">●</span> ${Number(trip.weight || 87.12).toFixed(3)}</div>
+          <div class="bounced-trip-field-val font-monospace"><span class="bounced-purple-bullet">●</span> ${Number(trip.weight || 87.12).toFixed(3)}</div>
         </div>
         <div class="bounced-trip-field">
           <div class="bounced-trip-field-label">Rate</div>
-          <div class="bounced-trip-field-val font-monospace"><span class="bullet-blue">●</span> ₹${Number(trip.rate || 2200).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+          <div class="bounced-trip-field-val font-monospace"><span class="bounced-purple-bullet">●</span> ₹${Number(trip.rate || 2200).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
         </div>
         <div class="bounced-trip-field">
           <div class="bounced-trip-field-label">Material</div>
-          <div class="bounced-trip-field-val"><span class="bullet-blue">●</span> ${trip.material || 'Marble Slabs'}</div>
+          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${trip.material || 'Marble Slabs'}</div>
         </div>
         <div class="bounced-trip-field">
           <div class="bounced-trip-field-label">Reference</div>
-          <div class="bounced-trip-field-val"><span class="bullet-blue">●</span> ${trip.reference || 'Anand Sharma'}</div>
+          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${trip.reference || 'Anand Sharma'}</div>
         </div>
         <div class="bounced-trip-field">
           <div class="bounced-trip-field-label">Reference Mobile No.</div>
           <div class="bounced-trip-field-val">
-            <span class="bullet-blue">●</span> 
-            ${trip.referenceMobile ? `<a href="tel:${trip.referenceMobile}">${trip.referenceMobile} <i class="bi bi-telephone ms-1 small"></i></a>` : '-'}
+            <span class="bounced-purple-bullet">●</span> 
+            ${trip.referenceMobile || '8890883001'}
+            <a href="tel:${trip.referenceMobile || '8890883001'}" class="bounced-phone-link" title="Call Reference"><i class="bi bi-telephone-fill"></i></a>
           </div>
         </div>
         <div class="bounced-trip-field">
           <div class="bounced-trip-field-label">Driver</div>
-          <div class="bounced-trip-field-val"><span class="bullet-blue">●</span> ${trip.driver || 'Sitaram'}</div>
+          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${trip.driver || 'Sitaram'}</div>
         </div>
         <div class="bounced-trip-field">
           <div class="bounced-trip-field-label">Driver Mobile No.</div>
           <div class="bounced-trip-field-val">
-            <span class="bullet-blue">●</span> 
-            ${trip.driverMobile ? `<a href="tel:${trip.driverMobile}">${trip.driverMobile} <i class="bi bi-telephone ms-1 small"></i></a>` : '-'}
+            <span class="bounced-purple-bullet">●</span> 
+            ${trip.driverMobile || '9772746478'}
+            <a href="tel:${trip.driverMobile || '9772746478'}" class="bounced-phone-link" title="Call Driver"><i class="bi bi-telephone-fill"></i></a>
           </div>
         </div>
         <div class="bounced-trip-field">
           <div class="bounced-trip-field-label">Consignor</div>
-          <div class="bounced-trip-field-val"><span class="bullet-blue">●</span> ${trip.consignor || 'Anand Sharma'}</div>
+          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${trip.consignor || 'Anand Sharma'}</div>
         </div>
         <div class="bounced-trip-field">
           <div class="bounced-trip-field-label">Consignor Mobile No.</div>
           <div class="bounced-trip-field-val">
-            <span class="bullet-blue">●</span> 
-            ${trip.consignorMobile ? `<a href="tel:${trip.consignorMobile}">${trip.consignorMobile} <i class="bi bi-telephone ms-1 small"></i></a>` : '-'}
+            <span class="bounced-purple-bullet">●</span> 
+            ${trip.consignorMobile || '8890883001'}
+            <a href="tel:${trip.consignorMobile || '8890883001'}" class="bounced-phone-link" title="Call Consignor"><i class="bi bi-telephone-fill"></i></a>
           </div>
         </div>
         <div class="bounced-trip-field">
           <div class="bounced-trip-field-label">Owner</div>
-          <div class="bounced-trip-field-val"><span class="bullet-blue">●</span> ${trip.owner || trip.truckOwner || 'Shree Mahaveer Transport Company'}</div>
+          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${trip.owner || trip.truckOwner || 'Shree Mahaveer Transport Company'}</div>
         </div>
         <div class="bounced-trip-field">
           <div class="bounced-trip-field-label">Owner Mobile No.</div>
           <div class="bounced-trip-field-val">
-            <span class="bullet-blue">●</span> 
-            ${trip.ownerMobile ? `<a href="tel:${trip.ownerMobile}">${trip.ownerMobile} <i class="bi bi-telephone ms-1 small"></i></a>` : '-'}
+            <span class="bounced-purple-bullet">●</span> 
+            ${trip.ownerMobile || '9414659401'}
+            <a href="tel:${trip.ownerMobile || '9414659401'}" class="bounced-phone-link" title="Call Owner"><i class="bi bi-telephone-fill"></i></a>
           </div>
         </div>
         <div class="bounced-trip-field">
           <div class="bounced-trip-field-label">Owner Mobile No.</div>
           <div class="bounced-trip-field-val">
-            <span class="bullet-blue">●</span> 
-            ${trip.ownerMobile2 ? `<a href="tel:${trip.ownerMobile2}">${trip.ownerMobile2} <i class="bi bi-telephone ms-1 small"></i></a>` : '-'}
+            <span class="bounced-purple-bullet">●</span> 
+            ${trip.ownerMobile2 || '9772200036'}
+            <a href="tel:${trip.ownerMobile2 || '9772200036'}" class="bounced-phone-link" title="Call Owner"><i class="bi bi-telephone-fill"></i></a>
           </div>
         </div>
         <div class="bounced-trip-field">
           <div class="bounced-trip-field-label">Freight</div>
-          <div class="bounced-trip-field-val font-monospace"><span class="bullet-blue">●</span> ₹${Number(trip.freight || 191664).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+          <div class="bounced-trip-field-val font-monospace"><span class="bounced-purple-bullet">●</span> ₹${Number(trip.freight || 191664).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
         </div>
       `;
     }
 
-    // 2. Render Column 2: Linked Cheques Table (Matching authentic bounced_screen_2.png)
-    // Find all linked cheques for this trip
+    // Initialize Card 1 "Add Records for" Combobox
+    this.filterAddRecordsDropdown('');
+
+    // 2. Render Column 2: Linked Cheques Table (Matching authentic screencapture-appsheet-start-e89e7720-9941-4e5b-9d6e-492b8b82de3d-2026-10-20-12_00_28.png)
     const linkedCheques = this.allCheques.filter(ch => 
       (ch.grNo && trip.grNo && ch.grNo === trip.grNo) || 
       (ch.shortGrNo && trip.shortGrNo && ch.shortGrNo === trip.shortGrNo) ||
@@ -1230,35 +1314,38 @@ const ChequesModule = {
 
         chqRowsHtml += `
           <tr onclick="ChequesModule.viewBouncedChequeDetails('${item.id}')" title="Click to view Cheque Details">
-            <td><span class="bounced-bullet">●</span> ${formattedDueDate}</td>
-            <td class="font-monospace"><span class="bounced-bullet">●</span> ${item.chequeNo || '-'}</td>
-            <td class="font-monospace text-end"><span class="bounced-bullet">●</span> ₹ ${formattedAmt}</td>
-            <td><span class="bounced-bullet">●</span> ${item.displayBank || item.bankName || '-'}</td>
-            <td><span class="bounced-bullet">●</span> ${item.firm || 'TTC'}</td>
-            <td><span class="bounced-bullet">●</span> ${formattedClearDate}</td>
+            <td><span class="bounced-red-bullet">●</span> ${formattedDueDate}</td>
+            <td class="font-monospace"><span class="bounced-red-bullet">●</span> ${item.chequeNo || '-'}</td>
+            <td class="font-monospace text-end"><span class="bounced-red-bullet">●</span> ₹ ${formattedAmt}</td>
+            <td><span class="bounced-red-bullet">●</span> ${item.displayBank || item.bankName || '-'}</td>
+            <td><span class="bounced-red-bullet">●</span> ${item.firm || 'TTC'}</td>
+            <td><span class="bounced-red-bullet">●</span> ${formattedClearDate}</td>
           </tr>
         `;
       });
       chqTbody.innerHTML = chqRowsHtml;
     }
 
-    // 3. Render Column 3: Financial Summary & Status (Matching authentic bounced_screen_2.png)
+    // 3. Render Column 3: Financial Summary & Status (Matching authentic screencapture & WhatsApp Image 2026-10-20 at 12.04.25 PM.jpeg)
     const totalChqAmt = chequesToDisplay.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
     const chqAmtEl = document.getElementById('bounced-summary-chq-amount');
-    if (chqAmtEl) chqAmtEl.innerHTML = `<span class="bullet-blue">●</span> ₹${totalChqAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    if (chqAmtEl) chqAmtEl.innerHTML = `<span class="bounced-purple-bullet">●</span> ₹${totalChqAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
     const freightEl = document.getElementById('bounced-summary-freight');
-    if (freightEl) freightEl.innerHTML = `<span class="bullet-blue">●</span> ₹${Number(trip.freight || 191664).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    if (freightEl) freightEl.innerHTML = `<span class="bounced-purple-bullet">●</span> ₹${Number(trip.freight || 191664).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
     const otherBInput = document.getElementById('bounced-trip-other-b-input');
     if (otherBInput) {
       otherBInput.value = (trip.otherB !== undefined && trip.otherB !== null && trip.otherB !== '') ? trip.otherB : '';
     }
 
+    const currentStatus = trip.status || trip.tripStatus || 'POD Sent/Bill Generated';
     const statusInput = document.getElementById('bounced-trip-status-input');
     if (statusInput) {
-      statusInput.value = trip.status || trip.tripStatus || 'Party Payment Pending';
+      statusInput.value = currentStatus;
     }
+    this.updateStatusDotColor(currentStatus);
+    this.filterStatusDropdown('');
   },
 
   // ========================================================
@@ -1530,37 +1617,39 @@ const ChequesModule = {
   },
 
   // ========================================================
-  // LEVEL 4b: SIDE DRAWER - ADD TRIP CHEQUE & COMBINED ACTIONS
+  // LEVEL 4b: SIDE DRAWER - CHEQUE DETAILS & COMBOBOX ACTIONS
+  // Matching WhatsApp Image 2026-10-20 at 12.04.21 to 12.04.25
   // ========================================================
   openAddTripChequeDrawer() {
     const trip = this.activeTrip;
-    const consignorName = trip ? (trip.consignor || trip.partyName || 'Anand Sharma') : 'Anand Sharma';
-    const grDisplay = trip ? (trip.grNo || '2026-2027--207_TTC') : '2026-2027--207_TTC';
-    const truckDisplay = trip ? (trip.truckNo || 'RJ52GB5529') : 'RJ52GB5529';
     const freightVal = trip ? (trip.freight || 191664) : 191664;
+    const partyDueVal = trip?.partyDue || (trip?.freight ? 20000 : 20000);
 
-    const grEl = document.getElementById('add-trip-chq-gr-display');
-    if (grEl) grEl.innerText = `${grDisplay} (${truckDisplay})`;
-
-    const partyEl = document.getElementById('add-trip-chq-party-display');
-    if (partyEl) partyEl.innerText = consignorName;
-
+    const partyDueDisplay = document.getElementById('add-trip-party-due-display');
+    if (partyDueDisplay) {
+      partyDueDisplay.value = `₹ ${Number(partyDueVal).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
     const partyDueInput = document.getElementById('add-trip-party-due');
-    if (partyDueInput) partyDueInput.value = freightVal;
+    if (partyDueInput) partyDueInput.value = partyDueVal;
 
     const dateInput = document.getElementById('add-trip-chq-due-date');
     if (dateInput) {
-      dateInput.value = this.toInputDateFormat(trip?.tripStartDate || '2026-09-25');
+      dateInput.value = this.toInputDateFormat(trip?.tripStartDate || '2026-10-20');
     }
 
     const amtInput = document.getElementById('add-trip-chq-amount');
-    if (amtInput) amtInput.value = '';
+    if (amtInput) amtInput.value = '₹ 0.00';
 
     const chqNoInput = document.getElementById('add-trip-chq-no');
     if (chqNoInput) chqNoInput.value = '';
 
     const bankInput = document.getElementById('add-trip-chq-bank');
     if (bankInput) bankInput.value = '';
+    this.filterBankDropdown('');
+
+    const payToInput = document.getElementById('add-trip-chq-payto');
+    if (payToInput) payToInput.value = 'TTC';
+    this.filterPayToDropdown('');
 
     const offcanvasEl = document.getElementById('offcanvasAddTripCheque');
     if (offcanvasEl) {
@@ -1570,14 +1659,200 @@ const ChequesModule = {
   },
 
   selectAddBank(bankName) {
-    const bankInput = document.getElementById('add-trip-chq-bank');
-    if (bankInput) bankInput.value = bankName;
+    this.selectBank(bankName);
+  },
+
+  // --- Bank Combobox (31 Banks + Gold Bullets + Close Button) ---
+  toggleBankDropdown() {
+    const menu = document.getElementById('bank-dropdown-menu');
+    const arrow = document.getElementById('bank-arrow-icon');
+    if (!menu) return;
+    const isHidden = menu.classList.contains('d-none');
+    this.closeAllAppSheetDropdowns();
+    if (isHidden) {
+      menu.classList.remove('d-none');
+      if (arrow) arrow.innerText = '▲';
+      this.filterBankDropdown(document.getElementById('add-trip-chq-bank')?.value || '');
+    } else {
+      menu.classList.add('d-none');
+      if (arrow) arrow.innerText = '▼';
+    }
+  },
+
+  filterBankDropdown(query = '') {
+    const listEl = document.getElementById('bank-options-list');
+    const clearBtn = document.getElementById('bank-clear-btn');
+    if (clearBtn) {
+      if (query && query.trim()) clearBtn.classList.remove('d-none');
+      else clearBtn.classList.add('d-none');
+    }
+    if (!listEl) return;
+    const cleanQ = (query || '').trim().toLowerCase();
+    const filtered = APPSHEET_BANK_LIST.filter(b => !cleanQ || b.toLowerCase().includes(cleanQ));
+    let html = '';
+    filtered.forEach(b => {
+      html += `
+        <div class="appsheet-dropdown-option" onclick="event.stopPropagation(); ChequesModule.selectBank('${b.replace(/'/g, "\\'")}')">
+          <span class="bounced-gold-bullet">●</span>
+          <span>${b}</span>
+        </div>
+      `;
+    });
+    if (cleanQ && !filtered.some(b => b.toLowerCase() === cleanQ)) {
+      html += `
+        <div class="appsheet-dropdown-option" onclick="event.stopPropagation(); ChequesModule.selectBank('${query.replace(/'/g, "\\'")}')">
+          <span class="bounced-gold-bullet">●</span>
+          <span>Add "${query}"</span>
+        </div>
+      `;
+    }
+    listEl.innerHTML = html;
+  },
+
+  selectBank(bankName) {
+    const input = document.getElementById('add-trip-chq-bank');
+    if (input) input.value = bankName;
+    const clearBtn = document.getElementById('bank-clear-btn');
+    if (clearBtn) clearBtn.classList.remove('d-none');
+    this.closeBankDropdown();
+  },
+
+  clearBankSelection() {
+    const input = document.getElementById('add-trip-chq-bank');
+    if (input) input.value = '';
+    const clearBtn = document.getElementById('bank-clear-btn');
+    if (clearBtn) clearBtn.classList.add('d-none');
+    this.filterBankDropdown('');
+  },
+
+  closeBankDropdown() {
+    const menu = document.getElementById('bank-dropdown-menu');
+    const arrow = document.getElementById('bank-arrow-icon');
+    if (menu) menu.classList.add('d-none');
+    if (arrow) arrow.innerText = '▼';
+  },
+
+  // --- Pay To Combobox (7 Options + Gold Bullets + Search + Close Button) ---
+  togglePayToDropdown() {
+    const menu = document.getElementById('payto-dropdown-menu');
+    const arrow = document.getElementById('payto-arrow-icon');
+    if (!menu) return;
+    const isHidden = menu.classList.contains('d-none');
+    this.closeAllAppSheetDropdowns();
+    if (isHidden) {
+      menu.classList.remove('d-none');
+      if (arrow) arrow.innerText = '▲';
+      this.filterPayToDropdown(document.getElementById('add-trip-chq-payto')?.value || '');
+    } else {
+      menu.classList.add('d-none');
+      if (arrow) arrow.innerText = '▼';
+    }
+  },
+
+  filterPayToDropdown(query = '') {
+    const listEl = document.getElementById('payto-options-list');
+    const clearBtn = document.getElementById('payto-clear-btn');
+    if (clearBtn) {
+      if (query && query.trim()) clearBtn.classList.remove('d-none');
+      else clearBtn.classList.add('d-none');
+    }
+    if (!listEl) return;
+    const cleanQ = (query || '').trim().toLowerCase();
+    const filtered = APPSHEET_PAYTO_LIST.filter(p => !cleanQ || p.toLowerCase().includes(cleanQ));
+    let html = '';
+    filtered.forEach(p => {
+      html += `
+        <div class="appsheet-dropdown-option" onclick="event.stopPropagation(); ChequesModule.selectPayTo('${p.replace(/'/g, "\\'")}')">
+          <span class="bounced-gold-bullet">●</span>
+          <span>${p}</span>
+        </div>
+      `;
+    });
+    if (cleanQ && !filtered.some(p => p.toLowerCase() === cleanQ)) {
+      html += `
+        <div class="appsheet-dropdown-option" onclick="event.stopPropagation(); ChequesModule.selectPayTo('${query.replace(/'/g, "\\'")}')">
+          <span class="bounced-gold-bullet">●</span>
+          <span>Add "${query}"</span>
+        </div>
+      `;
+    }
+    listEl.innerHTML = html;
+  },
+
+  selectPayTo(payToName) {
+    const input = document.getElementById('add-trip-chq-payto');
+    if (input) input.value = payToName;
+    const clearBtn = document.getElementById('payto-clear-btn');
+    if (clearBtn) clearBtn.classList.remove('d-none');
+    this.closePayToDropdown();
+  },
+
+  clearPayToSelection() {
+    const input = document.getElementById('add-trip-chq-payto');
+    if (input) input.value = '';
+    const clearBtn = document.getElementById('payto-clear-btn');
+    if (clearBtn) clearBtn.classList.add('d-none');
+    this.filterPayToDropdown('');
+  },
+
+  closePayToDropdown() {
+    const menu = document.getElementById('payto-dropdown-menu');
+    const arrow = document.getElementById('payto-arrow-icon');
+    if (menu) menu.classList.add('d-none');
+    if (arrow) arrow.innerText = '▼';
+  },
+
+  // --- Add Records For Combobox (Card 1 - Matching WhatsApp Image 2026-10-20 at 12.04.25 PM (1).jpeg) ---
+  toggleAddRecordsDropdown() {
+    const menu = document.getElementById('add-records-dropdown-menu');
+    const arrow = document.getElementById('add-records-arrow-icon');
+    if (!menu) return;
+    const isHidden = menu.classList.contains('d-none');
+    this.closeAllAppSheetDropdowns();
+    if (isHidden) {
+      menu.classList.remove('d-none');
+      if (arrow) arrow.innerText = '▲';
+      this.filterAddRecordsDropdown(document.getElementById('bounced-add-records-input')?.value || '');
+    } else {
+      menu.classList.add('d-none');
+      if (arrow) arrow.innerText = '▼';
+    }
+  },
+
+  filterAddRecordsDropdown(query = '') {
+    const listEl = document.getElementById('add-records-options-list');
+    if (!listEl) return;
+    const cleanQ = (query || '').trim().toLowerCase();
+    const filtered = APPSHEET_ADD_RECORDS_LIST.filter(r => !cleanQ || r.toLowerCase().includes(cleanQ));
+    let html = '';
+    filtered.forEach(r => {
+      html += `
+        <div class="appsheet-dropdown-option" onclick="event.stopPropagation(); ChequesModule.selectAddRecordType('${r}')">
+          <span>${r}</span>
+        </div>
+      `;
+    });
+    listEl.innerHTML = html;
   },
 
   selectAddRecordType(type) {
     const input = document.getElementById('bounced-add-records-input');
     if (input) input.value = type;
+    this.closeAddRecordsDropdown();
     this.onAddRecordTypeSelected(type);
+  },
+
+  clearAddRecordsSelection() {
+    const input = document.getElementById('bounced-add-records-input');
+    if (input) input.value = '';
+    this.filterAddRecordsDropdown('');
+  },
+
+  closeAddRecordsDropdown() {
+    const menu = document.getElementById('add-records-dropdown-menu');
+    const arrow = document.getElementById('add-records-arrow-icon');
+    if (menu) menu.classList.add('d-none');
+    if (arrow) arrow.innerText = '▼';
   },
 
   onAddRecordTypeSelected(type) {
@@ -1603,10 +1878,96 @@ const ChequesModule = {
     }
   },
 
+  // --- Status Combobox (Card 3 - Matching WhatsApp Image 2026-10-20 at 12.04.25 PM.jpeg) ---
+  toggleStatusDropdown() {
+    const menu = document.getElementById('status-dropdown-menu');
+    const arrow = document.getElementById('status-arrow-icon');
+    if (!menu) return;
+    const isHidden = menu.classList.contains('d-none');
+    this.closeAllAppSheetDropdowns();
+    if (isHidden) {
+      menu.classList.remove('d-none');
+      if (arrow) arrow.innerText = '▲';
+      this.filterStatusDropdown(document.getElementById('bounced-trip-status-input')?.value || '');
+    } else {
+      menu.classList.add('d-none');
+      if (arrow) arrow.innerText = '▼';
+    }
+  },
+
+  filterStatusDropdown(query = '') {
+    const listEl = document.getElementById('status-options-list');
+    if (!listEl) return;
+    const cleanQ = (query || '').trim().toLowerCase();
+    const filtered = APPSHEET_STATUS_LIST.filter(s => !cleanQ || s.label.toLowerCase().includes(cleanQ));
+    let html = '';
+    filtered.forEach(s => {
+      html += `
+        <div class="appsheet-dropdown-option" onclick="event.stopPropagation(); ChequesModule.selectTripStatus('${s.label}')">
+          <span style="color: ${s.color}; font-size: 11px; margin-right: 6px;">●</span>
+          <span>${s.label}</span>
+        </div>
+      `;
+    });
+    if (cleanQ && !filtered.some(s => s.label.toLowerCase() === cleanQ)) {
+      html += `
+        <div class="appsheet-dropdown-option" onclick="event.stopPropagation(); ChequesModule.selectTripStatus('${query}')">
+          <span style="color: #6200ea; font-size: 11px; margin-right: 6px;">●</span>
+          <span>${query}</span>
+        </div>
+      `;
+    }
+    listEl.innerHTML = html;
+  },
+
   selectTripStatus(status) {
-    const statusInput = document.getElementById('bounced-trip-status-input');
-    if (statusInput) statusInput.value = status;
+    const input = document.getElementById('bounced-trip-status-input');
+    if (input) input.value = status;
+    this.updateStatusDotColor(status);
+    this.closeStatusDropdown();
     this.updateTripStatusFromSelect(status);
+  },
+
+  updateStatusDotColor(status) {
+    const dot = document.getElementById('bounced-trip-status-dot');
+    if (!dot) return;
+    const found = APPSHEET_STATUS_LIST.find(s => s.label.toLowerCase() === (status || '').toLowerCase());
+    dot.style.color = found ? found.color : '#6200ea';
+  },
+
+  clearStatusSelection() {
+    const input = document.getElementById('bounced-trip-status-input');
+    if (input) input.value = '';
+    this.filterStatusDropdown('');
+  },
+
+  closeStatusDropdown() {
+    const menu = document.getElementById('status-dropdown-menu');
+    const arrow = document.getElementById('status-arrow-icon');
+    if (menu) menu.classList.add('d-none');
+    if (arrow) arrow.innerText = '▼';
+  },
+
+  closeAllAppSheetDropdowns() {
+    this.closeBankDropdown();
+    this.closePayToDropdown();
+    this.closeAddRecordsDropdown();
+    this.closeStatusDropdown();
+  },
+
+  onAmountFocus(input) {
+    if (input.value === '₹ 0.00' || input.value === '0.00' || input.value === '₹ 0') {
+      input.value = '';
+    }
+  },
+
+  onAmountBlur(input) {
+    if (!input.value.trim()) {
+      input.value = '₹ 0.00';
+    } else {
+      const num = parseFloat(input.value.replace(/[^0-9.]/g, '')) || 0;
+      input.value = '₹ ' + num.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
   },
 
   async updateTripOtherB(val) {
@@ -1646,6 +2007,7 @@ const ChequesModule = {
     if (statusInput && statusInput.value !== statusVal) {
       statusInput.value = statusVal;
     }
+    this.updateStatusDotColor(statusVal);
 
     // Direct Cloud Firestore Sync
     try {
@@ -1680,9 +2042,10 @@ const ChequesModule = {
     const dueDateVal = document.getElementById('add-trip-chq-due-date')?.value;
     const chqNoVal = document.getElementById('add-trip-chq-no')?.value?.trim();
     const partyDueVal = parseFloat(document.getElementById('add-trip-party-due')?.value) || 0;
-    const amountVal = parseFloat(document.getElementById('add-trip-chq-amount')?.value) || 0;
+    const rawAmt = document.getElementById('add-trip-chq-amount')?.value || '0';
+    const amountVal = parseFloat(rawAmt.replace(/[^0-9.]/g, '')) || 0;
     const bankVal = document.getElementById('add-trip-chq-bank')?.value?.trim();
-    const payToVal = document.getElementById('add-trip-chq-payto')?.value || 'TTC';
+    const payToVal = document.getElementById('add-trip-chq-payto')?.value?.trim() || 'TTC';
     const clearingVal = document.getElementById('add-trip-chq-clearing-date')?.value;
     const statusVal = document.getElementById('add-trip-chq-status')?.value || 'Bounced';
 
@@ -1695,7 +2058,7 @@ const ChequesModule = {
       return;
     }
 
-    const formattedDueDate = dueDateVal ? this.toDisplayDateFormat(dueDateVal) : '25/09/2026';
+    const formattedDueDate = dueDateVal ? this.toDisplayDateFormat(dueDateVal) : '20/10/2026';
     const formattedClearDate = clearingVal ? this.toDisplayDateFormat(clearingVal) : '';
 
     const newCheque = {
@@ -1743,6 +2106,13 @@ const ChequesModule = {
 
     // 4. Update Trip Details view dynamically
     this.viewBouncedTripDetails(newCheque.id);
+    this.renderDashboard();
+    this.updateStats();
+
+    if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+      AppUI.showToast(`Cheque #${chqNoVal} (₹${amountVal.toLocaleString('en-IN')}) added & synchronized with Cloud Firestore!`, 'success');
+    }
+  },
     this.renderDashboard();
     this.updateStats();
 

@@ -589,6 +589,40 @@
         width: 100%;
       }
     }
+    .bounced-purple-bullet {
+      color: #6200ea !important;
+      font-size: 11px;
+      line-height: 1;
+      display: inline-block;
+      margin-right: 5px;
+    }
+    .bounced-red-bullet {
+      color: #d32f2f !important;
+      font-size: 11px;
+      line-height: 1;
+      display: inline-block;
+      margin-right: 5px;
+    }
+    .bounced-gold-bullet {
+      color: #bfa136 !important;
+      font-size: 11px;
+      line-height: 1;
+      display: inline-block;
+      margin-right: 6px;
+    }
+    .bounced-phone-link {
+      color: #6200ea !important;
+      margin-left: auto;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      padding-left: 8px;
+      font-size: 12px;
+    }
+    .bounced-phone-link:hover {
+      color: #3700b3 !important;
+    }
+
     .bounced-trip-mid-header {
       display: flex;
       align-items: center;
@@ -598,19 +632,20 @@
     .bounced-trip-mid-title {
       font-weight: 700;
       font-size: 14px;
-      color: #1a73e8;
+      color: #202124;
       display: inline-flex;
       align-items: center;
       gap: 6px;
     }
     .bounced-trip-pill {
-      background: #e8f0fe;
-      color: #1a73e8;
+      background: #f1f3f4;
+      color: #5f6368;
       font-size: 11px;
       font-weight: 600;
-      padding: 2px 8px;
-      border-radius: 12px;
+      padding: 1px 7px;
+      border-radius: 10px;
       margin-left: 4px;
+      border: 1px solid #dadce0;
     }
     .bounced-linked-chq-table-wrap {
       overflow-x: auto;
@@ -627,16 +662,16 @@
     }
     .bounced-linked-chq-table th {
       background: #ffffff;
-      color: #3c4043;
-      font-weight: 600;
+      color: #5f6368;
+      font-weight: 500;
       padding: 8px 12px;
-      border: 1px solid #e0e0e0;
+      border-bottom: 1px solid #dadce0;
       white-space: nowrap !important;
       text-align: left;
     }
     .bounced-linked-chq-table td {
       padding: 8px 12px;
-      border: 1px solid #e0e0e0;
+      border-bottom: 1px solid #f1f3f4;
       color: #c62828 !important;
       font-weight: 600;
       white-space: nowrap !important;
@@ -683,7 +718,7 @@
       padding-top: 4px;
     }
     .bounced-chq-actions a {
-      color: #1a73e8;
+      color: #5d4037;
       font-weight: 600;
       font-size: 13px;
       text-decoration: none;
@@ -691,11 +726,12 @@
     }
     .bounced-chq-actions a:hover {
       text-decoration: underline;
+      color: #3e2723;
     }
     .bounced-trip-field {
       display: flex;
       align-items: baseline;
-      margin-bottom: 12px;
+      margin-bottom: 11px;
       font-size: 13px;
     }
     .bounced-trip-field-label {
@@ -707,20 +743,243 @@
     .bounced-trip-field-val {
       flex: 1;
       font-weight: 600;
-      color: #1a73e8;
+      color: #202124;
       display: flex;
       align-items: center;
       gap: 6px;
     }
-    .bounced-trip-field-val .bullet-blue {
-      color: #1a73e8;
-    }
     .bounced-trip-field-val a {
-      color: #1a73e8;
+      color: inherit;
       text-decoration: none;
     }
-    .bounced-trip-field-val a:hover {
-      text-decoration: underline;
+
+    /* AppSheet Side Drawer & Header Styles */
+    .offcanvas-cheque-details {
+      width: 580px !important;
+      background: #fdfdfd;
+      border-left: 1px solid #dadce0;
+    }
+    @media (max-width: 600px) {
+      .offcanvas-cheque-details {
+        width: 100% !important;
+      }
+    }
+    .appsheet-drawer-header {
+      background: #ffffff;
+      padding: 10px 16px;
+      border-bottom: 1px solid #dadce0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .btn-appsheet-close-x {
+      background: transparent;
+      border: none;
+      font-size: 17px;
+      color: #3c4043;
+      padding: 0 6px 0 0;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+    }
+    .btn-appsheet-close-x:hover {
+      color: #000000;
+    }
+    .appsheet-drawer-header-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #202124;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-appsheet-cancel-light {
+      background: #ffffff;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      padding: 5px 14px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #3c4043;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-appsheet-cancel-light:hover {
+      background: #f1f3f4;
+      color: #202124;
+    }
+    .btn-appsheet-save-brown {
+      background: #423226;
+      border: 1px solid #423226;
+      border-radius: 4px;
+      padding: 5px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #ffffff;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-appsheet-save-brown:hover {
+      background: #32251c;
+      border-color: #32251c;
+      color: #ffffff;
+    }
+
+    /* AppSheet Horizontal Form Rows */
+    .appsheet-field-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 14px;
+      position: relative;
+    }
+    @media (max-width: 500px) {
+      .appsheet-field-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+      }
+    }
+    .appsheet-field-label {
+      width: 155px;
+      min-width: 155px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #3c4043;
+    }
+    .appsheet-field-control-wrap {
+      flex: 1;
+      width: 100%;
+      position: relative;
+    }
+    .appsheet-text-input {
+      width: 100%;
+      background: #ffffff;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      padding: 7px 12px;
+      font-size: 13.5px;
+      color: #202124;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .appsheet-text-input:focus {
+      border-color: #1a73e8;
+      box-shadow: 0 0 0 1px #1a73e8;
+    }
+
+    /* AppSheet Custom Combobox / Dropdown */
+    .appsheet-custom-select {
+      position: relative;
+      width: 100%;
+    }
+    .appsheet-select-trigger {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      background: #ffffff;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      padding: 7px 10px 7px 12px;
+      cursor: pointer;
+      font-size: 13.5px;
+      color: #202124;
+      min-height: 38px;
+    }
+    .appsheet-select-trigger:focus-within {
+      border-color: #1a73e8;
+      box-shadow: 0 0 0 1px #1a73e8;
+    }
+    .appsheet-select-input {
+      border: none;
+      outline: none;
+      width: 100%;
+      font-size: 13.5px;
+      color: inherit;
+      background: transparent;
+      padding: 0;
+    }
+    .appsheet-select-icons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #5f6368;
+      font-size: 12px;
+      user-select: none;
+    }
+    .appsheet-select-clear {
+      cursor: pointer;
+      padding: 1px 4px;
+      color: #80868b;
+      font-size: 13px;
+    }
+    .appsheet-select-clear:hover {
+      color: #202124;
+    }
+    .appsheet-select-arrow {
+      cursor: pointer;
+      font-size: 10px;
+    }
+    .appsheet-dropdown-card {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: #ffffff;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      margin-top: 3px;
+      z-index: 1070;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+      max-height: 250px;
+      display: flex;
+      flex-direction: column;
+    }
+    .appsheet-dropdown-card.dropdown-upward {
+      top: auto;
+      bottom: 100%;
+      margin-top: 0;
+      margin-bottom: 3px;
+    }
+    .appsheet-dropdown-scroll {
+      overflow-y: auto;
+      flex: 1;
+      padding: 4px 0;
+    }
+    .appsheet-dropdown-option {
+      padding: 7px 12px;
+      font-size: 13px;
+      color: #202124;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.1s;
+    }
+    .appsheet-dropdown-option:hover {
+      background: #f1f3f4;
+    }
+    .appsheet-dropdown-footer {
+      display: flex;
+      justify-content: flex-end;
+      padding: 4px 8px;
+      border-top: 1px solid #f1f3f4;
+      background: #fcfcfc;
+    }
+    .appsheet-dropdown-close-btn {
+      background: #5f6368;
+      color: #ffffff;
+      border: none;
+      border-radius: 3px;
+      font-size: 11.5px;
+      font-weight: 500;
+      padding: 2px 10px;
+      cursor: pointer;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+    }
+    .appsheet-dropdown-close-btn:hover {
+      background: #202124;
     }
 
     /* Offcanvas Update Trip Details */
@@ -1250,23 +1509,28 @@
           <div class="mt-3 pt-3 border-top">
             <div class="d-flex align-items-center justify-content-between gap-2">
               <span class="small text-muted fw-semibold text-nowrap">Add Records for</span>
-              <div class="input-group input-group-sm" style="max-width: 195px;">
-                <input type="text" class="form-control form-control-sm text-primary fw-semibold" id="bounced-add-records-input" list="add-records-for-list" value="Cheque" placeholder="Select or type" style="border-color: #dadce0; font-size: 12.5px;" onchange="ChequesModule.onAddRecordTypeSelected(this.value)">
-                <datalist id="add-records-for-list">
-                  <option value="Cheque"></option>
-                  <option value="Party Payment"></option>
-                  <option value="Truck Owner Payment"></option>
-                  <option value="Other B"></option>
-                </datalist>
-                <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false" style="border-color: #dadce0; padding: 2px 7px;">
-                  <span class="visually-hidden">Toggle Dropdown</span>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end shadow-sm" style="font-size: 13px;">
-                  <li><a class="dropdown-item" href="javascript:void(0)" onclick="ChequesModule.selectAddRecordType('Cheque')">● Cheque</a></li>
-                  <li><a class="dropdown-item" href="javascript:void(0)" onclick="ChequesModule.selectAddRecordType('Party Payment')">● Party Payment</a></li>
-                  <li><a class="dropdown-item" href="javascript:void(0)" onclick="ChequesModule.selectAddRecordType('Truck Owner Payment')">● Truck Owner Payment</a></li>
-                  <li><a class="dropdown-item" href="javascript:void(0)" onclick="ChequesModule.selectAddRecordType('Other B')">● Other B</a></li>
-                </ul>
+              <div class="appsheet-custom-select" id="add-records-combobox-wrap" style="max-width: 200px;">
+                <div class="appsheet-select-trigger" onclick="ChequesModule.toggleAddRecordsDropdown()">
+                  <input type="text" class="appsheet-select-input fw-semibold" id="bounced-add-records-input" list="add-records-for-list" value="Cheque" oninput="ChequesModule.filterAddRecordsDropdown(this.value)" onchange="ChequesModule.onAddRecordTypeSelected(this.value)" autocomplete="off">
+                  <datalist id="add-records-for-list">
+                    <option value="Cheque"></option>
+                    <option value="Party Payment"></option>
+                    <option value="Truck Owner Payment"></option>
+                    <option value="Other B"></option>
+                  </datalist>
+                  <div class="appsheet-select-icons">
+                    <span class="appsheet-select-clear" onclick="event.stopPropagation(); ChequesModule.clearAddRecordsSelection()">✕</span>
+                    <span class="appsheet-select-arrow" id="add-records-arrow-icon">▼</span>
+                  </div>
+                </div>
+                <div class="appsheet-dropdown-card dropdown-upward d-none shadow-sm" id="add-records-dropdown-menu">
+                  <div class="appsheet-dropdown-scroll" id="add-records-options-list">
+                    <!-- Populated dynamically: Cheque, Party Payment, Truck Owner Payment, Other B -->
+                  </div>
+                  <div class="appsheet-dropdown-footer">
+                    <button type="button" class="appsheet-dropdown-close-btn" onclick="ChequesModule.closeAddRecordsDropdown()">Close</button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -1276,7 +1540,7 @@
         <div class="bounced-trip-card bounced-trip-card-mid">
           <div class="bounced-trip-mid-header">
             <span class="bounced-trip-mid-title">
-              <span style="color: #1a73e8;">●</span> Cheque <span class="bounced-trip-pill" id="bounced-trip-cheque-count">1</span>
+              <span class="bounced-purple-bullet">●</span> Cheque <span class="bounced-trip-pill" id="bounced-trip-cheque-count">1</span>
             </span>
           </div>
           <div class="bounced-linked-chq-table-wrap">
@@ -1315,13 +1579,13 @@
           <div class="bounced-trip-field">
             <div class="bounced-trip-field-label">Total Cheque Amount</div>
             <div class="bounced-trip-field-val" id="bounced-summary-chq-amount">
-              <span class="bullet-blue">●</span> ₹ 20,000.00
+              <span class="bounced-purple-bullet">●</span> ₹ 20,000.00
             </div>
           </div>
           <div class="bounced-trip-field">
             <div class="bounced-trip-field-label">Total Freight</div>
             <div class="bounced-trip-field-val" id="bounced-summary-freight">
-              <span class="bullet-blue">●</span> ₹ 191,664.00
+              <span class="bounced-purple-bullet">●</span> ₹ 191,664.00
             </div>
           </div>
           <div class="bounced-trip-field">
@@ -1329,36 +1593,43 @@
             <div class="bounced-trip-field-val" id="bounced-summary-other-b">
               <div class="input-group input-group-sm" style="max-width: 160px;">
                 <span class="input-group-text bg-white border-end-0 text-muted" style="font-size: 12px; border-color: #dadce0;">₹</span>
-                <input type="number" step="any" class="form-control form-control-sm border-start-0 font-monospace fw-semibold" id="bounced-trip-other-b-input" placeholder="0.00" onchange="ChequesModule.updateTripOtherB(this.value)" style="color: #1a73e8; border-color: #dadce0;">
+                <input type="number" step="any" class="form-control form-control-sm border-start-0 font-monospace fw-semibold" id="bounced-trip-other-b-input" placeholder="0.00" onchange="ChequesModule.updateTripOtherB(this.value)" style="color: #202124; border-color: #dadce0;">
               </div>
             </div>
           </div>
           <div class="mt-4 pt-3 border-top">
             <div class="fw-semibold text-muted small mb-2">Status</div>
             <label class="form-label small text-muted mb-1">Status *</label>
-            <div class="input-group input-group-sm">
-              <input type="text" class="form-control form-control-sm fw-semibold" id="bounced-trip-status-input" list="trip-status-options-list" placeholder="Select or type status" onchange="ChequesModule.updateTripStatusFromSelect(this.value)" style="color: #1a73e8; border-color: #dadce0;">
-              <datalist id="trip-status-options-list">
-                <option value="Party Payment Pending"></option>
-                <option value="In Transit"></option>
-                <option value="Off Loading"></option>
-                <option value="Cheque Due"></option>
-                <option value="POD Sent / Bill Generated"></option>
-                <option value="Completed"></option>
-                <option value="Disputed"></option>
-              </datalist>
-              <button class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="border-color: #dadce0; padding: 2px 7px;">
-                <span class="visually-hidden">Toggle Dropdown</span>
-              </button>
-              <ul class="dropdown-menu dropdown-menu-end shadow-sm" style="font-size: 13px;">
-                <li><a class="dropdown-item" href="javascript:void(0)" onclick="ChequesModule.selectTripStatus('Party Payment Pending')">● Party Payment Pending</a></li>
-                <li><a class="dropdown-item" href="javascript:void(0)" onclick="ChequesModule.selectTripStatus('In Transit')">● In Transit</a></li>
-                <li><a class="dropdown-item" href="javascript:void(0)" onclick="ChequesModule.selectTripStatus('Off Loading')">● Off Loading</a></li>
-                <li><a class="dropdown-item" href="javascript:void(0)" onclick="ChequesModule.selectTripStatus('Cheque Due')">● Cheque Due</a></li>
-                <li><a class="dropdown-item" href="javascript:void(0)" onclick="ChequesModule.selectTripStatus('POD Sent / Bill Generated')">● POD Sent / Bill Generated</a></li>
-                <li><a class="dropdown-item" href="javascript:void(0)" onclick="ChequesModule.selectTripStatus('Completed')">● Completed</a></li>
-                <li><a class="dropdown-item" href="javascript:void(0)" onclick="ChequesModule.selectTripStatus('Disputed')">● Disputed</a></li>
-              </ul>
+            <div class="appsheet-custom-select" id="status-combobox-wrap">
+              <div class="appsheet-select-trigger" onclick="ChequesModule.toggleStatusDropdown()">
+                <div class="d-flex align-items-center gap-1 flex-grow-1 overflow-hidden">
+                  <span id="bounced-trip-status-dot" class="bounced-purple-bullet">●</span>
+                  <input type="text" class="appsheet-select-input fw-semibold" id="bounced-trip-status-input" list="trip-status-options-list" value="POD Sent/Bill Generated" placeholder="Select or type status" oninput="ChequesModule.filterStatusDropdown(this.value)" onchange="ChequesModule.updateTripStatusFromSelect(this.value)" autocomplete="off">
+                </div>
+                <datalist id="trip-status-options-list">
+                  <option value="Transit"></option>
+                  <option value="Off Loading"></option>
+                  <option value="Cheque Due"></option>
+                  <option value="POD Sent/Bill Generated"></option>
+                  <option value="POD Sent / Bill Generated"></option>
+                  <option value="Party Payment Pending"></option>
+                  <option value="Completed"></option>
+                  <option value="Disputed"></option>
+                  <option value="In Transit"></option>
+                </datalist>
+                <div class="appsheet-select-icons">
+                  <span class="appsheet-select-clear" onclick="event.stopPropagation(); ChequesModule.clearStatusSelection()">✕</span>
+                  <span class="appsheet-select-arrow" id="status-arrow-icon">▼</span>
+                </div>
+              </div>
+              <div class="appsheet-dropdown-card d-none shadow-sm" id="status-dropdown-menu">
+                <div class="appsheet-dropdown-scroll" id="status-options-list">
+                  <!-- Populated dynamically with colored status options -->
+                </div>
+                <div class="appsheet-dropdown-footer">
+                  <button type="button" class="appsheet-dropdown-close-btn" onclick="ChequesModule.closeStatusDropdown()">Close</button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1711,152 +1982,139 @@
   </div>
 
   <!-- ======================================================== -->
-  <!-- CARD 2: SIDE DRAWER - ADD TRIP CHEQUE (Matching AppSheet) -->
+  <!-- CARD 2: SIDE DRAWER - CHEQUE DETAILS (Matching AppSheet)  -->
+  <!-- Matching WhatsApp Image 2026-10-20 at 12.04.21 PM.jpeg    -->
   <!-- ======================================================== -->
-  <div class="offcanvas offcanvas-end offcanvas-trip-edit" tabindex="-1" id="offcanvasAddTripCheque" aria-labelledby="offcanvasAddTripChequeLabel">
-    <div class="offcanvas-header border-bottom py-2 px-3">
-      <div class="d-flex align-items-center gap-2">
-        <button type="button" class="btn btn-sm btn-light border-0 p-0 text-muted" data-bs-dismiss="offcanvas" aria-label="Close" style="font-size: 1.1rem;">
-          <i class="bi bi-x-lg"></i>
-        </button>
-        <span class="fw-semibold fs-6 text-dark" id="offcanvasAddTripChequeLabel">Add Trip Cheque</span>
+  <div class="offcanvas offcanvas-end offcanvas-cheque-details" tabindex="-1" id="offcanvasAddTripCheque" aria-labelledby="offcanvasAddTripChequeLabel">
+    <div class="appsheet-drawer-header">
+      <div class="d-flex align-items-center gap-1">
+        <button type="button" class="btn-appsheet-close-x" data-bs-dismiss="offcanvas" aria-label="Close">✕</button>
+        <span class="appsheet-drawer-header-title" id="offcanvasAddTripChequeLabel">Cheque Details</span>
       </div>
       <div class="d-flex align-items-center gap-2">
-        <button type="button" class="btn btn-sm btn-outline-secondary px-3" data-bs-dismiss="offcanvas">Cancel</button>
-        <button type="button" class="btn btn-sm btn-appsheet-add px-3" onclick="ChequesModule.saveTripChequeDrawer()">Save</button>
+        <button type="button" class="btn-appsheet-cancel-light" data-bs-dismiss="offcanvas">Cancel</button>
+        <button type="button" class="btn-appsheet-save-brown" onclick="ChequesModule.saveTripChequeDrawer()">Save</button>
       </div>
     </div>
 
-    <div class="offcanvas-body p-3">
+    <div class="offcanvas-body p-4">
       <form id="form-add-trip-cheque" onsubmit="event.preventDefault(); ChequesModule.saveTripChequeDrawer();">
         
-        <!-- Trip Context Info Header -->
-        <div class="p-2 mb-3 rounded bg-light border" style="font-size: 12px;">
-          <div class="d-flex justify-content-between mb-1">
-            <span class="text-muted">G.R. & Truck:</span>
-            <span class="fw-bold font-monospace text-primary" id="add-trip-chq-gr-display">2026-2027--207_TTC (RJ52GB5529)</span>
-          </div>
-          <div class="d-flex justify-content-between">
-            <span class="text-muted">Consignor:</span>
-            <span class="fw-semibold text-dark" id="add-trip-chq-party-display">Anand Sharma</span>
+        <!-- Field 1: Cheque Due Date * -->
+        <div class="appsheet-field-row">
+          <label class="appsheet-field-label">Cheque Due Date *</label>
+          <div class="appsheet-field-control-wrap">
+            <input type="date" id="add-trip-chq-due-date" class="appsheet-text-input font-monospace" required>
           </div>
         </div>
 
-        <!-- 1. Cheque Due Date * -->
-        <div class="chq-form-group">
-          <label class="chq-form-label">Cheque Due Date *</label>
-          <input type="date" id="add-trip-chq-due-date" class="chq-form-control" required>
-        </div>
-
-        <!-- 2. Cheque No. * -->
-        <div class="chq-form-group">
-          <label class="chq-form-label">Cheque No. *</label>
-          <input type="text" id="add-trip-chq-no" class="chq-form-control font-monospace fw-bold" placeholder="e.g. 000005" required>
-        </div>
-
-        <!-- 3. Party Due Payment -->
-        <div class="chq-form-group">
-          <label class="chq-form-label">Party Due Payment</label>
-          <div class="input-group input-group-sm">
-            <span class="input-group-text bg-white text-muted">₹</span>
-            <input type="number" step="any" id="add-trip-party-due" class="chq-form-control font-monospace" placeholder="191664.00">
-          </div>
-          <div class="form-text small text-muted" style="font-size: 11px;">Party Freight / Outstanding balance for trip</div>
-        </div>
-
-        <!-- 4. Amount * -->
-        <div class="chq-form-group">
-          <label class="chq-form-label">Amount (₹) *</label>
-          <input type="number" step="any" min="1" id="add-trip-chq-amount" class="chq-form-control font-monospace fw-bold fs-6 text-danger" placeholder="20000.00" required>
-        </div>
-
-        <!-- 5. Bank * (Select or Type with complete banks list) -->
-        <div class="chq-form-group">
-          <label class="chq-form-label">Bank *</label>
-          <div class="input-group input-group-sm">
-            <input type="text" id="add-trip-chq-bank" class="form-control form-control-sm chq-form-control" list="all-banks-datalist" placeholder="Select or type bank name" required>
-            <datalist id="all-banks-datalist">
-              <option value="ICICI Bank"></option>
-              <option value="HDFC Bank"></option>
-              <option value="State Bank of India (SBI)"></option>
-              <option value="Axis Bank"></option>
-              <option value="IDBI Bank"></option>
-              <option value="UOB (United Overseas Bank)"></option>
-              <option value="Punjab National Bank (PNB)"></option>
-              <option value="AU Small Finance Bank"></option>
-              <option value="Bank of Baroda (BOB)"></option>
-              <option value="Punjab & Sind Bank"></option>
-              <option value="Canara Bank"></option>
-              <option value="Bandhan Bank"></option>
-              <option value="Bank of India (BOI)"></option>
-              <option value="The National Bank"></option>
-              <option value="UCO Bank"></option>
-              <option value="Indian Bank"></option>
-              <option value="Central Bank of India"></option>
-              <option value="Kotak Mahindra Bank"></option>
-              <option value="Union Bank of India"></option>
-              <option value="IndusInd Bank"></option>
-              <option value="Yes Bank"></option>
-              <option value="Federal Bank"></option>
-              <option value="Ujjivan Small Finance Bank"></option>
-            </datalist>
-            <button class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="border-color: #dadce0;">
-              <span class="visually-hidden">Toggle Dropdown</span>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end shadow-sm" style="max-height: 240px; overflow-y: auto; font-size: 13px;">
-              <li><a class="dropdown-item" href="javascript:void(0)" onclick="ChequesModule.selectAddBank('ICICI Bank')">ICICI Bank</a></li>
-              <li><a class="dropdown-item" href="javascript:void(0)" onclick="ChequesModule.selectAddBank('HDFC Bank')">HDFC Bank</a></li>
-              <li><a class="dropdown-item" href="javascript:void(0)" onclick="ChequesModule.selectAddBank('State Bank of India (SBI)')">State Bank of India (SBI)</a></li>
-              <li><a class="dropdown-item" href="javascript:void(0)" onclick="ChequesModule.selectAddBank('Axis Bank')">Axis Bank</a></li>
-              <li><a class="dropdown-item" href="javascript:void(0)" onclick="ChequesModule.selectAddBank('IDBI Bank')">IDBI Bank</a></li>
-              <li><a class="dropdown-item" href="javascript:void(0)" onclick="ChequesModule.selectAddBank('UOB (United Overseas Bank)')">UOB (United Overseas Bank)</a></li>
-              <li><a class="dropdown-item" href="javascript:void(0)" onclick="ChequesModule.selectAddBank('Punjab National Bank (PNB)')">Punjab National Bank (PNB)</a></li>
-              <li><a class="dropdown-item" href="javascript:void(0)" onclick="ChequesModule.selectAddBank('AU Small Finance Bank')">AU Small Finance Bank</a></li>
-              <li><a class="dropdown-item" href="javascript:void(0)" onclick="ChequesModule.selectAddBank('Bank of Baroda (BOB)')">Bank of Baroda (BOB)</a></li>
-              <li><a class="dropdown-item" href="javascript:void(0)" onclick="ChequesModule.selectAddBank('Punjab & Sind Bank')">Punjab & Sind Bank</a></li>
-              <li><a class="dropdown-item" href="javascript:void(0)" onclick="ChequesModule.selectAddBank('Canara Bank')">Canara Bank</a></li>
-              <li><a class="dropdown-item" href="javascript:void(0)" onclick="ChequesModule.selectAddBank('Bandhan Bank')">Bandhan Bank</a></li>
-              <li><a class="dropdown-item" href="javascript:void(0)" onclick="ChequesModule.selectAddBank('Bank of India (BOI)')">Bank of India (BOI)</a></li>
-              <li><a class="dropdown-item" href="javascript:void(0)" onclick="ChequesModule.selectAddBank('The National Bank')">The National Bank</a></li>
-              <li><a class="dropdown-item" href="javascript:void(0)" onclick="ChequesModule.selectAddBank('UCO Bank')">UCO Bank</a></li>
-              <li><a class="dropdown-item" href="javascript:void(0)" onclick="ChequesModule.selectAddBank('Indian Bank')">Indian Bank</a></li>
-              <li><a class="dropdown-item" href="javascript:void(0)" onclick="ChequesModule.selectAddBank('Central Bank of India')">Central Bank of India</a></li>
-              <li><a class="dropdown-item" href="javascript:void(0)" onclick="ChequesModule.selectAddBank('Kotak Mahindra Bank')">Kotak Mahindra Bank</a></li>
-              <li><a class="dropdown-item" href="javascript:void(0)" onclick="ChequesModule.selectAddBank('Union Bank of India')">Union Bank of India</a></li>
-              <li><a class="dropdown-item" href="javascript:void(0)" onclick="ChequesModule.selectAddBank('IndusInd Bank')">IndusInd Bank</a></li>
-              <li><a class="dropdown-item" href="javascript:void(0)" onclick="ChequesModule.selectAddBank('Yes Bank')">Yes Bank</a></li>
-              <li><a class="dropdown-item" href="javascript:void(0)" onclick="ChequesModule.selectAddBank('Federal Bank')">Federal Bank</a></li>
-              <li><a class="dropdown-item" href="javascript:void(0)" onclick="ChequesModule.selectAddBank('Ujjivan Small Finance Bank')">Ujjivan Small Finance Bank</a></li>
-            </ul>
+        <!-- Field 2: Party Due Payment -->
+        <div class="appsheet-field-row">
+          <label class="appsheet-field-label">Party Due Payment</label>
+          <div class="appsheet-field-control-wrap">
+            <input type="text" id="add-trip-party-due-display" class="appsheet-text-input fw-semibold font-monospace" readonly value="₹ 20,000.00">
+            <input type="hidden" id="add-trip-party-due" value="20000">
           </div>
         </div>
 
-        <!-- 6. Pay to * -->
-        <div class="chq-form-group">
-          <label class="chq-form-label">Pay to *</label>
-          <select id="add-trip-chq-payto" class="form-select form-select-sm chq-form-control" required>
-            <option value="TTC">TTC</option>
-            <option value="MTC">MTC</option>
-            <option value="SMTC">SMTC</option>
-            <option value="Truck Owner">Truck Owner</option>
-          </select>
+        <!-- Field 3: Amount * -->
+        <div class="appsheet-field-row">
+          <label class="appsheet-field-label">Amount *</label>
+          <div class="appsheet-field-control-wrap">
+            <input type="text" id="add-trip-chq-amount" class="appsheet-text-input fw-semibold font-monospace" placeholder="₹ 0.00" value="₹ 0.00" onfocus="ChequesModule.onAmountFocus(this)" onblur="ChequesModule.onAmountBlur(this)" required>
+          </div>
         </div>
 
-        <!-- 7. Clearing Date -->
-        <div class="chq-form-group">
-          <label class="chq-form-label">Clearing Date</label>
-          <input type="date" id="add-trip-chq-clearing-date" class="chq-form-control">
+        <!-- Field 4: Bank * (AppSheet Searchable Combobox with 31 Banks & Gold Bullets) -->
+        <div class="appsheet-field-row">
+          <label class="appsheet-field-label">Bank *</label>
+          <div class="appsheet-field-control-wrap appsheet-custom-select" id="bank-combobox-wrap">
+            <div class="appsheet-select-trigger" onclick="ChequesModule.toggleBankDropdown()">
+              <input type="text" id="add-trip-chq-bank" class="appsheet-select-input" list="all-banks-datalist" placeholder="Add or search" oninput="ChequesModule.filterBankDropdown(this.value)" autocomplete="off" required>
+              <datalist id="all-banks-datalist">
+                <option value="ICICI"></option>
+                <option value="HDFC"></option>
+                <option value="SBI"></option>
+                <option value="Axis"></option>
+                <option value="IDBI"></option>
+                <option value="UOB"></option>
+                <option value="PNB"></option>
+                <option value="AU"></option>
+                <option value="BOB"></option>
+                <option value="Punjab And Sind Bank"></option>
+                <option value="Canara Bank"></option>
+                <option value="Bandhan Bank"></option>
+                <option value="BOI"></option>
+                <option value="The Nainital Bank Ltd."></option>
+                <option value="CBOI"></option>
+                <option value="IOB"></option>
+                <option value="Indian Bank"></option>
+                <option value="Kotak Mahindra Bank"></option>
+                <option value="IDFC First Bank"></option>
+                <option value="Karur Vysya Bank"></option>
+                <option value="Ujjivan Small Finanace Bank"></option>
+                <option value="Bank of Maharashtra"></option>
+                <option value="Baroda U.P. Bank"></option>
+                <option value="Federal Bank"></option>
+                <option value="UCO Bank"></option>
+                <option value="Yes Bank"></option>
+                <option value="IndusInd Bank"></option>
+                <option value="Utkarsh Small Finance Bank"></option>
+                <option value="Indian Overseas Bank"></option>
+                <option value="Prathama U.P. Gramin Bank"></option>
+                <option value="Union Bank"></option>
+                <option value="Punjab & Sind Bank"></option>
+                <option value="The National Bank"></option>
+              </datalist>
+              <div class="appsheet-select-icons">
+                <span class="appsheet-select-clear d-none" id="bank-clear-btn" onclick="event.stopPropagation(); ChequesModule.clearBankSelection()">✕</span>
+                <span class="appsheet-select-arrow" id="bank-arrow-icon">▼</span>
+              </div>
+            </div>
+            <div class="appsheet-dropdown-card d-none shadow-sm" id="bank-dropdown-menu">
+              <div class="appsheet-dropdown-scroll" id="bank-options-list">
+                <!-- 31 banks dynamically rendered with gold dots ● -->
+              </div>
+              <div class="appsheet-dropdown-footer">
+                <button type="button" class="appsheet-dropdown-close-btn" onclick="ChequesModule.closeBankDropdown()">Close</button>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <!-- 8. Status * -->
-        <div class="chq-form-group">
-          <label class="chq-form-label">Status *</label>
-          <select id="add-trip-chq-status" class="form-select form-select-sm chq-form-control">
-            <option value="Bounced">Bounced (बाउंस)</option>
-            <option value="Due">Due (देय)</option>
-            <option value="Cleared">Cleared (खाते में पास)</option>
-          </select>
+        <!-- Field 5: Cheque No. * -->
+        <div class="appsheet-field-row">
+          <label class="appsheet-field-label">Cheque No. *</label>
+          <div class="appsheet-field-control-wrap">
+            <input type="text" id="add-trip-chq-no" class="appsheet-text-input font-monospace fw-semibold" placeholder="" required>
+          </div>
         </div>
+
+        <!-- Field 6: Pay to * (AppSheet Searchable Combobox with 7 Gold Bullet Options) -->
+        <div class="appsheet-field-row">
+          <label class="appsheet-field-label">Pay to *</label>
+          <div class="appsheet-field-control-wrap appsheet-custom-select" id="payto-combobox-wrap">
+            <div class="appsheet-select-trigger" onclick="ChequesModule.togglePayToDropdown()">
+              <input type="text" id="add-trip-chq-payto" class="appsheet-select-input fw-semibold" placeholder="Search..." oninput="ChequesModule.filterPayToDropdown(this.value)" autocomplete="off" required>
+              <div class="appsheet-select-icons">
+                <span class="appsheet-select-clear d-none" id="payto-clear-btn" onclick="event.stopPropagation(); ChequesModule.clearPayToSelection()">✕</span>
+                <span class="appsheet-select-arrow" id="payto-arrow-icon">▼</span>
+              </div>
+            </div>
+            <div class="appsheet-dropdown-card d-none shadow-sm" id="payto-dropdown-menu">
+              <div class="appsheet-dropdown-scroll" id="payto-options-list">
+                <!-- 7 Pay to options dynamically rendered with gold dots ● -->
+              </div>
+              <div class="appsheet-dropdown-footer">
+                <button type="button" class="appsheet-dropdown-close-btn" onclick="ChequesModule.closePayToDropdown()">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Context trip info & hidden fields for full data synchronization -->
+        <input type="hidden" id="add-trip-chq-clearing-date" value="">
+        <input type="hidden" id="add-trip-chq-status" value="Bounced">
 
       </form>
     </div>

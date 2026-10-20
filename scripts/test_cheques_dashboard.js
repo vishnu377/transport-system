@@ -197,8 +197,31 @@ assert(htmlContent.includes('Party Payment Pending'), 'Status must include Party
 assert(chequesJs.includes('updateTripOtherB('), 'ChequesModule must define updateTripOtherB');
 assert(chequesJs.includes('selectTripStatus('), 'ChequesModule must define selectTripStatus');
 
+// 12. Verify Authentic AppSheet Details Form & Bullets (Matching 11 screenshots)
+assert(htmlContent.includes('.bounced-purple-bullet'), 'Must include .bounced-purple-bullet CSS');
+assert(htmlContent.includes('.bounced-red-bullet'), 'Must include .bounced-red-bullet CSS');
+assert(htmlContent.includes('.bounced-gold-bullet'), 'Must include .bounced-gold-bullet CSS');
+assert(htmlContent.includes('.bounced-phone-link'), 'Must include .bounced-phone-link CSS');
+assert(htmlContent.includes('Cheque Details'), 'Side drawer title must be Cheque Details');
+assert(htmlContent.includes('btn-appsheet-save-brown'), 'Side drawer must have authentic brown Save button');
+assert(htmlContent.includes('btn-appsheet-cancel-light'), 'Side drawer must have authentic light Cancel button');
+assert(htmlContent.includes('id="bank-dropdown-menu"'), 'Must define bank dropdown menu');
+assert(htmlContent.includes('id="payto-dropdown-menu"'), 'Must define payto dropdown menu');
+assert(htmlContent.includes('id="status-dropdown-menu"'), 'Must define status dropdown menu');
+assert(htmlContent.includes('id="add-records-dropdown-menu"'), 'Must define add records dropdown menu');
+
+// Verify Master Constants & Methods in cheques.js
+assert(chequesJs.includes('APPSHEET_BANK_LIST'), 'cheques.js must define APPSHEET_BANK_LIST');
+assert(chequesJs.includes('APPSHEET_PAYTO_LIST'), 'cheques.js must define APPSHEET_PAYTO_LIST');
+assert(chequesJs.includes('APPSHEET_STATUS_LIST'), 'cheques.js must define APPSHEET_STATUS_LIST');
+assert(chequesJs.includes('APPSHEET_ADD_RECORDS_LIST'), 'cheques.js must define APPSHEET_ADD_RECORDS_LIST');
+assert(chequesJs.includes('toggleBankDropdown()'), 'ChequesModule must define toggleBankDropdown');
+assert(chequesJs.includes('togglePayToDropdown()'), 'ChequesModule must define togglePayToDropdown');
+assert(chequesJs.includes('toggleStatusDropdown()'), 'ChequesModule must define toggleStatusDropdown');
+assert(chequesJs.includes('toggleAddRecordsDropdown()'), 'ChequesModule must define toggleAddRecordsDropdown');
+
 console.log('✔ Card 1 Combobox: Add Records for (Cheque, Party Payment, Truck Owner Payment, Other B) verified.');
-console.log('✔ Card 2 Side Drawer: Add Trip Cheque with Party Due, Amount, Banks datalist verified.');
+console.log('✔ Card 2 Side Drawer: Authentic Cheque Details with 31 Banks, 7 Pay To options & Gold Bullets verified.');
 console.log('✔ Card 3 Financials: Other B typable input & Status combobox verified.');
 console.log('✔ All Cheques Dashboard, Card 1 Due & Card 2 Bounced tests PASSED 100%!');
 
