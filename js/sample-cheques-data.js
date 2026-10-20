@@ -11897,7 +11897,11 @@ window.INITIAL_CHEQUES_DATA = [
       "driver": "Aasharam Gurjar",
       "driverMobile": "9950561094",
       "totalFreight": 162450.0,
-      "paidAmount": 162450.0,
+      "amountPaid": 96875.0,
+      "paidAmount": 25000.0,
+      "paymentMode": "Cash / Cheque",
+      "beneficiary": "TTC",
+      "beneficiaryName": "Rameshwar Prasad",
       "owner": "Laxmi Prakash Jat",
       "ownerMobile": "9571272336",
       "ownerTotalPayment": 162450.0,
@@ -12125,7 +12129,50 @@ window.INITIAL_CHEQUES_DATA = [
     "financialYear": "2025-2026",
     "fy": "2025-2026",
     "status": "Not Used",
-    "colorTheme": "orange"
+    "colorTheme": "orange",
+    "trip": {
+      "grNo": "2025-2026-1093_TTC",
+      "truckNo": "RJ52GB4538",
+      "tripStartDate": "12/10/2025",
+      "tripEndDate": "27/07/2026",
+      "origin": "Rajsamand (Raj.)",
+      "destination": "Azamgarh (U.P.)",
+      "consigneeBillingType": "Per Tonne",
+      "biltyAmount": 25000.0,
+      "weight": 112.780,
+      "rate": 2450.0,
+      "material": "Marble Powder / Goods",
+      "reference": "Pavan Bansal Dadri",
+      "referenceMobile": "-",
+      "driver": "Mukesh Kumar",
+      "driverMobile": "9783125142",
+      "totalFreight": 162450.0,
+      "amountPaid": 96875.0,
+      "paidAmount": 25000.0,
+      "paymentMode": "Cash / Cheque",
+      "beneficiary": "TTC",
+      "beneficiaryName": "Rameshwar Prasad",
+      "gstinConsignee": "09DCTPP3880F1ZW",
+      "consignee": "Azamgarh",
+      "owner": "Laxmi Prakash Jat",
+      "ownerMobile": "9571272336",
+      "ownerTotalPayment": 162450.0,
+      "consignors": [
+        {
+          "gstin": "08DACPM6262H1ZK",
+          "consignor": "Balaji Marble Supplier",
+          "address": "Near Shiv Temple, House No. 176, Maliwada, Rajnagar, Dist. Rajsamand (Raj.)-313324"
+        }
+      ],
+      "payments": [
+        { "paymentDate": "21/07/2026", "amountPaid": 137450.0, "mode": "Cash", "beneficiary": "", "description": "To Driver", "paidTo": "Truck Owner" },
+        { "paymentDate": "18/08/2026", "amountPaid": 25000.0, "mode": "NEFT/RTGS", "beneficiary": "TTC", "description": "", "paidTo": "Transporter" }
+      ],
+      "ownerPayments": [
+        { "paymentDate": "21/07/2026", "amountPaid": 137450.0, "mode": "Cash", "beneficiary": "", "fromBank": "", "toBank": "", description: "To Driver" },
+        { "paymentDate": "23/07/2026", "amountPaid": 24052.0, "mode": "NEFT/RTGS", "beneficiary": "Rameshwar Prasad", "fromBank": "TTC", "toBank": "ICICI", description: "" }
+      ]
+    }
   },
   {
     "id": "CHQ_NOTUSED_751768_01",
