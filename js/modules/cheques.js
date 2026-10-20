@@ -160,6 +160,14 @@ const ChequesModule = {
   currentNotUsedColor: 'magenta',
   currentSettledOrigin: 'cleared',
   searchQuery: '',
+  notUsedCurrentPage: 1,
+  notUsedPageSize: 25,
+  clearedCurrentPage: 1,
+  clearedPageSize: 25,
+  debtsCurrentPage: 1,
+  debtsPageSize: 25,
+  bouncedCurrentPage: 1,
+  bouncedPageSize: 25,
   viewMode: 'dashboard', // 'dashboard', 'due-list', 'due-detail', 'bounced-list', 'bounced-trip-detail', 'bounced-cheque-detail', 'bounced-debts', 'cleared-list', 'cleared-trip-detail', 'cleared-cheque-detail', 'register'
   activeCheque: null,
   activeTrip: null,
@@ -1047,6 +1055,73 @@ const ChequesModule = {
     if (activeEl) activeEl.classList.add('active');
   },
 
+  changeBouncedPage(page) {
+    this.bouncedCurrentPage = page;
+    this.renderBouncedTable();
+  },
+
+  changeBouncedPageSize(size) {
+    this.bouncedPageSize = size === 'ALL' ? 'ALL' : parseInt(size, 10);
+    this.bouncedCurrentPage = 1;
+    this.renderBouncedTable();
+  },
+
+  renderBouncedPagination(total, start, end, totalPages) {
+    const info = document.getElementById('bounced-pagination-info');
+    const container = document.getElementById('bounced-pagination-controls');
+    if (!info || !container) return;
+
+    if (this.bouncedPageSize === 'ALL' || total === 0 || totalPages <= 1) {
+      info.innerText = `Showing all ${total.toLocaleString('en-IN')} cheques`;
+      container.innerHTML = '';
+      return;
+    }
+
+    info.innerText = `Showing ${start.toLocaleString('en-IN')} to ${end.toLocaleString('en-IN')} of ${total.toLocaleString('en-IN')} cheques (Page ${this.bouncedCurrentPage} of ${totalPages})`;
+
+    let html = `
+      <button class="appsheet-page-btn" ${this.bouncedCurrentPage === 1 ? 'disabled' : ''} onclick="ChequesModule.changeBouncedPage(1)" title="First Page">
+        &laquo;&laquo; First
+      </button>
+      <button class="appsheet-page-btn" ${this.bouncedCurrentPage === 1 ? 'disabled' : ''} onclick="ChequesModule.changeBouncedPage(${this.bouncedCurrentPage - 1})" title="Previous Page">
+        &lsaquo; Prev
+      </button>
+    `;
+
+    let startPage = Math.max(1, this.bouncedCurrentPage - 2);
+    let endPage = Math.min(totalPages, startPage + 4);
+    if (endPage - startPage < 4) startPage = Math.max(1, endPage - 4);
+
+    if (startPage > 1) {
+      html += `<button class="appsheet-page-btn" onclick="ChequesModule.changeBouncedPage(1)">1</button>`;
+      if (startPage > 2) html += `<span class="px-1 text-muted" style="font-size: 11px;">...</span>`;
+    }
+
+    for (let p = startPage; p <= endPage; p++) {
+      html += `
+        <button class="appsheet-page-btn ${p === this.bouncedCurrentPage ? 'active' : ''}" onclick="ChequesModule.changeBouncedPage(${p})">
+          ${p}
+        </button>
+      `;
+    }
+
+    if (endPage < totalPages) {
+      if (endPage < totalPages - 1) html += `<span class="px-1 text-muted" style="font-size: 11px;">...</span>`;
+      html += `<button class="appsheet-page-btn" onclick="ChequesModule.changeBouncedPage(${totalPages})">${totalPages}</button>`;
+    }
+
+    html += `
+      <button class="appsheet-page-btn" ${this.bouncedCurrentPage === totalPages ? 'disabled' : ''} onclick="ChequesModule.changeBouncedPage(${this.bouncedCurrentPage + 1})" title="Next Page">
+        Next &rsaquo;
+      </button>
+      <button class="appsheet-page-btn" ${this.bouncedCurrentPage === totalPages ? 'disabled' : ''} onclick="ChequesModule.changeBouncedPage(${totalPages})" title="Last Page">
+        Last &raquo;&raquo;
+      </button>
+    `;
+
+    container.innerHTML = html;
+  },
+
   renderBouncedTable() {
     const tbody = document.getElementById('bounced-table-tbody');
     if (!tbody) return;
@@ -1073,9 +1148,25 @@ const ChequesModule = {
       '18/04/2025', '15/04/2025', '23/01/2025', '11/12/2024', 'blank'
     ];
 
+    const totalCount = bounced.length;
+    let paginatedBounced = bounced;
+    let startIdx = 1;
+    let endIdx = totalCount;
+    let totalPages = 1;
+
+    if (this.bouncedPageSize !== 'ALL') {
+      const pageSize = typeof this.bouncedPageSize === 'number' ? this.bouncedPageSize : parseInt(this.bouncedPageSize, 10);
+      totalPages = Math.ceil(totalCount / pageSize) || 1;
+      if (this.bouncedCurrentPage > totalPages) this.bouncedCurrentPage = 1;
+      const offset = (this.bouncedCurrentPage - 1) * pageSize;
+      startIdx = totalCount > 0 ? offset + 1 : 0;
+      endIdx = Math.min(offset + pageSize, totalCount);
+      paginatedBounced = bounced.slice(offset, endIdx);
+    }
+
     // Group items
     const grouped = {};
-    bounced.forEach(c => {
+    paginatedBounced.forEach(c => {
       const gDate = c.groupDate || 'blank';
       if (!grouped[gDate]) grouped[gDate] = [];
       grouped[gDate].push(c);
@@ -1153,6 +1244,7 @@ const ChequesModule = {
     }
 
     tbody.innerHTML = html;
+    this.renderBouncedPagination(totalCount, startIdx, endIdx, totalPages);
   },
 
   // ========================================================
@@ -1534,6 +1626,73 @@ const ChequesModule = {
     this.renderBouncedOpenDebts();
   },
 
+  changeDebtsPage(page) {
+    this.debtsCurrentPage = page;
+    this.renderBouncedOpenDebts();
+  },
+
+  changeDebtsPageSize(size) {
+    this.debtsPageSize = size === 'ALL' ? 'ALL' : parseInt(size, 10);
+    this.debtsCurrentPage = 1;
+    this.renderBouncedOpenDebts();
+  },
+
+  renderDebtsPagination(total, start, end, totalPages) {
+    const info = document.getElementById('debts-pagination-info');
+    const container = document.getElementById('debts-pagination-controls');
+    if (!info || !container) return;
+
+    if (this.debtsPageSize === 'ALL' || total === 0 || totalPages <= 1) {
+      info.innerText = `Showing all ${total.toLocaleString('en-IN')} debts`;
+      container.innerHTML = '';
+      return;
+    }
+
+    info.innerText = `Showing ${start.toLocaleString('en-IN')} to ${end.toLocaleString('en-IN')} of ${total.toLocaleString('en-IN')} debts (Page ${this.debtsCurrentPage} of ${totalPages})`;
+
+    let html = `
+      <button class="appsheet-page-btn" ${this.debtsCurrentPage === 1 ? 'disabled' : ''} onclick="ChequesModule.changeDebtsPage(1)" title="First Page">
+        &laquo;&laquo; First
+      </button>
+      <button class="appsheet-page-btn" ${this.debtsCurrentPage === 1 ? 'disabled' : ''} onclick="ChequesModule.changeDebtsPage(${this.debtsCurrentPage - 1})" title="Previous Page">
+        &lsaquo; Prev
+      </button>
+    `;
+
+    let startPage = Math.max(1, this.debtsCurrentPage - 2);
+    let endPage = Math.min(totalPages, startPage + 4);
+    if (endPage - startPage < 4) startPage = Math.max(1, endPage - 4);
+
+    if (startPage > 1) {
+      html += `<button class="appsheet-page-btn" onclick="ChequesModule.changeDebtsPage(1)">1</button>`;
+      if (startPage > 2) html += `<span class="px-1 text-muted" style="font-size: 11px;">...</span>`;
+    }
+
+    for (let p = startPage; p <= endPage; p++) {
+      html += `
+        <button class="appsheet-page-btn ${p === this.debtsCurrentPage ? 'active' : ''}" onclick="ChequesModule.changeDebtsPage(${p})">
+          ${p}
+        </button>
+      `;
+    }
+
+    if (endPage < totalPages) {
+      if (endPage < totalPages - 1) html += `<span class="px-1 text-muted" style="font-size: 11px;">...</span>`;
+      html += `<button class="appsheet-page-btn" onclick="ChequesModule.changeDebtsPage(${totalPages})">${totalPages}</button>`;
+    }
+
+    html += `
+      <button class="appsheet-page-btn" ${this.debtsCurrentPage === totalPages ? 'disabled' : ''} onclick="ChequesModule.changeDebtsPage(${this.debtsCurrentPage + 1})" title="Next Page">
+        Next &rsaquo;
+      </button>
+      <button class="appsheet-page-btn" ${this.debtsCurrentPage === totalPages ? 'disabled' : ''} onclick="ChequesModule.changeDebtsPage(${totalPages})" title="Last Page">
+        Last &raquo;&raquo;
+      </button>
+    `;
+
+    container.innerHTML = html;
+  },
+
   renderBouncedOpenDebts() {
     const tbody = document.getElementById('bounced-open-debts-tbody');
     if (!tbody) return;
@@ -1571,9 +1730,25 @@ const ChequesModule = {
       return;
     }
 
+    const totalCount = debts.length;
+    let paginatedDebts = debts;
+    let startIdx = 1;
+    let endIdx = totalCount;
+    let totalPages = 1;
+
+    if (this.debtsPageSize !== 'ALL') {
+      const pageSize = typeof this.debtsPageSize === 'number' ? this.debtsPageSize : parseInt(this.debtsPageSize, 10);
+      totalPages = Math.ceil(totalCount / pageSize) || 1;
+      if (this.debtsCurrentPage > totalPages) this.debtsCurrentPage = 1;
+      const offset = (this.debtsCurrentPage - 1) * pageSize;
+      startIdx = totalCount > 0 ? offset + 1 : 0;
+      endIdx = Math.min(offset + pageSize, totalCount);
+      paginatedDebts = debts.slice(offset, endIdx);
+    }
+
     // Group by Date Descending
     const dateGroups = {};
-    debts.forEach(d => {
+    paginatedDebts.forEach(d => {
       const dateKey = d.displayDate || this.toDisplayDateFormat(d.date) || 'Other';
       if (!dateGroups[dateKey]) {
         dateGroups[dateKey] = [];
@@ -1642,6 +1817,7 @@ const ChequesModule = {
     }
 
     tbody.innerHTML = html;
+    this.renderDebtsPagination(totalCount, startIdx, endIdx, totalPages);
   },
 
   // ========================================================
@@ -2470,6 +2646,75 @@ const ChequesModule = {
     if (el2024) el2024.innerText = `₹ ${Number(total2024 || 4947105.80).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   },
 
+  changeClearedPage(page) {
+    this.clearedCurrentPage = page;
+    this.renderClearedTable();
+  },
+
+  changeClearedPageSize(size) {
+    this.clearedPageSize = size === 'ALL' ? 'ALL' : parseInt(size, 10);
+    this.clearedCurrentPage = 1;
+    this.renderClearedTable();
+  },
+
+  renderClearedPagination(total, start, end, totalPages) {
+    const info = document.getElementById('cleared-pagination-info');
+    const container = document.getElementById('cleared-pagination-controls');
+    if (!info || !container) return;
+
+    if (this.clearedPageSize === 'ALL' || total === 0 || totalPages <= 1) {
+      info.innerText = `Showing all ${total.toLocaleString('en-IN')} cheques`;
+      container.innerHTML = '';
+      return;
+    }
+
+    info.innerText = `Showing ${start.toLocaleString('en-IN')} to ${end.toLocaleString('en-IN')} of ${total.toLocaleString('en-IN')} cheques (Page ${this.clearedCurrentPage} of ${totalPages})`;
+
+    let html = `
+      <button class="appsheet-page-btn" ${this.clearedCurrentPage === 1 ? 'disabled' : ''} onclick="ChequesModule.changeClearedPage(1)" title="First Page">
+        &laquo;&laquo; First
+      </button>
+      <button class="appsheet-page-btn" ${this.clearedCurrentPage === 1 ? 'disabled' : ''} onclick="ChequesModule.changeClearedPage(${this.clearedCurrentPage - 1})" title="Previous Page">
+        &lsaquo; Prev
+      </button>
+    `;
+
+    let startPage = Math.max(1, this.clearedCurrentPage - 2);
+    let endPage = Math.min(totalPages, startPage + 4);
+    if (endPage - startPage < 4) {
+      startPage = Math.max(1, endPage - 4);
+    }
+
+    if (startPage > 1) {
+      html += `<button class="appsheet-page-btn" onclick="ChequesModule.changeClearedPage(1)">1</button>`;
+      if (startPage > 2) html += `<span class="px-1 text-muted" style="font-size: 11px;">...</span>`;
+    }
+
+    for (let p = startPage; p <= endPage; p++) {
+      html += `
+        <button class="appsheet-page-btn ${p === this.clearedCurrentPage ? 'active' : ''}" onclick="ChequesModule.changeClearedPage(${p})">
+          ${p}
+        </button>
+      `;
+    }
+
+    if (endPage < totalPages) {
+      if (endPage < totalPages - 1) html += `<span class="px-1 text-muted" style="font-size: 11px;">...</span>`;
+      html += `<button class="appsheet-page-btn" onclick="ChequesModule.changeClearedPage(${totalPages})">${totalPages}</button>`;
+    }
+
+    html += `
+      <button class="appsheet-page-btn" ${this.clearedCurrentPage === totalPages ? 'disabled' : ''} onclick="ChequesModule.changeClearedPage(${this.clearedCurrentPage + 1})" title="Next Page">
+        Next &rsaquo;
+      </button>
+      <button class="appsheet-page-btn" ${this.clearedCurrentPage === totalPages ? 'disabled' : ''} onclick="ChequesModule.changeClearedPage(${totalPages})" title="Last Page">
+        Last &raquo;&raquo;
+      </button>
+    `;
+
+    container.innerHTML = html;
+  },
+
   renderClearedTable() {
     const tbody = document.getElementById('cleared-table-tbody');
     if (!tbody) return;
@@ -2500,10 +2745,26 @@ const ChequesModule = {
       return parseDate(b.clearingDate || b.groupDate || b.dueDate) - parseDate(a.clearingDate || a.groupDate || a.dueDate);
     });
 
+    const totalCount = cleared.length;
+    let paginatedCleared = cleared;
+    let startIdx = 1;
+    let endIdx = totalCount;
+    let totalPages = 1;
+
+    if (this.clearedPageSize !== 'ALL') {
+      const pageSize = typeof this.clearedPageSize === 'number' ? this.clearedPageSize : parseInt(this.clearedPageSize, 10);
+      totalPages = Math.ceil(totalCount / pageSize) || 1;
+      if (this.clearedCurrentPage > totalPages) this.clearedCurrentPage = 1;
+      const offset = (this.clearedCurrentPage - 1) * pageSize;
+      startIdx = totalCount > 0 ? offset + 1 : 0;
+      endIdx = Math.min(offset + pageSize, totalCount);
+      paginatedCleared = cleared.slice(offset, endIdx);
+    }
+
     // Group items by clearingDate / groupDate
     const grouped = {};
     const groupOrder = [];
-    cleared.forEach(c => {
+    paginatedCleared.forEach(c => {
       const gDate = c.clearingDate || c.groupDate || c.dueDate || 'blank';
       if (!grouped[gDate]) {
         grouped[gDate] = [];
@@ -2584,6 +2845,7 @@ const ChequesModule = {
     }
 
     tbody.innerHTML = html;
+    this.renderClearedPagination(totalCount, startIdx, endIdx, totalPages);
   },
 
   // Level 3: Cleared Open Trip Details (Matching screencapture_13_48_53.png)
@@ -3943,6 +4205,75 @@ const ChequesModule = {
     if (tabBadge) tabBadge.innerText = notUsed.length;
   },
 
+  changeNotUsedPage(page) {
+    this.notUsedCurrentPage = page;
+    this.renderNotUsedTable();
+  },
+
+  changeNotUsedPageSize(size) {
+    this.notUsedPageSize = size === 'ALL' ? 'ALL' : parseInt(size, 10);
+    this.notUsedCurrentPage = 1;
+    this.renderNotUsedTable();
+  },
+
+  renderNotUsedPagination(total, start, end, totalPages) {
+    const info = document.getElementById('notused-pagination-info');
+    const container = document.getElementById('notused-pagination-controls');
+    if (!info || !container) return;
+
+    if (this.notUsedPageSize === 'ALL' || total === 0 || totalPages <= 1) {
+      info.innerText = `Showing all ${total.toLocaleString('en-IN')} cheques`;
+      container.innerHTML = '';
+      return;
+    }
+
+    info.innerText = `Showing ${start.toLocaleString('en-IN')} to ${end.toLocaleString('en-IN')} of ${total.toLocaleString('en-IN')} cheques (Page ${this.notUsedCurrentPage} of ${totalPages})`;
+
+    let html = `
+      <button class="appsheet-page-btn" ${this.notUsedCurrentPage === 1 ? 'disabled' : ''} onclick="ChequesModule.changeNotUsedPage(1)" title="First Page">
+        &laquo;&laquo; First
+      </button>
+      <button class="appsheet-page-btn" ${this.notUsedCurrentPage === 1 ? 'disabled' : ''} onclick="ChequesModule.changeNotUsedPage(${this.notUsedCurrentPage - 1})" title="Previous Page">
+        &lsaquo; Prev
+      </button>
+    `;
+
+    let startPage = Math.max(1, this.notUsedCurrentPage - 2);
+    let endPage = Math.min(totalPages, startPage + 4);
+    if (endPage - startPage < 4) {
+      startPage = Math.max(1, endPage - 4);
+    }
+
+    if (startPage > 1) {
+      html += `<button class="appsheet-page-btn" onclick="ChequesModule.changeNotUsedPage(1)">1</button>`;
+      if (startPage > 2) html += `<span class="px-1 text-muted" style="font-size: 11px;">...</span>`;
+    }
+
+    for (let p = startPage; p <= endPage; p++) {
+      html += `
+        <button class="appsheet-page-btn ${p === this.notUsedCurrentPage ? 'active' : ''}" onclick="ChequesModule.changeNotUsedPage(${p})">
+          ${p}
+        </button>
+      `;
+    }
+
+    if (endPage < totalPages) {
+      if (endPage < totalPages - 1) html += `<span class="px-1 text-muted" style="font-size: 11px;">...</span>`;
+      html += `<button class="appsheet-page-btn" onclick="ChequesModule.changeNotUsedPage(${totalPages})">${totalPages}</button>`;
+    }
+
+    html += `
+      <button class="appsheet-page-btn" ${this.notUsedCurrentPage === totalPages ? 'disabled' : ''} onclick="ChequesModule.changeNotUsedPage(${this.notUsedCurrentPage + 1})" title="Next Page">
+        Next &rsaquo;
+      </button>
+      <button class="appsheet-page-btn" ${this.notUsedCurrentPage === totalPages ? 'disabled' : ''} onclick="ChequesModule.changeNotUsedPage(${totalPages})" title="Last Page">
+        Last &raquo;&raquo;
+      </button>
+    `;
+
+    container.innerHTML = html;
+  },
+
   renderNotUsedTable() {
     const tbody = document.getElementById('notused-table-tbody');
     if (!tbody) return;
@@ -3970,14 +4301,6 @@ const ChequesModule = {
       });
     }
 
-    // Group cheques by dueDate (or groupDate)
-    const groups = {};
-    notUsed.forEach(c => {
-      const dateKey = c.dueDate || c.groupDate || c.chequeDate || 'Others';
-      if (!groups[dateKey]) groups[dateKey] = [];
-      groups[dateKey].push(c);
-    });
-
     const parseDateToTime = (dStr) => {
       if (!dStr || dStr === 'Others') return 0;
       const parts = dStr.split('/');
@@ -3986,6 +4309,32 @@ const ChequesModule = {
       }
       return 0;
     };
+
+    notUsed.sort((a, b) => parseDateToTime(b.dueDate || b.groupDate || b.chequeDate) - parseDateToTime(a.dueDate || a.groupDate || a.chequeDate));
+
+    const totalCount = notUsed.length;
+    let paginatedItems = notUsed;
+    let startIdx = 1;
+    let endIdx = totalCount;
+    let totalPages = 1;
+
+    if (this.notUsedPageSize !== 'ALL') {
+      const pageSize = typeof this.notUsedPageSize === 'number' ? this.notUsedPageSize : parseInt(this.notUsedPageSize, 10);
+      totalPages = Math.ceil(totalCount / pageSize) || 1;
+      if (this.notUsedCurrentPage > totalPages) this.notUsedCurrentPage = 1;
+      const offset = (this.notUsedCurrentPage - 1) * pageSize;
+      startIdx = totalCount > 0 ? offset + 1 : 0;
+      endIdx = Math.min(offset + pageSize, totalCount);
+      paginatedItems = notUsed.slice(offset, endIdx);
+    }
+
+    // Group cheques by dueDate (or groupDate)
+    const groups = {};
+    paginatedItems.forEach(c => {
+      const dateKey = c.dueDate || c.groupDate || c.chequeDate || 'Others';
+      if (!groups[dateKey]) groups[dateKey] = [];
+      groups[dateKey].push(c);
+    });
 
     const sortedDates = Object.keys(groups).sort((a, b) => parseDateToTime(b) - parseDateToTime(a));
 
@@ -4063,6 +4412,7 @@ const ChequesModule = {
     }
 
     tbody.innerHTML = html;
+    this.renderNotUsedPagination(totalCount, startIdx, endIdx, totalPages);
   },
 
   goToAllChequesView(fy = 'ALL') {
