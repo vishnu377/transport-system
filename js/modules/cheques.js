@@ -114,6 +114,7 @@ const APPSHEET_STATUS_LIST = [
   { label: "Cheque Due", color: "#1976d2" },
   { label: "POD Sent/Bill Generated", color: "#6200ea" },
   { label: "Party Payment Pending", color: "#f57c00" },
+  { label: "Truck Owner Payment Pending", color: "#1b5e20" },
   { label: "Completed", color: "#2e7d32" },
   { label: "Disputed", color: "#c62828" }
 ];
@@ -123,6 +124,18 @@ const APPSHEET_ADD_RECORDS_LIST = [
   "Party Payment",
   "Truck Owner Payment",
   "Other B"
+];
+
+const CLEARED_METADATA = [
+  // Authentic Cleared Cheques matching screencapture_13_43_15.png
+  { chequeNo: '000004', groupDate: '16/10/2026', clearingDate: '16/10/2026', dueDate: '13/10/2026', bankName: 'HDFC', amount: 76000, partyName: 'GOYAL INDUSTRIES', grNo: '2026-2027--2418_TTC', shortGrNo: '2418', truckNo: 'RJ01GC4865', destination: 'Mohali (Punjab)', firm: 'TTC', fy: '2026-2027', tripId: 'TRIP_2026_2027_2418' },
+  { chequeNo: '848399', groupDate: '15/10/2026', clearingDate: '15/10/2026', dueDate: '12/10/2026', bankName: 'SBI', amount: 63700, partyName: 'KAILASH CHAND GARG', grNo: '2026-2027--2363_TTC', shortGrNo: '2363', truckNo: 'RJ09GC2872', destination: 'Neemrana (Raj.)', firm: 'TTC', fy: '2026-2027' },
+  { chequeNo: '000496', groupDate: '15/10/2026', clearingDate: '15/10/2026', dueDate: '12/10/2026', bankName: 'HDFC', amount: 65000, partyName: 'GOYAL INDUSTRIES', grNo: '2026-2027--2353_TTC', shortGrNo: '2353', truckNo: 'RJ01GB5398', destination: 'Mohali (Punjab)', firm: 'TTC', fy: '2026-2027' },
+  { chequeNo: '000490', groupDate: '15/10/2026', clearingDate: '15/10/2026', dueDate: '12/10/2026', bankName: 'HDFC', amount: 76000, partyName: 'GOYAL INDUSTRIES', grNo: '2026-2027--2351_TTC', shortGrNo: '2351', truckNo: 'RJ01GC2824', destination: 'Mohali (Punjab)', firm: 'TTC', fy: '2026-2027' },
+  { chequeNo: '000423', groupDate: '15/10/2026', clearingDate: '15/10/2026', dueDate: '11/10/2026', bankName: 'HDFC', amount: 70000, partyName: 'GOYAL INDUSTRIES', grNo: '2026-2027--2300_TTC', shortGrNo: '2300', truckNo: 'RJ01GC4865', destination: 'Mohali (Punjab)', firm: 'TTC', fy: '2026-2027' },
+  { chequeNo: '002770', groupDate: '14/10/2026', clearingDate: '14/10/2026', dueDate: '10/10/2026', bankName: 'HDFC', amount: 60000, partyName: 'BALAJI TRADERS', grNo: '2026-2027--2388_TTC', shortGrNo: '2388', truckNo: 'RJ09GC2782', destination: 'Faridabad (Hry.)', firm: 'TTC', fy: '2026-2027' },
+  { chequeNo: '003112', groupDate: '14/10/2026', clearingDate: '14/10/2026', dueDate: '10/10/2026', bankName: 'HDFC', amount: 70000, partyName: 'BALAJI TRADERS', grNo: '2026-2027--2364_TTC', shortGrNo: '2364', truckNo: 'RJ09GC0540', destination: 'Faridabad (Hry.)', firm: 'TTC', fy: '2026-2027' },
+  { chequeNo: '001508', groupDate: '14/10/2026', clearingDate: '14/10/2026', dueDate: '09/10/2026', bankName: 'HDFC', amount: 70000, partyName: 'BALAJI TRADERS', grNo: '2026-2027--2344_TTC', shortGrNo: '2344', truckNo: 'RJ09GC2782', destination: 'Faridabad (Hry.)', firm: 'TTC', fy: '2026-2027' }
 ];
 
 const ChequesModule = {
@@ -136,8 +149,10 @@ const ChequesModule = {
   bouncedSidebarVisible: true,
   debtsYearFilter: 'ALL',
   debtsSidebarVisible: true,
+  clearedYearFilter: 'ALL',
+  clearedSidebarVisible: true,
   searchQuery: '',
-  viewMode: 'dashboard', // 'dashboard', 'due-list', 'due-detail', 'bounced-list', 'bounced-trip-detail', 'bounced-cheque-detail', 'bounced-debts', 'register'
+  viewMode: 'dashboard', // 'dashboard', 'due-list', 'due-detail', 'bounced-list', 'bounced-trip-detail', 'bounced-cheque-detail', 'bounced-debts', 'cleared-list', 'cleared-trip-detail', 'cleared-cheque-detail', 'register'
   activeCheque: null,
   activeTrip: null,
 
@@ -201,6 +216,12 @@ const ChequesModule = {
       this.viewBouncedChequeDetails(idParam);
     } else if (viewParam === 'bounced-debts') {
       this.viewBouncedOpenDebts();
+    } else if (viewParam === 'cleared' || tabParam === 'cleared') {
+      this.goToClearedView(fyParam || 'ALL');
+    } else if (viewParam === 'cleared-trip' && idParam) {
+      this.viewClearedTripDetails(idParam);
+    } else if (viewParam === 'cleared-cheque' && idParam) {
+      this.viewClearedChequeDetails(idParam);
     } else if (viewParam === 'register' || tabParam) {
       this.goToCardView(tabParam || 'ALL', fyParam || 'ALL');
     } else {
@@ -213,7 +234,9 @@ const ChequesModule = {
         if (!e.target.closest('#bank-combobox-wrap') &&
             !e.target.closest('#payto-combobox-wrap') &&
             !e.target.closest('#add-records-combobox-wrap') &&
-            !e.target.closest('#status-combobox-wrap')) {
+            !e.target.closest('#status-combobox-wrap') &&
+            !e.target.closest('#cleared-add-records-combobox-wrap') &&
+            !e.target.closest('#cleared-status-combobox-wrap')) {
           this.closeAllAppSheetDropdowns();
         }
       });
@@ -1178,6 +1201,7 @@ const ChequesModule = {
       };
     }
     this.activeTrip = trip;
+    this.viewMode = 'bounced-trip-detail';
 
     this.hideAllViews();
 
@@ -2059,6 +2083,28 @@ const ChequesModule = {
     this.updateTripStatusFromSelect(status);
   },
 
+  getTripStatusTheme(status) {
+    const clean = (status || '').trim().toLowerCase().replace(/\s*\/\s*/g, '/');
+    const found = APPSHEET_STATUS_LIST.find(s => {
+      const sClean = s.label.toLowerCase().replace(/\s*\/\s*/g, '/');
+      return sClean === clean || 
+             (clean === 'transit' && sClean.includes('transit')) || 
+             (clean === 'in transit' && sClean === 'transit') ||
+             (clean.includes('pod sent') && sClean.includes('pod sent')) ||
+             (clean.includes('off load') && sClean.includes('off load')) ||
+             (clean.includes('cheque due') && sClean.includes('cheque due')) ||
+             (clean.includes('party') && sClean.includes('party')) ||
+             (clean.includes('owner') && sClean.includes('owner'));
+    });
+    if (found) {
+      return { color: found.color, bg: found.color + '15' };
+    }
+    if (clean.includes('owner')) {
+      return { color: '#1b5e20', bg: '#e8f5e9' };
+    }
+    return { color: '#6200ea', bg: '#f3e5f5' };
+  },
+
   updateStatusDotColor(status) {
     const dot = document.getElementById('bounced-trip-status-dot');
     const input = document.getElementById('bounced-trip-status-input');
@@ -2098,6 +2144,8 @@ const ChequesModule = {
     this.closePayToDropdown();
     this.closeAddRecordsDropdown();
     this.closeStatusDropdown();
+    this.closeClearedAddRecordsDropdown();
+    this.closeClearedStatusDropdown();
   },
 
   onAmountFocus(input) {
@@ -2270,9 +2318,663 @@ const ChequesModule = {
     }
   },
 
+  // ========================================================
+  // CARD 3: CLEARED CHEQUES (Matching screencapture_13_43_15 to 13_52_29)
+  // ========================================================
   goToClearedView(fy = 'ALL') {
-    this.goToCardView('Cleared', fy);
+    this.viewMode = 'cleared-list';
+    this.clearedYearFilter = fy;
+    this.hideAllViews();
+
+    const clearedListEl = document.getElementById('cheques-view-cleared-list');
+    if (clearedListEl) clearedListEl.classList.remove('d-none');
+
+    const clearedActions = document.getElementById('cleared-list-actions');
+    if (clearedActions) clearedActions.classList.remove('d-none');
+
+    // Search placeholder becomes: Search Cleared
+    const searchInput = document.getElementById('cheque-search');
+    if (searchInput) searchInput.placeholder = 'Search Cleared';
+
+    // Breadcrumb: Home > Cheques > Cleared
+    this.setBreadcrumbState('cleared-list');
+
+    // Update active year item on left rail
+    this.updateClearedYearSidebarUI(fy);
+
+    // Apply sidebar visibility state
+    this.applyClearedSidebarState();
+
+    this.renderClearedTable();
   },
+
+  toggleClearedSidebar() {
+    this.clearedSidebarVisible = !this.clearedSidebarVisible;
+    this.applyClearedSidebarState();
+  },
+
+  applyClearedSidebarState() {
+    const sidebar = document.getElementById('cleared-year-sidebar');
+    const showBtn = document.getElementById('btn-show-cleared-sidebar');
+    const funnelTool = document.getElementById('btn-toggle-cleared-sidebar-tool');
+    if (sidebar) {
+      if (this.clearedSidebarVisible) {
+        sidebar.classList.remove('d-none');
+        if (showBtn) showBtn.classList.add('d-none');
+        if (funnelTool) {
+          funnelTool.classList.remove('active');
+          funnelTool.style.backgroundColor = '';
+          funnelTool.style.color = '';
+        }
+      } else {
+        sidebar.classList.add('d-none');
+        if (showBtn) showBtn.classList.remove('d-none');
+        if (funnelTool) {
+          funnelTool.classList.add('active');
+          funnelTool.style.backgroundColor = '#202124';
+          funnelTool.style.color = '#ffffff';
+        }
+      }
+    }
+  },
+
+  filterClearedByYear(fy) {
+    this.clearedYearFilter = fy;
+    this.updateClearedYearSidebarUI(fy);
+    this.renderClearedTable();
+  },
+
+  updateClearedYearSidebarUI(fy) {
+    const ids = ['ALL', '2026', '2025', '2024'];
+    ids.forEach(id => {
+      const el = document.getElementById(`cleared-year-${id}`);
+      if (el) el.classList.remove('active');
+    });
+
+    const activeId = fy === 'ALL' ? 'ALL' : fy.substring(0, 4);
+    const activeEl = document.getElementById(`cleared-year-${activeId}`);
+    if (activeEl) activeEl.classList.add('active');
+  },
+
+  renderClearedTable() {
+    const tbody = document.getElementById('cleared-table-tbody');
+    if (!tbody) return;
+
+    let cleared = this.allCheques.filter(c => c.status === 'Cleared');
+
+    if (this.clearedYearFilter !== 'ALL') {
+      cleared = cleared.filter(c => c.financialYear === this.clearedYearFilter);
+    }
+
+    if (this.searchQuery) {
+      cleared = cleared.filter(c => {
+        const text = `${c.chequeNo} ${c.bankName} ${c.amount} ${c.partyName} ${c.grNo} ${c.truckNo} ${c.destination} ${c.firm} ${c.clearingDate || c.dueDate || c.chequeDate}`.toLowerCase();
+        return text.includes(this.searchQuery);
+      });
+    }
+
+    // Sort by clearingDate descending
+    cleared.sort((a, b) => {
+      const parseDate = (dStr) => {
+        if (!dStr) return 0;
+        const parts = dStr.split('/');
+        if (parts.length === 3) return new Date(parts[2], parts[1] - 1, parts[0]).getTime();
+        return new Date(dStr).getTime() || 0;
+      };
+      return parseDate(b.clearingDate || b.groupDate || b.dueDate) - parseDate(a.clearingDate || a.groupDate || a.dueDate);
+    });
+
+    // Group items by clearingDate / groupDate
+    const grouped = {};
+    const groupOrder = [];
+    cleared.forEach(c => {
+      const gDate = c.clearingDate || c.groupDate || c.dueDate || 'blank';
+      if (!grouped[gDate]) {
+        grouped[gDate] = [];
+        groupOrder.push(gDate);
+      }
+      grouped[gDate].push(c);
+    });
+
+    let html = '';
+    groupOrder.forEach(gDate => {
+      const items = grouped[gDate];
+      if (!items || items.length === 0) return;
+
+      const groupTotal = items.reduce((acc, curr) => acc + (Number(curr.amount) || 0), 0);
+
+      html += `
+        <tr class="cleared-group-header-row">
+          <td colspan="10">
+            <span class="me-3">${gDate}</span>
+            <span class="fw-bold">${this.formatCurrency(groupTotal)}</span>
+          </td>
+        </tr>
+      `;
+
+      items.forEach(c => {
+        let displayGr = c.shortGrNo || c.grNo || '-';
+        if (displayGr.includes('-')) {
+          const parts = displayGr.split('-');
+          displayGr = parts[parts.length - 1].replace('_TTC', '').replace('_MTC', '').replace('_SMTC', '');
+        }
+
+        html += `
+          <tr class="cleared-row" onclick="ChequesModule.viewClearedTripDetails('${c.id}')" style="cursor: pointer;">
+            <td class="font-monospace">
+              <span class="cleared-green-bullet">●</span> ${c.chequeNo || '-'}
+            </td>
+            <td>
+              ${c.bankName || '-'}
+            </td>
+            <td class="font-monospace text-end">
+              <span class="cleared-green-bullet">●</span> ${this.formatCurrency(c.amount)}
+            </td>
+            <td class="text-truncate" style="max-width: 220px;" title="${c.partyName || ''}">
+              <span class="cleared-green-bullet">●</span> ${c.partyName || '-'}
+            </td>
+            <td class="font-monospace">
+              <span class="cleared-green-bullet">●</span> ${displayGr}
+            </td>
+            <td class="font-monospace">
+              <span class="cleared-green-bullet">●</span> ${c.truckNo || '-'}
+            </td>
+            <td class="text-truncate" style="max-width: 160px;" title="${c.destination || ''}">
+              ${c.destination || '-'}
+            </td>
+            <td>
+              <span class="cleared-green-bullet">●</span> ${c.firm || 'TTC'}
+            </td>
+            <td>
+              <span class="cleared-green-bullet">●</span> ${c.clearingDate || c.dueDate || '-'}
+            </td>
+            <td class="text-center text-muted">
+              <i class="bi bi-chevron-right small"></i>
+            </td>
+          </tr>
+        `;
+      });
+    });
+
+    if (!html) {
+      html = `
+        <tr>
+          <td colspan="10" class="text-center py-5 text-muted">
+            <i class="bi bi-inbox fs-2 d-block mb-2 text-secondary"></i>
+            No cleared cheques matching filter.
+          </td>
+        </tr>
+      `;
+    }
+
+    tbody.innerHTML = html;
+  },
+
+  // Level 3: Cleared Open Trip Details (Matching screencapture_13_48_53.png)
+  viewClearedTripDetails(chequeId) {
+    let c = this.allCheques.find(x => x.id === chequeId || x.chequeNo === chequeId);
+    if (!c && this.allCheques.length > 0) {
+      c = this.allCheques.find(x => x.status === 'Cleared') || this.allCheques[0];
+    }
+    this.activeCheque = c;
+
+    // Find linked trip
+    let trip = null;
+    if (c.tripId) {
+      trip = this.allTrips.find(t => t.id === c.tripId);
+    }
+    if (!trip) {
+      trip = this.allTrips.find(t => (t.grNo && c.grNo && t.grNo === c.grNo) || (t.shortGrNo && c.shortGrNo && t.shortGrNo === c.shortGrNo));
+    }
+    if (!trip) {
+      trip = {
+        id: c.tripId || "TRIP_2026_2027_2418",
+        grNo: c.grNo || "2026-2027--2418_TTC",
+        shortGrNo: c.shortGrNo || "2418",
+        truckNo: c.truckNo || "RJ01GC4865",
+        tripStartDate: c.tripStartDate || "09/10/2026",
+        startDate: c.tripStartDate || "09/10/2026",
+        tripEndDate: c.tripEndDate || "19/10/2026",
+        endDate: c.tripEndDate || "19/10/2026",
+        origin: c.origin || "Rajsamand (Raj.)",
+        destination: c.destination || "Mohali (Punjab)",
+        billingType: c.billingType || "Per Tonne",
+        consigneeBillingType: c.consigneeBillingType || "Per Tonne",
+        biltyAmount: c.biltyAmount !== undefined ? c.biltyAmount : 6000,
+        weight: c.weight || 80.0,
+        rate: c.rate || 1900,
+        material: c.material || "MARBLE GRAINS",
+        freight: c.freight || 152000,
+        haultCharges: c.haultCharges || 0,
+        loadingCharges: c.loadingCharges || 0,
+        otherB: c.otherB !== undefined ? c.otherB : 0,
+        reference: c.reference || "Nilesh Malani",
+        referenceMobile: c.referenceMobile || "9829043728",
+        driver: c.driver || "Birdi Chand Gurjar Shrinagar",
+        driverMobile: c.driverMobile || "7568525599",
+        consignor: c.consignor || "RBL Natural Resources Ltd.",
+        consignorGstin: c.consignorGstin || "08AAACR6392F1ZT",
+        consignee: c.consignee || c.partyName || "GOYAL INDUSTRIES",
+        consigneeGstin: c.consigneeGstin || "03AACFG7694H1ZK",
+        consigneeAddress: c.consigneeAddress || "Plot No. 891 Industrial Area Phase-2 Mohali",
+        consigneeMobile: c.consigneeMobile || "9814614414",
+        owner: c.truckOwner || "Durga Enterprises",
+        truckOwner: c.truckOwner || "Durga Enterprises",
+        ownerMobile: c.truckOwnerMobile || "8824326001",
+        billNo: c.billNo || "0",
+        status: c.tripStatus || "Truck Owner Payment Pending",
+        tripStatus: c.tripStatus || "Truck Owner Payment Pending"
+      };
+    }
+    this.activeTrip = trip;
+    this.viewMode = 'cleared-trip-detail';
+
+    this.hideAllViews();
+
+    const tripEl = document.getElementById('cheques-view-cleared-trip-detail');
+    if (tripEl) tripEl.classList.remove('d-none');
+
+    const tripActions = document.getElementById('cleared-trip-actions');
+    if (tripActions) tripActions.classList.remove('d-none');
+
+    // Breadcrumb: Home > Cheques > Cleared > Open Trip Details
+    this.setBreadcrumbState('cleared-trip-detail');
+
+    // Format start & end date to display DD/MM/YYYY
+    const formattedStartDate = this.toDisplayDateFormat(trip.tripStartDate || trip.startDate || '09/10/2026');
+    const formattedEndDate = this.toDisplayDateFormat(trip.tripEndDate || trip.endDate || '19/10/2026');
+
+    // 1. Render Column 1: Trip Info (Matching screencapture_13_48_53.png)
+    const tripContentEl = document.getElementById('cleared-trip-details-content');
+    if (tripContentEl) {
+      tripContentEl.innerHTML = `
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">G.R.No.</div>
+          <div class="bounced-trip-field-val font-monospace"><span class="bounced-purple-bullet">●</span> ${trip.grNo || '2026-2027--2418_TTC'}</div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Truck No.</div>
+          <div class="bounced-trip-field-val font-monospace"><span class="bounced-purple-bullet">●</span> ${trip.truckNo || 'RJ01GC4865'}</div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Trip Start Date</div>
+          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${formattedStartDate}</div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Trip End Date</div>
+          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${formattedEndDate}</div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Origin</div>
+          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${trip.origin || 'Rajsamand (Raj.)'}</div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Destination</div>
+          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${trip.destination || 'Mohali (Punjab)'}</div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Consignee Billing Type</div>
+          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${trip.consigneeBillingType || trip.billingType || 'Per Tonne'}</div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Bilty Amount</div>
+          <div class="bounced-trip-field-val font-monospace"><span class="bounced-purple-bullet">●</span> ${trip.biltyAmount !== undefined ? trip.biltyAmount : 6000}</div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Weight</div>
+          <div class="bounced-trip-field-val font-monospace"><span class="bounced-purple-bullet">●</span> ${Number(trip.weight || 80.0).toFixed(3)}</div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Rate</div>
+          <div class="bounced-trip-field-val font-monospace"><span class="bounced-purple-bullet">●</span> ₹${Number(trip.rate || 1900).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Material</div>
+          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${trip.material || 'MARBLE GRAINS'}</div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Reference</div>
+          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${trip.reference || 'Nilesh Malani'}</div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Reference Mobile No.</div>
+          <div class="bounced-trip-field-val">
+            <span class="bounced-purple-bullet">●</span> 
+            ${trip.referenceMobile || '9829043728'}
+            <a href="tel:${trip.referenceMobile || '9829043728'}" class="bounced-phone-link" title="Call Reference"><i class="bi bi-telephone-fill"></i></a>
+          </div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Driver</div>
+          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${trip.driver || 'Birdi Chand Gurjar Shrinagar'}</div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Driver Mobile No.</div>
+          <div class="bounced-trip-field-val">
+            <span class="bounced-purple-bullet">●</span> 
+            ${trip.driverMobile || '7568525599'}
+            <a href="tel:${trip.driverMobile || '7568525599'}" class="bounced-phone-link" title="Call Driver"><i class="bi bi-telephone-fill"></i></a>
+          </div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Consignor</div>
+          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${trip.consignor || 'RBL Natural Resources Ltd.'}</div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Consignor GSTIN</div>
+          <div class="bounced-trip-field-val font-monospace"><span class="bounced-purple-bullet">●</span> ${trip.consignorGstin || '08AAACR6392F1ZT'}</div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Consignee</div>
+          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${trip.consignee || 'GOYAL INDUSTRIES'}</div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Consignee GSTIN</div>
+          <div class="bounced-trip-field-val font-monospace"><span class="bounced-purple-bullet">●</span> ${trip.consigneeGstin || '03AACFG7694H1ZK'}</div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Consignee Delivery Address</div>
+          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${trip.consigneeAddress || 'Plot No. 891 Industrial Area Phase-2 Mohali'}</div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Consignee Mobile No.</div>
+          <div class="bounced-trip-field-val">
+            <span class="bounced-purple-bullet">●</span> 
+            ${trip.consigneeMobile || '9814614414'}
+            <a href="tel:${trip.consigneeMobile || '9814614414'}" class="bounced-phone-link" title="Call Consignee"><i class="bi bi-telephone-fill"></i></a>
+          </div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Owner</div>
+          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${trip.owner || trip.truckOwner || 'Durga Enterprises'}</div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Owner Mobile No.</div>
+          <div class="bounced-trip-field-val">
+            <span class="bounced-purple-bullet">●</span> 
+            ${trip.ownerMobile || trip.truckOwnerMobile || '8824326001'}
+            <a href="tel:${trip.ownerMobile || trip.truckOwnerMobile || '8824326001'}" class="bounced-phone-link" title="Call Owner"><i class="bi bi-telephone-fill"></i></a>
+          </div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Freight</div>
+          <div class="bounced-trip-field-val font-monospace"><span class="bounced-purple-bullet">●</span> ₹${Number(trip.freight || 152000).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+        </div>
+        <div class="bounced-trip-field">
+          <div class="bounced-trip-field-label">Bill No.</div>
+          <div class="bounced-trip-field-val font-monospace"><span class="bounced-purple-bullet">●</span> ${trip.billNo !== undefined ? trip.billNo : '0'}</div>
+        </div>
+      `;
+    }
+
+    // 2. Render Column 2: Linked Cheques List
+    const tripGr = (trip.grNo || '').toLowerCase();
+    const tripShort = (trip.shortGrNo || '').toLowerCase();
+
+    let linkedCheques = this.allCheques.filter(ch => {
+      if (ch.tripId && (ch.tripId === trip.id || ch.tripId === 'TRIP_2026_2027_2418')) return true;
+      if (ch.grNo && (ch.grNo.toLowerCase() === tripGr || (tripShort && ch.grNo.toLowerCase().includes(tripShort)))) return true;
+      if (ch.id === c.id) return true;
+      return false;
+    });
+
+    if (linkedCheques.length === 0) {
+      linkedCheques = [c];
+    }
+
+    const chqCountHeader = document.getElementById('cleared-trip-cheques-count-header');
+    if (chqCountHeader) {
+      chqCountHeader.innerText = `Cheque ${linkedCheques.length}`;
+    }
+
+    const chqTbody = document.getElementById('cleared-trip-cheques-tbody');
+    if (chqTbody) {
+      let chqRowsHtml = '';
+      linkedCheques.forEach(item => {
+        const formattedAmt = this.formatCurrency(item.amount);
+        const formattedDueDate = this.toDisplayDateFormat(item.dueDate || item.chequeDate || '-');
+        const formattedClearDate = this.toDisplayDateFormat(item.clearingDate || item.groupDate || '-');
+
+        chqRowsHtml += `
+          <tr onclick="ChequesModule.viewClearedChequeDetails('${item.id}')" title="Click to view Cheque Details" style="cursor: pointer;">
+            <td><span class="cleared-green-bullet">●</span> ${formattedDueDate}</td>
+            <td class="font-monospace"><span class="cleared-green-bullet">●</span> ${item.chequeNo || '-'}</td>
+            <td><span class="cleared-green-bullet">●</span> ${item.bankName || '-'}</td>
+            <td class="font-monospace text-end"><span class="cleared-green-bullet">●</span> ${formattedAmt}</td>
+            <td><span class="cleared-green-bullet">●</span> ${item.firm || 'TTC'}</td>
+            <td><span class="cleared-green-bullet">●</span> ${formattedClearDate}</td>
+          </tr>
+        `;
+      });
+      chqTbody.innerHTML = chqRowsHtml;
+    }
+
+    // 3. Render Column 3: Financial Summary & Status
+    const totalLinkedAmount = linkedCheques.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+    const sumChqEl = document.getElementById('cleared-summary-chq-amount');
+    if (sumChqEl) {
+      sumChqEl.innerHTML = `<span class="bounced-purple-bullet">●</span> ${this.formatCurrency(totalLinkedAmount > 0 ? totalLinkedAmount : 76000)}`;
+    }
+
+    const freightVal = trip.freight || 152000;
+    const freightEl = document.getElementById('cleared-summary-freight');
+    if (freightEl) {
+      freightEl.innerHTML = `<span class="bounced-purple-bullet">●</span> ${this.formatCurrency(freightVal)}`;
+    }
+
+    const otherBVal = trip.otherB !== undefined ? trip.otherB : 0;
+    const otherBInput = document.getElementById('cleared-trip-other-b-input');
+    if (otherBInput) {
+      otherBInput.value = otherBVal;
+    }
+
+    // Status Combobox
+    const currentStatus = trip.status || trip.tripStatus || "Truck Owner Payment Pending";
+    const statusInput = document.getElementById('cleared-trip-status-input');
+    if (statusInput) {
+      statusInput.value = currentStatus;
+    }
+    this.updateClearedStatusDotColor(currentStatus);
+  },
+
+  // Level 4: Cleared Cheque Details (Matching screencapture_13_51_30.png)
+  viewClearedChequeDetails(chequeId) {
+    let c = this.allCheques.find(x => x.id === chequeId || x.chequeNo === chequeId);
+    if (!c && this.allCheques.length > 0) {
+      c = this.allCheques.find(x => x.status === 'Cleared') || this.allCheques[0];
+    }
+    this.activeCheque = c;
+    this.viewMode = 'cleared-cheque-detail';
+    this.hideAllViews();
+
+    const detailEl = document.getElementById('cheques-view-cleared-cheque-detail');
+    if (detailEl) detailEl.classList.remove('d-none');
+
+    // Breadcrumb: Home > Cheques > Cleared > Open Trip Details > Trip Cheque Details > Cheque Details
+    this.setBreadcrumbState('cleared-cheque-detail');
+
+    const cardBody = document.getElementById('cleared-cheque-detail-card-body');
+    if (cardBody) {
+      const formattedDueDate = this.toDisplayDateFormat(c.dueDate || c.chequeDate || '13/10/2026');
+      const formattedClearDate = this.toDisplayDateFormat(c.clearingDate || c.groupDate || '16/10/2026');
+
+      cardBody.innerHTML = `
+        <div class="chq-field-row">
+          <div class="chq-field-label">Cheque Due Date</div>
+          <div class="chq-field-val"><span class="cleared-green-bullet">●</span> ${formattedDueDate}</div>
+        </div>
+        <div class="chq-field-row">
+          <div class="chq-field-label">Cheque No.</div>
+          <div class="chq-field-val font-monospace"><span class="cleared-green-bullet">●</span> ${c.chequeNo || '000004'}</div>
+        </div>
+        <div class="chq-field-row">
+          <div class="chq-field-label">Amount</div>
+          <div class="chq-field-val font-monospace"><span class="cleared-green-bullet">●</span> ${this.formatCurrency(c.amount || 76000)}</div>
+        </div>
+        <div class="chq-field-row">
+          <div class="chq-field-label">Bank</div>
+          <div class="chq-field-val"><span class="cleared-green-bullet">●</span> ${c.bankName || 'HDFC'}</div>
+        </div>
+        <div class="chq-field-row">
+          <div class="chq-field-label">Pay to</div>
+          <div class="chq-field-val"><span class="cleared-green-bullet">●</span> ${c.firm || 'TTC'}</div>
+        </div>
+        <div class="chq-field-row">
+          <div class="chq-field-label">Clearing Date</div>
+          <div class="chq-field-val"><span class="cleared-green-bullet">●</span> ${formattedClearDate}</div>
+        </div>
+      `;
+    }
+  },
+
+  // --- Add Records Combobox for Cleared (Card 1 Bottom) ---
+  toggleClearedAddRecordsDropdown() {
+    const menu = document.getElementById('cleared-add-records-dropdown-menu');
+    const arrow = document.getElementById('cleared-add-records-arrow-icon');
+    if (!menu) return;
+    const isHidden = menu.classList.contains('d-none');
+    this.closeAllAppSheetDropdowns();
+    if (isHidden) {
+      menu.classList.remove('d-none');
+      if (arrow) arrow.innerText = '▲';
+      this.filterClearedAddRecordsDropdown(document.getElementById('cleared-add-records-input')?.value || '');
+    } else {
+      menu.classList.add('d-none');
+      if (arrow) arrow.innerText = '▼';
+    }
+  },
+
+  filterClearedAddRecordsDropdown(query = '') {
+    const listEl = document.getElementById('cleared-add-records-options-list-menu');
+    if (!listEl) return;
+    const q = (query || '').toLowerCase().trim();
+    const items = ['Cheque', 'Party Payment', 'Truck Owner Payment', 'Other B'];
+    const filtered = items.filter(item => item.toLowerCase().includes(q));
+
+    let html = '';
+    filtered.forEach(item => {
+      html += `
+        <div class="appsheet-dropdown-item" onclick="ChequesModule.selectClearedAddRecord('${item}')">
+          <span>${item}</span>
+        </div>
+      `;
+    });
+    if (!html) {
+      html = '<div class="p-2 text-muted small text-center">No options match</div>';
+    }
+    listEl.innerHTML = html;
+  },
+
+  closeClearedAddRecordsDropdown() {
+    const menu = document.getElementById('cleared-add-records-dropdown-menu');
+    const arrow = document.getElementById('cleared-add-records-arrow-icon');
+    if (menu) menu.classList.add('d-none');
+    if (arrow) arrow.innerText = '▼';
+  },
+
+  selectClearedAddRecord(type) {
+    const input = document.getElementById('cleared-add-records-input');
+    if (input) input.value = type;
+    this.closeClearedAddRecordsDropdown();
+
+    const cleanType = (type || '').trim().toLowerCase();
+    if (cleanType.includes('cheque')) {
+      this.openAddTripChequeDrawer();
+    } else if (cleanType.includes('party')) {
+      if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+        AppUI.showToast(`Party Payment selected for GR: ${this.activeTrip?.grNo || ''}`, 'info');
+      }
+      this.openUpdateTripDrawer();
+    } else if (cleanType.includes('owner')) {
+      if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+        AppUI.showToast(`Truck Owner Payment selected for Truck: ${this.activeTrip?.truckNo || ''}`, 'info');
+      }
+      this.openUpdateTripDrawer();
+    } else if (cleanType.includes('other')) {
+      const otherBInput = document.getElementById('cleared-trip-other-b-input');
+      if (otherBInput) {
+        otherBInput.focus();
+        otherBInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+  },
+
+  // --- Status Combobox for Cleared (Card 3) ---
+  toggleClearedStatusDropdown() {
+    const menu = document.getElementById('cleared-status-dropdown-menu');
+    const arrow = document.getElementById('cleared-status-arrow-icon');
+    if (!menu) return;
+    const isHidden = menu.classList.contains('d-none');
+    this.closeAllAppSheetDropdowns();
+    if (isHidden) {
+      menu.classList.remove('d-none');
+      if (arrow) arrow.innerText = '▲';
+      this.filterClearedStatusDropdown(document.getElementById('cleared-trip-status-input')?.value || '');
+    } else {
+      menu.classList.add('d-none');
+      if (arrow) arrow.innerText = '▼';
+    }
+  },
+
+  filterClearedStatusDropdown(query = '') {
+    const listEl = document.getElementById('cleared-status-options-list');
+    if (!listEl) return;
+    const q = (query || '').toLowerCase().trim();
+    const filtered = APPSHEET_STATUS_LIST.filter(item => item.label.toLowerCase().includes(q));
+
+    let html = '';
+    filtered.forEach(item => {
+      const theme = this.getTripStatusTheme(item.label);
+      html += `
+        <div class="appsheet-dropdown-item" onclick="ChequesModule.selectClearedStatus('${item.label}')" style="display: flex; align-items: center; gap: 8px;">
+          <span style="color: ${theme.color}; font-size: 14px;">●</span>
+          <span style="color: ${theme.color}; font-weight: 600;">${item.label}</span>
+        </div>
+      `;
+    });
+    if (!html) {
+      html = '<div class="p-2 text-muted small text-center">No status matching</div>';
+    }
+    listEl.innerHTML = html;
+  },
+
+  closeClearedStatusDropdown() {
+    const menu = document.getElementById('cleared-status-dropdown-menu');
+    const arrow = document.getElementById('cleared-status-arrow-icon');
+    if (menu) menu.classList.add('d-none');
+    if (arrow) arrow.innerText = '▼';
+  },
+
+  selectClearedStatus(val) {
+    const input = document.getElementById('cleared-trip-status-input');
+    if (input) input.value = val;
+    this.updateClearedStatusDotColor(val);
+    this.closeClearedStatusDropdown();
+    this.updateTripStatusFromSelect(val);
+  },
+
+  updateClearedStatusDotColor(val) {
+    const theme = this.getTripStatusTheme(val);
+    const dot = document.getElementById('cleared-trip-status-dot');
+    const input = document.getElementById('cleared-trip-status-input');
+    if (dot) {
+      dot.style.color = theme.color;
+    }
+    if (input) {
+      input.style.color = theme.color;
+    }
+  },
+
+  clearClearedStatusSelection() {
+    const input = document.getElementById('cleared-trip-status-input');
+    if (input) {
+      input.value = '';
+      input.focus();
+    }
+    this.updateClearedStatusDotColor('');
+    this.filterClearedStatusDropdown('');
+  },
+
 
   goToNotUsedView(fy = 'ALL') {
     this.goToCardView('Not Used', fy);
@@ -2300,12 +3002,17 @@ const ChequesModule = {
       'cheques-view-bounced-trip-detail',
       'cheques-view-bounced-cheque-detail',
       'cheques-view-bounced-open-debts',
+      'cheques-view-cleared-list',
+      'cheques-view-cleared-trip-detail',
+      'cheques-view-cleared-cheque-detail',
       'cheques-view-register',
       'due-list-actions',
       'due-detail-actions',
       'bounced-list-actions',
       'bounced-trip-actions',
       'bounced-debts-actions',
+      'cleared-list-actions',
+      'cleared-trip-actions',
       'cheques-register-toolbar'
     ];
     ids.forEach(id => {
@@ -2366,6 +3073,28 @@ const ChequesModule = {
         { label: 'Bounced', action: 'ChequesModule.goToBouncedView()' },
         { label: 'Open Trip Details', action: `ChequesModule.viewBouncedTripDetails('${this.activeCheque?.id || ''}')` },
         { label: 'Open Debts' }
+      ];
+    } else if (view === 'cleared-list') {
+      crumbs = [
+        { label: 'Home', action: 'ChequesModule.goToDashboardView()' },
+        { label: 'Cheques', action: 'ChequesModule.goToDashboardView()' },
+        { label: 'Cleared' }
+      ];
+    } else if (view === 'cleared-trip-detail') {
+      crumbs = [
+        { label: 'Home', action: 'ChequesModule.goToDashboardView()' },
+        { label: 'Cheques', action: 'ChequesModule.goToDashboardView()' },
+        { label: 'Cleared', action: 'ChequesModule.goToClearedView()' },
+        { label: 'Open Trip Details' }
+      ];
+    } else if (view === 'cleared-cheque-detail') {
+      crumbs = [
+        { label: 'Home', action: 'ChequesModule.goToDashboardView()' },
+        { label: 'Cheques', action: 'ChequesModule.goToDashboardView()' },
+        { label: 'Cleared', action: 'ChequesModule.goToClearedView()' },
+        { label: 'Open Trip Details', action: `ChequesModule.viewClearedTripDetails('${this.activeCheque?.id || ''}')` },
+        { label: 'Trip Cheque Details' },
+        { label: 'Cheque Details' }
       ];
     } else if (view === 'register') {
       crumbs = [
@@ -2461,6 +3190,8 @@ const ChequesModule = {
       this.renderBouncedTable();
     } else if (this.viewMode === 'bounced-debts') {
       this.renderBouncedOpenDebts();
+    } else if (this.viewMode === 'cleared-list') {
+      this.renderClearedTable();
     } else if (this.viewMode === 'register') {
       this.renderTable();
     }

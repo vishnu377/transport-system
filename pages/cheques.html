@@ -640,6 +640,25 @@
       font-family: var(--bs-font-monospace);
       text-align: right;
     }
+    /* Cleared Cheques Authentic Styles Matching screencapture_13_43_15.png */
+    .cleared-green-bullet {
+      color: #2e7d32 !important;
+      font-size: 11px;
+      line-height: 1;
+      display: inline-block;
+      margin-right: 5px;
+    }
+    .cleared-group-header-row td {
+      background: #fdfdfd !important;
+      color: #2e7d32 !important;
+      font-weight: 700;
+      font-size: 13px;
+    }
+    .cleared-year-item.active {
+      background: #e8f5e9 !important;
+      color: #2e7d32 !important;
+      font-weight: 600;
+    }
     .bounced-red-bullet {
       color: #d32f2f !important;
       font-size: 11px;
@@ -1211,6 +1230,22 @@
           <span class="appsheet-tool-icon" id="debts-sidebar-funnel-tool" onclick="ChequesModule.toggleDebtsSidebar()" title="Filter Financial Year"><i class="bi bi-funnel"></i></span>
         </div>
 
+        <!-- Cleared List Top Actions matching screencapture_13_43_15.png -->
+        <div id="cleared-list-actions" class="d-none d-flex align-items-center gap-2">
+          <button type="button" class="btn btn-sm btn-outline-secondary d-none py-1 px-2" id="btn-show-cleared-sidebar" onclick="ChequesModule.toggleClearedSidebar()" title="Show Financial Year Sidebar" style="font-size: 12px; border-radius: 4px;">
+            <i class="bi bi-layout-sidebar-inset me-1"></i> Financial Year
+          </button>
+          <span class="appsheet-tool-icon" id="btn-toggle-cleared-sidebar-tool" onclick="ChequesModule.toggleClearedSidebar()" title="Toggle Financial Year Sidebar"><i class="bi bi-funnel"></i></span>
+        </div>
+
+        <!-- Cleared Trip Details Top Actions matching screencapture_13_48_53.png -->
+        <div id="cleared-trip-actions" class="d-none d-flex align-items-center gap-2">
+          <button type="button" class="btn-appsheet-add py-1 px-3" onclick="ChequesModule.openUpdateTripDrawer()" title="Update Trip Details">
+            <i class="bi bi-pencil me-1"></i> Edit
+          </button>
+          <span class="appsheet-tool-icon" onclick="ChequesModule.toggleTripFullscreen()" title="Expand view">↗</span>
+        </div>
+
         <!-- Register Toolbar Actions (Hidden on Dashboard) -->
         <div id="cheques-register-toolbar" class="d-none d-flex align-items-center gap-2 flex-wrap">
           <div class="vr mx-1"></div>
@@ -1761,6 +1796,225 @@
     </div>
 
     <!-- ======================================================== -->
+    <!-- CARD 3: LEVEL 2 - CLEARED CHEQUES LIST VIEW              -->
+    <!-- Matching screencapture_13_43_15.png                      -->
+    <!-- ======================================================== -->
+    <div id="cheques-view-cleared-list" class="d-none p-3">
+      <div class="bounced-split-container">
+        <!-- LEFT: Year Selector Rail (Toggleable) -->
+        <div class="bounced-year-sidebar shadow-sm" id="cleared-year-sidebar">
+          <div class="d-flex align-items-center justify-content-between px-3 pb-2 pt-1 border-bottom mb-2">
+            <span class="text-uppercase fw-semibold text-muted small" style="font-size: 11px; letter-spacing: 0.5px;">Financial Year</span>
+            <button type="button" class="btn btn-sm btn-link p-0 text-secondary text-decoration-none" onclick="ChequesModule.toggleClearedSidebar()" title="Hide Financial Year Sidebar" style="font-size: 13px;">
+              <i class="bi bi-chevron-left"></i>
+            </button>
+          </div>
+          <div class="bounced-year-item cleared-year-item active" id="cleared-year-ALL" onclick="ChequesModule.filterClearedByYear('ALL')">
+            <span class="fw-semibold">All</span>
+            <span class="badge bg-success-subtle text-success border border-success-subtle fw-semibold" id="cleared-rail-badge-ALL">₹ 20,225,292.80</span>
+          </div>
+          <div class="bounced-year-item cleared-year-item" id="cleared-year-2026" onclick="ChequesModule.filterClearedByYear('2026-2027')">
+            <span class="fw-semibold">2026-2027</span>
+            <span class="badge bg-success-subtle text-success border border-success-subtle fw-semibold" id="cleared-rail-badge-2026">₹ 5,124,183.00</span>
+          </div>
+          <div class="bounced-year-item cleared-year-item" id="cleared-year-2025" onclick="ChequesModule.filterClearedByYear('2025-2026')">
+            <span class="fw-semibold">2025-2026</span>
+            <span class="badge bg-success-subtle text-success border border-success-subtle fw-semibold" id="cleared-rail-badge-2025">₹ 10,154,004.00</span>
+          </div>
+          <div class="bounced-year-item cleared-year-item" id="cleared-year-2024" onclick="ChequesModule.filterClearedByYear('2024-2025')">
+            <span class="fw-semibold">2024-2025</span>
+            <span class="badge bg-success-subtle text-success border border-success-subtle fw-semibold" id="cleared-rail-badge-2024">₹ 4,947,105.80</span>
+          </div>
+        </div>
+
+        <!-- RIGHT: Cleared Table Container -->
+        <div class="bounced-table-container">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" id="cleared-table">
+              <thead class="table-light">
+                <tr>
+                  <th style="white-space: nowrap;">Cheque No.</th>
+                  <th style="white-space: nowrap;">Bank</th>
+                  <th style="white-space: nowrap;" class="text-end">Amount</th>
+                  <th style="white-space: nowrap;">Party</th>
+                  <th style="white-space: nowrap;">G.R.No.</th>
+                  <th style="white-space: nowrap;">Truck NO.</th>
+                  <th style="white-space: nowrap;">To</th>
+                  <th style="white-space: nowrap;">Pay to</th>
+                  <th style="white-space: nowrap;">Clearing Date</th>
+                  <th style="width: 24px; text-align: center;"></th>
+                </tr>
+              </thead>
+              <tbody id="cleared-table-tbody">
+                <!-- Rendered dynamically with Date Group headers and bullets -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- CARD 3: LEVEL 3 - CLEARED TRIP DETAILS (3 COLUMNS)       -->
+    <!-- Matching screencapture_13_48_53.png                      -->
+    <!-- ======================================================== -->
+    <div id="cheques-view-cleared-trip-detail" class="d-none">
+      <div class="bounced-trip-grid">
+        <!-- COLUMN 1: Trip Details -->
+        <div class="bounced-trip-card" id="cleared-trip-card-left">
+          <div class="bounced-trip-card-header">
+            <span class="bounced-trip-card-title">Trip Details</span>
+          </div>
+          <div class="bounced-trip-card-body" id="cleared-trip-details-content">
+            <!-- Rendered dynamically with purple text & phone links -->
+          </div>
+
+          <!-- Add Records For Combobox (Card 1 Bottom) -->
+          <div class="p-3 border-top bg-light-subtle">
+            <label class="form-label small text-muted mb-1 fw-semibold">Add Records for</label>
+            <div class="appsheet-custom-select" id="cleared-add-records-combobox-wrap">
+              <div class="appsheet-select-trigger" onclick="ChequesModule.toggleClearedAddRecordsDropdown()">
+                <input type="text" class="appsheet-select-input" id="cleared-add-records-input" list="cleared-add-records-options-list" placeholder="Select or type record type" oninput="ChequesModule.filterClearedAddRecordsDropdown(this.value)" autocomplete="off">
+                <datalist id="cleared-add-records-options-list">
+                  <option value="Cheque"></option>
+                  <option value="Party Payment"></option>
+                  <option value="Truck Owner Payment"></option>
+                  <option value="Other B"></option>
+                </datalist>
+                <div class="appsheet-select-icons">
+                  <span class="appsheet-select-arrow" id="cleared-add-records-arrow-icon">▼</span>
+                </div>
+              </div>
+              <div class="appsheet-dropdown-card d-none shadow-sm" id="cleared-add-records-dropdown-menu">
+                <div class="appsheet-dropdown-scroll" id="cleared-add-records-options-list-menu">
+                  <div class="appsheet-dropdown-item" onclick="ChequesModule.selectClearedAddRecord('Cheque')">
+                    <span>Cheque</span>
+                  </div>
+                  <div class="appsheet-dropdown-item" onclick="ChequesModule.selectClearedAddRecord('Party Payment')">
+                    <span>Party Payment</span>
+                  </div>
+                  <div class="appsheet-dropdown-item" onclick="ChequesModule.selectClearedAddRecord('Truck Owner Payment')">
+                    <span>Truck Owner Payment</span>
+                  </div>
+                  <div class="appsheet-dropdown-item" onclick="ChequesModule.selectClearedAddRecord('Other B')">
+                    <span>Other B</span>
+                  </div>
+                </div>
+                <div class="appsheet-dropdown-footer">
+                  <button type="button" class="appsheet-dropdown-close-btn" onclick="ChequesModule.closeClearedAddRecordsDropdown()">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- COLUMN 2: Linked Cheques List -->
+        <div class="bounced-trip-card bounced-trip-card-mid">
+          <div class="bounced-trip-card-header d-flex align-items-center justify-content-between">
+            <span class="bounced-trip-card-title" id="cleared-trip-cheques-count-header">Cheque 1</span>
+            <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 fw-semibold" onclick="ChequesModule.openAddTripChequeDrawer()" style="font-size: 11px; border-radius: 3px;">+ Add</button>
+          </div>
+          <div class="bounced-trip-card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0" id="cleared-trip-cheques-table" style="font-size: 12px;">
+                <thead class="table-light">
+                  <tr>
+                    <th style="white-space: nowrap;">Cheque Due Date</th>
+                    <th style="white-space: nowrap;">Cheque No.</th>
+                    <th style="white-space: nowrap;">Bank</th>
+                    <th style="white-space: nowrap;" class="text-end">Amount</th>
+                    <th style="white-space: nowrap;">Pay to</th>
+                    <th style="white-space: nowrap;">Clearing Date</th>
+                  </tr>
+                </thead>
+                <tbody id="cleared-trip-cheques-tbody">
+                  <!-- Rendered dynamically with green bullets -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="bounced-chq-actions">
+            <a href="javascript:void(0)" onclick="ChequesModule.goToClearedView()">Expand</a>
+            <a href="javascript:void(0)" onclick="ChequesModule.openAddTripChequeDrawer()" title="Add Cheque to this Trip">Add</a>
+          </div>
+        </div>
+
+        <!-- COLUMN 3: Financial Summary & Status -->
+        <div class="bounced-trip-card bounced-trip-card-right">
+          <div class="bounced-trip-field">
+            <div class="bounced-trip-field-label">Total Cheque Amount</div>
+            <div class="bounced-trip-field-val" id="cleared-summary-chq-amount">
+              <span class="bounced-purple-bullet">●</span> ₹ 76,000.00
+            </div>
+          </div>
+          <div class="bounced-trip-field">
+            <div class="bounced-trip-field-label">Total Freight</div>
+            <div class="bounced-trip-field-val" id="cleared-summary-freight">
+              <span class="bounced-purple-bullet">●</span> ₹ 152,000.00
+            </div>
+          </div>
+          <div class="bounced-trip-field">
+            <div class="bounced-trip-field-label">Other B</div>
+            <div class="bounced-trip-field-val" id="cleared-summary-other-b">
+              <div class="input-group input-group-sm" style="max-width: 160px;">
+                <span class="input-group-text bg-white border-end-0 text-muted" style="font-size: 12px; border-color: #dadce0;">₹</span>
+                <input type="number" step="any" class="form-control form-control-sm border-start-0 font-monospace fw-semibold" id="cleared-trip-other-b-input" placeholder="0.00" onchange="ChequesModule.updateTripOtherB(this.value)" style="color: #202124; border-color: #dadce0;">
+              </div>
+            </div>
+          </div>
+
+          <!-- Status Dropdown / Combobox (Card 3) -->
+          <div class="mt-4 pt-3 border-top">
+            <div class="fw-semibold text-muted small mb-2">Status</div>
+            <label class="form-label small text-muted mb-1">Status *</label>
+            <div class="appsheet-custom-select" id="cleared-status-combobox-wrap">
+              <div class="appsheet-select-trigger" onclick="ChequesModule.toggleClearedStatusDropdown()">
+                <div class="d-flex align-items-center gap-1 flex-grow-1 overflow-hidden">
+                  <span id="cleared-trip-status-dot" class="bounced-purple-bullet">●</span>
+                  <input type="text" class="appsheet-select-input fw-semibold" id="cleared-trip-status-input" list="cleared-trip-status-options-list" value="Truck Owner Payment Pending" placeholder="Select or type status" oninput="ChequesModule.filterClearedStatusDropdown(this.value); ChequesModule.updateClearedStatusDotColor(this.value);" onchange="ChequesModule.updateTripStatusFromSelect(this.value)" autocomplete="off">
+                </div>
+                <datalist id="cleared-trip-status-options-list">
+                  <option value="Truck Owner Payment Pending"></option>
+                  <option value="POD Sent/Bill Generated"></option>
+                  <option value="Transit"></option>
+                  <option value="Off Loading"></option>
+                  <option value="Cheque Due"></option>
+                  <option value="Party Payment Pending"></option>
+                  <option value="Completed"></option>
+                  <option value="Disputed"></option>
+                </datalist>
+                <div class="appsheet-select-icons">
+                  <span class="appsheet-select-clear" onclick="event.stopPropagation(); ChequesModule.clearClearedStatusSelection()">✕</span>
+                  <span class="appsheet-select-arrow" id="cleared-status-arrow-icon">▼</span>
+                </div>
+              </div>
+              <div class="appsheet-dropdown-card d-none shadow-sm" id="cleared-status-dropdown-menu">
+                <div class="appsheet-dropdown-scroll" id="cleared-status-options-list">
+                  <!-- Populated dynamically with colored status options -->
+                </div>
+                <div class="appsheet-dropdown-footer">
+                  <button type="button" class="appsheet-dropdown-close-btn" onclick="ChequesModule.closeClearedStatusDropdown()">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- CARD 3: LEVEL 4 - CLEARED CHEQUE DETAILS VIEW            -->
+    <!-- Matching screencapture_13_51_30.png                      -->
+    <!-- ======================================================== -->
+    <div id="cheques-view-cleared-cheque-detail" class="d-none">
+      <div class="chq-detail-container">
+        <div class="chq-detail-card" id="cleared-cheque-detail-card-body">
+          <!-- Filled dynamically with green bullets: Cheque Due Date, Cheque No, Amount, Bank, Pay to, Clearing Date -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
     <!-- 4. LEVEL 4: REGISTER TABLE VIEW (For Other Tabs & Toggle) -->
     <!-- ======================================================== -->
     <div id="cheques-view-register" class="d-none p-3">
@@ -2285,16 +2539,16 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
   <!-- Core App Scripts with Cache Busting -->
-  <script src="../js/config.js?v=20261020_v5"></script>
+  <script src="../js/config.js?v=20261020_v6"></script>
   <!-- Universal Master Data Assets (Guaranteed 100% Offline & Fresh Git Deploy Resilience) -->
-  <script src="../js/sample-parties-data.js?v=20261020_v5"></script>
-  <script src="../js/sample-truck-owners-data.js?v=20261020_v5"></script>
-  <script src="../js/sample-drivers-data.js?v=20261020_v5"></script>
-  <script src="../js/sample-trips-data.js?v=20261020_v5"></script>
-  <script src="../js/sample-debts-data.js?v=20261020_v5"></script>
-  <script src="../js/sample-cheques-data.js?v=20261020_v5"></script>
-  <script src="../js/db-service.js?v=20261020_v5"></script>
-  <script src="../js/app.js?v=20261020_v5"></script>
-  <script src="../js/modules/cheques.js?v=20261020_v5"></script>
+  <script src="../js/sample-parties-data.js?v=20261020_v6"></script>
+  <script src="../js/sample-truck-owners-data.js?v=20261020_v6"></script>
+  <script src="../js/sample-drivers-data.js?v=20261020_v6"></script>
+  <script src="../js/sample-trips-data.js?v=20261020_v6"></script>
+  <script src="../js/sample-debts-data.js?v=20261020_v6"></script>
+  <script src="../js/sample-cheques-data.js?v=20261020_v6"></script>
+  <script src="../js/db-service.js?v=20261020_v6"></script>
+  <script src="../js/app.js?v=20261020_v6"></script>
+  <script src="../js/modules/cheques.js?v=20261020_v6"></script>
 </body>
 </html>

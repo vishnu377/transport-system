@@ -243,12 +243,57 @@ assert(htmlContent.includes('₹ 304,100.00'), 'Open Debts FY 2026-2027 must dis
 assert(htmlContent.includes('₹ 364,500.00'), 'Open Debts FY 2025-2026 must display ₹ 364,500.00');
 assert(htmlContent.includes('₹ 668,600.00'), 'Open Debts FY All must display ₹ 668,600.00');
 
+// 14. Verify Card 3 Cleared Cheques (Matching screencapture_13_43_15 to 13_52_29)
+assert(htmlContent.includes('id="cheques-view-cleared-list"'), 'Must define cheques-view-cleared-list');
+assert(htmlContent.includes('id="cleared-year-sidebar"'), 'Must define cleared-year-sidebar');
+assert(htmlContent.includes('id="cleared-table"'), 'Must define cleared-table');
+assert(htmlContent.includes('id="cleared-table-tbody"'), 'Must define cleared-table-tbody');
+assert(htmlContent.includes('id="cleared-list-actions"'), 'Must define cleared-list-actions');
+assert(htmlContent.includes('id="cheques-view-cleared-trip-detail"'), 'Must define cheques-view-cleared-trip-detail');
+assert(htmlContent.includes('id="cleared-trip-actions"'), 'Must define cleared-trip-actions');
+assert(htmlContent.includes('id="cleared-trip-details-content"'), 'Must define cleared-trip-details-content');
+assert(htmlContent.includes('id="cleared-trip-cheques-tbody"'), 'Must define cleared-trip-cheques-tbody');
+assert(htmlContent.includes('id="cleared-summary-chq-amount"'), 'Must define cleared-summary-chq-amount');
+assert(htmlContent.includes('id="cleared-summary-freight"'), 'Must define cleared-summary-freight');
+assert(htmlContent.includes('id="cleared-trip-other-b-input"'), 'Must define cleared-trip-other-b-input');
+assert(htmlContent.includes('id="cleared-trip-status-input"'), 'Must define cleared-trip-status-input');
+assert(htmlContent.includes('id="cleared-status-dropdown-menu"'), 'Must define cleared-status-dropdown-menu');
+assert(htmlContent.includes('id="cheques-view-cleared-cheque-detail"'), 'Must define cheques-view-cleared-cheque-detail');
+assert(htmlContent.includes('id="cleared-cheque-detail-card-body"'), 'Must define cleared-cheque-detail-card-body');
+assert(htmlContent.includes('.cleared-green-bullet'), 'Must define .cleared-green-bullet CSS');
+assert(htmlContent.includes('.cleared-group-header-row'), 'Must define .cleared-group-header-row CSS');
+assert(htmlContent.includes('.cleared-year-item.active'), 'Must define .cleared-year-item.active CSS');
+
+// Verify Cleared methods in cheques.js
+assert(chequesJs.includes('goToClearedView('), 'ChequesModule must define goToClearedView');
+assert(chequesJs.includes('toggleClearedSidebar()'), 'ChequesModule must define toggleClearedSidebar');
+assert(chequesJs.includes('filterClearedByYear('), 'ChequesModule must define filterClearedByYear');
+assert(chequesJs.includes('renderClearedTable()'), 'ChequesModule must define renderClearedTable');
+assert(chequesJs.includes('viewClearedTripDetails('), 'ChequesModule must define viewClearedTripDetails');
+assert(chequesJs.includes('viewClearedChequeDetails('), 'ChequesModule must define viewClearedChequeDetails');
+assert(chequesJs.includes('toggleClearedAddRecordsDropdown()'), 'ChequesModule must define toggleClearedAddRecordsDropdown');
+assert(chequesJs.includes('toggleClearedStatusDropdown()'), 'ChequesModule must define toggleClearedStatusDropdown');
+
+// Verify Cleared Authentic Totals
+assert(htmlContent.includes('₹ 20,225,292.80'), 'Cleared Rail Badge All must be ₹ 20,225,292.80');
+assert(htmlContent.includes('₹ 5,124,183.00'), 'Cleared Rail Badge 2026-2027 must be ₹ 5,124,183.00');
+assert(htmlContent.includes('₹ 10,154,004.00'), 'Cleared Rail Badge 2025-2026 must be ₹ 10,154,004.00');
+assert(htmlContent.includes('₹ 4,947,105.80'), 'Cleared Rail Badge 2024-2025 must be ₹ 4,947,105.80');
+
+// Verify Sample Cleared Cheques and Trip
+const chq004 = chequesData.find(c => c.chequeNo === '000004' && c.status === 'Cleared');
+assert(chq004, 'Cheque 000004 must exist in Cleared cheques');
+assert.strictEqual(chq004.amount, 76000, 'Cheque 000004 amount must be 76000');
+assert.strictEqual(chq004.bankName, 'HDFC', 'Cheque 000004 bank must be HDFC');
+assert.strictEqual(chq004.partyName, 'GOYAL INDUSTRIES', 'Cheque 000004 party must be GOYAL INDUSTRIES');
+
 console.log('✔ Card 1 Combobox: Add Records for (Cheque, Party Payment, Truck Owner Payment, Other B) verified.');
 console.log('✔ Card 1 Values Color: Full text colored #6200ea (matching AppSheet screenshot) verified.');
 console.log('✔ Card 2 Side Drawer: Authentic Cheque Details with 31 Banks, 7 Pay To options & Gold Bullets verified.');
 console.log('✔ Card 3 Financials: Other B typable input & Status combobox with distinct per-status colors verified.');
 console.log('✔ Open Debts: FY Sidebar, 11 exact columns, Date Groups & Loading Blue Rows verified.');
-console.log('✔ All Cheques Dashboard, Card 1 Due, Card 2 Bounced & Open Debts tests PASSED 100%!');
+console.log('✔ Card 3 Cleared Cheques: Table, Green Bullets, 3-Col Trip Details & Cheque Details verified.');
+console.log('✔ All Cheques Dashboard, Card 1 Due, Card 2 Bounced, Card 3 Cleared & Open Debts tests PASSED 100%!');
 
 
 

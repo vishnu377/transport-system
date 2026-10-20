@@ -192,6 +192,68 @@ async function run() {
   mod.toggleDebtsSidebar();
   assert.strictEqual(mod.debtsSidebarVisible, true);
 
+  console.log('Step 14: Testing Cleared Cheques List View & Date Groups...');
+  mod.goToClearedView('ALL');
+  assert.strictEqual(mod.viewMode, 'cleared-list');
+  assert(!document.getElementById('cheques-view-cleared-list').classList.contains('d-none'), 'Cleared view must be visible');
+
+  const clearedTbody = document.getElementById('cleared-table-tbody');
+  assert(clearedTbody.innerHTML.includes('cleared-group-header-row'), 'Must render cleared date group header row');
+  assert(clearedTbody.innerHTML.includes('16/10/2026'), 'Must include 16/10/2026 date group');
+  assert(clearedTbody.innerHTML.includes('000004'), 'Must include cheque 000004');
+  assert(clearedTbody.innerHTML.includes('GOYAL INDUSTRIES'), 'Must include party GOYAL INDUSTRIES');
+  assert(clearedTbody.innerHTML.includes('cleared-green-bullet'), 'Must include green bullets for cleared');
+
+  // Verify FY filter & Sidebar toggle
+  mod.filterClearedByYear('2026-2027');
+  assert.strictEqual(mod.clearedYearFilter, '2026-2027');
+  mod.toggleClearedSidebar();
+  assert.strictEqual(mod.clearedSidebarVisible, false);
+  mod.toggleClearedSidebar();
+  assert.strictEqual(mod.clearedSidebarVisible, true);
+
+  console.log('Step 15: Testing Cleared Open Trip Details (3 Columns)...');
+  mod.viewClearedTripDetails('000004');
+  assert.strictEqual(mod.viewMode, 'cleared-trip-detail');
+  assert(!document.getElementById('cheques-view-cleared-trip-detail').classList.contains('d-none'), 'Cleared Trip Details must be visible');
+
+  // Col 1: Trip Info
+  const col1 = document.getElementById('cleared-trip-details-content');
+  assert(col1.innerHTML.includes('2026-2027--2418_TTC'), 'Col 1 must include GR 2026-2027--2418_TTC');
+  assert(col1.innerHTML.includes('RJ01GC4865'), 'Col 1 must include truck RJ01GC4865');
+  assert(col1.innerHTML.includes('Mohali (Punjab)'), 'Col 1 must include destination Mohali (Punjab)');
+  assert(col1.innerHTML.includes('tel:9829043728'), 'Col 1 must include tel call link');
+  assert(col1.innerHTML.includes('GOYAL INDUSTRIES'), 'Col 1 must include consignee GOYAL INDUSTRIES');
+
+  // Col 2: Linked Cheques
+  const chqCountHeader = document.getElementById('cleared-trip-cheques-count-header');
+  assert(chqCountHeader.innerText.includes('Cheque 1'), 'Card 2 header must be Cheque 1');
+  const col2Tbody = document.getElementById('cleared-trip-cheques-tbody');
+  assert(col2Tbody.innerHTML.includes('000004'), 'Col 2 table must include cheque 000004');
+  assert(col2Tbody.innerHTML.includes('HDFC'), 'Col 2 table must include bank HDFC');
+  assert(col2Tbody.innerHTML.includes('cleared-green-bullet'), 'Col 2 table must include green bullet');
+
+  // Col 3: Financial Summary & Status
+  const chqSummary = document.getElementById('cleared-summary-chq-amount');
+  assert(chqSummary.innerHTML.includes('76,000.00'), 'Col 3 Cheque amount must be 76,000.00');
+  const freightSummary = document.getElementById('cleared-summary-freight');
+  assert(freightSummary.innerHTML.includes('1,52,000.00') || freightSummary.innerHTML.includes('152,000.00'), 'Col 3 Freight amount must be 152,000.00');
+  const statusInput = document.getElementById('cleared-trip-status-input');
+  assert.strictEqual(statusInput.value, 'Truck Owner Payment Pending');
+
+  console.log('Step 16: Testing Cleared Cheque Details Card...');
+  mod.viewClearedChequeDetails('000004');
+  assert.strictEqual(mod.viewMode, 'cleared-cheque-detail');
+  assert(!document.getElementById('cheques-view-cleared-cheque-detail').classList.contains('d-none'), 'Cheque details card must be visible');
+
+  const cardBody = document.getElementById('cleared-cheque-detail-card-body');
+  assert(cardBody.innerHTML.includes('000004'), 'Card must show Cheque No 000004');
+  assert(cardBody.innerHTML.includes('HDFC'), 'Card must show Bank HDFC');
+  assert(cardBody.innerHTML.includes('76,000.00'), 'Card must show Amount 76,000.00');
+  assert(cardBody.innerHTML.includes('TTC'), 'Card must show Pay to TTC');
+  assert(cardBody.innerHTML.includes('16/10/2026'), 'Card must show Clearing Date 16/10/2026');
+  assert(cardBody.innerHTML.includes('cleared-green-bullet'), 'Card must use green bullets');
+
   console.log('\n🎉 ALL RUNTIME SIMULATION TESTS PASSED 100%! ZERO ERRORS! 🎉\n');
 }
 
