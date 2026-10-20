@@ -91,18 +91,16 @@ async function testPagination() {
   console.log(`Total Not Used Cheques: ${notUsedTotal}`);
   assert(notUsedTotal > 10, 'Expected more than 10 Not Used cheques for pagination testing');
 
-  // Default is 25: All should fit on page 1
-  ChequesModule.notUsedPageSize = 25;
+  // Default is 10: Page 1 should show 1 to 10 with active Next button
+  assert.strictEqual(ChequesModule.notUsedPageSize, 10, 'Default notUsedPageSize should be 10');
   ChequesModule.renderNotUsedTable();
   let notUsedInfo = document.getElementById('notused-pagination-info').innerText;
-  console.log(`Page size 25: "${notUsedInfo}"`);
-  assert.strictEqual(notUsedInfo, `Showing all ${notUsedTotal} cheques`);
-
-  // Switch page size to 10
-  ChequesModule.changeNotUsedPageSize(10);
-  notUsedInfo = document.getElementById('notused-pagination-info').innerText;
   console.log(`Page size 10 (Page 1): "${notUsedInfo}"`);
   assert.strictEqual(notUsedInfo, `Showing 1 to 10 of ${notUsedTotal} cheques (Page 1 of 2)`);
+
+  let controlsHtml = document.getElementById('notused-pagination-controls').innerHTML;
+  assert(controlsHtml.includes('Next &rsaquo;'), 'Next button must be present');
+  assert(!controlsHtml.includes('disabled onclick="ChequesModule.changeNotUsedPage(2)"'), 'Next button must not be disabled on Page 1');
 
   const p1Rows = (document.getElementById('notused-table-tbody').innerHTML.match(/<tr class="notused-row/g) || []).length;
   console.log(`Page 1 rendered rows count: ${p1Rows}`);
@@ -114,15 +112,26 @@ async function testPagination() {
   console.log(`Page size 10 (Page 2): "${notUsedInfo}"`);
   assert.strictEqual(notUsedInfo, `Showing 11 to ${notUsedTotal} of ${notUsedTotal} cheques (Page 2 of 2)`);
 
+  controlsHtml = document.getElementById('notused-pagination-controls').innerHTML;
+  assert(controlsHtml.includes('disabled onclick="ChequesModule.changeNotUsedPage(3)"') || controlsHtml.includes('disabled title="Next Page"'), 'Next button must be disabled on Page 2');
+
   const p2Rows = (document.getElementById('notused-table-tbody').innerHTML.match(/<tr class="notused-row/g) || []).length;
   console.log(`Page 2 rendered rows count: ${p2Rows}`);
   assert.strictEqual(p2Rows, notUsedTotal - 10, 'Page 2 should render remaining rows');
+
+  // Switch page size to 25
+  ChequesModule.changeNotUsedPageSize(25);
+  notUsedInfo = document.getElementById('notused-pagination-info').innerText;
+  console.log(`Page size 25: "${notUsedInfo}"`);
+  assert.strictEqual(notUsedInfo, `Showing 1 to ${notUsedTotal} of ${notUsedTotal} cheques (Page 1 of 1)`);
+  controlsHtml = document.getElementById('notused-pagination-controls').innerHTML;
+  assert(controlsHtml.includes('disabled title="Next Page"'), 'Buttons should still be visible with disabled Next');
 
   // Switch back to ALL
   ChequesModule.changeNotUsedPageSize('ALL');
   notUsedInfo = document.getElementById('notused-pagination-info').innerText;
   console.log(`Page size ALL: "${notUsedInfo}"`);
-  assert.strictEqual(notUsedInfo, `Showing all ${notUsedTotal} cheques`);
+  assert.strictEqual(notUsedInfo, `Showing all ${notUsedTotal} cheques (Page 1 of 1)`);
   console.log('✔ Not Used Cheques Pagination Tested Successfully!');
 
   // --- 2. Test Cleared Cheques Pagination ---

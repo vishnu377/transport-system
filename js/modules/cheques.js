@@ -161,7 +161,7 @@ const ChequesModule = {
   currentSettledOrigin: 'cleared',
   searchQuery: '',
   notUsedCurrentPage: 1,
-  notUsedPageSize: 25,
+  notUsedPageSize: 10,
   clearedCurrentPage: 1,
   clearedPageSize: 25,
   debtsCurrentPage: 1,
@@ -1071,9 +1071,23 @@ const ChequesModule = {
     const container = document.getElementById('bounced-pagination-controls');
     if (!info || !container) return;
 
-    if (this.bouncedPageSize === 'ALL' || total === 0 || totalPages <= 1) {
-      info.innerText = `Showing all ${total.toLocaleString('en-IN')} cheques`;
+    if (total === 0) {
+      info.innerText = 'Showing 0 cheques';
       container.innerHTML = '';
+      return;
+    }
+
+    if (this.bouncedPageSize === 'ALL' || totalPages <= 1) {
+      info.innerText = this.bouncedPageSize === 'ALL'
+        ? `Showing all ${total.toLocaleString('en-IN')} cheques (Page 1 of 1)`
+        : `Showing 1 to ${total.toLocaleString('en-IN')} of ${total.toLocaleString('en-IN')} cheques (Page 1 of 1)`;
+      container.innerHTML = `
+        <button class="appsheet-page-btn" disabled title="First Page">&laquo;&laquo; First</button>
+        <button class="appsheet-page-btn" disabled title="Previous Page">&lsaquo; Prev</button>
+        <button class="appsheet-page-btn active">1</button>
+        <button class="appsheet-page-btn" disabled title="Next Page">Next &rsaquo;</button>
+        <button class="appsheet-page-btn" disabled title="Last Page">Last &raquo;&raquo;</button>
+      `;
       return;
     }
 
@@ -1642,9 +1656,23 @@ const ChequesModule = {
     const container = document.getElementById('debts-pagination-controls');
     if (!info || !container) return;
 
-    if (this.debtsPageSize === 'ALL' || total === 0 || totalPages <= 1) {
-      info.innerText = `Showing all ${total.toLocaleString('en-IN')} debts`;
+    if (total === 0) {
+      info.innerText = 'Showing 0 debts';
       container.innerHTML = '';
+      return;
+    }
+
+    if (this.debtsPageSize === 'ALL' || totalPages <= 1) {
+      info.innerText = this.debtsPageSize === 'ALL'
+        ? `Showing all ${total.toLocaleString('en-IN')} debts (Page 1 of 1)`
+        : `Showing 1 to ${total.toLocaleString('en-IN')} of ${total.toLocaleString('en-IN')} debts (Page 1 of 1)`;
+      container.innerHTML = `
+        <button class="appsheet-page-btn" disabled title="First Page">&laquo;&laquo; First</button>
+        <button class="appsheet-page-btn" disabled title="Previous Page">&lsaquo; Prev</button>
+        <button class="appsheet-page-btn active">1</button>
+        <button class="appsheet-page-btn" disabled title="Next Page">Next &rsaquo;</button>
+        <button class="appsheet-page-btn" disabled title="Last Page">Last &raquo;&raquo;</button>
+      `;
       return;
     }
 
@@ -2662,9 +2690,23 @@ const ChequesModule = {
     const container = document.getElementById('cleared-pagination-controls');
     if (!info || !container) return;
 
-    if (this.clearedPageSize === 'ALL' || total === 0 || totalPages <= 1) {
-      info.innerText = `Showing all ${total.toLocaleString('en-IN')} cheques`;
+    if (total === 0) {
+      info.innerText = 'Showing 0 cheques';
       container.innerHTML = '';
+      return;
+    }
+
+    if (this.clearedPageSize === 'ALL' || totalPages <= 1) {
+      info.innerText = this.clearedPageSize === 'ALL'
+        ? `Showing all ${total.toLocaleString('en-IN')} cheques (Page 1 of 1)`
+        : `Showing 1 to ${total.toLocaleString('en-IN')} of ${total.toLocaleString('en-IN')} cheques (Page 1 of 1)`;
+      container.innerHTML = `
+        <button class="appsheet-page-btn" disabled title="First Page">&laquo;&laquo; First</button>
+        <button class="appsheet-page-btn" disabled title="Previous Page">&lsaquo; Prev</button>
+        <button class="appsheet-page-btn active">1</button>
+        <button class="appsheet-page-btn" disabled title="Next Page">Next &rsaquo;</button>
+        <button class="appsheet-page-btn" disabled title="Last Page">Last &raquo;&raquo;</button>
+      `;
       return;
     }
 
@@ -4221,9 +4263,23 @@ const ChequesModule = {
     const container = document.getElementById('notused-pagination-controls');
     if (!info || !container) return;
 
-    if (this.notUsedPageSize === 'ALL' || total === 0 || totalPages <= 1) {
-      info.innerText = `Showing all ${total.toLocaleString('en-IN')} cheques`;
+    if (total === 0) {
+      info.innerText = 'Showing 0 cheques';
       container.innerHTML = '';
+      return;
+    }
+
+    if (this.notUsedPageSize === 'ALL' || totalPages <= 1) {
+      info.innerText = this.notUsedPageSize === 'ALL'
+        ? `Showing all ${total.toLocaleString('en-IN')} cheques (Page 1 of 1)`
+        : `Showing 1 to ${total.toLocaleString('en-IN')} of ${total.toLocaleString('en-IN')} cheques (Page 1 of 1)`;
+      container.innerHTML = `
+        <button class="appsheet-page-btn" disabled title="First Page">&laquo;&laquo; First</button>
+        <button class="appsheet-page-btn" disabled title="Previous Page">&lsaquo; Prev</button>
+        <button class="appsheet-page-btn active">1</button>
+        <button class="appsheet-page-btn" disabled title="Next Page">Next &rsaquo;</button>
+        <button class="appsheet-page-btn" disabled title="Last Page">Last &raquo;&raquo;</button>
+      `;
       return;
     }
 
@@ -4412,6 +4468,10 @@ const ChequesModule = {
     }
 
     tbody.innerHTML = html;
+    const notUsedSel = document.getElementById('notused-page-size-select');
+    if (notUsedSel && notUsedSel.value !== String(this.notUsedPageSize)) {
+      notUsedSel.value = String(this.notUsedPageSize);
+    }
     this.renderNotUsedPagination(totalCount, startIdx, endIdx, totalPages);
   },
 
