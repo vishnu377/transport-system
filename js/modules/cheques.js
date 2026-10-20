@@ -1831,7 +1831,7 @@ const ChequesModule = {
     if (isHidden) {
       menu.classList.remove('d-none');
       if (arrow) arrow.innerText = '▲';
-      this.filterBankDropdown(document.getElementById('add-trip-chq-bank')?.value || '');
+      this.filterBankDropdown('');
     } else {
       menu.classList.add('d-none');
       if (arrow) arrow.innerText = '▼';
@@ -1901,7 +1901,7 @@ const ChequesModule = {
     if (isHidden) {
       menu.classList.remove('d-none');
       if (arrow) arrow.innerText = '▲';
-      this.filterPayToDropdown(document.getElementById('add-trip-chq-payto')?.value || '');
+      this.filterPayToDropdown('');
     } else {
       menu.classList.add('d-none');
       if (arrow) arrow.innerText = '▼';
@@ -1971,7 +1971,7 @@ const ChequesModule = {
     if (isHidden) {
       menu.classList.remove('d-none');
       if (arrow) arrow.innerText = '▲';
-      this.filterAddRecordsDropdown(document.getElementById('bounced-add-records-input')?.value || '');
+      this.filterAddRecordsDropdown('');
     } else {
       menu.classList.add('d-none');
       if (arrow) arrow.innerText = '▼';
@@ -2047,7 +2047,7 @@ const ChequesModule = {
     if (isHidden) {
       menu.classList.remove('d-none');
       if (arrow) arrow.innerText = '▲';
-      this.filterStatusDropdown(document.getElementById('bounced-trip-status-input')?.value || '');
+      this.filterStatusDropdown('');
     } else {
       menu.classList.add('d-none');
       if (arrow) arrow.innerText = '▼';
@@ -2143,7 +2143,12 @@ const ChequesModule = {
     const input = document.getElementById('bounced-trip-status-input');
     if (input) input.value = '';
     this.updateStatusDotColor('');
-    this.filterStatusDropdown('');
+    const menu = document.getElementById('status-dropdown-menu');
+    if (menu && menu.classList.contains('d-none')) {
+      this.toggleStatusDropdown();
+    } else {
+      this.filterStatusDropdown('');
+    }
   },
 
   closeStatusDropdown() {
@@ -2538,11 +2543,6 @@ const ChequesModule = {
     }
     this.activeCheque = c;
 
-    // Route to Settled Trip Details if this cheque/trip is Settled
-    if (c && (c.chequeNo === '848399' || (c.grNo && c.grNo.includes('2363')) || c.status === 'Settled' || c.tripStatus === 'Settled')) {
-      return this.viewClearedSettledDetails(chequeId);
-    }
-
     // Find linked trip
     let trip = null;
     if (c.tripId) {
@@ -2920,6 +2920,7 @@ const ChequesModule = {
     const menu = document.getElementById('cleared-add-records-dropdown-menu');
     const arrow = document.getElementById('cleared-add-records-arrow-icon');
     const trigger = document.getElementById('cleared-add-records-combobox-wrap')?.querySelector('.appsheet-select-trigger');
+    const col3 = document.getElementById('cleared-col-3');
     if (!menu) return;
     const isHidden = menu.classList.contains('d-none');
     this.closeAllAppSheetDropdowns();
@@ -2927,11 +2928,22 @@ const ChequesModule = {
       menu.classList.remove('d-none');
       if (arrow) arrow.innerText = '▲';
       if (trigger) trigger.classList.add('active');
-      this.filterClearedAddRecordsDropdown(document.getElementById('cleared-add-records-input')?.value || '');
+      if (col3) col3.style.zIndex = '10050';
+
+      const rect = trigger ? trigger.getBoundingClientRect() : null;
+      if (rect && (window.innerHeight - rect.bottom < 220)) {
+        menu.classList.add('dropdown-upward');
+      } else {
+        menu.classList.remove('dropdown-upward');
+      }
+
+      // Display ALL 4 record options
+      this.filterClearedAddRecordsDropdown('');
     } else {
       menu.classList.add('d-none');
       if (arrow) arrow.innerText = '▼';
       if (trigger) trigger.classList.remove('active');
+      if (col3) col3.style.zIndex = '';
     }
   },
 
@@ -2939,14 +2951,20 @@ const ChequesModule = {
     const listEl = document.getElementById('cleared-add-records-options-list-menu');
     if (!listEl) return;
     const q = (query || '').toLowerCase().trim();
+    const currentVal = (document.getElementById('cleared-add-records-input')?.value || '').toLowerCase().trim();
     const items = ['Cheque', 'Party Payment', 'Truck Owner Payment', 'Other B'];
-    const filtered = items.filter(item => item.toLowerCase().includes(q));
+    const filtered = items.filter(item => !q || item.toLowerCase().includes(q));
 
     let html = '';
     filtered.forEach(item => {
+      const isSelected = (item.toLowerCase().trim() === currentVal);
+      const bgStyle = isSelected ? 'background-color: #f1f3f4; font-weight: 700;' : 'background-color: #ffffff;';
+      const checkMark = isSelected ? `<span style="color: #1a73e8; font-weight: bold; margin-left: auto;">✓</span>` : '';
+
       html += `
-        <div class="appsheet-dropdown-item" onclick="ChequesModule.selectClearedAddRecord('${item}')">
-          <span>${item}</span>
+        <div class="appsheet-dropdown-item" onclick="ChequesModule.selectClearedAddRecord('${item}')" style="display: flex; align-items: center; gap: 10px; padding: 10px 14px; cursor: pointer; border-bottom: 1px solid #f1f3f4; user-select: none; ${bgStyle}">
+          <span style="color: #202124; font-weight: 600; font-size: 13.5px;">${item}</span>
+          ${checkMark}
         </div>
       `;
     });
@@ -2960,9 +2978,11 @@ const ChequesModule = {
     const menu = document.getElementById('cleared-add-records-dropdown-menu');
     const arrow = document.getElementById('cleared-add-records-arrow-icon');
     const trigger = document.getElementById('cleared-add-records-combobox-wrap')?.querySelector('.appsheet-select-trigger');
+    const col3 = document.getElementById('cleared-col-3');
     if (menu) menu.classList.add('d-none');
     if (arrow) arrow.innerText = '▼';
     if (trigger) trigger.classList.remove('active');
+    if (col3) col3.style.zIndex = '';
   },
 
   selectClearedAddRecord(type) {
@@ -2997,6 +3017,7 @@ const ChequesModule = {
     const menu = document.getElementById('cleared-status-dropdown-menu');
     const arrow = document.getElementById('cleared-status-arrow-icon');
     const trigger = document.getElementById('cleared-status-combobox-wrap')?.querySelector('.appsheet-select-trigger');
+    const col2 = document.getElementById('cleared-col-2');
     if (!menu) return;
     const isHidden = menu.classList.contains('d-none');
     this.closeAllAppSheetDropdowns();
@@ -3004,6 +3025,7 @@ const ChequesModule = {
       menu.classList.remove('d-none');
       if (arrow) arrow.innerText = '▲';
       if (trigger) trigger.classList.add('active');
+      if (col2) col2.style.zIndex = '10050';
 
       // Smart boundary check so dropdown never gets clipped
       const rect = trigger ? trigger.getBoundingClientRect() : null;
@@ -3013,11 +3035,13 @@ const ChequesModule = {
         menu.classList.remove('dropdown-upward');
       }
 
-      this.filterClearedStatusDropdown(document.getElementById('cleared-trip-status-input')?.value || '');
+      // Display ALL 7 statuses
+      this.filterClearedStatusDropdown('');
     } else {
       menu.classList.add('d-none');
       if (arrow) arrow.innerText = '▼';
       if (trigger) trigger.classList.remove('active');
+      if (col2) col2.style.zIndex = '';
     }
   },
 
@@ -3025,15 +3049,21 @@ const ChequesModule = {
     const listEl = document.getElementById('cleared-status-options-list');
     if (!listEl) return;
     const q = (query || '').toLowerCase().trim();
-    const filtered = APPSHEET_STATUS_LIST.filter(item => item.label.toLowerCase().includes(q));
+    const currentVal = (document.getElementById('cleared-trip-status-input')?.value || '').toLowerCase().trim();
+    const filtered = APPSHEET_STATUS_LIST.filter(item => !q || item.label.toLowerCase().includes(q));
 
     let html = '';
     filtered.forEach(item => {
       const theme = this.getTripStatusTheme(item.label);
+      const isSelected = (item.label.toLowerCase().trim() === currentVal);
+      const bgStyle = isSelected ? 'background-color: #f1f3f4; font-weight: 700;' : 'background-color: #ffffff;';
+      const checkMark = isSelected ? `<span style="color: #1a73e8; font-weight: bold; margin-left: auto;">✓</span>` : '';
+
       html += `
-        <div class="appsheet-dropdown-item" onclick="ChequesModule.selectClearedStatus('${item.label}')" style="display: flex; align-items: center; gap: 10px; padding: 10px 14px; cursor: pointer; border-bottom: 1px solid #f1f3f4; user-select: none;">
-          <span style="color: ${theme.color}; font-size: 16px; line-height: 1; flex-shrink: 0;">●</span>
-          <span style="color: #202124; font-weight: 600; font-size: 13.5px;">${item.label}</span>
+        <div class="appsheet-dropdown-item" onclick="ChequesModule.selectClearedStatus('${item.label}')" style="display: flex; align-items: center; gap: 12px; padding: 10px 14px; cursor: pointer; border-bottom: 1px solid #f1f3f4; user-select: none; ${bgStyle}">
+          <span style="color: ${theme.color}; font-size: 15px; line-height: 1; flex-shrink: 0;">●</span>
+          <span style="color: ${isSelected ? theme.color : '#202124'}; font-weight: 600; font-size: 13.5px;">${item.label}</span>
+          ${checkMark}
         </div>
       `;
     });
@@ -3047,9 +3077,11 @@ const ChequesModule = {
     const menu = document.getElementById('cleared-status-dropdown-menu');
     const arrow = document.getElementById('cleared-status-arrow-icon');
     const trigger = document.getElementById('cleared-status-combobox-wrap')?.querySelector('.appsheet-select-trigger');
+    const col2 = document.getElementById('cleared-col-2');
     if (menu) menu.classList.add('d-none');
     if (arrow) arrow.innerText = '▼';
     if (trigger) trigger.classList.remove('active');
+    if (col2) col2.style.zIndex = '';
   },
 
   async selectClearedStatus(val) {
@@ -3058,10 +3090,6 @@ const ChequesModule = {
     this.closeClearedStatusDropdown();
     this.applyTripThemeColor(val);
     await this.updateTripStatusFromSelect(val);
-
-    if (val.trim().toLowerCase().includes('settle')) {
-      this.viewClearedSettledDetails(this.activeCheque?.id || '');
-    }
   },
 
   updateClearedStatusDotColor(val) {
@@ -3396,10 +3424,14 @@ const ChequesModule = {
     const input = document.getElementById('cleared-trip-status-input');
     if (input) {
       input.value = '';
-      input.focus();
     }
     this.updateClearedStatusDotColor('');
-    this.filterClearedStatusDropdown('');
+    const menu = document.getElementById('cleared-status-dropdown-menu');
+    if (menu && menu.classList.contains('d-none')) {
+      this.toggleClearedStatusDropdown();
+    } else {
+      this.filterClearedStatusDropdown('');
+    }
   },
 
 

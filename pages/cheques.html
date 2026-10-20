@@ -674,14 +674,24 @@
     .cleared-trip-grid {
       --trip-theme-color: #01cebc;
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(320px, 1fr));
       gap: 16px;
       align-items: start;
     }
-    @media (max-width: 1200px) {
+    @media (max-width: 1100px) {
       .cleared-trip-grid {
         grid-template-columns: 1fr;
       }
+    }
+    .cleared-trip-grid .table th,
+    .cleared-trip-grid .table td {
+      padding: 6px 8px;
+      font-size: 11.5px;
+      white-space: nowrap;
+    }
+    .cleared-trip-grid .table-responsive {
+      scrollbar-width: thin;
+      scrollbar-color: #dadce0 transparent;
     }
     .cleared-card {
       background: #ffffff;
@@ -2057,20 +2067,20 @@
             <div class="pt-2 border-top">
               <div class="fw-semibold text-muted small mb-1" style="font-size: 11px;">Status</div>
               <label class="form-label small text-muted mb-1" style="font-size: 11px;">Status *</label>
-              <div class="appsheet-custom-select" id="cleared-status-combobox-wrap">
-                <div class="appsheet-select-trigger" onclick="ChequesModule.toggleClearedStatusDropdown()">
-                  <div class="d-flex align-items-center gap-1 flex-grow-1 overflow-hidden">
-                    <span id="cleared-trip-status-dot" style="color: #1b5e20; font-size: 11px;">●</span>
-                    <input type="text" class="appsheet-select-input fw-semibold" id="cleared-trip-status-input" list="cleared-trip-status-options-list" value="Truck Owner Payment Pending" placeholder="Select or type status" oninput="ChequesModule.filterClearedStatusDropdown(this.value); ChequesModule.updateClearedStatusDotColor(this.value);" onchange="ChequesModule.updateTripStatusFromSelect(this.value)" autocomplete="off" style="color: #1b5e20;">
+              <div class="appsheet-custom-select" id="cleared-status-combobox-wrap" style="position: relative;">
+                <div class="appsheet-select-trigger" onclick="ChequesModule.toggleClearedStatusDropdown()" style="cursor: pointer;">
+                  <div class="d-flex align-items-center gap-2 flex-grow-1 overflow-hidden">
+                    <span id="cleared-trip-status-dot" style="color: #1b5e20; font-size: 14px; line-height: 1;">●</span>
+                    <input type="text" class="appsheet-select-input fw-semibold" id="cleared-trip-status-input" value="Truck Owner Payment Pending" placeholder="Select status" readonly style="color: #1b5e20; cursor: pointer; user-select: none; background: transparent;">
                   </div>
                   <div class="appsheet-select-icons">
-                    <span class="appsheet-select-clear" onclick="event.stopPropagation(); ChequesModule.clearClearedStatusSelection()">✕</span>
+                    <span class="appsheet-select-clear" onclick="event.stopPropagation(); ChequesModule.clearClearedStatusSelection()" title="Clear">✕</span>
                     <span class="appsheet-select-arrow" id="cleared-status-arrow-icon">▼</span>
                   </div>
                 </div>
                 <div class="appsheet-dropdown-card d-none shadow-sm" id="cleared-status-dropdown-menu">
                   <div class="appsheet-dropdown-scroll" id="cleared-status-options-list">
-                    <!-- Populated dynamically with colored status options -->
+                    <!-- Populated dynamically with all 7 colored status options -->
                   </div>
                   <div class="appsheet-dropdown-footer">
                     <button type="button" class="appsheet-dropdown-close-btn" onclick="ChequesModule.closeClearedStatusDropdown()">Close</button>
@@ -2091,27 +2101,16 @@
           <!-- Section 2: Add Records For Combobox -->
           <div class="p-3">
             <label class="form-label small text-muted mb-1 fw-semibold" style="font-size: 11px;">Add Records for</label>
-            <div class="appsheet-custom-select" id="cleared-add-records-combobox-wrap">
-              <div class="appsheet-select-trigger" onclick="ChequesModule.toggleClearedAddRecordsDropdown()">
-                <input type="text" class="appsheet-select-input" id="cleared-add-records-input" list="cleared-add-records-options-list" value="Cheque" placeholder="Select or type record type" oninput="ChequesModule.filterClearedAddRecordsDropdown(this.value)" autocomplete="off">
+            <div class="appsheet-custom-select" id="cleared-add-records-combobox-wrap" style="position: relative;">
+              <div class="appsheet-select-trigger" onclick="ChequesModule.toggleClearedAddRecordsDropdown()" style="cursor: pointer;">
+                <input type="text" class="appsheet-select-input fw-semibold" id="cleared-add-records-input" value="Cheque" placeholder="Select record type" readonly style="cursor: pointer; user-select: none; background: transparent;">
                 <div class="appsheet-select-icons">
                   <span class="appsheet-select-arrow" id="cleared-add-records-arrow-icon">▼</span>
                 </div>
               </div>
               <div class="appsheet-dropdown-card d-none shadow-sm" id="cleared-add-records-dropdown-menu">
                 <div class="appsheet-dropdown-scroll" id="cleared-add-records-options-list-menu">
-                  <div class="appsheet-dropdown-item" onclick="ChequesModule.selectClearedAddRecord('Cheque')">
-                    <span>Cheque</span>
-                  </div>
-                  <div class="appsheet-dropdown-item" onclick="ChequesModule.selectClearedAddRecord('Party Payment')">
-                    <span>Party Payment</span>
-                  </div>
-                  <div class="appsheet-dropdown-item" onclick="ChequesModule.selectClearedAddRecord('Truck Owner Payment')">
-                    <span>Truck Owner Payment</span>
-                  </div>
-                  <div class="appsheet-dropdown-item" onclick="ChequesModule.selectClearedAddRecord('Other B')">
-                    <span>Other B</span>
-                  </div>
+                  <!-- Populated dynamically: Cheque, Party Payment, Truck Owner Payment, Other B -->
                 </div>
                 <div class="appsheet-dropdown-footer">
                   <button type="button" class="appsheet-dropdown-close-btn" onclick="ChequesModule.closeClearedAddRecordsDropdown()">Close</button>
