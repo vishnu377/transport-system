@@ -2113,13 +2113,6 @@ const ChequesModule = {
       AppUI.showToast(`Cheque #${chqNoVal} (₹${amountVal.toLocaleString('en-IN')}) added & synchronized with Cloud Firestore!`, 'success');
     }
   },
-    this.renderDashboard();
-    this.updateStats();
-
-    if (typeof AppUI !== 'undefined' && AppUI.showToast) {
-      AppUI.showToast(`Cheque #${chqNoVal} (₹${amountVal.toLocaleString('en-IN')}) added & synchronized with Cloud Firestore!`, 'success');
-    }
-  },
 
   toggleTripFullscreen() {
     const grid = document.querySelector('.bounced-trip-grid');
@@ -2674,6 +2667,15 @@ const ChequesModule = {
   }
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-  ChequesModule.init();
-});
+if (typeof window !== 'undefined') {
+  window.ChequesModule = ChequesModule;
+}
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = ChequesModule;
+}
+
+if (typeof document !== 'undefined') {
+  document.addEventListener('DOMContentLoaded', () => {
+    ChequesModule.init();
+  });
+}
