@@ -1690,6 +1690,14 @@
           <span class="appsheet-tool-icon" id="btn-toggle-allcheques-sidebar-tool" onclick="ChequesModule.toggleAllChequesSidebar()" title="Toggle Financial Year Sidebar"><i class="bi bi-funnel"></i></span>
         </div>
 
+        <!-- All Cheques Open Trip Top Actions matching screencapture 18_31_50.png -->
+        <div id="allcheques-trip-actions" class="d-none d-flex align-items-center gap-2">
+          <button type="button" class="btn btn-sm btn-warning text-dark fw-bold py-1 px-3" onclick="ChequesModule.openUpdateTripDrawer()" title="Update Trip Details">
+            <i class="bi bi-pencil-square me-1"></i> Edit
+          </button>
+          <span class="appsheet-tool-icon" onclick="ChequesModule.toggleTripFullscreen()" title="Expand view">↗</span>
+        </div>
+
         <!-- Cleared List Top Actions matching screencapture_13_43_15.png -->
         <div id="cleared-list-actions" class="d-none d-flex align-items-center gap-2">
           <button type="button" class="btn btn-sm btn-outline-secondary d-none py-1 px-2" id="btn-show-cleared-sidebar" onclick="ChequesModule.toggleClearedSidebar()" title="Show Financial Year Sidebar" style="font-size: 12px; border-radius: 4px;">
@@ -3006,6 +3014,216 @@
               <div id="allcheques-pagination-controls" class="appsheet-pagination"></div>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- CARD 5: ALL CHEQUES - LEVEL 3: OPEN TRIP DETAILS VIEW    -->
+    <!-- Matching AppSheet 18_31_50.png, 18_37_38.png, 18_41_31.png -->
+    <!-- ======================================================== -->
+    <div id="cheques-view-allcheques-open-trip" class="d-none p-3">
+      <div class="row g-3">
+        
+        <!-- COLUMN 1: Card 1 (Trip Info) + Card 2 (Cheque Card) -->
+        <div class="col-12 col-lg-4 d-flex flex-column gap-3">
+          <!-- CARD 1: Trip Info (Slate / Charcoal Field-Value pairs) -->
+          <div class="cleared-card shadow-sm p-3" id="allchq-open-card1-trip">
+            <div id="allchq-open-trip-fields">
+              <!-- Dynamically populated: GR No, Truck No, Dates, Origin, Dest, Weight, Rate, Material, Ref, Driver -->
+            </div>
+          </div>
+
+          <!-- CARD 2: Cheque Card (Slate Header, Pink/Gold/Red Row, Expand & Add) -->
+          <div class="cleared-card shadow-sm p-3" id="allchq-open-card2-cheque">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+              <div class="d-flex align-items-center gap-2">
+                <span class="allchq-cheque-header-bullet" style="color: #495057;">●</span>
+                <span class="fw-bold allchq-cheque-header-title" style="color: #3c4043; font-size: 13.5px;">Cheque</span>
+                <span class="badge bg-light text-secondary border fw-semibold" id="allchq-open-cheque-count">1</span>
+              </div>
+            </div>
+            <div class="table-responsive" style="overflow-x: auto;">
+              <table class="table table-hover align-middle mb-1" style="font-size: 11.5px;">
+                <thead class="table-light">
+                  <tr>
+                    <th style="white-space: nowrap;">Cheque Due Date</th>
+                    <th style="white-space: nowrap;">Cheque No.</th>
+                    <th style="white-space: nowrap;" class="text-end">Amount</th>
+                    <th style="white-space: nowrap;">Bank</th>
+                    <th style="white-space: nowrap;">Pay to</th>
+                    <th style="white-space: nowrap;">Clearing Date</th>
+                  </tr>
+                </thead>
+                <tbody id="allchq-open-cheque-tbody">
+                  <!-- Rendered with Pink / Gold / Red rows -->
+                </tbody>
+              </table>
+            </div>
+            <!-- Horizontal scroll track matching AppSheet -->
+            <div class="bounced-scroll-track-wrapper my-1">
+              <div class="bounced-scroll-track">
+                <span class="scroll-arrow">◀</span>
+                <div class="scroll-bar-thumb"></div>
+                <span class="scroll-arrow">▶</span>
+              </div>
+            </div>
+            <!-- Action links: Expand & Add -->
+            <div class="d-flex align-items-center justify-content-end gap-3 pt-2" style="font-size: 12px;">
+              <a href="javascript:void(0)" class="text-primary text-decoration-none fw-semibold" onclick="ChequesModule.viewAllChequesTripChequesList()">Expand</a>
+              <a href="javascript:void(0)" class="text-primary text-decoration-none fw-semibold" id="allchq-open-add-cheque-btn" onclick="ChequesModule.openAddTripChequeDrawer()">Add</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- COLUMN 2: Card 3 (Consignor/s) + Card 4 (Totals & Status) -->
+        <div class="col-12 col-lg-4 d-flex flex-column gap-3">
+          <!-- CARD 3: Consignor/s (Slate Header, GSTIN, Consignor, Address, Expand) -->
+          <div class="cleared-card shadow-sm p-3" id="allchq-open-card3-consignors">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+              <div class="d-flex align-items-center gap-2">
+                <span style="color: #495057;">●</span>
+                <span class="fw-bold" style="color: #3c4043; font-size: 13.5px;">Consignor/s</span>
+                <span class="badge bg-light text-secondary border fw-semibold" id="allchq-open-consignors-count">1</span>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-sm table-hover align-middle mb-1" style="font-size: 11px;">
+                <thead class="table-light">
+                  <tr>
+                    <th>GSTIN</th>
+                    <th>Consignor</th>
+                    <th>Consignor Address</th>
+                  </tr>
+                </thead>
+                <tbody id="allchq-open-consignors-tbody">
+                  <!-- Populated from trip.consignors -->
+                </tbody>
+              </table>
+            </div>
+            <div class="text-end pt-2" style="font-size: 12px;">
+              <a href="javascript:void(0)" class="text-primary text-decoration-none fw-semibold" onclick="ChequesModule.expandAllChequesConsignors()">Expand</a>
+            </div>
+          </div>
+
+          <!-- CARD 4: Totals & Status (Total Cheque Amount, Total Freight, Status Combobox) -->
+          <div class="cleared-card shadow-sm p-3" id="allchq-open-card4-totals">
+            <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+              <span class="text-muted small">Total Cheque Amount</span>
+              <span class="font-monospace fw-semibold" style="color: #3c4043;"><span style="color: #495057;">●</span> ₹ <span id="allchq-totals-cheque-amt">20,000.00</span></span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+              <span class="text-muted small">Total Freight</span>
+              <span class="font-monospace fw-semibold" style="color: #3c4043;"><span style="color: #495057;">●</span> ₹ <span id="allchq-totals-freight">127,100.00</span></span>
+            </div>
+            <!-- Status Combobox -->
+            <div class="mt-3 pt-2">
+              <label class="form-label small text-muted mb-1">Status *</label>
+              <div class="appsheet-custom-select" id="allchq-status-combobox-wrap">
+                <div class="appsheet-select-trigger" onclick="ChequesModule.toggleAllChqStatusDropdown()">
+                  <div class="d-flex align-items-center gap-1 flex-grow-1 overflow-hidden">
+                    <span id="allchq-status-dot" style="color: #495057;">●</span>
+                    <input type="text" class="appsheet-select-input fw-semibold" id="allchq-trip-status-input" list="allchq-trip-status-list" value="Cheque Due" placeholder="Select or type status" oninput="ChequesModule.filterAllChqStatusDropdown(this.value); ChequesModule.updateAllChqStatusDot(this.value);" onchange="ChequesModule.updateAllChqTripStatus(this.value)" autocomplete="off">
+                  </div>
+                  <datalist id="allchq-trip-status-list">
+                    <option value="Transit"></option>
+                    <option value="Off Loading"></option>
+                    <option value="Cheque Due"></option>
+                    <option value="POD Sent / Bill Generated"></option>
+                  </datalist>
+                  <div class="appsheet-select-icons">
+                    <span class="appsheet-select-clear" onclick="event.stopPropagation(); ChequesModule.clearAllChqStatusSelection()">✕</span>
+                    <span class="appsheet-select-arrow" id="allchq-status-arrow-icon">▼</span>
+                  </div>
+                </div>
+                <div class="appsheet-dropdown-card d-none shadow-sm" id="allchq-status-dropdown-menu">
+                  <div class="appsheet-dropdown-scroll" id="allchq-status-options-list">
+                    <!-- Populated dynamically with status options -->
+                  </div>
+                  <div class="appsheet-dropdown-footer">
+                    <button type="button" class="appsheet-dropdown-close-btn" onclick="ChequesModule.closeAllChqStatusDropdown()">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- COLUMN 3: Card 5 (Consignee, Owner & Add Records For) -->
+        <div class="col-12 col-lg-4 d-flex flex-column gap-3">
+          <!-- CARD 5: Consignee & Owner Card -->
+          <div class="cleared-card shadow-sm p-3" id="allchq-open-card5-consignee-owner">
+            <div id="allchq-open-consignee-owner-fields">
+              <!-- Dynamically populated: GSTIN Consignee, Consignee, Owner, Owner Mobiles, Freight -->
+            </div>
+            <!-- Add Records For Combobox -->
+            <div class="mt-3 pt-3 border-top">
+              <label class="form-label small text-muted mb-1">Add Records for</label>
+              <div class="appsheet-custom-select" id="allchq-add-records-wrap">
+                <div class="appsheet-select-trigger" onclick="ChequesModule.toggleAllChqAddRecordsDropdown()">
+                  <input type="text" class="appsheet-select-input fw-semibold" id="allchq-add-records-input" list="allchq-add-records-list" value="Cheque" oninput="ChequesModule.filterAllChqAddRecordsDropdown(this.value)" onchange="ChequesModule.onAllChqAddRecordSelected(this.value)" autocomplete="off">
+                  <datalist id="allchq-add-records-list">
+                    <option value="Cheque"></option>
+                    <option value="Party Payment"></option>
+                    <option value="Truck Owner Payment"></option>
+                    <option value="Other B"></option>
+                  </datalist>
+                  <div class="appsheet-select-icons">
+                    <span class="appsheet-select-clear" onclick="event.stopPropagation(); ChequesModule.clearAllChqAddRecordsSelection()">✕</span>
+                    <span class="appsheet-select-arrow" id="allchq-add-records-arrow-icon">▼</span>
+                  </div>
+                </div>
+                <div class="appsheet-dropdown-card dropdown-upward d-none shadow-sm" id="allchq-add-records-dropdown-menu">
+                  <div class="appsheet-dropdown-scroll" id="allchq-add-records-options-list">
+                    <!-- Cheque, Party Payment, Truck Owner Payment, Other B -->
+                  </div>
+                  <div class="appsheet-dropdown-footer">
+                    <button type="button" class="appsheet-dropdown-close-btn" onclick="ChequesModule.closeAllChqAddRecordsDropdown()">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- CARD 5: ALL CHEQUES - EXPANDED TRIP CHEQUE DETAILS LIST  -->
+    <!-- Matching AppSheet 18_32_33.png                           -->
+    <!-- ======================================================== -->
+    <div id="cheques-view-allcheques-trip-cheques" class="d-none p-3">
+      <div class="cleared-card shadow-sm p-3">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0" style="font-size: 12px;">
+            <thead class="table-light">
+              <tr>
+                <th style="white-space: nowrap;">Cheque Due Date</th>
+                <th style="white-space: nowrap;">Cheque No.</th>
+                <th style="white-space: nowrap;" class="text-end">Amount</th>
+                <th style="white-space: nowrap;">Bank</th>
+                <th style="white-space: nowrap;">Pay to</th>
+                <th style="white-space: nowrap;">Clearing Date</th>
+                <th style="width: 30px;"></th>
+              </tr>
+            </thead>
+            <tbody id="allcheques-expanded-cheques-tbody">
+              <!-- Rendered with Pink / Gold / Red row -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- CARD 5: ALL CHEQUES - SINGLE CHEQUE DETAILS CARD         -->
+    <!-- Matching AppSheet 18_32_44.png                           -->
+    <!-- ======================================================== -->
+    <div id="cheques-view-allcheques-cheque-detail" class="d-none p-3">
+      <div class="cleared-card shadow-sm p-4 mx-auto" style="max-width: 640px;" id="allchq-single-cheque-card">
+        <div id="allchq-single-cheque-content">
+          <!-- Cheque Due Date, Cheque No, Amount, Bank, Pay to -->
         </div>
       </div>
     </div>

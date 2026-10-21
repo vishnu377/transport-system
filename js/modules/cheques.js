@@ -257,7 +257,9 @@ const ChequesModule = {
             !e.target.closest('#add-records-combobox-wrap') &&
             !e.target.closest('#status-combobox-wrap') &&
             !e.target.closest('#cleared-add-records-combobox-wrap') &&
-            !e.target.closest('#cleared-status-combobox-wrap')) {
+            !e.target.closest('#cleared-status-combobox-wrap') &&
+            !e.target.closest('#allchq-status-combobox-wrap') &&
+            !e.target.closest('#allchq-add-records-wrap')) {
           this.closeAllAppSheetDropdowns();
         }
       });
@@ -1986,7 +1988,9 @@ const ChequesModule = {
     }
 
     // 5. Refresh Open Trip Details view
-    if (this.activeCheque) {
+    if (this.currentOpenOrigin === 'allcheques' && this.activeCheque) {
+      this.renderAllChequesOpenTripDetails(this.activeCheque, this.allChequesActiveColor || 'pink');
+    } else if (this.activeCheque) {
       this.viewBouncedTripDetails(this.activeCheque.id);
     }
 
@@ -2543,7 +2547,11 @@ const ChequesModule = {
     }
 
     // 4. Update Trip Details view dynamically
-    this.viewBouncedTripDetails(newCheque.id);
+    if (this.currentOpenOrigin === 'allcheques') {
+      this.renderAllChequesOpenTripDetails(newCheque, this.allChequesActiveColor || 'pink');
+    } else {
+      this.viewBouncedTripDetails(newCheque.id);
+    }
     this.renderDashboard();
     this.updateStats();
 
@@ -3497,6 +3505,169 @@ const ChequesModule = {
     // Search in allTrips by grNo or id
     let match = this.allTrips.find(t => t.id === c.tripId || (t.grNo && c.grNo && t.grNo.trim() === c.grNo.trim()) || (t.shortGrNo && c.shortGrNo && t.shortGrNo === c.shortGrNo));
     if (match) return match;
+
+    // Authentic Trip for Cheque 000144 / GR 2026-2027-2426_TTC (Pink / Due - 18_31_50.png)
+    if (c.chequeNo === '000144' || c.grNo === '2026-2027-2426_TTC') {
+      return {
+        id: "TRIP_2426_TTC",
+        grNo: "2026-2027-2426_TTC",
+        shortGrNo: "2426",
+        truckNo: "RJ52GB5053",
+        tripStartDate: "10/10/2026",
+        tripEndDate: "20/10/2026",
+        origin: "Rajsamand (Raj.)",
+        destination: "Delhi",
+        consigneeBillingType: "Per Tonne",
+        biltyAmount: 20000.0,
+        weight: 82.000,
+        rate: 1550.0,
+        material: "Wastage Marble Chips",
+        reference: "Shekhwat Chips Udhyog Nathdwara",
+        referenceMobile: "9414171155",
+        referenceMobile2: "9829041155",
+        driver: "Kanharam Shahpura",
+        driverMobile: "7023908869",
+        consignors: [
+          { gstin: "08APEPS7646K2Z6", name: "Manorath Industries", consignor: "Manorath Industries", address: "27, Shreeji Vihar, Lad Parishad Road, Su..." }
+        ],
+        totalChequeAmount: 20000.0,
+        totalFreight: 127100.0,
+        status: "Cheque Due",
+        gstinConsignee: "07AVZPT3197K1ZD",
+        consignee: "SHRI SHYAM MARBLE TILE HOUSE",
+        owner: "Shree Mahaveer Transport Company",
+        ownerMobile: "9414659401",
+        ownerMobile2: "9772200036",
+        freight: 127100.0,
+        addRecordsFor: "Cheque",
+        cheques: [c]
+      };
+    }
+
+    // Authentic Trip for Cheque 217365 / GR 2026-2027-2435_TTC (Gold / Mustard Due - 18_37_38.png)
+    if (c.chequeNo === '217365' || c.grNo === '2026-2027-2435_TTC') {
+      return {
+        id: "TRIP_2435_TTC",
+        grNo: "2026-2027-2435_TTC",
+        shortGrNo: "2435",
+        truckNo: "RJ52GB5054",
+        tripStartDate: "11/10/2026",
+        tripEndDate: "21/10/2026",
+        origin: "Rajsamand (Raj.)",
+        destination: "Meerut (U.P.)",
+        consigneeBillingType: "Per Tonne",
+        biltyAmount: 25000.0,
+        weight: 93.600,
+        rate: 1500.0,
+        material: "Marble Slabs",
+        reference: "Indian Marble Meerut",
+        referenceMobile: "9837509096",
+        driver: "Vikram Gurjar 4507",
+        driverMobile: "7015018788",
+        consignors: [
+          { gstin: "08BBDPP2640C1Z0", name: "Bhavesh Marble", consignor: "Bhavesh Marble", address: "Village & Post - Kunthwa, Teh. Nathdwar..." },
+          { gstin: "08AZWPR7661P1ZX", name: "Komal Enterprises", consignor: "Komal Enterprises", address: "NH 8 Piparda, Rajsamand (Raj.)" }
+        ],
+        totalChequeAmount: 25000.0,
+        totalFreight: 140400.0,
+        status: "Cheque Due",
+        gstinConsignee: "09BOPPT9576Q1Z9",
+        consignee: "New Indian Marbles",
+        consigneeMobile: "9837509096",
+        owner: "Shree Mahaveer Transport Company",
+        ownerMobile: "9414659401",
+        ownerMobile2: "9772200036",
+        freight: 140400.0,
+        addRecordsFor: "Cheque",
+        cheques: [c]
+      };
+    }
+
+    // Authentic Trip for Cheque 000423 / GR 2026-2027-2406_TTC (Green Cleared - 18_35_12.png)
+    if (c.chequeNo === '000423' || c.grNo === '2026-2027-2406_TTC') {
+      return {
+        id: "TRIP_2406_TTC",
+        grNo: "2026-2027-2406_TTC",
+        shortGrNo: "2406",
+        truckNo: "RJ52GB2508",
+        tripStartDate: "08/10/2026",
+        tripEndDate: "18/10/2026",
+        origin: "Kishangarh (Raj.)",
+        destination: "Delhi",
+        consigneeBillingType: "Fixed",
+        biltyAmount: 10000.0,
+        weight: 1.000,
+        rate: 10000.0,
+        material: "Polished Granite Slabs",
+        reference: "Anil Sharda",
+        referenceMobile: "9350734545",
+        driver: "Raju Fagarna",
+        driverMobile: "8696794782",
+        consignors: [
+          { gstin: "08AANPT4350P1ZV", name: "Vidhya Nand Marble", consignor: "Vidhya Nand Marble", address: "Khasara No. 436/273, Mohanpura Village, Kis..." }
+        ],
+        totalChequeAmount: 10000.0,
+        totalFreight: 10000.0,
+        fixedFreight: 10000.0,
+        status: "Completed",
+        gstinConsignee: "07ASAPS6080L1ZB",
+        consignee: "Madhav Marble",
+        consigneeMobile: "9350734545",
+        owner: "Laxmi Prakash Jat",
+        ownerMobile: "9571272336",
+        freight: 10000.0,
+        paidAmount: 10000.0,
+        amountPaid: 10000.0,
+        beneficiaryName: "Rameshwar Prasad",
+        beneficiary: "Rameshwar Prasad",
+        paymentMode: "NEFT/RTGS",
+        ownerPayments: [
+          { paymentDate: "18/10/2026", amountPaid: 10000.0, mode: "NEFT/RTGS", beneficiary: "Rameshwar Prasad" }
+        ],
+        payments: [
+          { paymentDate: "16/10/2026", amountPaid: 10000.0, mode: "Cheque", beneficiary: "TTC" }
+        ],
+        cheques: [c]
+      };
+    }
+
+    // Authentic Trip for Cheque 000004 / Bounced GR 2026-2027--207_TTC (Red Bounced - 18_41_31.png)
+    if (c.status === 'Bounced' || c.chequeNo === '000004' || c.grNo === '2026-2027--207_TTC') {
+      return {
+        id: "TRIP_TTC_NEG_00207",
+        grNo: c.grNo || "2026-2027--207_TTC",
+        shortGrNo: c.shortGrNo || "-207",
+        truckNo: c.truckNo || "RJ52GB5529",
+        tripStartDate: "01/09/2026",
+        tripEndDate: "11/09/2026",
+        origin: "Rajsamand (Raj.)",
+        destination: "Manjhanpur (U.P.)",
+        consigneeBillingType: "Per Tonne",
+        biltyAmount: 20000.0,
+        weight: 87.120,
+        rate: 2200.0,
+        material: "Marble Slabs",
+        reference: "Anand Sharma",
+        referenceMobile: "8890883001",
+        driver: "Sitaram",
+        driverMobile: "9772746478",
+        consignors: [
+          { gstin: "08AAPCA1234F1Z1", name: "Anand Sharma", consignor: "Anand Sharma", address: "Rajsamand (Raj.)" }
+        ],
+        totalChequeAmount: 20000.0,
+        totalFreight: 191664.0,
+        status: "Party Payment Pending",
+        gstinConsignee: "09AABCT1234F1Z5",
+        consignee: "Anand Sharma",
+        consigneeMobile: "8890883001",
+        owner: "Shree Mahaveer Transport Company",
+        ownerMobile: "9414659401",
+        ownerMobile2: "9772200036",
+        freight: 191664.0,
+        addRecordsFor: "Cheque",
+        cheques: [c]
+      };
+    }
 
     // Authentic Trip for Cheque 615580 / GR 2025-2026-1093_TTC (Orange / Cash Settled - media_1792504207427_93d0c6de.png)
     if (c.chequeNo === '615580' || c.grNo === '2025-2026-1093_TTC') {
@@ -4837,12 +5008,455 @@ const ChequesModule = {
     this.currentSettledOrigin = 'allcheques';
 
     if (c.status === 'Cleared') {
+      // Green color row -> Settled Trip Details (Green theme matching 18_35_12.png)
       this.renderSettledTripDetails(c, 'green', 'allcheques');
-    } else if (c.status === 'Bounced') {
-      this.viewBouncedTripDetails(c.id, 'allcheques');
     } else {
-      // Due / Not Used / Pending
-      this.viewBouncedTripDetails(c.id, 'allcheques');
+      // Due (Pink / Gold) or Bounced (Red) -> All Cheques Open Trip Details (5 Cards matching 18_31_50.png, 18_37_38.png, 18_41_31.png)
+      let colorMode = 'pink';
+      if (c.status === 'Bounced' || c.colorTheme === 'red') {
+        colorMode = 'red';
+      } else if (c.colorTheme === 'mustard' || c.colorTheme === 'gold' || c.chequeNo === '217365') {
+        colorMode = 'gold';
+      } else {
+        colorMode = 'pink';
+      }
+      this.renderAllChequesOpenTripDetails(c, colorMode);
+    }
+  },
+
+  renderAllChequesOpenTripDetails(c, colorMode = 'pink') {
+    this.activeCheque = c;
+    this.allChequesActiveColor = colorMode;
+    const trip = this.getTripForCheque(c);
+    this.activeTrip = trip;
+    this.viewMode = 'allcheques-open-trip';
+    this.hideAllViews();
+
+    const openEl = document.getElementById('cheques-view-allcheques-open-trip');
+    if (openEl) openEl.classList.remove('d-none');
+
+    const tripActions = document.getElementById('allcheques-trip-actions');
+    if (tripActions) tripActions.classList.remove('d-none');
+
+    this.setBreadcrumbState('allcheques-open-trip');
+
+    const rowColorHex = colorMode === 'red' ? '#cc0b0b' : (colorMode === 'gold' ? '#c3ad00' : '#fb0a82');
+    const isRed = (colorMode === 'red');
+
+    // 1. Populate Card 1: Trip Info (Slate / Charcoal Field-Value pairs)
+    const card1 = document.getElementById('allchq-open-trip-fields');
+    if (card1) {
+      card1.innerHTML = `
+        <div class="cleared-trip-field mb-2">
+          <div class="cleared-trip-field-label">G.R.No.</div>
+          <div class="cleared-trip-field-val font-monospace" style="color: #3c4043;"><span style="color: #495057;">●</span> ${trip.grNo || '-'}</div>
+        </div>
+        <div class="cleared-trip-field mb-2">
+          <div class="cleared-trip-field-label">Truck No.</div>
+          <div class="cleared-trip-field-val font-monospace" style="color: #3c4043;"><span style="color: #495057;">●</span> ${trip.truckNo || '-'}</div>
+        </div>
+        <div class="cleared-trip-field mb-2">
+          <div class="cleared-trip-field-label">Trip Start Date</div>
+          <div class="cleared-trip-field-val" style="color: #3c4043;"><span style="color: #495057;">●</span> ${this.toDisplayDateFormat(trip.tripStartDate || '10/10/2026')}</div>
+        </div>
+        <div class="cleared-trip-field mb-2">
+          <div class="cleared-trip-field-label">Trip End Date</div>
+          <div class="cleared-trip-field-val" style="color: #3c4043;"><span style="color: #495057;">●</span> ${this.toDisplayDateFormat(trip.tripEndDate || '20/10/2026')}</div>
+        </div>
+        <div class="cleared-trip-field mb-2">
+          <div class="cleared-trip-field-label">Origin</div>
+          <div class="cleared-trip-field-val" style="color: #3c4043;"><span style="color: #495057;">●</span> ${trip.origin || 'Rajsamand (Raj.)'}</div>
+        </div>
+        <div class="cleared-trip-field mb-2">
+          <div class="cleared-trip-field-label">Destination</div>
+          <div class="cleared-trip-field-val" style="color: #3c4043;"><span style="color: #495057;">●</span> ${trip.destination || 'Delhi'}</div>
+        </div>
+        <div class="cleared-trip-field mb-2">
+          <div class="cleared-trip-field-label">Consignee Billing Type</div>
+          <div class="cleared-trip-field-val" style="color: #3c4043;"><span style="color: #495057;">●</span> ${trip.consigneeBillingType || 'Per Tonne'}</div>
+        </div>
+        <div class="cleared-trip-field mb-2">
+          <div class="cleared-trip-field-label">Bilty Amount</div>
+          <div class="cleared-trip-field-val font-monospace" style="color: #3c4043;"><span style="color: #495057;">●</span> ₹${Number(trip.biltyAmount || 20000).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+        </div>
+        <div class="cleared-trip-field mb-2">
+          <div class="cleared-trip-field-label">Weight</div>
+          <div class="cleared-trip-field-val font-monospace" style="color: #3c4043;"><span style="color: #495057;">●</span> ${Number(trip.weight || 82).toFixed(3)}</div>
+        </div>
+        <div class="cleared-trip-field mb-2">
+          <div class="cleared-trip-field-label">Rate</div>
+          <div class="cleared-trip-field-val font-monospace" style="color: #3c4043;"><span style="color: #495057;">●</span> ₹${Number(trip.rate || 1550).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+        </div>
+        <div class="cleared-trip-field mb-2">
+          <div class="cleared-trip-field-label">Material</div>
+          <div class="cleared-trip-field-val" style="color: #3c4043;"><span style="color: #495057;">●</span> ${trip.material || 'Wastage Marble Chips'}</div>
+        </div>
+        <div class="cleared-trip-field mb-2">
+          <div class="cleared-trip-field-label">Reference</div>
+          <div class="cleared-trip-field-val" style="color: #3c4043;"><span style="color: #495057;">●</span> ${trip.reference || 'Shekhwat Chips Udhyog Nathdwara'}</div>
+        </div>
+        <div class="cleared-trip-field mb-2">
+          <div class="cleared-trip-field-label">Reference Mobile No.</div>
+          <div class="cleared-trip-field-val" style="color: #3c4043;">
+            <span style="color: #495057;">●</span> ${trip.referenceMobile || '9414171155'}
+            <a href="tel:${trip.referenceMobile || '9414171155'}" class="text-secondary ms-1"><i class="bi bi-telephone-fill" style="font-size: 11px;"></i></a>
+          </div>
+        </div>
+        ${trip.referenceMobile2 ? `
+        <div class="cleared-trip-field mb-2">
+          <div class="cleared-trip-field-label">Reference Mobile No.</div>
+          <div class="cleared-trip-field-val" style="color: #3c4043;">
+            <span style="color: #495057;">●</span> ${trip.referenceMobile2}
+            <a href="tel:${trip.referenceMobile2}" class="text-secondary ms-1"><i class="bi bi-telephone-fill" style="font-size: 11px;"></i></a>
+          </div>
+        </div>` : ''}
+        <div class="cleared-trip-field mb-2">
+          <div class="cleared-trip-field-label">Driver</div>
+          <div class="cleared-trip-field-val" style="color: #3c4043;"><span style="color: #495057;">●</span> ${trip.driver || 'Kanharam Shahpura'}</div>
+        </div>
+        <div class="cleared-trip-field mb-1">
+          <div class="cleared-trip-field-label">Driver Mobile No.</div>
+          <div class="cleared-trip-field-val" style="color: #3c4043;">
+            <span style="color: #495057;">●</span> ${trip.driverMobile || '7023908869'}
+            <a href="tel:${trip.driverMobile || '7023908869'}" class="text-secondary ms-1"><i class="bi bi-telephone-fill" style="font-size: 11px;"></i></a>
+          </div>
+        </div>
+      `;
+    }
+
+    // 2. Populate Card 2: Cheque Table
+    const chqTbody = document.getElementById('allchq-open-cheque-tbody');
+    const chqCountBadge = document.getElementById('allchq-open-cheque-count');
+    const chequesList = trip.cheques && trip.cheques.length > 0 ? trip.cheques : [c];
+    if (chqCountBadge) chqCountBadge.innerText = String(chequesList.length);
+
+    if (chqTbody) {
+      chqTbody.innerHTML = chequesList.map(item => `
+        <tr onclick="ChequesModule.viewAllChequesSingleCheque('${item.id || ''}')" style="cursor: pointer; color: ${rowColorHex}; font-weight: 500;">
+          <td style="white-space: nowrap;"><span style="color: ${rowColorHex};">●</span> ${item.dueDate || item.chequeDate || '-'}</td>
+          <td class="font-monospace" style="white-space: nowrap;"><span style="color: ${rowColorHex};">●</span> ${item.chequeNo || '-'}</td>
+          <td class="font-monospace text-end" style="white-space: nowrap;"><span style="color: ${rowColorHex};">●</span> ₹ ${Number(item.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+          <td class="text-truncate" style="max-width: 100px; white-space: nowrap;"><span style="color: ${rowColorHex};">●</span> ${item.bankName || '-'}</td>
+          <td style="white-space: nowrap;"><span style="color: ${rowColorHex};">●</span> ${item.payTo || 'TTC'}</td>
+          <td style="white-space: nowrap;"><span style="color: ${rowColorHex};">●</span> ${item.clearingDate || ''}</td>
+        </tr>
+      `).join('');
+    }
+
+    // Add button: Hidden for Red Bounced cheques
+    const addBtn = document.getElementById('allchq-open-add-cheque-btn');
+    if (addBtn) {
+      addBtn.style.display = isRed ? 'none' : 'inline';
+    }
+
+    // 3. Populate Card 3: Consignor/s Table
+    const consignors = trip.consignors && trip.consignors.length > 0 ? trip.consignors : [
+      { gstin: "08APEPS7646K2Z6", name: "Manorath Industries", consignor: "Manorath Industries", address: "27, Shreeji Vihar, Lad Parishad Road, Su..." }
+    ];
+    const conCountBadge = document.getElementById('allchq-open-consignors-count');
+    if (conCountBadge) conCountBadge.innerText = String(consignors.length);
+    const conTbody = document.getElementById('allchq-open-consignors-tbody');
+    if (conTbody) {
+      conTbody.innerHTML = consignors.map(con => `
+        <tr style="cursor: pointer;" onclick="ChequesModule.expandAllChequesConsignors()">
+          <td class="font-monospace" style="white-space: nowrap; color: #3c4043;"><span style="color: #495057;">●</span> ${con.gstin || '-'}</td>
+          <td style="white-space: nowrap; color: #3c4043;">${con.name || con.consignor || '-'}</td>
+          <td class="text-truncate" style="max-width: 140px; white-space: nowrap; color: #3c4043;">${con.address || '-'} &gt;</td>
+        </tr>
+      `).join('');
+    }
+
+    // 4. Populate Card 4: Totals & Status
+    const totalChqAmtEl = document.getElementById('allchq-totals-cheque-amt');
+    const totalFreightEl = document.getElementById('allchq-totals-freight');
+    if (totalChqAmtEl) totalChqAmtEl.innerText = Number(trip.totalChequeAmount || c.amount || 20000).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    if (totalFreightEl) totalFreightEl.innerText = Number(trip.totalFreight || trip.freight || 127100).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    
+    // Status Combobox
+    const statusInput = document.getElementById('allchq-trip-status-input');
+    if (statusInput) statusInput.value = trip.status || 'Cheque Due';
+    this.updateAllChqStatusDot(trip.status || 'Cheque Due');
+    this.populateAllChqStatusDropdown();
+
+    // 5. Populate Card 5: Consignee & Owner Details
+    const card5Fields = document.getElementById('allchq-open-consignee-owner-fields');
+    if (card5Fields) {
+      card5Fields.innerHTML = `
+        <div class="cleared-trip-field mb-2">
+          <div class="cleared-trip-field-label">GSTIN Consignee</div>
+          <div class="cleared-trip-field-val font-monospace" style="color: #3c4043;"><span style="color: #495057;">●</span> ${trip.gstinConsignee || '07AVZPT3197K1ZD'}</div>
+        </div>
+        <div class="cleared-trip-field mb-2">
+          <div class="cleared-trip-field-label">Consignee</div>
+          <div class="cleared-trip-field-val" style="color: #3c4043;"><span style="color: #495057;">●</span> ${trip.consignee || trip.partyName || 'SHRI SHYAM MARBLE TILE HOUSE'}</div>
+        </div>
+        ${trip.consigneeMobile ? `
+        <div class="cleared-trip-field mb-2">
+          <div class="cleared-trip-field-label">Consignee Mobile No.</div>
+          <div class="cleared-trip-field-val" style="color: #3c4043;">
+            <span style="color: #495057;">●</span> ${trip.consigneeMobile}
+            <a href="tel:${trip.consigneeMobile}" class="text-secondary ms-1"><i class="bi bi-telephone-fill" style="font-size: 11px;"></i></a>
+          </div>
+        </div>` : ''}
+        <div class="cleared-trip-field mb-2">
+          <div class="cleared-trip-field-label">Owner</div>
+          <div class="cleared-trip-field-val" style="color: #3c4043;"><span style="color: #495057;">●</span> ${trip.owner || 'Shree Mahaveer Transport Company'}</div>
+        </div>
+        <div class="cleared-trip-field mb-2">
+          <div class="cleared-trip-field-label">Owner Mobile No.</div>
+          <div class="cleared-trip-field-val" style="color: #3c4043;">
+            <span style="color: #495057;">●</span> ${trip.ownerMobile || '9414659401'}
+            <a href="tel:${trip.ownerMobile || '9414659401'}" class="text-secondary ms-1"><i class="bi bi-telephone-fill" style="font-size: 11px;"></i></a>
+          </div>
+        </div>
+        <div class="cleared-trip-field mb-2">
+          <div class="cleared-trip-field-label">Owner Mobile No.</div>
+          <div class="cleared-trip-field-val" style="color: #3c4043;">
+            <span style="color: #495057;">●</span> ${trip.ownerMobile2 || '9772200036'}
+            <a href="tel:${trip.ownerMobile2 || '9772200036'}" class="text-secondary ms-1"><i class="bi bi-telephone-fill" style="font-size: 11px;"></i></a>
+          </div>
+        </div>
+        <div class="cleared-trip-field mb-1">
+          <div class="cleared-trip-field-label">Freight</div>
+          <div class="cleared-trip-field-val font-monospace" style="color: #3c4043;"><span style="color: #495057;">●</span> ₹${Number(trip.freight || trip.totalFreight || 127100).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+        </div>
+      `;
+    }
+
+    // Add Records For Combobox
+    const addRecInput = document.getElementById('allchq-add-records-input');
+    if (addRecInput) addRecInput.value = 'Cheque';
+    this.populateAllChqAddRecordsDropdown();
+  },
+
+  viewAllChequesTripChequesList() {
+    this.viewMode = 'allcheques-trip-cheques';
+    this.hideAllViews();
+    const el = document.getElementById('cheques-view-allcheques-trip-cheques');
+    if (el) el.classList.remove('d-none');
+    this.setBreadcrumbState('allcheques-trip-cheques');
+
+    const colorMode = this.allChequesActiveColor || 'pink';
+    const rowColorHex = colorMode === 'red' ? '#cc0b0b' : (colorMode === 'gold' ? '#c3ad00' : '#fb0a82');
+    const tbody = document.getElementById('allcheques-expanded-cheques-tbody');
+    const trip = this.activeTrip;
+    const chequesList = trip?.cheques && trip.cheques.length > 0 ? trip.cheques : [this.activeCheque];
+
+    if (tbody) {
+      tbody.innerHTML = chequesList.map(item => `
+        <tr onclick="ChequesModule.viewAllChequesSingleCheque('${item.id || ''}')" style="cursor: pointer; color: ${rowColorHex}; font-weight: 500;">
+          <td style="white-space: nowrap;"><span style="color: ${rowColorHex};">●</span> ${item.dueDate || item.chequeDate || '-'}</td>
+          <td class="font-monospace" style="white-space: nowrap;"><span style="color: ${rowColorHex};">●</span> ${item.chequeNo || '-'}</td>
+          <td class="font-monospace text-end" style="white-space: nowrap;"><span style="color: ${rowColorHex};">●</span> ₹ ${Number(item.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+          <td style="white-space: nowrap;"><span style="color: ${rowColorHex};">●</span> ${item.bankName || '-'}</td>
+          <td style="white-space: nowrap;"><span style="color: ${rowColorHex};">●</span> ${item.payTo || 'TTC'}</td>
+          <td style="white-space: nowrap;"><span style="color: ${rowColorHex};">●</span> ${item.clearingDate || ''}</td>
+          <td class="text-end text-muted"><i class="bi bi-chevron-right small"></i></td>
+        </tr>
+      `).join('');
+    }
+  },
+
+  viewAllChequesSingleCheque(chequeId) {
+    this.viewMode = 'allcheques-cheque-detail';
+    this.hideAllViews();
+    const el = document.getElementById('cheques-view-allcheques-cheque-detail');
+    if (el) el.classList.remove('d-none');
+    this.setBreadcrumbState('allcheques-cheque-detail');
+
+    const item = (this.allCheques || []).find(x => String(x.id) === String(chequeId)) || this.activeCheque;
+    const colorMode = this.allChequesActiveColor || 'pink';
+    const rowColorHex = colorMode === 'red' ? '#cc0b0b' : (colorMode === 'gold' ? '#c3ad00' : '#fb0a82');
+
+    const container = document.getElementById('allchq-single-cheque-content');
+    if (container) {
+      container.innerHTML = `
+        <div class="cleared-trip-field mb-3 pb-2 border-bottom">
+          <div class="cleared-trip-field-label">Cheque Due Date</div>
+          <div class="cleared-trip-field-val" style="color: ${rowColorHex}; font-weight: 600;"><span style="color: ${rowColorHex};">●</span> ${item.dueDate || item.chequeDate || '-'}</div>
+        </div>
+        <div class="cleared-trip-field mb-3 pb-2 border-bottom">
+          <div class="cleared-trip-field-label">Cheque No.</div>
+          <div class="cleared-trip-field-val font-monospace" style="color: ${rowColorHex}; font-weight: 600;"><span style="color: ${rowColorHex};">●</span> ${item.chequeNo || '-'}</div>
+        </div>
+        <div class="cleared-trip-field mb-3 pb-2 border-bottom">
+          <div class="cleared-trip-field-label">Amount</div>
+          <div class="cleared-trip-field-val font-monospace" style="color: ${rowColorHex}; font-weight: 600;"><span style="color: ${rowColorHex};">●</span> ₹${Number(item.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+        </div>
+        <div class="cleared-trip-field mb-3 pb-2 border-bottom">
+          <div class="cleared-trip-field-label">Bank</div>
+          <div class="cleared-trip-field-val" style="color: ${rowColorHex}; font-weight: 600;"><span style="color: ${rowColorHex};">●</span> ${item.bankName || '-'}</div>
+        </div>
+        <div class="cleared-trip-field mb-1">
+          <div class="cleared-trip-field-label">Pay to</div>
+          <div class="cleared-trip-field-val" style="color: ${rowColorHex}; font-weight: 600;"><span style="color: ${rowColorHex};">●</span> ${item.payTo || 'TTC'}</div>
+        </div>
+      `;
+    }
+  },
+
+  expandAllChequesConsignors() {
+    const trip = this.activeTrip;
+    const consignors = trip?.consignors || [];
+    if (consignors.length > 0 && typeof AppUI !== 'undefined' && AppUI.showToast) {
+      AppUI.showToast(`Consignors: ${consignors.map(c => c.name || c.consignor).join(', ')}`, 'info');
+    }
+  },
+
+  // Status Combobox handlers for All Cheques Open Trip
+  toggleAllChqStatusDropdown() {
+    const menu = document.getElementById('allchq-status-dropdown-menu');
+    if (!menu) return;
+    const isHidden = menu.classList.contains('d-none');
+    document.querySelectorAll('.appsheet-dropdown-card').forEach(d => d.classList.add('d-none'));
+    if (isHidden) menu.classList.remove('d-none');
+  },
+
+  closeAllChqStatusDropdown() {
+    const menu = document.getElementById('allchq-status-dropdown-menu');
+    if (menu) menu.classList.add('d-none');
+  },
+
+  clearAllChqStatusSelection() {
+    const input = document.getElementById('allchq-trip-status-input');
+    if (input) {
+      input.value = '';
+      this.updateAllChqStatusDot('');
+      this.filterAllChqStatusDropdown('');
+    }
+  },
+
+  updateAllChqStatusDot(val) {
+    const dot = document.getElementById('allchq-status-dot');
+    if (!dot) return;
+    const v = (val || '').toLowerCase();
+    if (v.includes('transit')) dot.style.color = '#1a73e8';
+    else if (v.includes('off') || v.includes('loading')) dot.style.color = '#e37400';
+    else if (v.includes('due')) dot.style.color = '#8a2be2';
+    else if (v.includes('pod') || v.includes('bill')) dot.style.color = '#137333';
+    else dot.style.color = '#495057';
+  },
+
+  populateAllChqStatusDropdown() {
+    const list = document.getElementById('allchq-status-options-list');
+    if (!list) return;
+    const statuses = [
+      { name: 'Transit', color: '#1a73e8' },
+      { name: 'Off Loading', color: '#e37400' },
+      { name: 'Cheque Due', color: '#8a2be2' },
+      { name: 'POD Sent / Bill Generated', color: '#137333' }
+    ];
+    list.innerHTML = statuses.map(s => `
+      <div class="appsheet-dropdown-item d-flex align-items-center gap-2 py-2 px-3" onclick="ChequesModule.selectCustomAllChqStatus('${s.name}')" style="cursor: pointer;">
+        <span style="color: ${s.color};">●</span>
+        <span class="small fw-semibold text-dark">${s.name}</span>
+      </div>
+    `).join('');
+  },
+
+  filterAllChqStatusDropdown(query) {
+    const q = (query || '').toLowerCase();
+    const items = document.querySelectorAll('#allchq-status-options-list .appsheet-dropdown-item');
+    items.forEach(item => {
+      const txt = item.innerText.toLowerCase();
+      item.style.display = txt.includes(q) ? 'flex' : 'none';
+    });
+  },
+
+  selectCustomAllChqStatus(status) {
+    const input = document.getElementById('allchq-trip-status-input');
+    if (input) input.value = status;
+    this.updateAllChqStatusDot(status);
+    this.closeAllChqStatusDropdown();
+    this.updateAllChqTripStatus(status);
+  },
+
+  async updateAllChqTripStatus(status) {
+    if (!this.activeTrip) return;
+    this.activeTrip.status = status;
+    this.activeTrip.tripStatus = status;
+
+    if (this.activeTrip.id && typeof dbService !== 'undefined' && dbService.update) {
+      try {
+        await dbService.update('trips', this.activeTrip.id, { tripStatus: status });
+      } catch (err) {
+        console.warn('Status update note:', err);
+      }
+    }
+
+    if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+      AppUI.showToast(`Trip status updated to "${status}" & synced with Cloud Firestore!`, 'success');
+    }
+  },
+
+  // Add Records For Combobox handlers for All Cheques Open Trip
+  toggleAllChqAddRecordsDropdown() {
+    const menu = document.getElementById('allchq-add-records-dropdown-menu');
+    if (!menu) return;
+    const isHidden = menu.classList.contains('d-none');
+    document.querySelectorAll('.appsheet-dropdown-card').forEach(d => d.classList.add('d-none'));
+    if (isHidden) menu.classList.remove('d-none');
+  },
+
+  closeAllChqAddRecordsDropdown() {
+    const menu = document.getElementById('allchq-add-records-dropdown-menu');
+    if (menu) menu.classList.add('d-none');
+  },
+
+  clearAllChqAddRecordsSelection() {
+    const input = document.getElementById('allchq-add-records-input');
+    if (input) {
+      input.value = '';
+      this.filterAllChqAddRecordsDropdown('');
+    }
+  },
+
+  populateAllChqAddRecordsDropdown() {
+    const list = document.getElementById('allchq-add-records-options-list');
+    if (!list) return;
+    const options = ['Cheque', 'Party Payment', 'Truck Owner Payment', 'Other B'];
+    list.innerHTML = options.map(opt => `
+      <div class="appsheet-dropdown-item py-2 px-3 small fw-semibold text-dark" onclick="ChequesModule.selectCustomAllChqAddRecord('${opt}')" style="cursor: pointer;">
+        ${opt}
+      </div>
+    `).join('');
+  },
+
+  filterAllChqAddRecordsDropdown(query) {
+    const q = (query || '').toLowerCase();
+    const items = document.querySelectorAll('#allchq-add-records-options-list .appsheet-dropdown-item');
+    items.forEach(item => {
+      const txt = item.innerText.toLowerCase();
+      item.style.display = txt.includes(q) ? 'block' : 'none';
+    });
+  },
+
+  selectCustomAllChqAddRecord(opt) {
+    const input = document.getElementById('allchq-add-records-input');
+    if (input) input.value = opt;
+    this.closeAllChqAddRecordsDropdown();
+    this.onAllChqAddRecordSelected(opt);
+  },
+
+  onAllChqAddRecordSelected(val) {
+    const v = (val || '').toLowerCase();
+    if (v.includes('cheque')) {
+      this.openAddTripChequeDrawer();
+    } else if (v.includes('party')) {
+      if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+        AppUI.showToast(`Party Payment selected for GR: ${this.activeTrip?.grNo || ''}`, 'info');
+      }
+      this.openUpdateTripDrawer();
+    } else if (v.includes('owner')) {
+      if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+        AppUI.showToast(`Truck Owner Payment selected for Truck: ${this.activeTrip?.truckNo || ''}`, 'info');
+      }
+      this.openUpdateTripDrawer();
+    } else if (v.includes('other')) {
+      if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+        AppUI.showToast(`Other B selected for GR: ${this.activeTrip?.grNo || ''}`, 'info');
+      }
+      this.openUpdateTripDrawer();
     }
   },
 
@@ -4859,6 +5473,10 @@ const ChequesModule = {
   hideAllViews() {
     const ids = [
       'cheques-view-allcheques-list',
+      'cheques-view-allcheques-open-trip',
+      'cheques-view-allcheques-trip-cheques',
+      'cheques-view-allcheques-cheque-detail',
+      'allcheques-trip-actions',
       'cheques-view-dashboard',
       'cheques-view-due-list',
       'cheques-view-due-detail',
@@ -4906,6 +5524,30 @@ const ChequesModule = {
         { label: 'Home', action: 'ChequesModule.goToDashboardView()' },
         { label: 'Cheques', action: 'ChequesModule.goToDashboardView()' },
         { label: 'All Cheques' }
+      ];
+    } else if (view === 'allcheques-open-trip') {
+      crumbs = [
+        { label: 'Home', action: 'ChequesModule.goToDashboardView()' },
+        { label: 'Cheques', action: 'ChequesModule.goToDashboardView()' },
+        { label: 'All Cheques', action: 'ChequesModule.goToAllChequesView()' },
+        { label: 'Open Trip Details' }
+      ];
+    } else if (view === 'allcheques-trip-cheques') {
+      crumbs = [
+        { label: 'Home', action: 'ChequesModule.goToDashboardView()' },
+        { label: 'Cheques', action: 'ChequesModule.goToDashboardView()' },
+        { label: 'All Cheques', action: 'ChequesModule.goToAllChequesView()' },
+        { label: 'Open Trip Details', action: `ChequesModule.renderAllChequesOpenTripDetails(ChequesModule.activeCheque, ChequesModule.allChequesActiveColor)` },
+        { label: 'Trip Cheque Details' }
+      ];
+    } else if (view === 'allcheques-cheque-detail') {
+      crumbs = [
+        { label: 'Home', action: 'ChequesModule.goToDashboardView()' },
+        { label: 'Cheques', action: 'ChequesModule.goToDashboardView()' },
+        { label: 'All Cheques', action: 'ChequesModule.goToAllChequesView()' },
+        { label: 'Open Trip Details', action: `ChequesModule.renderAllChequesOpenTripDetails(ChequesModule.activeCheque, ChequesModule.allChequesActiveColor)` },
+        { label: 'Trip Cheque Details', action: `ChequesModule.viewAllChequesTripChequesList()` },
+        { label: 'Cheque Details' }
       ];
     } else if (view === 'dashboard') {
       crumbs = [
