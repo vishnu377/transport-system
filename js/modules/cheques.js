@@ -1346,109 +1346,114 @@ const ChequesModule = {
     const formattedStartDate = this.toDisplayDateFormat(trip.tripStartDate || trip.startDate || '01/09/2026');
     const formattedEndDate = this.toDisplayDateFormat(trip.tripEndDate || trip.endDate || '11/09/2026');
 
-    // 1. Render Column 1: Trip Info (Matching authentic screencapture-appsheet-start-e89e7720-9941-4e5b-9d6e-492b8b82de3d-2026-10-20-12_00_28.png)
+    // 1. Render Column 1: Trip Info (Matching authentic Screen 3 / 18_41_31.png)
+    const isAllCheques = (this.currentOpenOrigin === 'allcheques');
+    const bBullet = isAllCheques ? '<span style="color: #495057;">●</span>' : '<span class="bounced-purple-bullet">●</span>';
+    const bValClass = isAllCheques ? 'allchq-open-field-val' : 'bounced-trip-field-val';
+    const bPhoneClass = isAllCheques ? 'allchq-slate-phone-link' : 'bounced-phone-link';
+
     const tripContentEl = document.getElementById('bounced-trip-details-content');
     if (tripContentEl) {
       tripContentEl.innerHTML = `
         <div class="bounced-trip-field">
           <div class="bounced-trip-field-label">G.R.No.</div>
-          <div class="bounced-trip-field-val font-monospace"><span class="bounced-purple-bullet">●</span> ${trip.grNo || '2026-2027--207_TTC'}</div>
+          <div class="${bValClass} font-monospace">${bBullet} ${trip.grNo || '2026-2027--207_TTC'}</div>
         </div>
         <div class="bounced-trip-field">
           <div class="bounced-trip-field-label">Truck No.</div>
-          <div class="bounced-trip-field-val font-monospace"><span class="bounced-purple-bullet">●</span> ${trip.truckNo || 'RJ52GB5529'}</div>
+          <div class="${bValClass} font-monospace">${bBullet} ${trip.truckNo || 'RJ52GB5529'}</div>
         </div>
         <div class="bounced-trip-field">
           <div class="bounced-trip-field-label">Trip Start Date</div>
-          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${formattedStartDate}</div>
+          <div class="${bValClass}">${bBullet} ${formattedStartDate}</div>
         </div>
         <div class="bounced-trip-field">
           <div class="bounced-trip-field-label">Trip End Date</div>
-          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${formattedEndDate}</div>
+          <div class="${bValClass}">${bBullet} ${formattedEndDate}</div>
         </div>
         <div class="bounced-trip-field">
           <div class="bounced-trip-field-label">Origin</div>
-          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${trip.origin || 'Rajsamand (Raj.)'}</div>
+          <div class="${bValClass}">${bBullet} ${trip.origin || 'Rajsamand (Raj.)'}</div>
         </div>
         <div class="bounced-trip-field">
           <div class="bounced-trip-field-label">Destination</div>
-          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${trip.destination || 'Manjhanpur (U.P.)'}</div>
+          <div class="${bValClass}">${bBullet} ${trip.destination || 'Manjhanpur (U.P.)'}</div>
         </div>
         <div class="bounced-trip-field">
           <div class="bounced-trip-field-label">Weight</div>
-          <div class="bounced-trip-field-val font-monospace"><span class="bounced-purple-bullet">●</span> ${Number(trip.weight || 87.12).toFixed(3)}</div>
+          <div class="${bValClass} font-monospace">${bBullet} ${Number(trip.weight || 87.12).toFixed(3)}</div>
         </div>
         <div class="bounced-trip-field">
           <div class="bounced-trip-field-label">Rate</div>
-          <div class="bounced-trip-field-val font-monospace"><span class="bounced-purple-bullet">●</span> ₹${Number(trip.rate || 2200).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+          <div class="${bValClass} font-monospace">${bBullet} ₹${Number(trip.rate || 2200).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
         </div>
         <div class="bounced-trip-field">
           <div class="bounced-trip-field-label">Material</div>
-          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${trip.material || 'Marble Slabs'}</div>
+          <div class="${bValClass}">${bBullet} ${trip.material || 'Marble Slabs'}</div>
         </div>
         <div class="bounced-trip-field">
           <div class="bounced-trip-field-label">Reference</div>
-          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${trip.reference || 'Anand Sharma'}</div>
+          <div class="${bValClass}">${bBullet} ${trip.reference || 'Anand Sharma'}</div>
         </div>
         <div class="bounced-trip-field">
           <div class="bounced-trip-field-label">Reference Mobile No.</div>
-          <div class="bounced-trip-field-val">
-            <span class="bounced-purple-bullet">●</span> 
+          <div class="${bValClass}">
+            ${bBullet} 
             ${trip.referenceMobile || '8890883001'}
-            <a href="tel:${trip.referenceMobile || '8890883001'}" class="bounced-phone-link" title="Call Reference"><i class="bi bi-telephone-fill"></i></a>
+            <a href="tel:${trip.referenceMobile || '8890883001'}" class="${bPhoneClass}" title="Call Reference"><i class="bi bi-telephone-fill"></i></a>
           </div>
         </div>
         <div class="bounced-trip-field">
           <div class="bounced-trip-field-label">Driver</div>
-          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${trip.driver || 'Sitaram'}</div>
+          <div class="${bValClass}">${bBullet} ${trip.driver || 'Sitaram'}</div>
         </div>
         <div class="bounced-trip-field">
           <div class="bounced-trip-field-label">Driver Mobile No.</div>
-          <div class="bounced-trip-field-val">
-            <span class="bounced-purple-bullet">●</span> 
+          <div class="${bValClass}">
+            ${bBullet} 
             ${trip.driverMobile || '9772746478'}
-            <a href="tel:${trip.driverMobile || '9772746478'}" class="bounced-phone-link" title="Call Driver"><i class="bi bi-telephone-fill"></i></a>
+            <a href="tel:${trip.driverMobile || '9772746478'}" class="${bPhoneClass}" title="Call Driver"><i class="bi bi-telephone-fill"></i></a>
           </div>
         </div>
         <div class="bounced-trip-field">
           <div class="bounced-trip-field-label">Consignor</div>
-          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${trip.consignor || 'Anand Sharma'}</div>
+          <div class="${bValClass}">${bBullet} ${trip.consignor || 'Anand Sharma'}</div>
         </div>
         <div class="bounced-trip-field">
           <div class="bounced-trip-field-label">Consignor Mobile No.</div>
-          <div class="bounced-trip-field-val">
-            <span class="bounced-purple-bullet">●</span> 
+          <div class="${bValClass}">
+            ${bBullet} 
             ${trip.consignorMobile || '8890883001'}
-            <a href="tel:${trip.consignorMobile || '8890883001'}" class="bounced-phone-link" title="Call Consignor"><i class="bi bi-telephone-fill"></i></a>
+            <a href="tel:${trip.consignorMobile || '8890883001'}" class="${bPhoneClass}" title="Call Consignor"><i class="bi bi-telephone-fill"></i></a>
           </div>
         </div>
         <div class="bounced-trip-field">
           <div class="bounced-trip-field-label">Owner</div>
-          <div class="bounced-trip-field-val"><span class="bounced-purple-bullet">●</span> ${trip.owner || trip.truckOwner || 'Shree Mahaveer Transport Company'}</div>
+          <div class="${bValClass}">${bBullet} ${trip.owner || trip.truckOwner || 'Shree Mahaveer Transport Company'}</div>
         </div>
         <div class="bounced-trip-field">
           <div class="bounced-trip-field-label">Owner Mobile No.</div>
-          <div class="bounced-trip-field-val">
-            <span class="bounced-purple-bullet">●</span> 
+          <div class="${bValClass}">
+            ${bBullet} 
             ${trip.ownerMobile || '9414659401'}
-            <a href="tel:${trip.ownerMobile || '9414659401'}" class="bounced-phone-link" title="Call Owner"><i class="bi bi-telephone-fill"></i></a>
+            <a href="tel:${trip.ownerMobile || '9414659401'}" class="${bPhoneClass}" title="Call Owner"><i class="bi bi-telephone-fill"></i></a>
           </div>
         </div>
         <div class="bounced-trip-field">
           <div class="bounced-trip-field-label">Owner Mobile No.</div>
-          <div class="bounced-trip-field-val">
-            <span class="bounced-purple-bullet">●</span> 
+          <div class="${bValClass}">
+            ${bBullet} 
             ${trip.ownerMobile2 || '9772200036'}
-            <a href="tel:${trip.ownerMobile2 || '9772200036'}" class="bounced-phone-link" title="Call Owner"><i class="bi bi-telephone-fill"></i></a>
+            <a href="tel:${trip.ownerMobile2 || '9772200036'}" class="${bPhoneClass}" title="Call Owner"><i class="bi bi-telephone-fill"></i></a>
           </div>
         </div>
         <div class="bounced-trip-field">
           <div class="bounced-trip-field-label">Freight</div>
-          <div class="bounced-trip-field-val font-monospace"><span class="bounced-purple-bullet">●</span> ₹${Number(trip.freight || 191664).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+          <div class="${bValClass} font-monospace">${bBullet} ₹${Number(trip.freight || 191664).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
         </div>
       `;
+      return_placeholder = true;
     }
-
     // Initialize Card 1 "Add Records for" Combobox
     this.filterAddRecordsDropdown('');
 
@@ -1489,10 +1494,10 @@ const ChequesModule = {
     // 3. Render Column 3: Financial Summary & Status (Matching authentic screencapture & WhatsApp Image 2026-10-20 at 12.04.25 PM.jpeg)
     const totalChqAmt = chequesToDisplay.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
     const chqAmtEl = document.getElementById('bounced-summary-chq-amount');
-    if (chqAmtEl) chqAmtEl.innerHTML = `<span class="bounced-purple-bullet">●</span> ₹${totalChqAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    if (chqAmtEl) chqAmtEl.innerHTML = `${bBullet} ₹${totalChqAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
     const freightEl = document.getElementById('bounced-summary-freight');
-    if (freightEl) freightEl.innerHTML = `<span class="bounced-purple-bullet">●</span> ₹${Number(trip.freight || 191664).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    if (freightEl) freightEl.innerHTML = `${bBullet} ₹${Number(trip.freight || 191664).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
     const otherBInput = document.getElementById('bounced-trip-other-b-input');
     if (otherBInput) {
@@ -3506,6 +3511,54 @@ const ChequesModule = {
     let match = this.allTrips.find(t => t.id === c.tripId || (t.grNo && c.grNo && t.grNo.trim() === c.grNo.trim()) || (t.shortGrNo && c.shortGrNo && t.shortGrNo === c.shortGrNo));
     if (match) return match;
 
+    // Authentic Trip for Cheque 001111 / GR 2026-2027-2418_TTC (Green Cleared with Off Loading Trip - Screen 4)
+    if (c.chequeNo === '001111' || c.grNo === '2026-2027-2418_TTC' || c.grNo === '2026-2027--2418_TTC') {
+      return {
+        id: "TRIP_2026_2027_2418",
+        grNo: "2026-2027-2418_TTC",
+        shortGrNo: "2418",
+        truckNo: "RJ01GC4865",
+        tripStartDate: "09/10/2026",
+        tripEndDate: "19/10/2026",
+        origin: "Rajsamand (Raj.)",
+        destination: "Mohali (Punjab)",
+        consigneeBillingType: "Per Tonne",
+        biltyAmount: 76000.0,
+        weight: 80.000,
+        rate: 1900.0,
+        material: "MARBLE GRAINS",
+        reference: "Nilesh Malani",
+        referenceMobile: "9829043728",
+        driver: "Birdi Chand Gurjar Shrinagar",
+        driverMobile: "7568525599",
+        consignors: [
+          { gstin: "08AFSFS6249C1ZJ", name: "SHRINATH MICRON", consignor: "SHRINATH MICRON", address: "202, SUNRISE APPARMENT, BUS STAND..." }
+        ],
+        totalChequeAmount: 76000.0,
+        totalFreight: 152000.0,
+        status: "Off Loading",
+        tripStatus: "Off Loading",
+        gstinConsignee: "03AAEFG0040N1ZT",
+        consignee: "GOYAL INDUSTRIES",
+        consigneeMobile: "9215072333",
+        consigneeMobile2: "9814115742",
+        owner: "Shankar Singh Rawat Shrinagar",
+        ownerMobile: "8209362551",
+        freight: 152000.0,
+        addRecordsFor: "Cheque",
+        cheques: [
+          {
+            dueDate: "13/10/2026",
+            chequeNo: "001111",
+            amount: 76000.0,
+            bankName: "ICICI",
+            payTo: "TTC",
+            clearingDate: "16/10/2026"
+          }
+        ]
+      };
+    }
+
     // Authentic Trip for Cheque 000144 / GR 2026-2027-2426_TTC (Pink / Due - 18_31_50.png)
     if (c.chequeNo === '000144' || c.grNo === '2026-2027-2426_TTC') {
       return {
@@ -5006,22 +5059,34 @@ const ChequesModule = {
     this.activeCheque = c;
     this.currentOpenOrigin = 'allcheques';
     this.currentSettledOrigin = 'allcheques';
+    const trip = this.getTripForCheque(c);
 
-    if (c.status === 'Cleared') {
-      // Green color row -> Settled Trip Details (Green theme matching 18_35_12.png)
-      this.renderSettledTripDetails(c, 'green', 'allcheques');
-    } else {
-      // Due (Pink / Gold) or Bounced (Red) -> All Cheques Open Trip Details (5 Cards matching 18_31_50.png, 18_37_38.png, 18_41_31.png)
-      let colorMode = 'pink';
-      if (c.status === 'Bounced' || c.colorTheme === 'red') {
-        colorMode = 'red';
-      } else if (c.colorTheme === 'mustard' || c.colorTheme === 'gold' || c.chequeNo === '217365') {
-        colorMode = 'gold';
-      } else {
-        colorMode = 'pink';
-      }
-      this.renderAllChequesOpenTripDetails(c, colorMode);
+    // Screen 3: Red Bounced cheque -> 3 Columns Bounced Open Trip Details (Matching Screen 3)
+    if (c.status === 'Bounced' || c.colorTheme === 'red' || c.chequeNo === '000004') {
+      this.viewBouncedTripDetails(c.id, 'allcheques');
+      return;
     }
+
+    // Screen 4: Green Cleared cheque with Off Loading trip -> 5 Cards with Pink Trip text and Green Cheque row (Matching Screen 4)
+    if (c.status === 'Cleared' && (trip?.status === 'Off Loading' || trip?.tripStatus === 'Off Loading' || c.chequeNo === '001111' || c.grNo === '2026-2027-2418_TTC')) {
+      this.renderAllChequesOpenTripDetails(c, 'green_offloading');
+      return;
+    }
+
+    // Screen 5: Other Cleared cheques -> Settled Trip Details (Green theme matching 18_35_12.png)
+    if (c.status === 'Cleared') {
+      this.renderSettledTripDetails(c, 'green', 'allcheques');
+      return;
+    }
+
+    // Screen 2: Gold Due cheque -> 5 Cards with Slate Trip text and Gold Cheque row (Matching Screen 2)
+    if (c.colorTheme === 'mustard' || c.colorTheme === 'gold' || c.chequeNo === '217365') {
+      this.renderAllChequesOpenTripDetails(c, 'gold');
+      return;
+    }
+
+    // Screen 1: Pink Due cheque -> 5 Cards with Slate Trip text and Pink Cheque row (Matching Screen 1)
+    this.renderAllChequesOpenTripDetails(c, 'pink');
   },
 
   renderAllChequesOpenTripDetails(c, colorMode = 'pink') {
@@ -5040,91 +5105,101 @@ const ChequesModule = {
 
     this.setBreadcrumbState('allcheques-open-trip');
 
-    const rowColorHex = colorMode === 'red' ? '#cc0b0b' : (colorMode === 'gold' ? '#c3ad00' : '#fb0a82');
+    const isPinkTrip = (colorMode === 'green_offloading');
+    const chqRowColorHex = (colorMode === 'green_offloading') ? '#00b11f' : (colorMode === 'gold' ? '#c3ad00' : (colorMode === 'red' ? '#cc0b0b' : '#fb0a82'));
     const isRed = (colorMode === 'red');
 
-    // 1. Populate Card 1: Trip Info (Slate / Charcoal Field-Value pairs)
+    const tripValClass = isPinkTrip ? 'allchq-pink-field-val' : 'allchq-open-field-val';
+    const tripBulletColor = isPinkTrip ? '#fb0a82' : '#495057';
+    const tripPhoneClass = isPinkTrip ? 'allchq-pink-phone-link' : 'allchq-slate-phone-link';
+
+    // 1. Populate Card 1: Trip Info
     const card1 = document.getElementById('allchq-open-trip-fields');
     if (card1) {
       card1.innerHTML = `
         <div class="cleared-trip-field mb-2">
           <div class="cleared-trip-field-label">G.R.No.</div>
-          <div class="allchq-open-field-val font-monospace"><span style="color: #495057;">●</span> ${trip.grNo || '-'}</div>
+          <div class="${tripValClass} font-monospace"><span style="color: ${tripBulletColor};">●</span> ${trip.grNo || '-'}</div>
         </div>
         <div class="cleared-trip-field mb-2">
           <div class="cleared-trip-field-label">Truck No.</div>
-          <div class="allchq-open-field-val font-monospace"><span style="color: #495057;">●</span> ${trip.truckNo || '-'}</div>
+          <div class="${tripValClass} font-monospace"><span style="color: ${tripBulletColor};">●</span> ${trip.truckNo || '-'}</div>
         </div>
         <div class="cleared-trip-field mb-2">
           <div class="cleared-trip-field-label">Trip Start Date</div>
-          <div class="allchq-open-field-val"><span style="color: #495057;">●</span> ${this.toDisplayDateFormat(trip.tripStartDate || '10/10/2026')}</div>
+          <div class="${tripValClass}"><span style="color: ${tripBulletColor};">●</span> ${this.toDisplayDateFormat(trip.tripStartDate || '10/10/2026')}</div>
         </div>
         <div class="cleared-trip-field mb-2">
           <div class="cleared-trip-field-label">Trip End Date</div>
-          <div class="allchq-open-field-val"><span style="color: #495057;">●</span> ${this.toDisplayDateFormat(trip.tripEndDate || '20/10/2026')}</div>
+          <div class="${tripValClass}"><span style="color: ${tripBulletColor};">●</span> ${this.toDisplayDateFormat(trip.tripEndDate || '20/10/2026')}</div>
         </div>
         <div class="cleared-trip-field mb-2">
           <div class="cleared-trip-field-label">Origin</div>
-          <div class="allchq-open-field-val"><span style="color: #495057;">●</span> ${trip.origin || 'Rajsamand (Raj.)'}</div>
+          <div class="${tripValClass}"><span style="color: ${tripBulletColor};">●</span> ${trip.origin || 'Rajsamand (Raj.)'}</div>
         </div>
         <div class="cleared-trip-field mb-2">
           <div class="cleared-trip-field-label">Destination</div>
-          <div class="allchq-open-field-val"><span style="color: #495057;">●</span> ${trip.destination || 'Delhi'}</div>
+          <div class="${tripValClass}"><span style="color: ${tripBulletColor};">●</span> ${trip.destination || 'Delhi'}</div>
         </div>
         <div class="cleared-trip-field mb-2">
           <div class="cleared-trip-field-label">Consignee Billing Type</div>
-          <div class="allchq-open-field-val"><span style="color: #495057;">●</span> ${trip.consigneeBillingType || 'Per Tonne'}</div>
+          <div class="${tripValClass}"><span style="color: ${tripBulletColor};">●</span> ${trip.consigneeBillingType || 'Per Tonne'}</div>
         </div>
         <div class="cleared-trip-field mb-2">
           <div class="cleared-trip-field-label">Bilty Amount</div>
-          <div class="allchq-open-field-val font-monospace"><span style="color: #495057;">●</span> ₹${Number(trip.biltyAmount || 20000).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+          <div class="${tripValClass} font-monospace"><span style="color: ${tripBulletColor};">●</span> ₹${Number(trip.biltyAmount || 20000).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
         </div>
         <div class="cleared-trip-field mb-2">
           <div class="cleared-trip-field-label">Weight</div>
-          <div class="allchq-open-field-val font-monospace"><span style="color: #495057;">●</span> ${Number(trip.weight || 82).toFixed(3)}</div>
+          <div class="${tripValClass} font-monospace"><span style="color: ${tripBulletColor};">●</span> ${Number(trip.weight || 82).toFixed(3)}</div>
         </div>
         <div class="cleared-trip-field mb-2">
           <div class="cleared-trip-field-label">Rate</div>
-          <div class="allchq-open-field-val font-monospace"><span style="color: #495057;">●</span> ₹${Number(trip.rate || 1550).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+          <div class="${tripValClass} font-monospace"><span style="color: ${tripBulletColor};">●</span> ₹${Number(trip.rate || 1550).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
         </div>
         <div class="cleared-trip-field mb-2">
           <div class="cleared-trip-field-label">Material</div>
-          <div class="allchq-open-field-val"><span style="color: #495057;">●</span> ${trip.material || 'Wastage Marble Chips'}</div>
+          <div class="${tripValClass}"><span style="color: ${tripBulletColor};">●</span> ${trip.material || 'Wastage Marble Chips'}</div>
         </div>
         <div class="cleared-trip-field mb-2">
           <div class="cleared-trip-field-label">Reference</div>
-          <div class="allchq-open-field-val"><span style="color: #495057;">●</span> ${trip.reference || 'Shekhwat Chips Udhyog Nathdwara'}</div>
+          <div class="${tripValClass}"><span style="color: ${tripBulletColor};">●</span> ${trip.reference || 'Shekhwat Chips Udhyog Nathdwara'}</div>
         </div>
         <div class="cleared-trip-field mb-2">
           <div class="cleared-trip-field-label">Reference Mobile No.</div>
-          <div class="allchq-open-field-val">
-            <span style="color: #495057;">●</span> ${trip.referenceMobile || '9414171155'}
-            <a href="tel:${trip.referenceMobile || '9414171155'}" class="allchq-slate-phone-link"><i class="bi bi-telephone-fill"></i></a>
+          <div class="${tripValClass}">
+            <span style="color: ${tripBulletColor};">●</span> ${trip.referenceMobile || '9414171155'}
+            <a href="tel:${trip.referenceMobile || '9414171155'}" class="${tripPhoneClass}"><i class="bi bi-telephone-fill"></i></a>
           </div>
         </div>
         ${trip.referenceMobile2 ? `
         <div class="cleared-trip-field mb-2">
           <div class="cleared-trip-field-label">Reference Mobile No.</div>
-          <div class="allchq-open-field-val">
-            <span style="color: #495057;">●</span> ${trip.referenceMobile2}
-            <a href="tel:${trip.referenceMobile2}" class="allchq-slate-phone-link"><i class="bi bi-telephone-fill"></i></a>
+          <div class="${tripValClass}">
+            <span style="color: ${tripBulletColor};">●</span> ${trip.referenceMobile2}
+            <a href="tel:${trip.referenceMobile2}" class="${tripPhoneClass}"><i class="bi bi-telephone-fill"></i></a>
           </div>
         </div>` : ''}
         <div class="cleared-trip-field mb-2">
           <div class="cleared-trip-field-label">Driver</div>
-          <div class="allchq-open-field-val"><span style="color: #495057;">●</span> ${trip.driver || 'Kanharam Shahpura'}</div>
+          <div class="${tripValClass}"><span style="color: ${tripBulletColor};">●</span> ${trip.driver || 'Kanharam Shahpura'}</div>
         </div>
         <div class="cleared-trip-field mb-1">
           <div class="cleared-trip-field-label">Driver Mobile No.</div>
-          <div class="allchq-open-field-val">
-            <span style="color: #495057;">●</span> ${trip.driverMobile || '7023908869'}
-            <a href="tel:${trip.driverMobile || '7023908869'}" class="allchq-slate-phone-link"><i class="bi bi-telephone-fill"></i></a>
+          <div class="${tripValClass}">
+            <span style="color: ${tripBulletColor};">●</span> ${trip.driverMobile || '7023908869'}
+            <a href="tel:${trip.driverMobile || '7023908869'}" class="${tripPhoneClass}"><i class="bi bi-telephone-fill"></i></a>
           </div>
         </div>
       `;
     }
 
     // 2. Populate Card 2: Cheque Table
+    const chqHeaderBullet = document.getElementById('allchq-cheque-header-bullet');
+    const chqHeaderTitle = document.getElementById('allchq-cheque-header-text');
+    if (chqHeaderBullet) chqHeaderBullet.style.color = isPinkTrip ? '#fb0a82' : '#495057';
+    if (chqHeaderTitle) chqHeaderTitle.style.color = isPinkTrip ? '#fb0a82' : '#3c4043';
+
     const chqTbody = document.getElementById('allchq-open-cheque-tbody');
     const chqCountBadge = document.getElementById('allchq-open-cheque-count');
     const chequesList = trip.cheques && trip.cheques.length > 0 ? trip.cheques : [c];
@@ -5132,13 +5207,13 @@ const ChequesModule = {
 
     if (chqTbody) {
       chqTbody.innerHTML = chequesList.map(item => `
-        <tr onclick="ChequesModule.viewAllChequesSingleCheque('${item.id || ''}')" style="cursor: pointer; color: ${rowColorHex}; font-weight: 600;">
-          <td style="white-space: nowrap; color: ${rowColorHex};">${item.dueDate || item.chequeDate || '-'}</td>
-          <td class="font-monospace" style="white-space: nowrap; color: ${rowColorHex};">${item.chequeNo || '-'}</td>
-          <td class="font-monospace text-end" style="white-space: nowrap; color: ${rowColorHex};">₹ ${Number(item.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-          <td class="text-truncate" style="max-width: 120px; white-space: nowrap; color: ${rowColorHex};">${item.bankName || '-'}</td>
-          <td style="white-space: nowrap; color: ${rowColorHex};">${item.payTo || 'TTC'}</td>
-          <td style="white-space: nowrap; color: ${rowColorHex};">${item.clearingDate || ''}</td>
+        <tr onclick="ChequesModule.viewAllChequesSingleCheque('${item.id || ''}')" style="cursor: pointer; color: ${chqRowColorHex}; font-weight: 600;">
+          <td style="white-space: nowrap; color: ${chqRowColorHex};"><span style="color: ${chqRowColorHex};">●</span> ${item.dueDate || item.chequeDate || '-'}</td>
+          <td class="font-monospace" style="white-space: nowrap; color: ${chqRowColorHex};"><span style="color: ${chqRowColorHex};">●</span> ${item.chequeNo || '-'}</td>
+          <td class="font-monospace text-end" style="white-space: nowrap; color: ${chqRowColorHex};"><span style="color: ${chqRowColorHex};">●</span> ₹ ${Number(item.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+          <td class="text-truncate" style="max-width: 120px; white-space: nowrap; color: ${chqRowColorHex};"><span style="color: ${chqRowColorHex};">●</span> ${item.bankName || '-'}</td>
+          <td style="white-space: nowrap; color: ${chqRowColorHex};"><span style="color: ${chqRowColorHex};">●</span> ${item.payTo || 'TTC'}</td>
+          <td style="white-space: nowrap; color: ${chqRowColorHex};">${item.clearingDate ? `<span style="color: ${chqRowColorHex};">●</span> ${item.clearingDate}` : ''}</td>
         </tr>
       `).join('');
     }
@@ -5150,6 +5225,11 @@ const ChequesModule = {
     }
 
     // 3. Populate Card 3: Consignor/s Table
+    const conHeaderBullet = document.getElementById('allchq-consignors-header-bullet');
+    const conHeaderTitle = document.getElementById('allchq-consignors-header-text');
+    if (conHeaderBullet) conHeaderBullet.style.color = isPinkTrip ? '#fb0a82' : '#495057';
+    if (conHeaderTitle) conHeaderTitle.style.color = isPinkTrip ? '#fb0a82' : '#3c4043';
+
     const consignors = trip.consignors && trip.consignors.length > 0 ? trip.consignors : [
       { gstin: "08APEPS7646K2Z6", name: "Manorath Industries", consignor: "Manorath Industries", address: "27, Shreeji Vihar, Lad Parishad Road, Sukharia Nagar, Nathdwara (Raj.)-313301" }
     ];
@@ -5167,15 +5247,34 @@ const ChequesModule = {
     }
 
     // 4. Populate Card 4: Totals & Status
+    const totalsBulletColor = isPinkTrip ? '#fb0a82' : '#495057';
+    const totalsValColor = isPinkTrip ? '#fb0a82' : '#3c4043';
     const totalChqAmtEl = document.getElementById('allchq-totals-cheque-amt');
     const totalFreightEl = document.getElementById('allchq-totals-freight');
-    if (totalChqAmtEl) totalChqAmtEl.innerText = Number(trip.totalChequeAmount || c.amount || 20000).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    if (totalFreightEl) totalFreightEl.innerText = Number(trip.totalFreight || trip.freight || 127100).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const totalChqBullet = document.getElementById('allchq-totals-cheque-bullet');
+    const totalFreightBullet = document.getElementById('allchq-totals-freight-bullet');
+    if (totalChqBullet) totalChqBullet.style.color = totalsBulletColor;
+    if (totalFreightBullet) totalFreightBullet.style.color = totalsBulletColor;
+    if (totalChqAmtEl) {
+      totalChqAmtEl.style.color = totalsValColor;
+      totalChqAmtEl.innerText = Number(trip.totalChequeAmount || c.amount || 20000).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+    if (totalFreightEl) {
+      totalFreightEl.style.color = totalsValColor;
+      totalFreightEl.innerText = Number(trip.totalFreight || trip.freight || 127100).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
     
     // Status Combobox
     const statusInput = document.getElementById('allchq-trip-status-input');
-    if (statusInput) statusInput.value = trip.status || 'Cheque Due';
-    this.updateAllChqStatusDot(trip.status || 'Cheque Due');
+    const statusDot = document.getElementById('allchq-status-dot');
+    const displayStatus = trip.status || (isPinkTrip ? 'Off Loading' : 'Cheque Due');
+    if (statusInput) {
+      statusInput.value = displayStatus;
+      statusInput.style.color = isPinkTrip ? '#fb0a82' : '#202124';
+    }
+    if (statusDot) {
+      statusDot.style.color = isPinkTrip ? '#fb0a82' : '#495057';
+    }
     this.populateAllChqStatusDropdown();
 
     // 5. Populate Card 5: Consignee & Owner Details
@@ -5184,41 +5283,50 @@ const ChequesModule = {
       card5Fields.innerHTML = `
         <div class="cleared-trip-field mb-2">
           <div class="cleared-trip-field-label">GSTIN Consignee</div>
-          <div class="allchq-open-field-val font-monospace"><span style="color: #495057;">●</span> ${trip.gstinConsignee || '07AVZPT3197K1ZD'}</div>
+          <div class="${tripValClass} font-monospace"><span style="color: ${tripBulletColor};">●</span> ${trip.gstinConsignee || '07AVZPT3197K1ZD'}</div>
         </div>
         <div class="cleared-trip-field mb-2">
           <div class="cleared-trip-field-label">Consignee</div>
-          <div class="allchq-open-field-val"><span style="color: #495057;">●</span> ${trip.consignee || trip.partyName || 'SHRI SHYAM MARBLE TILE HOUSE'}</div>
+          <div class="${tripValClass}"><span style="color: ${tripBulletColor};">●</span> ${trip.consignee || trip.partyName || 'SHRI SHYAM MARBLE TILE HOUSE'}</div>
         </div>
         ${trip.consigneeMobile ? `
         <div class="cleared-trip-field mb-2">
           <div class="cleared-trip-field-label">Consignee Mobile No.</div>
-          <div class="allchq-open-field-val">
-            <span style="color: #495057;">●</span> ${trip.consigneeMobile}
-            <a href="tel:${trip.consigneeMobile}" class="allchq-slate-phone-link"><i class="bi bi-telephone-fill"></i></a>
+          <div class="${tripValClass}">
+            <span style="color: ${tripBulletColor};">●</span> ${trip.consigneeMobile}
+            <a href="tel:${trip.consigneeMobile}" class="${tripPhoneClass}"><i class="bi bi-telephone-fill"></i></a>
+          </div>
+        </div>` : ''}
+        ${trip.consigneeMobile2 ? `
+        <div class="cleared-trip-field mb-2">
+          <div class="cleared-trip-field-label">Consignee Mobile No.</div>
+          <div class="${tripValClass}">
+            <span style="color: ${tripBulletColor};">●</span> ${trip.consigneeMobile2}
+            <a href="tel:${trip.consigneeMobile2}" class="${tripPhoneClass}"><i class="bi bi-telephone-fill"></i></a>
           </div>
         </div>` : ''}
         <div class="cleared-trip-field mb-2">
           <div class="cleared-trip-field-label">Owner</div>
-          <div class="allchq-open-field-val"><span style="color: #495057;">●</span> ${trip.owner || 'Shree Mahaveer Transport Company'}</div>
+          <div class="${tripValClass}"><span style="color: ${tripBulletColor};">●</span> ${trip.owner || 'Shree Mahaveer Transport Company'}</div>
         </div>
         <div class="cleared-trip-field mb-2">
           <div class="cleared-trip-field-label">Owner Mobile No.</div>
-          <div class="allchq-open-field-val">
-            <span style="color: #495057;">●</span> ${trip.ownerMobile || '9414659401'}
-            <a href="tel:${trip.ownerMobile || '9414659401'}" class="allchq-slate-phone-link"><i class="bi bi-telephone-fill"></i></a>
+          <div class="${tripValClass}">
+            <span style="color: ${tripBulletColor};">●</span> ${trip.ownerMobile || '9414659401'}
+            <a href="tel:${trip.ownerMobile || '9414659401'}" class="${tripPhoneClass}"><i class="bi bi-telephone-fill"></i></a>
           </div>
         </div>
+        ${trip.ownerMobile2 ? `
         <div class="cleared-trip-field mb-2">
           <div class="cleared-trip-field-label">Owner Mobile No.</div>
-          <div class="allchq-open-field-val">
-            <span style="color: #495057;">●</span> ${trip.ownerMobile2 || '9772200036'}
-            <a href="tel:${trip.ownerMobile2 || '9772200036'}" class="allchq-slate-phone-link"><i class="bi bi-telephone-fill"></i></a>
+          <div class="${tripValClass}">
+            <span style="color: ${tripBulletColor};">●</span> ${trip.ownerMobile2}
+            <a href="tel:${trip.ownerMobile2}" class="${tripPhoneClass}"><i class="bi bi-telephone-fill"></i></a>
           </div>
-        </div>
+        </div>` : ''}
         <div class="cleared-trip-field mb-1">
           <div class="cleared-trip-field-label">Freight</div>
-          <div class="allchq-open-field-val font-monospace"><span style="color: #495057;">●</span> ₹${Number(trip.freight || trip.totalFreight || 127100).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+          <div class="${tripValClass} font-monospace"><span style="color: ${tripBulletColor};">●</span> ₹${Number(trip.freight || trip.totalFreight || 127100).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
         </div>
       `;
     }
@@ -5243,14 +5351,15 @@ const ChequesModule = {
     const chequesList = trip?.cheques && trip.cheques.length > 0 ? trip.cheques : [this.activeCheque];
 
     if (tbody) {
+      const chqRowColorHex = (colorMode === 'green_offloading') ? '#00b11f' : (colorMode === 'gold' ? '#c3ad00' : (colorMode === 'red' ? '#cc0b0b' : '#fb0a82'));
       tbody.innerHTML = chequesList.map(item => `
-        <tr onclick="ChequesModule.viewAllChequesSingleCheque('${item.id || ''}')" style="cursor: pointer; color: ${rowColorHex}; font-weight: 600;">
-          <td style="white-space: nowrap; color: ${rowColorHex};">${item.dueDate || item.chequeDate || '-'}</td>
-          <td class="font-monospace" style="white-space: nowrap; color: ${rowColorHex};">${item.chequeNo || '-'}</td>
-          <td class="font-monospace text-end" style="white-space: nowrap; color: ${rowColorHex};">₹ ${Number(item.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-          <td style="white-space: nowrap; color: ${rowColorHex};">${item.bankName || '-'}</td>
-          <td style="white-space: nowrap; color: ${rowColorHex};">${item.payTo || 'TTC'}</td>
-          <td style="white-space: nowrap; color: ${rowColorHex};">${item.clearingDate || ''}</td>
+        <tr onclick="ChequesModule.viewAllChequesSingleCheque('${item.id || ''}')" style="cursor: pointer; color: ${chqRowColorHex}; font-weight: 600;">
+          <td style="white-space: nowrap; color: ${chqRowColorHex};"><span style="color: ${chqRowColorHex};">●</span> ${item.dueDate || item.chequeDate || '-'}</td>
+          <td class="font-monospace" style="white-space: nowrap; color: ${chqRowColorHex};"><span style="color: ${chqRowColorHex};">●</span> ${item.chequeNo || '-'}</td>
+          <td class="font-monospace text-end" style="white-space: nowrap; color: ${chqRowColorHex};"><span style="color: ${chqRowColorHex};">●</span> ₹ ${Number(item.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+          <td style="white-space: nowrap; color: ${chqRowColorHex};"><span style="color: ${chqRowColorHex};">●</span> ${item.bankName || '-'}</td>
+          <td style="white-space: nowrap; color: ${chqRowColorHex};"><span style="color: ${chqRowColorHex};">●</span> ${item.payTo || 'TTC'}</td>
+          <td style="white-space: nowrap; color: ${chqRowColorHex};">${item.clearingDate ? `<span style="color: ${chqRowColorHex};">●</span> ${item.clearingDate}` : ''}</td>
           <td class="text-end text-muted"><i class="bi bi-chevron-right small"></i></td>
         </tr>
       `).join('');

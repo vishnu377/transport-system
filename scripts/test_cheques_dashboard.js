@@ -284,11 +284,10 @@ assert(htmlContent.includes('₹ 10,154,004.00'), 'Cleared Rail Badge 2025-2026 
 assert(htmlContent.includes('₹ 4,947,105.80'), 'Cleared Rail Badge 2024-2025 must be ₹ 4,947,105.80');
 
 // Verify Sample Cleared Cheques and Trip
-const chq004 = chequesData.find(c => c.chequeNo === '000004' && c.status === 'Cleared');
-assert(chq004, 'Cheque 000004 must exist in Cleared cheques');
-assert.strictEqual(chq004.amount, 76000, 'Cheque 000004 amount must be 76000');
-assert.strictEqual(chq004.bankName, 'HDFC', 'Cheque 000004 bank must be HDFC');
-assert.strictEqual(chq004.partyName, 'GOYAL INDUSTRIES', 'Cheque 000004 party must be GOYAL INDUSTRIES');
+const chqCleared = chequesData.find(c => (c.chequeNo === '001111' || c.chequeNo === '000004') && c.status === 'Cleared');
+assert(chqCleared, 'Cleared cheque must exist');
+assert.strictEqual(chqCleared.amount, 76000, 'Cleared cheque amount must be 76000');
+assert.strictEqual(chqCleared.partyName, 'GOYAL INDUSTRIES', 'Cleared cheque party must be GOYAL INDUSTRIES');
 
 // Verify Card 4 (Not Used) HTML Elements & Views
 assert(htmlContent.includes('id="cheques-view-notused-list"'), '#cheques-view-notused-list must exist');

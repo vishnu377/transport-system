@@ -992,6 +992,44 @@
       color: #202124 !important;
     }
 
+    /* All Cheques Open Trip Pink Field Values matching Screen 4 (Off Loading) */
+    .allchq-pink-field-val {
+      flex: 1;
+      font-weight: 600;
+      color: #fb0a82 !important;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      word-break: break-word;
+    }
+    .allchq-pink-field-val a {
+      color: #fb0a82 !important;
+      text-decoration: none;
+    }
+    .allchq-pink-phone-link {
+      color: #fb0a82 !important;
+      margin-left: auto;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      padding-left: 8px;
+      font-size: 12px;
+    }
+    .allchq-pink-phone-link:hover {
+      opacity: 0.85;
+      color: #d8006f !important;
+    }
+    .allchq-gold-link {
+      color: #b59d3d !important;
+      font-weight: 600 !important;
+      text-decoration: none !important;
+      font-size: 12px;
+    }
+    .allchq-gold-link:hover {
+      color: #8c7625 !important;
+      text-decoration: underline !important;
+    }
+
     .bounced-red-bullet {
       color: #d32f2f !important;
       font-size: 11px;
@@ -3086,12 +3124,12 @@
             </div>
           </div>
 
-          <!-- CARD 2: Cheque Card (Slate Header, Pink/Gold/Red Row, Expand & Add) -->
+          <!-- CARD 2: Cheque Card (Slate/Pink Header, Pink/Gold/Green Row, Expand & Add) -->
           <div class="cleared-card shadow-sm p-3" id="allchq-open-card2-cheque">
             <div class="d-flex align-items-center justify-content-between mb-2">
               <div class="d-flex align-items-center gap-2">
-                <span class="allchq-cheque-header-bullet" style="color: #495057;">●</span>
-                <span class="fw-bold allchq-cheque-header-title" style="color: #3c4043; font-size: 13.5px;">Cheque</span>
+                <span id="allchq-cheque-header-bullet" style="color: #495057;">●</span>
+                <span id="allchq-cheque-header-text" class="fw-bold" style="color: #3c4043; font-size: 13.5px;">Cheque</span>
                 <span class="badge bg-light text-secondary border fw-semibold" id="allchq-open-cheque-count">1</span>
               </div>
             </div>
@@ -3108,7 +3146,7 @@
                   </tr>
                 </thead>
                 <tbody id="allchq-open-cheque-tbody">
-                  <!-- Rendered with Pink / Gold / Red rows -->
+                  <!-- Rendered dynamically -->
                 </tbody>
               </table>
             </div>
@@ -3122,20 +3160,20 @@
             </div>
             <!-- Action links: Expand & Add -->
             <div class="d-flex align-items-center justify-content-end gap-3 pt-2" style="font-size: 12px;">
-              <a href="javascript:void(0)" class="text-primary text-decoration-none fw-semibold" onclick="ChequesModule.viewAllChequesTripChequesList()">Expand</a>
-              <a href="javascript:void(0)" class="text-primary text-decoration-none fw-semibold" id="allchq-open-add-cheque-btn" onclick="ChequesModule.openAddTripChequeDrawer()">Add</a>
+              <a href="javascript:void(0)" class="allchq-gold-link" onclick="ChequesModule.viewAllChequesTripChequesList()">Expand</a>
+              <a href="javascript:void(0)" class="allchq-gold-link" id="allchq-open-add-cheque-btn" onclick="ChequesModule.openAddTripChequeDrawer()">Add</a>
             </div>
           </div>
         </div>
 
         <!-- COLUMN 2: Card 3 (Consignor/s) + Card 4 (Totals & Status) -->
         <div class="col-12 col-lg-4 d-flex flex-column gap-3">
-          <!-- CARD 3: Consignor/s (Slate Header, GSTIN, Consignor, Address, Expand) -->
+          <!-- CARD 3: Consignor/s (Slate/Pink Header, GSTIN, Consignor, Address, Expand) -->
           <div class="cleared-card shadow-sm p-3" id="allchq-open-card3-consignors">
             <div class="d-flex align-items-center justify-content-between mb-2">
               <div class="d-flex align-items-center gap-2">
-                <span style="color: #495057;">●</span>
-                <span class="fw-bold" style="color: #3c4043; font-size: 13.5px;">Consignor/s</span>
+                <span id="allchq-consignors-header-bullet" style="color: #495057;">●</span>
+                <span id="allchq-consignors-header-text" class="fw-bold" style="color: #3c4043; font-size: 13.5px;">Consignor/s</span>
                 <span class="badge bg-light text-secondary border fw-semibold" id="allchq-open-consignors-count">1</span>
               </div>
             </div>
@@ -3154,7 +3192,7 @@
               </table>
             </div>
             <div class="text-end pt-2" style="font-size: 12px;">
-              <a href="javascript:void(0)" class="text-primary text-decoration-none fw-semibold" onclick="ChequesModule.viewAllChequesPartyList()">Expand</a>
+              <a href="javascript:void(0)" class="allchq-gold-link" onclick="ChequesModule.viewAllChequesPartyList()">Expand</a>
             </div>
           </div>
 
@@ -3162,11 +3200,11 @@
           <div class="cleared-card shadow-sm p-3" id="allchq-open-card4-totals">
             <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
               <span class="text-muted small">Total Cheque Amount</span>
-              <span class="font-monospace fw-semibold" style="color: #3c4043;"><span style="color: #495057;">●</span> ₹ <span id="allchq-totals-cheque-amt">20,000.00</span></span>
+              <span class="font-monospace fw-semibold"><span id="allchq-totals-cheque-bullet" style="color: #495057;">●</span> ₹ <span id="allchq-totals-cheque-amt">20,000.00</span></span>
             </div>
             <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
               <span class="text-muted small">Total Freight</span>
-              <span class="font-monospace fw-semibold" style="color: #3c4043;"><span style="color: #495057;">●</span> ₹ <span id="allchq-totals-freight">127,100.00</span></span>
+              <span class="font-monospace fw-semibold"><span id="allchq-totals-freight-bullet" style="color: #495057;">●</span> ₹ <span id="allchq-totals-freight">127,100.00</span></span>
             </div>
             <!-- Status Combobox -->
             <div class="mt-3 pt-2">

@@ -7,13 +7,13 @@
 window.INITIAL_CHEQUES_DATA = [
 {
     "id": "CHQ_CLEARED_2418_01",
-    "chequeNo": "000004",
-    "bankName": "HDFC",
-    "displayBank": "HDFC",
+    "chequeNo": "001111",
+    "bankName": "ICICI",
+    "displayBank": "ICICI",
     "amount": 76000.0,
     "partyName": "GOYAL INDUSTRIES",
     "displayParty": "GOYAL INDUSTRIES",
-    "grNo": "2026-2027--2418_TTC",
+    "grNo": "2026-2027-2418_TTC",
     "shortGrNo": "2418",
     "truckNo": "RJ01GC4865",
     "destination": "Mohali (Punjab)",
