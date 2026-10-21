@@ -1,6 +1,96 @@
 // Fresh Dataset Auto-Generated from AppSheet with Authentic MTC & TTC Dalal References & Real Drivers
 // Total Bilties: 6704 | Highest GR: 2828
 window.INITIAL_EXCEL_TRIPS = [
+  {
+    "id": "TRIP_2026_2027_2298",
+    "grNo": "2026-2027-2298_TTC",
+    "grSeq": "2298",
+    "shortGrNo": "2298",
+    "transport": "TTC",
+    "biltyType": "Regular",
+    "financialYear": "2026-2027",
+    "tripStartDate": "2026-10-02",
+    "startDate": "02/10/2026",
+    "tripEndDate": "2026-10-11",
+    "endDate": "11/10/2026",
+    "truckNo": "RJ26GA8214",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Kanpur (U.P.)",
+    "consigneeBillingType": "Per Tonne",
+    "biltyAmount": 20000.0,
+    "weight": 80.950,
+    "rate": 1900.0,
+    "material": "Granite Slabs / Marble Tiles",
+    "reference": "Mahaveer Bijarniya Sikar",
+    "referenceMobile": "9464621042",
+    "driver": "Radheyshyam Meena",
+    "driverMobile": "8239254301",
+    "totalFreight": 153805.0,
+    "freight": 153805.0,
+    "paidAmount": 153805.0,
+    "amountPaid": 153805.0,
+    "owner": "Sitaram Meena",
+    "truckOwner": "Sitaram Meena",
+    "ownerMobile": "9413571154",
+    "truckOwnerMobile": "9413571154",
+    "ownerTotalPayment": 153805.0,
+    "totalChequeAmount": 20000.0,
+    "status": "Settled",
+    "tripStatus": "Settled",
+    "colorTheme": "green",
+    "consignors": [
+      {
+        "gstin": "08AADFS0700G1Z5",
+        "consignor": "Shree Om Shiv Minerals",
+        "name": "Shree Om Shiv Minerals",
+        "address": "Ind. Area, Dayla-Kalan Road, Village Jetpura, ..."
+      }
+    ],
+    "cheques": [
+      {
+        "id": "CHQ_CLEARED_2298_01",
+        "clearingDate": "12/10/2026",
+        "chequeNo": "003112",
+        "amount": 20000.0,
+        "bankName": "HDFC",
+        "displayBank": "HDFC",
+        "payTo": "TTC",
+        "dueDate": "12/10/2026",
+        "chequeDate": "12/10/2026"
+      }
+    ],
+    "ownerPayments": [
+      {
+        "paymentDate": "06/10/2026",
+        "amountPaid": 133805.0,
+        "mode": "Cash",
+        "beneficiary": ""
+      },
+      {
+        "paymentDate": "16/10/2026",
+        "amountPaid": 20000.0,
+        "mode": "NEFT/RTGS",
+        "beneficiary": "Truck Owner"
+      }
+    ],
+    "gstinConsignee": "09AQJPA5130G1Z6",
+    "consignee": "Agarwal Tiles & Granites",
+    "consigneeMobile": "9935863351",
+    "payments": [
+      {
+        "paymentDate": "06/10/2026",
+        "amountPaid": 133805.0,
+        "mode": "Cash",
+        "beneficiary": ""
+      },
+      {
+        "paymentDate": "12/10/2026",
+        "amountPaid": 20000.0,
+        "mode": "Cheque",
+        "beneficiary": "TTC"
+      }
+    ]
+  },
 {
     "id": "TRIP_2026_2027_2418",
     "grNo": "2026-2027-2418_TTC",

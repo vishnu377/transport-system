@@ -1019,6 +1019,20 @@
       opacity: 0.85;
       color: #d8006f !important;
     }
+    .allchq-count-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      background: #e8eaed;
+      color: #5f6368;
+      border-radius: 9px;
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1;
+    }
     .allchq-gold-link {
       color: #b59d3d !important;
       font-weight: 600 !important;
@@ -2635,17 +2649,23 @@
     <div id="cheques-view-cleared-settled-detail" class="d-none p-3">
       <div class="cleared-trip-grid" style="--trip-theme-color: #00b11f;">
         
-        <!-- COLUMN 1: Trip Info Card + Cheque Card -->
+        <!-- COLUMN 1: Trip Info Card (Top) + Cheque Table Card with Totals & Owner (Bottom) -->
         <div class="d-flex flex-column gap-3" id="settled-col-1">
-          <!-- Card 1: Trip Info -->
+          <!-- Card 1A: Trip Info -->
           <div class="cleared-card shadow-sm p-3" id="settled-card1-trip-fields">
             <!-- Dynamically populated with green bullets & values -->
           </div>
 
-          <!-- Card 2: Cheque 1 Table -->
+          <!-- Card 1B: Cheque 1 Table + Totals + Owner -->
           <div class="cleared-card shadow-sm p-3" id="settled-card2-cheque">
             <div class="d-flex align-items-center justify-content-between mb-2">
-              <span class="fw-bold" style="font-size: 13px; color: #00b11f;" id="settled-trip-cheques-count-header">Cheque 1</span>
+              <div class="d-flex align-items-center gap-2">
+                <span class="cleared-green-bullet" id="settled-trip-cheques-header-bullet" style="color: #00b11f;">●</span>
+                <span class="fw-bold" style="font-size: 13px; color: #3c4043;">Cheque</span>
+                <span class="allchq-count-badge" id="settled-trip-cheques-count-badge">1</span>
+                <!-- Kept for backward compatibility -->
+                <span class="d-none" id="settled-trip-cheques-count-header">Cheque 1</span>
+              </div>
             </div>
             <div class="table-responsive">
               <table class="table table-hover align-middle mb-1" style="font-size: 11.5px;">
@@ -2656,26 +2676,59 @@
                     <th class="text-end">Amount</th>
                     <th>Bank</th>
                     <th>Pay to</th>
+                    <th>Cheque Due Date</th>
                   </tr>
                 </thead>
                 <tbody id="settled-trip-cheques-tbody"></tbody>
               </table>
             </div>
-            <div class="pt-1 text-start" style="font-size: 12px;">
-              <a href="javascript:void(0)" class="text-primary text-decoration-none fw-semibold" onclick="ChequesModule.viewSettledTripChequesList()">Expand</a>
+            <div class="pt-1 text-end" style="font-size: 12px;">
+              <a href="javascript:void(0)" class="allchq-gold-link fw-semibold" onclick="ChequesModule.viewSettledTripChequesList()">Expand</a>
             </div>
-            <div class="pt-1 text-start" style="font-size: 12px;">
-              <a href="javascript:void(0)" class="text-primary text-decoration-none fw-semibold" onclick="ChequesModule.expandFirstClearedCheque()">Expand</a>
+
+            <!-- Card 1B Bottom: Total Freight, Paid Amount, Owner, Owner Mobile No. -->
+            <div class="pt-3 border-top mt-2" id="settled-card1b-financials-owner">
+              <div class="cleared-trip-field mb-2">
+                <div class="cleared-trip-field-label">Total Freight</div>
+                <div class="cleared-trip-field-val font-monospace">
+                  <span class="cleared-green-bullet" style="color: #00b11f;">●</span> <span id="settled-card1b-total-freight">₹153,805.00</span>
+                </div>
+              </div>
+              <div class="cleared-trip-field mb-2">
+                <div class="cleared-trip-field-label">Paid Amount</div>
+                <div class="cleared-trip-field-val font-monospace">
+                  <span class="cleared-green-bullet" style="color: #00b11f;">●</span> <span id="settled-card1b-paid-amount">₹153,805.00</span>
+                </div>
+              </div>
+              <div class="cleared-trip-field mb-2">
+                <div class="cleared-trip-field-label">Owner</div>
+                <div class="cleared-trip-field-val">
+                  <span class="cleared-green-bullet" style="color: #00b11f;">●</span> <span id="settled-card1b-owner">Sitaram Meena</span>
+                </div>
+              </div>
+              <div class="cleared-trip-field">
+                <div class="cleared-trip-field-label">Owner Mobile No.</div>
+                <div class="cleared-trip-field-val">
+                  <span class="cleared-green-bullet" style="color: #00b11f;">●</span> <span id="settled-card1b-owner-mobile">9413571154</span>
+                  <a href="tel:9413571154" id="settled-card1b-owner-phone-link" class="cleared-teal-phone-link ms-1" style="color: #00b11f;"><i class="bi bi-telephone-fill"></i></a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- COLUMN 2: Consignor/s 3 + Beneficiary/Financials + Owner Payment 2 -->
+        <!-- COLUMN 2: Consignor/s (Top) + Financial Totals (Middle) + Owner Payment (Bottom) -->
         <div class="d-flex flex-column gap-3" id="settled-col-2">
-          <!-- Card 3: Consignor/s 3 -->
+          <!-- Card 2A: Consignor/s -->
           <div class="cleared-card shadow-sm p-3" id="settled-card3-consignors">
             <div class="d-flex align-items-center justify-content-between mb-2">
-              <span class="fw-bold text-dark" style="font-size: 13px;" id="settled-consignors-count-header">Consignor/s 3</span>
+              <div class="d-flex align-items-center gap-2">
+                <span class="cleared-green-bullet" id="settled-consignors-header-bullet" style="color: #00b11f;">●</span>
+                <span class="fw-bold" style="font-size: 13px; color: #3c4043;">Consignor/s</span>
+                <span class="allchq-count-badge" id="settled-consignors-count-badge">1</span>
+                <!-- Kept for backward compatibility -->
+                <span class="d-none" id="settled-consignors-count-header">Consignor/s 1</span>
+              </div>
             </div>
             <div class="table-responsive">
               <table class="table table-sm table-hover align-middle mb-1" style="font-size: 11px;">
@@ -2689,110 +2742,106 @@
                 <tbody id="settled-consignors-tbody"></tbody>
               </table>
             </div>
-            <div class="pt-1 text-start" style="font-size: 12px;">
-              <a href="javascript:void(0)" class="text-primary text-decoration-none fw-semibold" onclick="ChequesModule.viewSettledPartyList()">Expand</a>
+            <div class="pt-1 text-end" style="font-size: 12px;">
+              <a href="javascript:void(0)" class="allchq-gold-link fw-semibold" onclick="ChequesModule.viewSettledPartyList()">Expand</a>
             </div>
           </div>
 
-          <!-- Card 4: Beneficiary + Financials -->
+          <!-- Card 2B: Financial Totals -->
           <div class="cleared-card shadow-sm p-3" id="settled-card4-financials">
-            <div class="d-flex align-items-center justify-content-between mb-1">
-              <span class="fw-bold text-dark" style="font-size: 12.5px;" id="settled-beneficiary-title">Beneficiary Rameshwar Prasad</span>
-            </div>
-            <div class="text-start mb-3" style="font-size: 12px;">
-              <a href="javascript:void(0)" class="text-primary text-decoration-none fw-semibold" onclick="ChequesModule.viewSettledOwnerPaymentDetails(0)">Expand</a>
-            </div>
-
-            <!-- Financials List -->
             <div class="cleared-trip-field mb-2">
               <div class="cleared-trip-field-label">Total Cheque Amount</div>
               <div class="cleared-trip-field-val font-monospace" id="settled-summary-chq-amount">
-                <span class="cleared-green-bullet">●</span> ₹ 25,000.00
-              </div>
-            </div>
-            <div class="cleared-trip-field mb-2">
-              <div class="cleared-trip-field-label">Freight</div>
-              <div class="cleared-trip-field-val font-monospace" id="settled-summary-freight">
-                <span class="cleared-green-bullet">●</span> ₹ 1,62,450.00
-              </div>
-            </div>
-            <div class="cleared-trip-field mb-2">
-              <div class="cleared-trip-field-label">Amount Paid</div>
-              <div class="cleared-trip-field-val font-monospace" id="settled-summary-amt-paid">
-                <span class="cleared-green-bullet">●</span> ₹ 96,875.00
-              </div>
-            </div>
-            <div class="cleared-trip-field mb-2">
-              <div class="cleared-trip-field-label">Paid Amount</div>
-              <div class="cleared-trip-field-val font-monospace" id="settled-summary-paid-amt">
-                <span class="cleared-green-bullet">●</span> ₹ 25,000.00
-              </div>
-            </div>
-            <div class="cleared-trip-field mb-2">
-              <div class="cleared-trip-field-label">Mode</div>
-              <div class="cleared-trip-field-val" id="settled-summary-mode">
-                <span class="cleared-green-bullet">●</span> Cash / Cheque
+                <span class="cleared-green-bullet" style="color: #00b11f;">●</span> ₹20,000.00
               </div>
             </div>
             <div class="cleared-trip-field">
-              <div class="cleared-trip-field-label">Beneficiary</div>
-              <div class="cleared-trip-field-val" id="settled-summary-beneficiary">
-                <span class="cleared-green-bullet">●</span> TTC
+              <div class="cleared-trip-field-label">Freight</div>
+              <div class="cleared-trip-field-val font-monospace" id="settled-summary-freight">
+                <span class="cleared-green-bullet" style="color: #00b11f;">●</span> ₹153,805.00
               </div>
+            </div>
+            <!-- Kept for backward compatibility -->
+            <div class="d-none">
+              <span id="settled-beneficiary-title">Beneficiary</span>
+              <span id="settled-summary-amt-paid">₹ 0.00</span>
+              <span id="settled-summary-paid-amt">₹ 0.00</span>
+              <span id="settled-summary-mode">Cash</span>
+              <span id="settled-summary-beneficiary">TTC</span>
             </div>
           </div>
 
-          <!-- Card 5: Owner Payment 2 Table -->
+          <!-- Card 2C: Owner Payment Table -->
           <div class="cleared-card shadow-sm p-3" id="settled-card5-owner-payment">
             <div class="d-flex align-items-center justify-content-between mb-2">
-              <span class="fw-bold text-dark" style="font-size: 13px;" id="settled-owner-payment-header">Owner Payment 2</span>
+              <div class="d-flex align-items-center gap-2">
+                <span class="cleared-green-bullet" id="settled-owner-payment-header-bullet" style="color: #00b11f;">●</span>
+                <span class="fw-bold" style="font-size: 13px; color: #3c4043;">Owner Payment</span>
+                <span class="allchq-count-badge" id="settled-owner-payment-count-badge">2</span>
+                <!-- Kept for backward compatibility -->
+                <span class="d-none" id="settled-owner-payment-header">Owner Payment 2</span>
+              </div>
             </div>
             <div class="table-responsive">
               <table class="table table-sm table-hover align-middle mb-1" style="font-size: 11px;">
                 <thead class="table-light">
                   <tr>
-                    <th>Payment Date</th>
+                    <th>Payment Date <i class="bi bi-arrow-up" style="font-size: 10px;"></i></th>
                     <th class="text-end">Amount Paid</th>
                     <th>Mode</th>
+                    <th>Beneficiary</th>
                   </tr>
                 </thead>
                 <tbody id="settled-owner-payment-tbody"></tbody>
               </table>
             </div>
-            <div class="pt-1 text-start" style="font-size: 12px;">
-              <a href="javascript:void(0)" class="text-primary text-decoration-none fw-semibold" onclick="ChequesModule.viewSettledOwnerPaymentList()">Expand</a>
+            <div class="pt-1 text-end" style="font-size: 12px;">
+              <a href="javascript:void(0)" class="allchq-gold-link fw-semibold" onclick="ChequesModule.viewSettledOwnerPaymentList()">Expand</a>
             </div>
           </div>
         </div>
 
-        <!-- COLUMN 3: Consignee + Payment 2 + Owner Info -->
+        <!-- COLUMN 3: Consignee (Top) + Payment Table (Middle) + Owner Total Payment (Bottom) -->
         <div class="d-flex flex-column gap-3" id="settled-col-3">
-          <!-- Card 6: GSTIN Consignee & Consignee -->
+          <!-- Card 3A: Consignee Info -->
           <div class="cleared-card shadow-sm p-3" id="settled-card6-consignee">
             <div class="cleared-trip-field mb-2">
               <div class="cleared-trip-field-label">GSTIN Consignee</div>
               <div class="cleared-trip-field-val font-monospace">
-                <span class="cleared-green-bullet">●</span> <span id="settled-consignee-gstin">09DCTPP3880F1ZW</span>
+                <span class="cleared-green-bullet" style="color: #00b11f;">●</span> <span id="settled-consignee-gstin">09AQJPA5130G1Z6</span>
+              </div>
+            </div>
+            <div class="cleared-trip-field mb-2">
+              <div class="cleared-trip-field-label">Consignee</div>
+              <div class="cleared-trip-field-val">
+                <span class="cleared-green-bullet" style="color: #00b11f;">●</span> <span id="settled-consignee-name">Agarwal Tiles & Granites</span>
               </div>
             </div>
             <div class="cleared-trip-field">
-              <div class="cleared-trip-field-label">Consignee</div>
+              <div class="cleared-trip-field-label">Consignee Mobile No.</div>
               <div class="cleared-trip-field-val">
-                <span class="cleared-green-bullet">●</span> <span id="settled-consignee-name">SHRI BABA RAMDEV MARBLES AND GRANITE</span>
+                <span class="cleared-green-bullet" style="color: #00b11f;">●</span> <span id="settled-consignee-mobile">9935863351</span>
+                <a href="tel:9935863351" id="settled-consignee-phone-link" class="cleared-teal-phone-link ms-1" style="color: #00b11f;"><i class="bi bi-telephone-fill"></i></a>
               </div>
             </div>
           </div>
 
-          <!-- Card 7: Payment 2 Table -->
+          <!-- Card 3B: Payment Table -->
           <div class="cleared-card shadow-sm p-3" id="settled-card7-payment">
             <div class="d-flex align-items-center justify-content-between mb-2">
-              <span class="fw-bold text-dark" style="font-size: 13px;" id="settled-payment-header">Payment 2</span>
+              <div class="d-flex align-items-center gap-2">
+                <span class="cleared-green-bullet" id="settled-payment-header-bullet" style="color: #00b11f;">●</span>
+                <span class="fw-bold" style="font-size: 13px; color: #3c4043;">Payment</span>
+                <span class="allchq-count-badge" id="settled-payment-count-badge">2</span>
+                <!-- Kept for backward compatibility -->
+                <span class="d-none" id="settled-payment-header">Payment 2</span>
+              </div>
             </div>
             <div class="table-responsive">
               <table class="table table-sm table-hover align-middle mb-1" style="font-size: 11px;">
                 <thead class="table-light">
                   <tr>
-                    <th>Payment Date</th>
+                    <th>Payment Date <i class="bi bi-arrow-up" style="font-size: 10px;"></i></th>
                     <th class="text-end">Amount Paid</th>
                     <th>Mode</th>
                     <th>Beneficiary</th>
@@ -2801,23 +2850,27 @@
                 <tbody id="settled-payment-tbody"></tbody>
               </table>
             </div>
-            <div class="pt-1 text-start" style="font-size: 12px;">
-              <a href="javascript:void(0)" class="text-primary text-decoration-none fw-semibold" onclick="ChequesModule.viewSettledTripPaymentList()">Expand</a>
+            <div class="pt-1 text-end" style="font-size: 12px;">
+              <a href="javascript:void(0)" class="allchq-gold-link fw-semibold" onclick="ChequesModule.viewSettledTripPaymentList()">Expand</a>
             </div>
           </div>
 
-          <!-- Card 8: Owner Info -->
-          <div class="cleared-card shadow-sm p-3" id="settled-card8-owner">
-            <div id="settled-owner-fields">
-              <!-- Dynamically populated -->
+          <!-- Card 3C: Owner Total Payment -->
+          <div class="cleared-card shadow-sm p-3" id="settled-card8-owner-total">
+            <div class="cleared-trip-field">
+              <div class="cleared-trip-field-label">Owner Total Payment</div>
+              <div class="cleared-trip-field-val font-monospace">
+                <span class="cleared-green-bullet" style="color: #00b11f;">●</span> <span id="settled-summary-owner-total">₹153,805.00</span>
+              </div>
             </div>
+            <!-- Kept for backward compatibility -->
+            <div id="settled-owner-fields" class="d-none"></div>
           </div>
         </div>
 
       </div>
     </div>
 
-    <!-- ======================================================== -->
     <!-- CARD 3: SETTLED TRIP PARTY DETAILS (16_32_16.png)         -->
     <!-- ======================================================== -->
     <div id="cheques-view-settled-party-detail" class="d-none p-3">
