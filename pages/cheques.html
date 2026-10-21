@@ -940,6 +940,58 @@
       opacity: 0.85;
     }
 
+    /* All Cheques Open Trip Slate / Charcoal Field Values matching AppSheet 18_31_50.png */
+    .allchq-open-field-val {
+      flex: 1;
+      font-weight: 600;
+      color: #202124 !important;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      word-break: break-word;
+    }
+    .allchq-open-field-val a {
+      color: #202124 !important;
+      text-decoration: none;
+    }
+    .allchq-open-field-val a:hover {
+      text-decoration: underline;
+    }
+    .allchq-slate-phone-link {
+      color: #5f6368 !important;
+      margin-left: auto;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      padding-left: 8px;
+      font-size: 12px;
+    }
+    .allchq-slate-phone-link:hover {
+      opacity: 0.85;
+      color: #202124 !important;
+    }
+
+    /* Authentic AppSheet Edit Button (Mustard / Gold #c2aa48) matching 18_31_50.png */
+    .btn-appsheet-edit-gold {
+      background-color: #c2aa48 !important;
+      color: #202124 !important;
+      border: 1px solid #bba442 !important;
+      font-size: 13px !important;
+      font-weight: 600 !important;
+      border-radius: 4px !important;
+      padding: 4px 14px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+      cursor: pointer;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      transition: background-color 0.15s ease;
+    }
+    .btn-appsheet-edit-gold:hover {
+      background-color: #b59d3d !important;
+      color: #202124 !important;
+    }
+
     .bounced-red-bullet {
       color: #d32f2f !important;
       font-size: 11px;
@@ -1692,8 +1744,8 @@
 
         <!-- All Cheques Open Trip Top Actions matching screencapture 18_31_50.png -->
         <div id="allcheques-trip-actions" class="d-none d-flex align-items-center gap-2">
-          <button type="button" class="btn btn-sm btn-warning text-dark fw-bold py-1 px-3" onclick="ChequesModule.openUpdateTripDrawer()" title="Update Trip Details">
-            <i class="bi bi-pencil-square me-1"></i> Edit
+          <button type="button" class="btn-appsheet-edit-gold" onclick="ChequesModule.openUpdateTripDrawer()" title="Update Trip Details">
+            <i class="bi bi-pencil-square"></i> Edit
           </button>
           <span class="appsheet-tool-icon" onclick="ChequesModule.toggleTripFullscreen()" title="Expand view">↗</span>
         </div>
@@ -3102,7 +3154,7 @@
               </table>
             </div>
             <div class="text-end pt-2" style="font-size: 12px;">
-              <a href="javascript:void(0)" class="text-primary text-decoration-none fw-semibold" onclick="ChequesModule.expandAllChequesConsignors()">Expand</a>
+              <a href="javascript:void(0)" class="text-primary text-decoration-none fw-semibold" onclick="ChequesModule.viewAllChequesPartyList()">Expand</a>
             </div>
           </div>
 
@@ -3224,6 +3276,42 @@
       <div class="cleared-card shadow-sm p-4 mx-auto" style="max-width: 640px;" id="allchq-single-cheque-card">
         <div id="allchq-single-cheque-content">
           <!-- Cheque Due Date, Cheque No, Amount, Bank, Pay to -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- CARD 5: ALL CHEQUES - OPEN TRIP PARTY DETAILS TABLE      -->
+    <!-- Matching AppSheet 18_33_57.png                           -->
+    <!-- ======================================================== -->
+    <div id="cheques-view-allcheques-party-list" class="d-none p-3">
+      <div class="cleared-card shadow-sm p-3">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0" style="font-size: 12.5px;">
+            <thead class="table-light">
+              <tr>
+                <th style="white-space: nowrap; width: 180px;">GSTIN</th>
+                <th style="white-space: nowrap; width: 220px;">Consignor</th>
+                <th style="white-space: nowrap; min-width: 300px;">Consignor Address</th>
+                <th style="width: 30px;"></th>
+              </tr>
+            </thead>
+            <tbody id="allcheques-party-list-tbody">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- CARD 5: ALL CHEQUES - SINGLE PARTY DETAILS CARD          -->
+    <!-- Matching AppSheet 18_34_12.png                           -->
+    <!-- ======================================================== -->
+    <div id="cheques-view-allcheques-party-detail" class="d-none p-3">
+      <div class="cleared-card shadow-sm p-4 mx-auto" style="max-width: 640px;">
+        <div id="allcheques-party-detail-card-body">
+          <!-- G.R.No., GSTIN, Consignor, Consignor Address -->
         </div>
       </div>
     </div>

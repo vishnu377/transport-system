@@ -13,6 +13,9 @@
  *      - Red Bounced row click (000004) -> 5 Cards Open Trip Details (Slate Cards, Red Cheque row, ONLY Expand)
  *  7. Cheque Drawer Add Form (18_33_23.png) & Cloud Firestore sync
  *  8. Expanded Trip Cheque Details (18_32_33.png) & Cheque Details (18_32_44.png)
+ *  9. Expanded Consignor/s List (18_33_57.png) & Single Party Detail Card (18_34_12.png)
+ *  10. Edit Button AppSheet Mustard Gold (#c2aa48) & Slate Text (#202124) in Card 1 & 5
+ *  11. NO Bullets/Dots in Cheque table cells ("puri row color, sirf dot nhi aate")
  */
 
 const fs = require('fs');
@@ -46,7 +49,7 @@ function createMockElement(id, tagName = 'div') {
       contains: (c) => el.classList.classes.has(c)
     },
     querySelectorAll: (sel) => [],
-    querySelector: (sel) => null,
+    querySelector: (sel) => createMockElement('generic-query-selector'),
     reset: () => { el.value = ''; }
   };
   domElements[id] = el;
@@ -173,15 +176,27 @@ async function testAllCheques() {
   assert(bc.includes('All Cheques') && bc.includes('Open Trip Details'), 'Breadcrumb must show All Cheques > Open Trip Details');
   
   // Verify 5 Cards populated for Pink Due:
+  // Card 1: Slate text with .allchq-open-field-val (no green forced)
   const card1Fields = document.getElementById('allchq-open-trip-fields').innerHTML;
+  assert(card1Fields.includes('allchq-open-field-val'), 'Card 1 must use allchq-open-field-val for slate text');
+  assert(!card1Fields.includes('cleared-trip-field-val'), 'Card 1 must NOT use cleared-trip-field-val (avoids forced green text)');
   assert(card1Fields.includes('2026-2027-2426_TTC') && card1Fields.includes('RJ52GB5053'), 'Card 1 must show authentic GR & Truck');
+  
+  // Card 2: Cheque table must render Pink row WITHOUT bullets in td cells ("sirf dot nhi aate")
   const chqTbodyHtml = document.getElementById('allchq-open-cheque-tbody').innerHTML;
   assert(chqTbodyHtml.includes('#fb0a82') && chqTbodyHtml.includes('000144'), 'Card 2 Cheque table must render Pink row');
+  assert(!chqTbodyHtml.includes('>●<') && !chqTbodyHtml.includes('● 000144'), 'Card 2 Cheque table cells must NOT contain bullet dots');
+  
   const addBtn = document.getElementById('allchq-open-add-cheque-btn');
   assert.strictEqual(addBtn.style.display, 'inline', 'Pink Due cheque must show Add button');
   const totalChqAmt = document.getElementById('allchq-totals-cheque-amt').innerText;
   assert(totalChqAmt.includes('20,000'), 'Card 4 Total Cheque Amount must be 20,000');
-  console.log('✔ Pink Due Cheque 000144 drilldown verified: 5 Cards Open Trip Details with Pink Cheque row & Add button');
+  
+  // Card 5: Slate text with .allchq-open-field-val
+  const card5Fields = document.getElementById('allchq-open-consignee-owner-fields').innerHTML;
+  assert(card5Fields.includes('allchq-open-field-val'), 'Card 5 must use allchq-open-field-val for slate text');
+  assert(!card5Fields.includes('cleared-trip-field-val'), 'Card 5 must NOT use cleared-trip-field-val');
+  console.log('✔ Pink Due Cheque 000144 drilldown verified: 5 Cards Open Trip Details with slate values & Pink Cheque row without dots');
 
   // 5c. Click Gold Due Cheque (217365) -> 5 Cards Open Trip Details
   ChequesModule.goToAllChequesView('ALL');
@@ -191,10 +206,12 @@ async function testAllCheques() {
   assert.strictEqual(ChequesModule.viewMode, 'allcheques-open-trip');
   assert.strictEqual(ChequesModule.allChequesActiveColor, 'gold');
   const goldCard1 = document.getElementById('allchq-open-trip-fields').innerHTML;
+  assert(goldCard1.includes('allchq-open-field-val'), 'Gold Card 1 must use allchq-open-field-val');
   assert(goldCard1.includes('2026-2027-2435_TTC') && goldCard1.includes('RJ52GB5054'), 'Card 1 must show Gold GR & Truck');
   const goldChqHtml = document.getElementById('allchq-open-cheque-tbody').innerHTML;
   assert(goldChqHtml.includes('#c3ad00') && goldChqHtml.includes('217365'), 'Card 2 Cheque table must render Gold row');
-  console.log('✔ Gold Due Cheque 217365 drilldown verified: 5 Cards Open Trip Details with Gold Cheque row');
+  assert(!goldChqHtml.includes('>●<') && !goldChqHtml.includes('● 217365'), 'Gold Cheque table cells must NOT contain bullet dots');
+  console.log('✔ Gold Due Cheque 217365 drilldown verified: 5 Cards Open Trip Details with Gold Cheque row without dots');
 
   // 5d. Click Red Bounced Cheque -> 5 Cards Open Trip Details (Add button hidden)
   ChequesModule.goToAllChequesView('ALL');
@@ -205,6 +222,7 @@ async function testAllCheques() {
   assert.strictEqual(ChequesModule.allChequesActiveColor, 'red');
   const redChqHtml = document.getElementById('allchq-open-cheque-tbody').innerHTML;
   assert(redChqHtml.includes('#cc0b0b'), 'Card 2 Cheque table must render Red row');
+  assert(!redChqHtml.includes('>●<'), 'Red Cheque table cells must NOT contain bullet dots');
   assert.strictEqual(addBtn.style.display, 'none', 'Red Bounced cheque must HIDE Add button (ONLY Expand allowed)');
   console.log('✔ Bounced Cheque drilldown verified: Red Cheque row & ONLY Expand button');
 
@@ -214,7 +232,9 @@ async function testAllCheques() {
   assert.strictEqual(ChequesModule.viewMode, 'allcheques-trip-cheques');
   bc = document.getElementById('appsheet-breadcrumb').innerText;
   assert(bc.includes('Trip Cheque Details'), 'Breadcrumb must show Trip Cheque Details');
-  console.log('✔ Expanded Trip Cheque Details view verified (matching 18_32_33.png)');
+  const expTbodyHtml = document.getElementById('allcheques-expanded-cheques-tbody').innerHTML;
+  assert(!expTbodyHtml.includes('>●<'), 'Expanded Cheque table cells must NOT contain bullet dots');
+  console.log('✔ Expanded Trip Cheque Details view verified (matching 18_32_33.png) without dots');
 
   // 5f. Test Single Cheque Details Card (18_32_44.png)
   ChequesModule.viewAllChequesSingleCheque(duePinkChq.id);
@@ -225,7 +245,26 @@ async function testAllCheques() {
   assert(singleContent.includes('000144') && singleContent.includes('Bandhan Bank'), 'Single cheque card must render fields');
   console.log('✔ Single Cheque Details card verified (matching 18_32_44.png)');
 
-  // 5g. Test Add Cheque Drawer (18_33_23.png) & Firestore sync
+  // 5g. Test Expand Consignor/s -> Open Trip Party Details (18_33_57.png)
+  ChequesModule.viewAllChequesRow(duePinkChq.id);
+  ChequesModule.viewAllChequesPartyList();
+  assert.strictEqual(ChequesModule.viewMode, 'allcheques-party-list');
+  bc = document.getElementById('appsheet-breadcrumb').innerText;
+  assert(bc.includes('Open Trip Party Details'), 'Breadcrumb must show Open Trip Party Details');
+  const partyListHtml = document.getElementById('allcheques-party-list-tbody').innerHTML;
+  assert(partyListHtml.includes('Manorath Industries') || partyListHtml.includes('08APEPS7646K2Z6'), 'Party table must show consignor');
+  console.log('✔ Expanded Consignor/s Party Details view verified (matching 18_33_57.png)');
+
+  // 5h. Test Single Party Detail Card (18_34_12.png)
+  ChequesModule.viewAllChequesPartyDetail(0);
+  assert.strictEqual(ChequesModule.viewMode, 'allcheques-party-detail');
+  bc = document.getElementById('appsheet-breadcrumb').innerText;
+  assert(bc.includes('Open Trip Party Details'), 'Breadcrumb must show Open Trip Party Details');
+  const partyCardHtml = document.getElementById('allcheques-party-detail-card-body').innerHTML;
+  assert(partyCardHtml.includes('G.R.No.') && partyCardHtml.includes('Manorath Industries'), 'Party Card must show GR and Consignor');
+  console.log('✔ Single Party Detail Card verified (matching 18_34_12.png)');
+
+  // 5i. Test Add Cheque Drawer (18_33_23.png) & Firestore sync
   ChequesModule.viewAllChequesRow(duePinkChq.id);
   ChequesModule.openAddTripChequeDrawer();
   document.getElementById('add-trip-chq-no').value = '999888';
@@ -235,6 +274,12 @@ async function testAllCheques() {
   await ChequesModule.saveTripChequeDrawer();
   assert(addedFirestoreCheques.some(c => c.chequeNo === '999888'), 'New cheque must be synced to Cloud Firestore');
   console.log('✔ Add Cheque Drawer and Firestore synchronization verified (matching 18_33_23.png)');
+
+  // 5j. Test Edit Button in HTML has AppSheet gold color (#c2aa48)
+  const htmlContent = fs.readFileSync(path.join(__dirname, '../pages/cheques.html'), 'utf8');
+  assert(htmlContent.includes('btn-appsheet-edit-gold'), 'HTML must use btn-appsheet-edit-gold class for Edit button');
+  assert(htmlContent.includes('#c2aa48'), 'CSS must define #c2aa48 for AppSheet Edit button');
+  console.log('✔ AppSheet Edit button styling verified (#c2aa48 mustard gold)');
 
   console.log('\n🎉 ALL CARD 5 (ALL CHEQUES) ROW CLICK TESTS PASSED 100%! ZERO REGRESSIONS! 🎉');
 }
