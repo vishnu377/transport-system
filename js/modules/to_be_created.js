@@ -160,7 +160,12 @@ const ToBeCreatedModule = {
     ]);
 
     this.setSearchPlaceholder('Search Other B Due');
+    const railEl = typeof document !== 'undefined' ? (document.getElementById('tobe-left-rail') || (typeof document.querySelector === 'function' ? document.querySelector('.tobe-list-left-rail') : null)) : null;
+    const isSidebarCollapsed = railEl && railEl.classList && typeof railEl.classList.contains === 'function' ? railEl.classList.contains('d-none') : false;
     this.setHeaderTools(`
+      <button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2 fw-semibold d-inline-flex align-items-center gap-1" id="btn-toggle-tobe-sidebar" onclick="ToBeCreatedModule.toggleSidebar()" title="Hide / Show Sidebar Filter" style="font-size: 11px; height: 26px;">
+        <i class="bi bi-layout-sidebar-inset"></i> <span id="btn-toggle-tobe-sidebar-text">${isSidebarCollapsed ? 'Show Sidebar' : 'Sidebar'}</span>
+      </button>
       <i class="bi bi-funnel" title="Filter" onclick="ToBeCreatedModule.toggleFilter()"></i>
       <i class="bi bi-check2-square" title="Select"></i>
     `);
@@ -1287,53 +1292,113 @@ const ToBeCreatedModule = {
     const t = this.activeTrip;
     if (!t) return;
 
-    document.getElementById('ut-grno').value = t.grNo || '';
-    document.getElementById('ut-rate').value = t.rate || '';
-    document.getElementById('ut-weight').value = t.weight || '';
-    document.getElementById('ut-freight').value = `₹ ${Number(t.freight || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    document.getElementById('ut-hault').value = t.haultCharges || 0;
-    document.getElementById('ut-loading').value = t.loadingCharges || 0;
-    document.getElementById('ut-otherb').value = t.otherB || 0;
-    document.getElementById('ut-reference').value = t.reference || '';
-    document.getElementById('ut-ref-mobile').value = t.referenceMobile || '';
-    document.getElementById('ut-driver').value = t.driver || '';
-    document.getElementById('ut-driver-mobile').value = t.driverMobile || '';
-    document.getElementById('ut-consignor').value = t.consignor || '';
-    document.getElementById('ut-consignor-mobile').value = t.consignorMobile || '';
-    document.getElementById('ut-consignee').value = t.consignee || '';
-    document.getElementById('ut-consignee-mobile').value = t.consigneeMobile || '';
-    document.getElementById('ut-owner').value = t.owner || '';
-    document.getElementById('ut-owner-mobile').value = t.ownerMobile || '';
-    document.getElementById('ut-billno').value = t.billNo || '0';
+    const setVal = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.value = val;
+    };
 
-    const bsOffcanvas = new bootstrap.Offcanvas(document.getElementById('updateTripDrawer'));
-    bsOffcanvas.show();
+    setVal('ut-grno', t.grNo || '');
+    setVal('ut-rate', t.rate || '');
+    setVal('ut-weight', t.weight || '');
+    setVal('ut-freight', `₹ ${Number(t.freight || (t.rate * t.weight) || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+    setVal('ut-hault', t.haultCharges || 0);
+    setVal('ut-loading', t.loadingCharges || 0);
+    setVal('ut-otherb', t.otherB || 0);
+    setVal('ut-reference', t.reference || '');
+    setVal('ut-ref-mobile', t.referenceMobile || '');
+    setVal('ut-driver', t.driver || '');
+    setVal('ut-driver-mobile', t.driverMobile || '');
+    setVal('ut-driver-mobile2', t.driverMobile2 || '');
+    setVal('ut-consignor', t.consignor || '');
+    setVal('ut-consignor-mobile', t.consignorMobile || '');
+    setVal('ut-consignee', t.consignee || t.consignor || '');
+    setVal('ut-consignee-mobile', t.consigneeMobile || t.consignorMobile || '');
+    setVal('ut-owner', t.owner || '');
+    setVal('ut-owner-mobile', t.ownerMobile || '');
+    setVal('ut-owner-mobile2', t.ownerMobile2 || '');
+    setVal('ut-billno', t.billNo || '0');
+
+    // Show/hide 2nd mobile rows if element exists
+    const rowDriver2 = document.getElementById('row-ut-driver-mobile2');
+    if (rowDriver2 && rowDriver2.style) rowDriver2.style.display = t.driverMobile2 ? 'flex' : 'none';
+    const rowOwner2 = document.getElementById('row-ut-owner-mobile2');
+    if (rowOwner2 && rowOwner2.style) rowOwner2.style.display = t.ownerMobile2 ? 'flex' : 'none';
+
+    const drawerEl = document.getElementById('updateTripDrawer');
+    if (drawerEl) {
+      if (typeof bootstrap !== 'undefined' && bootstrap.Offcanvas) {
+        const bsOffcanvas = bootstrap.Offcanvas.getOrCreateInstance(drawerEl);
+        bsOffcanvas.show();
+      } else if (drawerEl.classList) {
+        drawerEl.classList.add('show');
+        drawerEl.style.visibility = 'visible';
+      }
+    }
+  },
+
+  closeUpdateTripDrawer() {
+    const drawerEl = document.getElementById('updateTripDrawer');
+    if (drawerEl) {
+      if (typeof bootstrap !== 'undefined' && bootstrap.Offcanvas) {
+        const instance = bootstrap.Offcanvas.getInstance(drawerEl);
+        if (instance) instance.hide();
+      }
+      if (drawerEl.classList) {
+        drawerEl.classList.remove('show');
+        drawerEl.style.visibility = 'hidden';
+      }
+    }
+  },
+
+  calculateFormFreight() {
+    const rateEl = document.getElementById('ut-rate');
+    const weightEl = document.getElementById('ut-weight');
+    const freightEl = document.getElementById('ut-freight');
+    if (rateEl && weightEl && freightEl) {
+      const r = parseFloat(rateEl.value) || 0;
+      const w = parseFloat(weightEl.value) || 0;
+      const f = r * w;
+      freightEl.value = `₹ ${Number(f).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
   },
 
   async saveTripUpdate() {
     const t = this.activeTrip;
     if (!t) return;
 
-    t.rate = parseFloat(document.getElementById('ut-rate').value) || t.rate;
-    t.weight = parseFloat(document.getElementById('ut-weight').value) || t.weight;
+    const getVal = (id) => {
+      const el = document.getElementById(id);
+      return el ? el.value : '';
+    };
+
+    t.rate = parseFloat(getVal('ut-rate')) || t.rate;
+    t.weight = parseFloat(getVal('ut-weight')) || t.weight;
     t.freight = t.rate * t.weight;
-    t.haultCharges = parseFloat(document.getElementById('ut-hault').value) || 0;
-    t.loadingCharges = parseFloat(document.getElementById('ut-loading').value) || 0;
-    t.otherB = parseFloat(document.getElementById('ut-otherb').value) || t.otherB;
-    t.reference = document.getElementById('ut-reference').value;
-    t.referenceMobile = document.getElementById('ut-ref-mobile').value;
-    t.driver = document.getElementById('ut-driver').value;
-    t.driverMobile = document.getElementById('ut-driver-mobile').value;
-    t.consignor = document.getElementById('ut-consignor').value;
-    t.consignorMobile = document.getElementById('ut-consignor-mobile').value;
-    t.consignee = document.getElementById('ut-consignee').value;
-    t.consigneeMobile = document.getElementById('ut-consignee-mobile').value;
-    t.owner = document.getElementById('ut-owner').value;
-    t.ownerMobile = document.getElementById('ut-owner-mobile').value;
-    t.billNo = document.getElementById('ut-billno').value;
+    t.haultCharges = parseFloat(getVal('ut-hault')) || 0;
+    t.loadingCharges = parseFloat(getVal('ut-loading')) || 0;
+    t.otherB = parseFloat(getVal('ut-otherb')) || t.otherB;
+    t.reference = getVal('ut-reference') || t.reference;
+    t.referenceMobile = getVal('ut-ref-mobile') || t.referenceMobile;
+    t.driver = getVal('ut-driver') || t.driver;
+    t.driverMobile = getVal('ut-driver-mobile') || t.driverMobile;
+    if (getVal('ut-driver-mobile2')) t.driverMobile2 = getVal('ut-driver-mobile2');
+    t.consignor = getVal('ut-consignor') || t.consignor;
+    t.consignorMobile = getVal('ut-consignor-mobile') || t.consignorMobile;
+    t.consignee = getVal('ut-consignee') || t.consignee;
+    t.consigneeMobile = getVal('ut-consignee-mobile') || t.consigneeMobile;
+    t.owner = getVal('ut-owner') || t.owner;
+    t.ownerMobile = getVal('ut-owner-mobile') || t.ownerMobile;
+    if (getVal('ut-owner-mobile2')) t.ownerMobile2 = getVal('ut-owner-mobile2');
+    t.billNo = getVal('ut-billno') || '0';
 
     // Recalculate totals
     t.totalFreight = t.freight + t.haultCharges + t.loadingCharges;
+
+    // Update in dueTrips array
+    const tripInList = this.dueTrips.find(x => x.grNo === t.grNo);
+    if (tripInList) {
+      Object.assign(tripInList, t);
+    }
 
     // Sync with Firestore
     try {
@@ -1344,15 +1409,72 @@ const ToBeCreatedModule = {
       console.warn('[ToBeCreatedModule] Firestore sync error:', e);
     }
 
-    const drawerEl = document.getElementById('updateTripDrawer');
-    const instance = bootstrap.Offcanvas.getInstance(drawerEl);
-    if (instance) instance.hide();
+    this.closeUpdateTripDrawer();
 
     if (typeof AppUI !== 'undefined' && AppUI.showToast) {
       AppUI.showToast('Trip details updated and synced!', 'success');
     }
 
     this.renderTripDetailsView(t);
+  },
+
+  // ==========================================================
+  // SIDEBAR HIDE / UNHIDE & DRAWER NAVIGATION
+  // ==========================================================
+  toggleSidebar() {
+    const rail = typeof document !== 'undefined' ? (document.getElementById('tobe-left-rail') || (typeof document.querySelector === 'function' ? document.querySelector('.tobe-list-left-rail') : null)) : null;
+    const btn = typeof document !== 'undefined' ? document.getElementById('btn-toggle-tobe-sidebar') : null;
+    const btnText = typeof document !== 'undefined' ? document.getElementById('btn-toggle-tobe-sidebar-text') : null;
+    const unhideWrap = typeof document !== 'undefined' ? document.getElementById('tobe-unhide-sidebar-wrap') : null;
+    const container = typeof document !== 'undefined' ? document.getElementById('tobe-view-other-b-due-list') : null;
+
+    if (rail && rail.classList) {
+      rail.classList.toggle('d-none');
+      const isCollapsed = rail.classList.contains('d-none');
+      if (container && container.classList) {
+        container.classList.toggle('sidebar-collapsed', isCollapsed);
+      }
+      if (btn && btn.classList) {
+        btn.classList.toggle('active', isCollapsed);
+        btn.classList.toggle('btn-primary', isCollapsed);
+        btn.classList.toggle('text-white', isCollapsed);
+        btn.classList.toggle('btn-outline-secondary', !isCollapsed);
+      }
+      if (btnText) {
+        btnText.innerText = isCollapsed ? 'Show Sidebar' : 'Sidebar';
+      }
+      if (unhideWrap && unhideWrap.classList) {
+        unhideWrap.classList.toggle('d-none', !isCollapsed);
+      }
+      if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+        AppUI.showToast(isCollapsed ? 'Sidebar filter hidden. Showing full table width.' : 'Sidebar filter restored.', 'info');
+      }
+    }
+  },
+
+  toggleNavDrawer() {
+    const drawerEl = typeof document !== 'undefined' ? document.getElementById('appsheetDrawer') : null;
+    if (drawerEl) {
+      if (typeof bootstrap !== 'undefined' && bootstrap.Offcanvas) {
+        const inst = bootstrap.Offcanvas.getOrCreateInstance(drawerEl);
+        inst.toggle();
+      } else if (drawerEl.classList) {
+        drawerEl.classList.toggle('show');
+        drawerEl.style.visibility = drawerEl.classList.contains('show') ? 'visible' : 'hidden';
+      }
+    }
+  },
+
+  toggleRail() {
+    const rail = typeof document !== 'undefined' ? (document.getElementById('sidebar') || (typeof document.querySelector === 'function' ? document.querySelector('.appsheet-rail') : null)) : null;
+    const workspace = typeof document !== 'undefined' ? (typeof document.querySelector === 'function' ? document.querySelector('.appsheet-workspace') : null) : null;
+    if (rail && rail.classList) {
+      rail.classList.toggle('d-none');
+      const isHidden = rail.classList.contains('d-none');
+      if (workspace && workspace.style) {
+        workspace.style.marginLeft = isHidden ? '0' : '48px';
+      }
+    }
   },
 
   openAuthDrawer(grNo) {

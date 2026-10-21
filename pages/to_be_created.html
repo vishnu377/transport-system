@@ -738,9 +738,141 @@
       box-shadow: 0 1px 2px rgba(60, 64, 67, 0.05);
     }
 
-    /* Offcanvas */
+    /* Offcanvas Drawers (Matching 15_38_20.png) */
     .offcanvas-appsheet {
-      width: 440px !important;
+      width: 560px !important;
+      max-width: 95vw !important;
+      box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
+      border-left: 1px solid #dadce0;
+    }
+
+    .appsheet-close-btn {
+      background: transparent;
+      border: none;
+      font-size: 16px;
+      color: #5f6368;
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background-color 0.15s;
+    }
+    .appsheet-close-btn:hover {
+      background-color: #f1f3f4;
+      color: #202124;
+    }
+
+    .btn-appsheet-save {
+      background-color: #bfa15f;
+      color: #ffffff;
+      border: none;
+      border-radius: 4px;
+      padding: 5px 18px;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.15s;
+    }
+    .btn-appsheet-save:hover {
+      background-color: #ad9150;
+      color: #ffffff;
+    }
+
+    .btn-appsheet-gold {
+      background-color: #bfa15f;
+      color: #ffffff;
+      border: none;
+      border-radius: 4px;
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: background-color 0.15s;
+    }
+    .btn-appsheet-gold:hover {
+      background-color: #ad9150;
+      color: #ffffff;
+    }
+
+    /* 2-Column AppSheet Form Layout (Matching 15_38_20.png) */
+    .appsheet-form-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+      gap: 16px;
+    }
+    .appsheet-form-label {
+      width: 165px;
+      flex-shrink: 0;
+      font-size: 12.2px;
+      color: #5f6368;
+      font-weight: 500;
+      margin-bottom: 0;
+      line-height: 1.3;
+    }
+    .appsheet-form-field {
+      flex: 1;
+      position: relative;
+    }
+    .appsheet-form-input {
+      width: 100%;
+      height: 35px;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      padding: 5px 12px;
+      font-size: 12.8px;
+      color: #202124;
+      background-color: #ffffff;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .appsheet-form-input:focus {
+      outline: none;
+      border-color: #1a73e8;
+      box-shadow: 0 0 0 1px #1a73e8;
+    }
+    .appsheet-form-input:read-only {
+      background-color: #f8f9fa;
+      color: #5f6368;
+      cursor: default;
+    }
+    select.appsheet-form-input {
+      cursor: pointer;
+    }
+
+    /* Sidebar collapsed layout for Other B Due Table */
+    .tobe-list-view-container.sidebar-collapsed .tobe-list-left-rail {
+      display: none !important;
+    }
+    .tobe-list-view-container.sidebar-collapsed .tobe-list-table-container {
+      width: 100% !important;
+      flex: 1 1 100% !important;
+    }
+
+    .tobe-unhide-sidebar-pill {
+      background: #ffffff;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      color: #3c4043;
+      padding: 4px 12px;
+      font-size: 11.5px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(60, 64, 67, 0.1);
+      transition: background-color 0.15s, border-color 0.15s;
+      margin-bottom: 8px;
+    }
+    .tobe-unhide-sidebar-pill:hover {
+      background: #f1f3f4;
+      border-color: #bdc1c6;
     }
   </style>
 </head>
@@ -775,7 +907,7 @@
     <!-- Top Bar -->
     <header class="appsheet-top-bar">
       <div class="appsheet-top-left">
-        <button class="appsheet-icon-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#appsheetDrawer" aria-controls="appsheetDrawer" title="Menu">
+        <button class="appsheet-icon-btn" id="btn-hamburger-menu" type="button" onclick="ToBeCreatedModule.toggleNavDrawer()" title="Menu">
           <i class="bi bi-list"></i>
         </button>
         <span class="appsheet-brand-title">
@@ -971,7 +1103,7 @@
     <!-- ======================================================== -->
     <div id="tobe-view-other-b-due-list" class="tobe-list-view-container d-none">
       <!-- Left Rail: Year Filter -->
-      <aside class="tobe-list-left-rail">
+      <aside class="tobe-list-left-rail" id="tobe-left-rail">
         <div class="tobe-list-rail-item" id="rail-year-all" onclick="ToBeCreatedModule.filterByYear('ALL')">
           <span>All</span>
         </div>
@@ -995,6 +1127,12 @@
 
       <!-- Right Table Area -->
       <div class="tobe-list-table-container">
+        <!-- Unhide Sidebar Filter Button (Visible when sidebar is collapsed) -->
+        <div id="tobe-unhide-sidebar-wrap" class="d-none">
+          <button type="button" class="tobe-unhide-sidebar-pill" onclick="ToBeCreatedModule.toggleSidebar()" title="Show Year Filter Sidebar">
+            <i class="bi bi-layout-sidebar"></i> Show Year Filter Sidebar
+          </button>
+        </div>
         <table class="appsheet-table" id="tobe-due-table">
           <thead>
             <tr>
@@ -1294,94 +1432,161 @@
   <!-- Matching screencapture-...-15_38_20.png                  -->
   <!-- ======================================================== -->
   <div class="offcanvas offcanvas-end offcanvas-appsheet" tabindex="-1" id="updateTripDrawer" aria-labelledby="updateTripLabel">
-    <div class="offcanvas-header border-bottom py-2">
+    <div class="offcanvas-header border-bottom py-2 px-3 d-flex justify-content-between align-items-center" style="background:#ffffff; min-height: 52px;">
       <div class="d-flex align-items-center gap-2">
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        <h6 class="offcanvas-title fw-bold" id="updateTripLabel">Update Trip Details</h6>
+        <button type="button" class="appsheet-close-btn" data-bs-dismiss="offcanvas" aria-label="Close" onclick="ToBeCreatedModule.closeUpdateTripDrawer()">
+          <i class="bi bi-x-lg"></i>
+        </button>
+        <span class="offcanvas-title fw-semibold" id="updateTripLabel" style="font-size: 15px; color: #202124;">Update Trip Details</span>
       </div>
-      <div class="d-flex gap-2">
-        <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="offcanvas">Cancel</button>
-        <button type="button" class="btn btn-sm btn-appsheet-gold" onclick="ToBeCreatedModule.saveTripUpdate()">Save</button>
+      <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="offcanvas" onclick="ToBeCreatedModule.closeUpdateTripDrawer()" style="font-size: 12.5px; padding: 4px 14px; border-radius: 4px; border-color: #dadce0; color: #3c4043;">Cancel</button>
+        <button type="button" class="btn-appsheet-save" onclick="ToBeCreatedModule.saveTripUpdate()">Save</button>
       </div>
     </div>
-    <div class="offcanvas-body" style="max-height: calc(100vh - 60px); overflow-y: auto;">
-      <form id="form-update-trip">
-        <div class="mb-2">
-          <label class="form-label small text-muted">G.R.No.*</label>
-          <input type="text" class="form-control form-control-sm bg-light" id="ut-grno" readonly>
-        </div>
-        <div class="row g-2 mb-2">
-          <div class="col-6">
-            <label class="form-label small text-muted">Rate *</label>
-            <input type="number" class="form-control form-control-sm" id="ut-rate">
-          </div>
-          <div class="col-6">
-            <label class="form-label small text-muted">Weight *</label>
-            <input type="number" step="0.01" class="form-control form-control-sm" id="ut-weight">
+    <div class="offcanvas-body p-4" style="max-height: calc(100vh - 54px); overflow-y: auto; background:#ffffff;">
+      <form id="form-update-trip" onsubmit="event.preventDefault(); ToBeCreatedModule.saveTripUpdate();">
+        
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label" for="ut-grno">G.R.No.<span class="text-danger">*</span></label>
+          <div class="appsheet-form-field">
+            <input type="text" class="appsheet-form-input" id="ut-grno" readonly>
           </div>
         </div>
-        <div class="mb-2">
-          <label class="form-label small text-muted">Freight</label>
-          <input type="text" class="form-control form-control-sm bg-light" id="ut-freight" readonly>
-        </div>
-        <div class="row g-2 mb-2">
-          <div class="col-6">
-            <label class="form-label small text-muted">Hault Charges</label>
-            <input type="number" class="form-control form-control-sm" id="ut-hault" value="0">
-          </div>
-          <div class="col-6">
-            <label class="form-label small text-muted">Loading Charges</label>
-            <input type="number" class="form-control form-control-sm" id="ut-loading" value="0">
+
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label" for="ut-rate">Rate <span class="text-danger">*</span></label>
+          <div class="appsheet-form-field">
+            <input type="number" step="any" class="appsheet-form-input" id="ut-rate" oninput="ToBeCreatedModule.calculateFormFreight()">
           </div>
         </div>
-        <div class="mb-2">
-          <label class="form-label small text-muted">Other B *</label>
-          <input type="number" class="form-control form-control-sm" id="ut-otherb">
+
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label" for="ut-weight">Weight <span class="text-danger">*</span></label>
+          <div class="appsheet-form-field">
+            <input type="number" step="0.001" class="appsheet-form-input" id="ut-weight" oninput="ToBeCreatedModule.calculateFormFreight()">
+          </div>
         </div>
-        <div class="mb-2">
-          <label class="form-label small text-muted">Reference</label>
-          <input type="text" class="form-control form-control-sm" id="ut-reference">
+
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label" for="ut-freight">Freight</label>
+          <div class="appsheet-form-field">
+            <input type="text" class="appsheet-form-input" id="ut-freight" readonly>
+          </div>
         </div>
-        <div class="mb-2">
-          <label class="form-label small text-muted">Reference Mobile No.</label>
-          <input type="text" class="form-control form-control-sm" id="ut-ref-mobile">
+
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label" for="ut-hault">Hault Charges</label>
+          <div class="appsheet-form-field">
+            <input type="number" step="any" class="appsheet-form-input" id="ut-hault" value="0">
+          </div>
         </div>
-        <div class="mb-2">
-          <label class="form-label small text-muted">Driver</label>
-          <input type="text" class="form-control form-control-sm" id="ut-driver">
+
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label" for="ut-loading">Loading Charges</label>
+          <div class="appsheet-form-field">
+            <input type="number" step="any" class="appsheet-form-input" id="ut-loading" value="0">
+          </div>
         </div>
-        <div class="mb-2">
-          <label class="form-label small text-muted">Driver Mobile No.</label>
-          <input type="text" class="form-control form-control-sm" id="ut-driver-mobile">
+
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label" for="ut-otherb">Other B <span class="text-danger">*</span></label>
+          <div class="appsheet-form-field">
+            <input type="number" step="any" class="appsheet-form-input" id="ut-otherb">
+          </div>
         </div>
-        <div class="mb-2">
-          <label class="form-label small text-muted">Consignor</label>
-          <input type="text" class="form-control form-control-sm" id="ut-consignor">
+
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label" for="ut-reference">Reference</label>
+          <div class="appsheet-form-field">
+            <input type="text" class="appsheet-form-input" id="ut-reference">
+          </div>
         </div>
-        <div class="mb-2">
-          <label class="form-label small text-muted">Consignor Mobile No.</label>
-          <input type="text" class="form-control form-control-sm" id="ut-consignor-mobile">
+
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label" for="ut-ref-mobile">Reference Mobile No.</label>
+          <div class="appsheet-form-field">
+            <input type="text" class="appsheet-form-input" id="ut-ref-mobile">
+          </div>
         </div>
-        <div class="mb-2">
-          <label class="form-label small text-muted">Consignee</label>
-          <input type="text" class="form-control form-control-sm" id="ut-consignee">
+
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label" for="ut-driver">Driver</label>
+          <div class="appsheet-form-field">
+            <input type="text" class="appsheet-form-input" id="ut-driver">
+          </div>
         </div>
-        <div class="mb-2">
-          <label class="form-label small text-muted">Consignee Mobile No.</label>
-          <input type="text" class="form-control form-control-sm" id="ut-consignee-mobile">
+
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label" for="ut-driver-mobile">Driver Mobile No.</label>
+          <div class="appsheet-form-field">
+            <input type="text" class="appsheet-form-input" id="ut-driver-mobile">
+          </div>
         </div>
-        <div class="mb-2">
-          <label class="form-label small text-muted">Owner</label>
-          <input type="text" class="form-control form-control-sm" id="ut-owner">
+
+        <div class="appsheet-form-row" id="row-ut-driver-mobile2">
+          <label class="appsheet-form-label" for="ut-driver-mobile2">Driver Mobile No.</label>
+          <div class="appsheet-form-field">
+            <input type="text" class="appsheet-form-input" id="ut-driver-mobile2">
+          </div>
         </div>
-        <div class="mb-2">
-          <label class="form-label small text-muted">Owner Mobile No.</label>
-          <input type="text" class="form-control form-control-sm" id="ut-owner-mobile">
+
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label" for="ut-consignor">Consignor</label>
+          <div class="appsheet-form-field">
+            <input type="text" class="appsheet-form-input" id="ut-consignor">
+          </div>
         </div>
-        <div class="mb-2">
-          <label class="form-label small text-muted">Bill No.</label>
-          <input type="text" class="form-control form-control-sm" id="ut-billno" value="0">
+
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label" for="ut-consignor-mobile">Consignor Mobile No.</label>
+          <div class="appsheet-form-field">
+            <input type="text" class="appsheet-form-input" id="ut-consignor-mobile">
+          </div>
         </div>
+
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label" for="ut-consignee">Consignee</label>
+          <div class="appsheet-form-field">
+            <input type="text" class="appsheet-form-input" id="ut-consignee">
+          </div>
+        </div>
+
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label" for="ut-consignee-mobile">Consignee Mobile No.</label>
+          <div class="appsheet-form-field">
+            <input type="text" class="appsheet-form-input" id="ut-consignee-mobile">
+          </div>
+        </div>
+
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label" for="ut-owner">Owner</label>
+          <div class="appsheet-form-field">
+            <input type="text" class="appsheet-form-input" id="ut-owner">
+          </div>
+        </div>
+
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label" for="ut-owner-mobile">Owner Mobile No.</label>
+          <div class="appsheet-form-field">
+            <input type="text" class="appsheet-form-input" id="ut-owner-mobile">
+          </div>
+        </div>
+
+        <div class="appsheet-form-row" id="row-ut-owner-mobile2">
+          <label class="appsheet-form-label" for="ut-owner-mobile2">Owner Mobile No.</label>
+          <div class="appsheet-form-field">
+            <input type="text" class="appsheet-form-input" id="ut-owner-mobile2">
+          </div>
+        </div>
+
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label" for="ut-billno">Bill No.</label>
+          <div class="appsheet-form-field">
+            <input type="text" class="appsheet-form-input" id="ut-billno" value="0">
+          </div>
+        </div>
+
       </form>
     </div>
   </div>
