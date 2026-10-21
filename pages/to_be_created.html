@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To be Created - MTC And TTC - Trips</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <!-- Custom TMS Theme -->
+  <link rel="stylesheet" href="../css/style.css">
+  
+  <style>
+    :root {
+      --appsheet-bg: #f8f9fa;
+      --appsheet-card-bg: #ffffff;
+      --appsheet-text: #202124;
+      --appsheet-muted: #5f6368;
+      --appsheet-border: #dadce0;
+      --appsheet-border-light: #f1f3f4;
+      --appsheet-gold: #c2aa48;
+      --appsheet-green: #00b11f;
+      --appsheet-red: #cc0b0b;
+    }
+
+    body {
+      background-color: var(--appsheet-bg);
+      color: var(--appsheet-text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    /* 1. Left Icon Rail (48px fixed) */
+    .appsheet-rail {
+      width: 48px;
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      background: #ffffff;
+      border-right: 1px solid var(--appsheet-border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 6px;
+      z-index: 1040;
+    }
+
+    .appsheet-rail-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--appsheet-muted);
+      text-decoration: none;
+      border: none;
+      background: transparent;
+      margin-bottom: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .appsheet-rail-btn:hover {
+      background: #f1f3f4;
+      color: #202124;
+    }
+
+    .appsheet-rail-btn.active {
+      background: #fef7e0;
+      color: #b06000;
+    }
+
+    /* 2. Main Workspace */
+    .appsheet-workspace {
+      margin-left: 48px;
+      width: calc(100% - 48px);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: var(--appsheet-bg);
+    }
+
+    /* 3. Top Navigation Bar */
+    .appsheet-top-bar {
+      background: #ffffff;
+      border-bottom: 1px solid var(--appsheet-border);
+      padding: 6px 16px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 1020;
+    }
+
+    .appsheet-top-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-hamburger {
+      background: transparent;
+      border: none;
+      font-size: 19px;
+      color: #3c4043;
+      cursor: pointer;
+      padding: 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .appsheet-brand-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: #202124;
+      letter-spacing: 0.1px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Center Search */
+    .appsheet-top-center {
+      flex: 1;
+      max-width: 480px;
+      margin: 0 16px;
+    }
+
+    .appsheet-search-box {
+      background: #f1f3f4;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      padding: 4px 12px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 32px;
+    }
+
+    .appsheet-search-box i {
+      color: var(--appsheet-muted);
+      font-size: 13px;
+    }
+
+    .appsheet-search-box input {
+      background: transparent;
+      border: none;
+      outline: none;
+      width: 100%;
+      font-size: 12.5px;
+      color: var(--appsheet-text);
+    }
+
+    /* Top Right */
+    .appsheet-top-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .app-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #a88d3d;
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* 4. Sub-header & Breadcrumb */
+    .appsheet-sub-bar {
+      background: #ffffff;
+      border-bottom: 1px solid var(--appsheet-border);
+      padding: 6px 16px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .appsheet-breadcrumb {
+      font-size: 12px;
+      color: var(--appsheet-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 500;
+    }
+
+    .appsheet-breadcrumb a {
+      color: var(--appsheet-muted);
+      text-decoration: none;
+    }
+
+    .appsheet-breadcrumb a:hover {
+      text-decoration: underline;
+    }
+
+    .appsheet-breadcrumb span.active {
+      color: var(--appsheet-text);
+      font-weight: 600;
+    }
+
+    .appsheet-view-toggle {
+      color: var(--appsheet-muted);
+      cursor: pointer;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+    }
+
+    /* 5. 3-Cards Dashboard Layout (Matching media_1792575375498_f5f668db.png) */
+    .tobe-dashboard-container {
+      padding: 12px 16px;
+      flex: 1;
+    }
+
+    .tobe-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    @media (max-width: 992px) {
+      .tobe-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .tobe-card {
+      background: var(--appsheet-card-bg);
+      border: 1px solid var(--appsheet-border);
+      border-radius: 6px;
+      box-shadow: 0 1px 2px rgba(60,64,67,0.06);
+      display: flex;
+      flex-direction: column;
+      min-height: calc(100vh - 125px);
+      position: relative;
+    }
+
+    .tobe-card-header {
+      padding: 12px 14px 6px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .tobe-card-title {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #202124;
+      margin: 0;
+    }
+
+    .tobe-card-tools {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #5f6368;
+      font-size: 13px;
+    }
+
+    .tobe-card-tools i {
+      cursor: pointer;
+    }
+
+    .tobe-card-tools i:hover {
+      color: #202124;
+    }
+
+    .tobe-card-subheader {
+      padding: 2px 14px 8px 14px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #5f6368;
+      user-select: none;
+    }
+
+    .tobe-rows-list {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+
+    .tobe-row-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 14px;
+      border-top: 1px solid var(--appsheet-border-light);
+      cursor: pointer;
+      transition: background 0.12s ease-in-out;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .tobe-row-item:hover {
+      background: #f8f9fa;
+    }
+
+    .tobe-row-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tobe-bullet-red {
+      color: var(--appsheet-red);
+      font-size: 10px;
+      line-height: 1;
+    }
+
+    .tobe-bullet-green {
+      color: var(--appsheet-green);
+      font-size: 10px;
+      line-height: 1;
+    }
+
+    .tobe-label-all {
+      font-size: 12.5px;
+      font-weight: 500;
+      color: #202124;
+    }
+
+    .tobe-label-red {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--appsheet-red);
+      font-family: inherit;
+    }
+
+    .tobe-label-green {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--appsheet-green);
+      font-family: inherit;
+    }
+
+    .tobe-badge-pill {
+      background: #f1f3f4;
+      border: 1px solid #dadce0;
+      border-radius: 12px;
+      padding: 1px 7px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #3c4043;
+      font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      letter-spacing: 0.1px;
+    }
+
+    .tobe-chevron {
+      color: #5f6368;
+      font-size: 10px;
+      opacity: 0.85;
+    }
+
+    /* Resize handle indicator at bottom right of card (matching AppSheet screenshot) */
+    .tobe-card::after {
+      content: '';
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      width: 7px;
+      height: 7px;
+      border-right: 1.5px solid #bdc1c6;
+      border-bottom: 1.5px solid #bdc1c6;
+      pointer-events: none;
+    }
+
+    /* Offcanvas Sidebar */
+    .appsheet-drawer {
+      width: 280px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ======================================================== -->
+  <!-- 1. LEFT ICON RAIL (Matching AppSheet 48px fixed)         -->
+  <!-- ======================================================== -->
+  <aside class="appsheet-rail">
+    <button type="button" class="appsheet-rail-btn" title="Filter" id="rail-btn-funnel">
+      <i class="bi bi-funnel"></i>
+    </button>
+    <a href="../index.html" class="appsheet-rail-btn active" title="Home">
+      <i class="bi bi-house-door-fill"></i>
+    </a>
+    <button type="button" class="appsheet-rail-btn" title="About / Info">
+      <i class="bi bi-info-circle"></i>
+    </button>
+    <button type="button" class="appsheet-rail-btn" title="Messages">
+      <i class="bi bi-chat-left-text"></i>
+    </button>
+    <button type="button" class="appsheet-rail-btn mt-auto mb-2" title="Apps / Navigation">
+      <i class="bi bi-grid-3x3-gap"></i>
+    </button>
+  </aside>
+
+  <!-- ======================================================== -->
+  <!-- 2. MAIN WORKSPACE CONTAINER                              -->
+  <!-- ======================================================== -->
+  <div class="appsheet-workspace">
+    
+    <!-- Top Navigation Bar -->
+    <header class="appsheet-top-bar">
+      <div class="appsheet-top-left">
+        <button type="button" class="btn-hamburger" id="btn-sidebar-toggle" title="Menu" data-bs-toggle="offcanvas" data-bs-target="#appsheetSidebar">
+          <i class="bi bi-list"></i>
+        </button>
+        <span class="appsheet-brand-title">
+          <i class="bi bi-truck text-muted"></i>
+          <span>MTC And TTC - Trips</span>
+        </span>
+      </div>
+
+      <!-- Center Search Bar: Search To be Created -->
+      <div class="appsheet-top-center">
+        <div class="appsheet-search-box">
+          <i class="bi bi-search"></i>
+          <input type="text" id="tobe-search-input" placeholder="Search To be Created" autocomplete="off" oninput="ToBeCreatedModule.handleSearch(this.value)">
+        </div>
+      </div>
+
+      <!-- Right Actions: Refresh & Avatar -->
+      <div class="appsheet-top-right">
+        <span class="text-muted cursor-pointer" onclick="ToBeCreatedModule.refreshData()" title="Sync with Cloud Firestore" style="cursor: pointer; font-size: 14px;">
+          <i class="bi bi-arrow-repeat"></i>
+        </span>
+        <div class="app-avatar" title="Account">M</div>
+      </div>
+    </header>
+
+    <!-- Sub-header & Breadcrumbs: Home > To be Created -->
+    <div class="appsheet-sub-bar">
+      <div class="appsheet-breadcrumb" id="appsheet-breadcrumb">
+        <a href="../index.html"><i class="bi bi-house-door me-1"></i>Home</a>
+        <i class="bi bi-chevron-right" style="font-size: 10px;"></i>
+        <span class="active" id="breadcrumb-current-view">To be Created</span>
+      </div>
+      <div class="appsheet-view-toggle" title="Layout View">
+        <i class="bi bi-grid"></i>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- 3. DASHBOARD: 3 CARDS VIEW                               -->
+    <!-- Matching media_1792575375498_f5f668db.png                -->
+    <!-- ======================================================== -->
+    <main class="tobe-dashboard-container" id="tobe-dashboard-view">
+      <div class="tobe-grid">
+        
+        <!-- ==================================================== -->
+        <!-- CARD 1: Other B Due                                  -->
+        <!-- ==================================================== -->
+        <section class="tobe-card" id="tobe-card-other-b-due">
+          <div class="tobe-card-header">
+            <h2 class="tobe-card-title">Other B Due</h2>
+            <div class="tobe-card-tools">
+              <i class="bi bi-funnel" title="Filter Other B Due"></i>
+              <i class="bi bi-check2" title="Quick check"></i>
+            </div>
+          </div>
+          <div class="tobe-card-subheader">Year</div>
+          <div class="tobe-rows-list" id="tobe-card1-rows">
+            <!-- Row: All -->
+            <div class="tobe-row-item" onclick="ToBeCreatedModule.openCardView('due', 'ALL')" title="View All Other B Due">
+              <div class="tobe-row-left">
+                <span class="tobe-label-all">All</span>
+              </div>
+              <i class="bi bi-chevron-right tobe-chevron"></i>
+            </div>
+
+            <!-- Row: 2026-2027 -->
+            <div class="tobe-row-item" onclick="ToBeCreatedModule.openCardView('due', '2026-2027')" title="View 2026-2027 Other B Due">
+              <div class="tobe-row-left">
+                <span class="tobe-bullet-red">●</span>
+                <span class="tobe-label-red">2026-2027</span>
+                <span class="tobe-badge-pill" id="badge-due-2026">₹ 1,032,300.00</span>
+              </div>
+              <i class="bi bi-chevron-right tobe-chevron"></i>
+            </div>
+
+            <!-- Row: 2025-2026 -->
+            <div class="tobe-row-item" onclick="ToBeCreatedModule.openCardView('due', '2025-2026')" title="View 2025-2026 Other B Due">
+              <div class="tobe-row-left">
+                <span class="tobe-bullet-red">●</span>
+                <span class="tobe-label-red">2025-2026</span>
+                <span class="tobe-badge-pill" id="badge-due-2025">₹ 232,770.00</span>
+              </div>
+              <i class="bi bi-chevron-right tobe-chevron"></i>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================================================== -->
+        <!-- CARD 2: Other B Paid                                 -->
+        <!-- ==================================================== -->
+        <section class="tobe-card" id="tobe-card-other-b-paid">
+          <div class="tobe-card-header">
+            <h2 class="tobe-card-title">Other B Paid</h2>
+            <div class="tobe-card-tools">
+              <i class="bi bi-funnel" title="Filter Other B Paid"></i>
+              <i class="bi bi-check2" title="Quick check"></i>
+            </div>
+          </div>
+          <div class="tobe-card-subheader">Year</div>
+          <div class="tobe-rows-list" id="tobe-card2-rows">
+            <!-- Row: All -->
+            <div class="tobe-row-item" onclick="ToBeCreatedModule.openCardView('paid', 'ALL')" title="View All Other B Paid">
+              <div class="tobe-row-left">
+                <span class="tobe-label-all">All</span>
+              </div>
+              <i class="bi bi-chevron-right tobe-chevron"></i>
+            </div>
+
+            <!-- Row: 2026-2027 -->
+            <div class="tobe-row-item" onclick="ToBeCreatedModule.openCardView('paid', '2026-2027')" title="View 2026-2027 Other B Paid">
+              <div class="tobe-row-left">
+                <span class="tobe-bullet-green">●</span>
+                <span class="tobe-label-green">2026-2027</span>
+                <span class="tobe-badge-pill" id="badge-paid-2026">₹ 4,177,700.00</span>
+              </div>
+              <i class="bi bi-chevron-right tobe-chevron"></i>
+            </div>
+
+            <!-- Row: 2025-2026 -->
+            <div class="tobe-row-item" onclick="ToBeCreatedModule.openCardView('paid', '2025-2026')" title="View 2025-2026 Other B Paid">
+              <div class="tobe-row-left">
+                <span class="tobe-bullet-green">●</span>
+                <span class="tobe-label-green">2025-2026</span>
+                <span class="tobe-badge-pill" id="badge-paid-2025">₹ 5,201,950.00</span>
+              </div>
+              <i class="bi bi-chevron-right tobe-chevron"></i>
+            </div>
+
+            <!-- Row: 2024-2025 -->
+            <div class="tobe-row-item" onclick="ToBeCreatedModule.openCardView('paid', '2024-2025')" title="View 2024-2025 Other B Paid">
+              <div class="tobe-row-left">
+                <span class="tobe-bullet-green">●</span>
+                <span class="tobe-label-green">2024-2025</span>
+                <span class="tobe-badge-pill" id="badge-paid-2024">₹ 934,000.00</span>
+              </div>
+              <i class="bi bi-chevron-right tobe-chevron"></i>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================================================== -->
+        <!-- CARD 3: All Other B                                  -->
+        <!-- ==================================================== -->
+        <section class="tobe-card" id="tobe-card-all-other-b">
+          <div class="tobe-card-header">
+            <h2 class="tobe-card-title">All Other B</h2>
+            <div class="tobe-card-tools">
+              <i class="bi bi-funnel" title="Filter All Other B"></i>
+              <i class="bi bi-check2" title="Quick check"></i>
+            </div>
+          </div>
+          <div class="tobe-card-subheader">Year</div>
+          <div class="tobe-rows-list" id="tobe-card3-rows">
+            <!-- Row: All -->
+            <div class="tobe-row-item" onclick="ToBeCreatedModule.openCardView('all', 'ALL')" title="View All Other B">
+              <div class="tobe-row-left">
+                <span class="tobe-label-all">All</span>
+              </div>
+              <i class="bi bi-chevron-right tobe-chevron"></i>
+            </div>
+
+            <!-- Row: 2026-2027 -->
+            <div class="tobe-row-item" onclick="ToBeCreatedModule.openCardView('all', '2026-2027')" title="View 2026-2027 All Other B">
+              <div class="tobe-row-left">
+                <span class="tobe-bullet-green">●</span>
+                <span class="tobe-label-green">2026-2027</span>
+                <span class="tobe-badge-pill" id="badge-all-2026">264</span>
+              </div>
+              <i class="bi bi-chevron-right tobe-chevron"></i>
+            </div>
+
+            <!-- Row: 2025-2026 -->
+            <div class="tobe-row-item" onclick="ToBeCreatedModule.openCardView('all', '2025-2026')" title="View 2025-2026 All Other B">
+              <div class="tobe-row-left">
+                <span class="tobe-bullet-green">●</span>
+                <span class="tobe-label-green">2025-2026</span>
+                <span class="tobe-badge-pill" id="badge-all-2025">341</span>
+              </div>
+              <i class="bi bi-chevron-right tobe-chevron"></i>
+            </div>
+
+            <!-- Row: 2024-2025 -->
+            <div class="tobe-row-item" onclick="ToBeCreatedModule.openCardView('all', '2024-2025')" title="View 2024-2025 All Other B">
+              <div class="tobe-row-left">
+                <span class="tobe-bullet-green">●</span>
+                <span class="tobe-label-green">2024-2025</span>
+                <span class="tobe-badge-pill" id="badge-all-2024">280</span>
+              </div>
+              <i class="bi bi-chevron-right tobe-chevron"></i>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+    <!-- Placeholder for Card 1 (Other B Due) View Container -->
+    <div id="tobe-view-card1-list" class="d-none p-3">
+      <!-- Will be populated dynamically when user provides details for Card 1 -->
+      <div class="card p-3 shadow-sm bg-white border">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <h5 class="fw-bold mb-0" id="card1-list-title">Other B Due List</h5>
+          <button class="btn btn-sm btn-outline-secondary" onclick="ToBeCreatedModule.goToDashboardView()">
+            <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+          </button>
+        </div>
+        <div id="card1-list-content">
+          <p class="text-muted">Loading Other B Due records...</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Offcanvas Sidebar Container -->
+  <div class="offcanvas offcanvas-start appsheet-drawer" tabindex="-1" id="appsheetSidebar" aria-labelledby="appsheetSidebarLabel">
+    <div class="offcanvas-header border-bottom">
+      <h5 class="offcanvas-title fw-bold" id="appsheetSidebarLabel">Transport System</h5>
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body p-0" id="sidebar-container">
+      <!-- Rendered by AppUI.renderSidebar -->
+    </div>
+  </div>
+
+  <!-- Bootstrap 5 Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
+  <!-- Core App Scripts -->
+  <script src="../js/config.js?v=20261021_v1"></script>
+  <script src="../js/sample-parties-data.js?v=20261021_v1"></script>
+  <script src="../js/sample-truck-owners-data.js?v=20261021_v1"></script>
+  <script src="../js/sample-drivers-data.js?v=20261021_v1"></script>
+  <script src="../js/sample-trips-data.js?v=20261021_v1"></script>
+  <script src="../js/sample-debts-data.js?v=20261021_v1"></script>
+  <script src="../js/sample-cheques-data.js?v=20261021_v1"></script>
+  <script src="../js/db-service.js?v=20261021_v1"></script>
+  <script src="../js/app.js?v=20261021_v1"></script>
+  <script src="../js/modules/to_be_created.js?v=20261021_v1"></script>
+</body>
+</html>

@@ -108,7 +108,7 @@ const AppUI = {
         <a href="${pagesPath}cheques.html" class="drawer-link ${activePage === 'cheques' ? 'active' : ''}">
           <i class="bi bi-credit-card-2-front text-warning"></i> Cheques
         </a>
-        <a href="${pagesPath}trips.html?view=to_be_created" class="drawer-link ${activePage === 'to_be_created' ? 'active' : ''}">
+        <a href="${pagesPath}to_be_created.html" class="drawer-link ${activePage === 'to_be_created' ? 'active' : ''}">
           <i class="bi bi-calculator text-info"></i> To be Created (पेंडिंग बिल्टी)
         </a>
         <a href="${pagesPath}parties.html" class="drawer-link ${activePage === 'parties' ? 'active' : ''}">
