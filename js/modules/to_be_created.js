@@ -25,9 +25,9 @@ const ToBeCreatedModule = {
 
   summaryData: {
     due: {
-      '2026-2027': 1032300.0,
+      '2026-2027': 1023800.0,
       '2025-2026': 232770.0,
-      'total': 1265070.0
+      'total': 1256570.0
     },
     paid: {
       '2026-2027': 4177700.0,
@@ -160,13 +160,8 @@ const ToBeCreatedModule = {
     ]);
 
     this.setSearchPlaceholder('Search Other B Due');
-    const railEl = typeof document !== 'undefined' ? (document.getElementById('tobe-left-rail') || (typeof document.querySelector === 'function' ? document.querySelector('.tobe-list-left-rail') : null)) : null;
-    const isSidebarCollapsed = railEl && railEl.classList && typeof railEl.classList.contains === 'function' ? railEl.classList.contains('d-none') : false;
     this.setHeaderTools(`
-      <button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2 fw-semibold d-inline-flex align-items-center gap-1" id="btn-toggle-tobe-sidebar" onclick="ToBeCreatedModule.toggleSidebar()" title="Hide / Show Sidebar Filter" style="font-size: 11px; height: 26px;">
-        <i class="bi bi-layout-sidebar-inset"></i> <span id="btn-toggle-tobe-sidebar-text">${isSidebarCollapsed ? 'Show Sidebar' : 'Sidebar'}</span>
-      </button>
-      <i class="bi bi-funnel" title="Filter" onclick="ToBeCreatedModule.toggleFilter()"></i>
+      <i class="bi bi-funnel" title="Toggle Financial Year Sidebar" onclick="ToBeCreatedModule.toggleSidebar()"></i>
       <i class="bi bi-check2-square" title="Select"></i>
     `);
 

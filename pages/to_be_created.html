@@ -874,6 +874,47 @@
       background: #f1f3f4;
       border-color: #bdc1c6;
     }
+
+    /* Vertical AppSheet Form Layout & Toggle Buttons (Matching media_1792583389642_15fef770.png) */
+    #consigneePaymentDrawer.offcanvas-appsheet,
+    #addOtherBPaymentDrawer.offcanvas-appsheet {
+      width: 430px !important;
+    }
+    #updateTripDrawer.offcanvas-appsheet {
+      width: 560px !important;
+    }
+    .appsheet-vertical-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: #5f6368;
+      margin-bottom: 6px;
+      letter-spacing: 0.2px;
+    }
+    .btn-appsheet-toggle {
+      flex: 1;
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 500;
+      border-radius: 4px;
+      cursor: pointer;
+      border: 1px solid #137333;
+      background-color: #ffffff;
+      color: #137333;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .btn-appsheet-toggle.active {
+      background-color: #137333;
+      color: #ffffff;
+      border-color: #137333;
+    }
+    .btn-appsheet-toggle:hover:not(.active) {
+      background-color: #f0f7f3;
+    }
   </style>
 </head>
 <body>
@@ -975,7 +1016,7 @@
               <div class="tobe-row-left">
                 <span class="tobe-bullet-red">●</span>
                 <span class="tobe-label-red">2026-2027</span>
-                <span class="tobe-badge-pill" id="badge-due-2026">₹ 1,032,300.00</span>
+                <span class="tobe-badge-pill" id="badge-due-2026">₹ 1,023,800.00</span>
               </div>
               <i class="bi bi-chevron-right tobe-chevron"></i>
             </div>
@@ -1104,6 +1145,13 @@
     <div id="tobe-view-other-b-due-list" class="tobe-list-view-container d-none">
       <!-- Left Rail: Year Filter -->
       <aside class="tobe-list-left-rail" id="tobe-left-rail">
+        <div class="tobe-rail-header d-flex align-items-center justify-content-between px-2 py-2 border-bottom mb-1">
+          <span class="small fw-bold text-uppercase text-muted" style="font-size: 11px;">Financial Year</span>
+          <button type="button" class="btn btn-sm btn-light py-0 px-1 border-0 text-secondary" id="btn-collapse-sidebar-inner" onclick="ToBeCreatedModule.toggleSidebar()" title="Hide Sidebar (Collapse)" style="font-size: 13px; line-height: 1;">
+            <i class="bi bi-layout-sidebar-inset"></i>
+          </button>
+        </div>
+        <span id="btn-toggle-tobe-sidebar-text" class="d-none">Sidebar</span>
         <div class="tobe-list-rail-item" id="rail-year-all" onclick="ToBeCreatedModule.filterByYear('ALL')">
           <span>All</span>
         </div>
@@ -1128,9 +1176,9 @@
       <!-- Right Table Area -->
       <div class="tobe-list-table-container">
         <!-- Unhide Sidebar Filter Button (Visible when sidebar is collapsed) -->
-        <div id="tobe-unhide-sidebar-wrap" class="d-none">
-          <button type="button" class="tobe-unhide-sidebar-pill" onclick="ToBeCreatedModule.toggleSidebar()" title="Show Year Filter Sidebar">
-            <i class="bi bi-layout-sidebar"></i> Show Year Filter Sidebar
+        <div id="tobe-unhide-sidebar-wrap" class="d-none mb-2">
+          <button type="button" class="tobe-unhide-sidebar-pill d-inline-flex align-items-center gap-1" onclick="ToBeCreatedModule.toggleSidebar()" title="Show Year Filter Sidebar">
+            <i class="bi bi-layout-sidebar"></i> Show Financial Year Sidebar
           </button>
         </div>
         <table class="appsheet-table" id="tobe-due-table">
@@ -1306,47 +1354,49 @@
 
   <!-- ======================================================== -->
   <!-- DRAWER 1: Consignee Payment Details (Add)                -->
-  <!-- Matching screencapture-...-15_21_35.png & WhatsApp photos-->
+  <!-- Matching screencapture-...-15_21_35.png & media_1792583389642_15fef770.png -->
   <!-- ======================================================== -->
   <div class="offcanvas offcanvas-end offcanvas-appsheet" tabindex="-1" id="consigneePaymentDrawer" aria-labelledby="consigneePaymentLabel">
-    <div class="offcanvas-header border-bottom py-2">
+    <div class="offcanvas-header border-bottom py-2 px-3 d-flex justify-content-between align-items-center" style="background:#ffffff; min-height: 52px;">
       <div class="d-flex align-items-center gap-2">
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        <h6 class="offcanvas-title fw-bold" id="consigneePaymentLabel">Consignee Payment Details</h6>
+        <button type="button" class="appsheet-close-btn" data-bs-dismiss="offcanvas" aria-label="Close">
+          <i class="bi bi-x-lg"></i>
+        </button>
+        <span class="offcanvas-title fw-semibold" id="consigneePaymentLabel" style="font-size: 15px; color: #202124;">Consignee Payment Details</span>
       </div>
-      <div class="d-flex gap-2">
-        <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="offcanvas">Cancel</button>
-        <button type="button" class="btn btn-sm btn-appsheet-gold" onclick="ToBeCreatedModule.saveConsigneePayment()">Save</button>
+      <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="offcanvas" style="font-size: 12.5px; padding: 4px 14px; border-radius: 4px; border-color: #dadce0; color: #3c4043;">Cancel</button>
+        <button type="button" class="btn-appsheet-save" onclick="ToBeCreatedModule.saveConsigneePayment()">Save</button>
       </div>
     </div>
-    <div class="offcanvas-body">
-      <form id="form-consignee-payment">
-        <div class="mb-3">
-          <label class="form-label small text-muted">Payment Date *</label>
-          <input type="text" class="form-control form-control-sm" id="cp-payment-date" value="21-10-2026">
+    <div class="offcanvas-body p-4" style="background:#ffffff;">
+      <form id="form-consignee-payment" onsubmit="event.preventDefault(); ToBeCreatedModule.saveConsigneePayment();">
+        <div class="appsheet-form-vertical-row mb-3">
+          <label class="appsheet-vertical-label">Payment Date <span class="text-danger">*</span></label>
+          <input type="text" class="appsheet-form-input" id="cp-payment-date" value="20/10/2026">
         </div>
-        <div class="mb-3">
-          <label class="form-label small text-muted">Due</label>
-          <input type="text" class="form-control form-control-sm bg-light" id="cp-due" value="₹ 0.00" readonly>
+        <div class="appsheet-form-vertical-row mb-3">
+          <label class="appsheet-vertical-label">Due</label>
+          <input type="text" class="appsheet-form-input" id="cp-due" value="₹ 27,000.00" readonly style="background:#f8f9fa; color:#5f6368;">
         </div>
-        <div class="mb-3">
-          <label class="form-label small text-muted">Paid To *</label>
-          <div class="d-flex gap-2">
-            <button type="button" class="btn btn-sm btn-outline-success flex-fill active" id="cp-paidto-transporter" onclick="ToBeCreatedModule.togglePaidTo('Transporter')">
+        <div class="appsheet-form-vertical-row mb-3">
+          <label class="appsheet-vertical-label">Paid To <span class="text-danger">*</span></label>
+          <div class="d-flex gap-2" id="cp-paid-to-group">
+            <button type="button" class="btn-appsheet-toggle active" id="cp-paidto-transporter" onclick="ToBeCreatedModule.togglePaidTo('Transporter')">
               ● Transporter
             </button>
-            <button type="button" class="btn btn-sm btn-outline-success flex-fill" id="cp-paidto-owner" onclick="ToBeCreatedModule.togglePaidTo('Truck Owner')">
+            <button type="button" class="btn-appsheet-toggle" id="cp-paidto-owner" onclick="ToBeCreatedModule.togglePaidTo('Truck Owner')">
               ● Truck Owner
             </button>
           </div>
         </div>
-        <div class="mb-3">
-          <label class="form-label small text-muted">Amount Paid *</label>
-          <input type="number" class="form-control form-control-sm" id="cp-amount-paid" placeholder="₹ 0.00" value="0.00">
+        <div class="appsheet-form-vertical-row mb-3">
+          <label class="appsheet-vertical-label">Amount Paid <span class="text-danger">*</span></label>
+          <input type="number" step="any" class="appsheet-form-input" id="cp-amount-paid" placeholder="₹ 0.00" value="0.00">
         </div>
-        <div class="mb-3">
-          <label class="form-label small text-muted">Mode *</label>
-          <select class="form-select form-select-sm" id="cp-mode">
+        <div class="appsheet-form-vertical-row mb-3">
+          <label class="appsheet-vertical-label">Mode <span class="text-danger">*</span></label>
+          <select class="appsheet-form-input" id="cp-mode">
             <option value="Cash" selected>● Cash</option>
             <option value="Cash in Rajsamand">● Cash in Rajsamand</option>
             <option value="Cash in Bank">● Cash in Bank</option>
@@ -1362,9 +1412,9 @@
             <option value="GST">● GST</option>
           </select>
         </div>
-        <div class="mb-3">
-          <label class="form-label small text-muted">Description</label>
-          <input type="text" class="form-control form-control-sm" id="cp-description" placeholder="Description / Remarks">
+        <div class="appsheet-form-vertical-row mb-3">
+          <label class="appsheet-vertical-label">Description</label>
+          <input type="text" class="appsheet-form-input" id="cp-description" placeholder="Description / Remarks">
         </div>
       </form>
     </div>
@@ -1375,53 +1425,55 @@
   <!-- Matching screencapture-...-15_37_53.png                  -->
   <!-- ======================================================== -->
   <div class="offcanvas offcanvas-end offcanvas-appsheet" tabindex="-1" id="addOtherBPaymentDrawer" aria-labelledby="addOtherBPaymentLabel">
-    <div class="offcanvas-header border-bottom py-2">
+    <div class="offcanvas-header border-bottom py-2 px-3 d-flex justify-content-between align-items-center" style="background:#ffffff; min-height: 52px;">
       <div class="d-flex align-items-center gap-2">
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        <h6 class="offcanvas-title fw-bold" id="addOtherBPaymentLabel">Add Other B Payment Details</h6>
+        <button type="button" class="appsheet-close-btn" data-bs-dismiss="offcanvas" aria-label="Close">
+          <i class="bi bi-x-lg"></i>
+        </button>
+        <span class="offcanvas-title fw-semibold" id="addOtherBPaymentLabel" style="font-size: 15px; color: #202124;">Add Other B Payment Details</span>
       </div>
-      <div class="d-flex gap-2">
-        <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="offcanvas">Cancel</button>
-        <button type="button" class="btn btn-sm btn-appsheet-gold" onclick="ToBeCreatedModule.saveOtherBPayment()">Save</button>
+      <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="offcanvas" style="font-size: 12.5px; padding: 4px 14px; border-radius: 4px; border-color: #dadce0; color: #3c4043;">Cancel</button>
+        <button type="button" class="btn-appsheet-save" onclick="ToBeCreatedModule.saveOtherBPayment()">Save</button>
       </div>
     </div>
-    <div class="offcanvas-body">
-      <form id="form-otherb-payment">
-        <div class="mb-3">
-          <label class="form-label small text-muted">Payment Date *</label>
-          <input type="text" class="form-control form-control-sm" id="ob-payment-date" value="21-10-2026">
+    <div class="offcanvas-body p-4" style="background:#ffffff;">
+      <form id="form-otherb-payment" onsubmit="event.preventDefault(); ToBeCreatedModule.saveOtherBPayment();">
+        <div class="appsheet-form-vertical-row mb-3">
+          <label class="appsheet-vertical-label">Payment Date <span class="text-danger">*</span></label>
+          <input type="text" class="appsheet-form-input" id="ob-payment-date" value="21-10-2026">
         </div>
-        <div class="mb-3">
-          <label class="form-label small text-muted">Due</label>
-          <input type="text" class="form-control form-control-sm bg-light" id="ob-due" value="₹ 11,500.00" readonly>
+        <div class="appsheet-form-vertical-row mb-3">
+          <label class="appsheet-vertical-label">Due</label>
+          <input type="text" class="appsheet-form-input" id="ob-due" value="₹ 11,500.00" readonly style="background:#f8f9fa; color:#5f6368;">
         </div>
-        <div class="mb-3">
-          <label class="form-label small text-muted">Paid To</label>
+        <div class="appsheet-form-vertical-row mb-3">
+          <label class="appsheet-vertical-label">Paid To</label>
           <div class="d-flex gap-2">
-            <button type="button" class="btn btn-sm btn-outline-success flex-fill active" id="ob-paidto-transporter">
+            <button type="button" class="btn-appsheet-toggle active" id="ob-paidto-transporter">
               ● Transporter
             </button>
-            <button type="button" class="btn btn-sm btn-outline-success flex-fill" id="ob-paidto-owner">
+            <button type="button" class="btn-appsheet-toggle" id="ob-paidto-owner">
               ● Truck Owner
             </button>
           </div>
         </div>
-        <div class="mb-3">
-          <label class="form-label small text-muted">Amount Paid *</label>
-          <input type="number" class="form-control form-control-sm" id="ob-amount-paid" value="0.00">
+        <div class="appsheet-form-vertical-row mb-3">
+          <label class="appsheet-vertical-label">Amount Paid <span class="text-danger">*</span></label>
+          <input type="number" step="any" class="appsheet-form-input" id="ob-amount-paid" value="0.00">
         </div>
-        <div class="mb-3">
-          <label class="form-label small text-muted">Mode *</label>
-          <select class="form-select form-select-sm" id="ob-mode">
+        <div class="appsheet-form-vertical-row mb-3">
+          <label class="appsheet-vertical-label">Mode <span class="text-danger">*</span></label>
+          <select class="appsheet-form-input" id="ob-mode">
             <option value="Phone Pe/GPay/PayTM/UPI" selected>● Phone Pe/GPay/PayTM/UPI</option>
             <option value="Cash">● Cash</option>
             <option value="NEFT/RTGS">● NEFT/RTGS</option>
             <option value="Cheque">● Cheque</option>
           </select>
         </div>
-        <div class="mb-3">
-          <label class="form-label small text-muted">Description</label>
-          <input type="text" class="form-control form-control-sm" id="ob-description" placeholder="Description">
+        <div class="appsheet-form-vertical-row mb-3">
+          <label class="appsheet-vertical-label">Description</label>
+          <input type="text" class="appsheet-form-input" id="ob-description" placeholder="Description">
         </div>
       </form>
     </div>

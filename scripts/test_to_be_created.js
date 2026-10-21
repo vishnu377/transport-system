@@ -5,7 +5,7 @@
  *  2. 3-Cards Dashboard Layout (Other B Due, Other B Paid, All Other B)
  *  3. Card 1 (Other B Due):
  *      - Red Bullets & Red Years
- *      - 2026-2027: ₹ 1,032,300.00
+ *      - 2026-2027: ₹ 1,023,800.00
  *      - 2025-2026: ₹ 232,770.00
  *  4. Card 2 (Other B Paid):
  *      - Green Bullets & Green Years
@@ -124,10 +124,10 @@ async function testModule() {
 
   // Verify Card 1 Badges (Other B Due)
   const due2026 = document.getElementById('badge-due-2026').innerText;
-  assert(due2026.includes('1,032,300.00'), 'Card 1 2026-2027 must show ₹ 1,032,300.00');
+  assert(due2026.includes('1,023,800.00'), 'Card 1 2026-2027 must show ₹ 1,023,800.00');
   const due2025 = document.getElementById('badge-due-2025').innerText;
   assert(due2025.includes('232,770.00'), 'Card 1 2025-2026 must show ₹ 232,770.00');
-  console.log('✔ Card 1 (Other B Due) badges verified: ₹ 1,032,300.00 & ₹ 232,770.00');
+  console.log('✔ Card 1 (Other B Due) badges verified: ₹ 1,023,800.00 & ₹ 232,770.00');
 
   // Verify Card 2 Badges (Other B Paid)
   const paid2026 = document.getElementById('badge-paid-2026').innerText;
