@@ -68,6 +68,15 @@ const ToBeCreatedModule = {
 
     this.renderDashboardBadges();
 
+    // Setup global listener to close AppSheet custom dropdowns on outside click
+    if (typeof document !== 'undefined' && document.addEventListener) {
+      document.addEventListener('click', (e) => {
+        if (!e.target || !e.target.closest || !e.target.closest('.appsheet-select-wrapper')) {
+          ToBeCreatedModule.closeAllAppSheetDropdowns();
+        }
+      });
+    }
+
     // Check URL query parameters
     const urlParams = typeof window !== 'undefined' && window.location ? new URLSearchParams(window.location.search) : null;
     if (urlParams && urlParams.get('view') === 'due-list') {
@@ -337,7 +346,10 @@ const ToBeCreatedModule = {
     const payments = t.payments || [];
     const paymentRowsHtml = payments.map((p, idx) => `
       <tr onclick="ToBeCreatedModule.openPaymentDetail(${idx})" style="cursor: pointer;">
-        <td><i class="bi bi-trash text-muted me-2" onclick="event.stopPropagation(); ToBeCreatedModule.openAuthDrawer('${t.grNo}')"></i><i class="bi bi-pencil text-muted" onclick="event.stopPropagation(); ToBeCreatedModule.openAuthDrawer('${t.grNo}')"></i></td>
+        <td>
+          <i class="bi bi-trash text-muted me-2" onclick="event.stopPropagation(); ToBeCreatedModule.openAuthDrawer('${t.grNo}')"></i>
+          <i class="bi bi-pencil text-muted" onclick="event.stopPropagation(); ToBeCreatedModule.openAuthDrawer('${t.grNo}')"></i>
+        </td>
         <td><span class="tobe-bullet-green">●</span> <span style="color: var(--appsheet-green); font-weight:600;">${p.paymentDate}</span></td>
         <td><span class="tobe-bullet-green">●</span> <span style="color: var(--appsheet-green); font-weight:600;">₹ ${Number(p.amountPaid).toFixed(2)}</span></td>
         <td><span class="tobe-bullet-green">●</span> <span style="color: var(--appsheet-green); font-weight:600;">${p.mode}</span></td>
@@ -372,10 +384,7 @@ const ToBeCreatedModule = {
             <div class="tobe-field-row align-items-center">
               <span class="tobe-field-label">Add Records for</span>
               <div class="tobe-field-value">
-                <select class="form-select form-select-sm" style="max-width: 170px;">
-                  <option selected>Party Payment</option>
-                  <option>Other B</option>
-                </select>
+                ${this.renderAppSheetAddRecordsDropdown(t.addRecordsFor || 'Party Payment')}
               </div>
             </div>
           </div>
@@ -386,7 +395,7 @@ const ToBeCreatedModule = {
           <div class="d-flex align-items-center gap-2 mb-2">
             <span class="tobe-bullet-red">●</span>
             <span class="fw-bold" style="color: var(--appsheet-red); font-size: 13.5px;">Payment</span>
-            <span class="badge bg-secondary" style="font-size: 10px;">${payments.length}</span>
+            <span class="tobe-count-badge">${payments.length}</span>
           </div>
           <div class="table-responsive">
             <table class="details-table">
@@ -416,22 +425,12 @@ const ToBeCreatedModule = {
           ${this.renderFieldRow('Paid Amount', `₹${Number(t.paidAmount || 0).toFixed(2)}`, 'red')}
           ${this.renderFieldRow('Due Amount', `₹${Number(t.dueAmount || 0).toFixed(2)}`, 'green')}
           
-          <div class="my-3 border-top pt-2">
-            <div class="text-muted small fw-bold mb-1">Other B</div>
-            <div class="text-muted small fw-bold mb-2">Status</div>
+          <div class="my-2 border-top pt-2">
+            <div class="tobe-section-subhead">Other B</div>
+            <div class="tobe-section-subhead">Status</div>
             <div class="mb-2">
-              <label class="form-label small text-muted mb-1">Status *</label>
-              <div class="input-group input-group-sm">
-                <span class="input-group-text bg-white border-end-0">
-                  <span class="tobe-bullet-red">●</span>
-                </span>
-                <select class="form-select form-select-sm border-start-0" style="color: var(--appsheet-red); font-weight: 600;">
-                  <option selected>Other B Pending</option>
-                  <option>Transit</option>
-                  <option>Off Loading</option>
-                  <option>Party Payment Pending</option>
-                </select>
-              </div>
+              <label class="form-label small text-muted mb-1">Status <span class="text-danger">*</span></label>
+              ${this.renderAppSheetStatusDropdown(t.status || 'Other B Pending')}
             </div>
           </div>
         </div>
@@ -439,7 +438,7 @@ const ToBeCreatedModule = {
     `;
   },
 
-  // VARIATION B: GOLD / SUN ROW (Matching screencapture-...-15_37_07.png)
+  // VARIATION B: GOLD / SUN ROW (Matching screencapture-...-15_37_07.png & media_1792580649383_ba9b2dc8.png)
   renderGoldTripDetails(t) {
     const otherBPayments = t.otherBPayments || [];
     const rowsHtml = otherBPayments.map((p, idx) => `
@@ -481,11 +480,11 @@ const ToBeCreatedModule = {
             <div class="tobe-field-row align-items-center mb-2">
               <span class="tobe-field-label">Add Records for</span>
               <div class="tobe-field-value">
-                <span class="badge bg-light text-dark border px-3 py-1">Other B</span>
+                ${this.renderAppSheetAddRecordsDropdown(t.addRecordsFor || 'Other B')}
               </div>
             </div>
             ${this.renderFieldRow('Total Freight', `₹${Number(t.totalFreight || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, 'gold')}
-            <div class="fw-bold text-muted small my-1">Other B</div>
+            <div class="tobe-section-subhead">Other B</div>
             ${this.renderFieldRow('Other B', `₹${Number(t.otherB || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, 'gold')}
           </div>
         </div>
@@ -495,7 +494,7 @@ const ToBeCreatedModule = {
           <div class="d-flex align-items-center gap-2 mb-2">
             <span class="tobe-bullet-gold">●</span>
             <span class="fw-bold" style="color: var(--appsheet-gold-text); font-size: 13.5px;">Other B Payment</span>
-            <span class="badge bg-secondary" style="font-size: 10px;">${otherBPayments.length}</span>
+            <span class="tobe-count-badge">${otherBPayments.length}</span>
           </div>
           <div class="table-responsive">
             <table class="details-table">
@@ -524,20 +523,11 @@ const ToBeCreatedModule = {
           ${this.renderFieldRow('Other B Total Payment', `₹${Number(t.otherBTotalPayment || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, 'gold')}
           ${this.renderFieldRow('Other B Due Payment', `₹${Number(t.otherBDuePayment || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, 'red')}
           
-          <div class="my-3 border-top pt-2">
-            <div class="text-muted small fw-bold mb-2">Status</div>
+          <div class="my-2 border-top pt-2">
+            <div class="tobe-section-subhead">Status</div>
             <div class="mb-2">
-              <label class="form-label small text-muted mb-1">Status *</label>
-              <div class="input-group input-group-sm">
-                <span class="input-group-text bg-white border-end-0">
-                  <span class="tobe-bullet-gold">●</span>
-                </span>
-                <select class="form-select form-select-sm border-start-0" style="color: var(--appsheet-gold-text); font-weight: 600;">
-                  <option selected>Transit</option>
-                  <option>Other B Pending</option>
-                  <option>Off Loading</option>
-                </select>
-              </div>
+              <label class="form-label small text-muted mb-1">Status <span class="text-danger">*</span></label>
+              ${this.renderAppSheetStatusDropdown(t.status || 'Transit')}
             </div>
           </div>
         </div>
@@ -585,7 +575,7 @@ const ToBeCreatedModule = {
             <div class="tobe-field-row align-items-center">
               <span class="tobe-field-label">Add Records for</span>
               <div class="tobe-field-value">
-                <span class="badge bg-light text-dark border px-3 py-1">Party Payment</span>
+                ${this.renderAppSheetAddRecordsDropdown(t.addRecordsFor || 'Party Payment')}
               </div>
             </div>
           </div>
@@ -596,7 +586,7 @@ const ToBeCreatedModule = {
           <div class="d-flex align-items-center gap-2 mb-2">
             <span class="tobe-bullet-blue">●</span>
             <span class="fw-bold" style="color: var(--appsheet-blue); font-size: 13.5px;">Payment</span>
-            <span class="badge bg-secondary" style="font-size: 10px;">${payments.length}</span>
+            <span class="tobe-count-badge">${payments.length}</span>
           </div>
           <div class="table-responsive">
             <table class="details-table">
@@ -626,20 +616,12 @@ const ToBeCreatedModule = {
           ${this.renderFieldRow('Paid Amount', `₹${Number(t.paidAmount || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, 'blue')}
           ${this.renderFieldRow('Due Amount', `₹${Number(t.dueAmount || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, 'red')}
           
-          <div class="my-3 border-top pt-2">
-            <div class="text-muted small fw-bold mb-1">Other B</div>
-            <div class="text-muted small fw-bold mb-2">Status</div>
+          <div class="my-2 border-top pt-2">
+            <div class="tobe-section-subhead">Other B</div>
+            <div class="tobe-section-subhead">Status</div>
             <div class="mb-2">
-              <label class="form-label small text-muted mb-1">Status *</label>
-              <div class="input-group input-group-sm">
-                <span class="input-group-text bg-white border-end-0">
-                  <span class="tobe-bullet-blue">●</span>
-                </span>
-                <select class="form-select form-select-sm border-start-0" style="color: var(--appsheet-blue); font-weight: 600;">
-                  <option selected>Party Payment Pending</option>
-                  <option>Other B Pending</option>
-                </select>
-              </div>
+              <label class="form-label small text-muted mb-1">Status <span class="text-danger">*</span></label>
+              ${this.renderAppSheetStatusDropdown(t.status || 'Party Payment Pending')}
             </div>
           </div>
         </div>
@@ -647,7 +629,7 @@ const ToBeCreatedModule = {
     `;
   },
 
-  // VARIATION D: PINK ROW (Matching screencapture-...-15_43_51.png) - Single Center Card
+  // VARIATION D: PINK ROW (Matching screencapture-...-15_43_51.png & media_1792580649408_a9b30ceb.png)
   renderPinkTripDetails(t) {
     return `
       <div class="tobe-single-center-card">
@@ -674,30 +656,17 @@ const ToBeCreatedModule = {
           <div class="tobe-field-row align-items-center mb-2">
             <span class="tobe-field-label">Add Records for</span>
             <div class="tobe-field-value">
-              <select class="form-select form-select-sm" style="max-width: 220px;">
-                <option selected></option>
-                <option>Party Payment</option>
-                <option>Other B</option>
-              </select>
+              ${this.renderAppSheetAddRecordsDropdown(t.addRecordsFor || '')}
             </div>
           </div>
           ${this.renderFieldRow('Total Freight', `₹${Number(t.totalFreight || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, 'pink')}
           
-          <div class="fw-bold text-muted small my-2">Other B</div>
-          <div class="fw-bold text-muted small mb-2">Status</div>
+          <div class="tobe-section-subhead">Other B</div>
+          <div class="tobe-section-subhead">Status</div>
           
           <div class="mb-2">
-            <label class="form-label small text-muted mb-1">Status *</label>
-            <div class="input-group input-group-sm">
-              <span class="input-group-text bg-white border-end-0">
-                <span class="tobe-bullet-pink">●</span>
-              </span>
-              <select class="form-select form-select-sm border-start-0" style="color: var(--appsheet-pink); font-weight: 600;">
-                <option selected>Off Loading</option>
-                <option>Transit</option>
-                <option>Other B Pending</option>
-              </select>
-            </div>
+            <label class="form-label small text-muted mb-1">Status <span class="text-danger">*</span></label>
+            ${this.renderAppSheetStatusDropdown(t.status || 'Off Loading')}
           </div>
         </div>
       </div>
@@ -727,6 +696,219 @@ const ToBeCreatedModule = {
         </div>
       </div>
     `;
+  },
+
+  // ==========================================================
+  // APPSHEET CUSTOM DROPDOWNS (Matching media_1792580649374 & media_1792580649401)
+  // ==========================================================
+  getStatusColor(status) {
+    switch (status) {
+      case 'Transit':
+        return { bullet: '#bfa100', text: '#bfa100', name: 'gold' };
+      case 'Off Loading':
+        return { bullet: '#fb0a82', text: '#fb0a82', name: 'pink' };
+      case 'Cheque Due':
+      case 'Party Payment Pending':
+        return { bullet: '#0080ff', text: '#0080ff', name: 'blue' };
+      case 'POD Sent/Bill Generated':
+        return { bullet: '#795298', text: '#795298', name: 'purple' };
+      case 'Other B Pending':
+      default:
+        return { bullet: '#cc0b0b', text: '#cc0b0b', name: 'red' };
+    }
+  },
+
+  renderAppSheetStatusDropdown(currentStatus = 'Transit') {
+    const statusList = [
+      { label: 'Transit', color: '#bfa100' },
+      { label: 'Off Loading', color: '#fb0a82' },
+      { label: 'Cheque Due', color: '#0080ff' },
+      { label: 'POD Sent/Bill Generated', color: '#795298' },
+      { label: 'Other B Pending', color: '#cc0b0b' }
+    ];
+
+    if (currentStatus === 'Party Payment Pending' && !statusList.some(s => s.label === currentStatus)) {
+      statusList.splice(3, 0, { label: 'Party Payment Pending', color: '#0080ff' });
+    }
+
+    const current = statusList.find(s => s.label === currentStatus) || 
+      (currentStatus ? { label: currentStatus, color: this.getStatusColor(currentStatus).text } : { label: '', color: '#5f6368' });
+
+    const menuItems = statusList.map(s => `
+      <div class="appsheet-select-item" onclick="event.stopPropagation(); ToBeCreatedModule.selectStatus('${s.label}')">
+        <span style="color: ${s.color}; font-size: 13px; line-height: 1;">●</span>
+        <span style="color: ${s.color}; font-weight: 600;">${s.label}</span>
+      </div>
+    `).join('');
+
+    return `
+      <div class="appsheet-select-wrapper" id="tobe-status-dropdown-wrapper">
+        <div class="appsheet-select-control" id="tobe-status-control" onclick="ToBeCreatedModule.toggleStatusDropdown(event)">
+          <div class="appsheet-select-display" id="tobe-status-display">
+            ${current.label ? `
+              <span style="color: ${current.color}; font-size: 13px; line-height: 1;">●</span>
+              <span style="color: ${current.color}; font-weight: 600;">${current.label}</span>
+            ` : '<span class="text-muted" style="font-weight: 400;">Select Status</span>'}
+          </div>
+          <div class="appsheet-select-actions">
+            ${current.label ? `<span class="appsheet-clear-icon" title="Close" onclick="event.stopPropagation(); ToBeCreatedModule.clearStatus()">✕</span>` : ''}
+            <span class="appsheet-chevron-icon"><i class="bi bi-chevron-down"></i></span>
+          </div>
+        </div>
+        <div class="appsheet-select-menu d-none" id="tobe-status-menu">
+          ${menuItems}
+        </div>
+      </div>
+    `;
+  },
+
+  renderAppSheetAddRecordsDropdown(currentVal = '') {
+    const options = ['Cheque', 'Party Payment', 'Truck Owner Payment', 'Other B'];
+
+    const menuItems = options.map(opt => `
+      <div class="appsheet-select-item" onclick="event.stopPropagation(); ToBeCreatedModule.selectAddRecord('${opt}')">
+        <span style="color: #202124; font-weight: 500;">${opt}</span>
+      </div>
+    `).join('');
+
+    return `
+      <div class="appsheet-select-wrapper" id="tobe-addrecords-dropdown-wrapper" style="max-width: 170px;">
+        <div class="appsheet-select-control" id="tobe-addrecords-control" onclick="ToBeCreatedModule.toggleAddRecordsDropdown(event)">
+          <div class="appsheet-select-display" id="tobe-addrecords-display">
+            ${currentVal ? `<span style="color: #202124; font-weight: 600;">${currentVal}</span>` : '<span class="text-muted" style="font-weight: 400;">Select</span>'}
+          </div>
+          <div class="appsheet-select-actions">
+            ${currentVal ? `<span class="appsheet-clear-icon" title="Close" onclick="event.stopPropagation(); ToBeCreatedModule.clearAddRecords()">✕</span>` : ''}
+            <span class="appsheet-chevron-icon"><i class="bi bi-chevron-down"></i></span>
+          </div>
+        </div>
+        <div class="appsheet-select-menu d-none" id="tobe-addrecords-menu">
+          ${menuItems}
+        </div>
+      </div>
+    `;
+  },
+
+  toggleStatusDropdown(event) {
+    if (event) event.stopPropagation();
+    const menu = document.getElementById('tobe-status-menu');
+    const control = document.getElementById('tobe-status-control');
+    const otherMenu = document.getElementById('tobe-addrecords-menu');
+    const otherControl = document.getElementById('tobe-addrecords-control');
+
+    if (otherMenu) otherMenu.classList.add('d-none');
+    if (otherControl) otherControl.classList.remove('open');
+
+    if (menu) {
+      const isClosed = menu.classList.contains('d-none');
+      if (isClosed) {
+        menu.classList.remove('d-none');
+        if (control) control.classList.add('open');
+      } else {
+        menu.classList.add('d-none');
+        if (control) control.classList.remove('open');
+      }
+    }
+  },
+
+  toggleAddRecordsDropdown(event) {
+    if (event) event.stopPropagation();
+    const menu = document.getElementById('tobe-addrecords-menu');
+    const control = document.getElementById('tobe-addrecords-control');
+    const otherMenu = document.getElementById('tobe-status-menu');
+    const otherControl = document.getElementById('tobe-status-control');
+
+    if (otherMenu) otherMenu.classList.add('d-none');
+    if (otherControl) otherControl.classList.remove('open');
+
+    if (menu) {
+      const isClosed = menu.classList.contains('d-none');
+      if (isClosed) {
+        menu.classList.remove('d-none');
+        if (control) control.classList.add('open');
+      } else {
+        menu.classList.add('d-none');
+        if (control) control.classList.remove('open');
+      }
+    }
+  },
+
+  closeAllAppSheetDropdowns() {
+    const statusMenu = document.getElementById('tobe-status-menu');
+    const statusControl = document.getElementById('tobe-status-control');
+    const addMenu = document.getElementById('tobe-addrecords-menu');
+    const addControl = document.getElementById('tobe-addrecords-control');
+
+    if (statusMenu) statusMenu.classList.add('d-none');
+    if (statusControl) statusControl.classList.remove('open');
+    if (addMenu) addMenu.classList.add('d-none');
+    if (addControl) addControl.classList.remove('open');
+  },
+
+  selectStatus(newStatus) {
+    this.closeAllAppSheetDropdowns();
+    if (this.activeTrip) {
+      this.activeTrip.status = newStatus;
+      if (newStatus === 'Transit') this.activeTrip.color = 'gold';
+      else if (newStatus === 'Off Loading') this.activeTrip.color = 'pink';
+      else if (newStatus === 'Cheque Due' || newStatus === 'Party Payment Pending') this.activeTrip.color = 'blue';
+      else if (newStatus === 'Other B Pending') this.activeTrip.color = 'red';
+      
+      const tripInList = this.dueTrips.find(t => t.grNo === this.activeTrip.grNo);
+      if (tripInList) {
+        tripInList.status = newStatus;
+        tripInList.color = this.activeTrip.color;
+      }
+
+      this.renderTripDetailsView();
+
+      if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+        AppUI.showToast(`Trip Status changed to ${newStatus}`, 'success');
+      }
+    }
+  },
+
+  clearStatus() {
+    this.closeAllAppSheetDropdowns();
+    if (this.activeTrip) {
+      this.activeTrip.status = '';
+      this.renderTripDetailsView();
+    }
+  },
+
+  selectAddRecord(recordType) {
+    this.closeAllAppSheetDropdowns();
+    if (this.activeTrip) {
+      this.activeTrip.addRecordsFor = recordType;
+      const tripInList = this.dueTrips.find(t => t.grNo === this.activeTrip.grNo);
+      if (tripInList) {
+        tripInList.addRecordsFor = recordType;
+      }
+    }
+
+    if (recordType === 'Party Payment') {
+      this.openConsigneePaymentDrawer();
+    } else if (recordType === 'Other B') {
+      this.openAddOtherBPaymentDrawer();
+    } else if (recordType === 'Cheque') {
+      this.openAuthDrawer(this.activeTrip ? this.activeTrip.grNo : '');
+    } else if (recordType === 'Truck Owner Payment') {
+      this.openAuthDrawer(this.activeTrip ? this.activeTrip.grNo : '');
+    }
+
+    if (this.viewMode === 'trip-details') {
+      this.renderTripDetailsView();
+    }
+  },
+
+  clearAddRecords() {
+    this.closeAllAppSheetDropdowns();
+    if (this.activeTrip) {
+      this.activeTrip.addRecordsFor = '';
+      if (this.viewMode === 'trip-details') {
+        this.renderTripDetailsView();
+      }
+    }
   },
 
   // ==========================================================
