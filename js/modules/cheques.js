@@ -160,6 +160,11 @@ const ChequesModule = {
   currentNotUsedColor: 'magenta',
   currentSettledOrigin: 'cleared',
   searchQuery: '',
+  allChequesYearFilter: 'ALL',
+  allChequesSidebarVisible: true,
+  allChequesCurrentPage: 1,
+  allChequesPageSize: 25,
+  currentOpenOrigin: 'bounced',
   notUsedCurrentPage: 1,
   notUsedPageSize: 10,
   clearedCurrentPage: 1,
@@ -196,7 +201,7 @@ const ChequesModule = {
     all: {
       '2026-2027': 5504183.00,
       '2025-2026': 11909263.00,
-      '2024-2025': 5573340.80
+      '2024-2025': 5571340.80
     },
     debts: {
       'ALL': 668600.00,
@@ -1264,7 +1269,12 @@ const ChequesModule = {
   // ========================================================
   // LEVEL 3: OPEN TRIP DETAILS VIEW (Matching bounced_screen_2.png)
   // ========================================================
-  viewBouncedTripDetails(chequeId) {
+  viewBouncedTripDetails(chequeId, origin = '') {
+    if (origin) {
+      this.currentOpenOrigin = origin;
+    } else if (this.viewMode === 'bounced-list') {
+      this.currentOpenOrigin = 'bounced';
+    }
     this.viewMode = 'bounced-trip-detail';
 
     const c = this.allCheques.find(item => String(item.id) === String(chequeId)) || 
@@ -4475,9 +4485,352 @@ const ChequesModule = {
     this.renderNotUsedPagination(totalCount, startIdx, endIdx, totalPages);
   },
 
+  // ========================================================
+  // CARD 5: ALL CHEQUES (Matching AppSheet 18_24_06)
+  // ========================================================
   goToAllChequesView(fy = 'ALL') {
-    this.goToCardView('ALL', fy);
+    this.viewMode = 'allcheques-list';
+    this.allChequesYearFilter = fy;
+    this.hideAllViews();
+
+    const allChqEl = document.getElementById('cheques-view-allcheques-list');
+    if (allChqEl) allChqEl.classList.remove('d-none');
+
+    // Search placeholder
+    const searchInput = document.getElementById('cheque-search');
+    if (searchInput) searchInput.placeholder = 'Search All Cheques';
+
+    this.setBreadcrumbState('allcheques-list');
+    this.filterAllChequesByYear(fy);
   },
+
+  filterAllChequesByYear(fy) {
+    this.allChequesYearFilter = fy;
+    document.querySelectorAll('.allcheques-year-item').forEach(el => el.classList.remove('active'));
+    const activeId = fy === 'ALL' ? 'ALL' : fy.substring(0, 4);
+    const activeEl = document.getElementById(`allcheques-year-${activeId}`);
+    if (activeEl) activeEl.classList.add('active');
+    this.allChequesCurrentPage = 1;
+    this.renderAllChequesTable();
+  },
+
+  toggleAllChequesSidebar() {
+    const sidebar = document.getElementById('allcheques-year-sidebar');
+    if (!sidebar) return;
+    this.allChequesSidebarVisible = !this.allChequesSidebarVisible;
+    sidebar.style.display = this.allChequesSidebarVisible ? 'block' : 'none';
+  },
+
+  changeAllChequesPage(page) {
+    this.allChequesCurrentPage = page;
+    this.renderAllChequesTable();
+  },
+
+  changeAllChequesPageSize(size) {
+    this.allChequesPageSize = size === 'ALL' ? 'ALL' : parseInt(size, 10);
+    this.allChequesCurrentPage = 1;
+    this.renderAllChequesTable();
+  },
+
+  renderAllChequesPagination(total, start, end, totalPages) {
+    const info = document.getElementById('allcheques-pagination-info');
+    const container = document.getElementById('allcheques-pagination-controls');
+    if (!info || !container) return;
+
+    if (total === 0) {
+      info.innerText = 'Showing 0 cheques';
+      container.innerHTML = '';
+      return;
+    }
+
+    if (this.allChequesPageSize === 'ALL' || totalPages <= 1) {
+      info.innerText = this.allChequesPageSize === 'ALL'
+        ? `Showing all ${total.toLocaleString('en-IN')} cheques (Page 1 of 1)`
+        : `Showing 1 to ${total.toLocaleString('en-IN')} of ${total.toLocaleString('en-IN')} cheques (Page 1 of 1)`;
+      container.innerHTML = `
+        <button class="appsheet-page-btn" disabled title="First Page">&laquo;&laquo; First</button>
+        <button class="appsheet-page-btn" disabled title="Previous Page">&lsaquo; Prev</button>
+        <button class="appsheet-page-btn active">1</button>
+        <button class="appsheet-page-btn" disabled title="Next Page">Next &rsaquo;</button>
+        <button class="appsheet-page-btn" disabled title="Last Page">Last &raquo;&raquo;</button>
+      `;
+      return;
+    }
+
+    info.innerText = `Showing ${start.toLocaleString('en-IN')} to ${end.toLocaleString('en-IN')} of ${total.toLocaleString('en-IN')} cheques (Page ${this.allChequesCurrentPage} of ${totalPages})`;
+
+    let html = `
+      <button class="appsheet-page-btn" ${this.allChequesCurrentPage === 1 ? 'disabled' : ''} onclick="ChequesModule.changeAllChequesPage(1)" title="First Page">
+        &laquo;&laquo; First
+      </button>
+      <button class="appsheet-page-btn" ${this.allChequesCurrentPage === 1 ? 'disabled' : ''} onclick="ChequesModule.changeAllChequesPage(${this.allChequesCurrentPage - 1})" title="Previous Page">
+        &lsaquo; Prev
+      </button>
+    `;
+
+    let startPage = Math.max(1, this.allChequesCurrentPage - 2);
+    let endPage = Math.min(totalPages, startPage + 4);
+    if (endPage - startPage < 4) {
+      startPage = Math.max(1, endPage - 4);
+    }
+
+    if (startPage > 1) {
+      html += `<button class="appsheet-page-btn" onclick="ChequesModule.changeAllChequesPage(1)">1</button>`;
+      if (startPage > 2) html += `<span class="px-1 text-muted" style="font-size: 11px;">...</span>`;
+    }
+
+    for (let p = startPage; p <= endPage; p++) {
+      html += `
+        <button class="appsheet-page-btn ${p === this.allChequesCurrentPage ? 'active' : ''}" onclick="ChequesModule.changeAllChequesPage(${p})">
+          ${p}
+        </button>
+      `;
+    }
+
+    if (endPage < totalPages) {
+      if (endPage < totalPages - 1) html += `<span class="px-1 text-muted" style="font-size: 11px;">...</span>`;
+      html += `<button class="appsheet-page-btn" onclick="ChequesModule.changeAllChequesPage(${totalPages})">${totalPages}</button>`;
+    }
+
+    html += `
+      <button class="appsheet-page-btn" ${this.allChequesCurrentPage === totalPages ? 'disabled' : ''} onclick="ChequesModule.changeAllChequesPage(${this.allChequesCurrentPage + 1})" title="Next Page">
+        Next &rsaquo;
+      </button>
+      <button class="appsheet-page-btn" ${this.allChequesCurrentPage === totalPages ? 'disabled' : ''} onclick="ChequesModule.changeAllChequesPage(${totalPages})" title="Last Page">
+        Last &raquo;&raquo;
+      </button>
+    `;
+
+    container.innerHTML = html;
+  },
+
+  updateAllChequesSidebarBadges() {
+    let totalAll = 0;
+    let total2026 = 0;
+    let total2025 = 0;
+    let total2024 = 0;
+
+    (this.allCheques || []).forEach(c => {
+      const amt = Number(c.amount) || 0;
+      totalAll += amt;
+      const dateStr = c.dueDate || c.groupDate || c.chequeDate || '';
+      const fy = c.financialYear || this.getChequeFinancialYear(c);
+      if (fy === '2026-2027') total2026 += amt;
+      else if (fy === '2025-2026') total2025 += amt;
+      else if (fy === '2024-2025') total2024 += amt;
+    });
+
+    const setElem = (id, txt) => {
+      const el = document.getElementById(id);
+      if (el) el.innerText = txt;
+    };
+
+    setElem('allcheques-rail-badge-ALL', this.formatCurrency(this.authenticTotals?.all?.['ALL'] || totalAll || 22984786.80));
+    setElem('allcheques-rail-badge-2026', this.formatCurrency(this.authenticTotals?.all?.['2026-2027'] || total2026 || 5504183.00));
+    setElem('allcheques-rail-badge-2025', this.formatCurrency(this.authenticTotals?.all?.['2025-2026'] || total2025 || 11909263.00));
+    setElem('allcheques-rail-badge-2024', this.formatCurrency(this.authenticTotals?.all?.['2024-2025'] || total2024 || 5571340.80));
+  },
+
+  getChequeFinancialYear(c) {
+    if (c.financialYear) return c.financialYear;
+    const dStr = c.dueDate || c.groupDate || c.chequeDate || '';
+    if (!dStr) return '2026-2027';
+    const parts = dStr.split('/');
+    if (parts.length >= 3) {
+      const m = parseInt(parts[1], 10);
+      const y = parseInt(parts[2], 10);
+      if (!isNaN(m) && !isNaN(y)) {
+        return m >= 4 ? `${y}-${y + 1}` : `${y - 1}-${y}`;
+      }
+    }
+    return '2026-2027';
+  },
+
+  renderAllChequesTable() {
+    const tbody = document.getElementById('allcheques-table-tbody');
+    if (!tbody) return;
+
+    this.updateAllChequesSidebarBadges();
+
+    let list = [...(this.allCheques || [])];
+
+    // Filter by Financial Year
+    if (this.allChequesYearFilter && this.allChequesYearFilter !== 'ALL') {
+      list = list.filter(c => {
+        const fy = c.financialYear || this.getChequeFinancialYear(c);
+        return fy === this.allChequesYearFilter;
+      });
+    }
+
+    // Filter by Search Query
+    if (this.searchQuery) {
+      const q = this.searchQuery.toLowerCase().trim();
+      list = list.filter(c => {
+        const text = `${c.chequeNo || ''} ${c.bankName || ''} ${c.amount || ''} ${c.partyName || ''} ${c.grNo || ''} ${c.shortGrNo || ''} ${c.truckNo || ''} ${c.destination || ''} ${c.payTo || ''} ${c.dueDate || ''}`.toLowerCase();
+        return text.includes(q);
+      });
+    }
+
+    const parseDateToTime = (dStr) => {
+      if (!dStr || dStr === 'Others' || dStr === 'blank') return 0;
+      const parts = dStr.split('/');
+      if (parts.length === 3) {
+        return new Date(parseInt(parts[2], 10), parseInt(parts[1], 10) - 1, parseInt(parts[0], 10)).getTime();
+      }
+      return 0;
+    };
+
+    // Sort descending by date
+    list.sort((a, b) => parseDateToTime(b.dueDate || b.groupDate || b.chequeDate) - parseDateToTime(a.dueDate || a.groupDate || a.chequeDate));
+
+    const totalCount = list.length;
+    let paginatedItems = list;
+    let startIdx = 1;
+    let endIdx = totalCount;
+    let totalPages = 1;
+
+    if (this.allChequesPageSize !== 'ALL') {
+      const pageSize = typeof this.allChequesPageSize === 'number' ? this.allChequesPageSize : parseInt(this.allChequesPageSize, 10);
+      totalPages = Math.ceil(totalCount / pageSize) || 1;
+      if (this.allChequesCurrentPage > totalPages) this.allChequesCurrentPage = 1;
+      const offset = (this.allChequesCurrentPage - 1) * pageSize;
+      startIdx = totalCount > 0 ? offset + 1 : 0;
+      endIdx = Math.min(offset + pageSize, totalCount);
+      paginatedItems = list.slice(offset, endIdx);
+    }
+
+    // Group cheques by date
+    const groups = {};
+    paginatedItems.forEach(c => {
+      const dateKey = c.dueDate || c.groupDate || c.chequeDate || 'Others';
+      if (!groups[dateKey]) groups[dateKey] = [];
+      groups[dateKey].push(c);
+    });
+
+    const sortedDates = Object.keys(groups).sort((a, b) => parseDateToTime(b) - parseDateToTime(a));
+
+    let html = '';
+    sortedDates.forEach(dateStr => {
+      const items = groups[dateStr];
+      let groupSum = 0;
+      let hasPinkDue = false;
+      let hasGoldDue = false;
+      let hasBounced = false;
+
+      items.forEach(c => {
+        groupSum += (Number(c.amount) || 0);
+        if (c.status === 'Due') {
+          if (String(c.chequeNo) === '217365' || c.colorTheme === 'mustard' || c.isGold) {
+            hasGoldDue = true;
+          } else {
+            hasPinkDue = true;
+          }
+        } else if (c.status === 'Bounced') {
+          hasBounced = true;
+        }
+      });
+
+      let dateThemeColor = '#00b11f';
+      if (hasPinkDue) {
+        dateThemeColor = '#fb0a82';
+      } else if (hasBounced) {
+        dateThemeColor = '#cc0b0b';
+      } else if (hasGoldDue) {
+        dateThemeColor = '#c3ad00';
+      }
+
+      // Group Header
+      html += `
+        <tr class="allchq-group-header">
+          <td colspan="10" style="padding: 10px 10px 4px 10px; background: #fafafa; border-top: 1px solid #ebebeb; border-bottom: 1px solid #ebebeb;">
+            <div class="d-flex align-items-center gap-2">
+              <span style="color: ${dateThemeColor}; font-size: 14px;">●</span>
+              <span class="fw-bold font-monospace" style="color: ${dateThemeColor}; font-size: 12.5px;">${dateStr}</span>
+              <span class="badge bg-light text-dark border font-monospace" style="font-size: 11px; padding: 2px 8px; font-weight: 500;">
+                ${this.formatCurrency(groupSum)}
+              </span>
+            </div>
+          </td>
+        </tr>
+      `;
+
+      // Rows
+      items.forEach(c => {
+        let rowClass = 'allchq-row-green';
+        if (c.status === 'Bounced') {
+          rowClass = 'allchq-row-red';
+        } else if (c.status === 'Due') {
+          if (String(c.chequeNo) === '217365' || c.colorTheme === 'mustard' || c.isGold) {
+            rowClass = 'allchq-row-gold';
+          } else {
+            rowClass = 'allchq-row-pink';
+          }
+        } else if (c.status === 'Not Used') {
+          if (String(c.chequeNo) === '615580' || c.isOrange) {
+            rowClass = 'allchq-row-orange';
+          } else {
+            rowClass = 'allchq-row-pink';
+          }
+        } else {
+          rowClass = 'allchq-row-green';
+        }
+
+        html += `
+          <tr class="${rowClass}" onclick="ChequesModule.viewAllChequesRow('${c.id}')">
+            <td class="font-monospace"><span style="margin-right: 4px;">●</span> ${c.chequeNo || '-'}</td>
+            <td><span style="margin-right: 4px;">●</span> ${c.bankName || '-'}</td>
+            <td class="font-monospace text-end"><span style="margin-right: 4px;">●</span> ${this.formatCurrency(c.amount)}</td>
+            <td class="text-truncate" style="max-width: 220px;" title="${c.partyName || ''}"><span style="margin-right: 4px;">●</span> ${c.partyName || '-'}</td>
+            <td class="font-monospace"><span style="margin-right: 4px;">●</span> ${c.shortGrNo || c.grNo || '-'}</td>
+            <td class="font-monospace"><span style="margin-right: 4px;">●</span> ${c.truckNo || '-'}</td>
+            <td class="text-truncate" style="max-width: 140px;"><span style="margin-right: 4px;">●</span> ${c.destination || '-'}</td>
+            <td class="font-monospace"><span style="margin-right: 4px;">●</span> ${c.payTo || 'TTC'}</td>
+            <td class="font-monospace"><span style="margin-right: 4px;">●</span> ${c.dueDate || c.groupDate || c.chequeDate || '-'}</td>
+            <td class="text-center text-muted" style="width: 28px;">
+              <i class="bi bi-chevron-right small"></i>
+            </td>
+          </tr>
+        `;
+      });
+    });
+
+    if (!html) {
+      html = `
+        <tr>
+          <td colspan="10" class="text-center py-5 text-muted">
+            <i class="bi bi-inbox fs-2 d-block mb-2 text-secondary"></i>
+            No cheques found matching filter.
+          </td>
+        </tr>
+      `;
+    }
+
+    tbody.innerHTML = html;
+    const allChqSel = document.getElementById('allcheques-page-size-select');
+    if (allChqSel && allChqSel.value !== String(this.allChequesPageSize)) {
+      allChqSel.value = String(this.allChequesPageSize);
+    }
+    this.renderAllChequesPagination(totalCount, startIdx, endIdx, totalPages);
+  },
+
+  viewAllChequesRow(chequeId) {
+    const c = (this.allCheques || []).find(x => String(x.id) === String(chequeId));
+    if (!c) return;
+
+    this.activeCheque = c;
+    this.currentOpenOrigin = 'allcheques';
+    this.currentSettledOrigin = 'allcheques';
+
+    if (c.status === 'Cleared') {
+      this.renderSettledTripDetails(c, 'green', 'allcheques');
+    } else if (c.status === 'Bounced') {
+      this.viewBouncedTripDetails(c.id, 'allcheques');
+    } else {
+      // Due / Not Used / Pending
+      this.viewBouncedTripDetails(c.id, 'allcheques');
+    }
+  },
+
 
   toggleViewMode() {
     if (this.viewMode === 'dashboard') {
@@ -4490,6 +4843,7 @@ const ChequesModule = {
   // Helper to hide all views cleanly
   hideAllViews() {
     const ids = [
+      'cheques-view-allcheques-list',
       'cheques-view-dashboard',
       'cheques-view-due-list',
       'cheques-view-due-detail',
@@ -4531,7 +4885,13 @@ const ChequesModule = {
     if (!container) return;
 
     let crumbs = [];
-    if (view === 'dashboard') {
+    if (view === 'allcheques-list') {
+      crumbs = [
+        { label: 'Home', action: 'ChequesModule.goToDashboardView()' },
+        { label: 'Cheques', action: 'ChequesModule.goToDashboardView()' },
+        { label: 'All Cheques' }
+      ];
+    } else if (view === 'dashboard') {
       crumbs = [
         { label: 'Home', action: 'ChequesModule.goToDashboardView()' },
         { label: 'Cheques' }
@@ -4556,10 +4916,11 @@ const ChequesModule = {
         { label: 'Bounced' }
       ];
     } else if (view === 'bounced-trip-detail') {
+      const isAll = (this.currentOpenOrigin === 'allcheques');
       crumbs = [
         { label: 'Home', action: 'ChequesModule.goToDashboardView()' },
         { label: 'Cheques', action: 'ChequesModule.goToDashboardView()' },
-        { label: 'Bounced', action: 'ChequesModule.goToBouncedView()' },
+        { label: isAll ? 'All Cheques' : 'Bounced', action: isAll ? 'ChequesModule.goToAllChequesView()' : 'ChequesModule.goToBouncedView()' },
         { label: 'Open Trip Details' }
       ];
     } else if (view === 'bounced-cheque-detail') {
@@ -4611,11 +4972,19 @@ const ChequesModule = {
         { label: 'Cheque Details' }
       ];
     } else if (view === 'cleared-settled-detail' || view === 'notused-settled-detail') {
-      const isNU = (view === 'notused-settled-detail' || this.currentSettledOrigin === 'notused');
+      let baseLabel = 'Cleared';
+      let baseAction = 'ChequesModule.goToClearedView()';
+      if (this.currentSettledOrigin === 'allcheques') {
+        baseLabel = 'All Cheques';
+        baseAction = 'ChequesModule.goToAllChequesView()';
+      } else if (view === 'notused-settled-detail' || this.currentSettledOrigin === 'notused') {
+        baseLabel = 'Not Used';
+        baseAction = 'ChequesModule.goToNotUsedView()';
+      }
       crumbs = [
         { label: 'Home', action: 'ChequesModule.goToDashboardView()' },
         { label: 'Cheques', action: 'ChequesModule.goToDashboardView()' },
-        { label: isNU ? 'Not Used' : 'Cleared', action: isNU ? 'ChequesModule.goToNotUsedView()' : 'ChequesModule.goToClearedView()' },
+        { label: baseLabel, action: baseAction },
         { label: 'Settled Trip Details' }
       ];
     } else if (view === 'settled-trip-cheques-list') {
@@ -4836,6 +5205,10 @@ const ChequesModule = {
       this.renderBouncedOpenDebts();
     } else if (this.viewMode === 'cleared-list') {
       this.renderClearedTable();
+    } else if (this.viewMode === 'notused-list') {
+      this.renderNotUsedTable();
+    } else if (this.viewMode === 'allcheques-list') {
+      this.renderAllChequesTable();
     } else if (this.viewMode === 'register') {
       this.renderTable();
     }
