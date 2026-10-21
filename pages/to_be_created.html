@@ -20,8 +20,11 @@
       --appsheet-border: #dadce0;
       --appsheet-border-light: #f1f3f4;
       --appsheet-gold: #c2aa48;
+      --appsheet-gold-text: #bfa100;
       --appsheet-green: #00b11f;
       --appsheet-red: #cc0b0b;
+      --appsheet-pink: #fb0a82;
+      --appsheet-blue: #0080ff;
     }
 
     body {
@@ -106,15 +109,22 @@
       gap: 12px;
     }
 
-    .btn-hamburger {
-      background: transparent;
+    .appsheet-icon-btn {
+      background: none;
       border: none;
-      font-size: 19px;
-      color: #3c4043;
+      color: var(--appsheet-muted);
+      font-size: 18px;
       cursor: pointer;
-      padding: 0;
+      padding: 4px;
+      border-radius: 4px;
       display: flex;
       align-items: center;
+      justify-content: center;
+    }
+
+    .appsheet-icon-btn:hover {
+      background: #f1f3f4;
+      color: #202124;
     }
 
     .appsheet-brand-title {
@@ -180,59 +190,93 @@
       justify-content: center;
     }
 
-    /* 4. Sub-header & Breadcrumb */
-    .appsheet-sub-bar {
+    /* 4. Subheader Breadcrumb Bar */
+    .appsheet-breadcrumb-bar {
       background: #ffffff;
       border-bottom: 1px solid var(--appsheet-border);
-      padding: 6px 16px;
-      height: 38px;
+      padding: 8px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      font-size: 13px;
+      min-height: 40px;
     }
 
     .appsheet-breadcrumb {
-      font-size: 12px;
-      color: var(--appsheet-muted);
       display: flex;
       align-items: center;
       gap: 6px;
-      font-weight: 500;
+      color: var(--appsheet-muted);
+      margin: 0;
+      padding: 0;
+      list-style: none;
     }
 
     .appsheet-breadcrumb a {
       color: var(--appsheet-muted);
       text-decoration: none;
+      font-weight: 400;
+      cursor: pointer;
     }
 
     .appsheet-breadcrumb a:hover {
+      color: var(--appsheet-text);
       text-decoration: underline;
     }
 
-    .appsheet-breadcrumb span.active {
-      color: var(--appsheet-text);
+    .appsheet-breadcrumb .active {
+      color: #202124;
       font-weight: 600;
     }
 
-    .appsheet-view-toggle {
-      color: var(--appsheet-muted);
-      cursor: pointer;
-      font-size: 15px;
-      display: flex;
-      align-items: center;
+    .breadcrumb-separator {
+      font-size: 11px;
+      color: #80868b;
     }
 
-    /* 5. 3-Cards Dashboard Layout (Matching media_1792575375498_f5f668db.png) */
+    .breadcrumb-tools {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #5f6368;
+    }
+
+    .breadcrumb-tools i {
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    .btn-appsheet-gold {
+      background-color: var(--appsheet-gold);
+      color: #ffffff;
+      border: none;
+      font-weight: 500;
+      font-size: 12px;
+      padding: 3px 12px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: background 0.15s;
+    }
+
+    .btn-appsheet-gold:hover {
+      background-color: #a88d3d;
+      color: #ffffff;
+    }
+
+    /* 5. Dashboard 3 Cards Layout */
     .tobe-dashboard-container {
-      padding: 12px 16px;
+      padding: 16px;
       flex: 1;
     }
 
     .tobe-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
+      gap: 16px;
       align-items: stretch;
+      min-height: calc(100vh - 120px);
     }
 
     @media (max-width: 992px) {
@@ -244,16 +288,28 @@
     .tobe-card {
       background: var(--appsheet-card-bg);
       border: 1px solid var(--appsheet-border);
-      border-radius: 6px;
-      box-shadow: 0 1px 2px rgba(60,64,67,0.06);
+      border-radius: 4px;
+      box-shadow: 0 1px 2px rgba(60, 64, 67, 0.08);
       display: flex;
       flex-direction: column;
-      min-height: calc(100vh - 125px);
       position: relative;
+      background-clip: padding-box;
+    }
+
+    .tobe-card::after {
+      content: '';
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      width: 7px;
+      height: 7px;
+      border-right: 1.5px solid #bdc1c6;
+      border-bottom: 1.5px solid #bdc1c6;
+      pointer-events: none;
     }
 
     .tobe-card-header {
-      padding: 12px 14px 6px 14px;
+      padding: 12px 14px 8px 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -272,28 +328,19 @@
       gap: 10px;
       color: #5f6368;
       font-size: 13px;
-    }
-
-    .tobe-card-tools i {
       cursor: pointer;
-    }
-
-    .tobe-card-tools i:hover {
-      color: #202124;
     }
 
     .tobe-card-subheader {
       padding: 2px 14px 8px 14px;
-      font-size: 11px;
-      font-weight: 600;
-      color: #5f6368;
-      user-select: none;
+      font-size: 11.5px;
+      color: var(--appsheet-muted);
+      font-weight: 400;
     }
 
     .tobe-rows-list {
       display: flex;
       flex-direction: column;
-      width: 100%;
     }
 
     .tobe-row-item {
@@ -318,37 +365,15 @@
       gap: 8px;
     }
 
-    .tobe-bullet-red {
-      color: var(--appsheet-red);
-      font-size: 10px;
-      line-height: 1;
-    }
+    .tobe-bullet-red { color: var(--appsheet-red); font-size: 10px; line-height: 1; }
+    .tobe-bullet-green { color: var(--appsheet-green); font-size: 10px; line-height: 1; }
+    .tobe-bullet-gold { color: var(--appsheet-gold-text); font-size: 10px; line-height: 1; }
+    .tobe-bullet-pink { color: var(--appsheet-pink); font-size: 10px; line-height: 1; }
+    .tobe-bullet-blue { color: var(--appsheet-blue); font-size: 10px; line-height: 1; }
 
-    .tobe-bullet-green {
-      color: var(--appsheet-green);
-      font-size: 10px;
-      line-height: 1;
-    }
-
-    .tobe-label-all {
-      font-size: 12.5px;
-      font-weight: 500;
-      color: #202124;
-    }
-
-    .tobe-label-red {
-      font-size: 12.5px;
-      font-weight: 700;
-      color: var(--appsheet-red);
-      font-family: inherit;
-    }
-
-    .tobe-label-green {
-      font-size: 12.5px;
-      font-weight: 700;
-      color: var(--appsheet-green);
-      font-family: inherit;
-    }
+    .tobe-label-all { font-size: 12.5px; font-weight: 500; color: #202124; }
+    .tobe-label-red { font-size: 12.5px; font-weight: 700; color: var(--appsheet-red); }
+    .tobe-label-green { font-size: 12.5px; font-weight: 700; color: var(--appsheet-green); }
 
     .tobe-badge-pill {
       background: #f1f3f4;
@@ -368,22 +393,228 @@
       opacity: 0.85;
     }
 
-    /* Resize handle indicator at bottom right of card (matching AppSheet screenshot) */
-    .tobe-card::after {
-      content: '';
-      position: absolute;
-      bottom: 2px;
-      right: 2px;
-      width: 7px;
-      height: 7px;
-      border-right: 1.5px solid #bdc1c6;
-      border-bottom: 1.5px solid #bdc1c6;
-      pointer-events: none;
+    /* 6. Other B Due Main List View (2-Panel layout) */
+    .tobe-list-view-container {
+      display: flex;
+      min-height: calc(100vh - 88px);
+      background: #ffffff;
     }
 
-    /* Offcanvas Sidebar */
-    .appsheet-drawer {
-      width: 280px;
+    .tobe-list-left-rail {
+      width: 175px;
+      border-right: 1px solid var(--appsheet-border);
+      background: #ffffff;
+      padding-top: 8px;
+      flex-shrink: 0;
+    }
+
+    .tobe-list-rail-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      font-size: 12px;
+      color: #202124;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+      transition: background 0.15s;
+    }
+
+    .tobe-list-rail-item:hover {
+      background: #f1f3f4;
+    }
+
+    .tobe-list-rail-item.active {
+      background: #fef7e0;
+      border-left: 3px solid #b06000;
+      font-weight: 600;
+    }
+
+    .tobe-list-table-container {
+      flex: 1;
+      overflow-x: auto;
+      background: #ffffff;
+    }
+
+    .appsheet-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .appsheet-table th {
+      background: #ffffff;
+      color: #5f6368;
+      font-weight: 600;
+      font-size: 11px;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--appsheet-border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      text-align: left;
+    }
+
+    .appsheet-table td {
+      padding: 7px 12px;
+      border-bottom: 1px solid #f1f3f4;
+      vertical-align: middle;
+      font-size: 11.5px;
+    }
+
+    .appsheet-table tr.tobe-data-row {
+      cursor: pointer;
+      transition: background 0.1s ease-in-out;
+    }
+
+    .appsheet-table tr.tobe-data-row:hover {
+      background-color: #f8f9fa;
+    }
+
+    /* Multi-color row styling */
+    .row-color-red { color: var(--appsheet-red); }
+    .row-color-red td { color: var(--appsheet-red); }
+    .row-color-red .bullet { color: var(--appsheet-red); }
+
+    .row-color-gold { color: var(--appsheet-gold-text); }
+    .row-color-gold td { color: var(--appsheet-gold-text); }
+    .row-color-gold .bullet { color: var(--appsheet-gold-text); }
+
+    .row-color-pink { color: var(--appsheet-pink); }
+    .row-color-pink td { color: var(--appsheet-pink); }
+    .row-color-pink .bullet { color: var(--appsheet-pink); }
+
+    .row-color-blue { color: var(--appsheet-blue); }
+    .row-color-blue td { color: var(--appsheet-blue); }
+    .row-color-blue .bullet { color: var(--appsheet-blue); }
+
+    .tobe-date-group-header {
+      background-color: #f8f9fa;
+      font-weight: 600;
+      font-size: 11.5px;
+      color: #3c4043;
+      padding: 5px 12px;
+      border-top: 1px solid var(--appsheet-border);
+      border-bottom: 1px solid var(--appsheet-border);
+    }
+
+    /* 7. Open Trip Details (Cards view) */
+    .tobe-details-container {
+      padding: 16px;
+      background: var(--appsheet-bg);
+      min-height: calc(100vh - 88px);
+    }
+
+    .tobe-details-grid-3 {
+      display: grid;
+      grid-template-columns: 1.15fr 1.25fr 0.9fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    @media (max-width: 1100px) {
+      .tobe-details-grid-3 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .tobe-details-card {
+      background: #ffffff;
+      border: 1px solid var(--appsheet-border);
+      border-radius: 4px;
+      padding: 14px 16px;
+      box-shadow: 0 1px 2px rgba(60, 64, 67, 0.05);
+    }
+
+    .tobe-field-row {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 10px;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .tobe-field-label {
+      width: 140px;
+      color: var(--appsheet-muted);
+      flex-shrink: 0;
+    }
+
+    .tobe-field-value {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
+    }
+
+    .phone-icon-btn {
+      color: #cc0b0b;
+      margin-left: auto;
+      font-size: 12px;
+      text-decoration: none;
+    }
+
+    .phone-icon-btn.gold { color: var(--appsheet-gold-text); }
+    .phone-icon-btn.blue { color: var(--appsheet-blue); }
+    .phone-icon-btn.pink { color: var(--appsheet-pink); }
+
+    .details-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11.5px;
+      margin-top: 6px;
+    }
+
+    .details-table th {
+      color: #5f6368;
+      font-weight: 600;
+      font-size: 11px;
+      padding: 6px 8px;
+      border-bottom: 1px solid var(--appsheet-border);
+      text-align: left;
+    }
+
+    .details-table td {
+      padding: 8px 8px;
+      border-bottom: 1px solid #f1f3f4;
+      vertical-align: middle;
+    }
+
+    .card-footer-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 16px;
+      padding-top: 10px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .card-footer-actions a {
+      color: #a88d3d;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .card-footer-actions a:hover {
+      text-decoration: underline;
+    }
+
+    /* Single Card for Pink Row */
+    .tobe-single-center-card {
+      max-width: 680px;
+      margin: 0 auto;
+      background: #ffffff;
+      border: 1px solid var(--appsheet-border);
+      border-radius: 4px;
+      padding: 20px 24px;
+      box-shadow: 0 1px 2px rgba(60, 64, 67, 0.05);
+    }
+
+    /* Offcanvas */
+    .offcanvas-appsheet {
+      width: 440px !important;
     }
   </style>
 </head>
@@ -399,35 +630,34 @@
     <a href="../index.html" class="appsheet-rail-btn active" title="Home">
       <i class="bi bi-house-door-fill"></i>
     </a>
-    <button type="button" class="appsheet-rail-btn" title="About / Info">
+    <button type="button" class="appsheet-rail-btn" title="Information">
       <i class="bi bi-info-circle"></i>
     </button>
-    <button type="button" class="appsheet-rail-btn" title="Messages">
-      <i class="bi bi-chat-left-text"></i>
+    <button type="button" class="appsheet-rail-btn" title="Feedback / Chat">
+      <i class="bi bi-chat-left-dots"></i>
     </button>
-    <button type="button" class="appsheet-rail-btn mt-auto mb-2" title="Apps / Navigation">
+    <button type="button" class="appsheet-rail-btn mt-auto mb-2" title="Apps / Modules">
       <i class="bi bi-grid-3x3-gap"></i>
     </button>
   </aside>
 
   <!-- ======================================================== -->
-  <!-- 2. MAIN WORKSPACE CONTAINER                              -->
+  <!-- 2. MAIN APPSHEET WORKSPACE                                -->
   <!-- ======================================================== -->
   <div class="appsheet-workspace">
     
-    <!-- Top Navigation Bar -->
+    <!-- Top Bar -->
     <header class="appsheet-top-bar">
       <div class="appsheet-top-left">
-        <button type="button" class="btn-hamburger" id="btn-sidebar-toggle" title="Menu" data-bs-toggle="offcanvas" data-bs-target="#appsheetSidebar">
+        <button class="appsheet-icon-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#appsheetDrawer" aria-controls="appsheetDrawer" title="Menu">
           <i class="bi bi-list"></i>
         </button>
         <span class="appsheet-brand-title">
-          <i class="bi bi-truck text-muted"></i>
+          <i class="bi bi-truck text-dark"></i>
           <span>MTC And TTC - Trips</span>
         </span>
       </div>
 
-      <!-- Center Search Bar: Search To be Created -->
       <div class="appsheet-top-center">
         <div class="appsheet-search-box">
           <i class="bi bi-search"></i>
@@ -435,49 +665,47 @@
         </div>
       </div>
 
-      <!-- Right Actions: Refresh & Avatar -->
       <div class="appsheet-top-right">
-        <span class="text-muted cursor-pointer" onclick="ToBeCreatedModule.refreshData()" title="Sync with Cloud Firestore" style="cursor: pointer; font-size: 14px;">
+        <span class="d-none d-md-inline-block text-muted" style="font-size: 11px;">Syncing...</span>
+        <button class="appsheet-icon-btn" title="Refresh" onclick="ToBeCreatedModule.init()">
           <i class="bi bi-arrow-repeat"></i>
-        </span>
-        <div class="app-avatar" title="Account">M</div>
+        </button>
+        <div class="app-avatar" title="User Account">M</div>
       </div>
     </header>
 
-    <!-- Sub-header & Breadcrumbs: Home > To be Created -->
-    <div class="appsheet-sub-bar">
-      <div class="appsheet-breadcrumb" id="appsheet-breadcrumb">
-        <a href="../index.html"><i class="bi bi-house-door me-1"></i>Home</a>
-        <i class="bi bi-chevron-right" style="font-size: 10px;"></i>
-        <span class="active" id="breadcrumb-current-view">To be Created</span>
+    <!-- Subheader Breadcrumb Bar -->
+    <nav class="appsheet-breadcrumb-bar">
+      <ul class="appsheet-breadcrumb" id="tobe-breadcrumb">
+        <li><a href="../index.html">Home</a></li>
+        <li class="breadcrumb-separator"><i class="bi bi-chevron-right"></i></li>
+        <li class="active" id="tobe-breadcrumb-active">To be Created</li>
+      </ul>
+      <div class="breadcrumb-tools" id="tobe-header-tools">
+        <i class="bi bi-grid" title="Switch View"></i>
       </div>
-      <div class="appsheet-view-toggle" title="Layout View">
-        <i class="bi bi-grid"></i>
-      </div>
-    </div>
+    </nav>
 
     <!-- ======================================================== -->
-    <!-- 3. DASHBOARD: 3 CARDS VIEW                               -->
+    <!-- VIEW 1: DASHBOARD (3 CARDS VIEW)                         -->
     <!-- Matching media_1792575375498_f5f668db.png                -->
     <!-- ======================================================== -->
     <main class="tobe-dashboard-container" id="tobe-dashboard-view">
       <div class="tobe-grid">
         
-        <!-- ==================================================== -->
-        <!-- CARD 1: Other B Due                                  -->
-        <!-- ==================================================== -->
+        <!-- CARD 1: Other B Due -->
         <section class="tobe-card" id="tobe-card-other-b-due">
           <div class="tobe-card-header">
             <h2 class="tobe-card-title">Other B Due</h2>
             <div class="tobe-card-tools">
               <i class="bi bi-funnel" title="Filter Other B Due"></i>
-              <i class="bi bi-arrows-angle-expand" title="Expand Other B Due"></i>
+              <i class="bi bi-arrows-angle-expand" title="Expand Other B Due" onclick="ToBeCreatedModule.openOtherBDueList('ALL')"></i>
             </div>
           </div>
           <div class="tobe-card-subheader">Year</div>
           <div class="tobe-rows-list" id="tobe-card1-rows">
             <!-- Row: All -->
-            <div class="tobe-row-item" onclick="ToBeCreatedModule.openCardView('due', 'ALL')" title="View All Other B Due">
+            <div class="tobe-row-item" onclick="ToBeCreatedModule.openOtherBDueList('ALL')" title="View All Other B Due">
               <div class="tobe-row-left">
                 <span class="tobe-label-all">All</span>
               </div>
@@ -485,7 +713,7 @@
             </div>
 
             <!-- Row: 2026-2027 -->
-            <div class="tobe-row-item" onclick="ToBeCreatedModule.openCardView('due', '2026-2027')" title="View 2026-2027 Other B Due">
+            <div class="tobe-row-item" onclick="ToBeCreatedModule.openOtherBDueList('2026-2027')" title="View 2026-2027 Other B Due">
               <div class="tobe-row-left">
                 <span class="tobe-bullet-red">●</span>
                 <span class="tobe-label-red">2026-2027</span>
@@ -495,7 +723,7 @@
             </div>
 
             <!-- Row: 2025-2026 -->
-            <div class="tobe-row-item" onclick="ToBeCreatedModule.openCardView('due', '2025-2026')" title="View 2025-2026 Other B Due">
+            <div class="tobe-row-item" onclick="ToBeCreatedModule.openOtherBDueList('2025-2026')" title="View 2025-2026 Other B Due">
               <div class="tobe-row-left">
                 <span class="tobe-bullet-red">●</span>
                 <span class="tobe-label-red">2025-2026</span>
@@ -506,9 +734,7 @@
           </div>
         </section>
 
-        <!-- ==================================================== -->
-        <!-- CARD 2: Other B Paid                                 -->
-        <!-- ==================================================== -->
+        <!-- CARD 2: Other B Paid -->
         <section class="tobe-card" id="tobe-card-other-b-paid">
           <div class="tobe-card-header">
             <h2 class="tobe-card-title">Other B Paid</h2>
@@ -559,9 +785,7 @@
           </div>
         </section>
 
-        <!-- ==================================================== -->
-        <!-- CARD 3: All Other B                                  -->
-        <!-- ==================================================== -->
+        <!-- CARD 3: All Other B -->
         <section class="tobe-card" id="tobe-card-all-other-b">
           <div class="tobe-card-header">
             <h2 class="tobe-card-title">All Other B</h2>
@@ -615,53 +839,464 @@
       </div>
     </main>
 
-    <!-- Placeholder for Card 1 (Other B Due) View Container -->
-    <div id="tobe-view-card1-list" class="d-none p-3">
-      <!-- Will be populated dynamically when user provides details for Card 1 -->
-      <div class="card p-3 shadow-sm bg-white border">
-        <div class="d-flex align-items-center justify-content-between mb-3">
-          <h5 class="fw-bold mb-0" id="card1-list-title">Other B Due List</h5>
-          <button class="btn btn-sm btn-outline-secondary" onclick="ToBeCreatedModule.goToDashboardView()">
-            <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
-          </button>
+    <!-- ======================================================== -->
+    <!-- VIEW 2: OTHER B DUE TABLE LIST                           -->
+    <!-- Matching root screenshot screencapture-...-15_19_00.png  -->
+    <!-- ======================================================== -->
+    <div id="tobe-view-other-b-due-list" class="tobe-list-view-container d-none">
+      <!-- Left Rail: Year Filter -->
+      <aside class="tobe-list-left-rail">
+        <div class="tobe-list-rail-item" id="rail-year-all" onclick="ToBeCreatedModule.filterByYear('ALL')">
+          <span>All</span>
         </div>
-        <div id="card1-list-content">
-          <p class="text-muted">Loading Other B Due records...</p>
+        <div class="tobe-list-rail-item active" id="rail-year-2026" onclick="ToBeCreatedModule.filterByYear('2026-2027')">
+          <div class="d-flex align-items-center gap-1">
+            <i class="bi bi-caret-right-fill" style="font-size: 10px;"></i>
+            <span class="tobe-bullet-red">●</span>
+            <span class="fw-bold" style="color: var(--appsheet-red);">2026-..</span>
+          </div>
+          <span class="tobe-badge-pill" style="font-size: 10px;">₹1,023,800.00</span>
         </div>
+        <div class="tobe-list-rail-item" id="rail-year-2025" onclick="ToBeCreatedModule.filterByYear('2025-2026')">
+          <div class="d-flex align-items-center gap-1">
+            <i class="bi bi-caret-right-fill" style="font-size: 10px;"></i>
+            <span class="tobe-bullet-red">●</span>
+            <span class="fw-bold" style="color: var(--appsheet-red);">2025-..</span>
+          </div>
+          <span class="tobe-badge-pill" style="font-size: 10px;">₹232,770.00</span>
+        </div>
+      </aside>
+
+      <!-- Right Table Area -->
+      <div class="tobe-list-table-container">
+        <table class="appsheet-table" id="tobe-due-table">
+          <thead>
+            <tr>
+              <th>G.R.No.</th>
+              <th>Trip Start Date</th>
+              <th>Truck No.</th>
+              <th>Other B Due Payment</th>
+              <th>Other B</th>
+              <th>Destination</th>
+              <th>Consignor</th>
+              <th>Consignee</th>
+              <th>Reference</th>
+              <th>Driver</th>
+              <th>Owner</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="tobe-due-table-body">
+            <!-- Dynamically populated rows with date grouping -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- VIEW 3: OPEN TRIP DETAILS                                -->
+    <!-- Matching Red/Gold/Blue/Pink screenshots                  -->
+    <!-- ======================================================== -->
+    <div id="tobe-view-trip-details" class="tobe-details-container d-none">
+      <div id="tobe-trip-details-content">
+        <!-- Rendered dynamically by ToBeCreatedModule.renderTripDetailsView() -->
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- VIEW 4: TRIP PAYMENT DETAILS TABLE (Expand Card 2)       -->
+    <!-- Matching screencapture-...-15_20_42.png                  -->
+    <!-- ======================================================== -->
+    <div id="tobe-view-payment-list" class="tobe-details-container d-none bg-white p-3">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <h6 class="fw-bold mb-0" id="payment-list-title">Trip Payment Details</h6>
+        <button class="btn btn-sm btn-appsheet-gold" onclick="ToBeCreatedModule.openConsigneePaymentDrawer()">
+          <i class="bi bi-plus-lg"></i> Add
+        </button>
+      </div>
+      <div class="table-responsive">
+        <table class="appsheet-table w-100">
+          <thead>
+            <tr>
+              <th style="width: 60px;"></th>
+              <th>Payment Date ↑</th>
+              <th>Amount Paid</th>
+              <th>Mode</th>
+              <th>Beneficiary</th>
+              <th>Description</th>
+              <th>Paid To</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="payment-list-table-body">
+            <!-- Dynamically populated -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- VIEW 5: SINGLE PAYMENT DETAILS CARD                      -->
+    <!-- Matching screencapture-...-15_20_55.png                  -->
+    <!-- ======================================================== -->
+    <div id="tobe-view-payment-detail" class="tobe-details-container d-none">
+      <div class="tobe-single-center-card" id="payment-detail-card-content">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- VIEW 6: TRIP OTHER B PAYMENT DETAILS TABLE               -->
+    <!-- Matching screencapture-...-15_37_27.png                  -->
+    <!-- ======================================================== -->
+    <div id="tobe-view-other-b-payment-list" class="tobe-details-container d-none bg-white p-3">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <h6 class="fw-bold mb-0">Trip Other B Payment Details</h6>
+        <button class="btn btn-sm btn-appsheet-gold" onclick="ToBeCreatedModule.openAddOtherBPaymentDrawer()">
+          <i class="bi bi-plus-lg"></i> Add
+        </button>
+      </div>
+      <div class="table-responsive">
+        <table class="appsheet-table w-100">
+          <thead>
+            <tr>
+              <th>Payment Date ↑</th>
+              <th>Amount Paid</th>
+              <th>Mode</th>
+              <th>Description</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="other-b-payment-list-table-body">
+            <!-- Dynamically populated -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- VIEW 7: SINGLE OTHER B PAYMENT DETAILS CARD              -->
+    <!-- Matching screencapture-...-15_37_37.png                  -->
+    <!-- ======================================================== -->
+    <div id="tobe-view-other-b-payment-detail" class="tobe-details-container d-none">
+      <div class="tobe-single-center-card" id="other-b-payment-detail-card-content">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- VIEW 8: OPEN DEBTS TABLE VIEW                            -->
+    <!-- Matching screencapture-...-15_40_50.png                  -->
+    <!-- ======================================================== -->
+    <div id="tobe-view-open-debts" class="tobe-list-view-container d-none">
+      <!-- Left Rail: Year Filter for Debts -->
+      <aside class="tobe-list-left-rail">
+        <div class="tobe-list-rail-item active" id="debt-rail-all" onclick="ToBeCreatedModule.filterDebtsByYear('ALL')">
+          <span>All</span>
+        </div>
+        <div class="tobe-list-rail-item" id="debt-rail-2026" onclick="ToBeCreatedModule.filterDebtsByYear('2026-2027')">
+          <div class="d-flex align-items-center gap-1">
+            <i class="bi bi-caret-right-fill" style="font-size: 10px;"></i>
+            <span class="tobe-bullet-gold">●</span>
+            <span class="fw-bold" style="color: var(--appsheet-gold-text);">2026-..</span>
+          </div>
+          <span class="tobe-badge-pill" style="font-size: 10px;">₹306,100.00</span>
+        </div>
+        <div class="tobe-list-rail-item" id="debt-rail-2025" onclick="ToBeCreatedModule.filterDebtsByYear('2025-2026')">
+          <div class="d-flex align-items-center gap-1">
+            <i class="bi bi-caret-right-fill" style="font-size: 10px;"></i>
+            <span class="tobe-bullet-gold">●</span>
+            <span class="fw-bold" style="color: var(--appsheet-gold-text);">2025-..</span>
+          </div>
+          <span class="tobe-badge-pill" style="font-size: 10px;">₹364,500.00</span>
+        </div>
+      </aside>
+
+      <!-- Right Table Area for Debts -->
+      <div class="tobe-list-table-container">
+        <table class="appsheet-table" id="tobe-debts-table">
+          <thead>
+            <tr>
+              <th>G.R.No.</th>
+              <th>Truck No.</th>
+              <th>To</th>
+              <th>Debt Type</th>
+              <th>Due Amount</th>
+              <th>Debt Amount</th>
+              <th>Debt Mode</th>
+              <th>Borrower Name</th>
+              <th>Receiver Name</th>
+              <th>Description</th>
+              <th>Date</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="tobe-debts-table-body">
+            <!-- Dynamically populated -->
+          </tbody>
+        </table>
       </div>
     </div>
 
   </div>
 
-  <!-- Offcanvas Sidebar Container -->
-  <div class="offcanvas offcanvas-start appsheet-drawer" tabindex="-1" id="appsheetSidebar" aria-labelledby="appsheetSidebarLabel">
-    <div class="offcanvas-header border-bottom">
-      <h5 class="offcanvas-title fw-bold" id="appsheetSidebarLabel">Transport System</h5>
-      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  <!-- ======================================================== -->
+  <!-- DRAWER 1: Consignee Payment Details (Add)                -->
+  <!-- Matching screencapture-...-15_21_35.png & WhatsApp photos-->
+  <!-- ======================================================== -->
+  <div class="offcanvas offcanvas-end offcanvas-appsheet" tabindex="-1" id="consigneePaymentDrawer" aria-labelledby="consigneePaymentLabel">
+    <div class="offcanvas-header border-bottom py-2">
+      <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        <h6 class="offcanvas-title fw-bold" id="consigneePaymentLabel">Consignee Payment Details</h6>
+      </div>
+      <div class="d-flex gap-2">
+        <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="offcanvas">Cancel</button>
+        <button type="button" class="btn btn-sm btn-appsheet-gold" onclick="ToBeCreatedModule.saveConsigneePayment()">Save</button>
+      </div>
     </div>
-    <div class="offcanvas-body p-0" id="sidebar-container">
-      <!-- Rendered by AppUI.renderSidebar -->
+    <div class="offcanvas-body">
+      <form id="form-consignee-payment">
+        <div class="mb-3">
+          <label class="form-label small text-muted">Payment Date *</label>
+          <input type="text" class="form-control form-control-sm" id="cp-payment-date" value="21-10-2026">
+        </div>
+        <div class="mb-3">
+          <label class="form-label small text-muted">Due</label>
+          <input type="text" class="form-control form-control-sm bg-light" id="cp-due" value="₹ 0.00" readonly>
+        </div>
+        <div class="mb-3">
+          <label class="form-label small text-muted">Paid To *</label>
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-sm btn-outline-success flex-fill active" id="cp-paidto-transporter" onclick="ToBeCreatedModule.togglePaidTo('Transporter')">
+              ● Transporter
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-success flex-fill" id="cp-paidto-owner" onclick="ToBeCreatedModule.togglePaidTo('Truck Owner')">
+              ● Truck Owner
+            </button>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label small text-muted">Amount Paid *</label>
+          <input type="number" class="form-control form-control-sm" id="cp-amount-paid" placeholder="₹ 0.00" value="0.00">
+        </div>
+        <div class="mb-3">
+          <label class="form-label small text-muted">Mode *</label>
+          <select class="form-select form-select-sm" id="cp-mode">
+            <option value="Cash" selected>● Cash</option>
+            <option value="Cash in Rajsamand">● Cash in Rajsamand</option>
+            <option value="Cash in Bank">● Cash in Bank</option>
+            <option value="Cheque">● Cheque</option>
+            <option value="NEFT/RTGS">● NEFT/RTGS</option>
+            <option value="Phone Pe/GPay/PayTM/UPI">● Phone Pe/GPay/PayTM/UPI</option>
+            <option value="Rate Difference">● Rate Difference</option>
+            <option value="Adjustment">● Adjustment</option>
+            <option value="Less Freight">● Less Freight</option>
+            <option value="Dalla">● Dalla</option>
+            <option value="Loading">● Loading</option>
+            <option value="TDS">● TDS</option>
+            <option value="GST">● GST</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label small text-muted">Description</label>
+          <input type="text" class="form-control form-control-sm" id="cp-description" placeholder="Description / Remarks">
+        </div>
+      </form>
     </div>
   </div>
 
-  <!-- Bootstrap 5 Bundle JS -->
+  <!-- ======================================================== -->
+  <!-- DRAWER 2: Add Other B Payment Details                    -->
+  <!-- Matching screencapture-...-15_37_53.png                  -->
+  <!-- ======================================================== -->
+  <div class="offcanvas offcanvas-end offcanvas-appsheet" tabindex="-1" id="addOtherBPaymentDrawer" aria-labelledby="addOtherBPaymentLabel">
+    <div class="offcanvas-header border-bottom py-2">
+      <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        <h6 class="offcanvas-title fw-bold" id="addOtherBPaymentLabel">Add Other B Payment Details</h6>
+      </div>
+      <div class="d-flex gap-2">
+        <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="offcanvas">Cancel</button>
+        <button type="button" class="btn btn-sm btn-appsheet-gold" onclick="ToBeCreatedModule.saveOtherBPayment()">Save</button>
+      </div>
+    </div>
+    <div class="offcanvas-body">
+      <form id="form-otherb-payment">
+        <div class="mb-3">
+          <label class="form-label small text-muted">Payment Date *</label>
+          <input type="text" class="form-control form-control-sm" id="ob-payment-date" value="21-10-2026">
+        </div>
+        <div class="mb-3">
+          <label class="form-label small text-muted">Due</label>
+          <input type="text" class="form-control form-control-sm bg-light" id="ob-due" value="₹ 11,500.00" readonly>
+        </div>
+        <div class="mb-3">
+          <label class="form-label small text-muted">Paid To</label>
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-sm btn-outline-success flex-fill active" id="ob-paidto-transporter">
+              ● Transporter
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-success flex-fill" id="ob-paidto-owner">
+              ● Truck Owner
+            </button>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label small text-muted">Amount Paid *</label>
+          <input type="number" class="form-control form-control-sm" id="ob-amount-paid" value="0.00">
+        </div>
+        <div class="mb-3">
+          <label class="form-label small text-muted">Mode *</label>
+          <select class="form-select form-select-sm" id="ob-mode">
+            <option value="Phone Pe/GPay/PayTM/UPI" selected>● Phone Pe/GPay/PayTM/UPI</option>
+            <option value="Cash">● Cash</option>
+            <option value="NEFT/RTGS">● NEFT/RTGS</option>
+            <option value="Cheque">● Cheque</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label small text-muted">Description</label>
+          <input type="text" class="form-control form-control-sm" id="ob-description" placeholder="Description">
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- DRAWER 3: Update Trip Details (Edit)                     -->
+  <!-- Matching screencapture-...-15_38_20.png                  -->
+  <!-- ======================================================== -->
+  <div class="offcanvas offcanvas-end offcanvas-appsheet" tabindex="-1" id="updateTripDrawer" aria-labelledby="updateTripLabel">
+    <div class="offcanvas-header border-bottom py-2">
+      <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        <h6 class="offcanvas-title fw-bold" id="updateTripLabel">Update Trip Details</h6>
+      </div>
+      <div class="d-flex gap-2">
+        <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="offcanvas">Cancel</button>
+        <button type="button" class="btn btn-sm btn-appsheet-gold" onclick="ToBeCreatedModule.saveTripUpdate()">Save</button>
+      </div>
+    </div>
+    <div class="offcanvas-body" style="max-height: calc(100vh - 60px); overflow-y: auto;">
+      <form id="form-update-trip">
+        <div class="mb-2">
+          <label class="form-label small text-muted">G.R.No.*</label>
+          <input type="text" class="form-control form-control-sm bg-light" id="ut-grno" readonly>
+        </div>
+        <div class="row g-2 mb-2">
+          <div class="col-6">
+            <label class="form-label small text-muted">Rate *</label>
+            <input type="number" class="form-control form-control-sm" id="ut-rate">
+          </div>
+          <div class="col-6">
+            <label class="form-label small text-muted">Weight *</label>
+            <input type="number" step="0.01" class="form-control form-control-sm" id="ut-weight">
+          </div>
+        </div>
+        <div class="mb-2">
+          <label class="form-label small text-muted">Freight</label>
+          <input type="text" class="form-control form-control-sm bg-light" id="ut-freight" readonly>
+        </div>
+        <div class="row g-2 mb-2">
+          <div class="col-6">
+            <label class="form-label small text-muted">Hault Charges</label>
+            <input type="number" class="form-control form-control-sm" id="ut-hault" value="0">
+          </div>
+          <div class="col-6">
+            <label class="form-label small text-muted">Loading Charges</label>
+            <input type="number" class="form-control form-control-sm" id="ut-loading" value="0">
+          </div>
+        </div>
+        <div class="mb-2">
+          <label class="form-label small text-muted">Other B *</label>
+          <input type="number" class="form-control form-control-sm" id="ut-otherb">
+        </div>
+        <div class="mb-2">
+          <label class="form-label small text-muted">Reference</label>
+          <input type="text" class="form-control form-control-sm" id="ut-reference">
+        </div>
+        <div class="mb-2">
+          <label class="form-label small text-muted">Reference Mobile No.</label>
+          <input type="text" class="form-control form-control-sm" id="ut-ref-mobile">
+        </div>
+        <div class="mb-2">
+          <label class="form-label small text-muted">Driver</label>
+          <input type="text" class="form-control form-control-sm" id="ut-driver">
+        </div>
+        <div class="mb-2">
+          <label class="form-label small text-muted">Driver Mobile No.</label>
+          <input type="text" class="form-control form-control-sm" id="ut-driver-mobile">
+        </div>
+        <div class="mb-2">
+          <label class="form-label small text-muted">Consignor</label>
+          <input type="text" class="form-control form-control-sm" id="ut-consignor">
+        </div>
+        <div class="mb-2">
+          <label class="form-label small text-muted">Consignor Mobile No.</label>
+          <input type="text" class="form-control form-control-sm" id="ut-consignor-mobile">
+        </div>
+        <div class="mb-2">
+          <label class="form-label small text-muted">Consignee</label>
+          <input type="text" class="form-control form-control-sm" id="ut-consignee">
+        </div>
+        <div class="mb-2">
+          <label class="form-label small text-muted">Consignee Mobile No.</label>
+          <input type="text" class="form-control form-control-sm" id="ut-consignee-mobile">
+        </div>
+        <div class="mb-2">
+          <label class="form-label small text-muted">Owner</label>
+          <input type="text" class="form-control form-control-sm" id="ut-owner">
+        </div>
+        <div class="mb-2">
+          <label class="form-label small text-muted">Owner Mobile No.</label>
+          <input type="text" class="form-control form-control-sm" id="ut-owner-mobile">
+        </div>
+        <div class="mb-2">
+          <label class="form-label small text-muted">Bill No.</label>
+          <input type="text" class="form-control form-control-sm" id="ut-billno" value="0">
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Offcanvas Navigation Sidebar (AppSheet Hamburger Drawer) -->
+  <div class="offcanvas offcanvas-start appsheet-drawer" tabindex="-1" id="appsheetDrawer" aria-labelledby="appsheetDrawerLabel">
+    <div class="offcanvas-header border-bottom">
+      <h5 class="offcanvas-title fw-bold" id="appsheetDrawerLabel">
+        <i class="bi bi-truck me-2 text-primary"></i> MTC & TTC
+      </h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body p-0">
+      <div class="list-group list-group-flush" id="sidebar-nav-links">
+        <a href="../index.html" class="list-group-item list-group-item-action py-3">
+          <i class="bi bi-house-door me-2"></i> Home
+        </a>
+        <a href="./to_be_created.html" class="list-group-item list-group-item-action active py-3">
+          <i class="bi bi-file-earmark-plus me-2"></i> To be Created
+        </a>
+        <a href="./cheques.html" class="list-group-item list-group-item-action py-3">
+          <i class="bi bi-cash-stack me-2"></i> Cheques
+        </a>
+        <a href="./trips.html" class="list-group-item list-group-item-action py-3">
+          <i class="bi bi-truck me-2"></i> Trips
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS Bundle -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-
-  <!-- Core App Scripts -->
-  <script src="../js/config.js?v=20261021_v1"></script>
-  <script src="../js/sample-parties-data.js?v=20261021_v1"></script>
-  <script src="../js/sample-truck-owners-data.js?v=20261021_v1"></script>
-  <script src="../js/sample-drivers-data.js?v=20261021_v1"></script>
-  <script src="../js/sample-trips-data.js?v=20261021_v1"></script>
-  <script src="../js/sample-debts-data.js?v=20261021_v1"></script>
-  <script src="../js/sample-cheques-data.js?v=20261021_v1"></script>
-  <script src="../js/db-service.js?v=20261021_v1"></script>
-  <script src="../js/app.js?v=20261021_v1"></script>
-  <script src="../js/modules/to_be_created.js?v=20261021_v1"></script>
+  <!-- Master Datasets -->
+  <script src="../js/sample-other-b-data.js"></script>
+  <script src="../js/modules/to_be_created.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      ToBeCreatedModule.init();
+    });
+  </script>
 </body>
 </html>
