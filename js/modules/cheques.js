@@ -4496,6 +4496,9 @@ const ChequesModule = {
     const allChqEl = document.getElementById('cheques-view-allcheques-list');
     if (allChqEl) allChqEl.classList.remove('d-none');
 
+    const actions = document.getElementById('allcheques-list-actions');
+    if (actions) actions.classList.remove('d-none');
+
     // Search placeholder
     const searchInput = document.getElementById('cheque-search');
     if (searchInput) searchInput.placeholder = 'Search All Cheques';
@@ -4519,6 +4522,18 @@ const ChequesModule = {
     if (!sidebar) return;
     this.allChequesSidebarVisible = !this.allChequesSidebarVisible;
     sidebar.style.display = this.allChequesSidebarVisible ? 'block' : 'none';
+    const showBtn = document.getElementById('btn-show-allcheques-sidebar');
+    if (showBtn) {
+      if (this.allChequesSidebarVisible) {
+        showBtn.classList.add('d-none');
+      } else {
+        showBtn.classList.remove('d-none');
+      }
+    }
+    const icon = document.getElementById('allcheques-sidebar-toggle-icon');
+    if (icon) {
+      icon.className = this.allChequesSidebarVisible ? 'bi bi-chevron-left' : 'bi bi-chevron-right';
+    }
   },
 
   changeAllChequesPage(page) {
@@ -4870,6 +4885,7 @@ const ChequesModule = {
       'bounced-list-actions',
       'bounced-trip-actions',
       'bounced-debts-actions',
+      'allcheques-list-actions',
       'cleared-list-actions',
       'cleared-trip-actions',
       'cheques-register-toolbar'

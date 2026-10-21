@@ -1460,7 +1460,7 @@
       justify-content: space-between;
       padding: 7px 12px;
       border-radius: 20px;
-      margin-bottom: 4px;
+      margin: 0 8px 4px 8px;
       cursor: pointer;
       font-size: 12.5px;
       transition: all 0.15s ease;
@@ -1680,6 +1680,14 @@
             <i class="bi bi-layout-sidebar-inset"></i>
           </button>
           <span class="appsheet-tool-icon" id="debts-sidebar-funnel-tool" onclick="ChequesModule.toggleDebtsSidebar()" title="Filter Financial Year"><i class="bi bi-funnel"></i></span>
+        </div>
+
+        <!-- All Cheques List Top Actions matching screencapture 18_24_06.png -->
+        <div id="allcheques-list-actions" class="d-none d-flex align-items-center gap-2">
+          <button type="button" class="btn btn-sm btn-outline-secondary d-none py-1 px-2" id="btn-show-allcheques-sidebar" onclick="ChequesModule.toggleAllChequesSidebar()" title="Show Financial Year Sidebar" style="font-size: 12px; border-radius: 4px;">
+            <i class="bi bi-layout-sidebar-inset me-1"></i> Financial Year
+          </button>
+          <span class="appsheet-tool-icon" id="btn-toggle-allcheques-sidebar-tool" onclick="ChequesModule.toggleAllChequesSidebar()" title="Toggle Financial Year Sidebar"><i class="bi bi-funnel"></i></span>
         </div>
 
         <!-- Cleared List Top Actions matching screencapture_13_43_15.png -->
@@ -2914,47 +2922,47 @@
         <!-- ======================================================== -->
     <!-- CARD 5: ALL CHEQUES VIEW (Matching AppSheet 18_24_06)     -->
     <!-- ======================================================== -->
-    <div id="cheques-view-allcheques-list" class="d-none">
-      <div class="bounced-split-layout">
+    <div id="cheques-view-allcheques-list" class="d-none p-3">
+      <div class="bounced-split-container">
         <!-- LEFT: Financial Year Sidebar Rail (AppSheet Style) -->
-        <div class="bounced-year-sidebar" id="allcheques-year-sidebar">
-          <div class="bounced-year-header">
-            <span class="small fw-bold text-uppercase text-muted" style="font-size: 11px; letter-spacing: 0.5px;">Financial Year</span>
-            <button class="btn btn-sm btn-light border-0 p-1" onclick="ChequesModule.toggleAllChequesSidebar()" title="Toggle Sidebar" style="font-size: 11px; color: #5f6368;">
+        <div class="bounced-year-sidebar shadow-sm" id="allcheques-year-sidebar" style="width: 220px; min-width: 220px;">
+          <div class="d-flex align-items-center justify-content-between px-3 pb-2 pt-1 border-bottom mb-2">
+            <span class="text-uppercase fw-semibold text-muted small" style="font-size: 11px; letter-spacing: 0.5px;">Financial Year</span>
+            <button type="button" class="btn btn-sm btn-link p-0 text-secondary text-decoration-none" onclick="ChequesModule.toggleAllChequesSidebar()" title="Hide Financial Year Sidebar" style="font-size: 13px;">
               <i class="bi bi-chevron-left" id="allcheques-sidebar-toggle-icon"></i>
             </button>
           </div>
           <!-- All -->
           <div class="allcheques-year-item active" id="allcheques-year-ALL" onclick="ChequesModule.filterAllChequesByYear('ALL')">
             <span class="fw-semibold">All</span>
-            <span class="badge bg-light text-dark border fw-semibold" id="allcheques-rail-badge-ALL">₹ 2,29,84,786.80</span>
+            <span class="badge bg-light text-dark border fw-semibold font-monospace" id="allcheques-rail-badge-ALL">₹ 2,29,84,786.80</span>
           </div>
           <!-- 2026-2027 -->
           <div class="allcheques-year-item" id="allcheques-year-2026" onclick="ChequesModule.filterAllChequesByYear('2026-2027')">
             <div class="d-flex align-items-center gap-2">
-              <span class="allcheques-green-arrow">&#9658;</span>
-              <span class="allcheques-green-bullet">●</span>
+              <i class="bi bi-caret-right-fill" style="font-size: 8.5px; color: #202124;"></i>
+              <span style="color: #00b11f; font-size: 13px; line-height: 1;">●</span>
               <span class="fw-bold allcheques-year-title">2026-2027</span>
             </div>
-            <span class="badge bg-light text-dark border fw-semibold" id="allcheques-rail-badge-2026">₹ 55,04,183.00</span>
+            <span class="badge bg-light text-dark border fw-semibold font-monospace" id="allcheques-rail-badge-2026">₹ 55,04,183.00</span>
           </div>
           <!-- 2025-2026 -->
           <div class="allcheques-year-item" id="allcheques-year-2025" onclick="ChequesModule.filterAllChequesByYear('2025-2026')">
             <div class="d-flex align-items-center gap-2">
-              <span class="allcheques-green-arrow">&#9658;</span>
-              <span class="allcheques-green-bullet">●</span>
+              <i class="bi bi-caret-right-fill" style="font-size: 8.5px; color: #202124;"></i>
+              <span style="color: #00b11f; font-size: 13px; line-height: 1;">●</span>
               <span class="fw-bold allcheques-year-title">2025-2026</span>
             </div>
-            <span class="badge bg-light text-dark border fw-semibold" id="allcheques-rail-badge-2025">₹ 1,19,09,263.00</span>
+            <span class="badge bg-light text-dark border fw-semibold font-monospace" id="allcheques-rail-badge-2025">₹ 1,19,09,263.00</span>
           </div>
           <!-- 2024-2025 -->
           <div class="allcheques-year-item" id="allcheques-year-2024" onclick="ChequesModule.filterAllChequesByYear('2024-2025')">
             <div class="d-flex align-items-center gap-2">
-              <span class="allcheques-green-arrow">&#9658;</span>
-              <span class="allcheques-green-bullet">●</span>
+              <i class="bi bi-caret-right-fill" style="font-size: 8.5px; color: #202124;"></i>
+              <span style="color: #00b11f; font-size: 13px; line-height: 1;">●</span>
               <span class="fw-bold allcheques-year-title">2024-2025</span>
             </div>
-            <span class="badge bg-light text-dark border fw-semibold" id="allcheques-rail-badge-2024">₹ 55,71,340.80</span>
+            <span class="badge bg-light text-dark border fw-semibold font-monospace" id="allcheques-rail-badge-2024">₹ 55,71,340.80</span>
           </div>
         </div>
 
