@@ -284,8 +284,8 @@ const ToBeCreatedModule = {
             <td><span class="bullet" style="color: ${bulletColor}; font-size: 9px; margin-right: 4px;">●</span>${fmtOtherB}</td>
             <td><span class="bullet" style="color: ${bulletColor}; font-size: 9px; margin-right: 4px;">●</span>${t.destination || ''}</td>
             <td><span class="bullet" style="color: ${bulletColor}; font-size: 9px; margin-right: 4px;">●</span>${t.consignor || ''}</td>
-            <td><span class="bullet" style="color: ${bulletColor}; font-size: 9px; margin-right: 4px;">●</span>${t.consignee || ''}</td>
-            <td><span class="bullet" style="color: ${bulletColor}; font-size: 9px; margin-right: 4px;">●</span>${t.reference || ''}</td>
+            <td><span class="bullet" style="color: ${bulletColor}; font-size: 9px; margin-right: 4px;">●</span>${t.consignee || t.consignor || ''}</td>
+            <td><span class="bullet" style="color: ${bulletColor}; font-size: 9px; margin-right: 4px;">●</span>${t.reference || t.consignee || t.consignor || ''}</td>
             <td><span class="bullet" style="color: ${bulletColor}; font-size: 9px; margin-right: 4px;">●</span>${t.driver || ''}</td>
             <td><span class="bullet" style="color: ${bulletColor}; font-size: 9px; margin-right: 4px;">●</span>${t.owner || ''}</td>
             <td class="text-end text-muted"><i class="bi bi-chevron-right tobe-chevron"></i></td>

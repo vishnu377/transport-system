@@ -1,0 +1,130 @@
+﻿MTCAndTTC- Trips Search Other B Oue
+Home > Tobe Created > Other B Due
+G.R.No. Trip start Date Truck NO. Other B Due Payment Destination Consignor Consignee Reference Owner
+21.023Etnoo 18/10/2026
+2025-2. 2232.77000 -261 TTC 18/10/2026 R352GB2508 t18,omoo Delhi Shakti Rajpurohit Shakti Rajpurohit Shakti Rajpurohit Raju Fagana Laxmi Prakash Oat
+18/10/2026 R352GB5964 ell,5moo Delhi Goyal Marble Mangolpuri Goyal Marble Mangolpuri _ Goyal Marble Mangolpuri Kushiram GurJar Shree Mahaveer Transpo_
+-264 c 18/10/2026 R3S2GA7729 Delhi Sharif Tajmahal Marble Sharif Tajmahal Marble Sharif Tajmahal Marble Mahendra oat 2585 Laxmi Prakash Oat
+-263 TTC 18/10/2026 R352GA7726 t17,omoo Delhi Nishant Nishant Nishant Parkash Gurjar Laxmi Prakash Jat
+17/10/2026 t 19mo.oo
+-260_TTC 17/10/2026 R352GB5965 t19,omoo Delhi Anil Sharda Anil Sharda Anil Sharda Deva Bhaya Shree Mahaveer Transpo_
+16/10/2026 0400000
+- 258 _TTC 16/10/2026 R314GP3675 t19,omoo Delhi Anil Sharda Anil Sharda Anil Sharda Boss Rampur Wale 3675 Hansraj GurJar
+-2S7_TTC 16/10/2026 R352GB5%3 t17,omoo Delhi Chintu Bansal Chintu Bansal Chintu Bansal Trilok saini Shree Mahaveer Transpo_
+-256_TTC 16/10/2026 R352GB5054 e 1B,omoo Meerut (u.p.) Sheetal Marble Lalaji Sheetal Marble Lalaji Sheetal Marble Lalaji Vikram Gurjar4507 Shree Mahaveer Transpo_
+-259_TTC 16/10/2026 R352GB0725 Delhi Satish Kumar 3hanwar Satish Kumar 3hanwar Satish Kumar 3hanwar Ram Kumar Raiya Rameshwar Prasad
+09/10/2026 * 18.00000
+-253_TTC 09/10/2026 R352GB4507 e 1B,omoo Delhi Satish Kumar Ohanwar Satish Kumar 3hanwar Satish Kumar Ohanwar Hansraj Gurjar Chandwaji Shree Mahaveer Transpo_
+07/10/2026 t 19.00000
+-2S1_TTC 07/10/2026 R352GB5965 t19,omoo Delhi Anil Sharda Anil Sharda Anil Sharda Raju Bhilwa Shree Mahaveer Transpo_
+05/10/2026
+-248—TTC 05/10/2026 R332GC7697 Delhi Tarachand Choudhary Dem Tarachand Choudhary De_ Tarachand Choudhary Dem Dhola Ram Gurjar 7697 Billo Kasana
+04,110/2026
+-246 TTC 04/10/2026 NL01AF9218 t7,8moo Greather Noida (LIP.) Agarwal Marble Noida Agarwal Marble Noida Agarwal Marble Noida Chandra Parkash Hanuman Yadav %rinagar >
+• -247 TTC 04/10/2026 R352GB5444 e 1B,omoo Delhi Vipin Kishangarh Vipin Kisha ngarh Vipin Kishangarh Dataram Gurja r Dev Karan
+03/10/2026
+-245 TTC 03/10/2026 R352GB45B6 23,omoo Loni up.) Chintu Bansal Chintu Bansal Chintu Bansal Narendra Kumar Raiya Shree Mahaveer Transpo_
+-244—TTC 03/10/2026 R352GB2S08 e 1B,omoo Delhi Nansh Paliwal Kotwa Naresh Paliwal Kelwa Nansh Paliwal Kotwa Raju Fagana Laxmi Prakash Oat
+02/10/2026 t18,ooooo
+-243 TTC 02/10/2026 R301GD0501 e 1B,omoo Meerut (u.p.) Daud Marble Dilshad Meerut 6396387m Dilshad Meerut Ramothar Vaishnav0711 Amit Rajpurohit
+01/10/2026 t 3600000
+-238—TTC 01/10/2026 R352GB5965 e 19,omoo Delhi Anil Sharda Anil Sharda Anil Sharda Raju Bhilwa Shree Mahaveer Transpo_
+-241_TTC 01/10/2026 R352GB4537 t17,omoo Delhi Chintu Bansal Chintu Bansal Chintu Bansal Pitram Gurja r Shree Mahaveer Transpo_
+21/09/2026 *19.00000
+-231 TTC 21/09/2026 R352GB0725 t19,omoo Delhi Rakesh Bihari Rakesh Bihari Rakesh Bihari Ram Kumar Raiya Rameshwar Prasad
+20/09/2026
+-230_TTC 20/09/2026 R352GB5965 e 19,omoo Delhi Anil Sharda Anil Sharda Anil Sharda Raju Bhilwa Shree Mahaveer Transpo_
+19,109/2026 t 19.00000
+-229_TTC 19/09/2026 R352GB5640 e 19,omoo Delhi Anil Sharda Anil Sharda Anil Sharda Hardan Shree Mahaveer Transpo_
+17/09/2026 t17.cm_oo
+-227_TTC 17/09/2026 R352GA7728 Delhi Nishant Nishant Nishant Rajendra Kumar 7728 Laxmi Prakash Oat
+15/09/2026 "9.00000
+-221_TTC 15/09/2026 R352GB5965 t19,omoo Delhi Anil Sharda Anil Sharda Anil Sharda Raju Bhilwa Shree Mahaveer Transpo_
+14/09/2026
+-220_TTC 14/09/2026 R301GD4301 Noida (u.p.) Ashish Sharma Kishanga_ Ashish Sharma Kishanga_ Ashish Sharma Kishanga_ Rahul Prahlad3at
+08/09/2026 *17.00000
+08/09/2026 R352GB2SB7 Delhi Agarwal Dholpur MangoL Agarwal Dholpur MangoL Agarwal Dholpur MangoL Krishna Saini Rameshwar Prasad
+07/09/2026 t 19mo_oo
+• -214_TTC 07/09/2026 R352GB5965 t19,omoo Delhi Anil Sharda Anil Sharda Anil Sharda Raju Bhilwa Shree Mahaveer Transpo_
+06/09/2026
+-211_TTC 06/09/2026 R352GB5054 Meerut (u.p.) Sheetal Marble Lalaji Sheetal Marble Lalaji Sheetal Marble Lalaji Vikram Gurjar4507 Shree Mahaveer Transpo_
+02/09/2026 t 18.00000
+-208—TTC 02/09/2026 R352GB2S08 e 1B,omoo Meerut (u.p.) Indian Marble Meerut Indian Marble Meerut Indian Marble Meerut Raju Fagana Laxmi Prakash Oat
+01/09/2026 08.00000
+-205—TTC 01/09/2026 R352GB5965 t19,omoo Delhi Anil Sharda Anil Sharda Anil Sharda Raju Bhilwa Shree Mahaveer Transpo_
+-206—TTC 01/09/2026 R352GB2588 t19,omoo Meerut (u.p.) Meerut Mohd Anish Mk Mm Meerut Mohd Anish Mk M_ Meerut Mohd Anish Mk Mm Sintu Prajapat Lamba Haw Rameshwar Prasad
+29/08/2026
+-200—TTC 29/08/2026 R352GB5640 t19,omoo Delhi Anil Sharda Anil Sharda Anil Sharda Hardan Shree Mahaveer Transpo_
+26/08/2026 t 37mo_oo
+• -198_TTC 26/08/2026 R352GB5640 e 19,omoo Delhi Anil Sharda Anil Sharda Anil Sharda Hardan Shree Mahaveer Transpo_
+-197_TTC 26/08/2026 R3S2GA7872 e 1B,omoo Meerut (u.p.) Meerut Mohd Anish Mk Mm Meerut Mohd Anish Mk M_ Meerut Mohd Anish Mk Mm Ramratan Gurjar Banwari Lal Dhabas
+25/08/2026 t 19mo.oo
+• -195 TTC 25/08/2026 R352GB5965 e 19,omoo Delhi Anil Sharda Anil Sharda Anil Sharda Raju Bhilwa Shree Mahaveer Transpo_
+23/08/2026 e 1B.cm_oo
+-191_TTC 23/08/2026 R352GA7729 e 1B,omoo Meerut (u.p.) Anees Khan Meerut M.C Anees Khan Meerut M.K._ Anees Khan Meerut M.C Mahendra oat 2585 Laxmi Prakash Oat
+21/08/2026 t19,ooooo
+-189_TTC 21/08/2026 R352GB4507 t19,omoo Meerut (u.p.) Sheetal Marble Lalaji Sheetal Marble Lalaji Sheetal Marble Lalaji Dharmendra Gurjar Shree Mahaveer Transpo_
+20/08/2026 t37.cm_oo
+-187 _TTC 20/08/2026 R3S2GA6148 e 1B,omoo Delhi Banwari Vaishnav Banwari Vaishnav Banwari Vaishnav Mukesh Gurjar 6148 Mukesh Gurjar6148
+-188_TTC 20/08/2026 R352GB5965 t19,omoo Delhi Anil Sharda Anil Sharda Anil Sharda Raju Bhilwa Shree Mahaveer Transpo_
+19/08/2026 *3600000
+• -185_TTC 19/08/2026 R351GB5442 e 1B,omoo Delhi Amit Shah Amit Shah Amit Shah Pappu Gurjar Bhilwara Pappu GurjarBhiIwara
+19/08/2026 218,000.00 t 18,00000 Délhi Chihtu Bansal Chintu Bansal Chihtu Bansal Kalu gurJar Hihdoli Rameshwar Prasad
+18/08/2026
+18/08/2026 R352GB2587 e 1B,omoo Delhi Shakti Rajpurohit Shakti Rajpurohit Shakti Rajpurohit Kirshan Saini Rameshwar Prasad
+17/08/2026 tl.cm_oo
+-181 _ TTC 17/08/2026 R352GB4746 el,omoo Delhi Shakti Rajpurohit Shakti Rajpurohit Shakti Rajpurohit Surendra Dhabas Surendra Dhabas
+• 15/08/2026
+-176 TTC 15/08/2026 R352GB5057 e 1B,omoo Delhi Chintu Bansal Chintu Bansal Chintu Bansal Mangalram GurjarAnteIa Shree Mahaveer Transpo_
+14/08/2026
+-174_TTC 14/08/2026 R332GC2937 e 18,5moo Delhi Thakur Marble Thakur Marble Naresh Paliwal Kelwa Hansraj Gurjar Paota Hansraj GurJarPaota
+25/07/2026 uomo.oo
+-150_TTC 25/07/2026 R352GB5057 Delhi Naresh Paliwal Kelwa Naresh Paliwal Kelwa Naresh Paliwal Kelwa Vikram Gurjar Shree Mahaveer Transpo_
+12/07/2026 *2000000
+-136—TTC 12/07/2026 R352GB0772 Delhi Mahaveer Minerals Mahaveer Minerals Mahaveer Minerals Satish 6172 Vinod Dhabas
+08/07/2026
+-128—TTC 08/07/2026 R352GA7444 e 1B,omoo Delhi Banwari Vaishnav Banwari Vaishnav Banwari Vaishnav Dev Karan Gurjar Dev Karan
+05/07/2026
+-124—TTC 05/07/2026 R352GB250B Loni up.) Rakesh Bihari Rakesh Bihari Rakesh Bihari Raju Fagana Laxmi Prakash Oat
+01/07/2026
+• -119 TTC 01/07/2026 R352GA7726 Delhi Mahaveer Bansal Mahaveer Bansal Mahaveer Bansal Manoj Gurjar Laxmi Prakash Oat
+23/06/2026 * 18.00000
+-III_TTC 23/06/2026 R332GES388 Khatauli(up.) Muskan Marble and Tiles _ Muskan Marble and Tiles Muskan Marble and Tiles _ Billo Kasana Billo Kasana
+22/06/2026
+-110 TTC 22/06/2026 R301GD0821 Ghaziabad (u.p.) Rakesh Bihari Rakesh Bihari Rakesh Bihari Rajesh Meehvanshi Sattu Kumawat Shrinaear >
+27/05/2026 t3B.cm_oo
+-73_TTC 27/05/2026 R352GB5053 e 1B,omoo Delhi Shakti Rajpurohit Shakti Rajpurohit Shakti Rajpurohit Suresh Kasana Shree Mahaveer Transpo_
+-74 _ TTC 27/05/2026 R352GB2503 Delhi Chintu Bansal Chintu Bansal Chintu Bansal Ram Swaroop Laxmi Prakash Oat
+11/05/2026
+-50_TTC 11/05/2026 R352GB4506 e 1B,omoo Delhi Satish Kumar Ohanwar Satish Kumar 3hanwar Satish Kumar Ohanwar Tejaram Gurjar Shree Mahaveer Transpo_
+11/05/2026 R352GA7729 e 18,omoo Delhi Nishant Nishant Nishant Dinesh Yadav 7729 Laxmi Prakash Oat
+14/04/2026 17mo_oo
+-20_TTC 14/04/2026 R352GB4506 Delhi Tarachand Choudhary Dem Tarachand Choudhary De_ Tarachand Choudhary Dem Ram Swaroop Shree Mahaveer Transpo_
+31/03/2026 uzooooo
+-349 TTC 31/03/2026 R3S2GA6603 Delhi Anil Sharda Anil Sharda Anil Sharda Suresh Raiya Laxmi Prakash Oat
+-351 TTC 31/03/2026 R352GA7729 elB,omoo Delhi Chintu Bansal Chintu Bansal Chintu Bansal Krishna Saini Laxmi Prakash Oat
+12/03/2026
+-327_TTC 12/03/2026 R351GB5442 elB,omoo Delhi Shakti Rajpurohit Shakti Rajpurohit Shakti Rajpurohit Shivraj Pappu GurjarBhiIwara
+11/03/2026 e Bmo_oo
+-321_TTC 11/03/2026 R3S2GA9683 • tB,omoo Meerut (u.p.) Sheetal Marble Lalaji Sheetal Marble Lalaji Sheetal Marble Lalaji Ramratan Gurjar Banwari Lal Dhabas
+08/02/2026 e 3,770 oo
+-296 TTC 08/02/2026 R352GB2590 u.no.oo Delhi Satish Kumar Ohanwar Deepak uttam Nagar Cham Satish Kumar Ohanwar Rameshwar Prasad
+07/02/2026 e 1B.ooooo
+-294 TTC 07/02/2026 R314GP6423 e 1B,omoo Delhi Banwari Vaishnav Gulsan delhi Banwari Vaishnav Meena 3697 Bodu Shekhawat
+03/02/2026 uomo.oo
+-292 TTC 03/02/2026 R314GP6423 Delhi Vipin Kishangarh Vipin Kishangarh Vipin Kishangarh Driver 6423 Bodu Shekhawat
+05/01/2026
+-252_TTC 05/01/2026 R332GC7697 Meerut (u.p.) wal Meerut Ujjawal Meerut wal Meerut Billo Kasana Billo Kasana
+08/09/2025
+08/09/2025 R3S2GA6148 e 12,omoo Delhi Tyagi 'i Shubh Marble Tyagi Shubh Marble De_ Tyagi 'i Shubh Marble Mukesh Gurjar 6148 Mukesh Gurjar6148
+-212—TTC 08/09/2025 R314GR7227 e 1B,omoo Delhi Tyagi 'i Shubh Marble Tyagi Shubh Marble De_ Tyagi 'i Shubh Marble Nazim Khan 7227 Kailash Rundla Munim
+22/07/2025
+-160_TTC 22/07/2025 R314GR7149 Delhi Shiv Shakti Marble Bhura_ Shiv Shakti Marble Bhura_ Shiv Shakti Marble Bhura_ Ramavtar Rameshwar Rundla
+07/07/2025 usooooo
+-141—TTC 07/07/2025 R052GA3498 Varanasi (u.p.) Bhiwaram Murotiya Kish_ Bhiwaram Murotiya Kish_ Bhiwaram Murotiya Kish_ Mahendra Meena 3498 Kallu Meena
+06/07/2025 e 23.cm_oo
+-138_TTC 06/07/2025 ROOIGD0501 23,omoo Meerut (u.p.) Bhiwaram Murotiya Kish_ Bhiwaram Murotiya Kish_ Bhiwaram Murotiya Kish_ Raju Gurjar Shri nagar Amit Rajpurohit
+29/06/2025
+-126—TTC 29/06/2025 R314GH2898 Delhi Shiv Shakti Marble Bhura_ Shiv Shakti Marble Bhura_ Shiv Shakti Marble Bhura_ Ramavtar Rameshwar Rundla
+16/04/2025 tibooooo
+-29_TTC 16/04/2025 R3S2GA8614 e 1B,omoo Meerut (u.p.) Ujjawal Shri Ganesh Marb_ Ujjawal Shri Ganesh Marb_ Ujjawal Shri Ganesh Marb_ Ramchandra Oat Laxmi Prakash Oat
