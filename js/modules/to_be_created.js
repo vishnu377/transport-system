@@ -22,6 +22,11 @@ const ToBeCreatedModule = {
   activePaymentIndex: 0,
   dueTrips: [],
   debtsData: [],
+  paidTrips: [],
+  activePaidYearFilter: 'ALL',
+  activePaidTrip: null,
+  activePaidPaymentIndex: 0,
+  activePaidPaymentType: 'otherB',
 
   summaryData: {
     due: {
@@ -50,6 +55,9 @@ const ToBeCreatedModule = {
     if (typeof window !== 'undefined' && window.OTHER_B_DUE_DATA) {
       this.dueTrips = window.OTHER_B_DUE_DATA;
     }
+    if (typeof window !== 'undefined' && window.OTHER_B_PAID_DATA) {
+      this.paidTrips = window.OTHER_B_PAID_DATA;
+    }
     if (typeof window !== 'undefined' && window.OPEN_DEBTS_DATA) {
       this.debtsData = window.OPEN_DEBTS_DATA;
     }
@@ -60,6 +68,10 @@ const ToBeCreatedModule = {
         const firestoreOtherB = await dbService.getAll('other_b_due');
         if (firestoreOtherB && firestoreOtherB.length > 0) {
           this.dueTrips = firestoreOtherB;
+        }
+        const firestorePaid = await dbService.getAll('other_b_paid');
+        if (firestorePaid && firestorePaid.length > 0) {
+          this.paidTrips = firestorePaid;
         }
       }
     } catch (e) {
@@ -82,6 +94,11 @@ const ToBeCreatedModule = {
     if (urlParams && urlParams.get('view') === 'due-list') {
       const year = urlParams.get('year') || 'ALL';
       this.openOtherBDueList(year);
+    } else if (urlParams && urlParams.get('view') === 'paid-list') {
+      const year = urlParams.get('year') || 'ALL';
+      this.openOtherBPaidList(year);
+    } else if (urlParams && urlParams.get('paidGrNo')) {
+      this.openPaidTripDetails(urlParams.get('paidGrNo'));
     } else if (urlParams && urlParams.get('grNo')) {
       this.openTripDetails(urlParams.get('grNo'));
     } else {
@@ -138,9 +155,7 @@ const ToBeCreatedModule = {
     if (cardType === 'due') {
       this.openOtherBDueList(year);
     } else if (cardType === 'paid') {
-      if (typeof AppUI !== 'undefined' && AppUI.showToast) {
-        AppUI.showToast(`Selected Other B Paid (${year})`, 'info');
-      }
+      this.openOtherBPaidList(year);
     } else if (cardType === 'all') {
       if (typeof AppUI !== 'undefined' && AppUI.showToast) {
         AppUI.showToast(`Selected All Other B (${year})`, 'info');
@@ -1490,7 +1505,11 @@ const ToBeCreatedModule = {
       'tobe-view-payment-detail',
       'tobe-view-other-b-payment-list',
       'tobe-view-other-b-payment-detail',
-      'tobe-view-open-debts'
+      'tobe-view-open-debts',
+      'tobe-view-other-b-paid-list',
+      'tobe-view-paid-trip-details',
+      'tobe-view-paid-payment-list',
+      'tobe-view-paid-payment-detail'
     ];
     views.forEach(id => {
       const el = document.getElementById(id);
@@ -1536,12 +1555,927 @@ const ToBeCreatedModule = {
     this.searchQuery = query;
     if (this.viewMode === 'due-list') {
       this.renderDueTable();
+    } else if (this.viewMode === 'paid-list') {
+      this.renderPaidTable();
     } else if (this.viewMode === 'open-debts') {
       this.renderDebtsTable();
     }
   },
 
-  toggleFilter() {
+  // ==========================================================
+  // CARD 2: OTHER B PAID MODULE METHODS
+  // Matching screencapture-appsheet-start-...-11_42_48.png & subfolders
+  // ==========================================================
+  openOtherBPaidList(year = 'ALL') {
+    this.viewMode = 'paid-list';
+    this.activePaidYearFilter = year;
+    this.showView('tobe-view-other-b-paid-list');
+
+    this.setBreadcrumbs([
+      { label: 'Home', url: '../index.html' },
+      { label: 'To be Created', onclick: "ToBeCreatedModule.goToDashboardView()" },
+      { label: 'Other B Paid', active: true }
+    ]);
+
+    this.setSearchPlaceholder('Search Other B Paid');
+    this.setHeaderTools(`
+      <i class="bi bi-funnel" title="Toggle Financial Year Sidebar" onclick="ToBeCreatedModule.togglePaidSidebar()"></i>
+      <i class="bi bi-check2-square" title="Select"></i>
+    `);
+
+    this.updatePaidYearRailActive(year);
+    this.renderPaidTable();
+  },
+
+  updatePaidYearRailActive(year) {
+    const railAll = document.getElementById('paid-rail-all');
+    const rail2026 = document.getElementById('paid-rail-2026');
+    const rail2025 = document.getElementById('paid-rail-2025');
+    const rail2024 = document.getElementById('paid-rail-2024');
+
+    if (railAll) railAll.classList.toggle('active', year === 'ALL');
+    if (rail2026) rail2026.classList.toggle('active', year === '2026-2027');
+    if (rail2025) rail2025.classList.toggle('active', year === '2025-2026');
+    if (rail2024) rail2024.classList.toggle('active', year === '2024-2025');
+  },
+
+  filterPaidByYear(year) {
+    this.activePaidYearFilter = year;
+    this.updatePaidYearRailActive(year);
+    this.renderPaidTable();
+  },
+
+  togglePaidSidebar() {
+    const rail = document.getElementById('tobe-paid-left-rail');
+    const unhideWrap = document.getElementById('tobe-paid-unhide-sidebar-wrap');
+    if (!rail) return;
+    const isCollapsed = rail.classList.toggle('collapsed');
+    if (unhideWrap) {
+      if (isCollapsed) {
+        unhideWrap.classList.remove('d-none');
+      } else {
+        unhideWrap.classList.add('d-none');
+      }
+    }
+  },
+
+  renderPaidTable() {
+    const tbody = document.getElementById('tobe-paid-table-body');
+    if (!tbody) return;
+
+    let trips = this.paidTrips || [];
+
+    // Filter by Financial Year
+    if (this.activePaidYearFilter !== 'ALL') {
+      trips = trips.filter(t => t.year === this.activePaidYearFilter);
+    }
+
+    // Filter by search query
+    if (this.searchQuery) {
+      const q = this.searchQuery.toLowerCase();
+      trips = trips.filter(t => 
+        (t.grNo && t.grNo.toLowerCase().includes(q)) ||
+        (t.shortGr && t.shortGr.toLowerCase().includes(q)) ||
+        (t.truckNo && t.truckNo.toLowerCase().includes(q)) ||
+        (t.destination && t.destination.toLowerCase().includes(q)) ||
+        (t.consignor && t.consignor.toLowerCase().includes(q)) ||
+        (t.reference && t.reference.toLowerCase().includes(q)) ||
+        (t.driver && t.driver.toLowerCase().includes(q)) ||
+        (t.owner && t.owner.toLowerCase().includes(q)) ||
+        (t.description && t.description.toLowerCase().includes(q)) ||
+        (t.mode && t.mode.toLowerCase().includes(q))
+      );
+    }
+
+    if (trips.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="9" class="text-center py-5 text-muted">
+            <i class="bi bi-inbox fs-3 d-block mb-2 text-secondary"></i>
+            No records found for Other B Paid in selected year
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    // Group trips by paymentDate
+    const dateGroups = {};
+    trips.forEach(t => {
+      const grp = t.paymentDate || t.dateGroup || 'Other';
+      if (!dateGroups[grp]) {
+        dateGroups[grp] = {
+          trips: [],
+          totalAmount: 0
+        };
+      }
+      dateGroups[grp].trips.push(t);
+      dateGroups[grp].totalAmount += Number(t.amountPaid || 0);
+    });
+
+    let html = '';
+    Object.keys(dateGroups).forEach(grpKey => {
+      const grp = dateGroups[grpKey];
+      const sumFormatted = `₹ ${Number(grp.totalAmount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+      // Date group header row
+      html += `
+        <tr class="tobe-date-group-header">
+          <td colspan="3" class="fw-bold" style="padding-left: 16px;">
+            <i class="bi bi-calendar-event me-2 text-secondary"></i>${grpKey}
+          </td>
+          <td class="fw-bold" style="color: #137333;">${sumFormatted}</td>
+          <td colspan="5"></td>
+        </tr>
+      `;
+
+      // Payment records for this date
+      grp.trips.forEach(t => {
+        const amtFormatted = `₹ ${Number(t.amountPaid || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        const rowClass = `tobe-row-${(t.color || 'light-blue').replace(/_/g, '-')}`;
+        const shortGr = t.shortGr || t.grNo;
+
+        html += `
+          <tr class="${rowClass} tobe-clickable-row" onclick="ToBeCreatedModule.openPaidTripDetails('${t.grNo}')" title="Click to view details for ${t.grNo}">
+            <td style="padding-left: 16px;">${t.paymentDate || ''}</td>
+            <td class="fw-semibold tobe-cell-accent">${shortGr}</td>
+            <td class="fw-medium">${t.truckNo || ''}</td>
+            <td class="fw-semibold text-end pe-3" style="font-variant-numeric: tabular-nums;">${amtFormatted}</td>
+            <td>${t.mode || 'Cash in Rajsamand'}</td>
+            <td class="text-truncate" style="max-width: 220px;" title="${t.description || ''}">${t.description || '-'}</td>
+            <td class="text-truncate" style="max-width: 180px;" title="${t.reference || ''}">${t.reference || '-'}</td>
+            <td class="text-truncate" style="max-width: 180px;" title="${t.owner || ''}">${t.owner || '-'}</td>
+            <td class="text-end pe-3">
+              <i class="bi bi-chevron-right text-muted" style="font-size: 11px;"></i>
+            </td>
+          </tr>
+        `;
+      });
+    });
+
+    tbody.innerHTML = html;
+  },
+
+  openPaidTripDetails(grNo) {
+    let trip = (this.paidTrips || []).find(t => t.grNo === grNo || t.shortGr === grNo);
+    if (!trip && typeof window !== 'undefined' && window.OTHER_B_PAID_DATA) {
+      trip = window.OTHER_B_PAID_DATA.find(t => t.grNo === grNo || t.shortGr === grNo);
+    }
+    if (!trip) {
+      if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+        AppUI.showToast(`Trip ${grNo} not found`, 'warning');
+      }
+      return;
+    }
+
+    this.activePaidTrip = trip;
+    this.viewMode = 'paid-details';
+    this.showView('tobe-view-paid-trip-details');
+
+    const isSettled = trip.color === 'green' || trip.status === 'Settled';
+    const detailLabel = isSettled ? 'Settled Trip Details' : 'Open Trip Details';
+
+    this.setBreadcrumbs([
+      { label: 'Home', url: '../index.html' },
+      { label: 'To be Created', onclick: "ToBeCreatedModule.goToDashboardView()" },
+      { label: 'Other B Paid', onclick: `ToBeCreatedModule.openOtherBPaidList('${this.activePaidYearFilter}')` },
+      { label: detailLabel, active: true }
+    ]);
+
+    this.setSearchPlaceholder(`Search ${detailLabel}`);
+    this.setHeaderTools(`
+      <i class="bi bi-truck text-dark" title="All Debts" onclick="ToBeCreatedModule.openDebtsView()"></i>
+      <i class="bi bi-truck text-danger" title="All Truck Debts" onclick="ToBeCreatedModule.openTruckDebtsView()"></i>
+      <button class="btn btn-sm btn-appsheet-gold" onclick="ToBeCreatedModule.openUpdateTripDrawer()">
+        <i class="bi bi-pencil-square me-1"></i> Edit
+      </button>
+      <i class="bi bi-arrows-angle-expand" title="Fullscreen"></i>
+    `);
+
+    this.renderPaidTripDetailsView(trip);
+  },
+
+  renderPaidTripDetailsView(t) {
+    const container = document.getElementById('tobe-paid-trip-details-content');
+    if (!container) return;
+
+    if (t.color === 'green' || t.status === 'Settled') {
+      container.innerHTML = this.renderGreenPaidTripDetails(t);
+    } else if (t.color === 'red' || t.status === 'Other B Pending') {
+      container.innerHTML = this.renderRedPaidTripDetails(t);
+    } else if (t.color === 'sky_blue' || t.status === 'Truck Owner Payment Pending') {
+      container.innerHTML = this.renderSkyBluePaidTripDetails(t);
+    } else {
+      container.innerHTML = this.renderLightBluePaidTripDetails(t);
+    }
+  },
+
+  // VARIATION 1: GREEN (Settled Trip Details - Matching screencapture-...-11_50_04.png)
+  renderGreenPaidTripDetails(t) {
+    const fmt = (n) => `₹ ${Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    const otherBPayments = t.otherBPayments || [
+      { paymentDate: t.paymentDate || '21/10/2026', amountPaid: t.amountPaid || 18000, mode: 'Cash in Rajsamand', description: '' }
+    ];
+    const payments = t.payments || [
+      { paymentDate: '19/10/2026', amountPaid: t.freight || 127999, beneficiary: 'Cash' }
+    ];
+    const ownerPayments = t.ownerPayments || [
+      { paymentDate: '19/10/2026', amountPaid: t.freight || 127999, mode: 'Cash', beneficiary: 'Cash' }
+    ];
+
+    return `
+      <div class="tobe-details-grid-3">
+        <!-- CARD 1: Trip Information (Settled Green Accent) -->
+        <div class="tobe-details-card" style="border-top: 3px solid #137333;">
+          <div class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom">
+            <span class="fw-bold" style="font-size: 13px; color: #137333;">G.R.No.</span>
+            <span class="fw-bold" style="font-size: 13px; color: #137333;">${t.grNo}</span>
+          </div>
+          ${this.renderFieldRow('Truck No.', t.truckNo, 'green')}
+          ${this.renderFieldRow('Trip Start Date', t.tripStartDate, 'green')}
+          ${this.renderFieldRow('Trip End Date', t.tripEndDate, 'green')}
+          ${this.renderFieldRow('Origin', t.origin || 'Rajsamand (Raj.)', 'green')}
+          ${this.renderFieldRow('Destination', t.destination || 'Delhi', 'green')}
+          ${this.renderFieldRow('Weight', t.weight ? Number(t.weight).toFixed(3) : '82.580', 'green')}
+          ${this.renderFieldRow('Rate', t.rate ? fmt(t.rate) : '₹ 1,550.00', 'green')}
+          ${this.renderFieldRow('Material', t.material || 'Marble Slabs, Granite Slabs', 'green')}
+          ${this.renderFieldRow('Reference', t.reference, 'green')}
+          ${this.renderFieldRow('Reference Mobile No.', t.referenceMobile || '9650271892', 'green')}
+          ${this.renderFieldRow('Driver', t.driver, 'green')}
+          ${this.renderFieldRow('Driver Mobile No.', t.driverMobile || '8058881707', 'green')}
+          ${this.renderFieldRow('Consignor', t.consignor, 'green')}
+          ${this.renderFieldRow('Consignor Mobile No.', t.consignorMobile || '9650271892', 'green')}
+          ${this.renderFieldRow('Freight', fmt(t.freight || 127999), 'green')}
+        </div>
+
+        <!-- CARD 2: Payments Breakdown (Matching 11_50_04.png) -->
+        <div class="tobe-details-card">
+          <!-- Section 1: Payment 1 -->
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="fw-bold" style="font-size: 13px; color: #202124;">Payment ${payments.length}</span>
+          </div>
+          <table class="details-table mb-2">
+            <thead>
+              <tr>
+                <th>Payment Date</th>
+                <th>Amount Paid</th>
+                <th>Beneficiary</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${payments.map(p => `
+                <tr>
+                  <td>${p.paymentDate}</td>
+                  <td class="fw-semibold">${fmt(p.amountPaid)}</td>
+                  <td>${p.beneficiary || 'Cash'}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+          <div class="card-footer-actions mb-3">
+            <a onclick="ToBeCreatedModule.openPaymentListView()">Expand</a>
+          </div>
+
+          <div class="border-top pt-2 mb-3">
+            <div class="d-flex justify-content-between py-1">
+              <span class="text-muted" style="font-size: 11.5px;">Owner Total Payment</span>
+              <span class="fw-bold" style="font-size: 12px; color: #202124;">${fmt(t.ownerTotalPayment || t.freight || 127999)}</span>
+            </div>
+          </div>
+
+          <!-- Section 2: Other B 1 -->
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="fw-bold" style="font-size: 13px; color: #202124;">Other B ${otherBPayments.length}</span>
+          </div>
+          <table class="details-table mb-2">
+            <thead>
+              <tr>
+                <th>Payment Date</th>
+                <th>Amount Paid</th>
+                <th>Mode</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${otherBPayments.map(p => `
+                <tr>
+                  <td>${p.paymentDate}</td>
+                  <td class="fw-semibold">${fmt(p.amountPaid)}</td>
+                  <td>${p.mode || 'Cash in Rajsamand'}</td>
+                  <td>${p.description || '-'}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+          <div class="card-footer-actions mb-3">
+            <a onclick="ToBeCreatedModule.openPaidPaymentListView('otherB')">Expand</a>
+          </div>
+
+          <!-- Section 3: Owner Payment 1 -->
+          <div class="border-top pt-2">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="fw-bold" style="font-size: 13px; color: #202124;">Owner Payment ${ownerPayments.length}</span>
+            </div>
+            <table class="details-table mb-2">
+              <thead>
+                <tr>
+                  <th>Payment Date</th>
+                  <th>Amount Paid</th>
+                  <th>Mode</th>
+                  <th>Beneficiary</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${ownerPayments.map(p => `
+                  <tr>
+                    <td>${p.paymentDate}</td>
+                    <td class="fw-semibold">${fmt(p.amountPaid)}</td>
+                    <td>${p.mode || 'Cash'}</td>
+                    <td>${p.beneficiary || 'Cash'}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+            <div class="card-footer-actions">
+              <a onclick="ToBeCreatedModule.openPaidPaymentListView('owner')">Expand</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 3: Totals & Settled Status (Matching 11_50_04.png) -->
+        <div class="tobe-details-card">
+          <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+            <span class="fw-bold" style="font-size: 13px; color: #202124;">Settlement Status</span>
+            <span class="tobe-status-settled">
+              <i class="bi bi-check-circle-fill"></i> Settled
+            </span>
+          </div>
+          <div class="d-flex justify-content-between py-1 border-bottom">
+            <span class="text-muted" style="font-size: 11.5px;">Total Freight</span>
+            <span class="fw-bold" style="font-size: 12px; color: #202124;">${fmt(t.totalFreight || t.freight || 127999)}</span>
+          </div>
+          <div class="d-flex justify-content-between py-1 border-bottom">
+            <span class="text-muted" style="font-size: 11.5px;">Paid Amount</span>
+            <span class="fw-bold" style="font-size: 12px; color: #137333;">${fmt(t.paidAmount || t.freight || 127999)}</span>
+          </div>
+          <div class="d-flex justify-content-between py-1 border-bottom">
+            <span class="text-muted" style="font-size: 11.5px;">Other B Total Payment</span>
+            <span class="fw-bold" style="font-size: 12px; color: #137333;">${fmt(t.otherBTotalPayment || t.otherB || 18000)}</span>
+          </div>
+          <div class="d-flex justify-content-between py-1 border-bottom">
+            <span class="text-muted" style="font-size: 11.5px;">Owner</span>
+            <span class="fw-semibold" style="font-size: 12px; color: #202124;">${t.owner || 'Rameshwar Prasad'}</span>
+          </div>
+          <div class="d-flex justify-content-between py-1">
+            <span class="text-muted" style="font-size: 11.5px;">Owner Mobile No.</span>
+            <span class="fw-semibold" style="font-size: 12px; color: #202124;">${t.ownerMobile || '9414659401'}</span>
+          </div>
+        </div>
+      </div>
+    `;
+  },
+
+  // VARIATION 2: LIGHT BLUE (Party Payment Pending - Matching 11_45_56.png)
+  renderLightBluePaidTripDetails(t) {
+    const fmt = (n) => `₹ ${Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    const payments = t.otherBPayments || [
+      { paymentDate: '19/10/2026', amountPaid: 8500, mode: 'Phone Pe/GPay/PayTM/UPI', description: 'UPI-Amar Motors' },
+      { paymentDate: '21/10/2026', amountPaid: 8200, mode: 'Phone Pe/GPay/PayTM/UPI', description: 'UPI-Nishant Gour' },
+      { paymentDate: '21/10/2026', amountPaid: 3300, mode: 'Phone Pe/GPay/PayTM/UPI', description: 'Mr Vijay Kumar' }
+    ];
+
+    return `
+      <div class="tobe-details-grid-3">
+        <!-- CARD 1: Trip Information -->
+        <div class="tobe-details-card">
+          <div class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom">
+            <span class="fw-bold" style="font-size: 13px; color: #202124;">G.R.No.</span>
+            <span class="fw-bold" style="font-size: 13px; color: #1a73e8;">${t.grNo}</span>
+          </div>
+          ${this.renderFieldRow('Truck No.', t.truckNo, 'gold')}
+          ${this.renderFieldRow('Trip Start Date', t.tripStartDate, 'gold')}
+          ${this.renderFieldRow('Trip End Date', t.tripEndDate, 'gold')}
+          ${this.renderFieldRow('Origin', t.origin || 'Rajsamand (Raj.)', 'gold')}
+          ${this.renderFieldRow('Destination', t.destination || 'Delhi', 'gold')}
+          ${this.renderFieldRow('Weight', t.weight ? Number(t.weight).toFixed(3) : '95.680', 'gold')}
+          ${this.renderFieldRow('Rate', t.rate ? fmt(t.rate) : '₹ 1,550.00', 'gold')}
+          ${this.renderFieldRow('Material', t.material || 'Marble Slabs', 'gold')}
+          ${this.renderFieldRow('Reference', t.reference, 'gold')}
+          ${this.renderFieldRow('Reference Mobile No.', t.referenceMobile || '9810645833', 'gold')}
+          ${this.renderFieldRow('Driver', t.driver, 'gold')}
+          ${this.renderFieldRow('Driver Mobile No.', t.driverMobile || '6377445099, 7878460322', 'gold')}
+          ${this.renderFieldRow('Consignor', t.consignor, 'gold')}
+          ${this.renderFieldRow('Consignor Mobile No.', t.consignorMobile || '9810645833', 'gold')}
+          ${this.renderFieldRow('Owner', t.owner, 'gold')}
+          ${this.renderFieldRow('Owner Mobile No.', t.ownerMobile || '9414659401, 9772200036', 'gold')}
+          ${this.renderFieldRow('Freight', fmt(t.freight || 148304), 'gold')}
+          <div class="mt-3 pt-2 border-top">
+            <button class="btn btn-sm btn-outline-primary w-100 py-1" onclick="ToBeCreatedModule.openAddPaidPaymentDrawer()">
+              <i class="bi bi-plus-lg me-1"></i> Add Records for Other B
+            </button>
+          </div>
+          ${this.renderFieldRow('Total Freight', fmt(t.totalFreight || t.freight || 148304), 'gold')}
+          ${this.renderFieldRow('Other B', fmt(t.otherB || 20000), 'gold')}
+        </div>
+
+        <!-- CARD 2: Other B Payments Table (Matching 11_45_56.png) -->
+        <div class="tobe-details-card">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="fw-bold" style="font-size: 13px; color: #202124;">Other B Payment ${payments.length}</span>
+          </div>
+          <table class="details-table mb-2">
+            <thead>
+              <tr>
+                <th>Payment Date</th>
+                <th>Amount Paid</th>
+                <th>Mode</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${payments.map(p => `
+                <tr>
+                  <td>${p.paymentDate}</td>
+                  <td class="fw-semibold">${fmt(p.amountPaid)}</td>
+                  <td>${p.mode || 'Phone Pe/GPay/PayTM/UPI'}</td>
+                  <td class="text-truncate" style="max-width: 140px;">${p.description || '-'}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+          <div class="card-footer-actions">
+            <a onclick="ToBeCreatedModule.openPaidPaymentListView('otherB')">Expand</a>
+            <a onclick="ToBeCreatedModule.openAddPaidPaymentDrawer()">Add</a>
+          </div>
+        </div>
+
+        <!-- CARD 3: Totals & Status (Matching 11_45_56.png) -->
+        <div class="tobe-details-card">
+          <div class="d-flex justify-content-between py-1 border-bottom">
+            <span class="text-muted" style="font-size: 11.5px;">Other B Total Payment</span>
+            <span class="fw-bold" style="font-size: 12px; color: #1a73e8;">${fmt(t.otherBTotalPayment || 20000)}</span>
+          </div>
+          <div class="d-flex justify-content-between py-1 border-bottom">
+            <span class="text-muted" style="font-size: 11.5px;">Other B Due Payment</span>
+            <span class="fw-bold" style="font-size: 12px; color: #5f6368;">0.00</span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center py-2">
+            <span class="text-muted" style="font-size: 11.5px;">Status</span>
+            <span class="tobe-status-party-pending">
+              <i class="bi bi-clock-fill" style="font-size: 9px;"></i> Party Payment Pending
+            </span>
+          </div>
+        </div>
+      </div>
+    `;
+  },
+
+  // VARIATION 3: RED (Other B Pending - Matching 11_53_18.png)
+  renderRedPaidTripDetails(t) {
+    const fmt = (n) => `₹ ${Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    const payments = t.otherBPayments || [
+      { paymentDate: '17/10/2026', amountPaid: 10200, mode: 'Phone Pe/GPay/PayTM/UPI', description: 'Ravi Kumar' }
+    ];
+
+    return `
+      <div class="tobe-details-grid-3">
+        <!-- CARD 1: Trip Information -->
+        <div class="tobe-details-card">
+          <div class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom">
+            <span class="fw-bold" style="font-size: 13px; color: #202124;">G.R.No.</span>
+            <span class="fw-bold" style="font-size: 13px; color: #d93025;">${t.grNo}</span>
+          </div>
+          ${this.renderFieldRow('Truck No.', t.truckNo, 'red')}
+          ${this.renderFieldRow('Trip Start Date', t.tripStartDate, 'red')}
+          ${this.renderFieldRow('Trip End Date', t.tripEndDate, 'red')}
+          ${this.renderFieldRow('Origin', t.origin || 'Rajsamand (Raj.)', 'red')}
+          ${this.renderFieldRow('Destination', t.destination || 'Greater Noida (U.P.)', 'red')}
+          ${this.renderFieldRow('Weight', t.weight ? Number(t.weight).toFixed(3) : '75.420', 'red')}
+          ${this.renderFieldRow('Rate', t.rate ? fmt(t.rate) : '₹ 1,500.00', 'red')}
+          ${this.renderFieldRow('Material', t.material || 'Marble Slabs', 'red')}
+          ${this.renderFieldRow('Reference', t.reference, 'red')}
+          ${this.renderFieldRow('Reference Mobile No.', t.referenceMobile || '7531858336', 'red')}
+          ${this.renderFieldRow('Driver', t.driver, 'red')}
+          ${this.renderFieldRow('Driver Mobile No.', t.driverMobile || '8529635755', 'red')}
+          ${this.renderFieldRow('Consignor', t.consignor, 'red')}
+          ${this.renderFieldRow('Consignor Mobile No.', t.consignorMobile || '7531858336', 'red')}
+          ${this.renderFieldRow('Owner', t.owner, 'red')}
+          ${this.renderFieldRow('Owner Mobile No.', t.ownerMobile || '8239475626', 'red')}
+          ${this.renderFieldRow('Freight', fmt(t.freight || 113130), 'red')}
+          <div class="mt-3 pt-2 border-top">
+            <button class="btn btn-sm btn-outline-danger w-100 py-1" onclick="ToBeCreatedModule.openAddPaidPaymentDrawer()">
+              <i class="bi bi-plus-lg me-1"></i> Add Records for Other B
+            </button>
+          </div>
+          ${this.renderFieldRow('Total Freight', fmt(t.totalFreight || t.freight || 113130), 'red')}
+          ${this.renderFieldRow('Other B', fmt(t.otherB || 18000), 'red')}
+        </div>
+
+        <!-- CARD 2: Other B Payment 1 Table (Matching 11_53_18.png) -->
+        <div class="tobe-details-card">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="fw-bold" style="font-size: 13px; color: #202124;">Other B Payment ${payments.length}</span>
+          </div>
+          <table class="details-table mb-2">
+            <thead>
+              <tr>
+                <th>Payment Date</th>
+                <th>Amount Paid</th>
+                <th>Mode</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${payments.map(p => `
+                <tr>
+                  <td>${p.paymentDate}</td>
+                  <td class="fw-semibold text-danger">${fmt(p.amountPaid)}</td>
+                  <td>${p.mode || 'Phone Pe/GPay/PayTM/UPI'}</td>
+                  <td>${p.description || '-'}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+          <div class="card-footer-actions">
+            <a onclick="ToBeCreatedModule.openPaidPaymentListView('otherB')">Expand</a>
+            <a onclick="ToBeCreatedModule.openAddPaidPaymentDrawer()">Add</a>
+          </div>
+        </div>
+
+        <!-- CARD 3: Totals & Status (Matching 11_53_18.png) -->
+        <div class="tobe-details-card">
+          <div class="d-flex justify-content-between py-1 border-bottom">
+            <span class="text-muted" style="font-size: 11.5px;">Other B Total Payment</span>
+            <span class="fw-bold" style="font-size: 12px; color: #202124;">${fmt(t.otherBTotalPayment || 10200)}</span>
+          </div>
+          <div class="d-flex justify-content-between py-1 border-bottom">
+            <span class="text-muted" style="font-size: 11.5px;">Other B Due Payment</span>
+            <span class="fw-bold" style="font-size: 12px; color: #d93025;">${fmt(t.otherBDuePayment || 7800)}</span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center py-2">
+            <span class="text-muted" style="font-size: 11.5px;">Status</span>
+            <span class="tobe-status-otherb-pending">
+              <i class="bi bi-exclamation-circle-fill" style="font-size: 9px;"></i> Other B Pending
+            </span>
+          </div>
+        </div>
+      </div>
+    `;
+  },
+
+  // VARIATION 4: SKY BLUE CHAMKILA (Truck Owner Payment Pending - Matching 11_55_52.png)
+  renderSkyBluePaidTripDetails(t) {
+    const fmt = (n) => `₹ ${Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    const ownerPayments = t.ownerPayments || [
+      { paymentDate: '25/09/2026', amountPaid: 1500, mode: 'Dalia' },
+      { paymentDate: '25/09/2026', amountPaid: 50000, mode: 'Cash' },
+      { paymentDate: '26/09/2026', amountPaid: 32400, mode: 'Phone Pe/GPay/PayTM/UPI' },
+      { paymentDate: '27/09/2026', amountPaid: 8700, mode: 'Phone Pe/GPay/PayTM/UPI' },
+      { paymentDate: '27/09/2026', amountPaid: 10600, mode: 'Phone Pe/GPay/PayTM/UPI' }
+    ];
+
+    return `
+      <div class="tobe-details-grid-3">
+        <!-- CARD 1: Trip Information -->
+        <div class="tobe-details-card">
+          <div class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom">
+            <span class="fw-bold" style="font-size: 13px; color: #202124;">G.R.No.</span>
+            <span class="fw-bold" style="font-size: 13px; color: #00838f;">${t.grNo}</span>
+          </div>
+          ${this.renderFieldRow('Truck No.', t.truckNo, 'gold')}
+          ${this.renderFieldRow('Trip Start Date', t.tripStartDate, 'gold')}
+          ${this.renderFieldRow('Trip End Date', t.tripEndDate, 'gold')}
+          ${this.renderFieldRow('Origin', t.origin || 'Rajsamand (Raj.)', 'gold')}
+          ${this.renderFieldRow('Destination', t.destination || 'Ghaziabad (U.P.)', 'gold')}
+          ${this.renderFieldRow('Weight', t.weight ? Number(t.weight).toFixed(3) : '57.290', 'gold')}
+          ${this.renderFieldRow('Rate', t.rate ? fmt(t.rate) : '₹ 2,000.00', 'gold')}
+          ${this.renderFieldRow('Material', t.material || 'Granite Slabs', 'gold')}
+          ${this.renderFieldRow('Reference', t.reference, 'gold')}
+          ${this.renderFieldRow('Reference Mobile No.', t.referenceMobile || '9810123304', 'gold')}
+          ${this.renderFieldRow('Driver', t.driver, 'gold')}
+          ${this.renderFieldRow('Driver Mobile No.', t.driverMobile || '9784175913', 'gold')}
+          ${this.renderFieldRow('Consignor', t.consignor, 'gold')}
+          ${this.renderFieldRow('Consignor Mobile No.', t.consignorMobile || '9810123304', 'gold')}
+          ${this.renderFieldRow('Owner', t.owner, 'gold')}
+          ${this.renderFieldRow('Owner Mobile No.', t.ownerMobile || '8502873309', 'gold')}
+          ${this.renderFieldRow('Freight', fmt(t.freight || 114580), 'gold')}
+          <div class="mt-3 pt-2 border-top">
+            <button class="btn btn-sm btn-outline-info w-100 py-1 text-dark" onclick="ToBeCreatedModule.openAddOwnerPaymentDrawer()">
+              <i class="bi bi-plus-lg me-1"></i> Add Records for Truck Owner Payment
+            </button>
+          </div>
+          ${this.renderFieldRow('Total Freight', fmt(t.totalFreight || t.freight || 114580), 'gold')}
+        </div>
+
+        <!-- CARD 2: Owner Payment Table (Matching 11_55_52.png) -->
+        <div class="tobe-details-card">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="fw-bold" style="font-size: 13px; color: #202124;">Owner Payment ${ownerPayments.length}</span>
+          </div>
+          <table class="details-table mb-2">
+            <thead>
+              <tr>
+                <th>Payment Date</th>
+                <th>Amount Paid</th>
+                <th>Mode</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${ownerPayments.map(p => `
+                <tr>
+                  <td>${p.paymentDate}</td>
+                  <td class="fw-semibold">${fmt(p.amountPaid)}</td>
+                  <td>${p.mode || 'Phone Pe/GPay/PayTM/UPI'}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+          <div class="card-footer-actions">
+            <a onclick="ToBeCreatedModule.openPaidPaymentListView('owner')">Expand</a>
+            <a onclick="ToBeCreatedModule.openAddOwnerPaymentDrawer()">Add</a>
+          </div>
+        </div>
+
+        <!-- CARD 3: Totals & Status (Matching 11_55_52.png) -->
+        <div class="tobe-details-card">
+          <div class="d-flex justify-content-between py-1 border-bottom">
+            <span class="text-muted" style="font-size: 11.5px;">Owner Total Payment</span>
+            <span class="fw-bold" style="font-size: 12px; color: #202124;">${fmt(t.ownerTotalPayment || 108850)}</span>
+          </div>
+          <div class="d-flex justify-content-between py-1 border-bottom">
+            <span class="text-muted" style="font-size: 11.5px;">Owner Due</span>
+            <span class="fw-bold" style="font-size: 12px; color: #00838f;">${fmt(t.ownerDue || 5730)}</span>
+          </div>
+          <div class="d-flex justify-content-between py-1 border-bottom">
+            <span class="text-muted" style="font-size: 11.5px;">Other B</span>
+            <span class="fw-semibold" style="font-size: 12px; color: #202124;">${fmt(t.otherB || 18000)}</span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center py-2">
+            <span class="text-muted" style="font-size: 11.5px;">Status</span>
+            <span class="tobe-status-owner-pending">
+              <i class="bi bi-truck" style="font-size: 10px;"></i> Truck Owner Payment Pending
+            </span>
+          </div>
+        </div>
+      </div>
+    `;
+  },
+
+  // EXPANDED PAYMENT LIST VIEW (Matching 11_47_25.png)
+  openPaidPaymentListView(type = 'otherB') {
+    this.activePaidPaymentType = type;
+    this.viewMode = 'paid-payment-list';
+    this.showView('tobe-view-paid-payment-list');
+
+    const titleText = type === 'owner' ? 'Trip Owner Payment Details' : 'Trip Other B Payment Details';
+    const elTitle = document.getElementById('paid-payment-list-title');
+    if (elTitle) elTitle.innerText = titleText;
+
+    this.setBreadcrumbs([
+      { label: 'Home', url: '../index.html' },
+      { label: 'To be Created', onclick: "ToBeCreatedModule.goToDashboardView()" },
+      { label: 'Other B Paid', onclick: `ToBeCreatedModule.openOtherBPaidList('${this.activePaidYearFilter}')` },
+      { label: 'Open Trip Details', onclick: `ToBeCreatedModule.openPaidTripDetails('${this.activePaidTrip ? this.activePaidTrip.grNo : ""}')` },
+      { label: titleText, active: true }
+    ]);
+
+    this.setSearchPlaceholder(`Search ${titleText}`);
+    this.setHeaderTools(`
+      <i class="bi bi-funnel" title="Filter"></i>
+      <i class="bi bi-check2-square" title="Select"></i>
+    `);
+
+    const tbody = document.getElementById('paid-payment-list-table-body');
+    if (!tbody || !this.activePaidTrip) return;
+
+    const list = type === 'owner' ? (this.activePaidTrip.ownerPayments || []) : (this.activePaidTrip.otherBPayments || []);
+    const fmt = (n) => `₹ ${Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+    tbody.innerHTML = list.map((p, idx) => `
+      <tr class="tobe-clickable-row" onclick="ToBeCreatedModule.openPaidPaymentDetailView(${idx}, '${type}')">
+        <td class="fw-semibold">${p.paymentDate || ''}</td>
+        <td class="fw-bold" style="color: #137333;">${fmt(p.amountPaid)}</td>
+        <td>${(p.mode ? p.mode + ' ' : '') + (p.description || '')}</td>
+      </tr>
+    `).join('');
+  },
+
+  // SINGLE PAYMENT DETAIL CARD (Matching 11_47_37.png)
+  openPaidPaymentDetailView(idx, type = 'otherB') {
+    this.activePaidPaymentIndex = idx;
+    this.activePaidPaymentType = type;
+    this.viewMode = 'paid-payment-detail';
+    this.showView('tobe-view-paid-payment-detail');
+
+    const titleText = type === 'owner' ? 'Trip Owner Payment Details' : 'Trip Other B Payment Details';
+
+    this.setBreadcrumbs([
+      { label: 'Home', url: '../index.html' },
+      { label: 'To be Created', onclick: "ToBeCreatedModule.goToDashboardView()" },
+      { label: 'Other B Paid', onclick: `ToBeCreatedModule.openOtherBPaidList('${this.activePaidYearFilter}')` },
+      { label: 'Open Trip Details', onclick: `ToBeCreatedModule.openPaidTripDetails('${this.activePaidTrip ? this.activePaidTrip.grNo : ""}')` },
+      { label: titleText, onclick: `ToBeCreatedModule.openPaidPaymentListView('${type}')` },
+      { label: 'Details', active: true }
+    ]);
+
+    const card = document.getElementById('paid-payment-detail-card-content');
+    if (!card || !this.activePaidTrip) return;
+
+    const list = type === 'owner' ? (this.activePaidTrip.ownerPayments || []) : (this.activePaidTrip.otherBPayments || []);
+    const p = list[idx] || {};
+    const fmt = (n) => `₹ ${Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+    card.innerHTML = `
+      ${this.renderFieldRow('Payment Date', p.paymentDate, 'green')}
+      ${this.renderFieldRow('Paid To', p.paidTo || (type === 'owner' ? 'Truck Owner' : 'Transporter'), 'green')}
+      ${this.renderFieldRow('Mode', p.mode || 'Phone Pe/GPay/PayTM/UPI', 'green')}
+      ${this.renderFieldRow('Amount Paid', fmt(p.amountPaid), 'green')}
+      ${this.renderFieldRow('Beneficiary', p.beneficiary || 'TTC', 'green')}
+      ${this.renderFieldRow('From Bank', p.fromBank || 'Other', 'green')}
+      ${this.renderFieldRow('To Bank', p.toBank || 'IDBI', 'green')}
+      ${this.renderFieldRow('Description', p.description || '-', 'green')}
+    `;
+  },
+
+  // DRAWERS & MODALS FOR OTHER B PAID
+  openAddPaidPaymentDrawer() {
+    if (!this.activePaidTrip) return;
+    const dueEl = document.getElementById('ob-due');
+    if (dueEl) {
+      dueEl.value = `₹ ${Number(this.activePaidTrip.otherBDuePayment || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+    const amtEl = document.getElementById('ob-amount-paid');
+    if (amtEl) amtEl.value = this.activePaidTrip.otherBDuePayment || 0;
+
+    const drawer = document.getElementById('addOtherBPaymentDrawer');
+    if (drawer && typeof bootstrap !== 'undefined') {
+      const bsOffcanvas = bootstrap.Offcanvas.getOrCreateInstance(drawer);
+      bsOffcanvas.show();
+    }
+  },
+
+  openAddOwnerPaymentDrawer() {
+    if (!this.activePaidTrip) return;
+    const dueEl = document.getElementById('owner-payment-due');
+    if (dueEl) {
+      dueEl.value = `₹ ${Number(this.activePaidTrip.ownerDue || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+    const amtEl = document.getElementById('owner-amount-paid');
+    if (amtEl) amtEl.value = this.activePaidTrip.ownerDue || 0;
+
+    const drawer = document.getElementById('addOwnerPaymentDrawer');
+    if (drawer && typeof bootstrap !== 'undefined') {
+      const bsOffcanvas = bootstrap.Offcanvas.getOrCreateInstance(drawer);
+      bsOffcanvas.show();
+    }
+  },
+
+  async savePaidOtherBPayment() {
+    if (!this.activePaidTrip) return;
+
+    const dateVal = document.getElementById('ob-payment-date')?.value || new Date().toLocaleDateString('en-GB');
+    const amtVal = parseFloat(document.getElementById('ob-amount-paid')?.value) || 0;
+    const modeVal = document.getElementById('ob-mode')?.value || 'Phone Pe/GPay/PayTM/UPI';
+    const descVal = document.getElementById('ob-description')?.value || '';
+
+    if (amtVal <= 0) {
+      if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+        AppUI.showToast('Please enter a valid amount paid', 'warning');
+      }
+      return;
+    }
+
+    if (!this.activePaidTrip.otherBPayments) {
+      this.activePaidTrip.otherBPayments = [];
+    }
+
+    const newPayment = {
+      paymentDate: dateVal,
+      paidTo: 'Transporter',
+      mode: modeVal,
+      amountPaid: amtVal,
+      beneficiary: 'TTC',
+      fromBank: 'Other',
+      toBank: 'IDBI',
+      description: descVal
+    };
+
+    this.activePaidTrip.otherBPayments.push(newPayment);
+    this.activePaidTrip.otherBTotalPayment = (Number(this.activePaidTrip.otherBTotalPayment) || 0) + amtVal;
+    this.activePaidTrip.otherBDuePayment = Math.max(0, (Number(this.activePaidTrip.otherBDuePayment) || 0) - amtVal);
+
+    if (this.activePaidTrip.otherBDuePayment <= 0 && this.activePaidTrip.color === 'red') {
+      this.activePaidTrip.color = 'light_blue';
+      this.activePaidTrip.status = 'Party Payment Pending';
+    }
+
+    // Sync with Firestore if dbService exists
+    try {
+      if (typeof dbService !== 'undefined' && dbService.update) {
+        await dbService.update('other_b_paid', this.activePaidTrip.grNo, this.activePaidTrip);
+      }
+    } catch (e) {
+      console.warn('[ToBeCreatedModule] Firestore update failed (saved to local state):', e);
+    }
+
+    // Close offcanvas drawer
+    const drawerEl = document.getElementById('addOtherBPaymentDrawer');
+    if (drawerEl && typeof bootstrap !== 'undefined') {
+      const bsOffcanvas = bootstrap.Offcanvas.getInstance(drawerEl);
+      if (bsOffcanvas) bsOffcanvas.hide();
+    }
+
+    if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+      AppUI.showToast(`Saved Other B payment of ₹ ${amtVal.toLocaleString('en-US', { minimumFractionDigits: 2 })}!`, 'success');
+    }
+
+    // Refresh view
+    if (this.viewMode === 'paid-details') {
+      this.renderPaidTripDetailsView(this.activePaidTrip);
+    } else if (this.viewMode === 'paid-payment-list') {
+      this.openPaidPaymentListView('otherB');
+    } else {
+      this.renderPaidTable();
+    }
+  },
+
+  async saveOwnerPayment() {
+    if (!this.activePaidTrip) return;
+
+    const dateVal = document.getElementById('owner-payment-date')?.value || new Date().toLocaleDateString('en-GB');
+    const amtVal = parseFloat(document.getElementById('owner-amount-paid')?.value) || 0;
+    const modeVal = document.getElementById('owner-payment-mode')?.value || 'Phone Pe/GPay/PayTM/UPI';
+    const descVal = document.getElementById('owner-payment-description')?.value || '';
+
+    if (amtVal <= 0) {
+      if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+        AppUI.showToast('Please enter a valid amount paid', 'warning');
+      }
+      return;
+    }
+
+    if (!this.activePaidTrip.ownerPayments) {
+      this.activePaidTrip.ownerPayments = [];
+    }
+
+    const newPayment = {
+      paymentDate: dateVal,
+      paidTo: 'Truck Owner',
+      mode: modeVal,
+      amountPaid: amtVal,
+      beneficiary: this.activePaidTrip.owner || 'Truck Owner',
+      description: descVal
+    };
+
+    this.activePaidTrip.ownerPayments.push(newPayment);
+    this.activePaidTrip.ownerTotalPayment = (Number(this.activePaidTrip.ownerTotalPayment) || 0) + amtVal;
+    this.activePaidTrip.ownerDue = Math.max(0, (Number(this.activePaidTrip.ownerDue) || 0) - amtVal);
+
+    if (this.activePaidTrip.ownerDue <= 0 && this.activePaidTrip.color === 'sky_blue') {
+      this.activePaidTrip.status = 'Party Payment Pending';
+      this.activePaidTrip.color = 'light_blue';
+    }
+
+    // Sync with Firestore if dbService exists
+    try {
+      if (typeof dbService !== 'undefined' && dbService.update) {
+        await dbService.update('other_b_paid', this.activePaidTrip.grNo, this.activePaidTrip);
+      }
+    } catch (e) {
+      console.warn('[ToBeCreatedModule] Firestore update failed (saved to local state):', e);
+    }
+
+    // Close offcanvas drawer
+    const drawerEl = document.getElementById('addOwnerPaymentDrawer');
+    if (drawerEl && typeof bootstrap !== 'undefined') {
+      const bsOffcanvas = bootstrap.Offcanvas.getInstance(drawerEl);
+      if (bsOffcanvas) bsOffcanvas.hide();
+    }
+
+    if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+      AppUI.showToast(`Saved Truck Owner payment of ₹ ${amtVal.toLocaleString('en-US', { minimumFractionDigits: 2 })}!`, 'success');
+    }
+
+    // Refresh view
+    if (this.viewMode === 'paid-details') {
+      this.renderPaidTripDetailsView(this.activePaidTrip);
+    } else if (this.viewMode === 'paid-payment-list') {
+      this.openPaidPaymentListView('owner');
+    } else {
+      this.renderPaidTable();
+    }
+  },
+
+  openTruckDebtsView(year = 'ALL') {
+    // Navigates to Debts view focused on truck owner debts
+    this.openDebtsView(year);
+    if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+      AppUI.showToast('Showing All Truck Debts', 'info');
+    }
+  },
+
+
+    toggleFilter() {
     if (typeof AppUI !== 'undefined' && AppUI.showToast) {
       AppUI.showToast('Filtering Other B Due...', 'info');
     }
