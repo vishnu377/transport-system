@@ -3,367 +3,707 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Parties Master (3,396 Accounts) - MTC & TTC Logistics</title>
+  <title>Parties - MTC And TTC - Trips</title>
+
+  <!-- Google Fonts: Roboto & Inter for Authentic AppSheet look -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
   <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Bootstrap Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-  <!-- Custom TMS Theme -->
-  <link rel="stylesheet" href="../css/style.css">
+
   <style>
-    .filter-btn-group .btn {
-      font-size: 0.8rem;
-      padding: 0.35rem 0.75rem;
-      border-radius: 20px;
+    :root {
+      --appsheet-bg: #f8f9fa;
+      --appsheet-card-bg: #ffffff;
+      --appsheet-text: #202124;
+      --appsheet-muted: #5f6368;
+      --appsheet-border: #dadce0;
+      --appsheet-border-light: #f1f3f4;
+      --appsheet-gold: #f9ab00;
+      --appsheet-blue: #1a73e8;
+      --appsheet-blue-bg: #e8f0fe;
+      --appsheet-blue-border: #d2e3fc;
+      --appsheet-green: #137333;
+      --appsheet-green-bg: #e6f4ea;
+      --appsheet-green-border: #ceead6;
     }
-    .party-name-link {
-      color: #1e3a8a;
+
+    body {
+      background-color: var(--appsheet-bg);
+      color: var(--appsheet-text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    /* 1. Left Icon Rail (48px fixed) */
+    .appsheet-rail {
+      width: 48px;
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      background: #ffffff;
+      border-right: 1px solid var(--appsheet-border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 6px;
+      z-index: 1040;
+    }
+
+    .appsheet-rail-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--appsheet-muted);
       text-decoration: none;
-      font-weight: 600;
-    }
-    .party-name-link:hover {
-      text-decoration: underline;
-      color: #2563eb;
-    }
-    .copy-btn {
-      opacity: 0.6;
+      border: none;
+      background: transparent;
+      margin-bottom: 8px;
       cursor: pointer;
-      transition: opacity 0.2s;
+      font-size: 16px;
+      transition: background 0.15s, color 0.15s;
     }
-    .copy-btn:hover {
-      opacity: 1;
+
+    .appsheet-rail-btn:hover {
+      background: #f1f3f4;
+      color: #202124;
     }
-    .table-fixed-layout {
-      table-layout: fixed;
+
+    .appsheet-rail-btn.active {
+      background: #fef7e0;
+      color: #b06000;
+    }
+
+    /* 2. Main Container */
+    .parties-main-container {
+      margin-left: 48px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 3. Top Header Bar */
+    .appsheet-header {
+      height: 50px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--appsheet-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      position: sticky;
+      top: 0;
+      z-index: 1020;
+    }
+
+    .appsheet-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--appsheet-text);
+    }
+
+    .appsheet-brand i.bi-truck {
+      font-size: 18px;
+      color: #3c4043;
+    }
+
+    .appsheet-search-wrap {
+      flex: 0 1 480px;
+      position: relative;
+    }
+
+    .appsheet-search-wrap input {
       width: 100%;
+      height: 36px;
+      background: #f1f3f4;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      padding: 0 14px 0 38px;
+      font-size: 13.5px;
+      color: var(--appsheet-text);
+      outline: none;
+      transition: background 0.2s, border 0.2s, box-shadow 0.2s;
     }
-    .table-custom th {
-      background-color: #f1f5f9;
-      font-size: 0.78rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: #475569;
-      padding: 0.65rem 0.5rem;
-      white-space: nowrap;
+
+    .appsheet-search-wrap input:focus {
+      background: #ffffff;
+      border-color: #1a73e8;
+      box-shadow: 0 1px 3px rgba(26, 115, 232, 0.2);
     }
-    .table-custom td {
-      vertical-align: middle;
-      font-size: 0.825rem;
-      padding: 0.55rem 0.5rem;
+
+    .appsheet-search-wrap i.bi-search {
+      position: absolute;
+      left: 12px;
+      top: 9px;
+      color: var(--appsheet-muted);
+      font-size: 14px;
     }
-    .badge-gst {
-      font-family: monospace;
-      letter-spacing: 0.5px;
-      font-size: 0.72rem;
+
+    .appsheet-top-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .app-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #b06000;
+      color: #ffffff;
+      font-size: 13px;
       font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
     }
-    /* Prevent table horizontal scrollbar */
-    .table-container-responsive {
-      width: 100%;
+
+    /* 4. Subheader Breadcrumb Bar */
+    .appsheet-breadcrumb-bar {
+      height: 40px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--appsheet-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      position: sticky;
+      top: 50px;
+      z-index: 1010;
+    }
+
+    .appsheet-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--appsheet-muted);
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .appsheet-breadcrumb a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .appsheet-breadcrumb a:hover {
+      color: #1a73e8;
+    }
+
+    .appsheet-breadcrumb .current {
+      color: var(--appsheet-text);
+      font-weight: 500;
+    }
+
+    .appsheet-bar-tools {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--appsheet-muted);
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    /* 5. 3-Card Grid Layout (Matching media_1792691679696_57a495f0.png) */
+    .parties-main-content {
+      padding: 16px;
+      flex: 1;
+    }
+
+    .parties-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr 1fr;
+      gap: 16px;
+      align-items: stretch;
+      min-height: calc(100vh - 122px);
+    }
+
+    @media (max-width: 992px) {
+      .parties-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .parties-card {
+      background: var(--appsheet-card-bg);
+      border: 1px solid var(--appsheet-border);
+      border-radius: 4px;
+      box-shadow: 0 1px 2px rgba(60, 64, 67, 0.08);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      background-clip: padding-box;
+      max-height: calc(100vh - 122px);
+    }
+
+    .parties-card::after {
+      content: '';
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      width: 7px;
+      height: 7px;
+      border-right: 1.5px solid #bdc1c6;
+      border-bottom: 1.5px solid #bdc1c6;
+      pointer-events: none;
+    }
+
+    .parties-card-header {
+      padding: 12px 14px 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--appsheet-border-light);
+    }
+
+    .parties-card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #202124;
+      margin: 0;
+    }
+
+    .parties-card-tools {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #5f6368;
+      font-size: 13px;
+    }
+
+    .parties-card-subheader {
+      padding: 6px 14px;
+      font-size: 11.5px;
+      color: var(--appsheet-muted);
+      font-weight: 500;
+      background: #fafafa;
+      border-bottom: 1px solid var(--appsheet-border-light);
+    }
+
+    /* Card 1: Add Button (Yellow/Gold) */
+    .btn-appsheet-add {
+      background-color: var(--appsheet-gold);
+      color: #202124;
+      font-weight: 600;
+      font-size: 12px;
+      padding: 3px 12px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: opacity 0.15s;
+    }
+
+    .btn-appsheet-add:hover {
+      opacity: 0.9;
+    }
+
+    /* Card 1: Table Styles */
+    .parties-table-container {
+      flex: 1;
+      overflow-y: auto;
       overflow-x: auto;
     }
-    @media (min-width: 992px) {
-      .table-container-responsive {
-        overflow-x: hidden;
-      }
+
+    .parties-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .parties-table th {
+      background: #ffffff;
+      color: #5f6368;
+      font-weight: 600;
+      font-size: 11px;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--appsheet-border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      text-align: left;
+    }
+
+    .parties-table td {
+      padding: 7px 12px;
+      border-bottom: 1px solid #f1f3f4;
+      vertical-align: middle;
+      font-size: 11.5px;
+    }
+
+    .parties-row {
+      cursor: pointer;
+      transition: background 0.1s ease-in-out;
+    }
+
+    .parties-row:hover {
+      background-color: #f8f9fa;
+    }
+
+    /* Card 2 & 3: Year Rows List */
+    .parties-rows-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .parties-row-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 14px;
+      border-top: 1px solid var(--appsheet-border-light);
+      cursor: pointer;
+      transition: background 0.12s ease-in-out;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .parties-row-item:hover {
+      background: #f8f9fa;
+    }
+
+    .parties-row-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .parties-label-all {
+      font-size: 12.5px;
+      color: #202124;
+      font-weight: 500;
+    }
+
+    /* Blue Year Bullet & Badge (Card 2 Party Due) */
+    .bullet-blue {
+      color: var(--appsheet-blue);
+      font-size: 10px;
+    }
+
+    .label-blue {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--appsheet-blue);
+    }
+
+    .badge-pill-blue {
+      background: var(--appsheet-blue-bg);
+      color: var(--appsheet-blue);
+      border: 1px solid var(--appsheet-blue-border);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Green Year Bullet & Badge (Card 3 Party Paid) */
+    .bullet-green {
+      color: var(--appsheet-green);
+      font-size: 10px;
+    }
+
+    .label-green {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--appsheet-green);
+    }
+
+    .badge-pill-green {
+      background: var(--appsheet-green-bg);
+      color: var(--appsheet-green);
+      border: 1px solid var(--appsheet-green-border);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .parties-chevron {
+      color: #9aa0a6;
+      font-size: 11px;
     }
   </style>
 </head>
 <body>
 
-  <!-- Sidebar Navigation -->
-  <nav id="sidebar"></nav>
+  <!-- Left Icon Rail Navigation -->
+  <aside class="appsheet-rail">
+    <button class="appsheet-rail-btn" title="Filter"><i class="bi bi-funnel"></i></button>
+    <a href="../index.html" class="appsheet-rail-btn active" title="Home"><i class="bi bi-house-door-fill"></i></a>
+    <button class="appsheet-rail-btn" title="About / Info"><i class="bi bi-info-circle"></i></button>
+    <button class="appsheet-rail-btn" title="Messages"><i class="bi bi-chat-dots"></i></button>
+    <button class="appsheet-rail-btn mt-auto mb-2" title="Apps"><i class="bi bi-grid-3x3-gap"></i></button>
+  </aside>
 
-  <!-- Main Workspace -->
-  <div id="main-content">
-    
-    <!-- Top Navbar -->
-    <header class="top-navbar d-flex align-items-center justify-content-between">
-      <div class="d-flex align-items-center gap-3">
-        <button id="sidebar-toggle" class="btn btn-light d-lg-none">
-          <i class="bi bi-list fs-5"></i>
-        </button>
-        <div>
-          <h5 class="mb-0 fw-bold text-dark">
-            <i class="bi bi-buildings text-primary me-2"></i>Parties Master (3,396 Accounts)
-          </h5>
-          <small class="text-muted">GST Registered Consignors, Consignees, Verified Contacts & Ledger Balances</small>
-        </div>
+  <!-- Main Container -->
+  <div class="parties-main-container">
+
+    <!-- Top Header -->
+    <header class="appsheet-header">
+      <div class="appsheet-brand">
+        <i class="bi bi-list fs-5 text-secondary" style="cursor: pointer;"></i>
+        <i class="bi bi-truck"></i>
+        <span>MTC And TTC - Trips</span>
       </div>
 
-      <div class="d-flex align-items-center gap-2">
-        <button class="btn btn-outline-success btn-sm d-flex align-items-center gap-1 shadow-sm" onclick="PartiesModule.exportToCSV()" title="Export current filtered parties to CSV">
-          <i class="bi bi-file-earmark-spreadsheet"></i> <span>Export CSV</span>
+      <div class="appsheet-search-wrap">
+        <i class="bi bi-search"></i>
+        <input type="text" id="parties-search-input" placeholder="Search Parties" autocomplete="off" oninput="PartiesModule.handleSearch(this.value)">
+      </div>
+
+      <div class="appsheet-top-right">
+        <span class="d-none d-md-inline-block text-muted" style="font-size: 11px;">Syncing...</span>
+        <button class="btn btn-sm btn-light border-0 p-1 text-secondary" title="Refresh" onclick="PartiesModule.init()">
+          <i class="bi bi-arrow-repeat fs-6"></i>
         </button>
-        <button class="btn btn-primary btn-sm d-flex align-items-center gap-1 shadow-sm" onclick="PartiesModule.openAddModal()">
-          <i class="bi bi-plus-lg"></i> <span>Add New Party</span>
-        </button>
+        <div class="app-avatar" title="User Account">M</div>
       </div>
     </header>
 
-    <!-- Page Content -->
-    <main class="page-container">
-
-      <!-- Summary Stat Cards -->
-      <div class="row g-3 mb-4">
-        <div class="col-6 col-lg-3">
-          <div class="metric-card p-3 shadow-sm border-0 rounded-3">
-            <div class="d-flex align-items-center justify-content-between mb-1">
-              <div class="metric-title text-muted small fw-semibold">Total Parties</div>
-              <div class="metric-icon bg-primary-subtle text-primary rounded-circle p-2" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
-                <i class="bi bi-buildings"></i>
-              </div>
-            </div>
-            <div id="stat-total-parties" class="fs-4 fw-bold text-dark">0</div>
-            <small class="text-muted" id="stat-parties-sub">3,396 Profiles (S.No 1 to 3396)</small>
-          </div>
-        </div>
-
-        <div class="col-6 col-lg-3">
-          <div class="metric-card p-3 shadow-sm border-0 rounded-3">
-            <div class="d-flex align-items-center justify-content-between mb-1">
-              <div class="metric-title text-muted small fw-semibold">GST Registered</div>
-              <div class="metric-icon bg-info-subtle text-info rounded-circle p-2" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
-                <i class="bi bi-shield-check"></i>
-              </div>
-            </div>
-            <div id="stat-gst-parties" class="fs-4 fw-bold text-info">0</div>
-            <small class="text-muted" id="stat-gst-sub">Verified Taxpayers</small>
-          </div>
-        </div>
-
-        <div class="col-6 col-lg-3">
-          <div class="metric-card p-3 shadow-sm border-0 rounded-3">
-            <div class="d-flex align-items-center justify-content-between mb-1">
-              <div class="metric-title text-muted small fw-semibold">Total Outstanding Due</div>
-              <div class="metric-icon bg-danger-subtle text-danger rounded-circle p-2" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
-                <i class="bi bi-exclamation-triangle"></i>
-              </div>
-            </div>
-            <div id="stat-total-due" class="fs-4 fw-bold text-danger">₹0.00</div>
-            <small class="text-danger" id="stat-due-sub">Total Receivable (बकाया)</small>
-          </div>
-        </div>
-
-        <div class="col-6 col-lg-3">
-          <div class="metric-card p-3 shadow-sm border-0 rounded-3">
-            <div class="d-flex align-items-center justify-content-between mb-1">
-              <div class="metric-title text-muted small fw-semibold">Total Ledger Received</div>
-              <div class="metric-icon bg-success-subtle text-success rounded-circle p-2" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
-                <i class="bi bi-check2-circle"></i>
-              </div>
-            </div>
-            <div id="stat-total-paid" class="fs-4 fw-bold text-success">₹0.00</div>
-            <small class="text-success" id="stat-paid-sub">Direct Payments (जमा)</small>
-          </div>
-        </div>
+    <!-- Subheader Breadcrumb Bar -->
+    <nav class="appsheet-breadcrumb-bar">
+      <ul class="appsheet-breadcrumb">
+        <li><a href="../index.html">Home</a></li>
+        <li><i class="bi bi-chevron-right" style="font-size: 10px;"></i></li>
+        <li class="current">Parties</li>
+      </ul>
+      <div class="appsheet-bar-tools">
+        <i class="bi bi-funnel" title="Filter"></i>
+        <i class="bi bi-grid" title="Switch View"></i>
       </div>
+    </nav>
 
-      <!-- Parties Data Card -->
-      <div class="card border-0 shadow-sm rounded-3">
-        <!-- Top Filter Bar -->
-        <div class="card-header bg-white border-bottom p-3">
-          <div class="row g-2 align-items-center">
-            <!-- Search Bar -->
-            <div class="col-12 col-md-5 col-lg-4">
-              <div class="input-group input-group-sm">
-                <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
-                <input type="text" id="search-parties" class="form-control bg-light border-start-0" placeholder="Search party, GSTIN, phone, city..." autocomplete="off">
-                <button class="btn btn-outline-secondary btn-sm" type="button" id="btn-clear-search" onclick="PartiesModule.clearSearch()" title="Clear search" style="display:none;">
-                  <i class="bi bi-x-lg"></i>
-                </button>
-              </div>
-            </div>
+    <!-- Main Content: 3-Card Dashboard View -->
+    <main class="parties-main-content">
+      <div class="parties-grid">
 
-            <!-- State Filter -->
-            <div class="col-6 col-md-3 col-lg-2">
-              <select id="filter-state" class="form-select form-select-sm" onchange="PartiesModule.onStateChange(this.value)">
-                <option value="">All States / सभी राज्य</option>
-                <option value="Raj">Rajasthan (राज.)</option>
-                <option value="U.P.">Uttar Pradesh (U.P.)</option>
-                <option value="Delhi">Delhi</option>
-                <option value="Haryana">Haryana</option>
-                <option value="Punjab">Punjab</option>
-                <option value="UK">Uttarakhand</option>
-                <option value="Gujrat">Gujarat</option>
-                <option value="M.P.">Madhya Pradesh</option>
-              </select>
-            </div>
-
-            <!-- Per Page Select -->
-            <div class="col-6 col-md-4 col-lg-2">
-              <div class="d-flex align-items-center gap-1">
-                <label class="small text-muted text-nowrap">Show:</label>
-                <select id="items-per-page" class="form-select form-select-sm" onchange="PartiesModule.setItemsPerPage(this.value)">
-                  <option value="25">25 rows</option>
-                  <option value="50" selected>50 rows</option>
-                  <option value="100">100 rows</option>
-                  <option value="250">250 rows</option>
-                  <option value="all">All (3,396)</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- Quick Filter Badges / Pills -->
-            <div class="col-12 col-lg-4 text-lg-end">
-              <div class="filter-btn-group btn-group" role="group">
-                <button type="button" class="btn btn-outline-primary active" id="btn-filter-all" onclick="PartiesModule.setQuickFilter('all')">
-                  All (<span id="count-all">0</span>)
-                </button>
-                <button type="button" class="btn btn-outline-danger" id="btn-filter-due" onclick="PartiesModule.setQuickFilter('due')">
-                  Due (<span id="count-due">0</span>)
-                </button>
-                <button type="button" class="btn btn-outline-success" id="btn-filter-paid" onclick="PartiesModule.setQuickFilter('paid')">
-                  Paid (<span id="count-paid">0</span>)
-                </button>
-                <button type="button" class="btn btn-outline-secondary" id="btn-filter-mobile" onclick="PartiesModule.setQuickFilter('mobile')" title="With Phone">
-                  <i class="bi bi-telephone-fill me-1"></i>Phone (<span id="count-mobile">0</span>)
-                </button>
-              </div>
+        <!-- CARD 1: Parties Detail -->
+        <section class="parties-card" id="card-parties-detail">
+          <div class="parties-card-header">
+            <h2 class="parties-card-title">Parties Detail</h2>
+            <div class="d-flex align-items-center gap-2">
+              <button class="btn-appsheet-add" onclick="PartiesModule.openAddModal()">
+                <i class="bi bi-plus-lg"></i> Add
+              </button>
+              <i class="bi bi-funnel text-secondary" style="cursor: pointer;" title="Filter"></i>
+              <i class="bi bi-caret-down-fill text-secondary" style="cursor: pointer; font-size: 11px;" title="Sort"></i>
             </div>
           </div>
-        </div>
-
-        <!-- Table Responsive Container (Zero Horizontal Scroll) -->
-        <div class="table-container-responsive" style="min-height: 420px;">
-          <table class="table table-hover table-custom table-fixed-layout mb-0">
-            <thead>
-              <tr>
-                <th style="width: 4%;" class="text-center">#</th>
-                <th style="width: 38%;">Party / Company Name & Location</th>
-                <th style="width: 15%;">GSTIN</th>
-                <th style="width: 15%;">Contact & Phone</th>
-                <th style="width: 11%;" class="text-end">Due (बकाया)</th>
-                <th style="width: 11%;" class="text-end">Paid (जमा)</th>
-                <th style="width: 6%;" class="text-center">Action</th>
-              </tr>
-            </thead>
-            <tbody id="parties-tbody">
-              <tr>
-                <td colspan="7" class="text-center py-5 text-muted">
-                  <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div> Loading 3,396 parties...
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Table Footer / Pagination -->
-        <div class="card-footer bg-white border-top p-3 d-flex flex-column flex-md-row align-items-center justify-content-between gap-2">
-          <div class="small text-muted" id="pagination-info">
-            Showing 0 to 0 of 0 parties
+          <div class="parties-table-container">
+            <table class="parties-table">
+              <thead>
+                <tr>
+                  <th>GSTIN</th>
+                  <th>Address</th>
+                  <th>Name</th>
+                  <th>Mobile No.</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="parties-table-body">
+                <!-- Dynamically populated rows from 3,396 Master Dataset -->
+              </tbody>
+            </table>
           </div>
-          <nav aria-label="Parties pagination">
-            <ul class="pagination pagination-sm mb-0" id="pagination-controls">
-              <!-- Rendered dynamically -->
-            </ul>
-          </nav>
-        </div>
+        </section>
+
+        <!-- CARD 2: Party Due -->
+        <section class="parties-card" id="card-party-due">
+          <div class="parties-card-header">
+            <h2 class="parties-card-title">Party Due</h2>
+            <div class="parties-card-tools">
+              <i class="bi bi-funnel" title="Filter Party Due" style="cursor: pointer;"></i>
+              <i class="bi bi-arrows-angle-expand" title="Expand Party Due" onclick="PartiesModule.openCardView('due', 'ALL')" style="cursor: pointer;"></i>
+            </div>
+          </div>
+          <div class="parties-card-subheader">Year</div>
+          <div class="parties-rows-list">
+            <!-- Row: All -->
+            <div class="parties-row-item" onclick="PartiesModule.openCardView('due', 'ALL')" title="View All Party Due">
+              <div class="parties-row-left">
+                <span class="parties-label-all">All</span>
+              </div>
+              <i class="bi bi-chevron-right parties-chevron"></i>
+            </div>
+
+            <!-- Row: 2026-2027 -->
+            <div class="parties-row-item" onclick="PartiesModule.openCardView('due', '2026-2027')" title="View 2026-2027 Party Due">
+              <div class="parties-row-left">
+                <span class="bullet-blue">●</span>
+                <span class="label-blue">2026-2027</span>
+                <span class="badge-pill-blue" id="badge-due-2026">₹ 26,301,228.76</span>
+              </div>
+              <i class="bi bi-chevron-right parties-chevron"></i>
+            </div>
+
+            <!-- Row: 2025-2026 -->
+            <div class="parties-row-item" onclick="PartiesModule.openCardView('due', '2025-2026')" title="View 2025-2026 Party Due">
+              <div class="parties-row-left">
+                <span class="bullet-blue">●</span>
+                <span class="label-blue">2025-2026</span>
+                <span class="badge-pill-blue" id="badge-due-2025">₹ 918,706.10</span>
+              </div>
+              <i class="bi bi-chevron-right parties-chevron"></i>
+            </div>
+
+            <!-- Row: 2024-2025 -->
+            <div class="parties-row-item" onclick="PartiesModule.openCardView('due', '2024-2025')" title="View 2024-2025 Party Due">
+              <div class="parties-row-left">
+                <span class="bullet-blue">●</span>
+                <span class="label-blue">2024-2025</span>
+                <span class="badge-pill-blue" id="badge-due-2024">₹ 239,856.00</span>
+              </div>
+              <i class="bi bi-chevron-right parties-chevron"></i>
+            </div>
+          </div>
+        </section>
+
+        <!-- CARD 3: Party Paid -->
+        <section class="parties-card" id="card-party-paid">
+          <div class="parties-card-header">
+            <h2 class="parties-card-title">Party Paid</h2>
+            <div class="parties-card-tools">
+              <i class="bi bi-funnel" title="Filter Party Paid" style="cursor: pointer;"></i>
+              <i class="bi bi-arrows-angle-expand" title="Expand Party Paid" onclick="PartiesModule.openCardView('paid', 'ALL')" style="cursor: pointer;"></i>
+            </div>
+          </div>
+          <div class="parties-card-subheader">Year</div>
+          <div class="parties-rows-list">
+            <!-- Row: All -->
+            <div class="parties-row-item" onclick="PartiesModule.openCardView('paid', 'ALL')" title="View All Party Paid">
+              <div class="parties-row-left">
+                <span class="parties-label-all">All</span>
+              </div>
+              <i class="bi bi-chevron-right parties-chevron"></i>
+            </div>
+
+            <!-- Row: 2026-2027 -->
+            <div class="parties-row-item" onclick="PartiesModule.openCardView('paid', '2026-2027')" title="View 2026-2027 Party Paid">
+              <div class="parties-row-left">
+                <span class="bullet-green">●</span>
+                <span class="label-green">2026-2027</span>
+                <span class="badge-pill-green" id="badge-paid-2026">₹ 388,648,303.25</span>
+              </div>
+              <i class="bi bi-chevron-right parties-chevron"></i>
+            </div>
+
+            <!-- Row: 2025-2026 -->
+            <div class="parties-row-item" onclick="PartiesModule.openCardView('paid', '2025-2026')" title="View 2025-2026 Party Paid">
+              <div class="parties-row-left">
+                <span class="bullet-green">●</span>
+                <span class="label-green">2025-2026</span>
+                <span class="badge-pill-green" id="badge-paid-2025">₹ 615,289,069.19</span>
+              </div>
+              <i class="bi bi-chevron-right parties-chevron"></i>
+            </div>
+
+            <!-- Row: 2024-2025 -->
+            <div class="parties-row-item" onclick="PartiesModule.openCardView('paid', '2024-2025')" title="View 2024-2025 Party Paid">
+              <div class="parties-row-left">
+                <span class="bullet-green">●</span>
+                <span class="label-green">2024-2025</span>
+                <span class="badge-pill-green" id="badge-paid-2024">₹ 254,526,755.64</span>
+              </div>
+              <i class="bi bi-chevron-right parties-chevron"></i>
+            </div>
+          </div>
+        </section>
+
       </div>
-
     </main>
 
   </div>
 
-  <!-- Add / Edit Party Modal -->
-  <div class="modal fade" id="partyModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content border-0 shadow">
-        <div class="modal-header bg-primary text-white">
-          <h6 class="modal-title fw-bold" id="party-modal-title">Add New Party</h6>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-        </div>
-        <form id="party-form">
-          <div class="modal-body p-4">
-            <input type="hidden" id="party-id">
-            
-            <div class="mb-3">
-              <label class="form-label fw-semibold small">Company / Party Name *</label>
-              <input type="text" id="party-name" class="form-control" placeholder="e.g. Berger Paints India Ltd." required>
-            </div>
-
-            <div class="row g-2 mb-3">
-              <div class="col-md-6">
-                <label class="form-label fw-semibold small">15-Digit GSTIN</label>
-                <input type="text" id="party-gstin" class="form-control font-monospace text-uppercase" placeholder="09AABCB0976E2ZS" maxlength="15">
-              </div>
-              <div class="col-md-6">
-                <label class="form-label fw-semibold small">Contact Person</label>
-                <input type="text" id="party-contact" class="form-control" placeholder="e.g. Ramesh Kumar">
-              </div>
-            </div>
-
-            <div class="row g-2 mb-3">
-              <div class="col-md-6">
-                <label class="form-label fw-semibold small">Primary Mobile Number</label>
-                <input type="tel" id="party-mobile" class="form-control" placeholder="e.g. 9829241717">
-              </div>
-              <div class="col-md-6">
-                <label class="form-label fw-semibold small">City / Station</label>
-                <input type="text" id="party-city" class="form-control" placeholder="e.g. Rajsamand, Kanpur">
-              </div>
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label fw-semibold small">State</label>
-              <input type="text" id="party-state" class="form-control" placeholder="e.g. Raj., U.P., Delhi, Haryana">
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label fw-semibold small">Office / Works Address</label>
-              <textarea id="party-address" class="form-control" rows="2" placeholder="Street, Industrial Area, City, State"></textarea>
-            </div>
-
-            <div class="row g-2">
-              <div class="col-md-6">
-                <label class="form-label fw-semibold small">Opening Due Amount (₹)</label>
-                <input type="number" id="party-due" class="form-control" value="0" min="0" step="any">
-              </div>
-              <div class="col-md-6">
-                <label class="form-label fw-semibold small">Total Paid Amount (₹)</label>
-                <input type="number" id="party-paid" class="form-control" value="0" min="0" step="any">
-              </div>
-            </div>
-
-          </div>
-          <div class="modal-footer bg-light">
-            <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-sm btn-primary px-3 shadow-sm">Save Party</button>
-          </div>
-        </form>
+  <!-- Offcanvas: Add Party Drawer (Google AppSheet Style) -->
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="addPartyDrawer" aria-labelledby="addPartyLabel" style="width: 440px;">
+    <div class="offcanvas-header border-bottom py-2 px-3 d-flex justify-content-between align-items-center" style="background:#ffffff; min-height: 52px;">
+      <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn btn-sm btn-light border-0 p-1" data-bs-dismiss="offcanvas" aria-label="Close">
+          <i class="bi bi-x-lg"></i>
+        </button>
+        <span class="offcanvas-title fw-semibold" id="addPartyLabel" style="font-size: 15px; color: #202124;">New Party</span>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="offcanvas" style="font-size: 12.5px; padding: 4px 14px; border-radius: 4px; border-color: #dadce0;">Cancel</button>
+        <button type="button" class="btn btn-sm btn-primary" onclick="PartiesModule.saveNewParty()" style="font-size: 12.5px; padding: 4px 14px; border-radius: 4px; background-color: #1a73e8; border-color: #1a73e8;">Save</button>
       </div>
     </div>
-  </div>
-
-  <!-- Toast Notification Container -->
-  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999;">
-    <div id="live-toast" class="toast align-items-center text-bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
-      <div class="d-flex">
-        <div class="toast-body" id="toast-message">Notification</div>
-        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-      </div>
+    <div class="offcanvas-body p-3">
+      <form id="new-party-form">
+        <div class="mb-3">
+          <label class="form-label small fw-semibold text-secondary mb-1">Party Name *</label>
+          <input type="text" class="form-control form-control-sm" id="np-name" required placeholder="Enter firm or party name">
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-semibold text-secondary mb-1">GSTIN</label>
+          <input type="text" class="form-control form-control-sm font-monospace text-uppercase" id="np-gstin" placeholder="e.g. 09AASFB3237C1Z1">
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-semibold text-secondary mb-1">Mobile No.</label>
+          <input type="text" class="form-control form-control-sm" id="np-mobile" placeholder="e.g. 9891394465">
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-semibold text-secondary mb-1">Address</label>
+          <textarea class="form-control form-control-sm" id="np-address" rows="2" placeholder="Full address"></textarea>
+        </div>
+        <div class="row g-2 mb-3">
+          <div class="col-6">
+            <label class="form-label small fw-semibold text-secondary mb-1">City</label>
+            <input type="text" class="form-control form-control-sm" id="np-city" placeholder="City">
+          </div>
+          <div class="col-6">
+            <label class="form-label small fw-semibold text-secondary mb-1">State</label>
+            <input type="text" class="form-control form-control-sm" id="np-state" placeholder="State">
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-semibold text-secondary mb-1">Contact Person</label>
+          <input type="text" class="form-control form-control-sm" id="np-contact" placeholder="Contact person">
+        </div>
+      </form>
     </div>
   </div>
 
   <!-- Bootstrap 5 Bundle JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-  
-  <!-- Firebase SDK (Compatible v8 CDN) -->
+
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-
-  <!-- Core App Scripts -->
   <script src="../js/config.js"></script>
-  <!-- Universal Master Data Assets (Guaranteed 100% Offline & Fresh Git Deploy Resilience) -->
-  <script src="../js/sample-parties-data.js"></script>
-  <script src="../js/sample-truck-owners-data.js"></script>
-  <script src="../js/sample-drivers-data.js"></script>
-  <script src="../js/sample-trips-data.js"></script>
-  <script src="../js/sample-debts-data.js"></script>
-  <script src="../js/sample-cheques-data.js"></script>
   <script src="../js/db-service.js"></script>
-  <script src="../js/app.js"></script>
+
+  <!-- Master Dataset (3,396 Authentic Parties) -->
+  <script src="../js/sample-parties-data.js"></script>
+  <!-- Parties Controller Module -->
   <script src="../js/modules/parties.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      PartiesModule.init();
+    });
+  </script>
 </body>
 </html>
