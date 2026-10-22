@@ -588,6 +588,9 @@
     .phone-icon-btn.gold { color: var(--appsheet-gold-text); }
     .phone-icon-btn.blue { color: var(--appsheet-blue); }
     .phone-icon-btn.pink { color: var(--appsheet-pink); }
+    .phone-icon-btn.cyan { color: #00acc1; }
+    .phone-icon-btn.green { color: var(--appsheet-green); }
+    .tobe-bullet-cyan { color: #00acc1; font-size: 10px; line-height: 1; }
 
     /* Custom AppSheet Select Control */
     .appsheet-select-wrapper {
@@ -1141,7 +1144,7 @@
             <h2 class="tobe-card-title">Other B Paid</h2>
             <div class="tobe-card-tools">
               <i class="bi bi-funnel" title="Filter Other B Paid"></i>
-              <i class="bi bi-arrows-angle-expand" title="Expand Other B Paid"></i>
+              <i class="bi bi-arrows-angle-expand" title="Expand Other B Paid" onclick="ToBeCreatedModule.openOtherBPaidList('ALL')" style="cursor: pointer;"></i>
             </div>
           </div>
           <div class="tobe-card-subheader">Year</div>
@@ -1192,7 +1195,7 @@
             <h2 class="tobe-card-title">All Other B</h2>
             <div class="tobe-card-tools">
               <i class="bi bi-funnel" title="Filter All Other B"></i>
-              <i class="bi bi-arrows-angle-expand" title="Expand All Other B"></i>
+              <i class="bi bi-arrows-angle-expand" title="Expand All Other B" onclick="ToBeCreatedModule.openOtherBPaidList('ALL')" style="cursor: pointer;"></i>
             </div>
           </div>
           <div class="tobe-card-subheader">Year</div>
@@ -1622,21 +1625,34 @@
         </div>
         <div class="appsheet-form-vertical-row mb-3">
           <label class="appsheet-vertical-label">Mode <span class="text-danger">*</span></label>
-          <select class="appsheet-form-input" id="cp-mode">
-            <option value="Cash" selected>● Cash</option>
-            <option value="Cash in Rajsamand">● Cash in Rajsamand</option>
-            <option value="Cash in Bank">● Cash in Bank</option>
-            <option value="Cheque">● Cheque</option>
-            <option value="NEFT/RTGS">● NEFT/RTGS</option>
-            <option value="Phone Pe/GPay/PayTM/UPI">● Phone Pe/GPay/PayTM/UPI</option>
-            <option value="Rate Difference">● Rate Difference</option>
-            <option value="Adjustment">● Adjustment</option>
-            <option value="Less Freight">● Less Freight</option>
-            <option value="Dalla">● Dalla</option>
-            <option value="Loading">● Loading</option>
-            <option value="TDS">● TDS</option>
-            <option value="GST">● GST</option>
-          </select>
+          <input type="hidden" id="cp-mode" value="Cash">
+          <div class="appsheet-select-wrapper" id="cp-mode-wrapper">
+            <div class="appsheet-select-control" id="cp-mode-control" onclick="ToBeCreatedModule.toggleSelectDropdown('cp-mode', event)">
+              <div class="appsheet-select-display" id="cp-mode-display">
+                <span style="color: #137333; font-size: 13px; line-height: 1;">●</span>
+                <span style="color: #202124; font-weight: 500;">Cash</span>
+              </div>
+              <div class="appsheet-select-actions">
+                <span class="appsheet-clear-icon" title="Clear" onclick="event.stopPropagation(); ToBeCreatedModule.clearSelectDropdown('cp-mode', 'Select Mode')">✕</span>
+                <span class="appsheet-chevron-icon"><i class="bi bi-chevron-down"></i></span>
+              </div>
+            </div>
+            <div class="appsheet-select-menu d-none" id="cp-mode-menu">
+              <div class="appsheet-select-item" onclick="ToBeCreatedModule.selectDropdownOption('cp-mode', 'Cash', 'Cash', '#137333')"><span style="color: #137333;">●</span> <span>Cash</span></div>
+              <div class="appsheet-select-item" onclick="ToBeCreatedModule.selectDropdownOption('cp-mode', 'Cash in Rajsamand', 'Cash in Rajsamand', '#137333')"><span style="color: #137333;">●</span> <span>Cash in Rajsamand</span></div>
+              <div class="appsheet-select-item" onclick="ToBeCreatedModule.selectDropdownOption('cp-mode', 'Cash in Bank', 'Cash in Bank', '#137333')"><span style="color: #137333;">●</span> <span>Cash in Bank</span></div>
+              <div class="appsheet-select-item" onclick="ToBeCreatedModule.selectDropdownOption('cp-mode', 'Cheque', 'Cheque', '#137333')"><span style="color: #137333;">●</span> <span>Cheque</span></div>
+              <div class="appsheet-select-item" onclick="ToBeCreatedModule.selectDropdownOption('cp-mode', 'NEFT/RTGS', 'NEFT/RTGS', '#137333')"><span style="color: #137333;">●</span> <span>NEFT/RTGS</span></div>
+              <div class="appsheet-select-item" onclick="ToBeCreatedModule.selectDropdownOption('cp-mode', 'Phone Pe/GPay/PayTM/UPI', 'Phone Pe/GPay/PayTM/UPI', '#137333')"><span style="color: #137333;">●</span> <span>Phone Pe/GPay/PayTM/UPI</span></div>
+              <div class="appsheet-select-item" onclick="ToBeCreatedModule.selectDropdownOption('cp-mode', 'Rate Difference', 'Rate Difference', '#137333')"><span style="color: #137333;">●</span> <span>Rate Difference</span></div>
+              <div class="appsheet-select-item" onclick="ToBeCreatedModule.selectDropdownOption('cp-mode', 'Adjustment', 'Adjustment', '#137333')"><span style="color: #137333;">●</span> <span>Adjustment</span></div>
+              <div class="appsheet-select-item" onclick="ToBeCreatedModule.selectDropdownOption('cp-mode', 'Less Freight', 'Less Freight', '#137333')"><span style="color: #137333;">●</span> <span>Less Freight</span></div>
+              <div class="appsheet-select-item" onclick="ToBeCreatedModule.selectDropdownOption('cp-mode', 'Dalla', 'Dalla', '#137333')"><span style="color: #137333;">●</span> <span>Dalla</span></div>
+              <div class="appsheet-select-item" onclick="ToBeCreatedModule.selectDropdownOption('cp-mode', 'Loading', 'Loading', '#137333')"><span style="color: #137333;">●</span> <span>Loading</span></div>
+              <div class="appsheet-select-item" onclick="ToBeCreatedModule.selectDropdownOption('cp-mode', 'TDS', 'TDS', '#137333')"><span style="color: #137333;">●</span> <span>TDS</span></div>
+              <div class="appsheet-select-item" onclick="ToBeCreatedModule.selectDropdownOption('cp-mode', 'GST', 'GST', '#137333')"><span style="color: #137333;">●</span> <span>GST</span></div>
+            </div>
+          </div>
         </div>
         <div class="appsheet-form-vertical-row mb-3">
           <label class="appsheet-vertical-label">Description</label>
@@ -1684,13 +1700,26 @@
         </div>
         <div class="appsheet-form-vertical-row mb-3">
           <label class="appsheet-vertical-label">Mode <span class="text-danger">*</span></label>
-          <select class="appsheet-form-input" id="owner-payment-mode">
-            <option value="Phone Pe/GPay/PayTM/UPI" selected>● Phone Pe/GPay/PayTM/UPI</option>
-            <option value="Cash">● Cash</option>
-            <option value="Dalia">● Dalia</option>
-            <option value="Cheque">● Cheque</option>
-            <option value="NEFT/RTGS">● NEFT/RTGS</option>
-          </select>
+          <input type="hidden" id="owner-payment-mode" value="Phone Pe/GPay/PayTM/UPI">
+          <div class="appsheet-select-wrapper" id="owner-payment-mode-wrapper">
+            <div class="appsheet-select-control" id="owner-payment-mode-control" onclick="ToBeCreatedModule.toggleSelectDropdown('owner-payment-mode', event)">
+              <div class="appsheet-select-display" id="owner-payment-mode-display">
+                <span style="color: #137333; font-size: 13px; line-height: 1;">●</span>
+                <span style="color: #202124; font-weight: 500;">Phone Pe/GPay/PayTM/UPI</span>
+              </div>
+              <div class="appsheet-select-actions">
+                <span class="appsheet-clear-icon" title="Clear" onclick="event.stopPropagation(); ToBeCreatedModule.clearSelectDropdown('owner-payment-mode', 'Select Mode')">✕</span>
+                <span class="appsheet-chevron-icon"><i class="bi bi-chevron-down"></i></span>
+              </div>
+            </div>
+            <div class="appsheet-select-menu d-none" id="owner-payment-mode-menu">
+              <div class="appsheet-select-item" onclick="ToBeCreatedModule.selectDropdownOption('owner-payment-mode', 'Phone Pe/GPay/PayTM/UPI', 'Phone Pe/GPay/PayTM/UPI', '#137333')"><span style="color: #137333;">●</span> <span>Phone Pe/GPay/PayTM/UPI</span></div>
+              <div class="appsheet-select-item" onclick="ToBeCreatedModule.selectDropdownOption('owner-payment-mode', 'Cash', 'Cash', '#137333')"><span style="color: #137333;">●</span> <span>Cash</span></div>
+              <div class="appsheet-select-item" onclick="ToBeCreatedModule.selectDropdownOption('owner-payment-mode', 'Dalia', 'Dalia', '#137333')"><span style="color: #137333;">●</span> <span>Dalia</span></div>
+              <div class="appsheet-select-item" onclick="ToBeCreatedModule.selectDropdownOption('owner-payment-mode', 'Cheque', 'Cheque', '#137333')"><span style="color: #137333;">●</span> <span>Cheque</span></div>
+              <div class="appsheet-select-item" onclick="ToBeCreatedModule.selectDropdownOption('owner-payment-mode', 'NEFT/RTGS', 'NEFT/RTGS', '#137333')"><span style="color: #137333;">●</span> <span>NEFT/RTGS</span></div>
+            </div>
+          </div>
         </div>
         <div class="appsheet-form-vertical-row mb-3">
           <label class="appsheet-vertical-label">Description</label>
@@ -1726,10 +1755,10 @@
         <div class="appsheet-form-vertical-row mb-3">
           <label class="appsheet-vertical-label">Paid To</label>
           <div class="d-flex gap-2">
-            <button type="button" class="btn-appsheet-toggle active" id="ob-paidto-transporter">
+            <button type="button" class="btn-appsheet-toggle active" id="ob-paidto-transporter" onclick="ToBeCreatedModule.togglePaidTo('Transporter', 'ob')">
               ● Transporter
             </button>
-            <button type="button" class="btn-appsheet-toggle" id="ob-paidto-owner">
+            <button type="button" class="btn-appsheet-toggle" id="ob-paidto-owner" onclick="ToBeCreatedModule.togglePaidTo('Truck Owner', 'ob')">
               ● Truck Owner
             </button>
           </div>
@@ -1740,12 +1769,29 @@
         </div>
         <div class="appsheet-form-vertical-row mb-3">
           <label class="appsheet-vertical-label">Mode <span class="text-danger">*</span></label>
-          <select class="appsheet-form-input" id="ob-mode">
-            <option value="Phone Pe/GPay/PayTM/UPI" selected>● Phone Pe/GPay/PayTM/UPI</option>
-            <option value="Cash">● Cash</option>
-            <option value="NEFT/RTGS">● NEFT/RTGS</option>
-            <option value="Cheque">● Cheque</option>
-          </select>
+          <input type="hidden" id="ob-mode" value="Phone Pe/GPay/PayTM/UPI">
+          <div class="appsheet-select-wrapper" id="ob-mode-wrapper">
+            <div class="appsheet-select-control" id="ob-mode-control" onclick="ToBeCreatedModule.toggleSelectDropdown('ob-mode', event)">
+              <div class="appsheet-select-display" id="ob-mode-display">
+                <span style="color: #137333; font-size: 13px; line-height: 1;">●</span>
+                <span style="color: #202124; font-weight: 500;">Phone Pe/GPay/PayTM/UPI</span>
+              </div>
+              <div class="appsheet-select-actions">
+                <span class="appsheet-clear-icon" title="Clear" onclick="event.stopPropagation(); ToBeCreatedModule.clearSelectDropdown('ob-mode', 'Select Mode')">✕</span>
+                <span class="appsheet-chevron-icon"><i class="bi bi-chevron-down"></i></span>
+              </div>
+            </div>
+            <div class="appsheet-select-menu d-none" id="ob-mode-menu">
+              <div class="appsheet-select-item" onclick="ToBeCreatedModule.selectDropdownOption('ob-mode', 'Phone Pe/GPay/PayTM/UPI', 'Phone Pe/GPay/PayTM/UPI', '#137333')"><span style="color: #137333;">●</span> <span>Phone Pe/GPay/PayTM/UPI</span></div>
+              <div class="appsheet-select-item" onclick="ToBeCreatedModule.selectDropdownOption('ob-mode', 'Cash', 'Cash', '#137333')"><span style="color: #137333;">●</span> <span>Cash</span></div>
+              <div class="appsheet-select-item" onclick="ToBeCreatedModule.selectDropdownOption('ob-mode', 'NEFT/RTGS', 'NEFT/RTGS', '#137333')"><span style="color: #137333;">●</span> <span>NEFT/RTGS</span></div>
+              <div class="appsheet-select-item" onclick="ToBeCreatedModule.selectDropdownOption('ob-mode', 'Cheque', 'Cheque', '#137333')"><span style="color: #137333;">●</span> <span>Cheque</span></div>
+              <div class="appsheet-select-item" onclick="ToBeCreatedModule.selectDropdownOption('ob-mode', 'Cash in Rajsamand', 'Cash in Rajsamand', '#137333')"><span style="color: #137333;">●</span> <span>Cash in Rajsamand</span></div>
+              <div class="appsheet-select-item" onclick="ToBeCreatedModule.selectDropdownOption('ob-mode', 'Cash in Bank', 'Cash in Bank', '#137333')"><span style="color: #137333;">●</span> <span>Cash in Bank</span></div>
+              <div class="appsheet-select-item" onclick="ToBeCreatedModule.selectDropdownOption('ob-mode', 'Adjustment', 'Adjustment', '#137333')"><span style="color: #137333;">●</span> <span>Adjustment</span></div>
+              <div class="appsheet-select-item" onclick="ToBeCreatedModule.selectDropdownOption('ob-mode', 'TDS', 'TDS', '#137333')"><span style="color: #137333;">●</span> <span>TDS</span></div>
+            </div>
+          </div>
         </div>
         <div class="appsheet-form-vertical-row mb-3">
           <label class="appsheet-vertical-label">Description</label>

@@ -692,6 +692,7 @@ const ToBeCreatedModule = {
     const bulletColor = color === 'gold' ? 'var(--appsheet-gold-text)' :
                         color === 'pink' ? 'var(--appsheet-pink)' :
                         color === 'blue' ? 'var(--appsheet-blue)' :
+                        color === 'cyan' || color === 'skyblue' ? '#00acc1' :
                         color === 'green' ? 'var(--appsheet-green)' : 'var(--appsheet-red)';
     const textColor = bulletColor;
 
@@ -704,8 +705,8 @@ const ToBeCreatedModule = {
     return `
       <div class="tobe-field-row">
         <span class="tobe-field-label">${label}</span>
-        <div class="tobe-field-value" style="color: ${textColor};">
-          <span style="color: ${bulletColor}; font-size: 9px;">●</span>
+        <div class="tobe-field-value" style="color: ${textColor}; font-weight: 600;">
+          <span style="color: ${bulletColor}; font-size: 9px; line-height: 1;">●</span>
           <span>${value || '-'}</span>
           ${phoneHtml}
         </div>
@@ -727,6 +728,10 @@ const ToBeCreatedModule = {
         return { bullet: '#0080ff', text: '#0080ff', name: 'blue' };
       case 'POD Sent/Bill Generated':
         return { bullet: '#795298', text: '#795298', name: 'purple' };
+      case 'Settled':
+        return { bullet: '#137333', text: '#137333', name: 'green' };
+      case 'Truck Owner Payment Pending':
+        return { bullet: '#00acc1', text: '#00acc1', name: 'cyan' };
       case 'Other B Pending':
       default:
         return { bullet: '#cc0b0b', text: '#cc0b0b', name: 'red' };
@@ -848,16 +853,17 @@ const ToBeCreatedModule = {
     }
   },
 
-  closeAllAppSheetDropdowns() {
-    const statusMenu = document.getElementById('tobe-status-menu');
-    const statusControl = document.getElementById('tobe-status-control');
-    const addMenu = document.getElementById('tobe-addrecords-menu');
-    const addControl = document.getElementById('tobe-addrecords-control');
+  closeAllAppSheetDropdowns(except = []) {
+    if (typeof document === 'undefined') return;
+    const menus = document.querySelectorAll('.appsheet-select-menu');
+    const controls = document.querySelectorAll('.appsheet-select-control');
 
-    if (statusMenu) statusMenu.classList.add('d-none');
-    if (statusControl) statusControl.classList.remove('open');
-    if (addMenu) addMenu.classList.add('d-none');
-    if (addControl) addControl.classList.remove('open');
+    menus.forEach(m => {
+      if (!except.includes(m)) m.classList.add('d-none');
+    });
+    controls.forEach(c => {
+      if (!except.includes(c)) c.classList.remove('open');
+    });
   },
 
   selectStatus(newStatus) {
@@ -1193,13 +1199,54 @@ const ToBeCreatedModule = {
     bsOffcanvas.show();
   },
 
-  togglePaidTo(target) {
-    const btnTrans = document.getElementById('cp-paidto-transporter');
-    const btnOwner = document.getElementById('cp-paidto-owner');
+  togglePaidTo(target, prefix = 'cp') {
+    const btnTrans = document.getElementById(`${prefix}-paidto-transporter`);
+    const btnOwner = document.getElementById(`${prefix}-paidto-owner`);
     if (btnTrans && btnOwner) {
       btnTrans.classList.toggle('active', target === 'Transporter');
       btnOwner.classList.toggle('active', target === 'Truck Owner');
     }
+  },
+
+  // Generic AppSheet Select Helpers for Drawers / Forms
+  toggleSelectDropdown(id, event) {
+    if (event) event.stopPropagation();
+    const menu = document.getElementById(`${id}-menu`);
+    const control = document.getElementById(`${id}-control`);
+    this.closeAllAppSheetDropdowns([menu, control]);
+    if (menu) {
+      const isClosed = menu.classList.contains('d-none');
+      if (isClosed) {
+        menu.classList.remove('d-none');
+        if (control) control.classList.add('open');
+      } else {
+        menu.classList.add('d-none');
+        if (control) control.classList.remove('open');
+      }
+    }
+  },
+
+  selectDropdownOption(id, value, label, bulletColor = '#137333') {
+    const input = document.getElementById(id);
+    if (input) input.value = value;
+    const display = document.getElementById(`${id}-display`);
+    if (display) {
+      display.innerHTML = `
+        <span style="color: ${bulletColor}; font-size: 13px; line-height: 1;">●</span>
+        <span style="color: #202124; font-weight: 500;">${label}</span>
+      `;
+    }
+    this.closeAllAppSheetDropdowns();
+  },
+
+  clearSelectDropdown(id, placeholder = 'Select') {
+    const input = document.getElementById(id);
+    if (input) input.value = '';
+    const display = document.getElementById(`${id}-display`);
+    if (display) {
+      display.innerHTML = `<span class="text-muted" style="font-weight: 400;">${placeholder}</span>`;
+    }
+    this.closeAllAppSheetDropdowns();
   },
 
   async saveConsigneePayment() {
@@ -1257,6 +1304,9 @@ const ToBeCreatedModule = {
   },
 
   async saveOtherBPayment() {
+    if (this.viewMode.startsWith('paid') || (!this.activeTrip && this.activePaidTrip)) {
+      return this.savePaidOtherBPayment();
+    }
     const date = document.getElementById('ob-payment-date').value;
     const amount = parseFloat(document.getElementById('ob-amount-paid').value) || 0;
     const mode = document.getElementById('ob-mode').value;
@@ -1762,18 +1812,178 @@ const ToBeCreatedModule = {
     this.renderPaidTripDetailsView(trip);
   },
 
-  renderPaidTripDetailsView(t) {
+    renderPaidTripDetailsView(t) {
     const container = document.getElementById('tobe-paid-trip-details-content');
     if (!container) return;
+
+    if (!t) t = this.activePaidTrip;
+    if (!t) return;
 
     if (t.color === 'green' || t.status === 'Settled') {
       container.innerHTML = this.renderGreenPaidTripDetails(t);
     } else if (t.color === 'red' || t.status === 'Other B Pending') {
       container.innerHTML = this.renderRedPaidTripDetails(t);
-    } else if (t.color === 'sky_blue' || t.status === 'Truck Owner Payment Pending') {
+    } else if (t.color === 'sky_blue' || t.color === 'cyan' || t.status === 'Truck Owner Payment Pending') {
       container.innerHTML = this.renderSkyBluePaidTripDetails(t);
     } else {
       container.innerHTML = this.renderLightBluePaidTripDetails(t);
+    }
+  },
+
+  // AppSheet Dropdowns for Paid Trip Details (Card 2)
+  renderPaidAppSheetStatusDropdown(currentStatus = 'Party Payment Pending') {
+    const statusList = [
+      { label: 'Settled', color: '#137333' },
+      { label: 'Party Payment Pending', color: '#0080ff' },
+      { label: 'Other B Pending', color: '#cc0b0b' },
+      { label: 'Truck Owner Payment Pending', color: '#00acc1' }
+    ];
+
+    const current = statusList.find(s => s.label === currentStatus) || 
+      (currentStatus ? { label: currentStatus, color: this.getStatusColor(currentStatus).text } : { label: '', color: '#5f6368' });
+
+    const menuItems = statusList.map(s => `
+      <div class="appsheet-select-item" onclick="event.stopPropagation(); ToBeCreatedModule.selectPaidStatus('${s.label}')">
+        <span style="color: ${s.color}; font-size: 13px; line-height: 1;">●</span>
+        <span style="color: ${s.color}; font-weight: 600;">${s.label}</span>
+      </div>
+    `).join('');
+
+    return `
+      <div class="appsheet-select-wrapper" id="tobe-paid-status-dropdown-wrapper" style="max-width: 220px;">
+        <div class="appsheet-select-control" id="tobe-paid-status-control" onclick="ToBeCreatedModule.togglePaidStatusDropdown(event)">
+          <div class="appsheet-select-display" id="tobe-paid-status-display">
+            ${current.label ? `
+              <span style="color: ${current.color}; font-size: 13px; line-height: 1;">●</span>
+              <span style="color: ${current.color}; font-weight: 600;">${current.label}</span>
+            ` : '<span class="text-muted" style="font-weight: 400;">Select Status</span>'}
+          </div>
+          <div class="appsheet-select-actions">
+            ${current.label ? `<span class="appsheet-clear-icon" title="Close" onclick="event.stopPropagation(); ToBeCreatedModule.clearPaidStatus()">✕</span>` : ''}
+            <span class="appsheet-chevron-icon"><i class="bi bi-chevron-down"></i></span>
+          </div>
+        </div>
+        <div class="appsheet-select-menu d-none" id="tobe-paid-status-menu">
+          ${menuItems}
+        </div>
+      </div>
+    `;
+  },
+
+  togglePaidStatusDropdown(event) {
+    if (event) event.stopPropagation();
+    const menu = document.getElementById('tobe-paid-status-menu');
+    const control = document.getElementById('tobe-paid-status-control');
+    this.closeAllAppSheetDropdowns([menu, control]);
+
+    if (menu) {
+      const isClosed = menu.classList.contains('d-none');
+      if (isClosed) {
+        menu.classList.remove('d-none');
+        if (control) control.classList.add('open');
+      } else {
+        menu.classList.add('d-none');
+        if (control) control.classList.remove('open');
+      }
+    }
+  },
+
+  selectPaidStatus(newStatus) {
+    this.closeAllAppSheetDropdowns();
+    if (this.activePaidTrip) {
+      this.activePaidTrip.status = newStatus;
+      if (newStatus === 'Settled') this.activePaidTrip.color = 'green';
+      else if (newStatus === 'Party Payment Pending') this.activePaidTrip.color = 'light_blue';
+      else if (newStatus === 'Other B Pending') this.activePaidTrip.color = 'red';
+      else if (newStatus === 'Truck Owner Payment Pending') this.activePaidTrip.color = 'sky_blue';
+
+      const tripInList = (this.paidTrips || []).find(t => t.grNo === this.activePaidTrip.grNo);
+      if (tripInList) {
+        tripInList.status = newStatus;
+        tripInList.color = this.activePaidTrip.color;
+      }
+
+      this.renderPaidTripDetailsView(this.activePaidTrip);
+    }
+  },
+
+  clearPaidStatus() {
+    this.closeAllAppSheetDropdowns();
+    if (this.activePaidTrip) {
+      this.activePaidTrip.status = '';
+      this.renderPaidTripDetailsView(this.activePaidTrip);
+    }
+  },
+
+  renderPaidAppSheetAddRecordsDropdown(currentVal = 'Other B') {
+    const options = ['Other B', 'Truck Owner Payment', 'Party Payment', 'Cheque'];
+
+    const menuItems = options.map(opt => `
+      <div class="appsheet-select-item" onclick="event.stopPropagation(); ToBeCreatedModule.selectPaidAddRecord('${opt}')">
+        <span style="color: #202124; font-weight: 500;">${opt}</span>
+      </div>
+    `).join('');
+
+    return `
+      <div class="appsheet-select-wrapper" id="tobe-paid-addrecords-dropdown-wrapper" style="max-width: 190px;">
+        <div class="appsheet-select-control" id="tobe-paid-addrecords-control" onclick="ToBeCreatedModule.togglePaidAddRecordsDropdown(event)">
+          <div class="appsheet-select-display" id="tobe-paid-addrecords-display">
+            ${currentVal ? `<span style="color: #202124; font-weight: 600;">${currentVal}</span>` : '<span class="text-muted" style="font-weight: 400;">Select</span>'}
+          </div>
+          <div class="appsheet-select-actions">
+            ${currentVal ? `<span class="appsheet-clear-icon" title="Close" onclick="event.stopPropagation(); ToBeCreatedModule.clearPaidAddRecords()">✕</span>` : ''}
+            <span class="appsheet-chevron-icon"><i class="bi bi-chevron-down"></i></span>
+          </div>
+        </div>
+        <div class="appsheet-select-menu d-none" id="tobe-paid-addrecords-menu">
+          ${menuItems}
+        </div>
+      </div>
+    `;
+  },
+
+  togglePaidAddRecordsDropdown(event) {
+    if (event) event.stopPropagation();
+    const menu = document.getElementById('tobe-paid-addrecords-menu');
+    const control = document.getElementById('tobe-paid-addrecords-control');
+    this.closeAllAppSheetDropdowns([menu, control]);
+
+    if (menu) {
+      const isClosed = menu.classList.contains('d-none');
+      if (isClosed) {
+        menu.classList.remove('d-none');
+        if (control) control.classList.add('open');
+      } else {
+        menu.classList.add('d-none');
+        if (control) control.classList.remove('open');
+      }
+    }
+  },
+
+  selectPaidAddRecord(recordType) {
+    this.closeAllAppSheetDropdowns();
+    if (this.activePaidTrip) {
+      this.activePaidTrip.addRecordsFor = recordType;
+      const tripInList = (this.paidTrips || []).find(t => t.grNo === this.activePaidTrip.grNo);
+      if (tripInList) {
+        tripInList.addRecordsFor = recordType;
+      }
+    }
+
+    if (recordType === 'Other B') {
+      this.openAddPaidPaymentDrawer();
+    } else if (recordType === 'Truck Owner Payment') {
+      this.openAddOwnerPaymentDrawer();
+    } else if (recordType === 'Party Payment') {
+      this.openConsigneePaymentDrawer();
+    }
+  },
+
+  clearPaidAddRecords() {
+    this.closeAllAppSheetDropdowns();
+    if (this.activePaidTrip) {
+      this.activePaidTrip.addRecordsFor = '';
+      this.renderPaidTripDetailsView(this.activePaidTrip);
     }
   },
 
@@ -1807,81 +2017,89 @@ const ToBeCreatedModule = {
           ${this.renderFieldRow('Rate', t.rate ? fmt(t.rate) : '₹ 1,550.00', 'green')}
           ${this.renderFieldRow('Material', t.material || 'Marble Slabs, Granite Slabs', 'green')}
           ${this.renderFieldRow('Reference', t.reference, 'green')}
-          ${this.renderFieldRow('Reference Mobile No.', t.referenceMobile || '9650271892', 'green')}
+          ${this.renderFieldRow('Reference Mobile No.', t.referenceMobile || '9650271892', 'green', true)}
           ${this.renderFieldRow('Driver', t.driver, 'green')}
-          ${this.renderFieldRow('Driver Mobile No.', t.driverMobile || '8058881707', 'green')}
+          ${this.renderFieldRow('Driver Mobile No.', t.driverMobile || '8058881707', 'green', true)}
           ${this.renderFieldRow('Consignor', t.consignor, 'green')}
-          ${this.renderFieldRow('Consignor Mobile No.', t.consignorMobile || '9650271892', 'green')}
+          ${this.renderFieldRow('Consignor Mobile No.', t.consignorMobile || '9650271892', 'green', true)}
           ${this.renderFieldRow('Freight', fmt(t.freight || 127999), 'green')}
         </div>
 
         <!-- CARD 2: Payments Breakdown (Matching 11_50_04.png) -->
         <div class="tobe-details-card">
-          <!-- Section 1: Payment 1 -->
-          <div class="d-flex justify-content-between align-items-center mb-2">
-            <span class="fw-bold" style="font-size: 13px; color: #202124;">Payment ${payments.length}</span>
+          <!-- Section 1: Payment -->
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="tobe-bullet-green me-1">●</span>
+            <span class="fw-bold" style="font-size: 13px; color: #202124;">Payment</span>
+            <span class="badge bg-light text-muted border">${payments.length}</span>
           </div>
           <table class="details-table mb-2">
             <thead>
               <tr>
-                <th>Payment Date</th>
+                <th>Payment Date <i class="bi bi-arrow-up small"></i></th>
                 <th>Amount Paid</th>
+                <th>Mode</th>
                 <th>Beneficiary</th>
               </tr>
             </thead>
             <tbody>
               ${payments.map(p => `
                 <tr>
-                  <td>${p.paymentDate}</td>
-                  <td class="fw-semibold">${fmt(p.amountPaid)}</td>
+                  <td><span class="tobe-bullet-green me-1">●</span> <span style="color: var(--appsheet-green); font-weight:600;">${p.paymentDate}</span></td>
+                  <td><span class="tobe-bullet-green me-1">●</span> <span style="color: var(--appsheet-green); font-weight:600;">${fmt(p.amountPaid)}</span></td>
+                  <td><span class="tobe-bullet-green me-1">●</span> <span style="color: var(--appsheet-green); font-weight:500;">${p.mode || 'Cash'}</span></td>
                   <td>${p.beneficiary || 'Cash'}</td>
                 </tr>
               `).join('')}
             </tbody>
           </table>
           <div class="card-footer-actions mb-3">
-            <a onclick="ToBeCreatedModule.openPaymentListView()">Expand</a>
+            <a onclick="ToBeCreatedModule.openPaidPaymentListView('payment')">Expand</a>
           </div>
 
           <div class="border-top pt-2 mb-3">
             <div class="d-flex justify-content-between py-1">
               <span class="text-muted" style="font-size: 11.5px;">Owner Total Payment</span>
-              <span class="fw-bold" style="font-size: 12px; color: #202124;">${fmt(t.ownerTotalPayment || t.freight || 127999)}</span>
+              <span class="fw-bold" style="font-size: 12px; color: #137333;"><span class="tobe-bullet-green me-1">●</span>${fmt(t.ownerTotalPayment || t.freight || 127999)}</span>
+            </div>
+            <div class="d-flex justify-content-between py-1">
+              <span class="text-muted" style="font-size: 11.5px;">Other B</span>
+              <span class="fw-bold" style="font-size: 12px; color: #137333;"><span class="tobe-bullet-green me-1">●</span>${fmt(t.otherB || 18000)}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 3: Totals & Settled Status (Matching 11_50_04.png) -->
+        <div class="tobe-details-card">
+          <div class="d-flex justify-content-between py-1 border-bottom">
+            <span class="text-muted" style="font-size: 11.5px;">Total Freight</span>
+            <span class="fw-bold" style="font-size: 12px; color: #137333;"><span class="tobe-bullet-green me-1">●</span>${fmt(t.totalFreight || t.freight || 127999)}</span>
+          </div>
+          <div class="d-flex justify-content-between py-1 border-bottom">
+            <span class="text-muted" style="font-size: 11.5px;">Paid Amount</span>
+            <span class="fw-bold" style="font-size: 12px; color: #137333;"><span class="tobe-bullet-green me-1">●</span>${fmt(t.paidAmount || t.freight || 127999)}</span>
+          </div>
+          <div class="d-flex justify-content-between py-1 border-bottom">
+            <span class="text-muted" style="font-size: 11.5px;">Owner</span>
+            <span class="fw-semibold" style="font-size: 12px; color: #137333;"><span class="tobe-bullet-green me-1">●</span>${t.owner || 'Rameshwar Prasad'}</span>
+          </div>
+          <div class="d-flex justify-content-between py-1">
+            <span class="text-muted" style="font-size: 11.5px;">Owner Mobile No.</span>
+            <div class="d-flex align-items-center gap-1" style="color: #137333; font-weight: 600; font-size: 12px;">
+              <span class="tobe-bullet-green">●</span>
+              <span>${t.ownerMobile || '9414659401'}</span>
+              <a href="tel:${t.ownerMobile || '9414659401'}" class="phone-icon-btn green" title="Call">
+                <i class="bi bi-telephone-fill"></i>
+              </a>
             </div>
           </div>
 
-          <!-- Section 2: Other B 1 -->
-          <div class="d-flex justify-content-between align-items-center mb-2">
-            <span class="fw-bold" style="font-size: 13px; color: #202124;">Other B ${otherBPayments.length}</span>
-          </div>
-          <table class="details-table mb-2">
-            <thead>
-              <tr>
-                <th>Payment Date</th>
-                <th>Amount Paid</th>
-                <th>Mode</th>
-                <th>Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${otherBPayments.map(p => `
-                <tr>
-                  <td>${p.paymentDate}</td>
-                  <td class="fw-semibold">${fmt(p.amountPaid)}</td>
-                  <td>${p.mode || 'Cash in Rajsamand'}</td>
-                  <td>${p.description || '-'}</td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-          <div class="card-footer-actions mb-3">
-            <a onclick="ToBeCreatedModule.openPaidPaymentListView('otherB')">Expand</a>
-          </div>
-
-          <!-- Section 3: Owner Payment 1 -->
-          <div class="border-top pt-2">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <span class="fw-bold" style="font-size: 13px; color: #202124;">Owner Payment ${ownerPayments.length}</span>
+          <!-- Section 2: Other B 1 in right card -->
+          <div class="border-top pt-3 mt-3">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <span class="tobe-bullet-green me-1">●</span>
+              <span class="fw-bold" style="font-size: 13px; color: #202124;">Other B</span>
+              <span class="badge bg-light text-muted border">${otherBPayments.length}</span>
             </div>
             <table class="details-table mb-2">
               <thead>
@@ -1889,53 +2107,62 @@ const ToBeCreatedModule = {
                   <th>Payment Date</th>
                   <th>Amount Paid</th>
                   <th>Mode</th>
-                  <th>Beneficiary</th>
+                  <th>Description</th>
                 </tr>
               </thead>
               <tbody>
-                ${ownerPayments.map(p => `
+                ${otherBPayments.map(p => `
                   <tr>
-                    <td>${p.paymentDate}</td>
-                    <td class="fw-semibold">${fmt(p.amountPaid)}</td>
-                    <td>${p.mode || 'Cash'}</td>
-                    <td>${p.beneficiary || 'Cash'}</td>
+                    <td><span class="tobe-bullet-green me-1">●</span> <span style="color: var(--appsheet-green); font-weight:600;">${p.paymentDate}</span></td>
+                    <td><span class="tobe-bullet-green me-1">●</span> <span style="color: var(--appsheet-green); font-weight:600;">${fmt(p.amountPaid)}</span></td>
+                    <td><span class="tobe-bullet-green me-1">●</span> <span style="color: var(--appsheet-green); font-weight:500;">${p.mode || 'Cash in Rajsamand'}</span></td>
+                    <td><span class="tobe-bullet-green me-1">●</span> ${p.description || '-'}</td>
                   </tr>
                 `).join('')}
               </tbody>
             </table>
             <div class="card-footer-actions">
-              <a onclick="ToBeCreatedModule.openPaidPaymentListView('owner')">Expand</a>
+              <a onclick="ToBeCreatedModule.openPaidPaymentListView('otherB')">Expand</a>
             </div>
           </div>
         </div>
 
-        <!-- CARD 3: Totals & Settled Status (Matching 11_50_04.png) -->
-        <div class="tobe-details-card">
-          <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
-            <span class="fw-bold" style="font-size: 13px; color: #202124;">Settlement Status</span>
-            <span class="tobe-status-settled">
-              <i class="bi bi-check-circle-fill"></i> Settled
-            </span>
+        <!-- CARD 4 (Full Width): Owner Payment 1 (Matching 11_50_04.png) -->
+        <div class="tobe-details-card" style="grid-column: 1 / -1;">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="tobe-bullet-green me-1">●</span>
+            <span class="fw-bold" style="font-size: 13px; color: #202124;">Owner Payment</span>
+            <span class="badge bg-light text-muted border">${ownerPayments.length}</span>
           </div>
-          <div class="d-flex justify-content-between py-1 border-bottom">
-            <span class="text-muted" style="font-size: 11.5px;">Total Freight</span>
-            <span class="fw-bold" style="font-size: 12px; color: #202124;">${fmt(t.totalFreight || t.freight || 127999)}</span>
+          <table class="details-table mb-2">
+            <thead>
+              <tr>
+                <th>Payment Date <i class="bi bi-arrow-up small"></i></th>
+                <th>Amount Paid</th>
+                <th>Mode</th>
+                <th>Beneficiary</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${ownerPayments.map(p => `
+                <tr>
+                  <td><span class="tobe-bullet-green me-1">●</span> <span style="color: var(--appsheet-green); font-weight:600;">${p.paymentDate}</span></td>
+                  <td><span class="tobe-bullet-green me-1">●</span> <span style="color: var(--appsheet-green); font-weight:600;">${fmt(p.amountPaid)}</span></td>
+                  <td><span class="tobe-bullet-green me-1">●</span> <span style="color: var(--appsheet-green); font-weight:500;">${p.mode || 'Cash'}</span></td>
+                  <td>${p.beneficiary || 'Cash'}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+          <div class="card-footer-actions mb-3">
+            <a onclick="ToBeCreatedModule.openPaidPaymentListView('owner')">Expand</a>
           </div>
-          <div class="d-flex justify-content-between py-1 border-bottom">
-            <span class="text-muted" style="font-size: 11.5px;">Paid Amount</span>
-            <span class="fw-bold" style="font-size: 12px; color: #137333;">${fmt(t.paidAmount || t.freight || 127999)}</span>
-          </div>
-          <div class="d-flex justify-content-between py-1 border-bottom">
-            <span class="text-muted" style="font-size: 11.5px;">Other B Total Payment</span>
-            <span class="fw-bold" style="font-size: 12px; color: #137333;">${fmt(t.otherBTotalPayment || t.otherB || 18000)}</span>
-          </div>
-          <div class="d-flex justify-content-between py-1 border-bottom">
-            <span class="text-muted" style="font-size: 11.5px;">Owner</span>
-            <span class="fw-semibold" style="font-size: 12px; color: #202124;">${t.owner || 'Rameshwar Prasad'}</span>
-          </div>
-          <div class="d-flex justify-content-between py-1">
-            <span class="text-muted" style="font-size: 11.5px;">Owner Mobile No.</span>
-            <span class="fw-semibold" style="font-size: 12px; color: #202124;">${t.ownerMobile || '9414659401'}</span>
+
+          <div class="border-top pt-2">
+            <div class="d-flex justify-content-between py-1">
+              <span class="text-muted" style="font-size: 11.5px;">Other B Total Payment</span>
+              <span class="fw-bold" style="font-size: 12px; color: #137333;"><span class="tobe-bullet-green me-1">●</span>${fmt(t.otherBTotalPayment || t.otherB || 18000)}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -1953,47 +2180,55 @@ const ToBeCreatedModule = {
 
     return `
       <div class="tobe-details-grid-3">
-        <!-- CARD 1: Trip Information -->
+        <!-- CARD 1: Trip Information (Light Blue Bullet & Accent) -->
         <div class="tobe-details-card">
           <div class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom">
             <span class="fw-bold" style="font-size: 13px; color: #202124;">G.R.No.</span>
-            <span class="fw-bold" style="font-size: 13px; color: #1a73e8;">${t.grNo}</span>
+            <span class="fw-bold" style="font-size: 13px; color: #1a73e8;"><span class="tobe-bullet-blue me-1">●</span>${t.grNo}</span>
           </div>
-          ${this.renderFieldRow('Truck No.', t.truckNo, 'gold')}
-          ${this.renderFieldRow('Trip Start Date', t.tripStartDate, 'gold')}
-          ${this.renderFieldRow('Trip End Date', t.tripEndDate, 'gold')}
-          ${this.renderFieldRow('Origin', t.origin || 'Rajsamand (Raj.)', 'gold')}
-          ${this.renderFieldRow('Destination', t.destination || 'Delhi', 'gold')}
-          ${this.renderFieldRow('Weight', t.weight ? Number(t.weight).toFixed(3) : '95.680', 'gold')}
-          ${this.renderFieldRow('Rate', t.rate ? fmt(t.rate) : '₹ 1,550.00', 'gold')}
-          ${this.renderFieldRow('Material', t.material || 'Marble Slabs', 'gold')}
-          ${this.renderFieldRow('Reference', t.reference, 'gold')}
-          ${this.renderFieldRow('Reference Mobile No.', t.referenceMobile || '9810645833', 'gold')}
-          ${this.renderFieldRow('Driver', t.driver, 'gold')}
-          ${this.renderFieldRow('Driver Mobile No.', t.driverMobile || '6377445099, 7878460322', 'gold')}
-          ${this.renderFieldRow('Consignor', t.consignor, 'gold')}
-          ${this.renderFieldRow('Consignor Mobile No.', t.consignorMobile || '9810645833', 'gold')}
-          ${this.renderFieldRow('Owner', t.owner, 'gold')}
-          ${this.renderFieldRow('Owner Mobile No.', t.ownerMobile || '9414659401, 9772200036', 'gold')}
-          ${this.renderFieldRow('Freight', fmt(t.freight || 148304), 'gold')}
+          ${this.renderFieldRow('Truck No.', t.truckNo, 'blue')}
+          ${this.renderFieldRow('Trip Start Date', t.tripStartDate, 'blue')}
+          ${this.renderFieldRow('Trip End Date', t.tripEndDate, 'blue')}
+          ${this.renderFieldRow('Origin', t.origin || 'Rajsamand (Raj.)', 'blue')}
+          ${this.renderFieldRow('Destination', t.destination || 'Delhi', 'blue')}
+          ${this.renderFieldRow('Weight', t.weight ? Number(t.weight).toFixed(3) : '95.680', 'blue')}
+          ${this.renderFieldRow('Rate', t.rate ? fmt(t.rate) : '₹ 1,550.00', 'blue')}
+          ${this.renderFieldRow('Material', t.material || 'Marble Slabs', 'blue')}
+          ${this.renderFieldRow('Reference', t.reference, 'blue')}
+          ${this.renderFieldRow('Reference Mobile No.', t.referenceMobile || '9810645833', 'blue', true)}
+          ${this.renderFieldRow('Driver', t.driver, 'blue')}
+          ${this.renderFieldRow('Driver Mobile No.', t.driverMobile || '6377445099, 7878460322', 'blue', true)}
+          ${this.renderFieldRow('Consignor', t.consignor, 'blue')}
+          ${this.renderFieldRow('Consignor Mobile No.', t.consignorMobile || '9810645833', 'blue', true)}
+          ${this.renderFieldRow('Owner', t.owner, 'blue')}
+          ${this.renderFieldRow('Owner Mobile No.', t.ownerMobile || '9414659401, 9772200036', 'blue', true)}
+          ${this.renderFieldRow('Freight', fmt(t.freight || 148304), 'blue')}
           <div class="mt-3 pt-2 border-top">
-            <button class="btn btn-sm btn-outline-primary w-100 py-1" onclick="ToBeCreatedModule.openAddPaidPaymentDrawer()">
-              <i class="bi bi-plus-lg me-1"></i> Add Records for Other B
-            </button>
+            <div class="tobe-field-row align-items-center">
+              <span class="tobe-field-label">Add Records for</span>
+              <div class="tobe-field-value">
+                ${this.renderPaidAppSheetAddRecordsDropdown(t.addRecordsFor || 'Other B')}
+              </div>
+            </div>
           </div>
-          ${this.renderFieldRow('Total Freight', fmt(t.totalFreight || t.freight || 148304), 'gold')}
-          ${this.renderFieldRow('Other B', fmt(t.otherB || 20000), 'gold')}
+          ${this.renderFieldRow('Total Freight', fmt(t.totalFreight || t.freight || 148304), 'blue')}
+          <div class="my-2 border-top pt-2">
+            <div class="fw-bold" style="font-size: 13px; color: #202124;">Other B</div>
+          </div>
+          ${this.renderFieldRow('Other B', fmt(t.otherB || 20000), 'blue')}
         </div>
 
         <!-- CARD 2: Other B Payments Table (Matching 11_45_56.png) -->
         <div class="tobe-details-card">
-          <div class="d-flex justify-content-between align-items-center mb-2">
-            <span class="fw-bold" style="font-size: 13px; color: #202124;">Other B Payment ${payments.length}</span>
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="tobe-bullet-blue me-1">●</span>
+            <span class="fw-bold" style="font-size: 13px; color: #202124;">Other B Payment</span>
+            <span class="badge bg-light text-muted border">${payments.length}</span>
           </div>
           <table class="details-table mb-2">
             <thead>
               <tr>
-                <th>Payment Date</th>
+                <th>Payment Date <i class="bi bi-arrow-up small"></i></th>
                 <th>Amount Paid</th>
                 <th>Mode</th>
                 <th>Description</th>
@@ -2001,11 +2236,11 @@ const ToBeCreatedModule = {
             </thead>
             <tbody>
               ${payments.map(p => `
-                <tr>
-                  <td>${p.paymentDate}</td>
-                  <td class="fw-semibold">${fmt(p.amountPaid)}</td>
-                  <td>${p.mode || 'Phone Pe/GPay/PayTM/UPI'}</td>
-                  <td class="text-truncate" style="max-width: 140px;">${p.description || '-'}</td>
+                <tr onclick="ToBeCreatedModule.openPaidPaymentListView('otherB')" style="cursor: pointer;">
+                  <td><span class="tobe-bullet-green me-1">●</span> <span style="color: var(--appsheet-green); font-weight:600;">${p.paymentDate}</span></td>
+                  <td><span class="tobe-bullet-green me-1">●</span> <span style="color: var(--appsheet-green); font-weight:600;">${fmt(p.amountPaid)}</span></td>
+                  <td><span class="tobe-bullet-green me-1">●</span> <span style="color: var(--appsheet-green); font-weight:500;">${p.mode || 'Phone Pe/GPay/PayTM/UPI'}</span></td>
+                  <td><span class="tobe-bullet-green me-1">●</span> <span style="color: var(--appsheet-green); font-weight:500;">${p.description || '-'}</span></td>
                 </tr>
               `).join('')}
             </tbody>
@@ -2018,19 +2253,17 @@ const ToBeCreatedModule = {
 
         <!-- CARD 3: Totals & Status (Matching 11_45_56.png) -->
         <div class="tobe-details-card">
-          <div class="d-flex justify-content-between py-1 border-bottom">
-            <span class="text-muted" style="font-size: 11.5px;">Other B Total Payment</span>
-            <span class="fw-bold" style="font-size: 12px; color: #1a73e8;">${fmt(t.otherBTotalPayment || 20000)}</span>
-          </div>
-          <div class="d-flex justify-content-between py-1 border-bottom">
-            <span class="text-muted" style="font-size: 11.5px;">Other B Due Payment</span>
-            <span class="fw-bold" style="font-size: 12px; color: #5f6368;">0.00</span>
-          </div>
-          <div class="d-flex justify-content-between align-items-center py-2">
-            <span class="text-muted" style="font-size: 11.5px;">Status</span>
-            <span class="tobe-status-party-pending">
-              <i class="bi bi-clock-fill" style="font-size: 9px;"></i> Party Payment Pending
-            </span>
+          ${this.renderFieldRow('Other B Total Payment', fmt(t.otherBTotalPayment || 20000), 'blue')}
+          ${this.renderFieldRow('Other B Due Payment', '0.00', 'green')}
+          
+          <div class="my-2 border-top pt-2">
+            <div class="fw-bold mb-2" style="font-size: 13px; color: #202124;">Status</div>
+            <div class="tobe-field-row align-items-center">
+              <span class="tobe-field-label">Status <span class="text-danger">*</span></span>
+              <div class="tobe-field-value">
+                ${this.renderPaidAppSheetStatusDropdown(t.status || 'Party Payment Pending')}
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -2046,47 +2279,55 @@ const ToBeCreatedModule = {
 
     return `
       <div class="tobe-details-grid-3">
-        <!-- CARD 1: Trip Information -->
+        <!-- CARD 1: Trip Information (Red Bullet & Accent) -->
         <div class="tobe-details-card">
           <div class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom">
             <span class="fw-bold" style="font-size: 13px; color: #202124;">G.R.No.</span>
-            <span class="fw-bold" style="font-size: 13px; color: #d93025;">${t.grNo}</span>
+            <span class="fw-bold" style="font-size: 13px; color: #d93025;"><span class="tobe-bullet-red me-1">●</span>${t.grNo}</span>
           </div>
           ${this.renderFieldRow('Truck No.', t.truckNo, 'red')}
           ${this.renderFieldRow('Trip Start Date', t.tripStartDate, 'red')}
           ${this.renderFieldRow('Trip End Date', t.tripEndDate, 'red')}
           ${this.renderFieldRow('Origin', t.origin || 'Rajsamand (Raj.)', 'red')}
-          ${this.renderFieldRow('Destination', t.destination || 'Greater Noida (U.P.)', 'red')}
+          ${this.renderFieldRow('Destination', t.destination || 'Greather Noida (U.P.)', 'red')}
           ${this.renderFieldRow('Weight', t.weight ? Number(t.weight).toFixed(3) : '75.420', 'red')}
           ${this.renderFieldRow('Rate', t.rate ? fmt(t.rate) : '₹ 1,500.00', 'red')}
           ${this.renderFieldRow('Material', t.material || 'Marble Slabs', 'red')}
           ${this.renderFieldRow('Reference', t.reference, 'red')}
-          ${this.renderFieldRow('Reference Mobile No.', t.referenceMobile || '7531858336', 'red')}
+          ${this.renderFieldRow('Reference Mobile No.', t.referenceMobile || '7531858336', 'red', true)}
           ${this.renderFieldRow('Driver', t.driver, 'red')}
-          ${this.renderFieldRow('Driver Mobile No.', t.driverMobile || '8529635755', 'red')}
+          ${this.renderFieldRow('Driver Mobile No.', t.driverMobile || '8529635755', 'red', true)}
           ${this.renderFieldRow('Consignor', t.consignor, 'red')}
-          ${this.renderFieldRow('Consignor Mobile No.', t.consignorMobile || '7531858336', 'red')}
+          ${this.renderFieldRow('Consignor Mobile No.', t.consignorMobile || '7531858336', 'red', true)}
           ${this.renderFieldRow('Owner', t.owner, 'red')}
-          ${this.renderFieldRow('Owner Mobile No.', t.ownerMobile || '8239475626', 'red')}
+          ${this.renderFieldRow('Owner Mobile No.', t.ownerMobile || '8239475626', 'red', true)}
           ${this.renderFieldRow('Freight', fmt(t.freight || 113130), 'red')}
           <div class="mt-3 pt-2 border-top">
-            <button class="btn btn-sm btn-outline-danger w-100 py-1" onclick="ToBeCreatedModule.openAddPaidPaymentDrawer()">
-              <i class="bi bi-plus-lg me-1"></i> Add Records for Other B
-            </button>
+            <div class="tobe-field-row align-items-center">
+              <span class="tobe-field-label">Add Records for</span>
+              <div class="tobe-field-value">
+                ${this.renderPaidAppSheetAddRecordsDropdown(t.addRecordsFor || 'Other B')}
+              </div>
+            </div>
           </div>
           ${this.renderFieldRow('Total Freight', fmt(t.totalFreight || t.freight || 113130), 'red')}
+          <div class="my-2 border-top pt-2">
+            <div class="fw-bold" style="font-size: 13px; color: #202124;">Other B</div>
+          </div>
           ${this.renderFieldRow('Other B', fmt(t.otherB || 18000), 'red')}
         </div>
 
         <!-- CARD 2: Other B Payment 1 Table (Matching 11_53_18.png) -->
         <div class="tobe-details-card">
-          <div class="d-flex justify-content-between align-items-center mb-2">
-            <span class="fw-bold" style="font-size: 13px; color: #202124;">Other B Payment ${payments.length}</span>
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="tobe-bullet-red me-1">●</span>
+            <span class="fw-bold" style="font-size: 13px; color: #202124;">Other B Payment</span>
+            <span class="badge bg-light text-muted border">${payments.length}</span>
           </div>
           <table class="details-table mb-2">
             <thead>
               <tr>
-                <th>Payment Date</th>
+                <th>Payment Date <i class="bi bi-arrow-up small"></i></th>
                 <th>Amount Paid</th>
                 <th>Mode</th>
                 <th>Description</th>
@@ -2094,11 +2335,11 @@ const ToBeCreatedModule = {
             </thead>
             <tbody>
               ${payments.map(p => `
-                <tr>
-                  <td>${p.paymentDate}</td>
-                  <td class="fw-semibold text-danger">${fmt(p.amountPaid)}</td>
-                  <td>${p.mode || 'Phone Pe/GPay/PayTM/UPI'}</td>
-                  <td>${p.description || '-'}</td>
+                <tr onclick="ToBeCreatedModule.openPaidPaymentListView('otherB')" style="cursor: pointer;">
+                  <td><span class="tobe-bullet-green me-1">●</span> <span style="color: var(--appsheet-green); font-weight:600;">${p.paymentDate}</span></td>
+                  <td><span class="tobe-bullet-green me-1">●</span> <span style="color: var(--appsheet-green); font-weight:600;">${fmt(p.amountPaid)}</span></td>
+                  <td><span class="tobe-bullet-green me-1">●</span> <span style="color: var(--appsheet-green); font-weight:500;">${p.mode || 'Phone Pe/GPay/PayTM/UPI'}</span></td>
+                  <td><span class="tobe-bullet-green me-1">●</span> <span style="color: var(--appsheet-green); font-weight:500;">${p.description || '-'}</span></td>
                 </tr>
               `).join('')}
             </tbody>
@@ -2111,19 +2352,17 @@ const ToBeCreatedModule = {
 
         <!-- CARD 3: Totals & Status (Matching 11_53_18.png) -->
         <div class="tobe-details-card">
-          <div class="d-flex justify-content-between py-1 border-bottom">
-            <span class="text-muted" style="font-size: 11.5px;">Other B Total Payment</span>
-            <span class="fw-bold" style="font-size: 12px; color: #202124;">${fmt(t.otherBTotalPayment || 10200)}</span>
-          </div>
-          <div class="d-flex justify-content-between py-1 border-bottom">
-            <span class="text-muted" style="font-size: 11.5px;">Other B Due Payment</span>
-            <span class="fw-bold" style="font-size: 12px; color: #d93025;">${fmt(t.otherBDuePayment || 7800)}</span>
-          </div>
-          <div class="d-flex justify-content-between align-items-center py-2">
-            <span class="text-muted" style="font-size: 11.5px;">Status</span>
-            <span class="tobe-status-otherb-pending">
-              <i class="bi bi-exclamation-circle-fill" style="font-size: 9px;"></i> Other B Pending
-            </span>
+          ${this.renderFieldRow('Other B Total Payment', fmt(t.otherBTotalPayment || 10200), 'red')}
+          ${this.renderFieldRow('Other B Due Payment', fmt(t.otherBDuePayment || 7800), 'red')}
+          
+          <div class="my-2 border-top pt-2">
+            <div class="fw-bold mb-2" style="font-size: 13px; color: #202124;">Status</div>
+            <div class="tobe-field-row align-items-center">
+              <span class="tobe-field-label">Status <span class="text-danger">*</span></span>
+              <div class="tobe-field-value">
+                ${this.renderPaidAppSheetStatusDropdown(t.status || 'Other B Pending')}
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -2143,56 +2382,63 @@ const ToBeCreatedModule = {
 
     return `
       <div class="tobe-details-grid-3">
-        <!-- CARD 1: Trip Information -->
+        <!-- CARD 1: Trip Information (Cyan Bullet & Accent) -->
         <div class="tobe-details-card">
           <div class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom">
             <span class="fw-bold" style="font-size: 13px; color: #202124;">G.R.No.</span>
-            <span class="fw-bold" style="font-size: 13px; color: #00838f;">${t.grNo}</span>
+            <span class="fw-bold" style="font-size: 13px; color: #00acc1;"><span class="tobe-bullet-cyan me-1">●</span>${t.grNo}</span>
           </div>
-          ${this.renderFieldRow('Truck No.', t.truckNo, 'gold')}
-          ${this.renderFieldRow('Trip Start Date', t.tripStartDate, 'gold')}
-          ${this.renderFieldRow('Trip End Date', t.tripEndDate, 'gold')}
-          ${this.renderFieldRow('Origin', t.origin || 'Rajsamand (Raj.)', 'gold')}
-          ${this.renderFieldRow('Destination', t.destination || 'Ghaziabad (U.P.)', 'gold')}
-          ${this.renderFieldRow('Weight', t.weight ? Number(t.weight).toFixed(3) : '57.290', 'gold')}
-          ${this.renderFieldRow('Rate', t.rate ? fmt(t.rate) : '₹ 2,000.00', 'gold')}
-          ${this.renderFieldRow('Material', t.material || 'Granite Slabs', 'gold')}
-          ${this.renderFieldRow('Reference', t.reference, 'gold')}
-          ${this.renderFieldRow('Reference Mobile No.', t.referenceMobile || '9810123304', 'gold')}
-          ${this.renderFieldRow('Driver', t.driver, 'gold')}
-          ${this.renderFieldRow('Driver Mobile No.', t.driverMobile || '9784175913', 'gold')}
-          ${this.renderFieldRow('Consignor', t.consignor, 'gold')}
-          ${this.renderFieldRow('Consignor Mobile No.', t.consignorMobile || '9810123304', 'gold')}
-          ${this.renderFieldRow('Owner', t.owner, 'gold')}
-          ${this.renderFieldRow('Owner Mobile No.', t.ownerMobile || '8502873309', 'gold')}
-          ${this.renderFieldRow('Freight', fmt(t.freight || 114580), 'gold')}
+          ${this.renderFieldRow('Truck No.', t.truckNo, 'cyan')}
+          ${this.renderFieldRow('Trip Start Date', t.tripStartDate, 'cyan')}
+          ${this.renderFieldRow('Trip End Date', t.tripEndDate, 'cyan')}
+          ${this.renderFieldRow('Origin', t.origin || 'Rajsamand (Raj.)', 'cyan')}
+          ${this.renderFieldRow('Destination', t.destination || 'Ghaziabad (U.P.)', 'cyan')}
+          ${this.renderFieldRow('Weight', t.weight ? Number(t.weight).toFixed(3) : '57.290', 'cyan')}
+          ${this.renderFieldRow('Rate', t.rate ? fmt(t.rate) : '₹ 2,000.00', 'cyan')}
+          ${this.renderFieldRow('Material', t.material || 'Granite Slabs', 'cyan')}
+          ${this.renderFieldRow('Reference', t.reference, 'cyan')}
+          ${this.renderFieldRow('Reference Mobile No.', t.referenceMobile || '9810123304', 'cyan', true)}
+          ${this.renderFieldRow('Driver', t.driver, 'cyan')}
+          ${this.renderFieldRow('Driver Mobile No.', t.driverMobile || '9784175913', 'cyan', true)}
+          ${this.renderFieldRow('Consignor', t.consignor, 'cyan')}
+          ${this.renderFieldRow('Consignor Mobile No.', t.consignorMobile || '9810123304', 'cyan', true)}
+          ${this.renderFieldRow('Owner', t.owner, 'cyan')}
+          ${this.renderFieldRow('Owner Mobile No.', t.ownerMobile || '8502873309', 'cyan', true)}
+          ${this.renderFieldRow('Freight', fmt(t.freight || 114580), 'cyan')}
           <div class="mt-3 pt-2 border-top">
-            <button class="btn btn-sm btn-outline-info w-100 py-1 text-dark" onclick="ToBeCreatedModule.openAddOwnerPaymentDrawer()">
-              <i class="bi bi-plus-lg me-1"></i> Add Records for Truck Owner Payment
-            </button>
+            <div class="tobe-field-row align-items-center">
+              <span class="tobe-field-label">Add Records for</span>
+              <div class="tobe-field-value">
+                ${this.renderPaidAppSheetAddRecordsDropdown(t.addRecordsFor || 'Truck Owner Payment')}
+              </div>
+            </div>
           </div>
-          ${this.renderFieldRow('Total Freight', fmt(t.totalFreight || t.freight || 114580), 'gold')}
+          ${this.renderFieldRow('Total Freight', fmt(t.totalFreight || t.freight || 114580), 'cyan')}
         </div>
 
         <!-- CARD 2: Owner Payment Table (Matching 11_55_52.png) -->
         <div class="tobe-details-card">
-          <div class="d-flex justify-content-between align-items-center mb-2">
-            <span class="fw-bold" style="font-size: 13px; color: #202124;">Owner Payment ${ownerPayments.length}</span>
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="tobe-bullet-cyan me-1">●</span>
+            <span class="fw-bold" style="font-size: 13px; color: #202124;">Owner Payment</span>
+            <span class="badge bg-light text-muted border">${ownerPayments.length}</span>
           </div>
           <table class="details-table mb-2">
             <thead>
               <tr>
-                <th>Payment Date</th>
+                <th style="width: 25px;"></th>
+                <th>Payment Date <i class="bi bi-arrow-up small"></i></th>
                 <th>Amount Paid</th>
                 <th>Mode</th>
               </tr>
             </thead>
             <tbody>
               ${ownerPayments.map(p => `
-                <tr>
-                  <td>${p.paymentDate}</td>
-                  <td class="fw-semibold">${fmt(p.amountPaid)}</td>
-                  <td>${p.mode || 'Phone Pe/GPay/PayTM/UPI'}</td>
+                <tr onclick="ToBeCreatedModule.openPaidPaymentListView('owner')" style="cursor: pointer;">
+                  <td><i class="bi bi-pencil text-muted" onclick="event.stopPropagation(); ToBeCreatedModule.openAuthDrawer('${t.grNo}')"></i></td>
+                  <td><span class="tobe-bullet-green me-1">●</span> <span style="color: var(--appsheet-green); font-weight:600;">${p.paymentDate}</span></td>
+                  <td><span class="tobe-bullet-green me-1">●</span> <span style="color: var(--appsheet-green); font-weight:600;">${fmt(p.amountPaid)}</span></td>
+                  <td><span class="tobe-bullet-green me-1">●</span> <span style="color: var(--appsheet-green); font-weight:500;">${p.mode || 'Phone Pe/GPay/PayTM/UPI'}</span></td>
                 </tr>
               `).join('')}
             </tbody>
@@ -2205,23 +2451,21 @@ const ToBeCreatedModule = {
 
         <!-- CARD 3: Totals & Status (Matching 11_55_52.png) -->
         <div class="tobe-details-card">
-          <div class="d-flex justify-content-between py-1 border-bottom">
-            <span class="text-muted" style="font-size: 11.5px;">Owner Total Payment</span>
-            <span class="fw-bold" style="font-size: 12px; color: #202124;">${fmt(t.ownerTotalPayment || 108850)}</span>
+          ${this.renderFieldRow('Owner Total Payment', fmt(t.ownerTotalPayment || 108850), 'cyan')}
+          ${this.renderFieldRow('Owner Due', fmt(t.ownerDue || 5730), 'red')}
+          
+          <div class="my-2 border-top pt-2">
+            <div class="fw-bold" style="font-size: 13px; color: #202124;">Other B</div>
           </div>
-          <div class="d-flex justify-content-between py-1 border-bottom">
-            <span class="text-muted" style="font-size: 11.5px;">Owner Due</span>
-            <span class="fw-bold" style="font-size: 12px; color: #00838f;">${fmt(t.ownerDue || 5730)}</span>
-          </div>
-          <div class="d-flex justify-content-between py-1 border-bottom">
-            <span class="text-muted" style="font-size: 11.5px;">Other B</span>
-            <span class="fw-semibold" style="font-size: 12px; color: #202124;">${fmt(t.otherB || 18000)}</span>
-          </div>
-          <div class="d-flex justify-content-between align-items-center py-2">
-            <span class="text-muted" style="font-size: 11.5px;">Status</span>
-            <span class="tobe-status-owner-pending">
-              <i class="bi bi-truck" style="font-size: 10px;"></i> Truck Owner Payment Pending
-            </span>
+
+          <div class="my-2 border-top pt-2">
+            <div class="fw-bold mb-2" style="font-size: 13px; color: #202124;">Status</div>
+            <div class="tobe-field-row align-items-center">
+              <span class="tobe-field-label">Status <span class="text-danger">*</span></span>
+              <div class="tobe-field-value">
+                ${this.renderPaidAppSheetStatusDropdown(t.status || 'Truck Owner Payment Pending')}
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -2234,7 +2478,7 @@ const ToBeCreatedModule = {
     this.viewMode = 'paid-payment-list';
     this.showView('tobe-view-paid-payment-list');
 
-    const titleText = type === 'owner' ? 'Trip Owner Payment Details' : 'Trip Other B Payment Details';
+    const titleText = type === 'owner' ? 'Trip Owner Payment Details' : type === 'payment' ? 'Trip Payment Details' : 'Trip Other B Payment Details';
     const elTitle = document.getElementById('paid-payment-list-title');
     if (elTitle) elTitle.innerText = titleText;
 
@@ -2255,7 +2499,7 @@ const ToBeCreatedModule = {
     const tbody = document.getElementById('paid-payment-list-table-body');
     if (!tbody || !this.activePaidTrip) return;
 
-    const list = type === 'owner' ? (this.activePaidTrip.ownerPayments || []) : (this.activePaidTrip.otherBPayments || []);
+    const list = type === 'owner' ? (this.activePaidTrip.ownerPayments || []) : type === 'payment' ? (this.activePaidTrip.payments || []) : (this.activePaidTrip.otherBPayments || []);
     const fmt = (n) => `₹ ${Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
     tbody.innerHTML = list.map((p, idx) => `
@@ -2288,7 +2532,7 @@ const ToBeCreatedModule = {
     const card = document.getElementById('paid-payment-detail-card-content');
     if (!card || !this.activePaidTrip) return;
 
-    const list = type === 'owner' ? (this.activePaidTrip.ownerPayments || []) : (this.activePaidTrip.otherBPayments || []);
+    const list = type === 'owner' ? (this.activePaidTrip.ownerPayments || []) : type === 'payment' ? (this.activePaidTrip.payments || []) : (this.activePaidTrip.otherBPayments || []);
     const p = list[idx] || {};
     const fmt = (n) => `₹ ${Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
