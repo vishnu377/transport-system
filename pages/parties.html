@@ -376,19 +376,21 @@
       line-height: 1;
     }
 
-    /* Card 1: Table Styles (Strictly balanced within 1/3 card column) */
+    /* Card 1: Table Styles (Strict table-layout fixed so columns NEVER collide or mix) */
     .parties-table-container {
       flex: 1;
       overflow-y: auto;
       overflow-x: auto;
       min-height: 0;
+      background: #ffffff;
     }
 
     .parties-table {
       width: 100%;
+      min-width: 480px;
+      table-layout: fixed;
       border-collapse: collapse;
       font-size: 11.5px;
-      white-space: nowrap;
     }
 
     .parties-table th {
@@ -396,12 +398,15 @@
       color: #5f6368;
       font-weight: 600;
       font-size: 10.5px;
-      padding: 7px 8px;
+      padding: 8px 8px;
       border-bottom: 1px solid var(--appsheet-border);
       position: sticky;
       top: 0;
       z-index: 10;
       text-align: left;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .parties-table td {
@@ -409,6 +414,17 @@
       border-bottom: 1px solid #f1f3f4;
       vertical-align: middle;
       font-size: 11px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .cell-truncate {
+      display: block;
+      width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .parties-row {
@@ -805,6 +821,13 @@
             </div>
             <div class="parties-table-container">
               <table class="parties-table">
+                <colgroup>
+                  <col style="width: 115px;">
+                  <col style="width: 125px;">
+                  <col style="width: 125px;">
+                  <col style="width: 95px;">
+                  <col style="width: 20px;">
+                </colgroup>
                 <thead>
                   <tr>
                     <th>GSTIN</th>
@@ -944,15 +967,23 @@
               </div>
             </div>
             <div class="parties-table-container">
-              <table class="parties-table">
+              <table class="parties-table" style="min-width: 820px;">
+                <colgroup>
+                  <col style="width: 145px;">
+                  <col style="width: 30%;">
+                  <col style="width: 28%;">
+                  <col style="width: 110px;">
+                  <col style="width: 110px;">
+                  <col style="width: 25px;">
+                </colgroup>
                 <thead>
                   <tr>
-                    <th style="width: 150px;">GSTIN</th>
+                    <th>GSTIN</th>
                     <th>Address</th>
                     <th>Name</th>
-                    <th style="width: 110px;">Mobile No.</th>
-                    <th style="width: 110px;">Mobile No. 1</th>
-                    <th style="width: 25px;"></th>
+                    <th>Mobile No.</th>
+                    <th>Mobile No. 1</th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody id="parties-full-table-body">

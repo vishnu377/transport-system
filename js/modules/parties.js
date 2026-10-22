@@ -254,24 +254,34 @@ const PartiesModule = {
     const displayList = parties.slice(0, 300);
 
     tbody.innerHTML = displayList.map(p => {
-      const gstin = p.gstin || '-';
-      const address = p.address || '-';
-      const name = p.name || '-';
-      const mobile = p.mobile || '-';
+      const gstin = p.gstin || '';
+      const address = p.address || '';
+      const name = p.name || '';
+      const mobile = p.mobile || p.mobile1 || '';
       const id = p.id || p.sno;
 
-      const gstinHtml = q ? this.highlightMatch(gstin, q) : gstin;
+      const gstinHtml = q ? this.highlightMatch(gstin, q) : (gstin || '-');
       const addrHtml = q ? this.highlightMatch(address, q) : address;
-      const nameHtml = q ? this.highlightMatch(name, q) : name;
+      const nameHtml = q ? this.highlightMatch(name, q) : (name || '-');
       const mobHtml = q ? this.highlightMatch(mobile, q) : mobile;
 
       return `
         <tr class="parties-row" onclick="PartiesModule.openPartyDetails('${id}')" title="${name}">
-          <td class="font-monospace text-uppercase text-dark" style="font-size: 10.5px; width: 110px;">${gstinHtml}</td>
-          <td class="text-truncate text-secondary" style="max-width: 115px; font-size: 11px;" title="${address}">${addrHtml}</td>
-          <td class="text-truncate fw-semibold text-dark" style="max-width: 115px; font-size: 11px;" title="${name}">${nameHtml}</td>
-          <td class="text-muted" style="font-size: 10.5px; width: 85px;">${mobHtml}</td>
-          <td class="text-end pe-1" style="width: 16px;"><i class="bi bi-chevron-right text-muted" style="font-size: 9.5px;"></i></td>
+          <td>
+            <span class="cell-truncate font-monospace text-uppercase text-dark" style="font-size: 10.5px;">${gstinHtml}</span>
+          </td>
+          <td>
+            <span class="cell-truncate text-secondary" style="font-size: 11px;" title="${address}">${addrHtml}</span>
+          </td>
+          <td>
+            <span class="cell-truncate fw-semibold text-dark" style="font-size: 11px;" title="${name}">${nameHtml}</span>
+          </td>
+          <td>
+            <span class="cell-truncate text-dark" style="font-size: 10.5px; font-variant-numeric: tabular-nums;" title="${mobile}">${mobHtml}</span>
+          </td>
+          <td class="text-end pe-1">
+            <i class="bi bi-chevron-right text-muted" style="font-size: 9.5px;"></i>
+          </td>
         </tr>
       `;
     }).join('');
@@ -292,27 +302,39 @@ const PartiesModule = {
     const displayList = parties.slice(0, 400);
 
     tbody.innerHTML = displayList.map(p => {
-      const gstin = p.gstin || '-';
-      const address = p.address || '-';
-      const name = p.name || '-';
-      const mobile = p.mobile || '-';
-      const mobile1 = p.mobile1 || '-';
+      const gstin = p.gstin || '';
+      const address = p.address || '';
+      const name = p.name || '';
+      const mobile = p.mobile || '';
+      const mobile1 = p.mobile1 || '';
       const id = p.id || p.sno;
 
-      const gstinHtml = q ? this.highlightMatch(gstin, q) : gstin;
+      const gstinHtml = q ? this.highlightMatch(gstin, q) : (gstin || '-');
       const addrHtml = q ? this.highlightMatch(address, q) : address;
-      const nameHtml = q ? this.highlightMatch(name, q) : name;
+      const nameHtml = q ? this.highlightMatch(name, q) : (name || '-');
       const mobHtml = q ? this.highlightMatch(mobile, q) : mobile;
       const mob1Html = q ? this.highlightMatch(mobile1, q) : mobile1;
 
       return `
         <tr class="parties-row" onclick="PartiesModule.openPartyDetails('${id}')" title="${name}">
-          <td class="font-monospace text-uppercase text-dark" style="font-size: 11.5px;">${gstinHtml}</td>
-          <td class="text-secondary" style="max-width: 320px; word-break: break-word;">${addrHtml}</td>
-          <td class="fw-semibold text-dark" style="max-width: 250px;">${nameHtml}</td>
-          <td class="text-dark" style="font-size: 11.5px;">${mobHtml}</td>
-          <td class="text-muted" style="font-size: 11.5px;">${mob1Html}</td>
-          <td class="text-end pe-2"><i class="bi bi-chevron-right text-muted" style="font-size: 11px;"></i></td>
+          <td>
+            <span class="cell-truncate font-monospace text-uppercase text-dark" style="font-size: 11px;">${gstinHtml}</span>
+          </td>
+          <td>
+            <span class="cell-truncate text-secondary" style="font-size: 11.5px;" title="${address}">${addrHtml}</span>
+          </td>
+          <td>
+            <span class="cell-truncate fw-semibold text-dark" style="font-size: 11.5px;" title="${name}">${nameHtml}</span>
+          </td>
+          <td>
+            <span class="cell-truncate text-dark" style="font-size: 11px; font-variant-numeric: tabular-nums;" title="${mobile}">${mobHtml}</span>
+          </td>
+          <td>
+            <span class="cell-truncate text-muted" style="font-size: 11px; font-variant-numeric: tabular-nums;" title="${mobile1}">${mob1Html}</span>
+          </td>
+          <td class="text-end pe-2">
+            <i class="bi bi-chevron-right text-muted" style="font-size: 10px;"></i>
+          </td>
         </tr>
       `;
     }).join('');
