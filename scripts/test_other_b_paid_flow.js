@@ -2,17 +2,16 @@
  * test_other_b_paid_flow.js - Automated Test Suite for "Other B Paid" Module (Card 2)
  * Tests:
  *  1. Dashboard & Navigation into Other B Paid
- *  2. Main List Table with Date Grouping & 4 Color Types (Green, Light Blue, Red, Sky Blue Chamkila)
- *  3. Green Row Drilldown: Settled Trip Details (screencapture-...-11_50_04.png)
- *  4. Light Blue Row Drilldown: Party Payment Pending (screencapture-...-11_45_56.png)
- *  5. Red Row Drilldown: Other B Pending (screencapture-...-11_53_18.png)
- *  6. Sky Blue Chamkila Row Drilldown: Truck Owner Payment Pending (screencapture-...-11_55_52.png)
- *  7. Expand Payment View: Trip Other B Payment Details (screencapture-...-11_47_25.png)
- *  8. Single Payment Details Card (screencapture-...-11_47_37.png)
- *  9. Add Payment Drawer & Calculation Updates
- *  10. Add Owner Payment Drawer for Sky Blue Chamkila
- *  11. Financial Year rail filter & sidebar collapse toggle
- *  12. Totals Verification against Google AppSheet Dashboard
+ *  2. Main List Table: ALL rows in Card 2 are GREEN (with tobe-bullet-green)
+ *  3. Sidebar Collapse/Unhide Toggle: Smooth d-none & sidebar-collapsed sync
+ *  4. Single Clean Debts Icon in Header (no duplicate truck icons)
+ *  5. Green Row Drilldown: Settled Trip Details (screencapture-...-11_50_04.png)
+ *  6. Light Blue Row Drilldown: Party Payment Pending (screencapture-...-11_45_56.png)
+ *  7. Red Row Drilldown: Other B Pending (screencapture-...-11_53_18.png)
+ *  8. Sky Blue Chamkila Row Drilldown: Truck Owner Payment Pending (screencapture-...-11_55_52.png)
+ *  9. Expand Payment View & Single Payment Detail Card
+ *  10. Add Payment Drawer & Dynamic Recalculation
+ *  11. Financial Year Totals Verification (₹ 4,177,700.00 / ₹ 5,201,950.00 / ₹ 934,000.00)
  */
 
 const assert = require('assert');
@@ -61,6 +60,10 @@ global.document = {
     }
     return mockElements[id];
   },
+  querySelector(sel) {
+    const id = sel.replace(/[#.]/g, '');
+    return this.getElementById(id);
+  },
   addEventListener(event, fn) {}
 };
 
@@ -104,32 +107,48 @@ async function runTests() {
   assert(b2024.includes('934,000.00'), `Badge 2024 mismatch: ${b2024}`);
   console.log('✓ Test 1 Passed: Dashboard badges match Google AppSheet targets exactly.');
 
-  // TEST 2: Open Other B Paid List (All & FY filter)
-  console.log('\n[Test 2] Opening Other B Paid list view...');
+  // TEST 2: In Card 2 list view, ALL rows are GREEN!
+  console.log('\n[Test 2] Opening Other B Paid list view & verifying ALL rows are GREEN...');
   ToBeCreatedModule.openOtherBPaidList('ALL');
   assert.strictEqual(ToBeCreatedModule.viewMode, 'paid-list');
   
   const tableBody = document.getElementById('tobe-paid-table-body').innerHTML;
   assert(tableBody.includes('21/10/2026'), 'Expected date group 21/10/2026 in table');
   assert(tableBody.includes('tobe-row-green'), 'Expected green row in table');
-  assert(tableBody.includes('tobe-row-light-blue'), 'Expected light blue row in table');
-  assert(tableBody.includes('tobe-row-red'), 'Expected red row in table');
-  assert(tableBody.includes('tobe-row-sky-blue'), 'Expected sky blue row in table');
-  console.log('✓ Test 2 Passed: Main list renders with date groups and all 4 color styles.');
+  assert(tableBody.includes('tobe-bullet-green'), 'Expected green bullet in table');
+  // Confirm NO red/light-blue/sky-blue row classes in Card 2 main table
+  assert(!tableBody.includes('tobe-row-red'), 'Main table rows in Card 2 must NOT have tobe-row-red');
+  assert(!tableBody.includes('tobe-row-light-blue'), 'Main table rows in Card 2 must NOT have tobe-row-light-blue');
+  assert(!tableBody.includes('tobe-row-sky-blue'), 'Main table rows in Card 2 must NOT have tobe-row-sky-blue');
+  console.log('✓ Test 2 Passed: In Card 2 list, ALL rows are green with green bullets.');
 
-  // TEST 3: Sidebar toggle
+  // TEST 3: Sidebar collapse / unhide toggle
   console.log('\n[Test 3] Testing sidebar toggle in Other B Paid...');
   const rail = document.getElementById('tobe-paid-left-rail');
-  ToBeCreatedModule.togglePaidSidebar();
-  assert(rail.classList.contains('collapsed'), 'Expected rail to be collapsed');
-  ToBeCreatedModule.togglePaidSidebar();
-  assert(!rail.classList.contains('collapsed'), 'Expected rail to be expanded again');
-  console.log('✓ Test 3 Passed: Sidebar collapse/unhide toggling works.');
+  const container = document.getElementById('tobe-view-other-b-paid-list');
+  const unhideWrap = document.getElementById('tobe-paid-unhide-sidebar-wrap');
 
-  // TEST 4: Drilldown Green (Settled Trip Details - 2026-2027--259_TTC)
-  console.log('\n[Test 4] Testing Green Drilldown: Settled Trip Details (2026-2027--259_TTC)...');
+  ToBeCreatedModule.togglePaidSidebar();
+  assert(rail.classList.contains('d-none'), 'Expected rail to have d-none');
+  assert(container.classList.contains('sidebar-collapsed'), 'Expected container to have sidebar-collapsed');
+  assert(!unhideWrap.classList.contains('d-none'), 'Expected unhide button to be visible');
+
+  ToBeCreatedModule.togglePaidSidebar();
+  assert(!rail.classList.contains('d-none'), 'Expected rail to NOT have d-none');
+  assert(!container.classList.contains('sidebar-collapsed'), 'Expected container to NOT have sidebar-collapsed');
+  assert(unhideWrap.classList.contains('d-none'), 'Expected unhide button to be hidden');
+  console.log('✓ Test 3 Passed: Sidebar collapse/unhide toggle works smoothly with container & unhide pill.');
+
+  // TEST 4: Single Debts Icon in Header (No duplicate truck icons)
+  console.log('\n[Test 4] Verifying header has ONLY ONE Debts icon (no duplicate truck icons)...');
   ToBeCreatedModule.openPaidTripDetails('2026-2027--259_TTC');
-  assert.strictEqual(ToBeCreatedModule.viewMode, 'paid-details');
+  const headerHtml = document.getElementById('tobe-header-tools').innerHTML;
+  const truckCount = (headerHtml.match(/bi-truck/g) || []).length;
+  assert.strictEqual(truckCount, 1, `Expected exactly 1 truck icon in header, found ${truckCount}`);
+  console.log('✓ Test 4 Passed: Header tools has exactly 1 clean Debts icon (no duplicate icons).');
+
+  // TEST 5: Drilldown Green (Settled Trip Details - 2026-2027--259_TTC)
+  console.log('\n[Test 5] Testing Green Drilldown: Settled Trip Details (2026-2027--259_TTC)...');
   const greenContent = document.getElementById('tobe-paid-trip-details-content').innerHTML;
   assert(greenContent.includes('Settled'), 'Expected Settled badge');
   assert(greenContent.includes('RJ52GB0725'), 'Expected Truck RJ52GB0725');
@@ -137,10 +156,10 @@ async function runTests() {
   assert(greenContent.includes('127,999.00'), 'Expected 127,999.00 freight/payment');
   assert(greenContent.includes('Other B 1'), 'Expected Other B 1 table');
   assert(greenContent.includes('Rameshwar Prasad'), 'Expected Owner Rameshwar Prasad');
-  console.log('✓ Test 4 Passed: Authentic Green Settled Trip Details verified.');
+  console.log('✓ Test 5 Passed: Authentic Green Settled Trip Details verified.');
 
-  // TEST 5: Drilldown Light Blue (Party Payment Pending - 2026-2027--262_TTC)
-  console.log('\n[Test 5] Testing Light Blue Drilldown: Party Payment Pending (2026-2027--262_TTC)...');
+  // TEST 6: Drilldown Light Blue (Party Payment Pending - 2026-2027--262_TTC)
+  console.log('\n[Test 6] Testing Light Blue Drilldown: Party Payment Pending (2026-2027--262_TTC)...');
   ToBeCreatedModule.openPaidTripDetails('2026-2027--262_TTC');
   const blueContent = document.getElementById('tobe-paid-trip-details-content').innerHTML;
   assert(blueContent.includes('Party Payment Pending'), 'Expected Party Payment Pending status');
@@ -150,10 +169,10 @@ async function runTests() {
   assert(blueContent.includes('UPI-Nishant Gour'), 'Expected UPI-Nishant Gour payment');
   assert(blueContent.includes('Mr Vijay Kumar'), 'Expected Mr Vijay Kumar payment');
   assert(blueContent.includes('Add Records for Other B'), 'Expected Add Records button');
-  console.log('✓ Test 5 Passed: Authentic Light Blue Party Payment Pending verified.');
+  console.log('✓ Test 6 Passed: Authentic Light Blue Party Payment Pending verified.');
 
-  // TEST 6: Drilldown Red (Other B Pending - 2026-2027--246_TTC)
-  console.log('\n[Test 6] Testing Red Drilldown: Other B Pending (2026-2027--246_TTC)...');
+  // TEST 7: Drilldown Red (Other B Pending - 2026-2027--246_TTC)
+  console.log('\n[Test 7] Testing Red Drilldown: Other B Pending (2026-2027--246_TTC)...');
   ToBeCreatedModule.openPaidTripDetails('2026-2027--246_TTC');
   const redContent = document.getElementById('tobe-paid-trip-details-content').innerHTML;
   assert(redContent.includes('Other B Pending'), 'Expected Other B Pending status');
@@ -162,10 +181,10 @@ async function runTests() {
   assert(redContent.includes('10,200.00'), 'Expected ₹ 10,200.00 payment');
   assert(redContent.includes('7,800.00'), 'Expected ₹ 7,800.00 due payment');
   assert(redContent.includes('Agarwal Marble Noida'), 'Expected Reference Agarwal Marble Noida');
-  console.log('✓ Test 6 Passed: Authentic Red Other B Pending verified.');
+  console.log('✓ Test 7 Passed: Authentic Red Other B Pending verified.');
 
-  // TEST 7: Drilldown Sky Blue Chamkila (Truck Owner Payment Pending - 2026-2027--235_TTC)
-  console.log('\n[Test 7] Testing Sky Blue Chamkila: Truck Owner Payment Pending (2026-2027--235_TTC)...');
+  // TEST 8: Drilldown Sky Blue Chamkila (Truck Owner Payment Pending - 2026-2027--235_TTC)
+  console.log('\n[Test 8] Testing Sky Blue Chamkila: Truck Owner Payment Pending (2026-2027--235_TTC)...');
   ToBeCreatedModule.openPaidTripDetails('2026-2027--235_TTC');
   const skyContent = document.getElementById('tobe-paid-trip-details-content').innerHTML;
   assert(skyContent.includes('Truck Owner Payment Pending'), 'Expected Truck Owner Payment Pending status');
@@ -174,10 +193,10 @@ async function runTests() {
   assert(skyContent.includes('108,850.00'), 'Expected Owner Total Payment 108,850.00');
   assert(skyContent.includes('5,730.00'), 'Expected Owner Due 5,730.00');
   assert(skyContent.includes('Add Records for Truck Owner Payment'), 'Expected Add Records for Truck Owner Payment button');
-  console.log('✓ Test 7 Passed: Authentic Sky Blue Chamkila Truck Owner Payment Pending verified.');
+  console.log('✓ Test 8 Passed: Authentic Sky Blue Chamkila Truck Owner Payment Pending verified.');
 
-  // TEST 8: Expand View & Payment Details Card
-  console.log('\n[Test 8] Testing Expand View & Single Payment Detail View...');
+  // TEST 9: Expand View & Payment Details Card
+  console.log('\n[Test 9] Testing Expand View & Single Payment Detail View...');
   ToBeCreatedModule.openPaidTripDetails('2026-2027--262_TTC');
   ToBeCreatedModule.openPaidPaymentListView('otherB');
   assert.strictEqual(ToBeCreatedModule.viewMode, 'paid-payment-list');
@@ -196,10 +215,10 @@ async function runTests() {
   assert(singleCard.includes('TTC'), 'Expected Beneficiary TTC');
   assert(singleCard.includes('IDBI'), 'Expected To Bank IDBI');
   assert(singleCard.includes('UPI-Amar Motors'), 'Expected Description UPI-Amar Motors');
-  console.log('✓ Test 8 Passed: Expand payment table and single payment detail card verified.');
+  console.log('✓ Test 9 Passed: Expand payment table and single payment detail card verified.');
 
-  // TEST 9: Adding Payment and Dynamic Recalculation
-  console.log('\n[Test 9] Testing dynamic Add Payment saving and status transition...');
+  // TEST 10: Adding Payment and Dynamic Recalculation
+  console.log('\n[Test 10] Testing dynamic Add Payment saving and status transition...');
   ToBeCreatedModule.openPaidTripDetails('2026-2027--246_TTC');
   assert.strictEqual(ToBeCreatedModule.activePaidTrip.otherBDuePayment, 7800);
   assert.strictEqual(ToBeCreatedModule.activePaidTrip.color, 'red');
@@ -213,10 +232,10 @@ async function runTests() {
   await ToBeCreatedModule.savePaidOtherBPayment();
   assert.strictEqual(ToBeCreatedModule.activePaidTrip.otherBDuePayment, 0, 'Due payment should now be 0');
   assert.strictEqual(ToBeCreatedModule.activePaidTrip.color, 'light_blue', 'Row color should change from red to light_blue when other B due becomes 0');
-  console.log('✓ Test 9 Passed: Add payment dynamically updates amounts, state, and status color.');
+  console.log('✓ Test 10 Passed: Add payment dynamically updates amounts, state, and status color.');
 
-  // TEST 10: Financial Year Summary Totals
-  console.log('\n[Test 10] Testing FY Totals calculation...');
+  // TEST 11: Financial Year Summary Totals
+  console.log('\n[Test 11] Testing FY Totals calculation...');
   const sum2026 = ToBeCreatedModule.paidTrips.filter(t => t.year === '2026-2027').reduce((a, b) => a + Number(b.amountPaid || 0), 0);
   const sum2025 = ToBeCreatedModule.paidTrips.filter(t => t.year === '2025-2026').reduce((a, b) => a + Number(b.amountPaid || 0), 0);
   const sum2024 = ToBeCreatedModule.paidTrips.filter(t => t.year === '2024-2025').reduce((a, b) => a + Number(b.amountPaid || 0), 0);
@@ -224,10 +243,10 @@ async function runTests() {
   assert.strictEqual(Math.round(sum2026), 4177700, `2026 sum mismatch: ${sum2026}`);
   assert.strictEqual(Math.round(sum2025), 5201950, `2025 sum mismatch: ${sum2025}`);
   assert.strictEqual(Math.round(sum2024), 934000, `2024 sum mismatch: ${sum2024}`);
-  console.log('✓ Test 10 Passed: Financial Year totals match 100% with the AppSheet badges.');
+  console.log('✓ Test 11 Passed: Financial Year totals match 100% with the AppSheet badges.');
 
   console.log('\n======================================================');
-  console.log('>>> ALL 10 OTHER B PAID TESTS PASSED SUCCESSFULLY! <<<');
+  console.log('>>> ALL 11 OTHER B PAID TESTS PASSED SUCCESSFULLY! <<<');
   console.log('======================================================\n');
 }
 

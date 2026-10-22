@@ -1606,15 +1606,22 @@ const ToBeCreatedModule = {
   },
 
   togglePaidSidebar() {
-    const rail = document.getElementById('tobe-paid-left-rail');
-    const unhideWrap = document.getElementById('tobe-paid-unhide-sidebar-wrap');
-    if (!rail) return;
-    const isCollapsed = rail.classList.toggle('collapsed');
-    if (unhideWrap) {
-      if (isCollapsed) {
-        unhideWrap.classList.remove('d-none');
-      } else {
-        unhideWrap.classList.add('d-none');
+    const rail = typeof document !== 'undefined' ? (document.getElementById('tobe-paid-left-rail') || (typeof document.querySelector === 'function' ? document.querySelector('#tobe-paid-left-rail') : null)) : null;
+    const unhideWrap = typeof document !== 'undefined' ? document.getElementById('tobe-paid-unhide-sidebar-wrap') : null;
+    const container = typeof document !== 'undefined' ? document.getElementById('tobe-view-other-b-paid-list') : null;
+
+    if (rail && rail.classList) {
+      rail.classList.toggle('d-none');
+      const isCollapsed = rail.classList.contains('d-none');
+      if (container && container.classList) {
+        container.classList.toggle('sidebar-collapsed', isCollapsed);
+      }
+      if (unhideWrap && unhideWrap.classList) {
+        if (isCollapsed) {
+          unhideWrap.classList.remove('d-none');
+        } else {
+          unhideWrap.classList.add('d-none');
+        }
       }
     }
   },
@@ -1689,18 +1696,19 @@ const ToBeCreatedModule = {
         </tr>
       `;
 
-      // Payment records for this date
+      // Payment records for this date (All rows in Card 2 Other B Paid are GREEN)
       grp.trips.forEach(t => {
         const amtFormatted = `₹ ${Number(t.amountPaid || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-        const rowClass = `tobe-row-${(t.color || 'light-blue').replace(/_/g, '-')}`;
         const shortGr = t.shortGr || t.grNo;
 
         html += `
-          <tr class="${rowClass} tobe-clickable-row" onclick="ToBeCreatedModule.openPaidTripDetails('${t.grNo}')" title="Click to view details for ${t.grNo}">
+          <tr class="tobe-row-green tobe-clickable-row" onclick="ToBeCreatedModule.openPaidTripDetails('${t.grNo}')" title="Click to view details for ${t.grNo}">
             <td style="padding-left: 16px;">${t.paymentDate || ''}</td>
-            <td class="fw-semibold tobe-cell-accent">${shortGr}</td>
+            <td class="fw-semibold tobe-cell-accent" style="color: #137333;">
+              <span class="tobe-bullet-green me-1">●</span>${shortGr}
+            </td>
             <td class="fw-medium">${t.truckNo || ''}</td>
-            <td class="fw-semibold text-end pe-3" style="font-variant-numeric: tabular-nums;">${amtFormatted}</td>
+            <td class="fw-semibold text-end pe-3" style="color: #137333; font-variant-numeric: tabular-nums;">${amtFormatted}</td>
             <td>${t.mode || 'Cash in Rajsamand'}</td>
             <td class="text-truncate" style="max-width: 220px;" title="${t.description || ''}">${t.description || '-'}</td>
             <td class="text-truncate" style="max-width: 180px;" title="${t.reference || ''}">${t.reference || '-'}</td>
@@ -1745,7 +1753,6 @@ const ToBeCreatedModule = {
     this.setSearchPlaceholder(`Search ${detailLabel}`);
     this.setHeaderTools(`
       <i class="bi bi-truck text-dark" title="All Debts" onclick="ToBeCreatedModule.openDebtsView()"></i>
-      <i class="bi bi-truck text-danger" title="All Truck Debts" onclick="ToBeCreatedModule.openTruckDebtsView()"></i>
       <button class="btn btn-sm btn-appsheet-gold" onclick="ToBeCreatedModule.openUpdateTripDrawer()">
         <i class="bi bi-pencil-square me-1"></i> Edit
       </button>
