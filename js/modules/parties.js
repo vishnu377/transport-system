@@ -99,14 +99,23 @@ const PartiesModule = {
 
       return `
         <tr class="parties-row" onclick="PartiesModule.openPartyDetails('${id}')" title="${name}">
-          <td class="font-monospace text-uppercase" style="font-size: 11px;">${gstin}</td>
-          <td class="text-truncate text-secondary" style="max-width: 170px;" title="${address}">${address}</td>
-          <td class="text-truncate fw-semibold text-dark" style="max-width: 170px;" title="${name}">${name}</td>
-          <td style="font-size: 11.5px;">${mobile}</td>
-          <td class="text-end pe-2"><i class="bi bi-chevron-right text-muted" style="font-size: 11px;"></i></td>
+          <td class="font-monospace text-uppercase text-dark" style="font-size: 10.5px; width: 110px;">${gstin}</td>
+          <td class="text-truncate text-secondary" style="max-width: 115px; font-size: 11px;" title="${address}">${address}</td>
+          <td class="text-truncate fw-semibold text-dark" style="max-width: 115px; font-size: 11px;" title="${name}">${name}</td>
+          <td class="text-muted" style="font-size: 10.5px; width: 85px;">${mobile}</td>
+          <td class="text-end pe-1" style="width: 16px;"><i class="bi bi-chevron-right text-muted" style="font-size: 9.5px;"></i></td>
         </tr>
       `;
     }).join('');
+  },
+
+  expandCard(cardId) {
+    const card = document.getElementById(cardId);
+    if (!card) return;
+    const isExpanded = card.classList.toggle('is-expanded');
+    if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+      AppUI.showToast(isExpanded ? 'Card expanded full width' : 'Card restored to 3-card grid', 'info');
+    }
   },
 
   handleSearch(query) {

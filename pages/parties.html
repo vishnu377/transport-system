@@ -23,13 +23,14 @@
       --appsheet-muted: #5f6368;
       --appsheet-border: #dadce0;
       --appsheet-border-light: #f1f3f4;
-      --appsheet-gold: #f9ab00;
+      --appsheet-gold: #c2b059;
+      --appsheet-gold-hover: #b5a34d;
       --appsheet-blue: #1a73e8;
-      --appsheet-blue-bg: #e8f0fe;
-      --appsheet-blue-border: #d2e3fc;
+      --appsheet-blue-bg: #f1f3f4;
+      --appsheet-blue-border: #dadce0;
       --appsheet-green: #137333;
-      --appsheet-green-bg: #e6f4ea;
-      --appsheet-green-border: #ceead6;
+      --appsheet-green-bg: #f1f3f4;
+      --appsheet-green-border: #dadce0;
     }
 
     body {
@@ -222,16 +223,17 @@
 
     /* 5. 3-Card Grid Layout (Matching media_1792691679696_57a495f0.png) */
     .parties-main-content {
-      padding: 16px;
+      padding: 14px 16px;
       flex: 1;
     }
 
     .parties-grid {
       display: grid;
-      grid-template-columns: 1.15fr 1fr 1fr;
-      gap: 16px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
       align-items: stretch;
-      min-height: calc(100vh - 122px);
+      min-height: calc(100vh - 120px);
+      width: 100%;
     }
 
     @media (max-width: 992px) {
@@ -249,7 +251,15 @@
       flex-direction: column;
       position: relative;
       background-clip: padding-box;
-      max-height: calc(100vh - 122px);
+      max-height: calc(100vh - 120px);
+      min-width: 0;
+      overflow: hidden;
+      transition: all 0.2s ease-in-out;
+    }
+
+    .parties-card.is-expanded {
+      grid-column: 1 / -1;
+      z-index: 100;
     }
 
     .parties-card::after {
@@ -265,7 +275,8 @@
     }
 
     .parties-card-header {
-      padding: 12px 14px 10px 14px;
+      padding: 10px 14px;
+      height: 48px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -277,14 +288,33 @@
       font-weight: 600;
       color: #202124;
       margin: 0;
+      white-space: nowrap;
     }
 
     .parties-card-tools {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       color: #5f6368;
       font-size: 13px;
+    }
+
+    .parties-card-tools i {
+      cursor: pointer;
+      font-size: 12.5px;
+      color: #5f6368;
+      transition: color 0.15s;
+    }
+
+    .parties-card-tools i:hover {
+      color: #202124;
+    }
+
+    .parties-header-divider {
+      width: 1px;
+      height: 16px;
+      background-color: var(--appsheet-border);
+      margin: 0 2px;
     }
 
     .parties-card-subheader {
@@ -296,37 +326,54 @@
       border-bottom: 1px solid var(--appsheet-border-light);
     }
 
-    /* Card 1: Add Button (Yellow/Gold) */
+    /* Card 1: Add Button (Authentic AppSheet Ochre/Gold) */
     .btn-appsheet-add {
       background-color: var(--appsheet-gold);
       color: #202124;
+      font-family: Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
       font-weight: 600;
-      font-size: 12px;
-      padding: 3px 12px;
+      font-size: 11.5px;
+      line-height: 1.2;
+      padding: 3.5px 12px;
       border-radius: 4px;
-      border: none;
+      border: 1px solid transparent;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      transition: opacity 0.15s;
+      letter-spacing: 0.2px;
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
+      transition: background-color 0.15s ease, box-shadow 0.15s ease;
+      white-space: nowrap;
     }
 
     .btn-appsheet-add:hover {
-      opacity: 0.9;
+      background-color: var(--appsheet-gold-hover);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
     }
 
-    /* Card 1: Table Styles */
+    .btn-appsheet-add:active {
+      background-color: #a89643;
+    }
+
+    .btn-appsheet-add .btn-add-plus {
+      font-weight: 700;
+      font-size: 13px;
+      line-height: 1;
+    }
+
+    /* Card 1: Table Styles (Strictly balanced within 1/3 card column) */
     .parties-table-container {
       flex: 1;
       overflow-y: auto;
       overflow-x: auto;
+      min-height: 0;
     }
 
     .parties-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 12px;
+      font-size: 11.5px;
       white-space: nowrap;
     }
 
@@ -334,8 +381,8 @@
       background: #ffffff;
       color: #5f6368;
       font-weight: 600;
-      font-size: 11px;
-      padding: 8px 12px;
+      font-size: 10.5px;
+      padding: 7px 8px;
       border-bottom: 1px solid var(--appsheet-border);
       position: sticky;
       top: 0;
@@ -344,10 +391,10 @@
     }
 
     .parties-table td {
-      padding: 7px 12px;
+      padding: 6.5px 8px;
       border-bottom: 1px solid #f1f3f4;
       vertical-align: middle;
-      font-size: 11.5px;
+      font-size: 11px;
     }
 
     .parties-row {
@@ -406,13 +453,13 @@
     }
 
     .badge-pill-blue {
-      background: var(--appsheet-blue-bg);
-      color: var(--appsheet-blue);
-      border: 1px solid var(--appsheet-blue-border);
+      background: #f1f3f4;
+      color: #3c4043;
+      border: 1px solid #dadce0;
       font-size: 11px;
-      font-weight: 600;
-      padding: 2px 10px;
-      border-radius: 12px;
+      font-weight: 500;
+      padding: 1.5px 7px;
+      border-radius: 3px;
       font-variant-numeric: tabular-nums;
     }
 
@@ -429,13 +476,13 @@
     }
 
     .badge-pill-green {
-      background: var(--appsheet-green-bg);
-      color: var(--appsheet-green);
-      border: 1px solid var(--appsheet-green-border);
+      background: #f1f3f4;
+      color: #3c4043;
+      border: 1px solid #dadce0;
       font-size: 11px;
-      font-weight: 600;
-      padding: 2px 10px;
-      border-radius: 12px;
+      font-weight: 500;
+      padding: 1.5px 7px;
+      border-radius: 3px;
       font-variant-numeric: tabular-nums;
     }
 
@@ -502,12 +549,13 @@
         <section class="parties-card" id="card-parties-detail">
           <div class="parties-card-header">
             <h2 class="parties-card-title">Parties Detail</h2>
-            <div class="d-flex align-items-center gap-2">
-              <button class="btn-appsheet-add" onclick="PartiesModule.openAddModal()">
-                <i class="bi bi-plus-lg"></i> Add
+            <div class="parties-card-tools">
+              <button class="btn-appsheet-add" onclick="PartiesModule.openAddModal()" title="Add">
+                <span class="btn-add-plus">+</span> Add
               </button>
-              <i class="bi bi-funnel text-secondary" style="cursor: pointer;" title="Filter"></i>
-              <i class="bi bi-caret-down-fill text-secondary" style="cursor: pointer; font-size: 11px;" title="Sort"></i>
+              <div class="parties-header-divider"></div>
+              <i class="bi bi-funnel" title="Filter" style="cursor: pointer;"></i>
+              <i class="bi bi-arrows-angle-expand" title="Expand Parties Detail" style="cursor: pointer;" onclick="PartiesModule.expandCard('card-parties-detail')"></i>
             </div>
           </div>
           <div class="parties-table-container">
@@ -534,7 +582,7 @@
             <h2 class="parties-card-title">Party Due</h2>
             <div class="parties-card-tools">
               <i class="bi bi-funnel" title="Filter Party Due" style="cursor: pointer;"></i>
-              <i class="bi bi-arrows-angle-expand" title="Expand Party Due" onclick="PartiesModule.openCardView('due', 'ALL')" style="cursor: pointer;"></i>
+              <i class="bi bi-arrows-angle-expand" title="Expand Party Due" onclick="PartiesModule.expandCard('card-party-due')" style="cursor: pointer;"></i>
             </div>
           </div>
           <div class="parties-card-subheader">Year</div>
@@ -585,7 +633,7 @@
             <h2 class="parties-card-title">Party Paid</h2>
             <div class="parties-card-tools">
               <i class="bi bi-funnel" title="Filter Party Paid" style="cursor: pointer;"></i>
-              <i class="bi bi-arrows-angle-expand" title="Expand Party Paid" onclick="PartiesModule.openCardView('paid', 'ALL')" style="cursor: pointer;"></i>
+              <i class="bi bi-arrows-angle-expand" title="Expand Party Paid" onclick="PartiesModule.expandCard('card-party-paid')" style="cursor: pointer;"></i>
             </div>
           </div>
           <div class="parties-card-subheader">Year</div>
