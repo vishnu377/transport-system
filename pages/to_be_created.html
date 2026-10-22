@@ -791,6 +791,40 @@
       font-weight: 600;
     }
 
+    /* Card 3: All Other B Row Colors & Bullet Styles matching 12_18_16.png */
+    .tobe-all-row {
+      cursor: pointer;
+      background-color: #ffffff !important;
+      transition: background-color 0.12s ease;
+    }
+    .tobe-all-row:hover {
+      background-color: #f8f9fa !important;
+    }
+    .tobe-all-row-gold, .tobe-all-row-gold td {
+      color: #946b00 !important;
+    }
+    .tobe-all-row-red, .tobe-all-row-red td {
+      color: #cc0b0b !important;
+    }
+    .tobe-all-row-blue, .tobe-all-row-blue td,
+    .tobe-all-row-light_blue, .tobe-all-row-light_blue td {
+      color: #1a73e8 !important;
+    }
+    .tobe-all-row-pink, .tobe-all-row-pink td {
+      color: #c2185b !important;
+    }
+    .tobe-all-row-sky_blue, .tobe-all-row-sky_blue td,
+    .tobe-all-row-cyan, .tobe-all-row-cyan td {
+      color: #00838f !important;
+    }
+    .tobe-all-row-green, .tobe-all-row-green td {
+      color: #137333 !important;
+    }
+    .tobe-all-date-header {
+      background-color: #ffffff !important;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
     /* Badges & Status Pills */
     .tobe-status-settled {
       background-color: #e6f4ea;
@@ -1196,7 +1230,7 @@
             <h2 class="tobe-card-title">All Other B</h2>
             <div class="tobe-card-tools">
               <i class="bi bi-funnel" title="Filter All Other B"></i>
-              <i class="bi bi-arrows-angle-expand" title="Expand All Other B" onclick="ToBeCreatedModule.openOtherBPaidList('ALL')" style="cursor: pointer;"></i>
+              <i class="bi bi-arrows-angle-expand" title="Expand All Other B" onclick="ToBeCreatedModule.openAllOtherBList('ALL')" style="cursor: pointer;"></i>
             </div>
           </div>
           <div class="tobe-card-subheader">Year</div>
@@ -1214,7 +1248,7 @@
               <div class="tobe-row-left">
                 <span class="tobe-bullet-green">●</span>
                 <span class="tobe-label-green">2026-2027</span>
-                <span class="tobe-badge-pill" id="badge-all-2026">264</span>
+                <span class="tobe-badge-pill" id="badge-all-2026">267</span>
               </div>
               <i class="bi bi-chevron-right tobe-chevron"></i>
             </div>
@@ -1579,6 +1613,91 @@
           <!-- Populated dynamically -->
         </div>
       </div>
+
+    <!-- ======================================================== -->
+    <!-- VIEW 6: ALL OTHER B LIST (Card 3 Main List)               -->
+    <!-- Matching screencapture-...-12_18_16.png                  -->
+    <!-- ======================================================== -->
+    <div id="tobe-view-all-other-b-list" class="tobe-list-view-container d-none">
+      <!-- Left Rail: Financial Year Filter -->
+      <aside class="tobe-list-left-rail" id="tobe-all-left-rail">
+        <div class="tobe-rail-header d-flex align-items-center justify-content-between px-2 py-2 border-bottom mb-1">
+          <span class="small fw-bold text-uppercase text-muted" style="font-size: 11px;">Financial Year</span>
+          <button type="button" class="btn btn-sm btn-light py-0 px-1 border-0 text-secondary" id="btn-collapse-all-sidebar-inner" onclick="ToBeCreatedModule.toggleAllSidebar()" title="Hide Sidebar (Collapse)" style="font-size: 13px; line-height: 1;">
+            <i class="bi bi-layout-sidebar-inset"></i>
+          </button>
+        </div>
+        <div class="tobe-list-rail-item active" id="all-rail-all" onclick="ToBeCreatedModule.filterAllByYear('ALL')">
+          <span>All</span>
+          <span class="tobe-badge-pill" id="badge-all-rail-all" style="font-size: 10px;">888</span>
+        </div>
+        <div class="tobe-list-rail-item" id="all-rail-2026" onclick="ToBeCreatedModule.filterAllByYear('2026-2027')">
+          <div class="d-flex align-items-center gap-1">
+            <i class="bi bi-caret-right-fill" style="font-size: 10px;"></i>
+            <span class="tobe-bullet-green">●</span>
+            <span class="fw-bold" style="color: var(--appsheet-green);">2026-..</span>
+          </div>
+          <span class="tobe-badge-pill" id="badge-all-rail-2026" style="font-size: 10px;">267</span>
+        </div>
+        <div class="tobe-list-rail-item" id="all-rail-2025" onclick="ToBeCreatedModule.filterAllByYear('2025-2026')">
+          <div class="d-flex align-items-center gap-1">
+            <i class="bi bi-caret-right-fill" style="font-size: 10px;"></i>
+            <span class="tobe-bullet-green">●</span>
+            <span class="fw-bold" style="color: var(--appsheet-green);">2025-..</span>
+          </div>
+          <span class="tobe-badge-pill" id="badge-all-rail-2025" style="font-size: 10px;">341</span>
+        </div>
+        <div class="tobe-list-rail-item" id="all-rail-2024" onclick="ToBeCreatedModule.filterAllByYear('2024-2025')">
+          <div class="d-flex align-items-center gap-1">
+            <i class="bi bi-caret-right-fill" style="font-size: 10px;"></i>
+            <span class="tobe-bullet-green">●</span>
+            <span class="fw-bold" style="color: var(--appsheet-green);">2024-..</span>
+          </div>
+          <span class="tobe-badge-pill" id="badge-all-rail-2024" style="font-size: 10px;">280</span>
+        </div>
+      </aside>
+
+      <!-- Right Table Area -->
+      <div class="tobe-list-table-container">
+        <!-- Unhide Sidebar Filter Button (Visible when sidebar is collapsed) -->
+        <div id="tobe-all-unhide-sidebar-wrap" class="d-none mb-2">
+          <button type="button" class="tobe-unhide-sidebar-pill d-inline-flex align-items-center gap-1" onclick="ToBeCreatedModule.toggleAllSidebar()" title="Show Financial Year Sidebar">
+            <i class="bi bi-layout-sidebar"></i> Show Financial Year Sidebar
+          </button>
+        </div>
+        <table class="appsheet-table" id="tobe-all-table">
+          <thead>
+            <tr>
+              <th>Trip Start Date</th>
+              <th>G.R.No.</th>
+              <th>Truck No.</th>
+              <th>Other B</th>
+              <th>Destination</th>
+              <th>Consignor</th>
+              <th>Consignee</th>
+              <th>Reference</th>
+              <th>Owner</th>
+              <th>Driver</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="tobe-all-table-body">
+            <!-- Dynamically populated rows with date grouping -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- VIEW 7: ALL OTHER B TRIP DETAILS (Drilldown View)         -->
+    <!-- Matching trip status color scheme                         -->
+    <!-- ======================================================== -->
+    <div id="tobe-view-all-trip-details" class="tobe-details-container d-none">
+      <div id="tobe-all-trip-details-content">
+        <!-- Rendered dynamically by ToBeCreatedModule.renderAllTripDetailsView() -->
+      </div>
+    </div>
+
     </div>
   </div>
 
@@ -2005,6 +2124,7 @@
   <!-- Master Datasets -->
   <script src="../js/sample-other-b-data.js"></script>
   <script src="../js/sample-other-b-paid-data.js"></script>
+  <script src="../js/sample-all-other-b-data.js"></script>
   <script src="../js/modules/to_be_created.js"></script>
   
   <script>

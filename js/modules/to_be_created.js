@@ -27,6 +27,10 @@ const ToBeCreatedModule = {
   activePaidTrip: null,
   activePaidPaymentIndex: 0,
   activePaidPaymentType: 'otherB',
+  allTrips: [],
+  activeAllYearFilter: 'ALL',
+  activeAllTrip: null,
+  originCard: 'due',
 
   summaryData: {
     due: {
@@ -41,10 +45,10 @@ const ToBeCreatedModule = {
       'total': 10313650.0
     },
     all: {
-      '2026-2027': 264,
+      '2026-2027': 267,
       '2025-2026': 341,
       '2024-2025': 280,
-      'total': 885
+      'total': 888
     }
   },
 
@@ -57,6 +61,9 @@ const ToBeCreatedModule = {
     }
     if (typeof window !== 'undefined' && window.OTHER_B_PAID_DATA) {
       this.paidTrips = window.OTHER_B_PAID_DATA;
+    }
+    if (typeof window !== 'undefined' && window.ALL_OTHER_B_DATA) {
+      this.allTrips = window.ALL_OTHER_B_DATA;
     }
     if (typeof window !== 'undefined' && window.OPEN_DEBTS_DATA) {
       this.debtsData = window.OPEN_DEBTS_DATA;
@@ -97,6 +104,11 @@ const ToBeCreatedModule = {
     } else if (urlParams && urlParams.get('view') === 'paid-list') {
       const year = urlParams.get('year') || 'ALL';
       this.openOtherBPaidList(year);
+    } else if (urlParams && urlParams.get('view') === 'all-list') {
+      const year = urlParams.get('year') || 'ALL';
+      this.openAllOtherBList(year);
+    } else if (urlParams && urlParams.get('allGrNo')) {
+      this.openAllTripDetails(urlParams.get('allGrNo'));
     } else if (urlParams && urlParams.get('paidGrNo')) {
       this.openPaidTripDetails(urlParams.get('paidGrNo'));
     } else if (urlParams && urlParams.get('grNo')) {
@@ -157,13 +169,12 @@ const ToBeCreatedModule = {
     } else if (cardType === 'paid') {
       this.openOtherBPaidList(year);
     } else if (cardType === 'all') {
-      if (typeof AppUI !== 'undefined' && AppUI.showToast) {
-        AppUI.showToast(`Selected All Other B (${year})`, 'info');
-      }
+      this.openAllOtherBList(year);
     }
   },
 
   openOtherBDueList(year = 'ALL') {
+    this.originCard = 'due';
     this.viewMode = 'due-list';
     this.activeYearFilter = year;
     this.showView('tobe-view-other-b-due-list');
@@ -1345,7 +1356,7 @@ const ToBeCreatedModule = {
   },
 
   openUpdateTripDrawer() {
-    const t = this.activePaidTrip || this.activeTrip;
+    const t = this.activeAllTrip || this.activePaidTrip || this.activeTrip;
     if (!t) return;
 
     const setVal = (id, val) => {
@@ -1435,7 +1446,7 @@ const ToBeCreatedModule = {
   },
 
   async saveTripUpdate() {
-    const t = this.activePaidTrip || this.activeTrip;
+    const t = this.activeAllTrip || this.activePaidTrip || this.activeTrip;
     if (!t) return;
 
     const getVal = (id) => {
@@ -1475,6 +1486,10 @@ const ToBeCreatedModule = {
       const dTrip = this.dueTrips.find(x => x.grNo === t.grNo);
       if (dTrip) Object.assign(dTrip, t);
     }
+    if (this.allTrips) {
+      const aTrip = this.allTrips.find(x => x.grNo === t.grNo);
+      if (aTrip) Object.assign(aTrip, t);
+    }
 
     // Sync with Firestore
     try {
@@ -1492,7 +1507,9 @@ const ToBeCreatedModule = {
       AppUI.showToast('Trip details updated and synced!', 'success');
     }
 
-    if (this.viewMode.startsWith('paid') || (!this.activeTrip && this.activePaidTrip)) {
+    if (this.viewMode.startsWith('all')) {
+      this.renderAllTripDetailsView(this.activeAllTrip || t);
+    } else if (this.viewMode.startsWith('paid') || (!this.activeTrip && this.activePaidTrip)) {
       this.renderPaidTripDetailsView(this.activePaidTrip);
     } else {
       this.renderTripDetailsView(this.activeTrip);
@@ -1580,7 +1597,9 @@ const ToBeCreatedModule = {
       'tobe-view-other-b-paid-list',
       'tobe-view-paid-trip-details',
       'tobe-view-paid-payment-list',
-      'tobe-view-paid-payment-detail'
+      'tobe-view-paid-payment-detail',
+      'tobe-view-all-other-b-list',
+      'tobe-view-all-trip-details'
     ];
     views.forEach(id => {
       const el = document.getElementById(id);
@@ -1628,6 +1647,8 @@ const ToBeCreatedModule = {
       this.renderDueTable();
     } else if (this.viewMode === 'paid-list') {
       this.renderPaidTable();
+    } else if (this.viewMode === 'all-list') {
+      this.renderAllTable();
     } else if (this.viewMode === 'open-debts') {
       this.renderDebtsTable();
     }
@@ -1638,6 +1659,7 @@ const ToBeCreatedModule = {
   // Matching screencapture-appsheet-start-...-11_42_48.png & subfolders
   // ==========================================================
   openOtherBPaidList(year = 'ALL') {
+    this.originCard = 'paid';
     this.viewMode = 'paid-list';
     this.activePaidYearFilter = year;
     this.showView('tobe-view-other-b-paid-list');
@@ -1926,8 +1948,19 @@ const ToBeCreatedModule = {
         tripInList.status = newStatus;
         tripInList.color = this.activePaidTrip.color;
       }
+      if (this.allTrips) {
+        const tripInAll = this.allTrips.find(t => t.grNo === this.activePaidTrip.grNo);
+        if (tripInAll) {
+          tripInAll.status = newStatus;
+          tripInAll.color = this.activePaidTrip.color;
+        }
+      }
 
-      this.renderPaidTripDetailsView(this.activePaidTrip);
+      if (this.viewMode.startsWith('all')) {
+        this.renderAllTripDetailsView(this.activePaidTrip);
+      } else {
+        this.renderPaidTripDetailsView(this.activePaidTrip);
+      }
     }
   },
 
@@ -1935,7 +1968,15 @@ const ToBeCreatedModule = {
     this.closeAllAppSheetDropdowns();
     if (this.activePaidTrip) {
       this.activePaidTrip.status = '';
-      this.renderPaidTripDetailsView(this.activePaidTrip);
+      if (this.allTrips) {
+        const tripInAll = this.allTrips.find(t => t.grNo === this.activePaidTrip.grNo);
+        if (tripInAll) tripInAll.status = '';
+      }
+      if (this.viewMode.startsWith('all')) {
+        this.renderAllTripDetailsView(this.activePaidTrip);
+      } else {
+        this.renderPaidTripDetailsView(this.activePaidTrip);
+      }
     }
   },
 
@@ -2506,11 +2547,20 @@ const ToBeCreatedModule = {
     const elTitle = document.getElementById('paid-payment-list-title');
     if (elTitle) elTitle.innerText = titleText;
 
+    const retListCall = this.originCard === 'all'
+      ? `ToBeCreatedModule.openAllOtherBList('${this.activeAllYearFilter}')`
+      : `ToBeCreatedModule.openOtherBPaidList('${this.activePaidYearFilter}')`;
+    const retListLabel = this.originCard === 'all' ? 'All Other B' : 'Other B Paid';
+
+    const retTripCall = this.originCard === 'all'
+      ? `ToBeCreatedModule.openAllTripDetails('${this.activePaidTrip ? this.activePaidTrip.grNo : ""}')`
+      : `ToBeCreatedModule.openPaidTripDetails('${this.activePaidTrip ? this.activePaidTrip.grNo : ""}')`;
+
     this.setBreadcrumbs([
       { label: 'Home', url: '../index.html' },
       { label: 'To be Created', onclick: "ToBeCreatedModule.goToDashboardView()" },
-      { label: 'Other B Paid', onclick: `ToBeCreatedModule.openOtherBPaidList('${this.activePaidYearFilter}')` },
-      { label: 'Open Trip Details', onclick: `ToBeCreatedModule.openPaidTripDetails('${this.activePaidTrip ? this.activePaidTrip.grNo : ""}')` },
+      { label: retListLabel, onclick: retListCall },
+      { label: 'Open Trip Details', onclick: retTripCall },
       { label: titleText, active: true }
     ]);
 
@@ -2754,7 +2804,292 @@ const ToBeCreatedModule = {
     if (typeof AppUI !== 'undefined' && AppUI.showToast) {
       AppUI.showToast('Filtering Other B Due...', 'info');
     }
-  }
+  },
+
+  // ==========================================================
+  // CARD 3: ALL OTHER B MODULE METHODS
+  // Matching screencapture-appsheet-start-...-12_18_16.png (Top & Bottom)
+  // ==========================================================
+  openAllOtherBList(year = 'ALL') {
+    this.originCard = 'all';
+    this.viewMode = 'all-list';
+    this.activeAllYearFilter = year;
+    this.showView('tobe-view-all-other-b-list');
+
+    this.setBreadcrumbs([
+      { label: 'Home', url: '../index.html' },
+      { label: 'To be Created', onclick: "ToBeCreatedModule.goToDashboardView()" },
+      { label: 'All Other B', active: true }
+    ]);
+
+    this.setSearchPlaceholder('Search All Other B');
+    this.setHeaderTools(`
+      <i class="bi bi-funnel" title="Toggle Financial Year Sidebar" onclick="ToBeCreatedModule.toggleAllSidebar()"></i>
+      <i class="bi bi-check2-square" title="Select"></i>
+    `);
+
+    this.updateAllYearRailActive(year);
+    this.renderAllTable();
+  },
+
+  updateAllYearRailActive(year) {
+    const railAll = document.getElementById('all-rail-all');
+    const rail2026 = document.getElementById('all-rail-2026');
+    const rail2025 = document.getElementById('all-rail-2025');
+    const rail2024 = document.getElementById('all-rail-2024');
+
+    if (railAll) railAll.classList.toggle('active', year === 'ALL');
+    if (rail2026) rail2026.classList.toggle('active', year === '2026-2027');
+    if (rail2025) rail2025.classList.toggle('active', year === '2025-2026');
+    if (rail2024) rail2024.classList.toggle('active', year === '2024-2025');
+  },
+
+  filterAllByYear(year) {
+    this.activeAllYearFilter = year;
+    this.updateAllYearRailActive(year);
+    this.renderAllTable();
+  },
+
+  toggleAllSidebar() {
+    const rail = typeof document !== 'undefined' ? (document.getElementById('tobe-all-left-rail') || (typeof document.querySelector === 'function' ? document.querySelector('#tobe-all-left-rail') : null)) : null;
+    const unhideWrap = typeof document !== 'undefined' ? document.getElementById('tobe-all-unhide-sidebar-wrap') : null;
+    const container = typeof document !== 'undefined' ? document.getElementById('tobe-view-all-other-b-list') : null;
+
+    if (rail && rail.classList) {
+      rail.classList.toggle('d-none');
+      const isCollapsed = rail.classList.contains('d-none');
+      if (container && container.classList) {
+        container.classList.toggle('sidebar-collapsed', isCollapsed);
+      }
+      if (unhideWrap && unhideWrap.classList) {
+        if (isCollapsed) {
+          unhideWrap.classList.remove('d-none');
+        } else {
+          unhideWrap.classList.add('d-none');
+        }
+      }
+    }
+  },
+
+  renderAllTable() {
+    const tbody = document.getElementById('tobe-all-table-body');
+    if (!tbody) return;
+
+    let trips = this.allTrips || [];
+    if ((!trips || trips.length === 0) && typeof window !== 'undefined' && window.ALL_OTHER_B_DATA) {
+      trips = window.ALL_OTHER_B_DATA;
+      this.allTrips = trips;
+    }
+
+    // Filter by Financial Year
+    if (this.activeAllYearFilter !== 'ALL') {
+      trips = trips.filter(t => t.year === this.activeAllYearFilter);
+    }
+
+    // Filter by search query
+    if (this.searchQuery) {
+      const q = this.searchQuery.toLowerCase();
+      trips = trips.filter(t => 
+        (t.grNo && t.grNo.toLowerCase().includes(q)) ||
+        (t.shortGr && t.shortGr.toLowerCase().includes(q)) ||
+        (t.truckNo && t.truckNo.toLowerCase().includes(q)) ||
+        (t.destination && t.destination.toLowerCase().includes(q)) ||
+        (t.consignor && t.consignor.toLowerCase().includes(q)) ||
+        (t.consignee && t.consignee.toLowerCase().includes(q)) ||
+        (t.reference && t.reference.toLowerCase().includes(q)) ||
+        (t.driver && t.driver.toLowerCase().includes(q)) ||
+        (t.owner && t.owner.toLowerCase().includes(q)) ||
+        (t.status && t.status.toLowerCase().includes(q))
+      );
+    }
+
+    if (trips.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="11" class="text-center py-5 text-muted">
+            <i class="bi bi-inbox fs-3 d-block mb-2 text-secondary"></i>
+            No records found for All Other B in selected year
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    // Color bullet map
+    const colorBulletMap = {
+      gold: '#bfa100',
+      red: '#d93025',
+      blue: '#0080ff',
+      light_blue: '#0080ff',
+      pink: '#fb0a82',
+      sky_blue: '#00b4d8',
+      cyan: '#00b4d8',
+      green: '#137333'
+    };
+
+    // Group trips by tripStartDate
+    const dateGroups = {};
+    trips.forEach(t => {
+      const grp = t.tripStartDate || t.dateGroup || 'Other';
+      if (!dateGroups[grp]) {
+        dateGroups[grp] = {
+          trips: [],
+          firstColor: t.color || 'green'
+        };
+      }
+      dateGroups[grp].trips.push(t);
+    });
+
+    let html = '';
+    Object.keys(dateGroups).forEach(grpKey => {
+      const grp = dateGroups[grpKey];
+      const count = grp.trips.length;
+      const headerBulletColor = colorBulletMap[grp.firstColor] || '#137333';
+
+      // Date group header row
+      html += `
+        <tr class="tobe-date-group-header tobe-all-date-header">
+          <td colspan="11" class="fw-bold" style="padding-left: 16px;">
+            <div class="d-flex align-items-center gap-2">
+              <span style="color: ${headerBulletColor}; font-size: 11px;">●</span>
+              <span class="fw-bold text-dark" style="font-size: 12.5px;">${grpKey}</span>
+              <span class="badge bg-light text-secondary border rounded-pill px-2 py-0" style="font-size: 10px; font-weight: 600;">${count}</span>
+            </div>
+          </td>
+        </tr>
+      `;
+
+      // Records for this date
+      grp.trips.forEach(t => {
+        const colorKey = t.color || 'green';
+        const bulletColor = colorBulletMap[colorKey] || '#137333';
+        const colorClass = `tobe-all-row-${colorKey}`;
+        const shortGr = t.shortGr || t.grNo;
+
+        let fmtOtherB = '';
+        if (t.otherB !== undefined && t.otherB !== null && t.otherB !== '') {
+          fmtOtherB = `₹ ${Number(t.otherB).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        }
+
+        html += `
+          <tr class="tobe-all-row ${colorClass}" onclick="ToBeCreatedModule.openAllTripDetails('${t.grNo}')" title="Click to view details for ${t.grNo}">
+            <td style="padding-left: 16px;">
+              <span style="color: ${bulletColor}; font-size: 9px; margin-right: 5px;">●</span>
+              <span>${t.tripStartDate || ''}</span>
+            </td>
+            <td class="fw-semibold">
+              <span style="color: ${bulletColor}; font-size: 9px; margin-right: 5px;">●</span>
+              <span>${shortGr}</span>
+            </td>
+            <td>
+              <span style="color: ${bulletColor}; font-size: 9px; margin-right: 5px;">●</span>
+              <span>${t.truckNo || ''}</span>
+            </td>
+            <td class="fw-medium">
+              ${fmtOtherB ? `<span style="color: ${bulletColor}; font-size: 9px; margin-right: 5px;">●</span><span>${fmtOtherB}</span>` : ''}
+            </td>
+            <td>
+              <span style="color: ${bulletColor}; font-size: 9px; margin-right: 5px;">●</span>
+              <span>${t.destination || ''}</span>
+            </td>
+            <td class="text-truncate" style="max-width: 170px;" title="${t.consignor || ''}">
+              <span style="color: ${bulletColor}; font-size: 9px; margin-right: 5px;">●</span>
+              <span>${t.consignor || ''}</span>
+            </td>
+            <td class="text-truncate" style="max-width: 170px;" title="${t.consignee || t.consignor || ''}">
+              <span style="color: ${bulletColor}; font-size: 9px; margin-right: 5px;">●</span>
+              <span>${t.consignee || t.consignor || ''}</span>
+            </td>
+            <td class="text-truncate" style="max-width: 170px;" title="${t.reference || t.consignor || ''}">
+              <span style="color: ${bulletColor}; font-size: 9px; margin-right: 5px;">●</span>
+              <span>${t.reference || t.consignor || ''}</span>
+            </td>
+            <td class="text-truncate" style="max-width: 170px;" title="${t.owner || ''}">
+              <span style="color: ${bulletColor}; font-size: 9px; margin-right: 5px;">●</span>
+              <span>${t.owner || ''}</span>
+            </td>
+            <td class="text-truncate" style="max-width: 170px;" title="${t.driver || ''}">
+              <span style="color: ${bulletColor}; font-size: 9px; margin-right: 5px;">●</span>
+              <span>${t.driver || ''}</span>
+            </td>
+            <td class="text-end pe-3">
+              <i class="bi bi-chevron-right text-muted" style="font-size: 11px;"></i>
+            </td>
+          </tr>
+        `;
+      });
+    });
+
+    tbody.innerHTML = html;
+  },
+
+  openAllTripDetails(grNo) {
+    let trip = (this.allTrips || []).find(t => t.grNo === grNo || t.shortGr === grNo);
+    if (!trip && typeof window !== 'undefined' && window.ALL_OTHER_B_DATA) {
+      trip = window.ALL_OTHER_B_DATA.find(t => t.grNo === grNo || t.shortGr === grNo);
+    }
+    if (!trip) {
+      trip = (this.dueTrips || []).find(t => t.grNo === grNo || t.shortGr === grNo) ||
+             (this.paidTrips || []).find(t => t.grNo === grNo || t.shortGr === grNo);
+    }
+    if (!trip) {
+      if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+        AppUI.showToast(`Trip ${grNo} not found`, 'warning');
+      }
+      return;
+    }
+
+    this.originCard = 'all';
+    this.activeAllTrip = trip;
+    this.activePaidTrip = trip;
+    this.activeTrip = trip;
+    this.viewMode = 'all-details';
+    this.showView('tobe-view-all-trip-details');
+
+    const isSettled = trip.color === 'green' || trip.status === 'Settled';
+    const detailLabel = isSettled ? 'Settled Trip Details' : 'Open Trip Details';
+
+    this.setBreadcrumbs([
+      { label: 'Home', url: '../index.html' },
+      { label: 'To be Created', onclick: "ToBeCreatedModule.goToDashboardView()" },
+      { label: 'All Other B', onclick: `ToBeCreatedModule.openAllOtherBList('${this.activeAllYearFilter}')` },
+      { label: detailLabel, active: true }
+    ]);
+
+    this.setSearchPlaceholder(`Search ${detailLabel}`);
+    this.setHeaderTools(`
+      <i class="bi bi-truck text-dark" title="All Debts" onclick="ToBeCreatedModule.openDebtsView()"></i>
+      <button class="btn btn-sm btn-appsheet-gold" onclick="ToBeCreatedModule.openUpdateTripDrawer()">
+        <i class="bi bi-pencil-square me-1"></i> Edit
+      </button>
+      <i class="bi bi-arrows-angle-expand" title="Fullscreen"></i>
+    `);
+
+    this.renderAllTripDetailsView(trip);
+  },
+
+  renderAllTripDetailsView(t) {
+    const container = document.getElementById('tobe-all-trip-details-content');
+    if (!container) return;
+
+    if (!t) t = this.activeAllTrip || this.activePaidTrip || this.activeTrip;
+    if (!t) return;
+
+    if (t.color === 'green' || t.status === 'Settled') {
+      container.innerHTML = this.renderGreenPaidTripDetails(t);
+    } else if (t.color === 'red' || t.status === 'Other B Pending') {
+      container.innerHTML = this.renderRedPaidTripDetails(t);
+    } else if (t.color === 'sky_blue' || t.color === 'cyan' || t.status === 'Truck Owner Payment Pending') {
+      container.innerHTML = this.renderSkyBluePaidTripDetails(t);
+    } else if (t.color === 'gold' || t.status === 'Transit') {
+      container.innerHTML = this.renderGoldTripDetails(t);
+    } else if (t.color === 'pink' || t.status === 'Off Loading') {
+      container.innerHTML = this.renderPinkTripDetails(t);
+    } else {
+      container.innerHTML = this.renderLightBluePaidTripDetails(t);
+    }
+  },
+
 };
 
 // Export for browser & NodeJS testing
