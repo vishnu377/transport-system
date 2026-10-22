@@ -744,35 +744,31 @@ const ToBeCreatedModule = {
       { label: 'Off Loading', color: '#fb0a82' },
       { label: 'Cheque Due', color: '#0080ff' },
       { label: 'POD Sent/Bill Generated', color: '#795298' },
-      { label: 'Other B Pending', color: '#cc0b0b' }
+      { label: 'Party Payment Pending', color: '#00acc1' },
+      { label: 'Other B Pending', color: '#cc0b0b' },
+      { label: 'Truck Owner Payment Pending', color: '#00838f' },
+      { label: 'Settled', color: '#137333' }
     ];
-
-    if (currentStatus === 'Party Payment Pending' && !statusList.some(s => s.label === currentStatus)) {
-      statusList.splice(3, 0, { label: 'Party Payment Pending', color: '#0080ff' });
-    }
 
     const current = statusList.find(s => s.label === currentStatus) || 
       (currentStatus ? { label: currentStatus, color: this.getStatusColor(currentStatus).text } : { label: '', color: '#5f6368' });
 
     const menuItems = statusList.map(s => `
       <div class="appsheet-select-item" onclick="event.stopPropagation(); ToBeCreatedModule.selectStatus('${s.label}')">
-        <span style="color: ${s.color}; font-size: 13px; line-height: 1;">●</span>
-        <span style="color: ${s.color}; font-weight: 600;">${s.label}</span>
+        <span style="color: ${s.color}; font-size: 11px; margin-right: 8px; line-height: 1;">●</span>
+        <span style="color: ${s.color}; font-weight: 600; font-size: 12.5px;">${s.label}</span>
       </div>
     `).join('');
 
     return `
-      <div class="appsheet-select-wrapper" id="tobe-status-dropdown-wrapper">
+      <div class="appsheet-select-wrapper" id="tobe-status-dropdown-wrapper" style="width: 100%; max-width: 280px;">
         <div class="appsheet-select-control" id="tobe-status-control" onclick="ToBeCreatedModule.toggleStatusDropdown(event)">
           <div class="appsheet-select-display" id="tobe-status-display">
-            ${current.label ? `
-              <span style="color: ${current.color}; font-size: 13px; line-height: 1;">●</span>
-              <span style="color: ${current.color}; font-weight: 600;">${current.label}</span>
-            ` : '<span class="text-muted" style="font-weight: 400;">Select Status</span>'}
+            <span style="color: #202124; font-weight: 500; font-size: 13px;">${current.label || '<span class="text-muted" style="font-weight: 400;">Select Status</span>'}</span>
           </div>
           <div class="appsheet-select-actions">
-            ${current.label ? `<span class="appsheet-clear-icon" title="Close" onclick="event.stopPropagation(); ToBeCreatedModule.clearStatus()">✕</span>` : ''}
-            <span class="appsheet-chevron-icon"><i class="bi bi-chevron-down"></i></span>
+            ${current.label ? `<span class="appsheet-clear-icon" title="Clear" onclick="event.stopPropagation(); ToBeCreatedModule.clearStatus()">✕</span>` : ''}
+            <span class="appsheet-chevron-icon" title="Close"><i class="bi bi-chevron-down"></i></span>
           </div>
         </div>
         <div class="appsheet-select-menu d-none" id="tobe-status-menu">
@@ -1349,13 +1345,29 @@ const ToBeCreatedModule = {
   },
 
   openUpdateTripDrawer() {
-    const t = this.activeTrip;
+    const t = this.activePaidTrip || this.activeTrip;
     if (!t) return;
 
     const setVal = (id, val) => {
       const el = document.getElementById(id);
       if (el) el.value = val;
     };
+
+    let dm1 = t.driverMobile || '';
+    let dm2 = t.driverMobile2 || '';
+    if (dm1.includes(',')) {
+      const parts = dm1.split(',').map(s => s.trim());
+      dm1 = parts[0];
+      dm2 = parts[1] || dm2;
+    }
+
+    let om1 = t.ownerMobile || '';
+    let om2 = t.ownerMobile2 || '';
+    if (om1.includes(',')) {
+      const parts = om1.split(',').map(s => s.trim());
+      om1 = parts[0];
+      om2 = parts[1] || om2;
+    }
 
     setVal('ut-grno', t.grNo || '');
     setVal('ut-rate', t.rate || '');
@@ -1367,22 +1379,22 @@ const ToBeCreatedModule = {
     setVal('ut-reference', t.reference || '');
     setVal('ut-ref-mobile', t.referenceMobile || '');
     setVal('ut-driver', t.driver || '');
-    setVal('ut-driver-mobile', t.driverMobile || '');
-    setVal('ut-driver-mobile2', t.driverMobile2 || '');
+    setVal('ut-driver-mobile', dm1);
+    setVal('ut-driver-mobile2', dm2);
     setVal('ut-consignor', t.consignor || '');
     setVal('ut-consignor-mobile', t.consignorMobile || '');
     setVal('ut-consignee', t.consignee || t.consignor || '');
     setVal('ut-consignee-mobile', t.consigneeMobile || t.consignorMobile || '');
     setVal('ut-owner', t.owner || '');
-    setVal('ut-owner-mobile', t.ownerMobile || '');
-    setVal('ut-owner-mobile2', t.ownerMobile2 || '');
+    setVal('ut-owner-mobile', om1);
+    setVal('ut-owner-mobile2', om2);
     setVal('ut-billno', t.billNo || '0');
 
     // Show/hide 2nd mobile rows if element exists
     const rowDriver2 = document.getElementById('row-ut-driver-mobile2');
-    if (rowDriver2 && rowDriver2.style) rowDriver2.style.display = t.driverMobile2 ? 'flex' : 'none';
+    if (rowDriver2 && rowDriver2.style) rowDriver2.style.display = dm2 ? 'flex' : 'none';
     const rowOwner2 = document.getElementById('row-ut-owner-mobile2');
-    if (rowOwner2 && rowOwner2.style) rowOwner2.style.display = t.ownerMobile2 ? 'flex' : 'none';
+    if (rowOwner2 && rowOwner2.style) rowOwner2.style.display = om2 ? 'flex' : 'none';
 
     const drawerEl = document.getElementById('updateTripDrawer');
     if (drawerEl) {
@@ -1405,7 +1417,7 @@ const ToBeCreatedModule = {
       }
       if (drawerEl.classList) {
         drawerEl.classList.remove('show');
-        drawerEl.style.visibility = 'hidden';
+        if (drawerEl.style) drawerEl.style.visibility = 'hidden';
       }
     }
   },
@@ -1423,7 +1435,7 @@ const ToBeCreatedModule = {
   },
 
   async saveTripUpdate() {
-    const t = this.activeTrip;
+    const t = this.activePaidTrip || this.activeTrip;
     if (!t) return;
 
     const getVal = (id) => {
@@ -1452,18 +1464,23 @@ const ToBeCreatedModule = {
     t.billNo = getVal('ut-billno') || '0';
 
     // Recalculate totals
-    t.totalFreight = t.freight + t.haultCharges + t.loadingCharges;
+    t.totalFreight = (t.freight || 0) + (t.haultCharges || 0) + (t.loadingCharges || 0);
 
-    // Update in dueTrips array
-    const tripInList = this.dueTrips.find(x => x.grNo === t.grNo);
-    if (tripInList) {
-      Object.assign(tripInList, t);
+    // Update in dueTrips or paidTrips array
+    if (this.paidTrips) {
+      const pTrip = this.paidTrips.find(x => x.grNo === t.grNo);
+      if (pTrip) Object.assign(pTrip, t);
+    }
+    if (this.dueTrips) {
+      const dTrip = this.dueTrips.find(x => x.grNo === t.grNo);
+      if (dTrip) Object.assign(dTrip, t);
     }
 
     // Sync with Firestore
     try {
       if (typeof dbService !== 'undefined' && dbService.update) {
-        await dbService.update('other_b_due', t.grNo, t);
+        const collection = (this.viewMode.startsWith('paid') || (!this.activeTrip && this.activePaidTrip)) ? 'other_b_paid' : 'other_b_due';
+        await dbService.update(collection, t.grNo, t);
       }
     } catch (e) {
       console.warn('[ToBeCreatedModule] Firestore sync error:', e);
@@ -1475,7 +1492,11 @@ const ToBeCreatedModule = {
       AppUI.showToast('Trip details updated and synced!', 'success');
     }
 
-    this.renderTripDetailsView(t);
+    if (this.viewMode.startsWith('paid') || (!this.activeTrip && this.activePaidTrip)) {
+      this.renderPaidTripDetailsView(this.activePaidTrip);
+    } else {
+      this.renderTripDetailsView(this.activeTrip);
+    }
   },
 
   // ==========================================================
@@ -1833,10 +1854,14 @@ const ToBeCreatedModule = {
   // AppSheet Dropdowns for Paid Trip Details (Card 2)
   renderPaidAppSheetStatusDropdown(currentStatus = 'Party Payment Pending') {
     const statusList = [
-      { label: 'Settled', color: '#137333' },
-      { label: 'Party Payment Pending', color: '#0080ff' },
+      { label: 'Transit', color: '#bfa100' },
+      { label: 'Off Loading', color: '#fb0a82' },
+      { label: 'Cheque Due', color: '#0080ff' },
+      { label: 'POD Sent/Bill Generated', color: '#795298' },
+      { label: 'Party Payment Pending', color: '#00acc1' },
       { label: 'Other B Pending', color: '#cc0b0b' },
-      { label: 'Truck Owner Payment Pending', color: '#00acc1' }
+      { label: 'Truck Owner Payment Pending', color: '#00838f' },
+      { label: 'Settled', color: '#137333' }
     ];
 
     const current = statusList.find(s => s.label === currentStatus) || 
@@ -1844,23 +1869,20 @@ const ToBeCreatedModule = {
 
     const menuItems = statusList.map(s => `
       <div class="appsheet-select-item" onclick="event.stopPropagation(); ToBeCreatedModule.selectPaidStatus('${s.label}')">
-        <span style="color: ${s.color}; font-size: 13px; line-height: 1;">●</span>
-        <span style="color: ${s.color}; font-weight: 600;">${s.label}</span>
+        <span style="color: ${s.color}; font-size: 11px; margin-right: 8px; line-height: 1;">●</span>
+        <span style="color: ${s.color}; font-weight: 600; font-size: 12.5px;">${s.label}</span>
       </div>
     `).join('');
 
     return `
-      <div class="appsheet-select-wrapper" id="tobe-paid-status-dropdown-wrapper" style="max-width: 220px;">
+      <div class="appsheet-select-wrapper" id="tobe-paid-status-dropdown-wrapper" style="width: 100%; max-width: 280px;">
         <div class="appsheet-select-control" id="tobe-paid-status-control" onclick="ToBeCreatedModule.togglePaidStatusDropdown(event)">
           <div class="appsheet-select-display" id="tobe-paid-status-display">
-            ${current.label ? `
-              <span style="color: ${current.color}; font-size: 13px; line-height: 1;">●</span>
-              <span style="color: ${current.color}; font-weight: 600;">${current.label}</span>
-            ` : '<span class="text-muted" style="font-weight: 400;">Select Status</span>'}
+            <span style="color: #202124; font-weight: 500; font-size: 13px;">${current.label || '<span class="text-muted" style="font-weight: 400;">Select Status</span>'}</span>
           </div>
           <div class="appsheet-select-actions">
-            ${current.label ? `<span class="appsheet-clear-icon" title="Close" onclick="event.stopPropagation(); ToBeCreatedModule.clearPaidStatus()">✕</span>` : ''}
-            <span class="appsheet-chevron-icon"><i class="bi bi-chevron-down"></i></span>
+            ${current.label ? `<span class="appsheet-clear-icon" title="Clear" onclick="event.stopPropagation(); ToBeCreatedModule.clearPaidStatus()">✕</span>` : ''}
+            <span class="appsheet-chevron-icon" title="Close"><i class="bi bi-chevron-down"></i></span>
           </div>
         </div>
         <div class="appsheet-select-menu d-none" id="tobe-paid-status-menu">
@@ -1893,7 +1915,9 @@ const ToBeCreatedModule = {
     if (this.activePaidTrip) {
       this.activePaidTrip.status = newStatus;
       if (newStatus === 'Settled') this.activePaidTrip.color = 'green';
-      else if (newStatus === 'Party Payment Pending') this.activePaidTrip.color = 'light_blue';
+      else if (newStatus === 'Transit') this.activePaidTrip.color = 'gold';
+      else if (newStatus === 'Off Loading') this.activePaidTrip.color = 'pink';
+      else if (newStatus === 'Cheque Due' || newStatus === 'Party Payment Pending' || newStatus === 'POD Sent/Bill Generated') this.activePaidTrip.color = 'light_blue';
       else if (newStatus === 'Other B Pending') this.activePaidTrip.color = 'red';
       else if (newStatus === 'Truck Owner Payment Pending') this.activePaidTrip.color = 'sky_blue';
 
