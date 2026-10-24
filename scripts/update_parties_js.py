@@ -103,7 +103,8 @@ const PartiesCombobox = {
         return;
       }
       dropdown.innerHTML = filtered.map(b => `
-        <div class="appsheet-combobox-item" onclick="PartiesCombobox.selectSimpleVal('${inputId}', '${b}', '${dropdownId}')">
+        <div class="appsheet-combobox-item d-flex align-items-center gap-2" onclick="PartiesCombobox.selectSimpleVal('${inputId}', '${b}', '${dropdownId}')">
+          <span class="appsheet-bullet bullet-golden">●</span>
           <div class="fw-semibold">${b}</div>
         </div>
       `).join('');
@@ -132,7 +133,7 @@ const PartiesCombobox = {
 
     // 3. PAY TO
     if (type === 'payTo') {
-      const payTos = ['TTC', 'SMTC', 'MTC'];
+      const payTos = ['TTC', 'TTC-JPR', 'TTC-KTA', 'TTC-UDZ', 'TTC-GWL', 'SMTC', 'MTC'];
       const filtered = payTos.filter(p => !q || p.toLowerCase().includes(q));
       dropdown.innerHTML = filtered.map(p => `
         <div class="appsheet-combobox-item" onclick="PartiesCombobox.selectSimpleVal('${inputId}', '${p}', '${dropdownId}')">
@@ -282,6 +283,14 @@ const PartiesModule = {
     this.renderPartiesTable();
     this.renderFullTable();
     this.renderPartyDueBadges();
+
+    if (typeof document !== 'undefined' && document.addEventListener) {
+      document.addEventListener('click', (e) => {
+        if (!e.target || !e.target.closest || !e.target.closest('.appsheet-status-dropdown-wrap')) {
+          this.closeAllDropdowns();
+        }
+      });
+    }
   },
 
   initComboboxes() {
@@ -303,32 +312,73 @@ const PartiesModule = {
   // ========================================================
 
   async loadPartiesData() {
+    // 1. Always load the authentic 3,396 master parties from INITIAL_EXCEL_PARTIES
+    let masterParties = [];
+    const partiesList = (typeof window !== 'undefined' && (window.INITIAL_EXCEL_PARTIES || window.SAMPLE_PARTIES_DATA)) ||
+                        (typeof global !== 'undefined' && global.window && (global.window.INITIAL_EXCEL_PARTIES || global.window.SAMPLE_PARTIES_DATA));
+    if (partiesList && partiesList.length > 0) {
+      masterParties = [...partiesList];
+    } else if (typeof require !== 'undefined') {
+      try {
+        const sample = require('../js/sample-parties-data.js');
+        masterParties = Array.isArray(sample) ? [...sample] : (global.window?.INITIAL_EXCEL_PARTIES ? [...global.window.INITIAL_EXCEL_PARTIES] : []);
+      } catch (e) {
+        masterParties = [];
+      }
+    }
+
+    // 2. Fetch any real updates or new parties from Firestore / dbService
+    let firestoreDocs = [];
     if (typeof firebase !== 'undefined' && firebase.firestore) {
       try {
         const db = firebase.firestore();
-        const snapshot = await db.collection('parties').limit(3500).get();
+        const snapshot = await db.collection('parties').limit(5000).get();
         if (!snapshot.empty) {
-          this.allParties = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-          console.log(`[PartiesModule] Loaded ${this.allParties.length} parties from Firestore`);
+          firestoreDocs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          console.log(`[PartiesModule] Found ${firestoreDocs.length} parties in Firestore`);
         }
       } catch (err) {
         console.warn('[PartiesModule] Firestore load error, using in-memory master dataset:', err);
       }
+    } else if (typeof dbService !== 'undefined' && dbService.getAll) {
+      try {
+        const docs = await dbService.getAll('parties');
+        if (docs && docs.length > 0) firestoreDocs = docs;
+      } catch (e) {}
     }
 
-    if (!this.allParties || this.allParties.length === 0) {
-      const partiesList = (typeof window !== 'undefined' && (window.INITIAL_EXCEL_PARTIES || window.SAMPLE_PARTIES_DATA)) ||
-                          (typeof global !== 'undefined' && global.window && (global.window.INITIAL_EXCEL_PARTIES || global.window.SAMPLE_PARTIES_DATA));
-      if (partiesList) {
-        this.allParties = [...partiesList];
-      } else if (typeof require !== 'undefined') {
-        try {
-          const sample = require('../js/sample-parties-data.js');
-          this.allParties = Array.isArray(sample) ? [...sample] : (global.window?.INITIAL_EXCEL_PARTIES ? [...global.window.INITIAL_EXCEL_PARTIES] : []);
-        } catch (e) {
-          this.allParties = [];
+    if (masterParties.length > 0) {
+      const partyMap = new Map();
+      masterParties.forEach(p => {
+        const key = (p.id || String(p.sno)).trim();
+        partyMap.set(key, { ...p });
+      });
+
+      // Merge firestore docs without destroying real names or phones
+      firestoreDocs.forEach(fDoc => {
+        const key = (fDoc.id || String(fDoc.sno || '')).trim();
+        if (partyMap.has(key)) {
+          const existing = partyMap.get(key);
+          const validName = fDoc.name && fDoc.name !== 'Unnamed Party' ? fDoc.name : existing.name;
+          const validMobile = fDoc.mobile || existing.mobile || '';
+          const validMobile1 = fDoc.mobile1 || existing.mobile1 || '';
+          const validAddress = fDoc.address || existing.address || '';
+          partyMap.set(key, {
+            ...existing,
+            ...fDoc,
+            name: validName,
+            mobile: validMobile,
+            mobile1: validMobile1,
+            address: validAddress
+          });
+        } else {
+          partyMap.set(key, fDoc);
         }
-      }
+      });
+
+      this.allParties = Array.from(partyMap.values());
+    } else if (firestoreDocs.length > 0) {
+      this.allParties = firestoreDocs;
     }
 
     this.filteredParties = [...this.allParties];
@@ -405,7 +455,7 @@ const PartiesModule = {
 
     const displayList = this.filteredParties.slice(0, 300);
     if (displayList.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted py-4">No parties found</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-4">No parties found</td></tr>`;
       return;
     }
 
@@ -413,8 +463,10 @@ const PartiesModule = {
       const gstinHtml = this.highlightMatch(p.gstin || '-', this.searchQuery);
       const addrHtml = this.highlightMatch(p.address || '-', this.searchQuery);
       const nameHtml = this.highlightMatch(p.name || '-', this.searchQuery);
-      const mobVal = p.mobile || p.mobile1 || '-';
+      const mobVal = p.mobile || '-';
       const mobHtml = this.highlightMatch(mobVal, this.searchQuery);
+      const mob1Val = p.mobile1 || '-';
+      const mob1Html = this.highlightMatch(mob1Val, this.searchQuery);
       const id = p.id || p.sno;
 
       return `
@@ -423,6 +475,7 @@ const PartiesModule = {
           <td><span class="cell-truncate" title="${p.address || ''}">${addrHtml}</span></td>
           <td class="fw-medium"><span class="cell-truncate" title="${p.name || ''}">${nameHtml}</span></td>
           <td><span class="cell-truncate" title="${mobVal}">${mobHtml}</span></td>
+          <td><span class="cell-truncate" title="${mob1Val}">${mob1Html}</span></td>
           <td style="text-align: right; color: #5f6368;"><i class="bi bi-chevron-right" style="font-size: 11px;"></i></td>
         </tr>
       `;
@@ -882,10 +935,8 @@ const PartiesModule = {
           <tr class="party-due-group-tr">
             <td colspan="12" class="party-due-group-cell">
               <div class="party-due-group-inner">
-                <div>
-                  <span class="bullet-golden" style="font-size: 11px;">●</span>
-                  <span style="font-weight: 600; font-size: 12px; color: #202124;">${date}</span>
-                </div>
+                <span class="appsheet-bullet bullet-golden">●</span>
+                <span style="font-weight: 600; font-size: 12px; color: #202124;">${date}</span>
                 <span class="party-due-group-badge">₹ ${this.formatCurrency(dayTotal)}</span>
               </div>
             </td>
@@ -894,22 +945,23 @@ const PartiesModule = {
 
         trips.forEach(t => {
           if (runningIndex >= startIndex && runningIndex < endIndex) {
-            const billDisplay = t.billNo ? `<span class="fw-semibold">${t.billNo}</span>` : `<span class="bullet-${t.colorScheme}">●</span>`;
+            const dot = `<span class="appsheet-bullet bullet-${t.colorScheme}">●</span>`;
+            const billDisplay = t.billNo ? `<span class="fw-semibold">${t.billNo}</span>` : dot;
             const shortGr = t.shortGrNo || t.grNo;
 
             html += `
               <tr class="party-due-row" onclick="PartiesModule.openPartyDueDrilldown('${t.id}')">
                 <td>${billDisplay}</td>
-                <td class="fw-semibold"><span class="cell-truncate">${shortGr}</span></td>
-                <td><span class="bullet-${t.colorScheme}">●</span> ${t.tripStartDate}</td>
-                <td class="due-amount-red">₹ ${this.formatCurrency(t.dueAmount)}</td>
-                <td><span class="bullet-${t.colorScheme}">●</span> ${t.transport}</td>
-                <td><span class="cell-truncate"><span class="bullet-${t.colorScheme}">●</span> ${t.consignee}</span></td>
-                <td><span class="cell-truncate"><span class="bullet-${t.colorScheme}">●</span> ${t.truckNo}</span></td>
-                <td><span class="cell-truncate"><span class="bullet-${t.colorScheme}">●</span> ${t.destination}</span></td>
-                <td><span class="cell-truncate"><span class="bullet-${t.colorScheme}">●</span> ${t.reference}</span></td>
-                <td><span class="cell-truncate"><span class="bullet-${t.colorScheme}">●</span> ${t.owner}</span></td>
-                <td><span class="cell-truncate"><span class="bullet-${t.colorScheme}">●</span> ${t.driver}</span></td>
+                <td class="fw-semibold">${dot} <span class="cell-truncate">${shortGr}</span></td>
+                <td>${dot} ${t.tripStartDate}</td>
+                <td class="due-amount-red"><span class="appsheet-bullet bullet-red">●</span> ₹ ${this.formatCurrency(t.dueAmount)}</td>
+                <td>${dot} ${t.transport}</td>
+                <td><span class="cell-truncate">${dot} ${t.consignee}</span></td>
+                <td><span class="cell-truncate">${dot} ${t.truckNo}</span></td>
+                <td><span class="cell-truncate">${dot} ${t.destination}</span></td>
+                <td><span class="cell-truncate">${dot} ${t.reference}</span></td>
+                <td><span class="cell-truncate">${dot} ${t.owner}</span></td>
+                <td><span class="cell-truncate">${dot} ${t.driver}</span></td>
                 <td style="text-align: right; color: #5f6368;"><i class="bi bi-chevron-right" style="font-size: 11px;"></i></td>
               </tr>
             `;
@@ -1241,11 +1293,20 @@ const PartiesModule = {
           <div class="drilldown-field">
             <div class="drilldown-field-label">Add Records for</div>
             <div class="drilldown-field-val">
-              <select class="form-select form-select-sm" style="font-size: 12px; border-radius: 4px;" onchange="PartiesModule.handleRecordSelection(this.value)">
-                <option value="">Select record...</option>
-                <option value="debts">Open Debts</option>
-                <option value="cheques">Cheque</option>
-              </select>
+              <div class="appsheet-status-dropdown-wrap position-relative w-100">
+                <button type="button" class="appsheet-select-btn" id="btn-add-records-dropdown" onclick="PartiesModule.toggleAddRecordsDropdown(event)">
+                  <span class="text-muted" style="font-weight: normal;" id="label-add-records"></span>
+                  <i class="bi bi-caret-down-fill select-caret"></i>
+                </button>
+                <div class="appsheet-select-menu d-none" id="menu-add-records-dropdown">
+                  <div class="select-option" onclick="PartiesModule.handleRecordSelection('debts')">
+                    Open Debts
+                  </div>
+                  <div class="select-option" onclick="PartiesModule.handleRecordSelection('cheques')">
+                    Cheque
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           <div class="drilldown-field">
@@ -1255,13 +1316,32 @@ const PartiesModule = {
           <div class="drilldown-field">
             <div class="drilldown-field-label">Status*</div>
             <div class="drilldown-field-val">
-              <select class="form-select form-select-sm fw-semibold" style="font-size: 12px; border-radius: 4px;" onchange="PartiesModule.changeTripStatus(this.value)">
-                <option value="Transit" ${t.status === 'Transit' ? 'selected' : ''}>● Transit</option>
-                <option value="Party Payment Pending" ${t.status === 'Party Payment Pending' ? 'selected' : ''}>● Party Payment Pending</option>
-                <option value="POD Sent/ Bill Generated" ${t.status === 'POD Sent/ Bill Generated' ? 'selected' : ''}>● POD Sent/ Bill Generated</option>
-                <option value="Off Loading" ${t.status === 'Off Loading' ? 'selected' : ''}>● Off Loading</option>
-                <option value="Cheque Due" ${t.status === 'Cheque Due' ? 'selected' : ''}>● Cheque Due</option>
-              </select>
+              <div class="appsheet-status-dropdown-wrap position-relative w-100">
+                <button type="button" class="appsheet-select-btn" id="btn-status-dropdown" onclick="PartiesModule.toggleStatusDropdown(event)">
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="appsheet-bullet bullet-${t.colorScheme}">●</span>
+                    <span class="status-btn-label">${t.status}</span>
+                  </div>
+                  <i class="bi bi-caret-down-fill select-caret"></i>
+                </button>
+                <div class="appsheet-select-menu d-none" id="menu-status-dropdown">
+                  <div class="select-option ${t.status === 'Transit' ? 'selected' : ''}" onclick="PartiesModule.changeTripStatus('Transit')">
+                    <span class="appsheet-bullet bullet-golden">●</span> Transit
+                  </div>
+                  <div class="select-option ${t.status === 'Party Payment Pending' ? 'selected' : ''}" onclick="PartiesModule.changeTripStatus('Party Payment Pending')">
+                    <span class="appsheet-bullet bullet-light_blue">●</span> Party Payment Pending
+                  </div>
+                  <div class="select-option ${t.status === 'POD Sent/ Bill Generated' ? 'selected' : ''}" onclick="PartiesModule.changeTripStatus('POD Sent/ Bill Generated')">
+                    <span class="appsheet-bullet bullet-dark_blue">●</span> POD Sent/ Bill Generated
+                  </div>
+                  <div class="select-option ${t.status === 'Off Loading' ? 'selected' : ''}" onclick="PartiesModule.changeTripStatus('Off Loading')">
+                    <span class="appsheet-bullet bullet-pink">●</span> Off Loading
+                  </div>
+                  <div class="select-option ${t.status === 'Cheque Due' ? 'selected' : ''}" onclick="PartiesModule.changeTripStatus('Cheque Due')">
+                    <span class="appsheet-bullet bullet-slate">●</span> Cheque Due
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         `;
@@ -1277,22 +1357,41 @@ const PartiesModule = {
           </div>
           <div class="drilldown-field">
             <div class="drilldown-field-label">Other B</div>
-            <div class="drilldown-field-val"><span class="text-muted">₹${this.formatCurrency(t.otherB || 27000)}</span></div>
+            <div class="drilldown-field-val"><span class="text-muted"></span></div>
           </div>
           <div class="drilldown-field">
             <div class="drilldown-field-label">Status</div>
-            <div class="drilldown-field-val"><span class="theme-text">${t.status}</span></div>
+            <div class="drilldown-field-val"><span class="theme-text"></span></div>
           </div>
           <div class="drilldown-field">
             <div class="drilldown-field-label">Status*</div>
             <div class="drilldown-field-val">
-              <select class="form-select form-select-sm fw-semibold" style="font-size: 12px; border-radius: 4px;" onchange="PartiesModule.changeTripStatus(this.value)">
-                <option value="Cheque Due" selected>● Cheque Due</option>
-                <option value="Transit">● Transit</option>
-                <option value="Party Payment Pending">● Party Payment Pending</option>
-                <option value="POD Sent/ Bill Generated">● POD Sent/ Bill Generated</option>
-                <option value="Off Loading">● Off Loading</option>
-              </select>
+              <div class="appsheet-status-dropdown-wrap position-relative w-100">
+                <button type="button" class="appsheet-select-btn" id="btn-status-dropdown" onclick="PartiesModule.toggleStatusDropdown(event)">
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="appsheet-bullet bullet-slate">●</span>
+                    <span class="status-btn-label">${t.status}</span>
+                  </div>
+                  <i class="bi bi-caret-down-fill select-caret"></i>
+                </button>
+                <div class="appsheet-select-menu d-none" id="menu-status-dropdown">
+                  <div class="select-option ${t.status === 'Cheque Due' ? 'selected' : ''}" onclick="PartiesModule.changeTripStatus('Cheque Due')">
+                    <span class="appsheet-bullet bullet-slate">●</span> Cheque Due
+                  </div>
+                  <div class="select-option ${t.status === 'Transit' ? 'selected' : ''}" onclick="PartiesModule.changeTripStatus('Transit')">
+                    <span class="appsheet-bullet bullet-golden">●</span> Transit
+                  </div>
+                  <div class="select-option ${t.status === 'Party Payment Pending' ? 'selected' : ''}" onclick="PartiesModule.changeTripStatus('Party Payment Pending')">
+                    <span class="appsheet-bullet bullet-light_blue">●</span> Party Payment Pending
+                  </div>
+                  <div class="select-option ${t.status === 'POD Sent/ Bill Generated' ? 'selected' : ''}" onclick="PartiesModule.changeTripStatus('POD Sent/ Bill Generated')">
+                    <span class="appsheet-bullet bullet-dark_blue">●</span> POD Sent/ Bill Generated
+                  </div>
+                  <div class="select-option ${t.status === 'Off Loading' ? 'selected' : ''}" onclick="PartiesModule.changeTripStatus('Off Loading')">
+                    <span class="appsheet-bullet bullet-pink">●</span> Off Loading
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         `;
@@ -1335,6 +1434,40 @@ const PartiesModule = {
 
     // Refresh drilldown & table
     this.openPartyDueDrilldown(this.selectedTrip.id);
+  },
+
+  toggleStatusDropdown(e) {
+    if (e && e.stopPropagation) e.stopPropagation();
+    const menu = document.getElementById('menu-status-dropdown');
+    if (menu) menu.classList.toggle('d-none');
+    document.getElementById('menu-add-records-dropdown')?.classList.add('d-none');
+  },
+
+  toggleAddRecordsDropdown(e) {
+    if (e && e.stopPropagation) e.stopPropagation();
+    const menu = document.getElementById('menu-add-records-dropdown');
+    if (menu) menu.classList.toggle('d-none');
+    document.getElementById('menu-status-dropdown')?.classList.add('d-none');
+  },
+
+  closeAllDropdowns() {
+    document.getElementById('menu-status-dropdown')?.classList.add('d-none');
+    document.getElementById('menu-add-records-dropdown')?.classList.add('d-none');
+  },
+
+  setPodTo(val) {
+    const shipperBtn = document.getElementById('btn-pod-shipper');
+    const buyerBtn = document.getElementById('btn-pod-buyer');
+    const valInput = document.getElementById('tf-pod-to-val');
+    if (valInput) valInput.value = val;
+
+    if (val === 'Shipper') {
+      if (shipperBtn) shipperBtn.classList.add('active');
+      if (buyerBtn) buyerBtn.classList.remove('active');
+    } else {
+      if (buyerBtn) buyerBtn.classList.add('active');
+      if (shipperBtn) shipperBtn.classList.remove('active');
+    }
   },
 
   handleRecordSelection(val) {
@@ -1551,6 +1684,7 @@ const PartiesModule = {
     if (tfConsignee) tfConsignee.value = t.consignee || '';
     if (tfPodDate) tfPodDate.value = t.podDate || '';
     if (tfPodWeight) tfPodWeight.value = t.podWeight || '';
+    this.setPodTo(t.podTo || 'Shipper');
 
     // Show/hide Other B for Cheque Due
     const otherBRow = document.getElementById('tf-row-other-b');
@@ -1599,9 +1733,14 @@ const PartiesModule = {
     t.podDate = document.getElementById('tf-pod-date')?.value || '';
     t.podWeight = parseFloat(document.getElementById('tf-pod-weight')?.value || 0);
 
-    const podToRadios = document.getElementsByName('tf-pod-to');
-    for (const r of podToRadios) {
-      if (r.checked) t.podTo = r.value;
+    const podToVal = document.getElementById('tf-pod-to-val')?.value;
+    if (podToVal) {
+      t.podTo = podToVal;
+    } else {
+      const podToRadios = document.getElementsByName('tf-pod-to');
+      for (const r of podToRadios) {
+        if (r.checked) t.podTo = r.value;
+      }
     }
 
     if (t.status === 'Cheque Due') {
