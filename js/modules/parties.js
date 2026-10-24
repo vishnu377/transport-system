@@ -265,6 +265,7 @@ const PartiesModule = {
   allPartyDueTrips: [],
   filteredPartyDueTrips: [],
   currentFY: '2026-2027',
+  currentDateFilter: 'ALL',
   dueSearchQuery: '',
   dueCurrentPage: 1,
   duePageSize: 50,
@@ -778,11 +779,38 @@ const PartiesModule = {
       { label: 'Party Due', current: true }
     ]);
 
-    // Bar Tools: Filter, Checkbox, Download CSV
+    // Bar Tools: All Dates dropdown, Download CSV, Sidebar toggle
+    const activeDateLabel = this.currentDateFilter === 'ALL' ? 'All Dates' : this.currentDateFilter;
+    const dateOptions = this.getDistinctDatesList().slice(0, 30).map(d => `
+      <div class="select-option ${this.currentDateFilter === d ? 'selected' : ''}" onclick="PartiesModule.setDateFilter('${d}')">
+        <span class="appsheet-bullet bullet-golden">●</span> ${d}
+      </div>
+    `).join('');
+
     this.setBarTools(`
-      <i class="bi bi-funnel" title="Filter Party Due" style="cursor: pointer;"></i>
-      <i class="bi bi-check2-square" title="Select Rows" style="cursor: pointer;"></i>
-      <i class="bi bi-download" title="Export CSV" style="cursor: pointer;" onclick="PartiesModule.exportPartyDueCSV()"></i>
+      <div class="d-flex align-items-center gap-2">
+        <div class="dropdown position-relative d-inline-block" id="due-date-filter-wrap">
+          <button class="btn btn-sm btn-light border py-1 px-2 d-inline-flex align-items-center gap-1" id="btn-due-date-filter" onclick="PartiesModule.toggleDateDropdown(event)" title="All Dates / Date Filter" style="height: 30px; font-size: 11.5px; font-weight: 600; color: #202124;">
+            <i class="bi bi-calendar3 text-primary"></i>
+            <span id="due-current-date-filter-label">${activeDateLabel}</span>
+            <i class="bi bi-caret-down-fill text-muted" style="font-size: 9px;"></i>
+          </button>
+          <div class="appsheet-select-menu d-none" id="menu-due-date-filter" style="width: 220px; right: 0; left: auto; max-height: 280px; overflow-y: auto;">
+            <div class="select-option fw-bold text-primary border-bottom" onclick="PartiesModule.setDateFilter('ALL')">
+              <i class="bi bi-calendar-check me-2"></i> All Dates (Show All)
+            </div>
+            ${dateOptions}
+          </div>
+        </div>
+
+        <button class="btn btn-sm btn-light border py-1 px-2 d-inline-flex align-items-center gap-1" onclick="PartiesModule.exportPartyDueCSV()" title="Download CSV" style="height: 30px;">
+          <i class="bi bi-download text-secondary"></i>
+        </button>
+
+        <button class="btn btn-sm btn-light border py-1 px-2 d-inline-flex align-items-center gap-1" onclick="PartiesModule.toggleDueSidebar()" title="Toggle Sidebar" style="height: 30px;">
+          <i class="bi bi-layout-sidebar text-secondary"></i>
+        </button>
+      </div>
     `);
 
     this.setSearchPlaceholder('Search Party Due');
@@ -864,6 +892,11 @@ const PartiesModule = {
     let list = this.allPartyDueTrips;
     if (this.currentFY && this.currentFY !== 'ALL') {
       list = list.filter(t => t.financialYear === this.currentFY);
+    }
+
+    // Filter by Date (All Dates vs specific date)
+    if (this.currentDateFilter && this.currentDateFilter !== 'ALL') {
+      list = list.filter(t => t.tripStartDate === this.currentDateFilter);
     }
 
     // Filter by live search
@@ -949,7 +982,7 @@ const PartiesModule = {
             const shortGr = t.shortGrNo || t.grNo;
 
             html += `
-              <tr class="party-due-row" onclick="PartiesModule.openPartyDueDrilldown('${t.id}')">
+              <tr class="party-due-row row-theme-${t.colorScheme}" onclick="PartiesModule.openPartyDueDrilldown('${t.id}')">
                 <td>${billDisplay}</td>
                 <td class="fw-semibold">${dot} <span class="cell-truncate">${shortGr}</span></td>
                 <td>${dot} ${t.tripStartDate}</td>
@@ -1295,14 +1328,22 @@ const PartiesModule = {
               <div class="appsheet-status-dropdown-wrap position-relative w-100">
                 <button type="button" class="appsheet-select-btn" id="btn-add-records-dropdown" onclick="PartiesModule.toggleAddRecordsDropdown(event)">
                   <span class="text-muted" style="font-weight: normal;" id="label-add-records"></span>
-                  <i class="bi bi-caret-down-fill select-caret"></i>
+                  <div class="d-flex align-items-center gap-1">
+                    <i class="bi bi-caret-down-fill select-caret" id="add-records-caret-icon" title="Open dropdown"></i>
+                  </div>
                 </button>
                 <div class="appsheet-select-menu d-none" id="menu-add-records-dropdown">
-                  <div class="select-option" onclick="PartiesModule.handleRecordSelection('debts')">
-                    Open Debts
-                  </div>
-                  <div class="select-option" onclick="PartiesModule.handleRecordSelection('cheques')">
+                  <div class="select-option" onclick="PartiesModule.handleAddRecordSelection('Cheque')">
                     Cheque
+                  </div>
+                  <div class="select-option" onclick="PartiesModule.handleAddRecordSelection('Party Payment')">
+                    Party Payment
+                  </div>
+                  <div class="select-option" onclick="PartiesModule.handleAddRecordSelection('Truck Owner Payment')">
+                    Truck Owner Payment
+                  </div>
+                  <div class="select-option" onclick="PartiesModule.handleAddRecordSelection('Other B')">
+                    Other B
                   </div>
                 </div>
               </div>
@@ -1317,27 +1358,27 @@ const PartiesModule = {
             <div class="drilldown-field-val">
               <div class="appsheet-status-dropdown-wrap position-relative w-100">
                 <button type="button" class="appsheet-select-btn" id="btn-status-dropdown" onclick="PartiesModule.toggleStatusDropdown(event)">
-                  <div class="d-flex align-items-center gap-2">
-                    <span class="appsheet-bullet bullet-${t.colorScheme}">●</span>
-                    <span class="status-btn-label">${t.status}</span>
+                  <span class="status-btn-label" id="status-display-label">${t.status}</span>
+                  <div class="d-flex align-items-center gap-1">
+                    <i class="bi bi-x appsheet-clear-icon" id="status-clear-btn" onclick="PartiesModule.clearTripStatus(event)" title="Clear"></i>
+                    <i class="bi bi-caret-down-fill select-caret" id="status-caret-icon" title="Open dropdown"></i>
                   </div>
-                  <i class="bi bi-caret-down-fill select-caret"></i>
                 </button>
                 <div class="appsheet-select-menu d-none" id="menu-status-dropdown">
                   <div class="select-option ${t.status === 'Transit' ? 'selected' : ''}" onclick="PartiesModule.changeTripStatus('Transit')">
-                    <span class="appsheet-bullet bullet-golden">●</span> Transit
-                  </div>
-                  <div class="select-option ${t.status === 'Party Payment Pending' ? 'selected' : ''}" onclick="PartiesModule.changeTripStatus('Party Payment Pending')">
-                    <span class="appsheet-bullet bullet-light_blue">●</span> Party Payment Pending
-                  </div>
-                  <div class="select-option ${t.status === 'POD Sent/ Bill Generated' ? 'selected' : ''}" onclick="PartiesModule.changeTripStatus('POD Sent/ Bill Generated')">
-                    <span class="appsheet-bullet bullet-dark_blue">●</span> POD Sent/ Bill Generated
+                    <span class="appsheet-bullet bullet-golden" style="font-size: 13px;">●</span> Transit
                   </div>
                   <div class="select-option ${t.status === 'Off Loading' ? 'selected' : ''}" onclick="PartiesModule.changeTripStatus('Off Loading')">
-                    <span class="appsheet-bullet bullet-pink">●</span> Off Loading
+                    <span class="appsheet-bullet bullet-pink" style="font-size: 13px;">●</span> Off Loading
                   </div>
                   <div class="select-option ${t.status === 'Cheque Due' ? 'selected' : ''}" onclick="PartiesModule.changeTripStatus('Cheque Due')">
-                    <span class="appsheet-bullet bullet-slate">●</span> Cheque Due
+                    <span class="appsheet-bullet bullet-slate" style="font-size: 13px;">●</span> Cheque Due
+                  </div>
+                  <div class="select-option ${t.status === 'POD Sent/ Bill Generated' ? 'selected' : ''}" onclick="PartiesModule.changeTripStatus('POD Sent/ Bill Generated')">
+                    <span class="appsheet-bullet bullet-dark_blue" style="font-size: 13px;">●</span> POD Sent/ Bill Generated
+                  </div>
+                  <div class="select-option ${t.status === 'Party Payment Pending' ? 'selected' : ''}" onclick="PartiesModule.changeTripStatus('Party Payment Pending')">
+                    <span class="appsheet-bullet bullet-light_blue" style="font-size: 13px;">●</span> Party Payment Pending
                   </div>
                 </div>
               </div>
@@ -1438,20 +1479,67 @@ const PartiesModule = {
   toggleStatusDropdown(e) {
     if (e && e.stopPropagation) e.stopPropagation();
     const menu = document.getElementById('menu-status-dropdown');
-    if (menu) menu.classList.toggle('d-none');
-    document.getElementById('menu-add-records-dropdown')?.classList.add('d-none');
+    const caret = document.getElementById('status-caret-icon');
+    if (!menu) return;
+    const isHidden = menu.classList.contains('d-none');
+    this.closeAllDropdowns(menu);
+    if (isHidden) {
+      menu.classList.remove('d-none');
+      if (caret) {
+        caret.className = 'bi bi-caret-up-fill select-caret';
+        caret.title = 'Close';
+      }
+    } else {
+      menu.classList.add('d-none');
+      if (caret) {
+        caret.className = 'bi bi-caret-down-fill select-caret';
+        caret.title = 'Open';
+      }
+    }
   },
 
   toggleAddRecordsDropdown(e) {
     if (e && e.stopPropagation) e.stopPropagation();
     const menu = document.getElementById('menu-add-records-dropdown');
-    if (menu) menu.classList.toggle('d-none');
-    document.getElementById('menu-status-dropdown')?.classList.add('d-none');
+    const caret = document.getElementById('add-records-caret-icon');
+    if (!menu) return;
+    const isHidden = menu.classList.contains('d-none');
+    this.closeAllDropdowns(menu);
+    if (isHidden) {
+      menu.classList.remove('d-none');
+      if (caret) {
+        caret.className = 'bi bi-caret-up-fill select-caret';
+        caret.title = 'Close';
+      }
+    } else {
+      menu.classList.add('d-none');
+      if (caret) {
+        caret.className = 'bi bi-caret-down-fill select-caret';
+        caret.title = 'Open';
+      }
+    }
   },
 
-  closeAllDropdowns() {
-    document.getElementById('menu-status-dropdown')?.classList.add('d-none');
-    document.getElementById('menu-add-records-dropdown')?.classList.add('d-none');
+  closeAllDropdowns(exceptEl) {
+    const menus = [
+      document.getElementById('menu-status-dropdown'),
+      document.getElementById('menu-add-records-dropdown'),
+      document.getElementById('menu-due-date-filter')
+    ];
+    menus.forEach(m => {
+      if (m && m !== exceptEl) m.classList.add('d-none');
+    });
+
+    const statusCaret = document.getElementById('status-caret-icon');
+    if (statusCaret) {
+      statusCaret.className = 'bi bi-caret-down-fill select-caret';
+      statusCaret.title = 'Open';
+    }
+    const addCaret = document.getElementById('add-records-caret-icon');
+    if (addCaret) {
+      addCaret.className = 'bi bi-caret-down-fill select-caret';
+      addCaret.title = 'Open';
+    }
   },
 
   setPodTo(val) {
@@ -2011,34 +2099,131 @@ const PartiesModule = {
     }
   },
 
+  showToast(msg, type = 'info') {
+    if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+      AppUI.showToast(msg, type);
+    } else {
+      console.log(`[Toast ${type}]: ${msg}`);
+    }
+  },
+
+  getDistinctDatesList() {
+    let list = this.allPartyDueTrips || [];
+    if (this.currentFY && this.currentFY !== 'ALL') {
+      list = list.filter(t => t.financialYear === this.currentFY);
+    }
+    const dates = [];
+    const seen = new Set();
+    list.forEach(t => {
+      if (t.tripStartDate && !seen.has(t.tripStartDate)) {
+        seen.add(t.tripStartDate);
+        dates.push(t.tripStartDate);
+      }
+    });
+    return dates;
+  },
+
+  toggleDateDropdown(e) {
+    if (e && e.stopPropagation) e.stopPropagation();
+    const menu = document.getElementById('menu-due-date-filter');
+    if (!menu) return;
+    const isHidden = menu.classList.contains('d-none');
+    this.closeAllDropdowns(menu);
+    if (isHidden) {
+      menu.classList.remove('d-none');
+    } else {
+      menu.classList.add('d-none');
+    }
+  },
+
+  setDateFilter(date) {
+    this.currentDateFilter = date;
+    this.dueCurrentPage = 1;
+    const label = document.getElementById('due-current-date-filter-label');
+    if (label) label.textContent = date === 'ALL' ? 'All Dates' : date;
+    const menu = document.getElementById('menu-due-date-filter');
+    if (menu) menu.classList.add('d-none');
+    this.renderPartyDueTable();
+    this.showToast(`Showing ${date === 'ALL' ? 'All Dates' : date}`, 'info');
+  },
+
+  clearTripStatus(e) {
+    if (e && e.stopPropagation) e.stopPropagation();
+    this.showToast('Please select a new status', 'info');
+    this.toggleStatusDropdown(e);
+  },
+
+  handleAddRecordSelection(val) {
+    this.closeAllDropdowns();
+    if (val === 'Cheque') {
+      this.openAddChequeModal();
+    } else if (val === 'Other B') {
+      this.openEditTripModal();
+      setTimeout(() => {
+        const input = document.getElementById('tf-other-b');
+        if (input) {
+          input.focus();
+          input.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 350);
+    } else if (val === 'Party Payment') {
+      this.showToast('Opening Party Payment form...', 'info');
+      this.openEditTripModal();
+    } else if (val === 'Truck Owner Payment') {
+      this.showToast('Opening Truck Owner Payment form...', 'info');
+      this.openEditTripModal();
+    } else {
+      this.handleRecordSelection(val);
+    }
+  },
+
   exportPartyDueCSV() {
-    const list = this.filteredPartyDueTrips;
-    if (!list || list.length === 0) return;
+    let list = this.filteredPartyDueTrips && this.filteredPartyDueTrips.length > 0 
+      ? this.filteredPartyDueTrips 
+      : (this.allPartyDueTrips || []);
+
+    if (this.currentFY && this.currentFY !== 'ALL') {
+      list = list.filter(t => t.financialYear === this.currentFY);
+    }
+    if (this.currentDateFilter && this.currentDateFilter !== 'ALL') {
+      list = list.filter(t => t.tripStartDate === this.currentDateFilter);
+    }
+
+    if (!list || list.length === 0) {
+      this.showToast('No Party Due records to download', 'warning');
+      return;
+    }
 
     const headers = ['Bill No', 'G.R.No', 'Trip Start Date', 'Due Amount', 'Transport', 'Consignee', 'Truck No', 'Destination', 'Reference', 'Owner', 'Driver', 'Status'];
     const rows = list.map(t => [
-      `"${t.billNo || ''}"`,
-      `"${t.grNo}"`,
-      `"${t.tripStartDate}"`,
-      t.dueAmount,
-      `"${t.transport}"`,
-      `"${t.consignee}"`,
-      `"${t.truckNo}"`,
-      `"${t.destination}"`,
-      `"${t.reference}"`,
-      `"${t.owner}"`,
-      `"${t.driver}"`,
-      `"${t.status}"`
+      `"${(t.billNo || '').replace(/"/g, '""')}"`,
+      `"${(t.shortGrNo || t.grNo || '').replace(/"/g, '""')}"`,
+      `"${t.tripStartDate || ''}"`,
+      Number(t.dueAmount || 0),
+      `"${(t.transport || '').replace(/"/g, '""')}"`,
+      `"${(t.consignee || '').replace(/"/g, '""')}"`,
+      `"${(t.truckNo || '').replace(/"/g, '""')}"`,
+      `"${(t.destination || '').replace(/"/g, '""')}"`,
+      `"${(t.reference || '').replace(/"/g, '""')}"`,
+      `"${(t.owner || '').replace(/"/g, '""')}"`,
+      `"${(t.driver || '').replace(/"/g, '""')}"`,
+      `"${(t.status || '').replace(/"/g, '""')}"`
     ]);
 
-    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
-    const encodedUri = encodeURI(csvContent);
+    const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\r\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const filename = `Party_Due_${this.currentFY || 'ALL'}_${Date.now()}.csv`;
     const link = document.createElement('a');
-    link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `Party_Due_${this.currentFY}_${Date.now()}.csv`);
+    link.href = url;
+    link.download = filename;
+    link.setAttribute('download', filename);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    this.showToast(`Exported ${list.length} records to CSV successfully`, 'success');
   }
 };
 
