@@ -39,6 +39,7 @@ function createMockEl(id) {
     style: {},
     setAttribute: () => {},
     getAttribute: () => null,
+    reset: () => {},
     addEventListener: () => {},
     closest: () => null
   };

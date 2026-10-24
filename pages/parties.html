@@ -748,6 +748,447 @@
       align-items: center;
       gap: 4px;
     }
+    /* ========================================================
+       Party Due (Card 2) - Google AppSheet Pixel-Perfect Styles
+       ======================================================== */
+    :root {
+      --due-gold: #bfa100;
+      --due-gold-bg: #fffbf0;
+      --due-light-blue: #0088cc;
+      --due-light-blue-bg: #f0f8ff;
+      --due-dark-blue: #6200ea;
+      --due-dark-blue-bg: #f5f0ff;
+      --due-pink: #e91e63;
+      --due-pink-bg: #fff0f5;
+      --due-slate: #5f6368;
+      --due-slate-bg: #f5f6f7;
+    }
+
+    /* 1. Party Due Main Layout */
+    .party-due-wrap {
+      display: flex;
+      flex: 1;
+      min-height: calc(100vh - 90px);
+      background: #ffffff;
+      border: 1px solid var(--appsheet-border);
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 12px 16px;
+      box-shadow: 0 1px 2px rgba(60, 64, 67, 0.08);
+      position: relative;
+    }
+
+    /* 2. Left Financial Year Sidebar */
+    .party-due-sidebar {
+      width: 180px;
+      min-width: 180px;
+      max-width: 180px;
+      background: #ffffff;
+      border-right: 1px solid var(--appsheet-border);
+      display: flex;
+      flex-direction: column;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow-x: hidden;
+      overflow-y: auto;
+      z-index: 5;
+    }
+
+    .party-due-sidebar.collapsed {
+      width: 0 !important;
+      min-width: 0 !important;
+      max-width: 0 !important;
+      border-right: none !important;
+      margin-left: 0;
+      visibility: hidden;
+      opacity: 0;
+    }
+
+    .party-due-sidebar-header {
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 10px;
+      border-bottom: 1px solid var(--appsheet-border-light);
+      background: #ffffff;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--appsheet-muted);
+    }
+
+    .sidebar-toggle-btn {
+      background: transparent;
+      border: none;
+      color: var(--appsheet-muted);
+      cursor: pointer;
+      padding: 4px 6px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      transition: background 0.15s;
+    }
+
+    .sidebar-toggle-btn:hover {
+      background: #f1f3f4;
+      color: #202124;
+    }
+
+    .party-due-sidebar-list {
+      display: flex;
+      flex-direction: column;
+      padding: 4px 0;
+    }
+
+    .party-due-sidebar-item {
+      padding: 9px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      font-size: 12px;
+      color: #3c4043;
+      border-left: 3px solid transparent;
+      transition: background 0.12s, border-color 0.12s;
+      user-select: none;
+    }
+
+    .party-due-sidebar-item:hover {
+      background: #f8f9fa;
+    }
+
+    .party-due-sidebar-item.active {
+      background: #e8f0fe;
+      color: #1a73e8;
+      font-weight: 600;
+      border-left-color: #1a73e8;
+    }
+
+    .party-due-sidebar-item .fy-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .party-due-sidebar-item .fy-bullet {
+      font-size: 9px;
+      color: #1a73e8;
+    }
+
+    .party-due-sidebar-item .fy-badge {
+      background: #f1f3f4;
+      color: #3c4043;
+      border: 1px solid #dadce0;
+      font-size: 10px;
+      font-weight: 500;
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .btn-unhide-sidebar {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      z-index: 10;
+      background: #ffffff;
+      border: 1px solid var(--appsheet-border);
+      border-radius: 4px;
+      padding: 3px 10px;
+      font-size: 11.5px;
+      font-weight: 500;
+      color: var(--appsheet-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 1px 3px rgba(60,64,67,0.12);
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .btn-unhide-sidebar:hover {
+      background: #f8f9fa;
+      color: #202124;
+    }
+
+    /* 3. Main Party Due Content Table */
+    .party-due-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      min-width: 0;
+      background: #ffffff;
+      position: relative;
+    }
+
+    .party-due-toolbar {
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      border-bottom: 1px solid var(--appsheet-border);
+      background: #ffffff;
+      font-size: 11.5px;
+      color: var(--appsheet-muted);
+    }
+
+    .party-due-table-scroll {
+      flex: 1;
+      overflow: auto;
+      max-height: calc(100vh - 170px);
+    }
+
+    .party-due-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      font-size: 11px;
+    }
+
+    .party-due-table th {
+      background: #ffffff;
+      color: #5f6368;
+      font-weight: 600;
+      font-size: 10.5px;
+      padding: 8px 6px;
+      border-bottom: 1px solid var(--appsheet-border);
+      position: sticky;
+      top: 0;
+      z-index: 4;
+      text-align: left;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Date Group Header Row */
+    .party-due-group-tr {
+      background: #fafafa;
+      border-top: 1px solid #e0e0e0;
+      border-bottom: 1px solid #e0e0e0;
+      font-weight: 600;
+      font-size: 11.5px;
+      position: sticky;
+      top: 31px;
+      z-index: 3;
+    }
+
+    .party-due-group-cell {
+      padding: 6px 10px;
+    }
+
+    .party-due-group-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .party-due-group-badge {
+      background: #f1f3f4;
+      border: 1px solid #dadce0;
+      border-radius: 3px;
+      padding: 1.5px 8px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #3c4043;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Row Item */
+    .party-due-row {
+      cursor: pointer;
+      transition: background 0.1s ease-in-out;
+      border-bottom: 1px solid #f1f3f4;
+    }
+
+    .party-due-row:hover {
+      background-color: #f8f9fa;
+    }
+
+    .party-due-row td {
+      padding: 6px 6px;
+      vertical-align: middle;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 11px;
+      color: #202124;
+    }
+
+    .due-amount-red {
+      color: #d93025;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Multi-color Theme Bullets */
+    .bullet-golden { color: #bfa100; font-size: 8px; margin-right: 4px; }
+    .bullet-light-blue { color: #0088cc; font-size: 8px; margin-right: 4px; }
+    .bullet-dark-blue { color: #6200ea; font-size: 8px; margin-right: 4px; }
+    .bullet-pink { color: #e91e63; font-size: 8px; margin-right: 4px; }
+    .bullet-slate { color: #5f6368; font-size: 8px; margin-right: 4px; }
+
+    /* 4. Drilldown: Open Trip Details (3-Card Layout) */
+    .drilldown-wrap {
+      padding: 14px 16px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .drilldown-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr 1fr;
+      gap: 14px;
+      align-items: start;
+    }
+
+    @media (max-width: 1200px) {
+      .drilldown-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .drilldown-card {
+      background: #ffffff;
+      border: 1px solid var(--appsheet-border);
+      border-radius: 4px;
+      padding: 14px 18px;
+      box-shadow: 0 1px 2px rgba(60,64,67,0.06);
+    }
+
+    .drilldown-field {
+      display: flex;
+      padding: 6.5px 0;
+      border-bottom: 1px solid #f8f9fa;
+      font-size: 11.5px;
+      align-items: center;
+    }
+
+    .drilldown-field:last-child {
+      border-bottom: none;
+    }
+
+    .drilldown-field-label {
+      width: 140px;
+      color: #5f6368;
+      font-weight: 500;
+      flex-shrink: 0;
+    }
+
+    .drilldown-field-val {
+      flex: 1;
+      color: #202124;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      word-break: break-word;
+    }
+
+    /* Drilldown Color Theming */
+    .theme-golden .theme-dot { color: #bfa100; }
+    .theme-golden .theme-text { color: #bfa100; font-weight: 600; }
+    .theme-golden .theme-icon { color: #bfa100; }
+
+    .theme-light-blue .theme-dot { color: #0088cc; }
+    .theme-light-blue .theme-text { color: #0088cc; font-weight: 600; }
+    .theme-light-blue .theme-icon { color: #0088cc; }
+
+    .theme-dark-blue .theme-dot { color: #6200ea; }
+    .theme-dark-blue .theme-text { color: #6200ea; font-weight: 600; }
+    .theme-dark-blue .theme-icon { color: #6200ea; }
+
+    .theme-pink .theme-dot { color: #e91e63; }
+    .theme-pink .theme-text { color: #e91e63; font-weight: 600; }
+    .theme-pink .theme-icon { color: #e91e63; }
+
+    .theme-slate .theme-dot { color: #5f6368; }
+    .theme-slate .theme-text { color: #5f6368; font-weight: 600; }
+    .theme-slate .theme-icon { color: #5f6368; }
+
+    .tel-link {
+      color: inherit;
+      text-decoration: none;
+      margin-left: auto;
+      display: inline-flex;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .tel-link:hover {
+      opacity: 0.8;
+    }
+
+    /* Middle Card Subtable */
+    .drilldown-subtable-wrap {
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .drilldown-subtable {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+    }
+
+    .drilldown-subtable th {
+      background: #ffffff;
+      color: #5f6368;
+      font-weight: 600;
+      padding: 7px 8px;
+      border-bottom: 1px solid #dadce0;
+      font-size: 10.5px;
+    }
+
+    .drilldown-subtable td {
+      padding: 6.5px 8px;
+      border-bottom: 1px solid #f1f3f4;
+      font-size: 11px;
+    }
+
+    .drilldown-subtable tr:hover {
+      background: #f8f9fa;
+      cursor: pointer;
+    }
+
+    .subtable-footer-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      padding: 8px 10px;
+      background: #ffffff;
+      font-size: 11.5px;
+    }
+
+    .subtable-action-link {
+      color: #bfa100;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .subtable-action-link:hover {
+      text-decoration: underline;
+    }
+
+    /* 5. Expanded Subtable View */
+    .expanded-subtable-card {
+      background: #ffffff;
+      border: 1px solid var(--appsheet-border);
+      border-radius: 4px;
+      box-shadow: 0 1px 2px rgba(60,64,67,0.08);
+      margin: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      overflow: hidden;
+    }
   </style>
 </head>
 <body>
@@ -847,10 +1288,10 @@
           <!-- CARD 2: Party Due -->
           <section class="parties-card" id="card-party-due">
             <div class="parties-card-header">
-              <h2 class="parties-card-title">Party Due</h2>
+              <h2 class="parties-card-title" onclick="PartiesModule.showPartyDueList()" style="cursor: pointer;" title="View all Party Due">Party Due</h2>
               <div class="parties-card-tools">
                 <i class="bi bi-funnel" title="Filter Party Due" style="cursor: pointer;"></i>
-                <i class="bi bi-arrows-angle-expand" title="Expand Party Due" onclick="PartiesModule.expandCard('card-party-due')" style="cursor: pointer;"></i>
+                <i class="bi bi-arrows-angle-expand" title="Expand Party Due" onclick="PartiesModule.showPartyDueList()" style="cursor: pointer;"></i>
               </div>
             </div>
             <div class="parties-card-subheader">Year</div>
@@ -1022,6 +1463,168 @@
           </div>
         </div>
       </div>
+
+      <!-- 4. Party Due Main Table View (screencapture-appsheet-start-...-10_54_25.png) -->
+      <div id="view-party-due-list" class="parties-view-section d-none">
+        <div class="party-due-wrap">
+          <!-- Left Financial Year Rail / Sidebar -->
+          <aside class="party-due-sidebar" id="due-sidebar">
+            <div class="party-due-sidebar-header">
+              <span>Financial Year</span>
+              <button class="sidebar-toggle-btn" id="btn-toggle-due-sidebar" onclick="PartiesModule.toggleDueSidebar()" title="Collapse Sidebar">
+                <i class="bi bi-chevron-left" id="due-sidebar-icon"></i>
+              </button>
+            </div>
+            <div class="party-due-sidebar-list">
+              <div class="party-due-sidebar-item" id="fy-all" onclick="PartiesModule.setPartyDueFY('ALL')">
+                <div class="fy-left">
+                  <span>All</span>
+                </div>
+              </div>
+              <div class="party-due-sidebar-item active" id="fy-2026" onclick="PartiesModule.setPartyDueFY('2026-2027')">
+                <div class="fy-left">
+                  <span class="fy-bullet">●</span>
+                  <span>2026-2027</span>
+                </div>
+                <span class="fy-badge" id="due-fy-badge-2026">₹ 25,340,760.75</span>
+              </div>
+              <div class="party-due-sidebar-item" id="fy-2025" onclick="PartiesModule.setPartyDueFY('2025-2026')">
+                <div class="fy-left">
+                  <span class="fy-bullet">●</span>
+                  <span>2025-2026</span>
+                </div>
+                <span class="fy-badge" id="due-fy-badge-2025">₹ 918,706.10</span>
+              </div>
+              <div class="party-due-sidebar-item" id="fy-2024" onclick="PartiesModule.setPartyDueFY('2024-2025')">
+                <div class="fy-left">
+                  <span class="fy-bullet">●</span>
+                  <span>2024-2025</span>
+                </div>
+                <span class="fy-badge" id="due-fy-badge-2024">₹ 239,856.00</span>
+              </div>
+            </div>
+          </aside>
+
+          <!-- Floating Unhide Sidebar Pill Button -->
+          <button class="btn-unhide-sidebar d-none" id="btn-unhide-due-sidebar" onclick="PartiesModule.toggleDueSidebar(false)" title="Unhide Sidebar">
+            <i class="bi bi-layout-sidebar-inset"></i>
+            <span>Show Sidebar</span>
+          </button>
+
+          <!-- Right Content: 11-Column Table -->
+          <div class="party-due-content">
+            <div class="party-due-toolbar">
+              <div class="d-flex align-items-center gap-2">
+                <span id="due-record-count-text" class="fw-semibold">Showing records</span>
+                <span class="badge bg-light text-dark border" id="due-filter-badge">FY: 2026-2027</span>
+              </div>
+              <div class="d-flex align-items-center gap-3">
+                <div class="d-flex align-items-center gap-1">
+                  <span>Rows:</span>
+                  <select class="form-select form-select-sm py-0 px-2" id="due-page-size-select" style="width: 70px; height: 26px; font-size: 11.5px;" onchange="PartiesModule.setDuePageSize(this.value)">
+                    <option value="25">25</option>
+                    <option value="50" selected>50</option>
+                    <option value="100">100</option>
+                    <option value="all">All</option>
+                  </select>
+                </div>
+                <div class="d-flex align-items-center gap-1" id="due-pagination-controls">
+                  <!-- Prev / Next / Page buttons -->
+                </div>
+              </div>
+            </div>
+
+            <div class="party-due-table-scroll" id="party-due-table-scroll">
+              <table class="party-due-table" id="party-due-main-table">
+                <colgroup>
+                  <col style="width: 70px;">
+                  <col style="width: 80px;">
+                  <col style="width: 110px;">
+                  <col style="width: 120px;">
+                  <col style="width: 85px;">
+                  <col style="width: 220px;">
+                  <col style="width: 110px;">
+                  <col style="width: 150px;">
+                  <col style="width: 180px;">
+                  <col style="width: 200px;">
+                  <col style="width: 140px;">
+                  <col style="width: 35px;">
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th>Bill No.</th>
+                    <th>G.R.No.</th>
+                    <th>Trip Start Date</th>
+                    <th>Due Amount</th>
+                    <th>Transport</th>
+                    <th>Consignee</th>
+                    <th>Truck No.</th>
+                    <th>Destination</th>
+                    <th>Reference</th>
+                    <th>Owner</th>
+                    <th>Driver</th>
+                    <th style="text-align: center;"></th>
+                  </tr>
+                </thead>
+                <tbody id="party-due-table-body">
+                  <!-- Dynamically populated with date group rows & trip rows -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Drilldown View: Open Trip Details (Matching 3-Card screenshot) -->
+      <div id="view-party-due-drilldown" class="parties-view-section d-none">
+        <div class="drilldown-wrap" id="drilldown-container">
+          <div class="drilldown-grid">
+            <!-- Card 1 (Left - Trip Info) -->
+            <div class="drilldown-card" id="drilldown-card-left">
+              <!-- Dynamically populated with key-value fields and telephone icons -->
+            </div>
+
+            <!-- Card 2 (Middle - Consignor/s or Cheque subtable) -->
+            <div class="drilldown-card" id="drilldown-card-mid">
+              <!-- Dynamically populated with Consignor or Cheque table -->
+            </div>
+
+            <!-- Card 3 (Right - Financial & Status) -->
+            <div class="drilldown-card" id="drilldown-card-right">
+              <!-- Dynamically populated with Freight, Consignee, Status dropdown -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. Expanded Subtable View (Open Trip Party Details or Trip Cheque Details) -->
+      <div id="view-party-due-expanded-subtable" class="parties-view-section d-none">
+        <div class="expanded-subtable-card">
+          <div class="party-due-toolbar">
+            <span class="fw-semibold" id="expanded-subtable-title">Subtable Details</span>
+            <span id="expanded-subtable-count" class="badge bg-light text-dark border">0 records</span>
+          </div>
+          <div class="party-due-table-scroll">
+            <table class="party-due-table" id="expanded-subtable">
+              <thead id="expanded-subtable-head">
+                <!-- Dynamically populated columns -->
+              </thead>
+              <tbody id="expanded-subtable-body">
+                <!-- Dynamically populated rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7. Single Subitem Details View (Open Trip Party Details or Cheque Details single card) -->
+      <div id="view-party-due-subitem-card" class="parties-view-section d-none">
+        <div class="party-detail-wrap">
+          <div class="party-detail-center-card" id="subitem-center-card">
+            <!-- Dynamically populated card -->
+          </div>
+        </div>
+      </div>
     </main>
 
   </div>
@@ -1103,6 +1706,225 @@
     </div>
   </div>
 
+  <!-- Offcanvas: Update Trip Details Drawer (Matching drilldown_golden_3 & drilldown_slate_17) -->
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="tripDrawer" aria-labelledby="tripDrawerLabel" style="width: 540px; max-width: 100vw;">
+    <div class="offcanvas-header border-bottom py-2 px-3 d-flex justify-content-between align-items-center" style="background:#ffffff; min-height: 52px;">
+      <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn btn-sm btn-light border-0 p-1" data-bs-dismiss="offcanvas" aria-label="Close" title="Close">
+          <i class="bi bi-x-lg text-secondary"></i>
+        </button>
+        <span class="offcanvas-title fw-semibold" id="tripDrawerLabel" style="font-size: 15px; color: #202124;">Update Trip Details</span>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="offcanvas" style="font-size: 12px; padding: 3px 14px; border-radius: 4px; border-color: #dadce0; color: #5f6368; background: #ffffff;">Cancel</button>
+        <button type="button" class="btn-appsheet-save" id="btn-trip-drawer-save" onclick="PartiesModule.saveTripDetails()">Save</button>
+      </div>
+    </div>
+    <div class="offcanvas-body p-3" style="background: #ffffff;">
+      <form id="trip-update-form" onsubmit="event.preventDefault(); PartiesModule.saveTripDetails();">
+        <input type="hidden" id="tf-id" value="">
+
+        <!-- G.R.No.* -->
+        <div class="drawer-form-row">
+          <label class="drawer-form-label">G.R.No.<span class="req">*</span></label>
+          <div class="drawer-form-control">
+            <input type="text" class="form-control form-control-sm" id="tf-grno" readonly style="background:#f8f9fa; border-radius: 4px; font-size: 12.5px;">
+          </div>
+        </div>
+
+        <!-- Bilty Amount -->
+        <div class="drawer-form-row" id="tf-row-bilty">
+          <label class="drawer-form-label">Bilty Amount</label>
+          <div class="drawer-form-control">
+            <input type="number" step="0.01" class="form-control form-control-sm" id="tf-bilty-amount" oninput="PartiesModule.calcTripFreight()" style="border-radius: 4px; font-size: 12.5px;">
+          </div>
+        </div>
+
+        <!-- Consignee Billing Type (Searchable Combobox) -->
+        <div class="drawer-form-row" id="tf-row-billing-type">
+          <label class="drawer-form-label">Billing Type</label>
+          <div class="drawer-form-control position-relative">
+            <div class="appsheet-combobox-wrapper">
+              <input type="text" class="form-control form-control-sm appsheet-combobox-input" id="tf-billing-type" placeholder="Select or type billing type..." autocomplete="off">
+              <i class="bi bi-x-circle-fill appsheet-combobox-clear" id="tf-billing-type-clear" title="Clear"></i>
+              <i class="bi bi-caret-down-fill appsheet-combobox-chevron" id="tf-billing-type-chevron" title="Open dropdown"></i>
+            </div>
+            <div class="appsheet-combobox-dropdown" id="tf-billing-type-dropdown"></div>
+          </div>
+        </div>
+
+        <!-- Rate* -->
+        <div class="drawer-form-row">
+          <label class="drawer-form-label">Rate<span class="req">*</span></label>
+          <div class="drawer-form-control">
+            <input type="number" step="0.01" class="form-control form-control-sm" id="tf-rate" oninput="PartiesModule.calcTripFreight()" style="border-radius: 4px; font-size: 12.5px;">
+          </div>
+        </div>
+
+        <!-- Weight* -->
+        <div class="drawer-form-row">
+          <label class="drawer-form-label">Weight<span class="req">*</span></label>
+          <div class="drawer-form-control">
+            <input type="number" step="0.001" class="form-control form-control-sm" id="tf-weight" oninput="PartiesModule.calcTripFreight()" style="border-radius: 4px; font-size: 12.5px;">
+          </div>
+        </div>
+
+        <!-- Freight -->
+        <div class="drawer-form-row">
+          <label class="drawer-form-label">Freight</label>
+          <div class="drawer-form-control">
+            <input type="number" step="0.01" class="form-control form-control-sm" id="tf-freight" readonly style="background:#f8f9fa; border-radius: 4px; font-size: 12.5px;">
+          </div>
+        </div>
+
+        <!-- Hault Charges -->
+        <div class="drawer-form-row">
+          <label class="drawer-form-label">Hault Charges</label>
+          <div class="drawer-form-control">
+            <input type="number" step="0.01" class="form-control form-control-sm" id="tf-hault-charges" value="0" oninput="PartiesModule.calcTripFreight()" style="border-radius: 4px; font-size: 12.5px;">
+          </div>
+        </div>
+
+        <!-- Loading Charges -->
+        <div class="drawer-form-row">
+          <label class="drawer-form-label">Loading Charges</label>
+          <div class="drawer-form-control">
+            <input type="number" step="0.01" class="form-control form-control-sm" id="tf-loading-charges" value="0" oninput="PartiesModule.calcTripFreight()" style="border-radius: 4px; font-size: 12.5px;">
+          </div>
+        </div>
+
+        <!-- Other B (for Cheque Due) -->
+        <div class="drawer-form-row d-none" id="tf-row-other-b">
+          <label class="drawer-form-label">Other B<span class="req">*</span></label>
+          <div class="drawer-form-control">
+            <input type="number" step="0.01" class="form-control form-control-sm" id="tf-other-b" value="0" style="border-radius: 4px; font-size: 12.5px;">
+          </div>
+        </div>
+
+        <!-- Consignee (Searchable Combobox across 3,396 master parties) -->
+        <div class="drawer-form-row">
+          <label class="drawer-form-label">Consignee</label>
+          <div class="drawer-form-control position-relative">
+            <div class="appsheet-combobox-wrapper">
+              <input type="text" class="form-control form-control-sm appsheet-combobox-input" id="tf-consignee" placeholder="Search or select consignee..." autocomplete="off">
+              <i class="bi bi-x-circle-fill appsheet-combobox-clear" id="tf-consignee-clear" title="Clear"></i>
+              <i class="bi bi-caret-down-fill appsheet-combobox-chevron" id="tf-consignee-chevron" title="Open dropdown"></i>
+            </div>
+            <div class="appsheet-combobox-dropdown" id="tf-consignee-dropdown"></div>
+          </div>
+        </div>
+
+        <!-- POD to Shipper/Buyer -->
+        <div class="drawer-form-row">
+          <label class="drawer-form-label">POD to Shipper/Buyer</label>
+          <div class="drawer-form-control d-flex gap-2">
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="tf-pod-to" id="tf-pod-shipper" value="Shipper" checked>
+              <label class="form-check-label fw-semibold" for="tf-pod-shipper" style="font-size: 12px; color: #bfa100;">● Shipper</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="tf-pod-to" id="tf-pod-buyer" value="Buyer">
+              <label class="form-check-label fw-semibold" for="tf-pod-buyer" style="font-size: 12px; color: #bfa100;">● Buyer</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- POD Date -->
+        <div class="drawer-form-row">
+          <label class="drawer-form-label">POD Date</label>
+          <div class="drawer-form-control">
+            <input type="date" class="form-control form-control-sm" id="tf-pod-date" style="border-radius: 4px; font-size: 12.5px;">
+          </div>
+        </div>
+
+        <!-- POD Weight -->
+        <div class="drawer-form-row">
+          <label class="drawer-form-label">POD Weight</label>
+          <div class="drawer-form-control">
+            <input type="number" step="0.001" class="form-control form-control-sm" id="tf-pod-weight" placeholder="0.000" style="border-radius: 4px; font-size: 12.5px;">
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Offcanvas: Add Cheque Details Drawer (Matching drilldown_slate_11) -->
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="chequeDrawer" aria-labelledby="chequeDrawerLabel" style="width: 500px; max-width: 100vw;">
+    <div class="offcanvas-header border-bottom py-2 px-3 d-flex justify-content-between align-items-center" style="background:#ffffff; min-height: 52px;">
+      <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn btn-sm btn-light border-0 p-1" data-bs-dismiss="offcanvas" aria-label="Close" title="Close">
+          <i class="bi bi-x-lg text-secondary"></i>
+        </button>
+        <span class="offcanvas-title fw-semibold" id="chequeDrawerLabel" style="font-size: 15px; color: #202124;">Cheque Details</span>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="offcanvas" style="font-size: 12px; padding: 3px 14px; border-radius: 4px; border-color: #dadce0; color: #5f6368; background: #ffffff;">Cancel</button>
+        <button type="button" class="btn-appsheet-save" id="btn-cheque-drawer-save" onclick="PartiesModule.saveChequeDetails()">Save</button>
+      </div>
+    </div>
+    <div class="offcanvas-body p-3" style="background: #ffffff;">
+      <form id="cheque-form" onsubmit="event.preventDefault(); PartiesModule.saveChequeDetails();">
+        <!-- Cheque Due Date* -->
+        <div class="drawer-form-row">
+          <label class="drawer-form-label">Cheque Due Date<span class="req">*</span></label>
+          <div class="drawer-form-control">
+            <input type="date" class="form-control form-control-sm" id="cf-due-date" required style="border-radius: 4px; font-size: 12.5px;">
+          </div>
+        </div>
+
+        <!-- Party Due Payment -->
+        <div class="drawer-form-row">
+          <label class="drawer-form-label">Party Due Payment</label>
+          <div class="drawer-form-control">
+            <input type="text" class="form-control form-control-sm" id="cf-party-due-payment" readonly style="background:#f8f9fa; border-radius: 4px; font-size: 12.5px;">
+          </div>
+        </div>
+
+        <!-- Amount* -->
+        <div class="drawer-form-row">
+          <label class="drawer-form-label">Amount<span class="req">*</span></label>
+          <div class="drawer-form-control">
+            <input type="number" step="0.01" class="form-control form-control-sm" id="cf-amount" required placeholder="0.00" style="border-radius: 4px; font-size: 12.5px;">
+          </div>
+        </div>
+
+        <!-- Bank* (Searchable Combobox) -->
+        <div class="drawer-form-row">
+          <label class="drawer-form-label">Bank<span class="req">*</span></label>
+          <div class="drawer-form-control position-relative">
+            <div class="appsheet-combobox-wrapper">
+              <input type="text" class="form-control form-control-sm appsheet-combobox-input" id="cf-bank" placeholder="Select or type bank name..." autocomplete="off">
+              <i class="bi bi-x-circle-fill appsheet-combobox-clear" id="cf-bank-clear" title="Clear"></i>
+              <i class="bi bi-caret-down-fill appsheet-combobox-chevron" id="cf-bank-chevron" title="Open dropdown"></i>
+            </div>
+            <div class="appsheet-combobox-dropdown" id="cf-bank-dropdown"></div>
+          </div>
+        </div>
+
+        <!-- Cheque No.* -->
+        <div class="drawer-form-row">
+          <label class="drawer-form-label">Cheque No.<span class="req">*</span></label>
+          <div class="drawer-form-control">
+            <input type="text" class="form-control form-control-sm" id="cf-cheque-no" required placeholder="e.g. 000004" style="border-radius: 4px; font-size: 12.5px;">
+          </div>
+        </div>
+
+        <!-- Pay to* (Searchable Combobox) -->
+        <div class="drawer-form-row">
+          <label class="drawer-form-label">Pay to<span class="req">*</span></label>
+          <div class="drawer-form-control position-relative">
+            <div class="appsheet-combobox-wrapper">
+              <input type="text" class="form-control form-control-sm appsheet-combobox-input" id="cf-payto" placeholder="Select or type Pay to..." autocomplete="off">
+              <i class="bi bi-x-circle-fill appsheet-combobox-clear" id="cf-payto-clear" title="Clear"></i>
+              <i class="bi bi-caret-down-fill appsheet-combobox-chevron" id="cf-payto-chevron" title="Open dropdown"></i>
+            </div>
+            <div class="appsheet-combobox-dropdown" id="cf-payto-dropdown"></div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Bootstrap 5 Bundle JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -1115,6 +1937,8 @@
 
   <!-- Master Dataset (3,396 Authentic Parties) -->
   <script src="../js/sample-parties-data.js"></script>
+  <!-- Authentic Party Due Dataset (386 Trips with 5 Color Schemes) -->
+  <script src="../js/party-due-data.js"></script>
   <!-- Parties Controller Module -->
   <script src="../js/modules/parties.js"></script>
 
