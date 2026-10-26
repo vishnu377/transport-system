@@ -1009,51 +1009,102 @@
     }
 
     .party-due-row td {
-      padding: 6px 6px;
+      padding: 6px 8px;
       vertical-align: middle;
-      white-space: nowrap;
+      white-space: nowrap !important;
       overflow: hidden;
       text-overflow: ellipsis;
-      font-size: 11px;
+      font-size: 11.5px;
       color: #202124;
+      line-height: 1.2;
     }
 
-    /* Entire Row Color in Google AppSheet */
+    /* Single Horizontal Inline Flex Cell (Prevents Dot from wrapping onto separate line) */
+    .party-due-cell-inner {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap !important;
+      max-width: 100%;
+      vertical-align: middle;
+    }
+
+    .party-due-cell-inner .cell-text {
+      white-space: nowrap !important;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    /* Bottom Pagination Bar */
+    .party-due-bottom-pagination {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 16px;
+      background: #ffffff;
+      border-top: 1px solid #e8eaed;
+      font-size: 11.5px;
+      color: #3c4043;
+      flex-shrink: 0;
+    }
+
+    /* Entire Row Color in Google AppSheet (Applied to all cells and child elements) */
     .party-due-row.row-theme-golden td,
-    .party-due-row.row-golden td {
+    .party-due-row.row-theme-golden td *,
+    .party-due-row.row-golden td,
+    .party-due-row.row-golden td * {
       color: #bfa100 !important;
       font-weight: 500;
     }
     .party-due-row.row-theme-light_blue td,
+    .party-due-row.row-theme-light_blue td *,
     .party-due-row.row-theme-light-blue td,
-    .party-due-row.row-light_blue td {
+    .party-due-row.row-theme-light-blue td *,
+    .party-due-row.row-light_blue td,
+    .party-due-row.row-light_blue td * {
       color: #0088cc !important;
       font-weight: 500;
     }
     .party-due-row.row-theme-dark_blue td,
+    .party-due-row.row-theme-dark_blue td *,
     .party-due-row.row-theme-dark-blue td,
-    .party-due-row.row-dark_blue td {
+    .party-due-row.row-theme-dark-blue td *,
+    .party-due-row.row-dark_blue td,
+    .party-due-row.row-dark_blue td * {
       color: #6200ea !important;
       font-weight: 500;
     }
     .party-due-row.row-theme-pink td,
-    .party-due-row.row-pink td {
+    .party-due-row.row-theme-pink td *,
+    .party-due-row.row-pink td,
+    .party-due-row.row-pink td * {
       color: #e91e63 !important;
       font-weight: 500;
     }
     .party-due-row.row-theme-slate td,
-    .party-due-row.row-slate td {
+    .party-due-row.row-theme-slate td *,
+    .party-due-row.row-slate td,
+    .party-due-row.row-slate td * {
       color: #5f6368 !important;
       font-weight: 500;
     }
 
+    /* Due Amount is ALWAYS RED with RED BULLET */
     .due-amount-red,
     .party-due-row td.due-amount-red,
+    .party-due-row td.due-amount-red *,
     .party-due-row.row-theme-golden td.due-amount-red,
+    .party-due-row.row-theme-golden td.due-amount-red *,
     .party-due-row.row-theme-light_blue td.due-amount-red,
+    .party-due-row.row-theme-light_blue td.due-amount-red *,
     .party-due-row.row-theme-dark_blue td.due-amount-red,
+    .party-due-row.row-theme-dark_blue td.due-amount-red *,
     .party-due-row.row-theme-pink td.due-amount-red,
-    .party-due-row.row-theme-slate td.due-amount-red {
+    .party-due-row.row-theme-pink td.due-amount-red *,
+    .party-due-row.row-theme-slate td.due-amount-red,
+    .party-due-row.row-theme-slate td.due-amount-red * {
       color: #d93025 !important;
       font-weight: 700 !important;
       font-variant-numeric: tabular-nums;
@@ -1340,10 +1391,22 @@
       font-size: 10.5px;
     }
 
-    .drilldown-subtable td {
-      padding: 6.5px 8px;
-      border-bottom: 1px solid #f1f3f4;
+    .drilldown-subtable th {
+      background: #ffffff;
+      color: #5f6368;
+      font-weight: 600;
+      padding: 7px 10px;
+      border-bottom: 1px solid #dadce0;
       font-size: 11px;
+      white-space: nowrap !important;
+    }
+
+    .drilldown-subtable td {
+      padding: 7px 10px;
+      border-bottom: 1px solid #f1f3f4;
+      font-size: 11.5px;
+      white-space: nowrap !important;
+      vertical-align: middle;
     }
 
     .drilldown-subtable tr:hover {
@@ -1444,7 +1507,7 @@
           <!-- CARD 1: Parties Detail -->
           <section class="parties-card" id="card-parties-detail">
             <div class="parties-card-header">
-              <h2 class="parties-card-title" onclick="PartiesModule.showFullList()" style="cursor: pointer;" title="View all parties full screen">Parties Detail</h2>
+              <h2 class="parties-card-title" onclick="PartiesModule.showFullList()" style="cursor: pointer;" title="View all parties full screen">Parties Detail <span class="parties-count-badge ms-2" id="parties-card-count-badge" style="font-size: 11px; padding: 2px 7px; background: #e8eaed; border-radius: 4px; color: #3c4043; font-weight: 600;">3,396</span></h2>
               <div class="parties-card-tools">
                 <button class="btn-appsheet-add" onclick="PartiesModule.openAddModal()" title="Add">
                   <span class="btn-add-plus">+</span> Add
@@ -1712,20 +1775,6 @@
                 <span id="due-record-count-text" class="fw-semibold">Showing records</span>
                 <span class="badge bg-light text-dark border" id="due-filter-badge">FY: 2026-2027</span>
               </div>
-              <div class="d-flex align-items-center gap-3">
-                <div class="d-flex align-items-center gap-1">
-                  <span>Rows:</span>
-                  <select class="form-select form-select-sm py-0 px-2" id="due-page-size-select" style="width: 70px; height: 26px; font-size: 11.5px;" onchange="PartiesModule.setDuePageSize(this.value)">
-                    <option value="25">25</option>
-                    <option value="50" selected>50</option>
-                    <option value="100">100</option>
-                    <option value="all">All</option>
-                  </select>
-                </div>
-                <div class="d-flex align-items-center gap-1" id="due-pagination-controls">
-                  <!-- Prev / Next / Page buttons -->
-                </div>
-              </div>
             </div>
 
             <div class="party-due-table-scroll" id="party-due-table-scroll">
@@ -1764,6 +1813,27 @@
                   <!-- Dynamically populated with date group rows & trip rows -->
                 </tbody>
               </table>
+            </div>
+
+            <!-- Bottom Pagination Bar matching Google AppSheet -->
+            <div class="party-due-bottom-pagination">
+              <div class="d-flex align-items-center gap-2">
+                <span id="due-record-count-bottom" class="text-muted" style="font-size: 11.5px;">Showing records</span>
+              </div>
+              <div class="d-flex align-items-center gap-3">
+                <div class="d-flex align-items-center gap-1">
+                  <span style="font-size: 11.5px; color: #5f6368;">Rows:</span>
+                  <select class="form-select form-select-sm py-0 px-2" id="due-page-size-select" style="width: 70px; height: 26px; font-size: 11.5px;" onchange="PartiesModule.setDuePageSize(this.value)">
+                    <option value="25">25</option>
+                    <option value="50" selected>50</option>
+                    <option value="100">100</option>
+                    <option value="all">All</option>
+                  </select>
+                </div>
+                <div class="d-flex align-items-center gap-1" id="due-pagination-controls">
+                  <!-- Prev / Next / Page buttons -->
+                </div>
+              </div>
             </div>
           </div>
         </div>

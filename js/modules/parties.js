@@ -410,6 +410,10 @@ const PartiesModule = {
       countBadge.textContent = txt;
       countBadge.innerText = txt;
     }
+    const cardBadge = document.getElementById('parties-card-count-badge');
+    if (cardBadge) {
+      cardBadge.textContent = `${this.filteredParties.length.toLocaleString('en-US')}`;
+    }
   },
 
   highlightMatch(text, query) {
@@ -977,23 +981,36 @@ const PartiesModule = {
 
         trips.forEach(t => {
           if (runningIndex >= startIndex && runningIndex < endIndex) {
-            const dot = `<span class="appsheet-bullet bullet-${t.colorScheme}">●</span>`;
-            const billDisplay = t.billNo ? `<span class="fw-semibold">${t.billNo}</span>` : dot;
             const shortGr = t.shortGrNo || t.grNo;
+            const billDisplay = t.billNo 
+              ? `<span class="fw-semibold">${t.billNo}</span>` 
+              : `<span class="appsheet-bullet bullet-${t.colorScheme}">●</span>`;
+
+            const c = (val, isBold = false) => `
+              <div class="party-due-cell-inner ${isBold ? 'fw-semibold' : ''}">
+                <span class="appsheet-bullet bullet-${t.colorScheme}">●</span>
+                <span class="cell-text">${val || '-'}</span>
+              </div>
+            `;
 
             html += `
               <tr class="party-due-row row-theme-${t.colorScheme}" onclick="PartiesModule.openPartyDueDrilldown('${t.id}')">
                 <td>${billDisplay}</td>
-                <td class="fw-semibold">${dot} <span class="cell-truncate">${shortGr}</span></td>
-                <td>${dot} ${t.tripStartDate}</td>
-                <td class="due-amount-red"><span class="appsheet-bullet bullet-red">●</span> ₹ ${this.formatCurrency(t.dueAmount)}</td>
-                <td>${dot} ${t.transport}</td>
-                <td><span class="cell-truncate">${dot} ${t.consignee}</span></td>
-                <td><span class="cell-truncate">${dot} ${t.truckNo}</span></td>
-                <td><span class="cell-truncate">${dot} ${t.destination}</span></td>
-                <td><span class="cell-truncate">${dot} ${t.reference}</span></td>
-                <td><span class="cell-truncate">${dot} ${t.owner}</span></td>
-                <td><span class="cell-truncate">${dot} ${t.driver}</span></td>
+                <td>${c(shortGr, true)}</td>
+                <td>${c(t.tripStartDate)}</td>
+                <td class="due-amount-red">
+                  <div class="party-due-cell-inner">
+                    <span class="appsheet-bullet bullet-red">●</span>
+                    <span class="cell-text">₹ ${this.formatCurrency(t.dueAmount)}</span>
+                  </div>
+                </td>
+                <td>${c(t.transport)}</td>
+                <td>${c(t.consignee)}</td>
+                <td>${c(t.truckNo)}</td>
+                <td>${c(t.destination)}</td>
+                <td>${c(t.reference)}</td>
+                <td>${c(t.owner)}</td>
+                <td>${c(t.driver)}</td>
                 <td style="text-align: right; color: #5f6368;"><i class="bi bi-chevron-right" style="font-size: 11px;"></i></td>
               </tr>
             `;
@@ -1022,10 +1039,15 @@ const PartiesModule = {
     const nextDisabled = this.dueCurrentPage >= totalPages ? 'disabled' : '';
 
     container.innerHTML = `
-      <button class="btn btn-sm btn-outline-secondary py-0 px-2" style="font-size: 11px;" ${prevDisabled} onclick="PartiesModule.setDuePage(${this.dueCurrentPage - 1})">&laquo; Prev</button>
-      <span class="small mx-1 text-muted">Page ${this.dueCurrentPage} of ${totalPages}</span>
-      <button class="btn btn-sm btn-outline-secondary py-0 px-2" style="font-size: 11px;" ${nextDisabled} onclick="PartiesModule.setDuePage(${this.dueCurrentPage + 1})">Next &raquo;</button>
+      <button class="btn btn-sm btn-outline-secondary py-0 px-2" style="font-size: 11.5px; border-radius: 4px;" ${prevDisabled} onclick="PartiesModule.setDuePage(${this.dueCurrentPage - 1})">&laquo; Prev</button>
+      <span class="small mx-2 text-muted fw-semibold" style="font-size: 11.5px;">Page ${this.dueCurrentPage} of ${totalPages}</span>
+      <button class="btn btn-sm btn-outline-secondary py-0 px-2" style="font-size: 11.5px; border-radius: 4px;" ${nextDisabled} onclick="PartiesModule.setDuePage(${this.dueCurrentPage + 1})">Next &raquo;</button>
     `;
+
+    const bottomCount = document.getElementById('due-record-count-bottom');
+    if (bottomCount) {
+      bottomCount.textContent = `Showing ${totalRecords} records`;
+    }
   },
 
   openPartyDueDrilldown(tripId) {
@@ -1209,26 +1231,28 @@ const PartiesModule = {
             <span class="badge bg-light text-dark border" style="font-size: 11px;">${consignors.length}</span>
           </div>
           <div class="drilldown-subtable-wrap">
-            <table class="drilldown-subtable">
-              <thead>
-                <tr>
-                  <th style="width: 32%;">GSTIN</th>
-                  <th style="width: 32%;">Consignor</th>
-                  <th style="width: 36%;">Consignor Address</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                ${consignors.map((c, i) => `
-                  <tr onclick="PartiesModule.openPartyDueSubitem(${i}, 'consignor')">
-                    <td class="font-monospace">${c.gstin}</td>
-                    <td class="fw-semibold">${c.consignor}</td>
-                    <td><span class="cell-truncate" title="${c.address}">${c.address}</span></td>
-                    <td style="text-align: right; color: #5f6368;"><i class="bi bi-chevron-right" style="font-size: 10px;"></i></td>
+            <div style="overflow-x: auto;">
+              <table class="drilldown-subtable">
+                <thead>
+                  <tr>
+                    <th style="width: 140px; white-space: nowrap;">GSTIN</th>
+                    <th style="min-width: 170px; white-space: nowrap;">Consignor</th>
+                    <th style="min-width: 250px; white-space: nowrap;">Consignor Address</th>
+                    <th style="width: 25px;"></th>
                   </tr>
-                `).join('')}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  ${consignors.map((c, i) => `
+                    <tr onclick="PartiesModule.openPartyDueSubitem(${i}, 'consignor')">
+                      <td class="font-monospace text-nowrap">${c.gstin}</td>
+                      <td class="fw-semibold text-nowrap">${c.consignor}</td>
+                      <td class="text-nowrap"><span class="cell-truncate text-nowrap" title="${c.address}">${c.address}</span></td>
+                      <td style="text-align: right; color: #5f6368;"><i class="bi bi-chevron-right" style="font-size: 10px;"></i></td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
             <div class="subtable-footer-actions">
               <a class="subtable-action-link" onclick="PartiesModule.openPartyDueSubtable('consignor')">Expand</a>
             </div>
