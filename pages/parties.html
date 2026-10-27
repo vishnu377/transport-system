@@ -1463,21 +1463,116 @@
     /* ========================================================
        PARTY PAID THEMES & COMPONENTS
        ======================================================== */
-    .theme-paid-green .theme-dot { color: #2e7d32 !important; }
-    .theme-paid-green .theme-text { color: #2e7d32 !important; font-weight: 600; }
-    .theme-paid-green .theme-icon { color: #2e7d32 !important; }
+    /* PARTY PAID COLOR THEMES (Values & Dots 100% Matching Screenshots) */
+    .theme-paid-green .theme-dot,
+    .theme-paid-green .drilldown-card-title .theme-dot { color: #2e7d32 !important; }
+    .theme-paid-green .theme-text,
+    .theme-paid-green .drilldown-field-val,
+    .theme-paid-green .drilldown-field-val span.theme-text {
+      color: #2e7d32 !important;
+      font-weight: 600 !important;
+      font-size: 12px;
+    }
+    .theme-paid-green .theme-icon,
+    .theme-paid-green .theme-phone-icon { color: #2e7d32 !important; font-size: 13px; }
 
-    .theme-paid-sky-blue .theme-dot { color: #00bfa5 !important; }
-    .theme-paid-sky-blue .theme-text { color: #00bfa5 !important; font-weight: 600; }
-    .theme-paid-sky-blue .theme-icon { color: #00bfa5 !important; }
+    .theme-paid-sky-blue .theme-dot,
+    .theme-paid-sky-blue .drilldown-card-title .theme-dot { color: #00bfa5 !important; }
+    .theme-paid-sky-blue .theme-text,
+    .theme-paid-sky-blue .drilldown-field-val,
+    .theme-paid-sky-blue .drilldown-field-val span.theme-text {
+      color: #00bfa5 !important;
+      font-weight: 600 !important;
+      font-size: 12px;
+    }
+    .theme-paid-sky-blue .theme-icon,
+    .theme-paid-sky-blue .theme-phone-icon { color: #00bfa5 !important; font-size: 13px; }
 
-    .theme-paid-blue .theme-dot { color: #0088cc !important; }
-    .theme-paid-blue .theme-text { color: #0088cc !important; font-weight: 600; }
-    .theme-paid-blue .theme-icon { color: #0088cc !important; }
+    .theme-paid-blue .theme-dot,
+    .theme-paid-blue .drilldown-card-title .theme-dot { color: #0088cc !important; }
+    .theme-paid-blue .theme-text,
+    .theme-paid-blue .drilldown-field-val,
+    .theme-paid-blue .drilldown-field-val span.theme-text {
+      color: #0088cc !important;
+      font-weight: 600 !important;
+      font-size: 12px;
+    }
+    .theme-paid-blue .theme-icon,
+    .theme-paid-blue .theme-phone-icon { color: #0088cc !important; font-size: 13px; }
 
-    .theme-paid-red .theme-dot { color: #d93025 !important; }
-    .theme-paid-red .theme-text { color: #d93025 !important; font-weight: 600; }
-    .theme-paid-red .theme-icon { color: #d93025 !important; }
+    .theme-paid-red .theme-dot,
+    .theme-paid-red .drilldown-card-title .theme-dot { color: #d93025 !important; }
+    .theme-paid-red .theme-text,
+    .theme-paid-red .drilldown-field-val,
+    .theme-paid-red .drilldown-field-val span.theme-text {
+      color: #d93025 !important;
+      font-weight: 600 !important;
+      font-size: 12px;
+    }
+    .theme-paid-red .theme-icon,
+    .theme-paid-red .theme-phone-icon { color: #d93025 !important; font-size: 13px; }
+
+    /* ALL PARTY PAID TABLE ROWS ARE 100% GREEN */
+    #party-paid-table tbody tr td {
+      color: #2e7d32 !important;
+      font-weight: 500 !important;
+      font-size: 12px !important;
+    }
+    #party-paid-table tbody tr td .cell-text,
+    #party-paid-table tbody tr td .cell-text-green,
+    #party-paid-table tbody tr td span {
+      color: #2e7d32 !important;
+      font-weight: 500 !important;
+    }
+    #party-paid-table tbody tr:hover td {
+      background-color: #f1f8e9 !important;
+    }
+    .party-paid-cell-inner {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+    .cell-text-green {
+      color: #2e7d32 !important;
+      font-weight: 500 !important;
+      font-size: 12px;
+    }
+    .bullet-paid-green {
+      color: #2e7d32 !important;
+      font-size: 9px;
+    }
+
+    /* Subtable clean fit without ugly horizontal scrollbars */
+    .drilldown-subtable-wrap {
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      overflow-x: hidden !important;
+      margin-top: 8px;
+      background: #ffffff;
+    }
+    .drilldown-subtable {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: auto;
+      font-size: 11px;
+    }
+    .drilldown-subtable th {
+      background: #ffffff;
+      color: #5f6368;
+      font-weight: 600;
+      padding: 6px 8px;
+      border-bottom: 1px solid #dadce0;
+      font-size: 10.5px;
+      white-space: nowrap;
+    }
+    .drilldown-subtable td {
+      padding: 6px 8px;
+      border-bottom: 1px solid #f1f3f4;
+      font-size: 11.5px;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
 
     .bullet-paid-green { color: #2e7d32; font-size: 11px; }
     .bullet-paid-sky-blue { color: #00bfa5; font-size: 11px; }
@@ -1703,7 +1798,7 @@
                 <div class="parties-row-left">
                   <span class="bullet-green">●</span>
                   <span class="label-green">2026-2027</span>
-                  <span class="badge-pill-green" id="badge-paid-2026">₹ 388,648,303.25</span>
+                  <span class="badge-pill-green" id="badge-paid-2026">₹ 398,192,487.25</span>
                 </div>
                 <i class="bi bi-chevron-right parties-chevron"></i>
               </div>
@@ -1996,7 +2091,7 @@
               <div class="due-sidebar-item active" id="paid-fy-item-2026-2027" onclick="PartiesModule.setPartyPaidFY('2026-2027')">
                 <span class="due-sidebar-dot bullet-paid-green">●</span>
                 <span class="due-sidebar-name">2026-2027</span>
-                <span class="badge-pill-green ms-auto" id="paid-fy-badge-2026">₹ 391,555,800.25</span>
+                <span class="badge-pill-green ms-auto" id="paid-fy-badge-2026">₹ 398,192,487.25</span>
               </div>
               <div class="due-sidebar-item" id="paid-fy-item-2025-2026" onclick="PartiesModule.setPartyPaidFY('2025-2026')">
                 <span class="due-sidebar-dot bullet-paid-green">●</span>
@@ -2026,7 +2121,7 @@
               <table class="party-due-table" id="party-paid-table">
                 <thead>
                   <tr>
-                    <th style="min-width: 120px;">G.R.No.</th>
+                    <th style="min-width: 130px;">G.R.No.</th>
                     <th style="min-width: 95px;">Start Date</th>
                     <th style="min-width: 110px;">Truck No.</th>
                     <th style="min-width: 120px;">To</th>
@@ -2039,6 +2134,11 @@
                     <th style="min-width: 105px;">Payment Date</th>
                     <th style="min-width: 110px; text-align: right;">Amount Paid</th>
                     <th style="min-width: 105px;">Mode</th>
+                    <th style="min-width: 100px;">Beneficiary</th>
+                    <th style="min-width: 80px;">From Bank</th>
+                    <th style="min-width: 80px;">To Bank</th>
+                    <th style="min-width: 120px;">Description</th>
+                    <th style="min-width: 100px;">Paid To</th>
                     <th style="width: 30px;"></th>
                   </tr>
                 </thead>

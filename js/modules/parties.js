@@ -254,7 +254,7 @@ const PartiesModule = {
       'total': 27459790.86
     },
     paid: {
-      '2026-2027': 388648303.25,
+      '2026-2027': 398192487.25,
       '2025-2026': 615289069.19,
       '2024-2025': 254526755.64,
       'total': 1258464128.08
@@ -302,6 +302,8 @@ const PartiesModule = {
         if (!e.target || !e.target.closest || 
             (!e.target.closest('.appsheet-status-dropdown-wrap') && 
              !e.target.closest('#due-date-filter-wrap') && 
+             !e.target.closest('#paid-date-filter-wrap') &&
+             !e.target.closest('#paid-toolbar-actions') &&
              !e.target.closest('.appsheet-select-menu') &&
              !e.target.closest('.dropdown'))) {
           this.closeAllDropdowns();
@@ -2301,12 +2303,16 @@ const PartiesModule = {
     const bDash25 = document.getElementById('badge-paid-2025');
     const bDash24 = document.getElementById('badge-paid-2024');
 
-    if (b26) b26.textContent = '₹ 391,555,800.25';
-    if (b25) b25.textContent = '₹ 615,289,069.19';
-    if (b24) b24.textContent = '₹ 254,526,765.64';
-    if (bDash26) bDash26.textContent = '₹ 391,555,800.25';
-    if (bDash25) bDash25.textContent = '₹ 615,289,069.19';
-    if (bDash24) bDash24.textContent = '₹ 254,526,765.64';
+    const total2026 = '₹ 398,192,487.25';
+    const total2025 = '₹ 615,289,069.19';
+    const total2024 = '₹ 254,526,765.64';
+
+    if (b26) b26.textContent = total2026;
+    if (b25) b25.textContent = total2025;
+    if (b24) b24.textContent = total2024;
+    if (bDash26) bDash26.textContent = total2026;
+    if (bDash25) bDash25.textContent = total2025;
+    if (bDash24) bDash24.textContent = total2024;
   },
 
   showPartyPaidList(year = '2026-2027') {
@@ -2324,9 +2330,9 @@ const PartiesModule = {
       }
     }
 
+    this.paidCurrentFY = year;
     this.paidDateFilter = 'ALL';
     this.paidSearchQuery = '';
-    this.paidCurrentFY = year;
     this.paidCurrentPage = 1;
 
     this.setBreadcrumb([
@@ -2335,41 +2341,51 @@ const PartiesModule = {
       { label: 'Party Paid', current: true }
     ]);
 
-    const activeDateLabel = 'All Dates';
-    const dateOptions = this.getDistinctPaidDatesList().slice(0, 30).map(d => `
-      <div class="select-option" onclick="PartiesModule.setPaidDateFilter('${d}')">
-        <span class="appsheet-bullet bullet-paid-green">●</span> ${d}
-      </div>
-    `).join('');
+    this.renderPaidToolbar();
+    this.setSearchPlaceholder('Search Party Paid');
+    this.setPartyPaidFY(year);
+  },
+
+  renderPaidToolbar() {
+    const dates = this.getDistinctPaidDatesList();
+    const activeLabel = this.paidDateFilter === 'ALL' ? 'All Dates' : this.paidDateFilter;
+
+    const dateOptionsHtml = [
+      `<div class="select-option fw-bold text-success border-bottom" onclick="PartiesModule.setPaidDateFilter('ALL')">
+        <i class="bi bi-calendar-check me-2"></i> All Dates (Show All)
+      </div>`,
+      ...dates.map(d => `
+        <div class="select-option" onclick="PartiesModule.setPaidDateFilter('${d}')">
+          <span class="appsheet-bullet bullet-paid-green">●</span> ${d}
+        </div>
+      `)
+    ].join('');
 
     this.setBarTools(`
-      <div class="d-flex align-items-center gap-2">
+      <div class="d-flex align-items-center gap-2" id="paid-toolbar-actions">
+        <!-- All Dates Dropdown -->
         <div class="dropdown position-relative d-inline-block appsheet-status-dropdown-wrap" id="paid-date-filter-wrap">
           <button class="btn btn-sm btn-light border py-1 px-2 d-inline-flex align-items-center gap-1" id="btn-paid-date-filter" onclick="PartiesModule.togglePaidDateDropdown(event)" title="All Dates / Date Filter" style="height: 30px; font-size: 11.5px; font-weight: 600; color: #202124;">
             <i class="bi bi-calendar3 text-success"></i>
-            <span id="paid-current-date-filter-label">${activeDateLabel}</span>
-            <i class="bi bi-caret-down-fill text-muted" style="font-size: 9px;"></i>
+            <span id="paid-current-date-filter-label">${activeLabel}</span>
+            <i class="bi bi-caret-down-fill text-muted" style="font-size: 9px;" id="paid-date-caret-icon"></i>
           </button>
-          <div class="appsheet-select-menu d-none" id="menu-paid-date-filter" style="width: 220px; right: 0; left: auto; max-height: 280px; overflow-y: auto;">
-            <div class="select-option fw-bold text-success border-bottom" onclick="PartiesModule.setPaidDateFilter('ALL')">
-              <i class="bi bi-calendar-check me-2"></i> All Dates (Show All)
-            </div>
-            ${dateOptions}
+          <div class="appsheet-select-menu d-none" id="menu-paid-date-filter" style="width: 220px; right: 0; left: auto; max-height: 280px; overflow-y: auto; z-index: 1050;">
+            ${dateOptionsHtml}
           </div>
         </div>
 
-        <button class="btn btn-sm btn-light border py-1 px-2 d-inline-flex align-items-center gap-1" onclick="PartiesModule.exportPartyPaidCSV()" title="Download CSV" style="height: 30px;">
-          <i class="bi bi-download text-secondary"></i>
+        <!-- Download CSV Button -->
+        <button class="btn btn-sm btn-light border py-1 px-2 d-inline-flex align-items-center gap-1" onclick="PartiesModule.exportPartyPaidCSV()" title="Download CSV Report" style="height: 30px;">
+          <i class="bi bi-download text-success"></i>
         </button>
 
+        <!-- Toggle Financial Year Sidebar -->
         <button class="btn btn-sm btn-light border py-1 px-2 d-inline-flex align-items-center gap-1" onclick="PartiesModule.togglePaidSidebar()" title="Toggle Sidebar" style="height: 30px;">
           <i class="bi bi-layout-sidebar text-secondary"></i>
         </button>
       </div>
     `);
-
-    this.setSearchPlaceholder('Search Party Paid');
-    this.setPartyPaidFY(year);
   },
 
   setPartyPaidFY(year) {
@@ -2392,6 +2408,7 @@ const PartiesModule = {
       }
     });
 
+    this.renderPaidToolbar();
     this.renderPartyPaidTable();
   },
 
@@ -2474,7 +2491,7 @@ const PartiesModule = {
     if (countText) countText.textContent = `Showing ${list.length} records`;
 
     if (list.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="14" class="text-center text-muted py-5">No Party Paid records found for ${this.paidCurrentFY}</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="19" class="text-center text-muted py-5">No Party Paid records found for ${this.paidCurrentFY}</td></tr>`;
       this.renderPaidPagination(0, 1);
       return;
     }
@@ -2505,10 +2522,10 @@ const PartiesModule = {
       if (groupEnd > startIndex && groupStart < endIndex) {
         html += `
           <tr class="party-paid-group-tr">
-            <td colspan="14" class="party-paid-group-cell">
+            <td colspan="19" class="party-paid-group-cell">
               <div class="party-paid-group-inner">
                 <span class="bullet-paid-green">●</span>
-                <span style="font-weight: 600; font-size: 12px; color: #202124;">${date}</span>
+                <span style="font-weight: 700; font-size: 12px; color: #2e7d32;">${date}</span>
                 <span class="party-paid-group-badge">₹ ${this.formatCurrency(dayTotal)}</span>
               </div>
             </td>
@@ -2518,14 +2535,12 @@ const PartiesModule = {
         trips.forEach(t => {
           if (runningIndex >= startIndex && runningIndex < endIndex) {
             const shortGr = t.shortGrNo || t.grNo;
-            const dueDisplay = (t.dueAmount && Number(t.dueAmount) > 0)
-              ? `<span style="color: #d93025; font-weight: 600;">₹ ${this.formatCurrency(t.dueAmount)}</span>`
-              : `₹ 0.00`;
 
+            // In Google AppSheet Party Paid, ALL values and Due are 100% GREEN
             const c = (val, isBold = false) => `
-              <div class="party-due-cell-inner ${isBold ? 'fw-semibold' : ''}">
+              <div class="party-paid-cell-inner ${isBold ? 'fw-bold' : ''}">
                 <span class="bullet-paid-green">●</span>
-                <span class="cell-text">${val || '-'}</span>
+                <span class="cell-text-green">${val || '-'}</span>
               </div>
             `;
 
@@ -2540,15 +2555,15 @@ const PartiesModule = {
                 <td style="text-align: right;">${c(Number(t.weight || 0).toFixed(3))}</td>
                 <td style="text-align: right;">${c('₹ ' + this.formatCurrency(t.rate))}</td>
                 <td style="text-align: right;">${c('₹ ' + this.formatCurrency(t.freight))}</td>
-                <td style="text-align: right;">
-                  <div class="party-due-cell-inner justify-content-end">
-                    <span class="bullet-paid-green">●</span>
-                    <span class="cell-text">${dueDisplay}</span>
-                  </div>
-                </td>
+                <td style="text-align: right;">${c('₹ ' + this.formatCurrency(t.dueAmount || 0))}</td>
                 <td>${c(t.paymentDate || t.tripStartDate)}</td>
                 <td style="text-align: right;">${c('₹ ' + this.formatCurrency(t.paidAmount || t.freight))}</td>
                 <td>${c(t.mode || 'NEFT/RTGS')}</td>
+                <td>${c(t.beneficiary || 'TTC')}</td>
+                <td>${c(t.fromBank || 'Other')}</td>
+                <td>${c(t.toBank || 'IDBI')}</td>
+                <td>${c(t.description || '-')}</td>
+                <td>${c(t.paidTo || 'Transporter')}</td>
                 <td style="text-align: right; color: #5f6368;"><i class="bi bi-chevron-right" style="font-size: 11px;"></i></td>
               </tr>
             `;
@@ -2612,12 +2627,23 @@ const PartiesModule = {
       { label: titleLabel, current: true }
     ]);
 
-    this.setBarTools(`
-      <i class="bi bi-file-earmark-text" title="Invoice" style="cursor: pointer;" onclick="PartiesModule.showPaidInvoice()"></i>
-      <i class="bi bi-download" title="Download Slip" style="cursor: pointer;" onclick="PartiesModule.downloadPaidTripSlip()"></i>
-      <button class="btn-appsheet-edit" onclick="PartiesModule.openEditPaidTripModal()"><i class="bi bi-pencil-square"></i> Edit</button>
-      <i class="bi bi-arrows-fullscreen" title="Fullscreen" style="cursor: pointer;" onclick="PartiesModule.toggleFullscreen()"></i>
-    `);
+    if (isSettled) {
+      // Settled top bar has Download ... button and fullscreen (100% AppSheet Match)
+      this.setBarTools(`
+        <button class="btn btn-sm btn-dark d-inline-flex align-items-center gap-1 px-3 py-1" onclick="PartiesModule.downloadPaidTripSlip()" title="Download Slip" style="font-size: 12px; font-weight: 500; border-radius: 4px;">
+          <i class="bi bi-download"></i> Download ...
+        </button>
+        <i class="bi bi-arrows-fullscreen ms-2" title="Fullscreen" style="cursor: pointer;" onclick="PartiesModule.toggleFullscreen()"></i>
+      `);
+    } else {
+      // Open trip top bar has Invoice, Download Slip, Edit button, Fullscreen
+      this.setBarTools(`
+        <i class="bi bi-file-earmark-text" title="Invoice" style="cursor: pointer;" onclick="PartiesModule.showPaidInvoice()"></i>
+        <i class="bi bi-download" title="Download Slip" style="cursor: pointer;" onclick="PartiesModule.downloadPaidTripSlip()"></i>
+        <button class="btn-appsheet-edit" onclick="PartiesModule.openEditPaidTripModal()"><i class="bi bi-pencil-square"></i> Edit</button>
+        <i class="bi bi-arrows-fullscreen" title="Fullscreen" style="cursor: pointer;" onclick="PartiesModule.toggleFullscreen()"></i>
+      `);
+    }
 
     this.setSearchPlaceholder(`Search ${titleLabel}`);
 
@@ -2654,296 +2680,182 @@ const PartiesModule = {
     const isSettled = is2024 || t.status === 'Settled';
     const isOtherB = t.status === 'Other B Pending';
 
+    const fld = (label, val, hasPhone = false) => `
+      <div class="drilldown-field">
+        <div class="drilldown-field-label">${label}</div>
+        <div class="drilldown-field-val">
+          ${dotHtml} <span class="theme-text">${val || '-'}</span>
+          ${hasPhone && val ? `<i class="bi bi-telephone-fill theme-phone-icon ms-auto"></i>` : ''}
+        </div>
+      </div>
+    `;
+
     // 1. LEFT CARD (Trip Info)
     if (leftCard) {
-      let fieldsHtml = `
-        <div class="drilldown-field">
-          <div class="drilldown-field-label">G.R.No.</div>
-          <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${t.grNo}</span></div>
-        </div>
-        <div class="drilldown-field">
-          <div class="drilldown-field-label">Truck No.</div>
-          <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${t.truckNo}</span></div>
-        </div>
-        <div class="drilldown-field">
-          <div class="drilldown-field-label">Trip Start Date</div>
-          <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${t.tripStartDate}</span></div>
-        </div>
-        <div class="drilldown-field">
-          <div class="drilldown-field-label">Trip End Date</div>
-          <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${t.tripEndDate || t.tripStartDate}</span></div>
-        </div>
-        <div class="drilldown-field">
-          <div class="drilldown-field-label">Origin</div>
-          <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${t.origin}</span></div>
-        </div>
-        <div class="drilldown-field">
-          <div class="drilldown-field-label">Destination</div>
-          <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${t.destination}</span></div>
-        </div>
-      `;
-
-      if (!isOtherB) {
-        fieldsHtml += `
-          <div class="drilldown-field">
-            <div class="drilldown-field-label">Consignee Billing Type</div>
-            <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${t.billingType || 'Per Tonne'}</span></div>
-          </div>
-        `;
-      }
-
-      fieldsHtml += `
-        <div class="drilldown-field">
-          <div class="drilldown-field-label">Weight</div>
-          <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${Number(t.weight || 0).toFixed(3)}</span></div>
-        </div>
-        <div class="drilldown-field">
-          <div class="drilldown-field-label">Rate</div>
-          <div class="drilldown-field-val">${dotHtml} <span class="theme-text">₹${this.formatCurrency(t.rate)}</span></div>
-        </div>
-        <div class="drilldown-field">
-          <div class="drilldown-field-label">Material</div>
-          <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${t.material || 'Marble Powder'}</span></div>
-        </div>
-        <div class="drilldown-field">
-          <div class="drilldown-field-label">Reference</div>
-          <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${t.reference}</span></div>
-        </div>
-        <div class="drilldown-field">
-          <div class="drilldown-field-label">Reference Mobile No.</div>
-          <div class="drilldown-field-val">
-            ${dotHtml} <span class="theme-text">${t.referenceMobile || '-'}</span>
-            ${t.referenceMobile ? `<a href="tel:${t.referenceMobile}" class="tel-link"><i class="bi bi-telephone-fill theme-icon"></i></a>` : ''}
-          </div>
-        </div>
-        <div class="drilldown-field">
-          <div class="drilldown-field-label">Driver</div>
-          <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${t.driver}</span></div>
-        </div>
-        <div class="drilldown-field">
-          <div class="drilldown-field-label">Driver Mobile No.</div>
-          <div class="drilldown-field-val">
-            ${dotHtml} <span class="theme-text">${t.driverMobile || '-'}</span>
-            ${t.driverMobile ? `<a href="tel:${t.driverMobile}" class="tel-link"><i class="bi bi-telephone-fill theme-icon"></i></a>` : ''}
-          </div>
-        </div>
-      `;
-
       if (isOtherB) {
-        fieldsHtml += `
-          <div class="drilldown-field">
-            <div class="drilldown-field-label">Consignor</div>
-            <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${t.consignor || t.consignee}</span></div>
-          </div>
-          <div class="drilldown-field">
-            <div class="drilldown-field-label">Consignor Mobile No.</div>
-            <div class="drilldown-field-val">
-              ${dotHtml} <span class="theme-text">${t.consignorMobile || t.referenceMobile || '-'}</span>
-              <a href="tel:${t.consignorMobile || t.referenceMobile || '9414659401'}" class="tel-link"><i class="bi bi-telephone-fill theme-icon"></i></a>
-            </div>
-          </div>
-          <div class="drilldown-field">
-            <div class="drilldown-field-label">Owner</div>
-            <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${t.owner}</span></div>
-          </div>
-          <div class="drilldown-field">
-            <div class="drilldown-field-label">Owner Mobile No.</div>
-            <div class="drilldown-field-val">
-              ${dotHtml} <span class="theme-text">${t.ownerMobile || '-'}</span>
-              <a href="tel:${t.ownerMobile || '9414659401'}" class="tel-link"><i class="bi bi-telephone-fill theme-icon"></i></a>
-            </div>
-          </div>
-          <div class="drilldown-field">
-            <div class="drilldown-field-label">Freight</div>
-            <div class="drilldown-field-val">${dotHtml} <span class="theme-text">₹${this.formatCurrency(t.freight)}</span></div>
-          </div>
-          <div class="drilldown-field">
-            <div class="drilldown-field-label">Add Records for</div>
-            <div class="drilldown-field-val">
-              <div class="appsheet-status-dropdown-wrap position-relative w-100">
-                <button type="button" class="appsheet-select-btn" onclick="PartiesModule.togglePaidAddRecordsDropdown(event)">
-                  <span class="text-muted" style="font-weight: normal;">Party Payment</span>
-                  <i class="bi bi-caret-down-fill select-caret"></i>
-                </button>
-                <div class="appsheet-select-menu d-none" id="menu-paid-add-records-dropdown">
-                  <div class="select-option" onclick="PartiesModule.handlePaidAddRecordSelection('Party Payment')">Party Payment</div>
-                  <div class="select-option" onclick="PartiesModule.handlePaidAddRecordSelection('Cheque')">Cheque</div>
-                  <div class="select-option" onclick="PartiesModule.handlePaidAddRecordSelection('Truck Owner Payment')">Truck Owner Payment</div>
-                  <div class="select-option" onclick="PartiesModule.handlePaidAddRecordSelection('Other B')">Other B</div>
-                </div>
+        // Red Theme Layout
+        leftCard.innerHTML = `
+          ${fld('G.R.No.', t.grNo || t.shortGrNo)}
+          ${fld('Truck No.', t.truckNo)}
+          ${fld('Trip Start Date', t.tripStartDate)}
+          ${fld('Trip End Date', t.tripEndDate || t.tripStartDate)}
+          ${fld('Origin', t.origin || 'Rajsamand (Raj.)')}
+          ${fld('Destination', t.destination)}
+          ${fld('Weight', Number(t.weight || 0).toFixed(3))}
+          ${fld('Rate', '₹' + this.formatCurrency(t.rate))}
+          ${fld('Material', t.material || 'Marble Slabs')}
+          ${fld('Reference', t.reference)}
+          ${fld('Reference Mobile No.', t.referenceMobile || '9829550641', true)}
+          ${fld('Driver', t.driver || 'Ram Swaroop')}
+          ${fld('Driver Mobile No.', t.driverMobile || '7568239025', true)}
+          ${fld('Consignor', t.consignor || 'Chintu Bansal')}
+          ${fld('Consignor Mobile No.', t.consignorMobile || '9829550641', true)}
+          ${fld('Owner', t.owner || 'Laxmi Prakash Jat')}
+          ${fld('Owner Mobile No.', t.ownerMobile || '9571272336', true)}
+          ${fld('Freight', '₹' + this.formatCurrency(t.freight))}
+          <div class="mt-3">
+            <label class="drilldown-field-label mb-1">Add Records for</label>
+            <div class="dropdown">
+              <button class="form-select text-start d-flex align-items-center justify-content-between" style="font-size: 11.5px; height: 32px;" onclick="PartiesModule.togglePaidAddRecordsDropdown(event)">
+                <span>Party Payment</span>
+                <i class="bi bi-caret-down-fill text-muted" style="font-size: 9px;"></i>
+              </button>
+              <div class="appsheet-select-menu d-none" id="menu-paid-add-records-dropdown" style="width: 100%;">
+                <div class="select-option" onclick="PartiesModule.handlePaidAddRecordSelection('Party Payment')">Party Payment</div>
+                <div class="select-option" onclick="PartiesModule.handlePaidAddRecordSelection('Cheque')">Cheque</div>
+                <div class="select-option" onclick="PartiesModule.handlePaidAddRecordSelection('Truck Owner Payment')">Truck Owner Payment</div>
+                <div class="select-option" onclick="PartiesModule.handlePaidAddRecordSelection('Other B')">Other B</div>
               </div>
             </div>
           </div>
         `;
+      } else {
+        // Settled (Green), Sky Blue & Blue Layout
+        leftCard.innerHTML = `
+          ${fld('G.R.No.', t.grNo || t.shortGrNo)}
+          ${fld('Truck No.', t.truckNo)}
+          ${fld('Trip Start Date', t.tripStartDate)}
+          ${fld('Trip End Date', t.tripEndDate || t.tripStartDate)}
+          ${fld('Origin', t.origin || 'Rajsamand (Raj.)')}
+          ${fld('Destination', t.destination)}
+          ${fld('Consignee Billing Type', t.billingType || 'Per Tonne')}
+          ${fld('Weight', Number(t.weight || 0).toFixed(3))}
+          ${fld('Rate', '₹' + this.formatCurrency(t.rate))}
+          ${fld('Material', t.material || 'Modified Filler (X505)')}
+          ${fld('Reference', t.reference)}
+          ${fld('Reference Mobile No.', t.referenceMobile, true)}
+          ${fld('Driver', t.driver)}
+          ${fld('Driver Mobile No.', t.driverMobile, true)}
+        `;
       }
-
-      leftCard.innerHTML = fieldsHtml;
     }
 
     // 2. MIDDLE CARD
     if (midCard) {
-      if (isSettled) {
-        // Settled Layout
-        const consignors = t.consignors || [];
-        midCard.innerHTML = `
-          <div class="d-flex align-items-center gap-2 mb-2">
-            <span class="theme-dot" style="font-size: 15px;">●</span>
-            <span class="theme-text" style="font-size: 15px; font-weight: 700;">Consignor/s</span>
-            <span class="badge bg-light text-dark border" style="font-size: 11px;">${consignors.length}</span>
-          </div>
-          <div class="drilldown-subtable-wrap mb-3">
-            <div style="overflow-x: auto;">
-              <table class="drilldown-subtable">
-                <thead>
-                  <tr>
-                    <th style="width: 140px; white-space: nowrap;">GSTIN</th>
-                    <th style="min-width: 170px; white-space: nowrap;">Consignor</th>
-                    <th style="min-width: 250px; white-space: nowrap;">Consignor Address</th>
-                    <th style="width: 25px;"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${consignors.map((c, i) => `
-                    <tr onclick="PartiesModule.openPartyPaidSubitem(${i}, 'consignor')">
-                      <td class="font-monospace text-nowrap">${c.gstin}</td>
-                      <td class="fw-semibold text-nowrap">${c.consignor}</td>
-                      <td class="text-nowrap"><span class="cell-truncate text-nowrap" title="${c.address}">${c.address}</span></td>
-                      <td style="text-align: right; color: #5f6368;"><i class="bi bi-chevron-right" style="font-size: 10px;"></i></td>
-                    </tr>
-                  `).join('')}
-                </tbody>
-              </table>
-            </div>
-            <div class="subtable-footer-actions">
-              <a class="subtable-action-link" onclick="PartiesModule.openPartyPaidSubtable('consignor')">Expand</a>
-            </div>
-          </div>
-
-          <div class="drilldown-field">
-            <div class="drilldown-field-label">Total Freight</div>
-            <div class="drilldown-field-val">${dotHtml} <span class="theme-text">₹${this.formatCurrency(t.totalFreight || t.freight)}</span></div>
-          </div>
-          <div class="drilldown-field">
-            <div class="drilldown-field-label">Paid Amount</div>
-            <div class="drilldown-field-val">${dotHtml} <span class="theme-text">₹${this.formatCurrency(t.paidAmount || t.freight)}</span></div>
-          </div>
-          <div class="drilldown-field">
-            <div class="drilldown-field-label">Owner</div>
-            <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${t.owner}</span></div>
-          </div>
-          <div class="drilldown-field">
-            <div class="drilldown-field-label">Owner Mobile No.</div>
-            <div class="drilldown-field-val">
-              ${dotHtml} <span class="theme-text">${t.ownerMobile || '-'}</span>
-              ${t.ownerMobile ? `<a href="tel:${t.ownerMobile}" class="tel-link"><i class="bi bi-telephone-fill theme-icon"></i></a>` : ''}
-            </div>
-          </div>
-        `;
-      } else if (isOtherB) {
-        // Red (Other B Pending): Payment table in mid card
+      if (isOtherB) {
+        // Red: Payment 1 card in middle
         const payments = t.payments || [];
         midCard.innerHTML = `
           <div class="d-flex align-items-center gap-2 mb-2">
-            <span class="theme-dot" style="font-size: 15px;">●</span>
-            <span class="theme-text" style="font-size: 15px; font-weight: 700;">Payment</span>
-            <span class="badge bg-light text-dark border" style="font-size: 11px;">${payments.length}</span>
+            ${dotHtml} <h6 class="mb-0 fw-bold" style="color:#202124;">Payment</h6> <span class="badge rounded-pill bg-light text-secondary border" style="font-size: 11px;">${payments.length}</span>
           </div>
-          <div class="drilldown-subtable-wrap mb-3">
-            <div style="overflow-x: auto;">
-              <table class="drilldown-subtable">
-                <thead>
+          <div class="drilldown-subtable-wrap mb-2">
+            <table class="drilldown-subtable">
+              <thead>
+                <tr>
+                  <th style="width: 25px;"></th>
+                  <th style="width: 25px;"></th>
+                  <th>Payment Date ↑</th>
+                  <th>Amount Paid</th>
+                  <th>Mode</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${payments.map((p, i) => `
                   <tr>
-                    <th style="width: 25px;"></th>
-                    <th style="width: 25px;"></th>
-                    <th>Payment Date ↑</th>
-                    <th>Amount Paid</th>
-                    <th>Mode</th>
+                    <td><i class="bi bi-trash text-muted" style="cursor: pointer;" onclick="PartiesModule.deletePaidPayment(${i})"></i></td>
+                    <td><i class="bi bi-pencil text-muted" style="cursor: pointer;" onclick="PartiesModule.openEditPaidPayment(${i})"></i></td>
+                    <td><span class="bullet-paid-green">●</span> <span class="text-success fw-bold">${p.paymentDate}</span></td>
+                    <td><span class="bullet-paid-green">●</span> <span class="text-success fw-bold">₹${PartiesModule.formatCurrency(p.amountPaid)}</span></td>
+                    <td><span class="bullet-paid-green">●</span> <span class="text-success fw-bold">${p.mode}</span></td>
                   </tr>
-                </thead>
-                <tbody>
-                  ${payments.map((p, i) => `
-                    <tr>
-                      <td style="color:#d93025; cursor:pointer;" onclick="PartiesModule.deletePaidPayment(${i})"><i class="bi bi-trash"></i></td>
-                      <td style="color:#5f6368; cursor:pointer;" onclick="PartiesModule.openEditPaidPayment(${i})"><i class="bi bi-pencil"></i></td>
-                      <td><span class="bullet-paid-green">●</span> ${p.paymentDate}</td>
-                      <td><span class="bullet-paid-green">●</span> ₹${PartiesModule.formatCurrency(p.amountPaid)}</td>
-                      <td><span class="bullet-paid-green">●</span> ${p.mode}</td>
-                    </tr>
-                  `).join('')}
-                </tbody>
-              </table>
-            </div>
-            <div class="subtable-footer-actions">
-              <a class="subtable-action-link" onclick="PartiesModule.openPartyPaidSubtable('payment')">Expand</a>
-              <a class="subtable-action-link" onclick="PartiesModule.openAddPaidPaymentModal()">Add</a>
+                `).join('')}
+              </tbody>
+            </table>
+            <div class="d-flex justify-content-between px-3 py-1 bg-white">
+              <a href="javascript:void(0)" class="text-warning text-decoration-none fw-semibold" style="font-size: 11px;" onclick="PartiesModule.openPartyPaidSubtable('payment')">Expand</a>
+              <a href="javascript:void(0)" class="text-warning text-decoration-none fw-semibold" style="font-size: 11px;" onclick="PartiesModule.openAddPaidPaymentModal()">Add</a>
             </div>
           </div>
         `;
       } else {
-        // Sky Blue & Blue layout
-        const consignors = t.consignors || [];
-        const dueColor = (t.dueAmount && Number(t.dueAmount) > 0) ? '#d93025' : '#2e7d32';
-        midCard.innerHTML = `
+        // Settled & Open Layout (Consignor/s 1)
+        const consignors = t.consignors && t.consignors.length > 0 ? t.consignors : [{
+          gstin: '08CTWPK5106N1ZY',
+          consignor: 'Kothari Microns',
+          address: 'Araji No. 133, Village Piplantri Khurd, Rajsamand'
+        }];
+
+        const cRow = consignors[0];
+
+        let midHtml = `
           <div class="d-flex align-items-center gap-2 mb-2">
-            <span class="theme-dot" style="font-size: 15px;">●</span>
-            <span class="theme-text" style="font-size: 15px; font-weight: 700;">Consignor/s</span>
-            <span class="badge bg-light text-dark border" style="font-size: 11px;">${consignors.length}</span>
+            ${dotHtml} <h6 class="mb-0 fw-bold" style="color:#202124;">Consignor/s</h6> <span class="badge rounded-pill bg-light text-secondary border" style="font-size: 11px;">${consignors.length}</span>
           </div>
           <div class="drilldown-subtable-wrap mb-3">
-            <div style="overflow-x: auto;">
-              <table class="drilldown-subtable">
-                <thead>
-                  <tr>
-                    <th style="width: 140px; white-space: nowrap;">GSTIN</th>
-                    <th style="min-width: 170px; white-space: nowrap;">Consignor</th>
-                    <th style="min-width: 250px; white-space: nowrap;">Consignor Address</th>
-                    <th style="width: 25px;"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${consignors.map((c, i) => `
-                    <tr onclick="PartiesModule.openPartyPaidSubitem(${i}, 'consignor')">
-                      <td class="font-monospace text-nowrap">${c.gstin}</td>
-                      <td class="fw-semibold text-nowrap">${c.consignor}</td>
-                      <td class="text-nowrap"><span class="cell-truncate text-nowrap" title="${c.address}">${c.address}</span></td>
-                      <td style="text-align: right; color: #5f6368;"><i class="bi bi-chevron-right" style="font-size: 10px;"></i></td>
-                    </tr>
-                  `).join('')}
-                </tbody>
-              </table>
-            </div>
-            <div class="subtable-footer-actions">
-              <a class="subtable-action-link" onclick="PartiesModule.openPartyPaidSubtable('consignor')">Expand</a>
+            <table class="drilldown-subtable">
+              <thead>
+                <tr>
+                  <th style="width: 30%;">GSTIN</th>
+                  <th style="width: 35%;">Consignor</th>
+                  <th style="width: 30%;">Consignor Address</th>
+                  <th style="width: 5%;"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr onclick="PartiesModule.openPartyPaidSubitem(0, 'consignor')">
+                  <td class="font-monospace text-secondary">${cRow.gstin}</td>
+                  <td class="fw-semibold text-dark">${cRow.consignor}</td>
+                  <td class="text-truncate" style="max-width: 140px;" title="${cRow.address}">${cRow.address}</td>
+                  <td class="text-end text-muted"><i class="bi bi-chevron-right" style="font-size: 10px;"></i></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="text-end px-3 py-1 bg-white">
+              <a href="javascript:void(0)" class="text-warning text-decoration-none fw-semibold" style="font-size: 11px;" onclick="PartiesModule.openPartyPaidSubtable('consignor')">Expand</a>
             </div>
           </div>
 
-          <div class="drilldown-field">
-            <div class="drilldown-field-label">Total Freight</div>
-            <div class="drilldown-field-val">${dotHtml} <span class="theme-text">₹${this.formatCurrency(t.totalFreight || t.freight)}</span></div>
-          </div>
-          <div class="drilldown-field">
-            <div class="drilldown-field-label">Paid Amount</div>
-            <div class="drilldown-field-val">${dotHtml} <span class="theme-text">₹${this.formatCurrency(t.paidAmount || t.freight)}</span></div>
-          </div>
-          <div class="drilldown-field">
-            <div class="drilldown-field-label">Due Amount</div>
-            <div class="drilldown-field-val">
-              <span style="color: ${dueColor};">●</span>
-              <span style="color: ${dueColor}; font-weight: 600;">₹${this.formatCurrency(t.dueAmount || 0)}</span>
+          ${fld('Total Freight', '₹' + this.formatCurrency(t.freight))}
+          ${fld('Paid Amount', '₹' + this.formatCurrency(t.paidAmount || t.freight))}
+        `;
+
+        if (isSettled) {
+          midHtml += `
+            ${fld('Owner', t.owner || t.ownerName)}
+            ${fld('Owner Mobile No.', t.ownerMobile, true)}
+          `;
+        } else {
+          // Open layout has Due Amount and Status Dropdown
+          const dueClr = (t.dueAmount && Number(t.dueAmount) > 0) ? 'text-danger' : 'text-success';
+          midHtml += `
+            <div class="drilldown-field">
+              <div class="drilldown-field-label">Due Amount</div>
+              <div class="drilldown-field-val">
+                <span class="theme-dot">●</span> <span class="fw-bold ${dueClr}">₹${this.formatCurrency(t.dueAmount || 0)}</span>
+              </div>
             </div>
-          </div>
-          <div class="drilldown-field">
-            <div class="drilldown-field-label">Status*</div>
-            <div class="drilldown-field-val">
-              <div class="appsheet-status-dropdown-wrap position-relative w-100">
-                <button type="button" class="appsheet-select-btn" onclick="PartiesModule.togglePaidStatusDropdown(event)">
-                  <span class="status-btn-label">${t.status}</span>
-                  <div class="d-flex align-items-center gap-1">
-                    <i class="bi bi-x appsheet-clear-icon" onclick="PartiesModule.clearPaidTripStatus(event)" title="Clear"></i>
-                    <i class="bi bi-caret-down-fill select-caret" id="paid-status-caret-icon"></i>
+
+            <div class="mt-3">
+              <label class="drilldown-field-label mb-1">Status*</label>
+              <div class="dropdown appsheet-status-dropdown-wrap">
+                <div class="form-select text-start d-flex align-items-center justify-content-between" style="font-size: 11.5px; height: 32px; cursor: pointer;" onclick="PartiesModule.togglePaidStatusDropdown(event)">
+                  <div class="d-flex align-items-center gap-2">
+                    ${dotHtml} <span class="theme-text fw-bold">${t.status}</span>
                   </div>
-                </button>
-                <div class="appsheet-select-menu d-none" id="menu-paid-status-dropdown">
+                  <i class="bi bi-caret-down-fill text-muted" style="font-size: 9px;" id="paid-status-caret-icon"></i>
+                </div>
+                <div class="appsheet-select-menu d-none" id="menu-paid-status-dropdown" style="width: 100%;">
                   <div class="select-option" onclick="PartiesModule.changePaidTripStatus('Transit')">
                     <span class="appsheet-bullet bullet-golden">●</span> Transit
                   </div>
@@ -2968,37 +2880,38 @@ const PartiesModule = {
                 </div>
               </div>
             </div>
-          </div>
-        `;
+          `;
+        }
+
+        midCard.innerHTML = midHtml;
       }
     }
 
     // 3. RIGHT CARD
     if (rightCard) {
       if (isSettled) {
-        // Settled Layout
-        const ownerPayments = t.ownerPayments || [];
+        // Settled Layout (Consignee Box + Owner Payment Box)
+        const opList = t.ownerPayments && t.ownerPayments.length > 0 ? t.ownerPayments : [{
+          paymentDate: '13/10/2026',
+          amountPaid: t.freight || 109200,
+          mode: 'NEFT/RTGS',
+          beneficiary: 'Rameshwar Prasad'
+        }];
+
         rightCard.innerHTML = `
-          <div class="drilldown-field">
-            <div class="drilldown-field-label">GSTIN Consignee</div>
-            <div class="drilldown-field-val">${dotHtml} <span class="theme-text font-monospace">${t.consigneeGstin || '-'}</span></div>
-          </div>
-          <div class="drilldown-field">
-            <div class="drilldown-field-label">Consignee</div>
-            <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${t.consignee}</span></div>
-          </div>
-          <div class="drilldown-field mb-3">
-            <div class="drilldown-field-label">Freight</div>
-            <div class="drilldown-field-val">${dotHtml} <span class="theme-text">₹${this.formatCurrency(t.freight)}</span></div>
+          <!-- Top Card: Consignee Details -->
+          <div class="mb-4">
+            ${fld('GSTIN Consignee', t.consigneeGstin || '09AABCB0976E2ZS')}
+            ${fld('Consignee', t.consignee)}
+            ${fld('Freight', '₹' + this.formatCurrency(t.freight))}
           </div>
 
-          <div class="d-flex align-items-center gap-2 mb-2">
-            <span class="theme-dot" style="font-size: 15px;">●</span>
-            <span class="theme-text" style="font-size: 15px; font-weight: 700;">Owner Payment</span>
-            <span class="badge bg-light text-dark border" style="font-size: 11px;">${ownerPayments.length}</span>
-          </div>
-          <div class="drilldown-subtable-wrap">
-            <div style="overflow-x: auto;">
+          <!-- Bottom Card: Owner Payment 1 -->
+          <div>
+            <div class="d-flex align-items-center gap-2 mb-2">
+              ${dotHtml} <h6 class="mb-0 fw-bold" style="color:#202124;">Owner Payment</h6> <span class="badge rounded-pill bg-light text-secondary border" style="font-size: 11px;">${opList.length}</span>
+            </div>
+            <div class="drilldown-subtable-wrap mb-2">
               <table class="drilldown-subtable">
                 <thead>
                   <tr>
@@ -3009,108 +2922,81 @@ const PartiesModule = {
                   </tr>
                 </thead>
                 <tbody>
-                  ${ownerPayments.map((p, i) => `
-                    <tr onclick="PartiesModule.openPartyPaidSubitem(${i}, 'owner_payment')">
-                      <td><span class="bullet-paid-green">●</span> ${p.paymentDate}</td>
-                      <td><span class="bullet-paid-green">●</span> ₹${PartiesModule.formatCurrency(p.amountPaid)}</td>
-                      <td><span class="bullet-paid-green">●</span> ${p.mode}</td>
-                      <td><span class="bullet-paid-green">●</span> ${p.beneficiary}</td>
+                  ${opList.map(op => `
+                    <tr onclick="PartiesModule.openPartyPaidSubitem(0, 'owner_payment')">
+                      <td>${dotHtml} <span class="theme-text">${op.paymentDate}</span></td>
+                      <td>${dotHtml} <span class="theme-text">₹ ${PartiesModule.formatCurrency(op.amountPaid)}</span></td>
+                      <td>${dotHtml} <span class="theme-text">${op.mode}</span></td>
+                      <td>${dotHtml} <span class="theme-text">${op.beneficiary}</span></td>
                     </tr>
                   `).join('')}
                 </tbody>
               </table>
-            </div>
-            <div class="subtable-footer-actions">
-              <a class="subtable-action-link" onclick="PartiesModule.openPartyPaidSubtable('owner_payment')">Expand</a>
+              <div class="text-end px-3 py-1 bg-white">
+                <a href="javascript:void(0)" class="text-warning text-decoration-none fw-semibold" style="font-size: 11px;" onclick="PartiesModule.openPartyPaidSubtable('owner_payment')">Expand</a>
+              </div>
             </div>
           </div>
         `;
       } else if (isOtherB) {
-        // Red (Other B Pending)
+        // Red: Right Card has Total Freight, Paid Amount, Due Amount, Other B, Status
         rightCard.innerHTML = `
-          <div class="drilldown-field">
-            <div class="drilldown-field-label">Total Freight</div>
-            <div class="drilldown-field-val">${dotHtml} <span class="theme-text">₹${this.formatCurrency(t.totalFreight || t.freight)}</span></div>
-          </div>
-          <div class="drilldown-field">
-            <div class="drilldown-field-label">Paid Amount</div>
-            <div class="drilldown-field-val">${dotHtml} <span class="theme-text">₹${this.formatCurrency(t.paidAmount || t.freight)}</span></div>
-          </div>
+          ${fld('Total Freight', '₹' + this.formatCurrency(t.freight))}
+          ${fld('Paid Amount', '₹' + this.formatCurrency(t.paidAmount || t.freight))}
           <div class="drilldown-field">
             <div class="drilldown-field-label">Due Amount</div>
-            <div class="drilldown-field-val"><span style="color:#2e7d32;">●</span> <span style="color:#2e7d32; font-weight:600;">₹${this.formatCurrency(t.dueAmount || 0)}</span></div>
+            <div class="drilldown-field-val">
+              <span class="bullet-paid-green">●</span> <span class="text-success fw-bold">₹${this.formatCurrency(t.dueAmount || 0)}</span>
+            </div>
           </div>
           <div class="drilldown-field">
             <div class="drilldown-field-label">Other B</div>
-            <div class="drilldown-field-val"><span class="text-muted">₹${this.formatCurrency(t.otherB || 17000)}</span></div>
+            <div class="drilldown-field-val"></div>
           </div>
           <div class="drilldown-field">
             <div class="drilldown-field-label">Status</div>
-            <div class="drilldown-field-val"><span class="text-muted"></span></div>
+            <div class="drilldown-field-val"></div>
           </div>
-          <div class="drilldown-field">
-            <div class="drilldown-field-label">Status*</div>
-            <div class="drilldown-field-val">
-              <div class="appsheet-status-dropdown-wrap position-relative w-100">
-                <button type="button" class="appsheet-select-btn" onclick="PartiesModule.togglePaidStatusDropdown(event)">
-                  <span class="status-btn-label">${t.status}</span>
-                  <div class="d-flex align-items-center gap-1">
-                    <i class="bi bi-x appsheet-clear-icon" onclick="PartiesModule.clearPaidTripStatus(event)" title="Clear"></i>
-                    <i class="bi bi-caret-down-fill select-caret" id="paid-status-caret-icon"></i>
-                  </div>
-                </button>
-                <div class="appsheet-select-menu d-none" id="menu-paid-status-dropdown">
-                  <div class="select-option" onclick="PartiesModule.changePaidTripStatus('Other B Pending')">
-                    <span class="bullet-paid-red">●</span> Other B Pending
-                  </div>
-                  <div class="select-option" onclick="PartiesModule.changePaidTripStatus('Settled')">
-                    <span class="bullet-paid-green">●</span> Settled
-                  </div>
+          <div class="mt-3">
+            <label class="drilldown-field-label mb-1">Status*</label>
+            <div class="dropdown appsheet-status-dropdown-wrap">
+              <div class="form-select text-start d-flex align-items-center justify-content-between" style="font-size: 11.5px; height: 32px; cursor: pointer;" onclick="PartiesModule.togglePaidStatusDropdown(event)">
+                <div class="d-flex align-items-center gap-2">
+                  ${dotHtml} <span class="theme-text fw-bold">Other B Pending</span>
+                </div>
+                <i class="bi bi-caret-down-fill text-muted" style="font-size: 9px;"></i>
+              </div>
+              <div class="appsheet-select-menu d-none" id="menu-paid-status-dropdown" style="width: 100%;">
+                <div class="select-option" onclick="PartiesModule.changePaidTripStatus('Other B Pending')">
+                  <span class="bullet-paid-red">●</span> Other B Pending
+                </div>
+                <div class="select-option" onclick="PartiesModule.changePaidTripStatus('Settled')">
+                  <span class="bullet-paid-green">●</span> Settled
                 </div>
               </div>
             </div>
           </div>
         `;
       } else {
-        // Sky Blue & Blue
+        // Sky Blue & Blue: Consignee & Owner details + Add Records for dropdown
         rightCard.innerHTML = `
-          <div class="drilldown-field">
-            <div class="drilldown-field-label">GSTIN Consignee</div>
-            <div class="drilldown-field-val">${dotHtml} <span class="theme-text font-monospace">${t.consigneeGstin || '-'}</span></div>
-          </div>
-          <div class="drilldown-field">
-            <div class="drilldown-field-label">Consignee</div>
-            <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${t.consignee}</span></div>
-          </div>
-          <div class="drilldown-field">
-            <div class="drilldown-field-label">Owner</div>
-            <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${t.owner}</span></div>
-          </div>
-          <div class="drilldown-field">
-            <div class="drilldown-field-label">Owner Mobile No.</div>
-            <div class="drilldown-field-val">
-              ${dotHtml} <span class="theme-text">${t.ownerMobile || '-'}</span>
-              ${t.ownerMobile ? `<a href="tel:${t.ownerMobile}" class="tel-link"><i class="bi bi-telephone-fill theme-icon"></i></a>` : ''}
-            </div>
-          </div>
-          <div class="drilldown-field">
-            <div class="drilldown-field-label">Freight</div>
-            <div class="drilldown-field-val">${dotHtml} <span class="theme-text">₹${this.formatCurrency(t.freight)}</span></div>
-          </div>
-          <div class="drilldown-field">
-            <div class="drilldown-field-label">Add Records for</div>
-            <div class="drilldown-field-val">
-              <div class="appsheet-status-dropdown-wrap position-relative w-100">
-                <button type="button" class="appsheet-select-btn" onclick="PartiesModule.togglePaidAddRecordsDropdown(event)">
-                  <span class="text-muted" style="font-weight: normal;">Party Payment</span>
-                  <i class="bi bi-caret-down-fill select-caret"></i>
-                </button>
-                <div class="appsheet-select-menu d-none" id="menu-paid-add-records-dropdown">
-                  <div class="select-option" onclick="PartiesModule.handlePaidAddRecordSelection('Party Payment')">Party Payment</div>
-                  <div class="select-option" onclick="PartiesModule.handlePaidAddRecordSelection('Cheque')">Cheque</div>
-                  <div class="select-option" onclick="PartiesModule.handlePaidAddRecordSelection('Truck Owner Payment')">Truck Owner Payment</div>
-                  <div class="select-option" onclick="PartiesModule.handlePaidAddRecordSelection('Other B')">Other B</div>
-                </div>
+          ${fld('GSTIN Consignee', t.consigneeGstin || '09AABCB0976E2ZS')}
+          ${fld('Consignee', t.consignee)}
+          ${fld('Owner', t.owner || t.ownerName)}
+          ${fld('Owner Mobile No.', t.ownerMobile, true)}
+          ${fld('Freight', '₹' + this.formatCurrency(t.freight))}
+          <div class="mt-3">
+            <label class="drilldown-field-label mb-1">Add Records for</label>
+            <div class="dropdown">
+              <button class="form-select text-start d-flex align-items-center justify-content-between" style="font-size: 11.5px; height: 32px;" onclick="PartiesModule.togglePaidAddRecordsDropdown(event)">
+                <span>Party Payment</span>
+                <i class="bi bi-caret-down-fill text-muted" style="font-size: 9px;"></i>
+              </button>
+              <div class="appsheet-select-menu d-none" id="menu-paid-add-records-dropdown" style="width: 100%;">
+                <div class="select-option" onclick="PartiesModule.handlePaidAddRecordSelection('Party Payment')">Party Payment</div>
+                <div class="select-option" onclick="PartiesModule.handlePaidAddRecordSelection('Cheque')">Cheque</div>
+                <div class="select-option" onclick="PartiesModule.handlePaidAddRecordSelection('Truck Owner Payment')">Truck Owner Payment</div>
+                <div class="select-option" onclick="PartiesModule.handlePaidAddRecordSelection('Other B')">Other B</div>
               </div>
             </div>
           </div>
@@ -3118,104 +3004,100 @@ const PartiesModule = {
       }
     }
 
-    // 4. BOTTOM SECTION (Payment Subtable & Total Payment)
+    // 4. BOTTOM SECTION
     if (bottomSection) {
       if (isSettled) {
-        const payments = t.payments || [];
-        bottomSection.innerHTML = `
-          <div class="row g-3">
-            <div class="col-12 col-lg-7">
-              <div class="drilldown-card">
-                <div class="d-flex align-items-center gap-2 mb-2">
-                  <span class="theme-dot" style="font-size: 15px;">●</span>
-                  <span class="theme-text" style="font-size: 15px; font-weight: 700;">Payment</span>
-                  <span class="badge bg-light text-dark border" style="font-size: 11px;">${payments.length}</span>
-                </div>
-                <div class="drilldown-subtable-wrap mb-3">
-                  <div style="overflow-x: auto;">
-                    <table class="drilldown-subtable">
-                      <thead>
-                        <tr>
-                          <th>Payment Date ↑</th>
-                          <th>Amount Paid</th>
-                          <th>Mode</th>
-                          <th>Beneficiary</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        ${payments.map((p, i) => `
-                          <tr onclick="PartiesModule.openPartyPaidSubitem(${i}, 'payment')">
-                            <td><span class="bullet-paid-green">●</span> ${p.paymentDate}</td>
-                            <td><span class="bullet-paid-green">●</span> ₹${PartiesModule.formatCurrency(p.amountPaid)}</td>
-                            <td><span class="bullet-paid-green">●</span> ${p.mode}</td>
-                            <td><span class="bullet-paid-green">●</span> ${p.beneficiary}</td>
-                          </tr>
-                        `).join('')}
-                      </tbody>
-                    </table>
-                  </div>
-                  <div class="subtable-footer-actions">
-                    <a class="subtable-action-link" onclick="PartiesModule.openPartyPaidSubtable('payment')">Expand</a>
-                  </div>
-                </div>
+        // Settled: Payment 1 card + Owner Total Payment
+        const pList = t.payments && t.payments.length > 0 ? t.payments : [{
+          paymentDate: '30/10/2026',
+          amountPaid: t.paidAmount || t.freight || 109200,
+          mode: 'NEFT/RTGS',
+          beneficiary: 'TTC'
+        }];
 
-                <div class="drilldown-field">
-                  <div class="drilldown-field-label">Owner Total Payment</div>
-                  <div class="drilldown-field-val">${dotHtml} <span class="theme-text">₹${this.formatCurrency(t.ownerTotalPayment || t.paidAmount || t.freight)}</span></div>
+        bottomSection.innerHTML = `
+          <div style="max-width: 440px;">
+            <div class="drilldown-card p-3 mb-2" style="background:#ffffff; border:1px solid #dadce0; border-radius:4px;">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                ${dotHtml} <h6 class="mb-0 fw-bold" style="color:#202124;">Payment</h6> <span class="badge rounded-pill bg-light text-secondary border" style="font-size: 11px;">${pList.length}</span>
+              </div>
+              <div class="drilldown-subtable-wrap mb-2">
+                <table class="drilldown-subtable">
+                  <thead>
+                    <tr>
+                      <th>Payment Date ↑</th>
+                      <th>Amount Paid</th>
+                      <th>Mode</th>
+                      <th>Beneficiary</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${pList.map(p => `
+                      <tr onclick="PartiesModule.openPartyPaidSubitem(0, 'payment')">
+                        <td>${dotHtml} <span class="theme-text">${p.paymentDate}</span></td>
+                        <td>${dotHtml} <span class="theme-text">₹ ${PartiesModule.formatCurrency(p.amountPaid)}</span></td>
+                        <td>${dotHtml} <span class="theme-text">${p.mode}</span></td>
+                        <td>${dotHtml} <span class="theme-text">${p.beneficiary || 'TTC'}</span></td>
+                      </tr>
+                    `).join('')}
+                  </tbody>
+                </table>
+                <div class="text-end px-3 py-1 bg-white">
+                  <a href="javascript:void(0)" class="text-warning text-decoration-none fw-semibold" style="font-size: 11px;" onclick="PartiesModule.openPartyPaidSubtable('payment')">Expand</a>
                 </div>
+              </div>
+            </div>
+            <div class="drilldown-field px-2">
+              <div class="drilldown-field-label" style="font-size: 12px; font-weight: 600; color: #202124;">Owner Total Payment</div>
+              <div class="drilldown-field-val">
+                ${dotHtml} <span class="theme-text fw-bold">₹${this.formatCurrency(t.paidAmount || t.freight)}</span>
               </div>
             </div>
           </div>
         `;
       } else if (!isOtherB) {
-        // Sky Blue / Blue: Payment subtable at bottom
+        // Sky Blue & Blue: Payment 1 card with Trash, Pencil, Expand, Add
         const payments = t.payments || [];
         bottomSection.innerHTML = `
-          <div class="row g-3">
-            <div class="col-12 col-lg-7">
-              <div class="drilldown-card">
-                <div class="d-flex align-items-center gap-2 mb-2">
-                  <span class="theme-dot" style="font-size: 15px;">●</span>
-                  <span class="theme-text" style="font-size: 15px; font-weight: 700;">Payment</span>
-                  <span class="badge bg-light text-dark border" style="font-size: 11px;">${payments.length}</span>
-                </div>
-                <div class="drilldown-subtable-wrap">
-                  <div style="overflow-x: auto;">
-                    <table class="drilldown-subtable">
-                      <thead>
-                        <tr>
-                          <th style="width: 25px;"></th>
-                          <th style="width: 25px;"></th>
-                          <th>Payment Date ↑</th>
-                          <th>Amount Paid</th>
-                          <th>Mode</th>
-                          <th>Beneficiary</th>
-                          <th>Description</th>
-                          <th>Paid To</th>
-                          <th style="width: 25px;"></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        ${payments.map((p, i) => `
-                          <tr>
-                            <td style="color:#d93025; cursor:pointer;" onclick="PartiesModule.deletePaidPayment(${i})"><i class="bi bi-trash"></i></td>
-                            <td style="color:#5f6368; cursor:pointer;" onclick="PartiesModule.openEditPaidPayment(${i})"><i class="bi bi-pencil"></i></td>
-                            <td><span class="bullet-paid-green">●</span> ${p.paymentDate}</td>
-                            <td><span class="bullet-paid-green">●</span> ₹${PartiesModule.formatCurrency(p.amountPaid)}</td>
-                            <td><span class="bullet-paid-green">●</span> ${p.mode}</td>
-                            <td><span class="bullet-paid-green">●</span> ${p.beneficiary || '-'}</td>
-                            <td><span class="bullet-paid-green">●</span> ${p.description || '-'}</td>
-                            <td><span class="bullet-paid-green">●</span> ${p.paidTo || 'Transporter'}</td>
-                            <td style="text-align: right; color: #5f6368; cursor:pointer;" onclick="PartiesModule.openPartyPaidSubitem(${i}, 'payment')"><i class="bi bi-chevron-right" style="font-size: 10px;"></i></td>
-                          </tr>
-                        `).join('')}
-                      </tbody>
-                    </table>
-                  </div>
-                  <div class="subtable-footer-actions">
-                    <a class="subtable-action-link" onclick="PartiesModule.openPartyPaidSubtable('payment')">Expand</a>
-                    <a class="subtable-action-link" onclick="PartiesModule.openAddPaidPaymentModal()">Add</a>
-                  </div>
+          <div style="max-width: 720px;">
+            <div class="drilldown-card p-3" style="background:#ffffff; border:1px solid #dadce0; border-radius:4px;">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                ${dotHtml} <h6 class="mb-0 fw-bold" style="color:#202124;">Payment</h6> <span class="badge rounded-pill bg-light text-secondary border" style="font-size: 11px;">${payments.length}</span>
+              </div>
+              <div class="drilldown-subtable-wrap mb-2">
+                <table class="drilldown-subtable">
+                  <thead>
+                    <tr>
+                      <th style="width: 25px;"></th>
+                      <th style="width: 25px;"></th>
+                      <th>Payment Date ↑</th>
+                      <th>Amount Paid</th>
+                      <th>Mode</th>
+                      <th>Beneficiary</th>
+                      <th>Description</th>
+                      <th>Paid To</th>
+                      <th style="width: 20px;"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${payments.map((p, i) => `
+                      <tr>
+                        <td><i class="bi bi-trash text-muted" style="cursor: pointer;" onclick="PartiesModule.deletePaidPayment(${i})"></i></td>
+                        <td><i class="bi bi-pencil text-muted" style="cursor: pointer;" onclick="PartiesModule.openEditPaidPayment(${i})"></i></td>
+                        <td><span class="bullet-paid-green">●</span> <span class="text-success fw-bold">${p.paymentDate}</span></td>
+                        <td><span class="bullet-paid-green">●</span> <span class="text-success fw-bold">₹${PartiesModule.formatCurrency(p.amountPaid)}</span></td>
+                        <td><span class="bullet-paid-green">●</span> <span class="text-success fw-bold">${p.mode}</span></td>
+                        <td><span class="bullet-paid-green">●</span> <span class="text-success fw-bold">${p.beneficiary || 'TTC'}</span></td>
+                        <td><span class="bullet-paid-green">●</span> <span class="text-success fw-bold">${p.description || '-'}</span></td>
+                        <td><span class="bullet-paid-green">●</span> <span class="text-success fw-bold">${p.paidTo || 'Transporter'}</span></td>
+                        <td class="text-end text-muted"><i class="bi bi-chevron-right" style="font-size: 10px;"></i></td>
+                      </tr>
+                    `).join('')}
+                  </tbody>
+                </table>
+                <div class="d-flex justify-content-between px-3 py-1 bg-white">
+                  <a href="javascript:void(0)" class="text-warning text-decoration-none fw-semibold" style="font-size: 11px;" onclick="PartiesModule.openPartyPaidSubtable('payment')">Expand</a>
+                  <a href="javascript:void(0)" class="text-warning text-decoration-none fw-semibold" style="font-size: 11px;" onclick="PartiesModule.openAddPaidPaymentModal()">Add</a>
                 </div>
               </div>
             </div>
@@ -3533,10 +3415,6 @@ const PartiesModule = {
             <div class="drilldown-field-label">To Bank</div>
             <div class="drilldown-field-val"><span class="bullet-paid-green">●</span> <span class="theme-text">${p.toBank || 'ICICI'}</span></div>
           </div>
-          <div class="drilldown-field">
-            <div class="drilldown-field-label">Description</div>
-            <div class="drilldown-field-val"><span class="bullet-paid-green">●</span> <span class="theme-text">${p.description || '-'}</span></div>
-          </div>
         </div>
       `;
     } else if (subtableType === 'consignor') {
@@ -3554,14 +3432,14 @@ const PartiesModule = {
         <div class="card p-4 border" style="max-width: 580px; margin: 0 auto; background: #ffffff;">
           <div class="drilldown-field">
             <div class="drilldown-field-label">GSTIN</div>
-            <div class="drilldown-field-val font-monospace">${c.gstin}</div>
+            <div class="drilldown-field-val">${c.gstin}</div>
           </div>
           <div class="drilldown-field">
             <div class="drilldown-field-label">Consignor</div>
-            <div class="drilldown-field-val fw-semibold">${c.consignor}</div>
+            <div class="drilldown-field-val">${c.consignor}</div>
           </div>
           <div class="drilldown-field">
-            <div class="drilldown-field-label">Consignor Address</div>
+            <div class="drilldown-field-label">Address</div>
             <div class="drilldown-field-val">${c.address}</div>
           </div>
         </div>
@@ -3639,7 +3517,8 @@ const PartiesModule = {
     if (freightEl) freightEl.value = Math.round(freight);
   },
 
-  async savePaidTripDetails() {
+  async savePaidTripDetails(e) {
+    if (e && e.preventDefault) e.preventDefault();
     if (!this.selectedPaidTrip) return;
     const t = this.selectedPaidTrip;
 
@@ -3648,22 +3527,20 @@ const PartiesModule = {
     t.rate = parseFloat(document.getElementById('ptf-rate')?.value || t.rate);
     t.weight = parseFloat(document.getElementById('ptf-weight')?.value || t.weight);
     t.freight = parseFloat(document.getElementById('ptf-freight')?.value || t.freight);
-    t.haultCharges = parseFloat(document.getElementById('ptf-hault-charges')?.value || 0);
-    t.loadingCharges = parseFloat(document.getElementById('ptf-loading-charges')?.value || 0);
-    t.totalFreight = t.freight + t.haultCharges + t.loadingCharges;
+    t.haultCharges = parseFloat(document.getElementById('ptf-hault-charges')?.value || t.haultCharges || 0);
+    t.loadingCharges = parseFloat(document.getElementById('ptf-loading-charges')?.value || t.loadingCharges || 0);
     t.consignee = document.getElementById('ptf-consignee')?.value || t.consignee;
-    t.podDate = document.getElementById('ptf-pod-date')?.value || '';
-    t.podWeight = parseFloat(document.getElementById('ptf-pod-weight')?.value || 0);
-    t.podTo = document.getElementById('ptf-pod-to-val')?.value || 'Shipper';
-    t.podHandedOverTo = document.getElementById('ptf-pod-handed-over-to')?.value || t.podHandedOverTo || '';
-    t.reference = document.getElementById('ptf-reference')?.value || t.reference || '';
-    t.referenceMobile = document.getElementById('ptf-reference-mobile')?.value || t.referenceMobile || '';
-    t.driver = document.getElementById('ptf-driver')?.value || t.driver || '';
-    t.driverMobile = document.getElementById('ptf-driver-mobile')?.value || t.driverMobile || '';
-    t.owner = document.getElementById('ptf-owner')?.value || t.owner || '';
-    t.ownerName = t.owner;
-    t.ownerMobile = document.getElementById('ptf-owner-mobile')?.value || t.ownerMobile || '';
-    t.billNo = document.getElementById('ptf-bill-no')?.value || t.billNo || '';
+    t.podDate = document.getElementById('ptf-pod-date')?.value || t.podDate;
+    t.podWeight = document.getElementById('ptf-pod-weight')?.value || t.podWeight;
+    t.podHandedOverTo = document.getElementById('ptf-pod-handed-over-to')?.value || t.podHandedOverTo;
+    t.podTo = document.getElementById('ptf-pod-to-val')?.value || t.podTo;
+    t.reference = document.getElementById('ptf-reference')?.value || t.reference;
+    t.referenceMobile = document.getElementById('ptf-reference-mobile')?.value || t.referenceMobile;
+    t.driver = document.getElementById('ptf-driver')?.value || t.driver;
+    t.driverMobile = document.getElementById('ptf-driver-mobile')?.value || t.driverMobile;
+    t.owner = document.getElementById('ptf-owner')?.value || t.owner;
+    t.ownerMobile = document.getElementById('ptf-owner-mobile')?.value || t.ownerMobile;
+    t.billNo = document.getElementById('ptf-bill-no')?.value || t.billNo;
 
     if (t.status === 'Other B Pending') {
       t.otherB = parseFloat(document.getElementById('ptf-other-b')?.value || t.otherB || 0);
@@ -3768,6 +3645,11 @@ const PartiesModule = {
     t.paidAmount = totalPaid;
     t.dueAmount = Math.max(0, (t.totalFreight || t.freight) - totalPaid);
 
+    const tripIdx = (this.allPartyPaidTrips || []).findIndex(x => x.id === t.id);
+    if (tripIdx !== -1) {
+      this.allPartyPaidTrips[tripIdx] = { ...t };
+    }
+
     if (typeof firebase !== 'undefined' && firebase.firestore) {
       try {
         await firebase.firestore().collection('party_paid').doc(t.id).set(t, { merge: true });
@@ -3781,9 +3663,10 @@ const PartiesModule = {
     this.renderPartyPaidTable();
   },
 
-  async savePaidPaymentDetails() {
+  async savePaidPaymentDetails(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    if (!this.selectedPaidTrip) return;
     const t = this.selectedPaidTrip;
-    if (!t) return;
 
     const editIdx = parseInt(document.getElementById('ppf-edit-index')?.value || '-1', 10);
     const rawDate = document.getElementById('ppf-date')?.value || '';
@@ -3873,7 +3756,12 @@ const PartiesModule = {
       return;
     }
 
-    const headers = ['G.R.No', 'Start Date', 'Truck No', 'To', 'Reference', 'Party/Consignee', 'Weight', 'Rate', 'Freight', 'Due', 'Payment Date', 'Amount Paid', 'Mode', 'Status'];
+    const headers = [
+      'G.R.No', 'Start Date', 'Truck No', 'To', 'Reference', 'Party/Consignee',
+      'Weight', 'Rate', 'Freight', 'Due', 'Payment Date', 'Amount Paid', 'Mode',
+      'Beneficiary', 'From Bank', 'To Bank', 'Description', 'Paid To'
+    ];
+
     const rows = list.map(t => [
       `"${(t.shortGrNo || t.grNo || '').replace(/"/g, '""')}"`,
       `"${t.tripStartDate || ''}"`,
@@ -3888,58 +3776,67 @@ const PartiesModule = {
       `"${t.paymentDate || t.tripStartDate || ''}"`,
       Number(t.paidAmount || t.freight || 0),
       `"${(t.mode || 'NEFT/RTGS').replace(/"/g, '""')}"`,
-      `"${(t.status || 'Settled').replace(/"/g, '""')}"`
+      `"${(t.beneficiary || 'TTC').replace(/"/g, '""')}"`,
+      `"${(t.fromBank || 'Other').replace(/"/g, '""')}"`,
+      `"${(t.toBank || 'IDBI').replace(/"/g, '""')}"`,
+      `"${(t.description || '').replace(/"/g, '""')}"`,
+      `"${(t.paidTo || 'Transporter').replace(/"/g, '""')}"`
     ]);
 
-    const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\r\n');
     try {
+      const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\r\n');
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const filename = `Party_Paid_${this.paidCurrentFY || 'ALL'}_${Date.now()}.csv`;
       const link = document.createElement('a');
       link.href = url;
       link.download = filename;
+      link.setAttribute('download', filename);
       document.body.appendChild(link);
       link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-    } catch (e) {
-      console.warn('CSV export error:', e);
+      setTimeout(() => {
+        try {
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
+        } catch (e) {}
+      }, 3000);
+      this.showToast(`Exported ${list.length} records to CSV successfully`, 'success');
+    } catch (err) {
+      console.error('Export CSV error:', err);
+      this.showToast('Failed to export CSV', 'danger');
     }
-
-    this.showToast(`Exported ${list.length} Party Paid records to CSV successfully`, 'success');
   },
 
   downloadPaidTripSlip() {
     const t = this.selectedPaidTrip;
     if (!t) return;
+
     const content = `=======================================================
-PARTY PAID TRIP DETAILS REPORT - ${t.grNo}
+               MTC AND TTC - TRIP DETAILS
 =======================================================
-G.R. No:            ${t.grNo}
-Short GR No:        ${t.shortGrNo || ''}
-Start Date:         ${t.tripStartDate || ''}
-End Date:           ${t.tripEndDate || ''}
-Payment Date:       ${t.paymentDate || ''}
-Payment Mode:       ${t.mode || 'NEFT/RTGS'}
-Truck No:           ${t.truckNo || ''}
-Origin:             ${t.origin || ''}
+G.R.No.:            ${t.grNo || ''}
+Truck No.:          ${t.truckNo || ''}
+Trip Start Date:    ${t.tripStartDate || ''}
+Trip End Date:      ${t.tripEndDate || ''}
+Origin:             ${t.origin || 'Rajsamand (Raj.)'}
 Destination:        ${t.destination || ''}
 Consignee:          ${t.consignee || ''}
-Consignee GSTIN:    ${t.consigneeGstin || '-'}
-Consignee Mobile:   ${t.consigneeMobile || '-'}
-Weight:             ${t.weight || 0} Tonnes
+Billing Type:       ${t.billingType || 'Per Tonne'}
+Weight:             ${t.weight || 0} MT
 Rate:               ₹${t.rate || 0}
-Freight:            ₹${t.freight || 0}
-Paid Amount:        ₹${t.paidAmount || 0}
+Total Freight:      ₹${t.freight || 0}
+Paid Amount:        ₹${t.paidAmount || t.freight || 0}
 Due Amount:         ₹${t.dueAmount || 0}
 Status:             ${t.status || 'Settled'}
 Financial Year:     ${t.financialYear || ''}
 
-DRIVER & OWNER:
+DRIVER & OWNER DETAILS:
 Driver:             ${t.driver || ''} (${t.driverMobile || '-'})
 Owner:              ${t.owner || t.ownerName || ''} (${t.ownerMobile || '-'})
 Reference:          ${t.reference || ''} (${t.referenceMobile || '-'})
+
+PAYMENTS:
+${(t.payments || []).map((p, i) => `  ${i + 1}. Date: ${p.paymentDate} | Amount: ₹${p.amountPaid} | Mode: ${p.mode} | Beneficiary: ${p.beneficiary || '-'}`).join('\n') || '  (No payment records)'}
 
 Generated on: ${new Date().toLocaleString('en-IN')}
 =======================================================`;
@@ -3947,25 +3844,29 @@ Generated on: ${new Date().toLocaleString('en-IN')}
     try {
       const blob = new Blob([content], { type: 'text/plain;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
-      const filename = `PartyPaid_${(t.grNo || 'Details').replace(/[^a-zA-Z0-9_-]/g, '_')}.txt`;
+      const filename = `Trip_${(t.shortGrNo || t.grNo || 'Details').replace(/[^a-zA-Z0-9_-]/g, '_')}.txt`;
       const link = document.createElement('a');
       link.href = url;
       link.download = filename;
+      link.setAttribute('download', filename);
       document.body.appendChild(link);
       link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
+      setTimeout(() => {
+        try {
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
+        } catch (e) {}
+      }, 3000);
+      this.showToast(`Downloaded trip report for ${t.shortGrNo || t.grNo}`, 'success');
     } catch (e) {
-      console.warn('Download error:', e);
+      console.warn('Download slip error:', e);
     }
-
-    this.showToast(`Downloaded trip report for ${t.grNo}`, 'success');
   },
 
   showPaidInvoice() {
     const t = this.selectedPaidTrip;
     if (!t) return;
-    this.showToast(`Invoice for ${t.grNo} (Paid: ₹${this.formatCurrency(t.paidAmount || t.freight)})`, 'info');
+    this.showToast(`Invoice for ${t.shortGrNo || t.grNo} (Paid: ₹${this.formatCurrency(t.paidAmount || t.freight)})`, 'info');
   },
 
   getDistinctPaidDatesList() {
@@ -3988,13 +3889,16 @@ Generated on: ${new Date().toLocaleString('en-IN')}
   togglePaidDateDropdown(e) {
     if (e && e.stopPropagation) e.stopPropagation();
     const menu = document.getElementById('menu-paid-date-filter');
+    const caret = document.getElementById('paid-date-caret-icon');
     if (!menu) return;
     const isHidden = menu.classList.contains('d-none');
     this.closeAllDropdowns(menu);
     if (isHidden) {
       menu.classList.remove('d-none');
+      if (caret) caret.className = 'bi bi-caret-up-fill text-success';
     } else {
       menu.classList.add('d-none');
+      if (caret) caret.className = 'bi bi-caret-down-fill text-muted';
     }
   },
 

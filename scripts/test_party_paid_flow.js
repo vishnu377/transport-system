@@ -144,7 +144,7 @@ async function runTests() {
   const b26 = document.getElementById('paid-fy-badge-2026');
   const b25 = document.getElementById('paid-fy-badge-2025');
   const b24 = document.getElementById('paid-fy-badge-2024');
-  assert.strictEqual(b26.textContent, '₹ 391,555,800.25', 'Badge 2026 mismatch');
+  assert.strictEqual(b26.textContent, '₹ 398,192,487.25', 'Badge 2026 mismatch');
   assert.strictEqual(b25.textContent, '₹ 615,289,069.19', 'Badge 2025 mismatch');
   assert.strictEqual(b24.textContent, '₹ 254,526,765.64', 'Badge 2024 mismatch');
   console.log('✓ FY Sidebar badges exactly match Google AppSheet screenshot values');
