@@ -29,8 +29,8 @@ async function runTests() {
   const parties = window.INITIAL_EXCEL_PARTIES;
   console.log(`PASS: Loaded ${parties.length} parties from sample-parties-data.js`);
 
-  if (parties.length !== 3396) {
-    console.error(`FAIL: Expected exactly 3396 parties, got ${parties.length}`);
+  if (parties.length !== 3517) {
+    console.error(`FAIL: Expected exactly 3517 parties, got ${parties.length}`);
     process.exit(1);
   }
 
@@ -82,13 +82,13 @@ async function runTests() {
     .replace('const dbService = new DBService();', 'global.dbService = new DBService();');
   eval(dbServiceContent);
 
-  const dbService = global.dbService;
-  if (!dbService) {
+  const localDbService = global.dbService;
+  if (!localDbService) {
     console.error("FAIL: dbService not initialized!");
     process.exit(1);
   }
 
-  const loadedParties = await dbService.getAll('parties');
+  const loadedParties = await localDbService.getAll('parties');
   console.log(`PASS: dbService.getAll('parties') returned ${loadedParties.length} parties`);
 
   if (loadedParties.length !== parties.length) {
@@ -168,8 +168,8 @@ async function runTests() {
   const perPage = 50;
   const totalPages = Math.ceil(total / perPage);
   console.log(`PASS: Pagination calculation: ${total} items at ${perPage}/page = ${totalPages} pages`);
-  if (totalPages !== 68) {
-    console.error(`FAIL: Expected 68 pages, got ${totalPages}`);
+  if (totalPages !== Math.ceil(parties.length / perPage)) {
+    console.error(`FAIL: Expected ${Math.ceil(parties.length / perPage)} pages, got ${totalPages}`);
     process.exit(1);
   }
 

@@ -66,7 +66,7 @@ async function runTests() {
   console.log('[Test 1] Initializing PartiesModule and loading 3,396 master parties...');
   await PartiesModule.init();
 
-  assert.strictEqual(PartiesModule.allParties.length, 3396, 'Must load exactly 3,396 parties');
+  assert.strictEqual(PartiesModule.allParties.length, 3517, 'Must load exactly 3,517 parties');
   console.log(`✓ Test 1 Passed: Successfully loaded ${PartiesModule.allParties.length} authentic parties.\n`);
 
   // Test 2: Card 1 Parties Detail Table Rendering

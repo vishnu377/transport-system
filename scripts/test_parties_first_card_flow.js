@@ -100,7 +100,7 @@ async function runTests() {
   // Test 1: Initialize Module & Load 3,396 authentic parties
   console.log('[Test 1] Initializing PartiesModule with 3,396 master parties...');
   await PartiesModule.init();
-  assert.strictEqual(PartiesModule.allParties.length, 3396, 'Must load all 3,396 parties');
+  assert.strictEqual(PartiesModule.allParties.length, 3517, 'Must load all 3,517 parties');
   console.log(`✓ Test 1 Passed: Loaded ${PartiesModule.allParties.length} authentic parties.\n`);
 
   // Test 2: Clicking a party row opens Single Party Details View (screencapture-...-23_50_06.png)

@@ -428,7 +428,7 @@ const PartiesModule = {
     const tbody = document.getElementById('parties-table-body');
     if (!tbody) return;
 
-    const displayList = this.filteredParties.slice(0, 300);
+    const displayList = this.filteredParties;
     if (displayList.length === 0) {
       tbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted py-4">No parties found matching "${this.searchQuery}"</td></tr>`;
       return;
@@ -458,7 +458,7 @@ const PartiesModule = {
     const tbody = document.getElementById('parties-full-table-body') || document.getElementById('full-parties-table-body');
     if (!tbody) return;
 
-    const displayList = this.filteredParties.slice(0, 300);
+    const displayList = this.filteredParties;
     if (displayList.length === 0) {
       tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-4">No parties found</td></tr>`;
       return;
