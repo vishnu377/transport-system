@@ -725,37 +725,68 @@ const PartiesModule = {
   // ========================================================
 
   async loadPartyDueData() {
+    // 1. Always load authentic 386 master trips from window.PARTY_DUE_DATA first
+    let masterTrips = [];
+    const tripsList = (typeof window !== 'undefined' && window.PARTY_DUE_DATA) ||
+                      (typeof global !== 'undefined' && global.window && global.window.PARTY_DUE_DATA);
+    if (tripsList && tripsList.length > 0) {
+      masterTrips = [...tripsList];
+    } else if (typeof require !== 'undefined') {
+      try {
+        const dueData = require('../js/party-due-data.js');
+        masterTrips = Array.isArray(dueData) ? [...dueData] : (global.window?.PARTY_DUE_DATA ? [...global.window.PARTY_DUE_DATA] : []);
+      } catch (e) {
+        masterTrips = [];
+      }
+    }
+
+    // 2. Fetch any real updates or new trips from Firestore collection 'party_due'
+    let firestoreDocs = [];
     if (typeof firebase !== 'undefined' && firebase.firestore) {
       try {
         const db = firebase.firestore();
         const snapshot = await db.collection('party_due').get();
         if (!snapshot.empty) {
-          this.allPartyDueTrips = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-          console.log(`[PartiesModule] Loaded ${this.allPartyDueTrips.length} Party Due trips from Firestore`);
+          firestoreDocs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          console.log(`[PartiesModule] Loaded ${firestoreDocs.length} Party Due trips from Firestore`);
         }
       } catch (err) {
-        console.warn('[PartiesModule] Firestore party_due load error, using party-due-data.js fallback:', err);
+        console.warn('[PartiesModule] Firestore party_due load error, continuing with master dataset:', err);
       }
     }
 
-    if (!this.allPartyDueTrips || this.allPartyDueTrips.length === 0) {
-      if (typeof window !== 'undefined' && window.PARTY_DUE_DATA) {
-        this.allPartyDueTrips = [...window.PARTY_DUE_DATA];
-      } else if (typeof require !== 'undefined') {
-        try {
-          const dueData = require('../js/party-due-data.js');
-          this.allPartyDueTrips = Array.isArray(dueData) ? [...dueData] : (global.window?.PARTY_DUE_DATA ? [...global.window.PARTY_DUE_DATA] : []);
-        } catch (e) {
-          this.allPartyDueTrips = [];
-        }
-      }
-    }
+    // 3. Merge: Master dataset + Firestore updates/additions using Map
+    const tripsMap = new Map();
+    masterTrips.forEach(t => {
+      const key = t.id || t.grNo;
+      if (key) tripsMap.set(key, { ...t });
+    });
 
+    firestoreDocs.forEach(p => {
+      const key = p.id || p.grNo;
+      if (key) {
+        const existing = tripsMap.get(key) || {};
+        tripsMap.set(key, { ...existing, ...p });
+      } else {
+        tripsMap.set(`TRIP_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`, p);
+      }
+    });
+
+    this.allPartyDueTrips = Array.from(tripsMap.values());
+    if (this.allPartyDueTrips.length === 0 && masterTrips.length > 0) {
+      this.allPartyDueTrips = [...masterTrips];
+    }
     this.filteredPartyDueTrips = [...this.allPartyDueTrips];
     this.renderPartyDueBadges();
   },
 
   renderPartyDueBadges() {
+    const cardTitle = (typeof document !== 'undefined' && document.getElementById) ?
+      (document.getElementById('card-party-due-title') || (document.querySelector ? document.querySelector('#card-party-due .parties-card-title') : null)) : null;
+    if (cardTitle && this.allPartyDueTrips && this.allPartyDueTrips.length > 0) {
+      cardTitle.textContent = `Party Due [${this.allPartyDueTrips.length.toLocaleString('en-US')}]`;
+    }
+
     const b26 = document.getElementById('due-fy-badge-2026');
     const b25 = document.getElementById('due-fy-badge-2025');
     const b24 = document.getElementById('due-fy-badge-2024');
@@ -777,6 +808,21 @@ const PartiesModule = {
     const listView = document.getElementById('view-party-due-list');
     if (listView) listView.classList.remove('d-none');
 
+    // Robust fallback: if allPartyDueTrips is empty, load immediately from master dataset
+    if (!this.allPartyDueTrips || this.allPartyDueTrips.length === 0) {
+      const tripsList = (typeof window !== 'undefined' && window.PARTY_DUE_DATA) ||
+                        (typeof global !== 'undefined' && global.window && global.window.PARTY_DUE_DATA);
+      if (tripsList && tripsList.length > 0) {
+        this.allPartyDueTrips = [...tripsList];
+      }
+    }
+
+    // Reset filters
+    this.currentDateFilter = 'ALL';
+    this.dueSearchQuery = '';
+    this.currentFY = year;
+    this.dueCurrentPage = 1;
+
     // Breadcrumbs: Home > Parties > Party Due
     this.setBreadcrumb([
       { label: 'Home', href: '../index.html' },
@@ -785,9 +831,9 @@ const PartiesModule = {
     ]);
 
     // Bar Tools: All Dates dropdown, Download CSV, Sidebar toggle
-    const activeDateLabel = this.currentDateFilter === 'ALL' ? 'All Dates' : this.currentDateFilter;
+    const activeDateLabel = 'All Dates';
     const dateOptions = this.getDistinctDatesList().slice(0, 30).map(d => `
-      <div class="select-option ${this.currentDateFilter === d ? 'selected' : ''}" onclick="PartiesModule.setDateFilter('${d}')">
+      <div class="select-option" onclick="PartiesModule.setDateFilter('${d}')">
         <span class="appsheet-bullet bullet-golden">●</span> ${d}
       </div>
     `).join('');
@@ -825,6 +871,26 @@ const PartiesModule = {
   setPartyDueFY(year) {
     this.currentFY = year;
     this.dueCurrentPage = 1;
+    this.currentDateFilter = 'ALL';
+
+    const lbl = document.getElementById('due-current-date-filter-label');
+    if (lbl) lbl.textContent = 'All Dates';
+
+    // Update date dropdown menu options for this FY
+    const menu = document.getElementById('menu-due-date-filter');
+    if (menu) {
+      const dateOptions = this.getDistinctDatesList().slice(0, 30).map(d => `
+        <div class="select-option" onclick="PartiesModule.setDateFilter('${d}')">
+          <span class="appsheet-bullet bullet-golden">●</span> ${d}
+        </div>
+      `).join('');
+      menu.innerHTML = `
+        <div class="select-option fw-bold text-primary border-bottom" onclick="PartiesModule.setDateFilter('ALL')">
+          <i class="bi bi-calendar-check me-2"></i> All Dates (Show All)
+        </div>
+        ${dateOptions}
+      `;
+    }
 
     // Update Sidebar active classes
     const items = ['fy-all', 'fy-2026', 'fy-2025', 'fy-2024'];
@@ -892,6 +958,11 @@ const PartiesModule = {
   renderPartyDueTable() {
     const tbody = document.getElementById('party-due-table-body');
     if (!tbody) return;
+
+    // Safety fallback: ensure trips are populated
+    if ((!this.allPartyDueTrips || this.allPartyDueTrips.length === 0) && typeof window !== 'undefined' && window.PARTY_DUE_DATA) {
+      this.allPartyDueTrips = [...window.PARTY_DUE_DATA];
+    }
 
     // Filter by FY
     let list = this.allPartyDueTrips;

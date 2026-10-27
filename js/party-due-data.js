@@ -10,7 +10,7 @@
  *   - slate (Cheque Due): #5f6368
  */
 
-window.PARTY_DUE_DATA = [
+var _PARTY_DUE_MASTER = [
   {
     "id": "DUE_20261022_2581",
     "billNo": "",
@@ -18522,6 +18522,13 @@ window.PARTY_DUE_DATA = [
   }
 ];
 
+if (typeof window !== 'undefined') {
+  window.PARTY_DUE_DATA = _PARTY_DUE_MASTER;
+}
+if (typeof global !== 'undefined') {
+  if (global.window) global.window.PARTY_DUE_DATA = _PARTY_DUE_MASTER;
+  global.PARTY_DUE_DATA = _PARTY_DUE_MASTER;
+}
 if (typeof module !== "undefined" && module.exports) {
-  module.exports = window.PARTY_DUE_DATA;
+  module.exports = _PARTY_DUE_MASTER;
 }
