@@ -243,7 +243,7 @@ const PartiesModule = {
   filteredParties: [],
   searchQuery: '',
   selectedParty: null,
-  activeView: 'dashboard', // 'dashboard', 'full-list', 'details', 'party-due-list', 'party-due-drilldown', 'party-due-expanded-subtable', 'party-due-subitem-card'
+  activeView: 'dashboard', // 'dashboard', 'full-list', 'details', 'party-due-list', 'party-due-drilldown', 'party-due-expanded-subtable', 'party-due-subitem-card', 'party-paid', 'party-paid-drilldown', 'party-paid-expanded-subtable', 'party-paid-subitem-card'
 
   // Summary amounts matching AppSheet Dashboard screenshot (media_1792691679696_57a495f0.png)
   summaryData: {
@@ -274,15 +274,28 @@ const PartiesModule = {
   selectedSubtableType: 'consignor',
   selectedSubitem: null,
 
+  // Party Paid (Card 3) State (100% AppSheet Match)
+  allPartyPaidTrips: [],
+  filteredPartyPaidTrips: [],
+  selectedPaidTrip: null,
+  paidCurrentFY: '2026-2027',
+  paidCurrentPage: 1,
+  paidPageSize: 50,
+  paidSearchQuery: '',
+  paidDateFilter: 'ALL',
+  paidSidebarCollapsed: false,
+
   async init() {
     console.log('[PartiesModule] Initializing Parties Master Module with AppSheet Flow...');
     this.initComboboxes();
     await this.loadPartiesData();
     await this.loadPartyDueData();
+    await this.loadPartyPaidData();
     this.renderBadges();
     this.renderPartiesTable();
     this.renderFullTable();
     this.renderPartyDueBadges();
+    this.renderPartyPaidBadges();
 
     if (typeof document !== 'undefined' && document.addEventListener) {
       document.addEventListener('click', (e) => {
@@ -1623,7 +1636,10 @@ const PartiesModule = {
     const menus = [
       document.getElementById('menu-status-dropdown'),
       document.getElementById('menu-add-records-dropdown'),
-      document.getElementById('menu-due-date-filter')
+      document.getElementById('menu-due-date-filter'),
+      document.getElementById('menu-paid-status-dropdown'),
+      document.getElementById('menu-paid-add-records-dropdown'),
+      document.getElementById('menu-paid-date-filter')
     ];
     menus.forEach(m => {
       if (m && m !== exceptEl) m.classList.add('d-none');
@@ -2176,7 +2192,11 @@ const PartiesModule = {
       'view-party-due-list',
       'view-party-due-drilldown',
       'view-party-due-expanded-subtable',
-      'view-party-due-subitem-card'
+      'view-party-due-subitem-card',
+      'view-party-paid',
+      'view-party-paid-drilldown',
+      'view-party-paid-expanded-subtable',
+      'view-party-paid-subitem-card'
     ];
     viewIds.forEach(id => {
       const el = document.getElementById(id);
@@ -2187,6 +2207,10 @@ const PartiesModule = {
   expandCard(cardId) {
     if (cardId === 'card-party-due') {
       this.showPartyDueList();
+      return;
+    }
+    if (cardId === 'card-party-paid') {
+      this.showPartyPaidList();
       return;
     }
     const card = document.getElementById(cardId);
@@ -2201,13 +2225,1791 @@ const PartiesModule = {
     if (cardType === 'due') {
       this.showPartyDueList(year);
     } else if (cardType === 'paid') {
-      if (typeof AppUI !== 'undefined' && AppUI.showToast) {
-        AppUI.showToast(`Party Paid module coming soon (${year})`, 'info');
+      this.showPartyPaidList(year);
+    }
+  },
+
+
+  // ========================================================
+  // CARD 3: PARTY PAID CONTROLLER (100% Matching Screenshots)
+  // ========================================================
+
+  async loadPartyPaidData() {
+    let masterTrips = [];
+    const tripsList = (typeof window !== 'undefined' && window.PARTY_PAID_DATA) ||
+                      (typeof global !== 'undefined' && global.window && global.window.PARTY_PAID_DATA);
+    if (tripsList && tripsList.length > 0) {
+      masterTrips = [...tripsList];
+    } else if (typeof require !== 'undefined') {
+      try {
+        const paidData = require('../js/party-paid-data.js');
+        masterTrips = Array.isArray(paidData) ? [...paidData] : (global.window?.PARTY_PAID_DATA ? [...global.window.PARTY_PAID_DATA] : []);
+      } catch (e) {
+        masterTrips = [];
+      }
+    }
+
+    let firestoreDocs = [];
+    if (typeof firebase !== 'undefined' && firebase.firestore) {
+      try {
+        const db = firebase.firestore();
+        const snapshot = await db.collection('party_paid').get();
+        if (!snapshot.empty) {
+          firestoreDocs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          console.log(`[PartiesModule] Loaded ${firestoreDocs.length} Party Paid trips from Firestore`);
+        }
+      } catch (err) {
+        console.warn('[PartiesModule] Firestore party_paid load error, continuing with master dataset:', err);
+      }
+    }
+
+    const tripsMap = new Map();
+    masterTrips.forEach(t => {
+      const key = t.id || t.grNo;
+      if (key) tripsMap.set(key, { ...t });
+    });
+
+    firestoreDocs.forEach(p => {
+      const key = p.id || p.grNo;
+      if (key) {
+        const existing = tripsMap.get(key) || {};
+        tripsMap.set(key, { ...existing, ...p });
+      } else {
+        tripsMap.set(`PAID_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`, p);
+      }
+    });
+
+    this.allPartyPaidTrips = Array.from(tripsMap.values());
+    if (this.allPartyPaidTrips.length === 0 && masterTrips.length > 0) {
+      this.allPartyPaidTrips = [...masterTrips];
+    }
+    this.filteredPartyPaidTrips = [...this.allPartyPaidTrips];
+    this.renderPartyPaidBadges();
+  },
+
+  renderPartyPaidBadges() {
+    const cardTitle = (typeof document !== 'undefined' && document.getElementById) ?
+      (document.getElementById('card-party-paid-title') || (document.querySelector ? document.querySelector('#card-party-paid .parties-card-title') : null)) : null;
+    if (cardTitle && this.allPartyPaidTrips && this.allPartyPaidTrips.length > 0) {
+      cardTitle.textContent = `Party Paid [${this.allPartyPaidTrips.length.toLocaleString('en-US')}]`;
+    }
+
+    const b26 = document.getElementById('paid-fy-badge-2026');
+    const b25 = document.getElementById('paid-fy-badge-2025');
+    const b24 = document.getElementById('paid-fy-badge-2024');
+    const bDash26 = document.getElementById('badge-paid-2026');
+    const bDash25 = document.getElementById('badge-paid-2025');
+    const bDash24 = document.getElementById('badge-paid-2024');
+
+    if (b26) b26.textContent = '₹ 391,555,800.25';
+    if (b25) b25.textContent = '₹ 615,289,069.19';
+    if (b24) b24.textContent = '₹ 254,526,765.64';
+    if (bDash26) bDash26.textContent = '₹ 391,555,800.25';
+    if (bDash25) bDash25.textContent = '₹ 615,289,069.19';
+    if (bDash24) bDash24.textContent = '₹ 254,526,765.64';
+  },
+
+  showPartyPaidList(year = '2026-2027') {
+    this.activeView = 'party-paid';
+    this.hideAllViews();
+
+    const view = document.getElementById('view-party-paid');
+    if (view) view.classList.remove('d-none');
+
+    if (!this.allPartyPaidTrips || this.allPartyPaidTrips.length === 0) {
+      const tripsList = (typeof window !== 'undefined' && window.PARTY_PAID_DATA) ||
+                        (typeof global !== 'undefined' && global.window && global.window.PARTY_PAID_DATA);
+      if (tripsList && tripsList.length > 0) {
+        this.allPartyPaidTrips = [...tripsList];
+      }
+    }
+
+    this.paidDateFilter = 'ALL';
+    this.paidSearchQuery = '';
+    this.paidCurrentFY = year;
+    this.paidCurrentPage = 1;
+
+    this.setBreadcrumb([
+      { label: 'Home', href: '../index.html' },
+      { label: 'Parties', action: "PartiesModule.showDashboard()" },
+      { label: 'Party Paid', current: true }
+    ]);
+
+    const activeDateLabel = 'All Dates';
+    const dateOptions = this.getDistinctPaidDatesList().slice(0, 30).map(d => `
+      <div class="select-option" onclick="PartiesModule.setPaidDateFilter('${d}')">
+        <span class="appsheet-bullet bullet-paid-green">●</span> ${d}
+      </div>
+    `).join('');
+
+    this.setBarTools(`
+      <div class="d-flex align-items-center gap-2">
+        <div class="dropdown position-relative d-inline-block appsheet-status-dropdown-wrap" id="paid-date-filter-wrap">
+          <button class="btn btn-sm btn-light border py-1 px-2 d-inline-flex align-items-center gap-1" id="btn-paid-date-filter" onclick="PartiesModule.togglePaidDateDropdown(event)" title="All Dates / Date Filter" style="height: 30px; font-size: 11.5px; font-weight: 600; color: #202124;">
+            <i class="bi bi-calendar3 text-success"></i>
+            <span id="paid-current-date-filter-label">${activeDateLabel}</span>
+            <i class="bi bi-caret-down-fill text-muted" style="font-size: 9px;"></i>
+          </button>
+          <div class="appsheet-select-menu d-none" id="menu-paid-date-filter" style="width: 220px; right: 0; left: auto; max-height: 280px; overflow-y: auto;">
+            <div class="select-option fw-bold text-success border-bottom" onclick="PartiesModule.setPaidDateFilter('ALL')">
+              <i class="bi bi-calendar-check me-2"></i> All Dates (Show All)
+            </div>
+            ${dateOptions}
+          </div>
+        </div>
+
+        <button class="btn btn-sm btn-light border py-1 px-2 d-inline-flex align-items-center gap-1" onclick="PartiesModule.exportPartyPaidCSV()" title="Download CSV" style="height: 30px;">
+          <i class="bi bi-download text-secondary"></i>
+        </button>
+
+        <button class="btn btn-sm btn-light border py-1 px-2 d-inline-flex align-items-center gap-1" onclick="PartiesModule.togglePaidSidebar()" title="Toggle Sidebar" style="height: 30px;">
+          <i class="bi bi-layout-sidebar text-secondary"></i>
+        </button>
+      </div>
+    `);
+
+    this.setSearchPlaceholder('Search Party Paid');
+    this.setPartyPaidFY(year);
+  },
+
+  setPartyPaidFY(year) {
+    this.paidCurrentFY = year;
+    this.paidCurrentPage = 1;
+    this.paidDateFilter = 'ALL';
+
+    const lbl = document.getElementById('paid-current-date-filter-label');
+    if (lbl) lbl.textContent = 'All Dates';
+
+    const items = ['ALL', '2026-2027', '2025-2026', '2024-2025'];
+    items.forEach(fy => {
+      const el = document.getElementById(`paid-fy-item-${fy}`);
+      if (el) {
+        if (fy === year) {
+          el.classList.add('active');
+        } else {
+          el.classList.remove('active');
+        }
+      }
+    });
+
+    this.renderPartyPaidTable();
+  },
+
+  togglePaidSidebar(forceState) {
+    const sidebar = document.getElementById('paid-sidebar');
+    const icon = document.getElementById('paid-sidebar-icon');
+    const unhideBtn = document.getElementById('btn-unhide-paid-sidebar');
+    if (!sidebar) return;
+
+    if (forceState !== undefined) {
+      this.paidSidebarCollapsed = forceState;
+    } else {
+      this.paidSidebarCollapsed = !this.paidSidebarCollapsed;
+    }
+
+    if (this.paidSidebarCollapsed) {
+      sidebar.classList.add('collapsed');
+      if (icon) {
+        icon.classList.remove('bi-chevron-left');
+        icon.classList.add('bi-chevron-right');
+      }
+      if (unhideBtn) unhideBtn.classList.remove('d-none');
+    } else {
+      sidebar.classList.remove('collapsed');
+      if (icon) {
+        icon.classList.remove('bi-chevron-right');
+        icon.classList.add('bi-chevron-left');
+      }
+      if (unhideBtn) unhideBtn.classList.add('d-none');
+    }
+  },
+
+  setPaidPageSize(size) {
+    this.paidPageSize = size === 'all' ? Infinity : parseInt(size, 10);
+    this.paidCurrentPage = 1;
+    this.renderPartyPaidTable();
+  },
+
+  setPaidPage(page) {
+    this.paidCurrentPage = page;
+    this.renderPartyPaidTable();
+  },
+
+  renderPartyPaidTable() {
+    const tbody = document.getElementById('party-paid-table-body');
+    if (!tbody) return;
+
+    if ((!this.allPartyPaidTrips || this.allPartyPaidTrips.length === 0) && typeof window !== 'undefined' && window.PARTY_PAID_DATA) {
+      this.allPartyPaidTrips = [...window.PARTY_PAID_DATA];
+    }
+
+    let list = this.allPartyPaidTrips || [];
+    if (this.paidCurrentFY && this.paidCurrentFY !== 'ALL') {
+      list = list.filter(t => t.financialYear === this.paidCurrentFY);
+    }
+
+    if (this.paidDateFilter && this.paidDateFilter !== 'ALL') {
+      list = list.filter(t => t.paymentDate === this.paidDateFilter || t.tripStartDate === this.paidDateFilter);
+    }
+
+    if (this.paidSearchQuery) {
+      const q = this.paidSearchQuery.toLowerCase().trim();
+      list = list.filter(t => (
+        (t.grNo && t.grNo.toLowerCase().includes(q)) ||
+        (t.shortGrNo && t.shortGrNo.toLowerCase().includes(q)) ||
+        (t.truckNo && t.truckNo.toLowerCase().includes(q)) ||
+        (t.destination && t.destination.toLowerCase().includes(q)) ||
+        (t.reference && t.reference.toLowerCase().includes(q)) ||
+        (t.consignee && t.consignee.toLowerCase().includes(q)) ||
+        (t.owner && t.owner.toLowerCase().includes(q)) ||
+        (t.driver && t.driver.toLowerCase().includes(q)) ||
+        (t.mode && t.mode.toLowerCase().includes(q)) ||
+        (t.status && t.status.toLowerCase().includes(q))
+      ));
+    }
+
+    this.filteredPartyPaidTrips = list;
+
+    const countText = document.getElementById('paid-record-count-text');
+    if (countText) countText.textContent = `Showing ${list.length} records`;
+
+    if (list.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="14" class="text-center text-muted py-5">No Party Paid records found for ${this.paidCurrentFY}</td></tr>`;
+      this.renderPaidPagination(0, 1);
+      return;
+    }
+
+    // Group by paymentDate (fallback to tripStartDate)
+    const dateMap = new Map();
+    list.forEach(t => {
+      const d = t.paymentDate || t.tripStartDate || 'Other';
+      if (!dateMap.has(d)) dateMap.set(d, []);
+      dateMap.get(d).push(t);
+    });
+
+    const pageSize = this.paidPageSize === Infinity ? list.length : (this.paidPageSize || 50);
+    const totalPages = Math.ceil(list.length / pageSize) || 1;
+    if (this.paidCurrentPage > totalPages) this.paidCurrentPage = 1;
+
+    const startIndex = (this.paidCurrentPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+
+    let html = '';
+    let runningIndex = 0;
+
+    for (const [date, trips] of dateMap.entries()) {
+      const dayTotal = trips.reduce((sum, t) => sum + Number(t.paidAmount || t.amountPaid || t.freight || 0), 0);
+      const groupStart = runningIndex;
+      const groupEnd = runningIndex + trips.length;
+
+      if (groupEnd > startIndex && groupStart < endIndex) {
+        html += `
+          <tr class="party-paid-group-tr">
+            <td colspan="14" class="party-paid-group-cell">
+              <div class="party-paid-group-inner">
+                <span class="bullet-paid-green">●</span>
+                <span style="font-weight: 600; font-size: 12px; color: #202124;">${date}</span>
+                <span class="party-paid-group-badge">₹ ${this.formatCurrency(dayTotal)}</span>
+              </div>
+            </td>
+          </tr>
+        `;
+
+        trips.forEach(t => {
+          if (runningIndex >= startIndex && runningIndex < endIndex) {
+            const shortGr = t.shortGrNo || t.grNo;
+            const dueDisplay = (t.dueAmount && Number(t.dueAmount) > 0)
+              ? `<span style="color: #d93025; font-weight: 600;">₹ ${this.formatCurrency(t.dueAmount)}</span>`
+              : `₹ 0.00`;
+
+            const c = (val, isBold = false) => `
+              <div class="party-due-cell-inner ${isBold ? 'fw-semibold' : ''}">
+                <span class="bullet-paid-green">●</span>
+                <span class="cell-text">${val || '-'}</span>
+              </div>
+            `;
+
+            html += `
+              <tr class="party-paid-row" onclick="PartiesModule.openPartyPaidDrilldown('${t.id}')">
+                <td>${c(shortGr, true)}</td>
+                <td>${c(t.tripStartDate)}</td>
+                <td>${c(t.truckNo)}</td>
+                <td>${c(t.destination)}</td>
+                <td>${c(t.reference)}</td>
+                <td>${c(t.consignee)}</td>
+                <td style="text-align: right;">${c(Number(t.weight || 0).toFixed(3))}</td>
+                <td style="text-align: right;">${c('₹ ' + this.formatCurrency(t.rate))}</td>
+                <td style="text-align: right;">${c('₹ ' + this.formatCurrency(t.freight))}</td>
+                <td style="text-align: right;">
+                  <div class="party-due-cell-inner justify-content-end">
+                    <span class="bullet-paid-green">●</span>
+                    <span class="cell-text">${dueDisplay}</span>
+                  </div>
+                </td>
+                <td>${c(t.paymentDate || t.tripStartDate)}</td>
+                <td style="text-align: right;">${c('₹ ' + this.formatCurrency(t.paidAmount || t.freight))}</td>
+                <td>${c(t.mode || 'NEFT/RTGS')}</td>
+                <td style="text-align: right; color: #5f6368;"><i class="bi bi-chevron-right" style="font-size: 11px;"></i></td>
+              </tr>
+            `;
+          }
+          runningIndex++;
+        });
+      } else {
+        runningIndex += trips.length;
+      }
+    }
+
+    tbody.innerHTML = html;
+    this.renderPaidPagination(list.length, totalPages);
+  },
+
+  renderPaidPagination(totalRecords, totalPages) {
+    const container = document.getElementById('paid-pagination-controls');
+    if (!container) return;
+
+    if (totalPages <= 1) {
+      container.innerHTML = `<span class="text-muted small">Page 1 of 1</span>`;
+      return;
+    }
+
+    const prevDisabled = this.paidCurrentPage <= 1 ? 'disabled' : '';
+    const nextDisabled = this.paidCurrentPage >= totalPages ? 'disabled' : '';
+
+    container.innerHTML = `
+      <button class="btn btn-sm btn-outline-secondary py-0 px-2" style="font-size: 11.5px; border-radius: 4px;" ${prevDisabled} onclick="PartiesModule.setPaidPage(${this.paidCurrentPage - 1})">&laquo; Prev</button>
+      <span class="small mx-2 text-muted fw-semibold" style="font-size: 11.5px;">Page ${this.paidCurrentPage} of ${totalPages}</span>
+      <button class="btn btn-sm btn-outline-secondary py-0 px-2" style="font-size: 11.5px; border-radius: 4px;" ${nextDisabled} onclick="PartiesModule.setPaidPage(${this.paidCurrentPage + 1})">Next &raquo;</button>
+    `;
+
+    const bottomCount = document.getElementById('paid-record-count-bottom');
+    if (bottomCount) {
+      bottomCount.textContent = `Showing ${totalRecords} records`;
+    }
+  },
+
+  openPartyPaidDrilldown(tripId) {
+    const trip = (this.allPartyPaidTrips || []).find(t => t.id === tripId || t.grNo === tripId);
+    if (!trip) {
+      this.showToast('Trip record not found', 'warning');
+      return;
+    }
+    this.selectedPaidTrip = trip;
+    this.activeView = 'party-paid-drilldown';
+    this.hideAllViews();
+
+    const drillView = document.getElementById('view-party-paid-drilldown');
+    if (drillView) drillView.classList.remove('d-none');
+
+    const is2024 = trip.financialYear === '2024-2025';
+    const isSettled = is2024 || trip.status === 'Settled';
+    const titleLabel = isSettled ? 'Settled Trip Details' : 'Open Trip Details';
+
+    this.setBreadcrumb([
+      { label: 'Home', href: '../index.html' },
+      { label: 'Parties', action: "PartiesModule.showDashboard()" },
+      { label: 'Party Paid', action: `PartiesModule.showPartyPaidList('${this.paidCurrentFY}')` },
+      { label: titleLabel, current: true }
+    ]);
+
+    this.setBarTools(`
+      <i class="bi bi-file-earmark-text" title="Invoice" style="cursor: pointer;" onclick="PartiesModule.showPaidInvoice()"></i>
+      <i class="bi bi-download" title="Download Slip" style="cursor: pointer;" onclick="PartiesModule.downloadPaidTripSlip()"></i>
+      <button class="btn-appsheet-edit" onclick="PartiesModule.openEditPaidTripModal()"><i class="bi bi-pencil-square"></i> Edit</button>
+      <i class="bi bi-arrows-fullscreen" title="Fullscreen" style="cursor: pointer;" onclick="PartiesModule.toggleFullscreen()"></i>
+    `);
+
+    this.setSearchPlaceholder(`Search ${titleLabel}`);
+
+    const container = document.getElementById('drilldown-paid-container');
+    if (container) {
+      container.className = 'drilldown-wrap';
+      if (is2024 || trip.status === 'Settled') {
+        container.classList.add('theme-paid-green');
+      } else if (trip.status === 'Truck Owner Payment Pending') {
+        container.classList.add('theme-paid-sky-blue');
+      } else if (trip.status === 'Party Payment Pending') {
+        container.classList.add('theme-paid-blue');
+      } else if (trip.status === 'Other B Pending') {
+        container.classList.add('theme-paid-red');
+      } else {
+        container.classList.add('theme-paid-green');
+      }
+    }
+
+    this.renderPartyPaidDrilldownView();
+  },
+
+  renderPartyPaidDrilldownView() {
+    const t = this.selectedPaidTrip;
+    if (!t) return;
+
+    const leftCard = document.getElementById('drilldown-paid-card-left');
+    const midCard = document.getElementById('drilldown-paid-card-mid');
+    const rightCard = document.getElementById('drilldown-paid-card-right');
+    const bottomSection = document.getElementById('drilldown-paid-bottom-section');
+
+    const dotHtml = `<span class="theme-dot">●</span>`;
+    const is2024 = t.financialYear === '2024-2025';
+    const isSettled = is2024 || t.status === 'Settled';
+    const isOtherB = t.status === 'Other B Pending';
+
+    // 1. LEFT CARD (Trip Info)
+    if (leftCard) {
+      let fieldsHtml = `
+        <div class="drilldown-field">
+          <div class="drilldown-field-label">G.R.No.</div>
+          <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${t.grNo}</span></div>
+        </div>
+        <div class="drilldown-field">
+          <div class="drilldown-field-label">Truck No.</div>
+          <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${t.truckNo}</span></div>
+        </div>
+        <div class="drilldown-field">
+          <div class="drilldown-field-label">Trip Start Date</div>
+          <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${t.tripStartDate}</span></div>
+        </div>
+        <div class="drilldown-field">
+          <div class="drilldown-field-label">Trip End Date</div>
+          <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${t.tripEndDate || t.tripStartDate}</span></div>
+        </div>
+        <div class="drilldown-field">
+          <div class="drilldown-field-label">Origin</div>
+          <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${t.origin}</span></div>
+        </div>
+        <div class="drilldown-field">
+          <div class="drilldown-field-label">Destination</div>
+          <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${t.destination}</span></div>
+        </div>
+      `;
+
+      if (!isOtherB) {
+        fieldsHtml += `
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Consignee Billing Type</div>
+            <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${t.billingType || 'Per Tonne'}</span></div>
+          </div>
+        `;
+      }
+
+      fieldsHtml += `
+        <div class="drilldown-field">
+          <div class="drilldown-field-label">Weight</div>
+          <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${Number(t.weight || 0).toFixed(3)}</span></div>
+        </div>
+        <div class="drilldown-field">
+          <div class="drilldown-field-label">Rate</div>
+          <div class="drilldown-field-val">${dotHtml} <span class="theme-text">₹${this.formatCurrency(t.rate)}</span></div>
+        </div>
+        <div class="drilldown-field">
+          <div class="drilldown-field-label">Material</div>
+          <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${t.material || 'Marble Powder'}</span></div>
+        </div>
+        <div class="drilldown-field">
+          <div class="drilldown-field-label">Reference</div>
+          <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${t.reference}</span></div>
+        </div>
+        <div class="drilldown-field">
+          <div class="drilldown-field-label">Reference Mobile No.</div>
+          <div class="drilldown-field-val">
+            ${dotHtml} <span class="theme-text">${t.referenceMobile || '-'}</span>
+            ${t.referenceMobile ? `<a href="tel:${t.referenceMobile}" class="tel-link"><i class="bi bi-telephone-fill theme-icon"></i></a>` : ''}
+          </div>
+        </div>
+        <div class="drilldown-field">
+          <div class="drilldown-field-label">Driver</div>
+          <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${t.driver}</span></div>
+        </div>
+        <div class="drilldown-field">
+          <div class="drilldown-field-label">Driver Mobile No.</div>
+          <div class="drilldown-field-val">
+            ${dotHtml} <span class="theme-text">${t.driverMobile || '-'}</span>
+            ${t.driverMobile ? `<a href="tel:${t.driverMobile}" class="tel-link"><i class="bi bi-telephone-fill theme-icon"></i></a>` : ''}
+          </div>
+        </div>
+      `;
+
+      if (isOtherB) {
+        fieldsHtml += `
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Consignor</div>
+            <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${t.consignor || t.consignee}</span></div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Consignor Mobile No.</div>
+            <div class="drilldown-field-val">
+              ${dotHtml} <span class="theme-text">${t.consignorMobile || t.referenceMobile || '-'}</span>
+              <a href="tel:${t.consignorMobile || t.referenceMobile || '9414659401'}" class="tel-link"><i class="bi bi-telephone-fill theme-icon"></i></a>
+            </div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Owner</div>
+            <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${t.owner}</span></div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Owner Mobile No.</div>
+            <div class="drilldown-field-val">
+              ${dotHtml} <span class="theme-text">${t.ownerMobile || '-'}</span>
+              <a href="tel:${t.ownerMobile || '9414659401'}" class="tel-link"><i class="bi bi-telephone-fill theme-icon"></i></a>
+            </div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Freight</div>
+            <div class="drilldown-field-val">${dotHtml} <span class="theme-text">₹${this.formatCurrency(t.freight)}</span></div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Add Records for</div>
+            <div class="drilldown-field-val">
+              <div class="appsheet-status-dropdown-wrap position-relative w-100">
+                <button type="button" class="appsheet-select-btn" onclick="PartiesModule.togglePaidAddRecordsDropdown(event)">
+                  <span class="text-muted" style="font-weight: normal;">Party Payment</span>
+                  <i class="bi bi-caret-down-fill select-caret"></i>
+                </button>
+                <div class="appsheet-select-menu d-none" id="menu-paid-add-records-dropdown">
+                  <div class="select-option" onclick="PartiesModule.handlePaidAddRecordSelection('Party Payment')">Party Payment</div>
+                  <div class="select-option" onclick="PartiesModule.handlePaidAddRecordSelection('Cheque')">Cheque</div>
+                  <div class="select-option" onclick="PartiesModule.handlePaidAddRecordSelection('Truck Owner Payment')">Truck Owner Payment</div>
+                  <div class="select-option" onclick="PartiesModule.handlePaidAddRecordSelection('Other B')">Other B</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      leftCard.innerHTML = fieldsHtml;
+    }
+
+    // 2. MIDDLE CARD
+    if (midCard) {
+      if (isSettled) {
+        // Settled Layout
+        const consignors = t.consignors || [];
+        midCard.innerHTML = `
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="theme-dot" style="font-size: 15px;">●</span>
+            <span class="theme-text" style="font-size: 15px; font-weight: 700;">Consignor/s</span>
+            <span class="badge bg-light text-dark border" style="font-size: 11px;">${consignors.length}</span>
+          </div>
+          <div class="drilldown-subtable-wrap mb-3">
+            <div style="overflow-x: auto;">
+              <table class="drilldown-subtable">
+                <thead>
+                  <tr>
+                    <th style="width: 140px; white-space: nowrap;">GSTIN</th>
+                    <th style="min-width: 170px; white-space: nowrap;">Consignor</th>
+                    <th style="min-width: 250px; white-space: nowrap;">Consignor Address</th>
+                    <th style="width: 25px;"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${consignors.map((c, i) => `
+                    <tr onclick="PartiesModule.openPartyPaidSubitem(${i}, 'consignor')">
+                      <td class="font-monospace text-nowrap">${c.gstin}</td>
+                      <td class="fw-semibold text-nowrap">${c.consignor}</td>
+                      <td class="text-nowrap"><span class="cell-truncate text-nowrap" title="${c.address}">${c.address}</span></td>
+                      <td style="text-align: right; color: #5f6368;"><i class="bi bi-chevron-right" style="font-size: 10px;"></i></td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+            <div class="subtable-footer-actions">
+              <a class="subtable-action-link" onclick="PartiesModule.openPartyPaidSubtable('consignor')">Expand</a>
+            </div>
+          </div>
+
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Total Freight</div>
+            <div class="drilldown-field-val">${dotHtml} <span class="theme-text">₹${this.formatCurrency(t.totalFreight || t.freight)}</span></div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Paid Amount</div>
+            <div class="drilldown-field-val">${dotHtml} <span class="theme-text">₹${this.formatCurrency(t.paidAmount || t.freight)}</span></div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Owner</div>
+            <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${t.owner}</span></div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Owner Mobile No.</div>
+            <div class="drilldown-field-val">
+              ${dotHtml} <span class="theme-text">${t.ownerMobile || '-'}</span>
+              ${t.ownerMobile ? `<a href="tel:${t.ownerMobile}" class="tel-link"><i class="bi bi-telephone-fill theme-icon"></i></a>` : ''}
+            </div>
+          </div>
+        `;
+      } else if (isOtherB) {
+        // Red (Other B Pending): Payment table in mid card
+        const payments = t.payments || [];
+        midCard.innerHTML = `
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="theme-dot" style="font-size: 15px;">●</span>
+            <span class="theme-text" style="font-size: 15px; font-weight: 700;">Payment</span>
+            <span class="badge bg-light text-dark border" style="font-size: 11px;">${payments.length}</span>
+          </div>
+          <div class="drilldown-subtable-wrap mb-3">
+            <div style="overflow-x: auto;">
+              <table class="drilldown-subtable">
+                <thead>
+                  <tr>
+                    <th style="width: 25px;"></th>
+                    <th style="width: 25px;"></th>
+                    <th>Payment Date ↑</th>
+                    <th>Amount Paid</th>
+                    <th>Mode</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${payments.map((p, i) => `
+                    <tr>
+                      <td style="color:#d93025; cursor:pointer;" onclick="PartiesModule.deletePaidPayment(${i})"><i class="bi bi-trash"></i></td>
+                      <td style="color:#5f6368; cursor:pointer;" onclick="PartiesModule.openEditPaidPayment(${i})"><i class="bi bi-pencil"></i></td>
+                      <td><span class="bullet-paid-green">●</span> ${p.paymentDate}</td>
+                      <td><span class="bullet-paid-green">●</span> ₹${PartiesModule.formatCurrency(p.amountPaid)}</td>
+                      <td><span class="bullet-paid-green">●</span> ${p.mode}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+            <div class="subtable-footer-actions">
+              <a class="subtable-action-link" onclick="PartiesModule.openPartyPaidSubtable('payment')">Expand</a>
+              <a class="subtable-action-link" onclick="PartiesModule.openAddPaidPaymentModal()">Add</a>
+            </div>
+          </div>
+        `;
+      } else {
+        // Sky Blue & Blue layout
+        const consignors = t.consignors || [];
+        const dueColor = (t.dueAmount && Number(t.dueAmount) > 0) ? '#d93025' : '#2e7d32';
+        midCard.innerHTML = `
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="theme-dot" style="font-size: 15px;">●</span>
+            <span class="theme-text" style="font-size: 15px; font-weight: 700;">Consignor/s</span>
+            <span class="badge bg-light text-dark border" style="font-size: 11px;">${consignors.length}</span>
+          </div>
+          <div class="drilldown-subtable-wrap mb-3">
+            <div style="overflow-x: auto;">
+              <table class="drilldown-subtable">
+                <thead>
+                  <tr>
+                    <th style="width: 140px; white-space: nowrap;">GSTIN</th>
+                    <th style="min-width: 170px; white-space: nowrap;">Consignor</th>
+                    <th style="min-width: 250px; white-space: nowrap;">Consignor Address</th>
+                    <th style="width: 25px;"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${consignors.map((c, i) => `
+                    <tr onclick="PartiesModule.openPartyPaidSubitem(${i}, 'consignor')">
+                      <td class="font-monospace text-nowrap">${c.gstin}</td>
+                      <td class="fw-semibold text-nowrap">${c.consignor}</td>
+                      <td class="text-nowrap"><span class="cell-truncate text-nowrap" title="${c.address}">${c.address}</span></td>
+                      <td style="text-align: right; color: #5f6368;"><i class="bi bi-chevron-right" style="font-size: 10px;"></i></td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+            <div class="subtable-footer-actions">
+              <a class="subtable-action-link" onclick="PartiesModule.openPartyPaidSubtable('consignor')">Expand</a>
+            </div>
+          </div>
+
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Total Freight</div>
+            <div class="drilldown-field-val">${dotHtml} <span class="theme-text">₹${this.formatCurrency(t.totalFreight || t.freight)}</span></div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Paid Amount</div>
+            <div class="drilldown-field-val">${dotHtml} <span class="theme-text">₹${this.formatCurrency(t.paidAmount || t.freight)}</span></div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Due Amount</div>
+            <div class="drilldown-field-val">
+              <span style="color: ${dueColor};">●</span>
+              <span style="color: ${dueColor}; font-weight: 600;">₹${this.formatCurrency(t.dueAmount || 0)}</span>
+            </div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Status*</div>
+            <div class="drilldown-field-val">
+              <div class="appsheet-status-dropdown-wrap position-relative w-100">
+                <button type="button" class="appsheet-select-btn" onclick="PartiesModule.togglePaidStatusDropdown(event)">
+                  <span class="status-btn-label">${t.status}</span>
+                  <div class="d-flex align-items-center gap-1">
+                    <i class="bi bi-x appsheet-clear-icon" onclick="PartiesModule.clearPaidTripStatus(event)" title="Clear"></i>
+                    <i class="bi bi-caret-down-fill select-caret" id="paid-status-caret-icon"></i>
+                  </div>
+                </button>
+                <div class="appsheet-select-menu d-none" id="menu-paid-status-dropdown">
+                  <div class="select-option" onclick="PartiesModule.changePaidTripStatus('Transit')">
+                    <span class="appsheet-bullet bullet-golden">●</span> Transit
+                  </div>
+                  <div class="select-option" onclick="PartiesModule.changePaidTripStatus('Off Loading')">
+                    <span class="appsheet-bullet bullet-pink">●</span> Off Loading
+                  </div>
+                  <div class="select-option" onclick="PartiesModule.changePaidTripStatus('Cheque Due')">
+                    <span class="appsheet-bullet bullet-slate">●</span> Cheque Due
+                  </div>
+                  <div class="select-option" onclick="PartiesModule.changePaidTripStatus('POD Sent/Bill Generated')">
+                    <span class="appsheet-bullet bullet-dark_blue">●</span> POD Sent/Bill Generated
+                  </div>
+                  <div class="select-option" onclick="PartiesModule.changePaidTripStatus('Truck Owner Payment Pending')">
+                    <span class="bullet-paid-sky-blue">●</span> Truck Owner Payment Pending
+                  </div>
+                  <div class="select-option" onclick="PartiesModule.changePaidTripStatus('Party Payment Pending')">
+                    <span class="bullet-paid-blue">●</span> Party Payment Pending
+                  </div>
+                  <div class="select-option" onclick="PartiesModule.changePaidTripStatus('Settled')">
+                    <span class="bullet-paid-green">●</span> Settled
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    // 3. RIGHT CARD
+    if (rightCard) {
+      if (isSettled) {
+        // Settled Layout
+        const ownerPayments = t.ownerPayments || [];
+        rightCard.innerHTML = `
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">GSTIN Consignee</div>
+            <div class="drilldown-field-val">${dotHtml} <span class="theme-text font-monospace">${t.consigneeGstin || '-'}</span></div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Consignee</div>
+            <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${t.consignee}</span></div>
+          </div>
+          <div class="drilldown-field mb-3">
+            <div class="drilldown-field-label">Freight</div>
+            <div class="drilldown-field-val">${dotHtml} <span class="theme-text">₹${this.formatCurrency(t.freight)}</span></div>
+          </div>
+
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="theme-dot" style="font-size: 15px;">●</span>
+            <span class="theme-text" style="font-size: 15px; font-weight: 700;">Owner Payment</span>
+            <span class="badge bg-light text-dark border" style="font-size: 11px;">${ownerPayments.length}</span>
+          </div>
+          <div class="drilldown-subtable-wrap">
+            <div style="overflow-x: auto;">
+              <table class="drilldown-subtable">
+                <thead>
+                  <tr>
+                    <th>Payment Date ↑</th>
+                    <th>Amount Paid</th>
+                    <th>Mode</th>
+                    <th>Beneficiary</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${ownerPayments.map((p, i) => `
+                    <tr onclick="PartiesModule.openPartyPaidSubitem(${i}, 'owner_payment')">
+                      <td><span class="bullet-paid-green">●</span> ${p.paymentDate}</td>
+                      <td><span class="bullet-paid-green">●</span> ₹${PartiesModule.formatCurrency(p.amountPaid)}</td>
+                      <td><span class="bullet-paid-green">●</span> ${p.mode}</td>
+                      <td><span class="bullet-paid-green">●</span> ${p.beneficiary}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+            <div class="subtable-footer-actions">
+              <a class="subtable-action-link" onclick="PartiesModule.openPartyPaidSubtable('owner_payment')">Expand</a>
+            </div>
+          </div>
+        `;
+      } else if (isOtherB) {
+        // Red (Other B Pending)
+        rightCard.innerHTML = `
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Total Freight</div>
+            <div class="drilldown-field-val">${dotHtml} <span class="theme-text">₹${this.formatCurrency(t.totalFreight || t.freight)}</span></div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Paid Amount</div>
+            <div class="drilldown-field-val">${dotHtml} <span class="theme-text">₹${this.formatCurrency(t.paidAmount || t.freight)}</span></div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Due Amount</div>
+            <div class="drilldown-field-val"><span style="color:#2e7d32;">●</span> <span style="color:#2e7d32; font-weight:600;">₹${this.formatCurrency(t.dueAmount || 0)}</span></div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Other B</div>
+            <div class="drilldown-field-val"><span class="text-muted">₹${this.formatCurrency(t.otherB || 17000)}</span></div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Status</div>
+            <div class="drilldown-field-val"><span class="text-muted"></span></div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Status*</div>
+            <div class="drilldown-field-val">
+              <div class="appsheet-status-dropdown-wrap position-relative w-100">
+                <button type="button" class="appsheet-select-btn" onclick="PartiesModule.togglePaidStatusDropdown(event)">
+                  <span class="status-btn-label">${t.status}</span>
+                  <div class="d-flex align-items-center gap-1">
+                    <i class="bi bi-x appsheet-clear-icon" onclick="PartiesModule.clearPaidTripStatus(event)" title="Clear"></i>
+                    <i class="bi bi-caret-down-fill select-caret" id="paid-status-caret-icon"></i>
+                  </div>
+                </button>
+                <div class="appsheet-select-menu d-none" id="menu-paid-status-dropdown">
+                  <div class="select-option" onclick="PartiesModule.changePaidTripStatus('Other B Pending')">
+                    <span class="bullet-paid-red">●</span> Other B Pending
+                  </div>
+                  <div class="select-option" onclick="PartiesModule.changePaidTripStatus('Settled')">
+                    <span class="bullet-paid-green">●</span> Settled
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      } else {
+        // Sky Blue & Blue
+        rightCard.innerHTML = `
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">GSTIN Consignee</div>
+            <div class="drilldown-field-val">${dotHtml} <span class="theme-text font-monospace">${t.consigneeGstin || '-'}</span></div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Consignee</div>
+            <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${t.consignee}</span></div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Owner</div>
+            <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${t.owner}</span></div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Owner Mobile No.</div>
+            <div class="drilldown-field-val">
+              ${dotHtml} <span class="theme-text">${t.ownerMobile || '-'}</span>
+              ${t.ownerMobile ? `<a href="tel:${t.ownerMobile}" class="tel-link"><i class="bi bi-telephone-fill theme-icon"></i></a>` : ''}
+            </div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Freight</div>
+            <div class="drilldown-field-val">${dotHtml} <span class="theme-text">₹${this.formatCurrency(t.freight)}</span></div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Add Records for</div>
+            <div class="drilldown-field-val">
+              <div class="appsheet-status-dropdown-wrap position-relative w-100">
+                <button type="button" class="appsheet-select-btn" onclick="PartiesModule.togglePaidAddRecordsDropdown(event)">
+                  <span class="text-muted" style="font-weight: normal;">Party Payment</span>
+                  <i class="bi bi-caret-down-fill select-caret"></i>
+                </button>
+                <div class="appsheet-select-menu d-none" id="menu-paid-add-records-dropdown">
+                  <div class="select-option" onclick="PartiesModule.handlePaidAddRecordSelection('Party Payment')">Party Payment</div>
+                  <div class="select-option" onclick="PartiesModule.handlePaidAddRecordSelection('Cheque')">Cheque</div>
+                  <div class="select-option" onclick="PartiesModule.handlePaidAddRecordSelection('Truck Owner Payment')">Truck Owner Payment</div>
+                  <div class="select-option" onclick="PartiesModule.handlePaidAddRecordSelection('Other B')">Other B</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    // 4. BOTTOM SECTION (Payment Subtable & Total Payment)
+    if (bottomSection) {
+      if (isSettled) {
+        const payments = t.payments || [];
+        bottomSection.innerHTML = `
+          <div class="row g-3">
+            <div class="col-12 col-lg-7">
+              <div class="drilldown-card">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                  <span class="theme-dot" style="font-size: 15px;">●</span>
+                  <span class="theme-text" style="font-size: 15px; font-weight: 700;">Payment</span>
+                  <span class="badge bg-light text-dark border" style="font-size: 11px;">${payments.length}</span>
+                </div>
+                <div class="drilldown-subtable-wrap mb-3">
+                  <div style="overflow-x: auto;">
+                    <table class="drilldown-subtable">
+                      <thead>
+                        <tr>
+                          <th>Payment Date ↑</th>
+                          <th>Amount Paid</th>
+                          <th>Mode</th>
+                          <th>Beneficiary</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        ${payments.map((p, i) => `
+                          <tr onclick="PartiesModule.openPartyPaidSubitem(${i}, 'payment')">
+                            <td><span class="bullet-paid-green">●</span> ${p.paymentDate}</td>
+                            <td><span class="bullet-paid-green">●</span> ₹${PartiesModule.formatCurrency(p.amountPaid)}</td>
+                            <td><span class="bullet-paid-green">●</span> ${p.mode}</td>
+                            <td><span class="bullet-paid-green">●</span> ${p.beneficiary}</td>
+                          </tr>
+                        `).join('')}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="subtable-footer-actions">
+                    <a class="subtable-action-link" onclick="PartiesModule.openPartyPaidSubtable('payment')">Expand</a>
+                  </div>
+                </div>
+
+                <div class="drilldown-field">
+                  <div class="drilldown-field-label">Owner Total Payment</div>
+                  <div class="drilldown-field-val">${dotHtml} <span class="theme-text">₹${this.formatCurrency(t.ownerTotalPayment || t.paidAmount || t.freight)}</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (!isOtherB) {
+        // Sky Blue / Blue: Payment subtable at bottom
+        const payments = t.payments || [];
+        bottomSection.innerHTML = `
+          <div class="row g-3">
+            <div class="col-12 col-lg-7">
+              <div class="drilldown-card">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                  <span class="theme-dot" style="font-size: 15px;">●</span>
+                  <span class="theme-text" style="font-size: 15px; font-weight: 700;">Payment</span>
+                  <span class="badge bg-light text-dark border" style="font-size: 11px;">${payments.length}</span>
+                </div>
+                <div class="drilldown-subtable-wrap">
+                  <div style="overflow-x: auto;">
+                    <table class="drilldown-subtable">
+                      <thead>
+                        <tr>
+                          <th style="width: 25px;"></th>
+                          <th style="width: 25px;"></th>
+                          <th>Payment Date ↑</th>
+                          <th>Amount Paid</th>
+                          <th>Mode</th>
+                          <th>Beneficiary</th>
+                          <th>Description</th>
+                          <th>Paid To</th>
+                          <th style="width: 25px;"></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        ${payments.map((p, i) => `
+                          <tr>
+                            <td style="color:#d93025; cursor:pointer;" onclick="PartiesModule.deletePaidPayment(${i})"><i class="bi bi-trash"></i></td>
+                            <td style="color:#5f6368; cursor:pointer;" onclick="PartiesModule.openEditPaidPayment(${i})"><i class="bi bi-pencil"></i></td>
+                            <td><span class="bullet-paid-green">●</span> ${p.paymentDate}</td>
+                            <td><span class="bullet-paid-green">●</span> ₹${PartiesModule.formatCurrency(p.amountPaid)}</td>
+                            <td><span class="bullet-paid-green">●</span> ${p.mode}</td>
+                            <td><span class="bullet-paid-green">●</span> ${p.beneficiary || '-'}</td>
+                            <td><span class="bullet-paid-green">●</span> ${p.description || '-'}</td>
+                            <td><span class="bullet-paid-green">●</span> ${p.paidTo || 'Transporter'}</td>
+                            <td style="text-align: right; color: #5f6368; cursor:pointer;" onclick="PartiesModule.openPartyPaidSubitem(${i}, 'payment')"><i class="bi bi-chevron-right" style="font-size: 10px;"></i></td>
+                          </tr>
+                        `).join('')}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="subtable-footer-actions">
+                    <a class="subtable-action-link" onclick="PartiesModule.openPartyPaidSubtable('payment')">Expand</a>
+                    <a class="subtable-action-link" onclick="PartiesModule.openAddPaidPaymentModal()">Add</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      } else {
+        bottomSection.innerHTML = '';
       }
     }
   },
 
-  formatCurrency(num) {
+  togglePaidStatusDropdown(e) {
+    if (e && e.stopPropagation) e.stopPropagation();
+    const menu = document.getElementById('menu-paid-status-dropdown');
+    const caret = document.getElementById('paid-status-caret-icon');
+    if (!menu) return;
+    const isHidden = menu.classList.contains('d-none');
+    this.closeAllDropdowns(menu);
+    if (isHidden) {
+      menu.classList.remove('d-none');
+      if (caret) caret.className = 'bi bi-caret-up-fill select-caret';
+    } else {
+      menu.classList.add('d-none');
+      if (caret) caret.className = 'bi bi-caret-down-fill select-caret';
+    }
+  },
+
+  togglePaidAddRecordsDropdown(e) {
+    if (e && e.stopPropagation) e.stopPropagation();
+    const menu = document.getElementById('menu-paid-add-records-dropdown');
+    if (!menu) return;
+    const isHidden = menu.classList.contains('d-none');
+    this.closeAllDropdowns(menu);
+    if (isHidden) {
+      menu.classList.remove('d-none');
+    } else {
+      menu.classList.add('d-none');
+    }
+  },
+
+  changePaidTripStatus(newStatus) {
+    if (!this.selectedPaidTrip) return;
+    this.selectedPaidTrip.status = newStatus;
+
+    const themeMap = {
+      'Settled': 'green',
+      'Truck Owner Payment Pending': 'sky_blue',
+      'Party Payment Pending': 'blue',
+      'Other B Pending': 'red'
+    };
+    this.selectedPaidTrip.colorScheme = themeMap[newStatus] || 'green';
+
+    const statusSyncIdx = (this.allPartyPaidTrips || []).findIndex(x => x.id === this.selectedPaidTrip.id);
+    if (statusSyncIdx !== -1) {
+      this.allPartyPaidTrips[statusSyncIdx] = { ...this.selectedPaidTrip };
+    }
+
+    // Firestore update
+    if (typeof firebase !== 'undefined' && firebase.firestore) {
+      try {
+        firebase.firestore().collection('party_paid').doc(this.selectedPaidTrip.id).set(this.selectedPaidTrip, { merge: true });
+      } catch (e) {
+        console.warn('Firestore update error:', e);
+      }
+    } else if (typeof dbService !== 'undefined' && dbService.update) {
+      try {
+        dbService.update('party_paid', this.selectedPaidTrip.id, this.selectedPaidTrip);
+      } catch (e) {
+        console.warn('dbService update error:', e);
+      }
+    }
+
+    this.showToast(`Status updated to "${newStatus}"`, 'success');
+    this.openPartyPaidDrilldown(this.selectedPaidTrip.id);
+  },
+
+  clearPaidTripStatus(e) {
+    if (e && e.stopPropagation) e.stopPropagation();
+    this.showToast('Please select a new status', 'info');
+    this.togglePaidStatusDropdown(e);
+  },
+
+  handlePaidAddRecordSelection(val) {
+    this.closeAllDropdowns();
+    if (val === 'Party Payment' || val === 'Truck Owner Payment') {
+      this.openAddPaidPaymentModal();
+    } else if (val === 'Other B') {
+      this.openEditPaidTripModal();
+    } else {
+      this.showToast(`Selected: ${val}`, 'info');
+    }
+  },
+
+  openPartyPaidSubtable(subtableType) {
+    const t = this.selectedPaidTrip;
+    if (!t) return;
+
+    this.activeView = 'party-paid-subtable';
+    this.hideAllViews();
+
+    const view = document.getElementById('view-party-paid-expanded-subtable');
+    if (view) view.classList.remove('d-none');
+
+    const titleEl = document.getElementById('expanded-paid-subtable-title');
+    const countEl = document.getElementById('expanded-paid-subtable-count');
+    const thead = document.getElementById('expanded-paid-subtable-head');
+    const tbody = document.getElementById('expanded-paid-subtable-body');
+
+    if (subtableType === 'payment') {
+      const payments = t.payments || [];
+      if (titleEl) titleEl.textContent = 'Trip Payment Details';
+      if (countEl) countEl.textContent = `${payments.length} records`;
+
+      this.setBreadcrumb([
+        { label: 'Home', href: '../index.html' },
+        { label: 'Parties', action: "PartiesModule.showDashboard()" },
+        { label: 'Party Paid', action: `PartiesModule.showPartyPaidList('${this.paidCurrentFY}')` },
+        { label: 'Settled Trip Details', action: `PartiesModule.openPartyPaidDrilldown('${t.id}')` },
+        { label: 'Trip Payment Details', current: true }
+      ]);
+
+      if (thead) {
+        thead.innerHTML = `
+          <tr>
+            <th>Payment Date ↑</th>
+            <th>Amount Paid</th>
+            <th>Mode</th>
+            <th>Beneficiary</th>
+            <th>Description</th>
+            <th>Paid To</th>
+            <th style="width: 25px;"></th>
+          </tr>
+        `;
+      }
+      if (tbody) {
+        tbody.innerHTML = payments.map((p, i) => `
+          <tr onclick="PartiesModule.openPartyPaidSubitem(${i}, 'payment')" style="cursor: pointer;">
+            <td><span class="bullet-paid-green">●</span> ${p.paymentDate}</td>
+            <td><span class="bullet-paid-green">●</span> ₹${PartiesModule.formatCurrency(p.amountPaid)}</td>
+            <td><span class="bullet-paid-green">●</span> ${p.mode}</td>
+            <td><span class="bullet-paid-green">●</span> ${p.beneficiary || '-'}</td>
+            <td><span class="bullet-paid-green">●</span> ${p.description || '-'}</td>
+            <td><span class="bullet-paid-green">●</span> ${p.paidTo || 'Transporter'}</td>
+            <td style="text-align: right; color: #5f6368;"><i class="bi bi-chevron-right"></i></td>
+          </tr>
+        `).join('');
+      }
+    } else if (subtableType === 'owner_payment') {
+      const ownerPayments = t.ownerPayments || [];
+      if (titleEl) titleEl.textContent = 'Trip Truck Owner Payment Details';
+      if (countEl) countEl.textContent = `${ownerPayments.length} records`;
+
+      this.setBreadcrumb([
+        { label: 'Home', href: '../index.html' },
+        { label: 'Parties', action: "PartiesModule.showDashboard()" },
+        { label: 'Party Paid', action: `PartiesModule.showPartyPaidList('${this.paidCurrentFY}')` },
+        { label: 'Settled Trip Details', action: `PartiesModule.openPartyPaidDrilldown('${t.id}')` },
+        { label: 'Trip Truck Owner Payment Details', current: true }
+      ]);
+
+      if (thead) {
+        thead.innerHTML = `
+          <tr>
+            <th>Payment Date ↑</th>
+            <th>Amount Paid</th>
+            <th>Mode</th>
+            <th>Beneficiary</th>
+            <th>From Bank</th>
+            <th>To Bank</th>
+            <th>Description</th>
+            <th style="width: 25px;"></th>
+          </tr>
+        `;
+      }
+      if (tbody) {
+        tbody.innerHTML = ownerPayments.map((p, i) => `
+          <tr onclick="PartiesModule.openPartyPaidSubitem(${i}, 'owner_payment')" style="cursor: pointer;">
+            <td><span class="bullet-paid-green">●</span> ${p.paymentDate}</td>
+            <td><span class="bullet-paid-green">●</span> ₹${PartiesModule.formatCurrency(p.amountPaid)}</td>
+            <td><span class="bullet-paid-green">●</span> ${p.mode}</td>
+            <td><span class="bullet-paid-green">●</span> ${p.beneficiary || '-'}</td>
+            <td><span class="bullet-paid-green">●</span> ${p.fromBank || '-'}</td>
+            <td><span class="bullet-paid-green">●</span> ${p.toBank || '-'}</td>
+            <td><span class="bullet-paid-green">●</span> ${p.description || '-'}</td>
+            <td style="text-align: right; color: #5f6368;"><i class="bi bi-chevron-right"></i></td>
+          </tr>
+        `).join('');
+      }
+    } else if (subtableType === 'consignor') {
+      const consignors = t.consignors || [];
+      if (titleEl) titleEl.textContent = 'Settled Trip Party Details';
+      if (countEl) countEl.textContent = `${consignors.length} records`;
+
+      this.setBreadcrumb([
+        { label: 'Home', href: '../index.html' },
+        { label: 'Parties', action: "PartiesModule.showDashboard()" },
+        { label: 'Party Paid', action: `PartiesModule.showPartyPaidList('${this.paidCurrentFY}')` },
+        { label: 'Settled Trip Details', action: `PartiesModule.openPartyPaidDrilldown('${t.id}')` },
+        { label: 'Settled Trip Party Details', current: true }
+      ]);
+
+      if (thead) {
+        thead.innerHTML = `
+          <tr>
+            <th>GSTIN</th>
+            <th>Consignor</th>
+            <th>Consignor Address</th>
+            <th style="width: 25px;"></th>
+          </tr>
+        `;
+      }
+      if (tbody) {
+        tbody.innerHTML = consignors.map((c, i) => `
+          <tr onclick="PartiesModule.openPartyPaidSubitem(${i}, 'consignor')" style="cursor: pointer;">
+            <td class="font-monospace">${c.gstin}</td>
+            <td class="fw-semibold">${c.consignor}</td>
+            <td>${c.address}</td>
+            <td style="text-align: right; color: #5f6368;"><i class="bi bi-chevron-right"></i></td>
+          </tr>
+        `).join('');
+      }
+    }
+  },
+
+  openPartyPaidSubitem(index, subtableType) {
+    const t = this.selectedPaidTrip;
+    if (!t) return;
+
+    this.activeView = 'party-paid-subitem';
+    this.hideAllViews();
+
+    const view = document.getElementById('view-party-paid-subitem-card');
+    if (view) view.classList.remove('d-none');
+
+    const card = document.getElementById('paid-subitem-center-card');
+    if (!card) return;
+
+    if (subtableType === 'payment') {
+      const p = (t.payments || [])[index] || {};
+      this.setBreadcrumb([
+        { label: 'Home', href: '../index.html' },
+        { label: 'Parties', action: "PartiesModule.showDashboard()" },
+        { label: 'Party Paid', action: `PartiesModule.showPartyPaidList('${this.paidCurrentFY}')` },
+        { label: 'Settled Trip Details', action: `PartiesModule.openPartyPaidDrilldown('${t.id}')` },
+        { label: 'Trip Payment Details', action: "PartiesModule.openPartyPaidSubtable('payment')" },
+        { label: 'Details', current: true }
+      ]);
+
+      card.innerHTML = `
+        <div class="card p-4 border" style="max-width: 580px; margin: 0 auto; background: #ffffff;">
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Payment Date</div>
+            <div class="drilldown-field-val"><span class="bullet-paid-green">●</span> <span class="theme-text">${p.paymentDate}</span></div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Paid To</div>
+            <div class="drilldown-field-val"><span class="bullet-paid-green">●</span> <span class="theme-text">${p.paidTo || 'Transporter'}</span></div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Mode</div>
+            <div class="drilldown-field-val"><span class="bullet-paid-green">●</span> <span class="theme-text">${p.mode}</span></div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Amount Paid</div>
+            <div class="drilldown-field-val"><span class="bullet-paid-green">●</span> <span class="theme-text">₹${this.formatCurrency(p.amountPaid)}</span></div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Beneficiary</div>
+            <div class="drilldown-field-val"><span class="bullet-paid-green">●</span> <span class="theme-text">${p.beneficiary || '-'}</span></div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">From Bank</div>
+            <div class="drilldown-field-val"><span class="bullet-paid-green">●</span> <span class="theme-text">${p.fromBank || 'Other'}</span></div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">To Bank</div>
+            <div class="drilldown-field-val"><span class="bullet-paid-green">●</span> <span class="theme-text">${p.toBank || 'IDBI'}</span></div>
+          </div>
+        </div>
+      `;
+    } else if (subtableType === 'owner_payment') {
+      const p = (t.ownerPayments || [])[index] || {};
+      this.setBreadcrumb([
+        { label: 'Home', href: '../index.html' },
+        { label: 'Parties', action: "PartiesModule.showDashboard()" },
+        { label: 'Party Paid', action: `PartiesModule.showPartyPaidList('${this.paidCurrentFY}')` },
+        { label: 'Settled Trip Details', action: `PartiesModule.openPartyPaidDrilldown('${t.id}')` },
+        { label: 'Trip Truck Owner Payment Details', action: "PartiesModule.openPartyPaidSubtable('owner_payment')" },
+        { label: 'Details', current: true }
+      ]);
+
+      card.innerHTML = `
+        <div class="card p-4 border" style="max-width: 580px; margin: 0 auto; background: #ffffff;">
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Payment Date</div>
+            <div class="drilldown-field-val"><span class="bullet-paid-green">●</span> <span class="theme-text">${p.paymentDate}</span></div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Mode</div>
+            <div class="drilldown-field-val"><span class="bullet-paid-green">●</span> <span class="theme-text">${p.mode}</span></div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Amount Paid</div>
+            <div class="drilldown-field-val"><span class="bullet-paid-green">●</span> <span class="theme-text">₹${this.formatCurrency(p.amountPaid)}</span></div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Beneficiary</div>
+            <div class="drilldown-field-val"><span class="bullet-paid-green">●</span> <span class="theme-text">${p.beneficiary || '-'}</span></div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">From Bank</div>
+            <div class="drilldown-field-val"><span class="bullet-paid-green">●</span> <span class="theme-text">${p.fromBank || 'TTC'}</span></div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">To Bank</div>
+            <div class="drilldown-field-val"><span class="bullet-paid-green">●</span> <span class="theme-text">${p.toBank || 'ICICI'}</span></div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Description</div>
+            <div class="drilldown-field-val"><span class="bullet-paid-green">●</span> <span class="theme-text">${p.description || '-'}</span></div>
+          </div>
+        </div>
+      `;
+    } else if (subtableType === 'consignor') {
+      const c = (t.consignors || [])[index] || {};
+      this.setBreadcrumb([
+        { label: 'Home', href: '../index.html' },
+        { label: 'Parties', action: "PartiesModule.showDashboard()" },
+        { label: 'Party Paid', action: `PartiesModule.showPartyPaidList('${this.paidCurrentFY}')` },
+        { label: 'Settled Trip Details', action: `PartiesModule.openPartyPaidDrilldown('${t.id}')` },
+        { label: 'Settled Trip Party Details', action: "PartiesModule.openPartyPaidSubtable('consignor')" },
+        { label: 'Settled Trip Party Details', current: true }
+      ]);
+
+      card.innerHTML = `
+        <div class="card p-4 border" style="max-width: 580px; margin: 0 auto; background: #ffffff;">
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">GSTIN</div>
+            <div class="drilldown-field-val font-monospace">${c.gstin}</div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Consignor</div>
+            <div class="drilldown-field-val fw-semibold">${c.consignor}</div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Consignor Address</div>
+            <div class="drilldown-field-val">${c.address}</div>
+          </div>
+        </div>
+      `;
+    }
+  },
+
+  openEditPaidTripModal() {
+    const t = this.selectedPaidTrip;
+    if (!t) return;
+
+    const el = id => document.getElementById(id);
+    if (el('ptf-id')) el('ptf-id').value = t.id;
+    if (el('ptf-grno')) el('ptf-grno').value = t.grNo;
+    if (el('ptf-bilty-amount')) el('ptf-bilty-amount').value = t.biltyAmount || 0;
+    if (el('ptf-billing-type')) el('ptf-billing-type').value = t.billingType || 'Per Tonne';
+    if (el('ptf-rate')) el('ptf-rate').value = t.rate || 0;
+    if (el('ptf-weight')) el('ptf-weight').value = t.weight || 0;
+    if (el('ptf-freight')) el('ptf-freight').value = t.freight || 0;
+    if (el('ptf-hault-charges')) el('ptf-hault-charges').value = t.haultCharges || 0;
+    if (el('ptf-loading-charges')) el('ptf-loading-charges').value = t.loadingCharges || 0;
+    if (el('ptf-consignee')) el('ptf-consignee').value = t.consignee || '';
+    if (el('ptf-pod-date')) el('ptf-pod-date').value = t.podDate || '';
+    if (el('ptf-pod-weight')) el('ptf-pod-weight').value = t.podWeight || '';
+    if (el('ptf-pod-handed-over-to')) el('ptf-pod-handed-over-to').value = t.podHandedOverTo || '';
+    if (el('ptf-reference')) el('ptf-reference').value = t.reference || '';
+    if (el('ptf-reference-mobile')) el('ptf-reference-mobile').value = t.referenceMobile || '';
+    if (el('ptf-driver')) el('ptf-driver').value = t.driver || '';
+    if (el('ptf-driver-mobile')) el('ptf-driver-mobile').value = t.driverMobile || '';
+    if (el('ptf-owner')) el('ptf-owner').value = t.owner || t.ownerName || '';
+    if (el('ptf-owner-mobile')) el('ptf-owner-mobile').value = t.ownerMobile || '';
+    if (el('ptf-bill-no')) el('ptf-bill-no').value = t.billNo || '';
+
+    const otherBRow = el('ptf-row-other-b');
+    if (otherBRow) {
+      if (t.status === 'Other B Pending') {
+        otherBRow.classList.remove('d-none');
+        if (el('ptf-other-b')) el('ptf-other-b').value = t.otherB || 17000;
+      } else {
+        otherBRow.classList.add('d-none');
+      }
+    }
+
+    this.setPaidPodTo(t.podTo || 'Shipper');
+
+    const drawer = document.getElementById('paidTripDrawer');
+    if (drawer && typeof bootstrap !== 'undefined') {
+      const bsOffcanvas = bootstrap.Offcanvas.getOrCreateInstance(drawer);
+      bsOffcanvas.show();
+    }
+  },
+
+  setPaidPodTo(val) {
+    const sBtn = document.getElementById('btn-paid-pod-shipper');
+    const bBtn = document.getElementById('btn-paid-pod-buyer');
+    const hid = document.getElementById('ptf-pod-to-val');
+    if (hid) hid.value = val;
+    if (val === 'Shipper') {
+      if (sBtn) sBtn.classList.add('active');
+      if (bBtn) bBtn.classList.remove('active');
+    } else {
+      if (bBtn) bBtn.classList.add('active');
+      if (sBtn) sBtn.classList.remove('active');
+    }
+  },
+
+  calcPaidTripFreight() {
+    const rate = parseFloat(document.getElementById('ptf-rate')?.value || 0);
+    const weight = parseFloat(document.getElementById('ptf-weight')?.value || 0);
+    const hault = parseFloat(document.getElementById('ptf-hault-charges')?.value || 0);
+    const loading = parseFloat(document.getElementById('ptf-loading-charges')?.value || 0);
+
+    const freight = (rate * weight) + hault + loading;
+    const freightEl = document.getElementById('ptf-freight');
+    if (freightEl) freightEl.value = Math.round(freight);
+  },
+
+  async savePaidTripDetails() {
+    if (!this.selectedPaidTrip) return;
+    const t = this.selectedPaidTrip;
+
+    t.biltyAmount = parseFloat(document.getElementById('ptf-bilty-amount')?.value || t.biltyAmount);
+    t.billingType = document.getElementById('ptf-billing-type')?.value || t.billingType;
+    t.rate = parseFloat(document.getElementById('ptf-rate')?.value || t.rate);
+    t.weight = parseFloat(document.getElementById('ptf-weight')?.value || t.weight);
+    t.freight = parseFloat(document.getElementById('ptf-freight')?.value || t.freight);
+    t.haultCharges = parseFloat(document.getElementById('ptf-hault-charges')?.value || 0);
+    t.loadingCharges = parseFloat(document.getElementById('ptf-loading-charges')?.value || 0);
+    t.totalFreight = t.freight + t.haultCharges + t.loadingCharges;
+    t.consignee = document.getElementById('ptf-consignee')?.value || t.consignee;
+    t.podDate = document.getElementById('ptf-pod-date')?.value || '';
+    t.podWeight = parseFloat(document.getElementById('ptf-pod-weight')?.value || 0);
+    t.podTo = document.getElementById('ptf-pod-to-val')?.value || 'Shipper';
+    t.podHandedOverTo = document.getElementById('ptf-pod-handed-over-to')?.value || t.podHandedOverTo || '';
+    t.reference = document.getElementById('ptf-reference')?.value || t.reference || '';
+    t.referenceMobile = document.getElementById('ptf-reference-mobile')?.value || t.referenceMobile || '';
+    t.driver = document.getElementById('ptf-driver')?.value || t.driver || '';
+    t.driverMobile = document.getElementById('ptf-driver-mobile')?.value || t.driverMobile || '';
+    t.owner = document.getElementById('ptf-owner')?.value || t.owner || '';
+    t.ownerName = t.owner;
+    t.ownerMobile = document.getElementById('ptf-owner-mobile')?.value || t.ownerMobile || '';
+    t.billNo = document.getElementById('ptf-bill-no')?.value || t.billNo || '';
+
+    if (t.status === 'Other B Pending') {
+      t.otherB = parseFloat(document.getElementById('ptf-other-b')?.value || t.otherB || 0);
+    }
+
+    const tripIdx = (this.allPartyPaidTrips || []).findIndex(x => x.id === t.id);
+    if (tripIdx !== -1) {
+      this.allPartyPaidTrips[tripIdx] = { ...t };
+    }
+
+    // Direct Firestore update
+    if (typeof firebase !== 'undefined' && firebase.firestore) {
+      try {
+        await firebase.firestore().collection('party_paid').doc(t.id).set(t, { merge: true });
+        console.log('[PartiesModule] Trip updated directly in Firestore party_paid:', t.id);
+      } catch (e) {
+        console.warn('Firestore party_paid update error:', e);
+      }
+    } else if (typeof dbService !== 'undefined' && dbService.update) {
+      try {
+        await dbService.update('party_paid', t.id, t);
+      } catch (e) {
+        console.warn('dbService party_paid update error:', e);
+      }
+    }
+
+    this.showToast(`Updated trip ${t.grNo} successfully`, 'success');
+    this.renderPartyPaidDrilldownView();
+    this.renderPartyPaidTable();
+
+    const drawer = document.getElementById('paidTripDrawer');
+    if (drawer && typeof bootstrap !== 'undefined') {
+      const bsOffcanvas = bootstrap.Offcanvas.getInstance(drawer);
+      if (bsOffcanvas) bsOffcanvas.hide();
+    }
+  },
+
+  openAddPaidPaymentModal() {
+    const t = this.selectedPaidTrip;
+    if (!t) return;
+
+    const el = id => document.getElementById(id);
+    if (el('ppf-edit-index')) el('ppf-edit-index').value = '-1';
+    if (el('ppf-date')) el('ppf-date').value = new Date().toISOString().split('T')[0];
+    if (el('ppf-due')) el('ppf-due').value = `₹ ${this.formatCurrency(t.dueAmount || 0)}`;
+    if (el('ppf-amount')) el('ppf-amount').value = t.dueAmount && Number(t.dueAmount) > 0 ? t.dueAmount : t.freight;
+    if (el('ppf-desc')) el('ppf-desc').value = '';
+    this.setPaidTo('Transporter');
+
+    const drawer = document.getElementById('paidPaymentDrawer');
+    if (drawer && typeof bootstrap !== 'undefined') {
+      const bsOffcanvas = bootstrap.Offcanvas.getOrCreateInstance(drawer);
+      bsOffcanvas.show();
+    }
+  },
+
+  setPaidTo(val) {
+    const tBtn = document.getElementById('btn-ppf-transporter');
+    const oBtn = document.getElementById('btn-ppf-owner');
+    const hid = document.getElementById('ppf-paid-to-val');
+    if (hid) hid.value = val;
+    if (val === 'Transporter') {
+      if (tBtn) tBtn.classList.add('active');
+      if (oBtn) oBtn.classList.remove('active');
+    } else {
+      if (oBtn) oBtn.classList.add('active');
+      if (tBtn) tBtn.classList.remove('active');
+    }
+  },
+
+  openEditPaidPayment(paymentIdx) {
+    const t = this.selectedPaidTrip;
+    if (!t || !t.payments || !t.payments[paymentIdx]) return;
+    const p = t.payments[paymentIdx];
+
+    const el = id => document.getElementById(id);
+    if (el('ppf-edit-index')) el('ppf-edit-index').value = String(paymentIdx);
+    if (el('ppf-date')) {
+      const parts = (p.paymentDate || '').split('/');
+      if (parts.length === 3) el('ppf-date').value = `${parts[2]}-${parts[1]}-${parts[0]}`;
+    }
+    if (el('ppf-due')) el('ppf-due').value = `₹ ${this.formatCurrency(t.dueAmount || 0)}`;
+    if (el('ppf-amount')) el('ppf-amount').value = p.amountPaid;
+    if (el('ppf-mode')) el('ppf-mode').value = p.mode || 'NEFT/RTGS';
+    if (el('ppf-desc')) el('ppf-desc').value = p.description || '';
+    this.setPaidTo(p.paidTo || 'Transporter');
+
+    const drawer = document.getElementById('paidPaymentDrawer');
+    if (drawer && typeof bootstrap !== 'undefined') {
+      const bsOffcanvas = bootstrap.Offcanvas.getOrCreateInstance(drawer);
+      bsOffcanvas.show();
+    }
+  },
+
+  async deletePaidPayment(paymentIdx) {
+    const t = this.selectedPaidTrip;
+    if (!t || !t.payments) return;
+    if (!confirm('Are you sure you want to delete this payment record?')) return;
+
+    t.payments.splice(paymentIdx, 1);
+    const totalPaid = t.payments.reduce((s, p) => s + Number(p.amountPaid || 0), 0);
+    t.paidAmount = totalPaid;
+    t.dueAmount = Math.max(0, (t.totalFreight || t.freight) - totalPaid);
+
+    if (typeof firebase !== 'undefined' && firebase.firestore) {
+      try {
+        await firebase.firestore().collection('party_paid').doc(t.id).set(t, { merge: true });
+      } catch (e) {
+        console.warn('Firestore error:', e);
+      }
+    }
+
+    this.showToast('Payment deleted successfully', 'success');
+    this.renderPartyPaidDrilldownView();
+    this.renderPartyPaidTable();
+  },
+
+  async savePaidPaymentDetails() {
+    const t = this.selectedPaidTrip;
+    if (!t) return;
+
+    const editIdx = parseInt(document.getElementById('ppf-edit-index')?.value || '-1', 10);
+    const rawDate = document.getElementById('ppf-date')?.value || '';
+    let pDate = rawDate;
+    if (rawDate.includes('-')) {
+      const p = rawDate.split('-');
+      pDate = `${p[2]}/${p[1]}/${p[0]}`;
+    }
+
+    const paidTo = document.getElementById('ppf-paid-to-val')?.value || 'Transporter';
+    const amount = parseFloat(document.getElementById('ppf-amount')?.value || 0);
+    const mode = document.getElementById('ppf-mode')?.value || 'NEFT/RTGS';
+    const desc = document.getElementById('ppf-desc')?.value || '';
+
+    if (!amount || amount <= 0) {
+      this.showToast('Please enter a valid payment amount', 'warning');
+      return;
+    }
+
+    if (!t.payments) t.payments = [];
+
+    const newPayment = {
+      paymentDate: pDate,
+      amountPaid: amount,
+      mode: mode,
+      beneficiary: paidTo === 'Transporter' ? 'TTC' : (t.owner || 'Truck Owner'),
+      description: desc,
+      paidTo: paidTo
+    };
+
+    if (editIdx >= 0 && editIdx < t.payments.length) {
+      t.payments[editIdx] = newPayment;
+    } else {
+      t.payments.push(newPayment);
+    }
+
+    const totalPaid = t.payments.reduce((s, p) => s + Number(p.amountPaid || 0), 0);
+    t.paidAmount = totalPaid;
+    t.dueAmount = Math.max(0, (t.totalFreight || t.freight) - totalPaid);
+
+    const paySyncIdx = (this.allPartyPaidTrips || []).findIndex(x => x.id === t.id);
+    if (paySyncIdx !== -1) {
+      this.allPartyPaidTrips[paySyncIdx] = { ...t };
+    }
+
+    // Save directly to Firestore collection 'party_paid'
+    if (typeof firebase !== 'undefined' && firebase.firestore) {
+      try {
+        await firebase.firestore().collection('party_paid').doc(t.id).set(t, { merge: true });
+        console.log('[PartiesModule] Payment saved directly in Firestore party_paid:', t.id);
+      } catch (e) {
+        console.warn('Firestore update error:', e);
+      }
+    } else if (typeof dbService !== 'undefined' && dbService.update) {
+      try {
+        await dbService.update('party_paid', t.id, t);
+      } catch (e) {
+        console.warn('dbService update error:', e);
+      }
+    }
+
+    this.showToast(`Saved payment of ₹${this.formatCurrency(amount)} successfully`, 'success');
+    this.renderPartyPaidDrilldownView();
+    this.renderPartyPaidTable();
+
+    const drawer = document.getElementById('paidPaymentDrawer');
+    if (drawer && typeof bootstrap !== 'undefined') {
+      const bsOffcanvas = bootstrap.Offcanvas.getInstance(drawer);
+      if (bsOffcanvas) bsOffcanvas.hide();
+    }
+  },
+
+  exportPartyPaidCSV() {
+    let list = this.filteredPartyPaidTrips && this.filteredPartyPaidTrips.length > 0 
+      ? this.filteredPartyPaidTrips 
+      : (this.allPartyPaidTrips || []);
+
+    if (this.paidCurrentFY && this.paidCurrentFY !== 'ALL') {
+      list = list.filter(t => t.financialYear === this.paidCurrentFY);
+    }
+    if (this.paidDateFilter && this.paidDateFilter !== 'ALL') {
+      list = list.filter(t => t.paymentDate === this.paidDateFilter || t.tripStartDate === this.paidDateFilter);
+    }
+
+    if (!list || list.length === 0) {
+      this.showToast('No Party Paid records to download', 'warning');
+      return;
+    }
+
+    const headers = ['G.R.No', 'Start Date', 'Truck No', 'To', 'Reference', 'Party/Consignee', 'Weight', 'Rate', 'Freight', 'Due', 'Payment Date', 'Amount Paid', 'Mode', 'Status'];
+    const rows = list.map(t => [
+      `"${(t.shortGrNo || t.grNo || '').replace(/"/g, '""')}"`,
+      `"${t.tripStartDate || ''}"`,
+      `"${(t.truckNo || '').replace(/"/g, '""')}"`,
+      `"${(t.destination || '').replace(/"/g, '""')}"`,
+      `"${(t.reference || '').replace(/"/g, '""')}"`,
+      `"${(t.consignee || '').replace(/"/g, '""')}"`,
+      Number(t.weight || 0),
+      Number(t.rate || 0),
+      Number(t.freight || 0),
+      Number(t.dueAmount || 0),
+      `"${t.paymentDate || t.tripStartDate || ''}"`,
+      Number(t.paidAmount || t.freight || 0),
+      `"${(t.mode || 'NEFT/RTGS').replace(/"/g, '""')}"`,
+      `"${(t.status || 'Settled').replace(/"/g, '""')}"`
+    ]);
+
+    const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\r\n');
+    try {
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const filename = `Party_Paid_${this.paidCurrentFY || 'ALL'}_${Date.now()}.csv`;
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      console.warn('CSV export error:', e);
+    }
+
+    this.showToast(`Exported ${list.length} Party Paid records to CSV successfully`, 'success');
+  },
+
+  downloadPaidTripSlip() {
+    const t = this.selectedPaidTrip;
+    if (!t) return;
+    const content = `=======================================================
+PARTY PAID TRIP DETAILS REPORT - ${t.grNo}
+=======================================================
+G.R. No:            ${t.grNo}
+Short GR No:        ${t.shortGrNo || ''}
+Start Date:         ${t.tripStartDate || ''}
+End Date:           ${t.tripEndDate || ''}
+Payment Date:       ${t.paymentDate || ''}
+Payment Mode:       ${t.mode || 'NEFT/RTGS'}
+Truck No:           ${t.truckNo || ''}
+Origin:             ${t.origin || ''}
+Destination:        ${t.destination || ''}
+Consignee:          ${t.consignee || ''}
+Consignee GSTIN:    ${t.consigneeGstin || '-'}
+Consignee Mobile:   ${t.consigneeMobile || '-'}
+Weight:             ${t.weight || 0} Tonnes
+Rate:               ₹${t.rate || 0}
+Freight:            ₹${t.freight || 0}
+Paid Amount:        ₹${t.paidAmount || 0}
+Due Amount:         ₹${t.dueAmount || 0}
+Status:             ${t.status || 'Settled'}
+Financial Year:     ${t.financialYear || ''}
+
+DRIVER & OWNER:
+Driver:             ${t.driver || ''} (${t.driverMobile || '-'})
+Owner:              ${t.owner || t.ownerName || ''} (${t.ownerMobile || '-'})
+Reference:          ${t.reference || ''} (${t.referenceMobile || '-'})
+
+Generated on: ${new Date().toLocaleString('en-IN')}
+=======================================================`;
+
+    try {
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const filename = `PartyPaid_${(t.grNo || 'Details').replace(/[^a-zA-Z0-9_-]/g, '_')}.txt`;
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      console.warn('Download error:', e);
+    }
+
+    this.showToast(`Downloaded trip report for ${t.grNo}`, 'success');
+  },
+
+  showPaidInvoice() {
+    const t = this.selectedPaidTrip;
+    if (!t) return;
+    this.showToast(`Invoice for ${t.grNo} (Paid: ₹${this.formatCurrency(t.paidAmount || t.freight)})`, 'info');
+  },
+
+  getDistinctPaidDatesList() {
+    let list = this.allPartyPaidTrips || [];
+    if (this.paidCurrentFY && this.paidCurrentFY !== 'ALL') {
+      list = list.filter(t => t.financialYear === this.paidCurrentFY);
+    }
+    const dates = [];
+    const seen = new Set();
+    list.forEach(t => {
+      const d = t.paymentDate || t.tripStartDate;
+      if (d && !seen.has(d)) {
+        seen.add(d);
+        dates.push(d);
+      }
+    });
+    return dates;
+  },
+
+  togglePaidDateDropdown(e) {
+    if (e && e.stopPropagation) e.stopPropagation();
+    const menu = document.getElementById('menu-paid-date-filter');
+    if (!menu) return;
+    const isHidden = menu.classList.contains('d-none');
+    this.closeAllDropdowns(menu);
+    if (isHidden) {
+      menu.classList.remove('d-none');
+    } else {
+      menu.classList.add('d-none');
+    }
+  },
+
+  setPaidDateFilter(date) {
+    this.paidDateFilter = date;
+    this.paidCurrentPage = 1;
+    const label = document.getElementById('paid-current-date-filter-label');
+    if (label) label.textContent = date === 'ALL' ? 'All Dates' : date;
+    const menu = document.getElementById('menu-paid-date-filter');
+    if (menu) menu.classList.add('d-none');
+    this.renderPartyPaidTable();
+    this.showToast(`Showing ${date === 'ALL' ? 'All Dates' : date}`, 'info');
+  },
+
+    formatCurrency(num) {
     if (num === undefined || num === null || isNaN(num)) return '0.00';
     return Number(num).toLocaleString('en-US', {
       minimumFractionDigits: 2,

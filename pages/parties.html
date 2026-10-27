@@ -1459,6 +1459,79 @@
       flex: 1;
       overflow: hidden;
     }
+  
+    /* ========================================================
+       PARTY PAID THEMES & COMPONENTS
+       ======================================================== */
+    .theme-paid-green .theme-dot { color: #2e7d32 !important; }
+    .theme-paid-green .theme-text { color: #2e7d32 !important; font-weight: 600; }
+    .theme-paid-green .theme-icon { color: #2e7d32 !important; }
+
+    .theme-paid-sky-blue .theme-dot { color: #00bfa5 !important; }
+    .theme-paid-sky-blue .theme-text { color: #00bfa5 !important; font-weight: 600; }
+    .theme-paid-sky-blue .theme-icon { color: #00bfa5 !important; }
+
+    .theme-paid-blue .theme-dot { color: #0088cc !important; }
+    .theme-paid-blue .theme-text { color: #0088cc !important; font-weight: 600; }
+    .theme-paid-blue .theme-icon { color: #0088cc !important; }
+
+    .theme-paid-red .theme-dot { color: #d93025 !important; }
+    .theme-paid-red .theme-text { color: #d93025 !important; font-weight: 600; }
+    .theme-paid-red .theme-icon { color: #d93025 !important; }
+
+    .bullet-paid-green { color: #2e7d32; font-size: 11px; }
+    .bullet-paid-sky-blue { color: #00bfa5; font-size: 11px; }
+    .bullet-paid-blue { color: #0088cc; font-size: 11px; }
+    .bullet-paid-red { color: #d93025; font-size: 11px; }
+
+    .party-paid-group-tr {
+      background: #f8fafd;
+      border-top: 1px solid #e8eaed;
+      border-bottom: 1px solid #e8eaed;
+    }
+    .party-paid-group-cell {
+      padding: 6px 12px !important;
+      font-weight: 600;
+      font-size: 12px;
+      color: #202124;
+    }
+    .party-paid-group-inner {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .party-paid-group-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 12px;
+      background: #e6f4ea;
+      color: #137333;
+      border: 1px solid #ceead6;
+      font-family: inherit;
+    }
+    .party-paid-row {
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+    .party-paid-row:hover {
+      background: #f1f8e9 !important;
+    }
+    .paid-drilldown-bottom-grid {
+      display: grid;
+      grid-template-columns: minmax(320px, 1.2fr) minmax(300px, 1fr);
+      gap: 16px;
+      margin-top: 16px;
+      align-items: start;
+    }
+    @media (max-width: 1100px) {
+      .paid-drilldown-bottom-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -1902,6 +1975,141 @@
           </div>
         </div>
       </div>
+    
+      <!-- 8. Party Paid Main List View (Matching 12-column screenshot) -->
+      <div id="view-party-paid" class="parties-view-section d-none">
+        <div class="due-layout-wrap">
+
+          <!-- Left FY Sidebar with Collapse / Unhide -->
+          <aside class="due-sidebar" id="paid-sidebar">
+            <div class="due-sidebar-header">
+              <span class="due-sidebar-title">All</span>
+              <button class="due-sidebar-toggle-btn" id="btn-collapse-paid-sidebar" onclick="PartiesModule.togglePaidSidebar()" title="Collapse Sidebar">
+                <i class="bi bi-chevron-left" id="paid-sidebar-icon"></i>
+              </button>
+            </div>
+            <div class="due-sidebar-items">
+              <div class="due-sidebar-item" id="paid-fy-item-ALL" onclick="PartiesModule.setPartyPaidFY('ALL')">
+                <span class="due-sidebar-dot text-muted">●</span>
+                <span class="due-sidebar-name">All Financial Years</span>
+              </div>
+              <div class="due-sidebar-item active" id="paid-fy-item-2026-2027" onclick="PartiesModule.setPartyPaidFY('2026-2027')">
+                <span class="due-sidebar-dot bullet-paid-green">●</span>
+                <span class="due-sidebar-name">2026-2027</span>
+                <span class="badge-pill-green ms-auto" id="paid-fy-badge-2026">₹ 391,555,800.25</span>
+              </div>
+              <div class="due-sidebar-item" id="paid-fy-item-2025-2026" onclick="PartiesModule.setPartyPaidFY('2025-2026')">
+                <span class="due-sidebar-dot bullet-paid-green">●</span>
+                <span class="due-sidebar-name">2025-2026</span>
+                <span class="badge-pill-green ms-auto" id="paid-fy-badge-2025">₹ 615,289,069.19</span>
+              </div>
+              <div class="due-sidebar-item" id="paid-fy-item-2024-2025" onclick="PartiesModule.setPartyPaidFY('2024-2025')">
+                <span class="due-sidebar-dot bullet-paid-green">●</span>
+                <span class="due-sidebar-name">2024-2025</span>
+                <span class="badge-pill-green ms-auto" id="paid-fy-badge-2024">₹ 254,526,765.64</span>
+              </div>
+            </div>
+          </aside>
+
+          <!-- Floating Unhide Sidebar Pill Button -->
+          <button class="btn-unhide-sidebar d-none" id="btn-unhide-paid-sidebar" onclick="PartiesModule.togglePaidSidebar(false)" title="Unhide Sidebar">
+            <i class="bi bi-chevron-right me-1"></i> Year
+          </button>
+
+          <!-- Right: Main Party Paid Table -->
+          <div class="due-table-wrapper">
+            <div class="party-due-toolbar">
+              <span id="paid-record-count-text" class="fw-semibold text-secondary">Showing records</span>
+            </div>
+
+            <div class="party-due-table-scroll">
+              <table class="party-due-table" id="party-paid-table">
+                <thead>
+                  <tr>
+                    <th style="min-width: 120px;">G.R.No.</th>
+                    <th style="min-width: 95px;">Start Date</th>
+                    <th style="min-width: 110px;">Truck No.</th>
+                    <th style="min-width: 120px;">To</th>
+                    <th style="min-width: 150px;">Reference</th>
+                    <th style="min-width: 180px;">Party/Consignee</th>
+                    <th style="min-width: 80px; text-align: right;">Weight</th>
+                    <th style="min-width: 90px; text-align: right;">Rate</th>
+                    <th style="min-width: 110px; text-align: right;">Freight</th>
+                    <th style="min-width: 100px; text-align: right;">Due</th>
+                    <th style="min-width: 105px;">Payment Date</th>
+                    <th style="min-width: 110px; text-align: right;">Amount Paid</th>
+                    <th style="min-width: 105px;">Mode</th>
+                    <th style="width: 30px;"></th>
+                  </tr>
+                </thead>
+                <tbody id="party-paid-table-body">
+                  <!-- Dynamically populated rows with green bullets and date groupings -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Scalable Bottom Pagination Toolbar -->
+            <div class="party-due-footer-bar">
+              <div class="d-flex align-items-center gap-2">
+                <span id="paid-record-count-bottom" class="text-muted" style="font-size: 11.5px;">Showing records</span>
+              </div>
+              <div class="d-flex align-items-center gap-3">
+                <div class="d-flex align-items-center gap-1">
+                  <span style="font-size: 11.5px; color: #5f6368;">Rows:</span>
+                  <select class="form-select form-select-sm py-0 px-2" id="paid-page-size-select" style="width: 70px; height: 26px; font-size: 11.5px;" onchange="PartiesModule.setPaidPageSize(this.value)">
+                    <option value="25">25</option>
+                    <option value="50" selected>50</option>
+                    <option value="100">100</option>
+                    <option value="all">All</option>
+                  </select>
+                </div>
+                <div class="d-flex align-items-center gap-1" id="paid-pagination-controls">
+                  <!-- Prev / Next / Page buttons -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 9. Party Paid Drilldown View (Settled Trip Details & Open Trip Details) -->
+      <div id="view-party-paid-drilldown" class="parties-view-section d-none">
+        <div class="drilldown-wrap" id="drilldown-paid-container">
+          <!-- Top 3-Card Grid -->
+          <div class="drilldown-grid" id="drilldown-paid-top-grid">
+            <div class="drilldown-card" id="drilldown-paid-card-left"></div>
+            <div class="drilldown-card" id="drilldown-paid-card-mid"></div>
+            <div class="drilldown-card" id="drilldown-paid-card-right"></div>
+          </div>
+
+          <!-- Bottom Section for Payment subtables and totals -->
+          <div id="drilldown-paid-bottom-section" class="mt-3"></div>
+        </div>
+      </div>
+
+      <!-- 10. Party Paid Expanded Subtable View -->
+      <div id="view-party-paid-expanded-subtable" class="parties-view-section d-none">
+        <div class="expanded-subtable-card">
+          <div class="party-due-toolbar">
+            <span class="fw-semibold" id="expanded-paid-subtable-title">Subtable Details</span>
+            <span id="expanded-paid-subtable-count" class="badge bg-light text-dark border">0 records</span>
+          </div>
+          <div class="party-due-table-scroll">
+            <table class="party-due-table" id="expanded-paid-subtable">
+              <thead id="expanded-paid-subtable-head"></thead>
+              <tbody id="expanded-paid-subtable-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- 11. Party Paid Single Subitem Details View -->
+      <div id="view-party-paid-subitem-card" class="parties-view-section d-none">
+        <div class="party-detail-wrap">
+          <div class="party-detail-center-card" id="paid-subitem-center-card"></div>
+        </div>
+      </div>
+
     </main>
 
   </div>
@@ -2267,6 +2475,291 @@
     </div>
   </div>
 
+  
+  <!-- Offcanvas: Update Trip Details Drawer for Party Paid (Matching WhatsApp Photo) -->
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="paidTripDrawer" aria-labelledby="paidTripDrawerLabel" style="width: 520px; max-width: 100vw;">
+    <div class="offcanvas-header border-bottom py-2 px-3 d-flex justify-content-between align-items-center" style="background:#ffffff; min-height: 52px;">
+      <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn btn-sm btn-light border-0 p-1" data-bs-dismiss="offcanvas" aria-label="Close" title="Close">
+          <i class="bi bi-x-lg text-secondary"></i>
+        </button>
+        <span class="offcanvas-title fw-semibold" id="paidTripDrawerLabel" style="font-size: 15px; color: #202124;">Update Trip Details</span>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="offcanvas" style="font-size: 12px; padding: 3px 14px; border-radius: 4px; border-color: #dadce0; color: #5f6368; background: #ffffff;">Cancel</button>
+        <button type="button" class="btn-appsheet-save" id="btn-paid-trip-drawer-save" onclick="PartiesModule.savePaidTripDetails()">Save</button>
+      </div>
+    </div>
+    <div class="offcanvas-body p-3" style="background: #ffffff;">
+      <form id="paid-trip-update-form" onsubmit="event.preventDefault(); PartiesModule.savePaidTripDetails();">
+        <input type="hidden" id="ptf-id">
+
+        <!-- G.R.No.* -->
+        <div class="drawer-form-row">
+          <label class="drawer-form-label">G.R.No.<span class="req">*</span></label>
+          <div class="drawer-form-control">
+            <input type="text" class="form-control form-control-sm" id="ptf-grno" readonly style="background: #f8f9fa; border-radius: 4px; font-size: 12.5px;">
+          </div>
+        </div>
+
+        <!-- Bilty Amount -->
+        <div class="drawer-form-row">
+          <label class="drawer-form-label">Bilty Amount</label>
+          <div class="drawer-form-control">
+            <input type="number" step="0.01" class="form-control form-control-sm" id="ptf-bilty-amount" value="0" style="border-radius: 4px; font-size: 12.5px;">
+          </div>
+        </div>
+
+        <!-- Consignee Billing Type -->
+        <div class="drawer-form-row">
+          <label class="drawer-form-label">Consignee Billing Type</label>
+          <div class="drawer-form-control">
+            <input type="text" class="form-control form-control-sm" id="ptf-billing-type" value="Per Tonne" style="border-radius: 4px; font-size: 12.5px;">
+          </div>
+        </div>
+
+        <!-- Rate* -->
+        <div class="drawer-form-row">
+          <label class="drawer-form-label">Rate<span class="req">*</span></label>
+          <div class="drawer-form-control">
+            <input type="number" step="0.01" class="form-control form-control-sm" id="ptf-rate" value="0" oninput="PartiesModule.calcPaidTripFreight()" style="border-radius: 4px; font-size: 12.5px;">
+          </div>
+        </div>
+
+        <!-- Weight* -->
+        <div class="drawer-form-row">
+          <label class="drawer-form-label">Weight<span class="req">*</span></label>
+          <div class="drawer-form-control">
+            <input type="number" step="0.001" class="form-control form-control-sm" id="ptf-weight" value="0" oninput="PartiesModule.calcPaidTripFreight()" style="border-radius: 4px; font-size: 12.5px;">
+          </div>
+        </div>
+
+        <!-- Freight -->
+        <div class="drawer-form-row">
+          <label class="drawer-form-label">Freight</label>
+          <div class="drawer-form-control">
+            <input type="number" step="0.01" class="form-control form-control-sm" id="ptf-freight" value="0" style="background:#f8f9fa; border-radius: 4px; font-size: 12.5px;">
+          </div>
+        </div>
+
+        <!-- Hault Charges -->
+        <div class="drawer-form-row">
+          <label class="drawer-form-label">Hault Charges</label>
+          <div class="drawer-form-control">
+            <input type="number" step="0.01" class="form-control form-control-sm" id="ptf-hault-charges" value="0" oninput="PartiesModule.calcPaidTripFreight()" style="border-radius: 4px; font-size: 12.5px;">
+          </div>
+        </div>
+
+        <!-- Loading Charges -->
+        <div class="drawer-form-row">
+          <label class="drawer-form-label">Loading Charges</label>
+          <div class="drawer-form-control">
+            <input type="number" step="0.01" class="form-control form-control-sm" id="ptf-loading-charges" value="0" oninput="PartiesModule.calcPaidTripFreight()" style="border-radius: 4px; font-size: 12.5px;">
+          </div>
+        </div>
+
+        <!-- Other B (for Other B Pending) -->
+        <div class="drawer-form-row d-none" id="ptf-row-other-b">
+          <label class="drawer-form-label">Other B<span class="req">*</span></label>
+          <div class="drawer-form-control">
+            <input type="number" step="0.01" class="form-control form-control-sm" id="ptf-other-b" value="0" style="border-radius: 4px; font-size: 12.5px;">
+          </div>
+        </div>
+
+        <!-- Consignee -->
+        <div class="drawer-form-row">
+          <label class="drawer-form-label">Consignee</label>
+          <div class="drawer-form-control">
+            <input type="text" class="form-control form-control-sm" id="ptf-consignee" placeholder="Consignee Name" style="border-radius: 4px; font-size: 12.5px;">
+          </div>
+        </div>
+
+        <!-- POD to Shipper/Buyer -->
+        <div class="drawer-form-row">
+          <label class="drawer-form-label">POD to Shipper/Buyer</label>
+          <div class="drawer-form-control">
+            <div class="appsheet-segmented-group">
+              <button type="button" class="appsheet-seg-btn active" id="btn-paid-pod-shipper" onclick="PartiesModule.setPaidPodTo('Shipper')">
+                <span class="appsheet-bullet bullet-golden">●</span> Shipper
+              </button>
+              <button type="button" class="appsheet-seg-btn" id="btn-paid-pod-buyer" onclick="PartiesModule.setPaidPodTo('Buyer')">
+                <span class="appsheet-bullet bullet-golden">●</span> Buyer
+              </button>
+              <input type="hidden" id="ptf-pod-to-val" value="Shipper">
+            </div>
+          </div>
+        </div>
+
+        <!-- POD Date -->
+        <div class="drawer-form-row">
+          <label class="drawer-form-label">POD Date</label>
+          <div class="drawer-form-control">
+            <input type="date" class="form-control form-control-sm" id="ptf-pod-date" style="border-radius: 4px; font-size: 12.5px;">
+          </div>
+        </div>
+
+        <!-- POD Weight -->
+        <div class="drawer-form-row">
+          <label class="drawer-form-label">POD Weight</label>
+          <div class="drawer-form-control">
+            <input type="number" step="0.001" class="form-control form-control-sm" id="ptf-pod-weight" placeholder="0.000" style="border-radius: 4px; font-size: 12.5px;">
+          </div>
+        </div>
+
+        <!-- POD Handed Over To -->
+        <div class="drawer-form-row">
+          <label class="drawer-form-label">POD Handed Over To</label>
+          <div class="drawer-form-control">
+            <input type="text" class="form-control form-control-sm" id="ptf-pod-handed-over-to" placeholder="e.g. Ramchandra Jat (Driver)" style="border-radius: 4px; font-size: 12.5px;">
+          </div>
+        </div>
+
+        <!-- Reference -->
+        <div class="drawer-form-row">
+          <label class="drawer-form-label">Reference</label>
+          <div class="drawer-form-control">
+            <input type="text" class="form-control form-control-sm" id="ptf-reference" placeholder="Reference Name" style="border-radius: 4px; font-size: 12.5px;">
+          </div>
+        </div>
+
+        <!-- Reference Mobile No. -->
+        <div class="drawer-form-row">
+          <label class="drawer-form-label">Reference Mobile No.</label>
+          <div class="drawer-form-control">
+            <input type="tel" class="form-control form-control-sm" id="ptf-reference-mobile" placeholder="Reference Mobile No." style="border-radius: 4px; font-size: 12.5px;">
+          </div>
+        </div>
+
+        <!-- Driver -->
+        <div class="drawer-form-row">
+          <label class="drawer-form-label">Driver</label>
+          <div class="drawer-form-control">
+            <input type="text" class="form-control form-control-sm" id="ptf-driver" placeholder="Driver Name" style="border-radius: 4px; font-size: 12.5px;">
+          </div>
+        </div>
+
+        <!-- Driver Mobile No. -->
+        <div class="drawer-form-row">
+          <label class="drawer-form-label">Driver Mobile No.</label>
+          <div class="drawer-form-control">
+            <input type="tel" class="form-control form-control-sm" id="ptf-driver-mobile" placeholder="Driver Mobile No." style="border-radius: 4px; font-size: 12.5px;">
+          </div>
+        </div>
+
+        <!-- Owner -->
+        <div class="drawer-form-row">
+          <label class="drawer-form-label">Owner</label>
+          <div class="drawer-form-control">
+            <input type="text" class="form-control form-control-sm" id="ptf-owner" placeholder="Truck Owner Name" style="border-radius: 4px; font-size: 12.5px;">
+          </div>
+        </div>
+
+        <!-- Owner Mobile No. -->
+        <div class="drawer-form-row">
+          <label class="drawer-form-label">Owner Mobile No.</label>
+          <div class="drawer-form-control">
+            <input type="tel" class="form-control form-control-sm" id="ptf-owner-mobile" placeholder="Owner Mobile No." style="border-radius: 4px; font-size: 12.5px;">
+          </div>
+        </div>
+
+        <!-- Bill No. -->
+        <div class="drawer-form-row">
+          <label class="drawer-form-label">Bill No.</label>
+          <div class="drawer-form-control">
+            <input type="text" class="form-control form-control-sm" id="ptf-bill-no" placeholder="Bill No." style="border-radius: 4px; font-size: 12.5px;">
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Offcanvas: Consignee Payment Details Drawer (Matching WhatsApp Photo 6.07.32 PM) -->
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="paidPaymentDrawer" aria-labelledby="paidPaymentDrawerLabel" style="width: 500px; max-width: 100vw;">
+    <div class="offcanvas-header border-bottom py-2 px-3 d-flex justify-content-between align-items-center" style="background:#ffffff; min-height: 52px;">
+      <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn btn-sm btn-light border-0 p-1" data-bs-dismiss="offcanvas" aria-label="Close" title="Close">
+          <i class="bi bi-x-lg text-secondary"></i>
+        </button>
+        <span class="offcanvas-title fw-semibold" id="paidPaymentDrawerLabel" style="font-size: 15px; color: #202124;">Consignee Payment Details</span>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="offcanvas" style="font-size: 12px; padding: 3px 14px; border-radius: 4px; border-color: #dadce0; color: #5f6368; background: #ffffff;">Cancel</button>
+        <button type="button" class="btn-appsheet-save" id="btn-paid-payment-drawer-save" onclick="PartiesModule.savePaidPaymentDetails()">Save</button>
+      </div>
+    </div>
+    <div class="offcanvas-body p-3" style="background: #ffffff;">
+      <form id="paid-payment-form" onsubmit="event.preventDefault(); PartiesModule.savePaidPaymentDetails();">
+        <input type="hidden" id="ppf-edit-index" value="-1">
+
+        <!-- Payment Date* -->
+        <div class="drawer-form-row">
+          <label class="drawer-form-label">Payment Date<span class="req">*</span></label>
+          <div class="drawer-form-control">
+            <input type="date" class="form-control form-control-sm" id="ppf-date" required style="border-radius: 4px; font-size: 12.5px;">
+          </div>
+        </div>
+
+        <!-- Due -->
+        <div class="drawer-form-row">
+          <label class="drawer-form-label">Due</label>
+          <div class="drawer-form-control">
+            <input type="text" class="form-control form-control-sm" id="ppf-due" readonly value="₹ 0.00" style="background: #f8f9fa; border-radius: 4px; font-size: 12.5px;">
+          </div>
+        </div>
+
+        <!-- Paid To* -->
+        <div class="drawer-form-row">
+          <label class="drawer-form-label">Paid To<span class="req">*</span></label>
+          <div class="drawer-form-control">
+            <div class="appsheet-segmented-group">
+              <button type="button" class="appsheet-seg-btn active" id="btn-ppf-transporter" onclick="PartiesModule.setPaidTo('Transporter')">
+                <span class="appsheet-bullet bullet-paid-green">●</span> Transporter
+              </button>
+              <button type="button" class="appsheet-seg-btn" id="btn-ppf-owner" onclick="PartiesModule.setPaidTo('Truck Owner')">
+                <span class="appsheet-bullet bullet-paid-green">●</span> Truck Owner
+              </button>
+              <input type="hidden" id="ppf-paid-to-val" value="Transporter">
+            </div>
+          </div>
+        </div>
+
+        <!-- Amount Paid* -->
+        <div class="drawer-form-row">
+          <label class="drawer-form-label">Amount Paid<span class="req">*</span></label>
+          <div class="drawer-form-control">
+            <input type="number" step="0.01" class="form-control form-control-sm" id="ppf-amount" required value="0" style="border-radius: 4px; font-size: 12.5px;">
+          </div>
+        </div>
+
+        <!-- Mode* -->
+        <div class="drawer-form-row">
+          <label class="drawer-form-label">Mode<span class="req">*</span></label>
+          <div class="drawer-form-control">
+            <select class="form-select form-select-sm" id="ppf-mode" style="border-radius: 4px; font-size: 12.5px;">
+              <option value="NEFT/RTGS" selected>NEFT/RTGS</option>
+              <option value="Cash">Cash</option>
+              <option value="Cash in Rajsamand">Cash in Rajsamand</option>
+              <option value="Cash in Bank">Cash in Bank</option>
+              <option value="Cheque">Cheque</option>
+              <option value="Phone Pe/GPay/PayTM/UPI">Phone Pe/GPay/PayTM/UPI</option>
+              <option value="Rate Difference">Rate Difference</option>
+              <option value="TDS">TDS</option>
+              <option value="Less Freight">Less Freight</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="drawer-form-row">
+          <label class="drawer-form-label">Description</label>
+          <div class="drawer-form-control">
+            <input type="text" class="form-control form-control-sm" id="ppf-desc" placeholder="e.g. Online transfer" style="border-radius: 4px; font-size: 12.5px;">
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Bootstrap 5 Bundle JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -2281,6 +2774,7 @@
   <script src="../js/sample-parties-data.js"></script>
   <!-- Authentic Party Due Dataset (386 Trips with 5 Color Schemes) -->
   <script src="../js/party-due-data.js"></script>
+  <script src="../js/party-paid-data.js"></script>
   <!-- Parties Controller Module -->
   <script src="../js/modules/parties.js"></script>
 
