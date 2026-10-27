@@ -59,8 +59,8 @@ console.log('=== Running User Reported Fixes Verification Suite ===\n');
 // Test 1: Initialize PartiesModule
 console.log('[Test 1] Initializing PartiesModule...');
 PartiesModule.allPartyDueTrips = [...window.PARTY_DUE_DATA];
-assert(PartiesModule.allPartyDueTrips.length === 386, 'Expected 386 trips');
-console.log('✓ Test 1 Passed: Loaded 386 Party Due trips.');
+assert(PartiesModule.allPartyDueTrips.length === 413, 'Expected 413 trips');
+console.log('✓ Test 1 Passed: Loaded 413 Party Due trips.');
 
 // Test 2: Full Row Color theme classes in renderPartyDueTable()
 console.log('\n[Test 2] Verifying that party-due rows have full color theme classes...');
