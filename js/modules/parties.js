@@ -2537,12 +2537,20 @@ const PartiesModule = {
             const shortGr = t.shortGrNo || t.grNo;
 
             // In Google AppSheet Party Paid, ALL values and Due are 100% GREEN
-            const c = (val, isBold = false) => `
-              <div class="party-paid-cell-inner ${isBold ? 'fw-bold' : ''}">
-                <span class="bullet-paid-green">●</span>
-                <span class="cell-text-green">${val || '-'}</span>
-              </div>
-            `;
+            // If a cell is empty, Google AppSheet renders ONLY the bullet dot without any trailing dash
+            const c = (val, isBold = false) => {
+              if (val === undefined || val === null || val === '') {
+                return `<div class="party-paid-cell-inner"><span class="bullet-paid-green">●</span></div>`;
+              }
+              return `
+                <div class="party-paid-cell-inner ${isBold ? 'fw-bold' : ''}">
+                  <span class="bullet-paid-green">●</span>
+                  <span class="cell-text-green">${val}</span>
+                </div>
+              `;
+            };
+
+            const paidToVal = t.paidTo || (['Cash', 'TDS', 'Less Freight', 'Loading'].includes(t.mode) ? 'Truck Owner' : 'Transporter');
 
             html += `
               <tr class="party-paid-row" onclick="PartiesModule.openPartyPaidDrilldown('${t.id}')">
@@ -2559,11 +2567,11 @@ const PartiesModule = {
                 <td>${c(t.paymentDate || t.tripStartDate)}</td>
                 <td style="text-align: right;">${c('₹ ' + this.formatCurrency(t.paidAmount || t.freight))}</td>
                 <td>${c(t.mode || 'NEFT/RTGS')}</td>
-                <td>${c(t.beneficiary || 'TTC')}</td>
-                <td>${c(t.fromBank || 'Other')}</td>
-                <td>${c(t.toBank || 'IDBI')}</td>
-                <td>${c(t.description || '-')}</td>
-                <td>${c(t.paidTo || 'Transporter')}</td>
+                <td>${c(t.beneficiary || '')}</td>
+                <td>${c(t.fromBank || '')}</td>
+                <td>${c(t.toBank || '')}</td>
+                <td>${c(t.description || '')}</td>
+                <td>${c(paidToVal)}</td>
                 <td style="text-align: right; color: #5f6368;"><i class="bi bi-chevron-right" style="font-size: 11px;"></i></td>
               </tr>
             `;
@@ -3087,8 +3095,8 @@ const PartiesModule = {
                         <td><span class="bullet-paid-green">●</span> <span class="text-success fw-bold">${p.paymentDate}</span></td>
                         <td><span class="bullet-paid-green">●</span> <span class="text-success fw-bold">₹${PartiesModule.formatCurrency(p.amountPaid)}</span></td>
                         <td><span class="bullet-paid-green">●</span> <span class="text-success fw-bold">${p.mode}</span></td>
-                        <td><span class="bullet-paid-green">●</span> <span class="text-success fw-bold">${p.beneficiary || 'TTC'}</span></td>
-                        <td><span class="bullet-paid-green">●</span> <span class="text-success fw-bold">${p.description || '-'}</span></td>
+                        <td><span class="bullet-paid-green">●</span> <span class="text-success fw-bold">${p.beneficiary || ''}</span></td>
+                        <td><span class="bullet-paid-green">●</span> <span class="text-success fw-bold">${p.description || ''}</span></td>
                         <td><span class="bullet-paid-green">●</span> <span class="text-success fw-bold">${p.paidTo || 'Transporter'}</span></td>
                         <td class="text-end text-muted"><i class="bi bi-chevron-right" style="font-size: 10px;"></i></td>
                       </tr>
@@ -3233,14 +3241,17 @@ const PartiesModule = {
         `;
       }
       if (tbody) {
+        const cellDot = val => (val === undefined || val === null || val === '') ?
+          '<span class="bullet-paid-green">●</span>' :
+          `<span class="bullet-paid-green">●</span> ${val}`;
         tbody.innerHTML = payments.map((p, i) => `
           <tr onclick="PartiesModule.openPartyPaidSubitem(${i}, 'payment')" style="cursor: pointer;">
-            <td><span class="bullet-paid-green">●</span> ${p.paymentDate}</td>
-            <td><span class="bullet-paid-green">●</span> ₹${PartiesModule.formatCurrency(p.amountPaid)}</td>
-            <td><span class="bullet-paid-green">●</span> ${p.mode}</td>
-            <td><span class="bullet-paid-green">●</span> ${p.beneficiary || '-'}</td>
-            <td><span class="bullet-paid-green">●</span> ${p.description || '-'}</td>
-            <td><span class="bullet-paid-green">●</span> ${p.paidTo || 'Transporter'}</td>
+            <td>${cellDot(p.paymentDate)}</td>
+            <td>${cellDot('₹' + PartiesModule.formatCurrency(p.amountPaid))}</td>
+            <td>${cellDot(p.mode)}</td>
+            <td>${cellDot(p.beneficiary)}</td>
+            <td>${cellDot(p.description)}</td>
+            <td>${cellDot(p.paidTo || 'Transporter')}</td>
             <td style="text-align: right; color: #5f6368;"><i class="bi bi-chevron-right"></i></td>
           </tr>
         `).join('');
@@ -3273,15 +3284,18 @@ const PartiesModule = {
         `;
       }
       if (tbody) {
+        const cellDot = val => (val === undefined || val === null || val === '') ?
+          '<span class="bullet-paid-green">●</span>' :
+          `<span class="bullet-paid-green">●</span> ${val}`;
         tbody.innerHTML = ownerPayments.map((p, i) => `
           <tr onclick="PartiesModule.openPartyPaidSubitem(${i}, 'owner_payment')" style="cursor: pointer;">
-            <td><span class="bullet-paid-green">●</span> ${p.paymentDate}</td>
-            <td><span class="bullet-paid-green">●</span> ₹${PartiesModule.formatCurrency(p.amountPaid)}</td>
-            <td><span class="bullet-paid-green">●</span> ${p.mode}</td>
-            <td><span class="bullet-paid-green">●</span> ${p.beneficiary || '-'}</td>
-            <td><span class="bullet-paid-green">●</span> ${p.fromBank || '-'}</td>
-            <td><span class="bullet-paid-green">●</span> ${p.toBank || '-'}</td>
-            <td><span class="bullet-paid-green">●</span> ${p.description || '-'}</td>
+            <td>${cellDot(p.paymentDate)}</td>
+            <td>${cellDot('₹' + PartiesModule.formatCurrency(p.amountPaid))}</td>
+            <td>${cellDot(p.mode)}</td>
+            <td>${cellDot(p.beneficiary)}</td>
+            <td>${cellDot(p.fromBank)}</td>
+            <td>${cellDot(p.toBank)}</td>
+            <td>${cellDot(p.description)}</td>
             <td style="text-align: right; color: #5f6368;"><i class="bi bi-chevron-right"></i></td>
           </tr>
         `).join('');
@@ -3350,7 +3364,7 @@ const PartiesModule = {
         <div class="card p-4 border" style="max-width: 580px; margin: 0 auto; background: #ffffff;">
           <div class="drilldown-field">
             <div class="drilldown-field-label">Payment Date</div>
-            <div class="drilldown-field-val"><span class="bullet-paid-green">●</span> <span class="theme-text">${p.paymentDate}</span></div>
+            <div class="drilldown-field-val"><span class="bullet-paid-green">●</span> <span class="theme-text">${p.paymentDate || ''}</span></div>
           </div>
           <div class="drilldown-field">
             <div class="drilldown-field-label">Paid To</div>
@@ -3358,7 +3372,7 @@ const PartiesModule = {
           </div>
           <div class="drilldown-field">
             <div class="drilldown-field-label">Mode</div>
-            <div class="drilldown-field-val"><span class="bullet-paid-green">●</span> <span class="theme-text">${p.mode}</span></div>
+            <div class="drilldown-field-val"><span class="bullet-paid-green">●</span> <span class="theme-text">${p.mode || ''}</span></div>
           </div>
           <div class="drilldown-field">
             <div class="drilldown-field-label">Amount Paid</div>
@@ -3366,15 +3380,19 @@ const PartiesModule = {
           </div>
           <div class="drilldown-field">
             <div class="drilldown-field-label">Beneficiary</div>
-            <div class="drilldown-field-val"><span class="bullet-paid-green">●</span> <span class="theme-text">${p.beneficiary || '-'}</span></div>
+            <div class="drilldown-field-val"><span class="bullet-paid-green">●</span> <span class="theme-text">${p.beneficiary || ''}</span></div>
           </div>
           <div class="drilldown-field">
             <div class="drilldown-field-label">From Bank</div>
-            <div class="drilldown-field-val"><span class="bullet-paid-green">●</span> <span class="theme-text">${p.fromBank || 'Other'}</span></div>
+            <div class="drilldown-field-val"><span class="bullet-paid-green">●</span> <span class="theme-text">${p.fromBank || ''}</span></div>
           </div>
           <div class="drilldown-field">
             <div class="drilldown-field-label">To Bank</div>
-            <div class="drilldown-field-val"><span class="bullet-paid-green">●</span> <span class="theme-text">${p.toBank || 'IDBI'}</span></div>
+            <div class="drilldown-field-val"><span class="bullet-paid-green">●</span> <span class="theme-text">${p.toBank || ''}</span></div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Description</div>
+            <div class="drilldown-field-val"><span class="bullet-paid-green">●</span> <span class="theme-text">${p.description || ''}</span></div>
           </div>
         </div>
       `;
@@ -3393,11 +3411,11 @@ const PartiesModule = {
         <div class="card p-4 border" style="max-width: 580px; margin: 0 auto; background: #ffffff;">
           <div class="drilldown-field">
             <div class="drilldown-field-label">Payment Date</div>
-            <div class="drilldown-field-val"><span class="bullet-paid-green">●</span> <span class="theme-text">${p.paymentDate}</span></div>
+            <div class="drilldown-field-val"><span class="bullet-paid-green">●</span> <span class="theme-text">${p.paymentDate || ''}</span></div>
           </div>
           <div class="drilldown-field">
             <div class="drilldown-field-label">Mode</div>
-            <div class="drilldown-field-val"><span class="bullet-paid-green">●</span> <span class="theme-text">${p.mode}</span></div>
+            <div class="drilldown-field-val"><span class="bullet-paid-green">●</span> <span class="theme-text">${p.mode || ''}</span></div>
           </div>
           <div class="drilldown-field">
             <div class="drilldown-field-label">Amount Paid</div>
@@ -3405,15 +3423,19 @@ const PartiesModule = {
           </div>
           <div class="drilldown-field">
             <div class="drilldown-field-label">Beneficiary</div>
-            <div class="drilldown-field-val"><span class="bullet-paid-green">●</span> <span class="theme-text">${p.beneficiary || '-'}</span></div>
+            <div class="drilldown-field-val"><span class="bullet-paid-green">●</span> <span class="theme-text">${p.beneficiary || ''}</span></div>
           </div>
           <div class="drilldown-field">
             <div class="drilldown-field-label">From Bank</div>
-            <div class="drilldown-field-val"><span class="bullet-paid-green">●</span> <span class="theme-text">${p.fromBank || 'TTC'}</span></div>
+            <div class="drilldown-field-val"><span class="bullet-paid-green">●</span> <span class="theme-text">${p.fromBank || ''}</span></div>
           </div>
           <div class="drilldown-field">
             <div class="drilldown-field-label">To Bank</div>
-            <div class="drilldown-field-val"><span class="bullet-paid-green">●</span> <span class="theme-text">${p.toBank || 'ICICI'}</span></div>
+            <div class="drilldown-field-val"><span class="bullet-paid-green">●</span> <span class="theme-text">${p.toBank || ''}</span></div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Description</div>
+            <div class="drilldown-field-val"><span class="bullet-paid-green">●</span> <span class="theme-text">${p.description || ''}</span></div>
           </div>
         </div>
       `;
