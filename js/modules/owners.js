@@ -1,89 +1,65 @@
 /**
  * Truck Owners Master Directory Module - MTC & TTC Logistics
- * Matches Google AppSheet UI (file0_top.png)
- * Total 586 Trucks & Owners (Header: 'Truck No. Number 586')
+ * Matches Google AppSheet Authentic 3-Card Layout (screencapture-appsheet-start-...-18_55_06.png)
+ * Total 595 Trucks & Owners (Header: 'Truck No. Number 595')
  */
 
 const OwnersModule = {
   allOwners: [],
-  allTrips: [],
-  currentCategoryFilter: 'ALL',
   searchQuery: '',
-  yearDueFilter: 'ALL',
-  yearPaidFilter: 'ALL',
+  expandedCardId: null,
 
   async init() {
     if (typeof AppUI !== 'undefined' && AppUI.renderSidebar) {
       AppUI.renderSidebar('owners');
     }
     await this.loadData();
+  },
+
+  async loadData() {
+    const tbody = document.getElementById('truck-owners-tbody');
+    if (tbody && (!this.allOwners || this.allOwners.length === 0)) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="5" class="text-center py-5 text-muted">
+            <div class="spinner-border spinner-border-sm text-secondary me-2"></div> Loading 595 truck owners...
+          </td>
+        </tr>
+      `;
+    }
+
+    try {
+      if (typeof dbService !== 'undefined') {
+        this.allOwners = await dbService.getAll('truckOwners');
+      } else if (typeof window !== 'undefined' && Array.isArray(window.INITIAL_TRUCK_OWNERS)) {
+        this.allOwners = window.INITIAL_TRUCK_OWNERS;
+      } else {
+        this.allOwners = [];
+      }
+    } catch (err) {
+      console.warn("Could not load from Firestore, falling back to INITIAL_TRUCK_OWNERS:", err);
+      if (typeof window !== 'undefined' && Array.isArray(window.INITIAL_TRUCK_OWNERS)) {
+        this.allOwners = window.INITIAL_TRUCK_OWNERS;
+      }
+    }
+
+    // Default fallback if database empty
+    if (!this.allOwners || this.allOwners.length === 0) {
+      if (typeof window !== 'undefined' && Array.isArray(window.INITIAL_TRUCK_OWNERS)) {
+        this.allOwners = window.INITIAL_TRUCK_OWNERS;
+      }
+    }
+
     this.updateStats();
     this.renderTable();
   },
 
-  async loadData() {
-    this.allOwners = await dbService.getAll('truckOwners');
-    try {
-      this.allTrips = await dbService.getAll('trips');
-    } catch (e) {
-      this.allTrips = [];
-    }
-  },
-
   updateStats() {
     const totalCount = this.allOwners.length;
-    let ownFleetCount = 0;
-    let duesCount = 0;
-    let clearedCount = 0;
-    let totalDue = 0;
-    let totalPaid = 0;
-
-    this.allOwners.forEach(o => {
-      const due = Number(o.dueAmount) || 0;
-      const paid = Number(o.paidAmount) || 0;
-      totalDue += due;
-      totalPaid += paid;
-
-      if (o.type === 'Self' || (o.name && o.name.includes('MTC Fleet'))) {
-        ownFleetCount++;
-      }
-      if (due > 0) duesCount++;
-      else clearedCount++;
-    });
-
-    const setElem = (id, text) => {
-      const el = document.getElementById(id);
-      if (el) el.innerText = text;
-    };
-
-    setElem('appsheet-header-count', String(totalCount));
-    setElem('filter-all-count', String(totalCount));
-    setElem('filter-dues-count', duesCount);
-    setElem('filter-cleared-count', clearedCount);
-  },
-
-  setCategoryFilter(category, btnElement) {
-    this.currentCategoryFilter = category;
-    this.yearDueFilter = 'ALL';
-    this.yearPaidFilter = 'ALL';
-
-    if (btnElement) {
-      document.querySelectorAll('.appsheet-pill').forEach(el => el.classList.remove('active'));
-      btnElement.classList.add('active');
+    const countBadge = document.getElementById('appsheet-header-count');
+    if (countBadge) {
+      countBadge.innerText = `Number ${totalCount}`;
     }
-    this.renderTable();
-  },
-
-  filterByDueYear(year) {
-    this.yearDueFilter = year;
-    this.currentCategoryFilter = 'DUES';
-    this.renderTable();
-  },
-
-  filterByPaidYear(year) {
-    this.yearPaidFilter = year;
-    this.currentCategoryFilter = 'ALL';
-    this.renderTable();
   },
 
   handleSearch(query) {
@@ -95,59 +71,53 @@ const OwnersModule = {
     const tbody = document.getElementById('truck-owners-tbody');
     if (!tbody) return;
 
-    let filtered = this.allOwners.filter(o => {
-      const isSelf = o.type === 'Self' || (o.name && o.name.includes('MTC Fleet'));
-      const due = Number(o.dueAmount) || 0;
-
-      if (this.currentCategoryFilter === 'SELF' && !isSelf) return false;
-      if (this.currentCategoryFilter === 'DUES' && due <= 0) return false;
-      if (this.currentCategoryFilter === 'CLEARED' && due > 0) return false;
-
-      if (this.searchQuery) {
-        const text = `${o.truckNo} ${o.name} ${o.mobile} ${o.mobile1}`.toLowerCase();
-        if (!text.includes(this.searchQuery)) return false;
-      }
-      return true;
-    });
+    let filtered = this.allOwners;
+    if (this.searchQuery) {
+      filtered = this.allOwners.filter(o => {
+        const text = `${o.truckNo || ''} ${o.name || ''} ${o.mobile || ''} ${o.mobile1 || ''}`.toLowerCase();
+        return text.includes(this.searchQuery);
+      });
+    }
 
     const showingText = document.getElementById('table-showing-text');
     if (showingText) {
-      showingText.innerText = `Showing ${filtered.length} of ${this.allOwners.length} records`;
+      if (this.searchQuery) {
+        showingText.innerText = `${filtered.length} of ${this.allOwners.length} records`;
+      } else {
+        showingText.innerText = `${this.allOwners.length} records`;
+      }
     }
 
     if (filtered.length === 0) {
       tbody.innerHTML = `
         <tr>
           <td colspan="5" class="text-center py-5 text-muted">
-            <i class="bi bi-inbox fs-3 d-block mb-1"></i> No matching truck owners found.
+            <i class="bi bi-inbox fs-4 d-block mb-1"></i> No matching truck owners found.
           </td>
         </tr>
       `;
       return;
     }
 
-    // Render up to 200 items smoothly
-    const displayList = filtered.slice(0, 200);
+    // Smooth rendering for all rows (progressive chunk or full list)
     let html = '';
+    const displayList = filtered.slice(0, 300); // render first 300 for snappy performance
 
     displayList.forEach(o => {
       const isSelf = o.type === 'Self' || (o.name && o.name.includes('MTC Fleet'));
-      const due = Number(o.dueAmount) || 0;
+      const safeId = String(o.id || o.truckNo);
 
       html += `
-        <tr class="appsheet-row" onclick="OwnersModule.openDetailView('${o.id}')">
+        <tr class="appsheet-row" onclick="OwnersModule.openDetailView('${safeId}')">
           <!-- 1. Truck No. -->
           <td>
-            <div class="d-flex align-items-center gap-1">
-              <span class="fw-bold font-monospace ${isSelf ? 'text-primary' : 'text-dark'}">${o.truckNo}</span>
-              ${isSelf ? '<span class="badge bg-warning text-dark ms-1" style="font-size: 0.65rem;">Own 10</span>' : ''}
-            </div>
-            ${due > 0 ? `<small class="text-danger fw-semibold">भाड़ा बाकी: ${this.formatCurrency(due)}</small>` : ''}
+            <span class="fw-bold font-monospace ${isSelf ? 'text-primary' : 'text-dark'}">${o.truckNo}</span>
+            ${isSelf ? '<span class="badge bg-warning text-dark ms-1" style="font-size: 0.65rem;">Own 10</span>' : ''}
           </td>
 
           <!-- 2. Name -->
           <td>
-            <div class="fw-semibold text-dark text-truncate" style="max-width: 190px;" title="${o.name}">${o.name}</div>
+            <div class="fw-normal text-dark text-truncate" style="max-width: 220px;" title="${o.name || ''}">${o.name || '-'}</div>
           </td>
 
           <!-- 3. Mobile No. -->
@@ -160,7 +130,7 @@ const OwnersModule = {
             <span class="font-monospace text-muted">${o.mobile1 || '-'}</span>
           </td>
 
-          <!-- 5. Arrow -->
+          <!-- 5. Chevron Arrow -->
           <td class="text-end text-muted">
             <i class="bi bi-chevron-right small"></i>
           </td>
@@ -169,269 +139,275 @@ const OwnersModule = {
     });
 
     tbody.innerHTML = html;
+
+    // Render remaining rows in background if dataset > 300
+    if (filtered.length > 300) {
+      setTimeout(() => {
+        let remainingHtml = '';
+        for (let i = 300; i < filtered.length; i++) {
+          const o = filtered[i];
+          const isSelf = o.type === 'Self' || (o.name && o.name.includes('MTC Fleet'));
+          const safeId = String(o.id || o.truckNo);
+          remainingHtml += `
+            <tr class="appsheet-row" onclick="OwnersModule.openDetailView('${safeId}')">
+              <td>
+                <span class="fw-bold font-monospace ${isSelf ? 'text-primary' : 'text-dark'}">${o.truckNo}</span>
+                ${isSelf ? '<span class="badge bg-warning text-dark ms-1" style="font-size: 0.65rem;">Own 10</span>' : ''}
+              </td>
+              <td>
+                <div class="fw-normal text-dark text-truncate" style="max-width: 220px;" title="${o.name || ''}">${o.name || '-'}</div>
+              </td>
+              <td><span class="font-monospace text-muted">${o.mobile || '-'}</span></td>
+              <td><span class="font-monospace text-muted">${o.mobile1 || '-'}</span></td>
+              <td class="text-end text-muted"><i class="bi bi-chevron-right small"></i></td>
+            </tr>
+          `;
+        }
+        tbody.insertAdjacentHTML('beforeend', remainingHtml);
+      }, 50);
+    }
   },
 
   openDetailView(ownerId) {
-    const o = this.allOwners.find(item => String(item.id) === String(ownerId));
+    const o = this.allOwners.find(item => String(item.id) === String(ownerId) || String(item.truckNo) === String(ownerId));
     if (!o) return;
 
     const modalBody = document.getElementById('owner-detail-body');
     const modalFooter = document.getElementById('owner-detail-footer');
 
     const isSelf = o.type === 'Self' || (o.name && o.name.includes('MTC Fleet'));
-    const due = Number(o.dueAmount) || 0;
-    const paid = Number(o.paidAmount) || 0;
-
-    const tripsList = Array.isArray(o.recentTrips) ? o.recentTrips : [];
-
-    let tripsHtml = '';
-    if (tripsList.length === 0) {
-      tripsHtml = `
-        <div class="text-center py-4 text-muted bg-light rounded border">
-          <i class="bi bi-journal-text fs-4 d-block mb-1 text-secondary"></i>
-          Trip records for this truck will display here as bills and bilties are dispatched.
-        </div>
-      `;
-    } else {
-      let rows = '';
-      tripsList.forEach(tr => {
-        rows += `
-          <tr>
-            <td><span class="badge bg-light text-dark border font-monospace">${tr.grNo || 'GR-Open'}</span></td>
-            <td>${tr.tripStartDate || '-'}</td>
-            <td>${tr.destination || 'Direct Delivery'}</td>
-            <td>${tr.driver || '-'}</td>
-            <td class="text-end fw-bold ${tr.ownerDue > 0 ? 'text-danger' : 'text-success'}">${this.formatCurrency(tr.ownerDue || tr.freight || 0)}</td>
-            <td class="text-center"><span class="badge bg-light text-dark border">${tr.status || 'Transit'}</span></td>
-          </tr>
-        `;
-      });
-      tripsHtml = `
-        <div class="table-responsive border rounded" style="max-height: 250px;">
-          <table class="table table-hover align-middle mb-0 small">
-            <thead class="table-light sticky-top">
-              <tr>
-                <th>GR No.</th>
-                <th>Date</th>
-                <th>Destination</th>
-                <th>Driver</th>
-                <th class="text-end">Due / Freight</th>
-                <th class="text-center">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${rows}
-            </tbody>
-          </table>
-        </div>
-      `;
-    }
 
     modalBody.innerHTML = `
-      <!-- AppSheet Detail Form -->
-      <div class="row g-3">
-        
-        <div class="col-12 bg-light p-3 rounded border d-flex justify-content-between align-items-center">
-          <div>
-            <span class="text-muted small">Truck Registration Number</span>
-            <div class="fw-bold font-monospace fs-4 text-dark">${o.truckNo}</div>
-          </div>
-          <div>
-            ${isSelf ? '<span class="badge bg-warning text-dark px-3 py-2 fs-7"><i class="bi bi-star-fill me-1"></i> Own Fleet (VIP 10 Trucks)</span>' : '<span class="badge bg-secondary px-3 py-2 fs-7">Market Attached Truck</span>'}
-          </div>
+      <!-- AppSheet Authentic Vertical Layout (Matching 19_04_54_crop.png) -->
+      <div class="d-flex flex-column gap-3">
+        <div class="border-bottom pb-2">
+          <div class="text-muted small fw-semibold">Truck No.</div>
+          <div class="fs-4 fw-bold font-monospace text-dark mt-1">${o.truckNo}</div>
         </div>
 
-        <div class="col-md-6">
-          <label class="text-muted small fw-semibold">Truck Owner Full Name</label>
-          <div class="fw-bold fs-6 text-dark">${o.name}</div>
+        <div class="border-bottom pb-2">
+          <div class="text-muted small fw-semibold">Name</div>
+          <div class="fs-5 fw-semibold text-dark mt-1">${o.name || '-'}</div>
         </div>
 
-        <div class="col-md-6">
-          <label class="text-muted small fw-semibold">Primary Contact Mobile</label>
-          <div class="font-monospace fs-6">${o.mobile ? `<a href="tel:${o.mobile}" class="text-decoration-none text-dark"><i class="bi bi-telephone text-primary me-1"></i>${o.mobile}</a>` : 'Not Provided'}</div>
-        </div>
-
-        <div class="col-md-6">
-          <label class="text-muted small fw-semibold">Mobile No. 1 (WhatsApp / Secondary)</label>
-          <div class="font-monospace fs-6">${o.mobile1 ? `<a href="https://wa.me/91${o.mobile1}" target="_blank" class="text-decoration-none text-success"><i class="bi bi-whatsapp me-1"></i>${o.mobile1}</a>` : 'None'}</div>
-        </div>
-
-        <div class="col-md-6">
-          <label class="text-muted small fw-semibold">Total Trips Recorded</label>
-          <div class="fw-semibold text-dark">${o.totalTrips || 0} Trips</div>
-        </div>
-
-        <!-- Financial Summary Bar -->
-        <div class="col-md-6">
-          <div class="p-3 bg-light rounded border">
-            <span class="text-muted small">Owner Paid (कुल भुगतान / जमा)</span>
-            <div class="fw-bold text-success fs-5">${this.formatCurrency(paid)}</div>
+        <div class="border-bottom pb-2">
+          <div class="text-muted small fw-semibold">Mobile No.</div>
+          <div class="font-monospace fs-6 mt-1">
+            ${o.mobile ? `<a href="tel:${o.mobile}" class="text-dark text-decoration-none"><i class="bi bi-telephone text-primary me-2"></i>${o.mobile}</a>` : '<span class="text-muted">-</span>'}
           </div>
         </div>
 
-        <div class="col-md-6">
-          <div class="p-3 ${due > 0 ? 'bg-danger-subtle border-danger' : 'bg-light'} rounded border">
-            <span class="${due > 0 ? 'text-danger' : 'text-muted'} small">Owner Due (भाड़ा बाकी)</span>
-            <div class="fw-bold ${due > 0 ? 'text-danger' : 'text-dark'} fs-5">${this.formatCurrency(due)}</div>
+        ${o.mobile1 ? `
+        <div class="border-bottom pb-2">
+          <div class="text-muted small fw-semibold">Mobile No. 1</div>
+          <div class="font-monospace fs-6 mt-1">
+            <a href="https://wa.me/91${o.mobile1}" target="_blank" class="text-dark text-decoration-none"><i class="bi bi-whatsapp text-success me-2"></i>${o.mobile1}</a>
           </div>
         </div>
+        ` : ''}
 
-        <!-- Linked Trips Section -->
-        <div class="col-12 mt-4">
-          <h6 class="fw-bold text-dark mb-2"><i class="bi bi-clock-history me-1"></i> Linked Trips & Dues Ledger</h6>
-          ${tripsHtml}
+        <div class="pt-1">
+          <div class="text-muted small fw-semibold">Fleet Type</div>
+          <div class="mt-1">
+            ${isSelf ? '<span class="badge bg-warning text-dark"><i class="bi bi-star-fill me-1"></i> Own Fleet (10 Trucks)</span>' : '<span class="badge bg-light text-dark border">Market Attached Truck</span>'}
+          </div>
         </div>
-
       </div>
     `;
 
     modalFooter.innerHTML = `
-      <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
-      <button type="button" class="btn btn-sm btn-outline-dark" onclick="window.print()">
-        <i class="bi bi-printer me-1"></i> Print
-      </button>
-      <button type="button" class="btn btn-sm btn-outline-primary" onclick="bootstrap.Modal.getInstance(document.getElementById('modalOwnerDetail')).hide(); OwnersModule.openEditModal('${o.id}')">
-        <i class="bi bi-pencil me-1"></i> Edit
-      </button>
-      ${due > 0 ? `
-        <button type="button" class="btn btn-sm btn-dark" onclick="bootstrap.Modal.getInstance(document.getElementById('modalOwnerDetail')).hide(); OwnersModule.openPayModal('${o.id}')">
-          <i class="bi bi-cash me-1"></i> Pay Owner (₹${Number(due).toLocaleString('en-IN')})
+      <div>
+        <button type="button" class="btn btn-sm btn-outline-danger" onclick="OwnersModule.deleteOwner('${o.id}')" title="Delete Truck Owner">
+          <i class="bi bi-trash"></i>
         </button>
-      ` : ''}
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-sm btn-dark" onclick="bootstrap.Modal.getInstance(document.getElementById('modalOwnerDetail')).hide(); OwnersModule.openEditDrawer('${o.id}')">
+          <i class="bi bi-pencil me-1"></i> Edit
+        </button>
+      </div>
     `;
 
-    new bootstrap.Modal(document.getElementById('modalOwnerDetail')).show();
-  },
-
-  openPayModal(ownerId) {
-    const o = this.allOwners.find(item => String(item.id) === String(ownerId));
-    if (!o) return;
-
-    document.getElementById('pay-owner-id').value = o.id;
-    document.getElementById('pay-truck-no').innerText = o.truckNo;
-    document.getElementById('pay-owner-name').innerText = `Owner: ${o.name}`;
-    document.getElementById('pay-current-due').innerText = this.formatCurrency(o.dueAmount);
-    document.getElementById('pay-amount').value = o.dueAmount || '';
-    document.getElementById('pay-date').value = new Date().toISOString().split('T')[0];
-    document.getElementById('pay-ref').value = '';
-    document.getElementById('pay-remarks').value = `Freight settlement for ${o.truckNo} (${o.name})`;
-
-    new bootstrap.Modal(document.getElementById('modalPayOwner')).show();
-  },
-
-  async saveOwnerPayment(event) {
-    event.preventDefault();
-    const ownerId = document.getElementById('pay-owner-id').value;
-    const amount = parseFloat(document.getElementById('pay-amount').value) || 0;
-    const date = document.getElementById('pay-date').value;
-    const mode = document.getElementById('pay-mode').value;
-    const refNo = document.getElementById('pay-ref').value.trim();
-    const remarks = document.getElementById('pay-remarks').value.trim();
-
-    if (!ownerId || amount <= 0) {
-      alert("Please specify a valid payment amount.");
-      return;
-    }
-
-    await dbService.recordOwnerPayment(ownerId, {
-      amount,
-      date,
-      mode,
-      refNo,
-      remarks
-    });
-
-    bootstrap.Modal.getInstance(document.getElementById('modalPayOwner')).hide();
-
-    await this.loadData();
-    this.updateStats();
-    this.renderTable();
-
-    if (typeof AppUI !== 'undefined' && AppUI.showToast) {
-      AppUI.showToast(`Recorded payment of ${this.formatCurrency(amount)} successfully!`, 'success');
+    const modalEl = document.getElementById('modalOwnerDetail');
+    if (modalEl && typeof bootstrap !== 'undefined') {
+      new bootstrap.Modal(modalEl).show();
     }
   },
 
-  openAddModal() {
-    const form = document.getElementById('owner-form');
+  openAddDrawer() {
+    const form = document.getElementById('ownerDrawerForm');
     if (form) form.reset();
-    document.getElementById('owner-id').value = '';
-    document.getElementById('owner-modal-title').innerText = 'Add Truck Owner';
-    new bootstrap.Modal(document.getElementById('ownerModal')).show();
+    document.getElementById('drawer-owner-id').value = '';
+    document.getElementById('drawerTitle').innerText = 'Details';
+    document.getElementById('drawer-owner-due').value = '0';
+    this.showDrawer();
   },
 
-  openEditModal(ownerId) {
-    const o = this.allOwners.find(item => String(item.id) === String(ownerId));
+  openEditDrawer(ownerId) {
+    const o = this.allOwners.find(item => String(item.id) === String(ownerId) || String(item.truckNo) === String(ownerId));
     if (!o) return;
 
-    document.getElementById('owner-id').value = o.id;
-    document.getElementById('owner-truck-no').value = o.truckNo;
-    document.getElementById('owner-name').value = o.name;
-    document.getElementById('owner-type').value = o.type || 'Market';
-    document.getElementById('owner-mobile').value = o.mobile || '';
-    document.getElementById('owner-mobile1').value = o.mobile1 || '';
-    document.getElementById('owner-due').value = o.dueAmount || 0;
+    document.getElementById('drawer-owner-id').value = o.id || '';
+    document.getElementById('drawer-truck-no').value = o.truckNo || '';
+    document.getElementById('drawer-owner-name').value = o.name || '';
+    document.getElementById('drawer-owner-mobile').value = o.mobile || '';
+    document.getElementById('drawer-owner-mobile1').value = o.mobile1 || '';
+    document.getElementById('drawer-owner-type').value = o.type || 'Market';
+    document.getElementById('drawer-owner-due').value = o.dueAmount || 0;
 
-    document.getElementById('owner-modal-title').innerText = `Edit: ${o.truckNo} - ${o.name}`;
-    new bootstrap.Modal(document.getElementById('ownerModal')).show();
+    document.getElementById('drawerTitle').innerText = 'Details';
+    this.showDrawer();
   },
 
-  async saveOwner(event) {
+  showDrawer() {
+    const drawer = document.getElementById('ownerDrawer');
+    const backdrop = document.getElementById('ownerDrawerBackdrop');
+    if (drawer) drawer.classList.add('open');
+    if (backdrop) backdrop.classList.add('show');
+  },
+
+  closeDrawer() {
+    const drawer = document.getElementById('ownerDrawer');
+    const backdrop = document.getElementById('ownerDrawerBackdrop');
+    if (drawer) drawer.classList.remove('open');
+    if (backdrop) backdrop.classList.remove('show');
+  },
+
+  async saveOwnerDrawer(event) {
     event.preventDefault();
-    const id = document.getElementById('owner-id').value;
-    const truckNo = document.getElementById('owner-truck-no').value.trim().toUpperCase();
-    const name = document.getElementById('owner-name').value.trim();
-    const type = document.getElementById('owner-type').value;
-    const mobile = document.getElementById('owner-mobile').value.trim();
-    const mobile1 = document.getElementById('owner-mobile1').value.trim();
-    const dueAmount = parseFloat(document.getElementById('owner-due').value) || 0;
+    const id = document.getElementById('drawer-owner-id').value;
+    const truckNo = document.getElementById('drawer-truck-no').value.trim().toUpperCase();
+    const name = document.getElementById('drawer-owner-name').value.trim();
+    const mobile = document.getElementById('drawer-owner-mobile').value.trim();
+    const mobile1 = document.getElementById('drawer-owner-mobile1').value.trim();
+    const type = document.getElementById('drawer-owner-type').value;
+    const dueAmount = parseFloat(document.getElementById('drawer-owner-due').value) || 0;
 
     if (!truckNo || !name || !mobile) {
-      alert("Please fill all required fields.");
+      alert("Please fill all required fields: Truck No., Name, and Mobile No.");
       return;
     }
 
     const ownerData = {
       truckNo,
       name,
-      type,
       mobile,
       mobile1,
+      type,
       dueAmount
     };
 
-    if (id) {
-      await dbService.update('truckOwners', id, ownerData);
-    } else {
-      ownerData.paidAmount = 0;
-      ownerData.totalTrips = 0;
-      ownerData.recentTrips = [];
-      await dbService.add('truckOwners', ownerData);
+    try {
+      if (id && typeof dbService !== 'undefined') {
+        await dbService.update('truckOwners', id, ownerData);
+      } else if (typeof dbService !== 'undefined') {
+        ownerData.paidAmount = 0;
+        ownerData.totalTrips = 0;
+        ownerData.recentTrips = [];
+        await dbService.add('truckOwners', ownerData);
+      } else {
+        // Local in-memory update
+        if (id) {
+          const idx = this.allOwners.findIndex(o => String(o.id) === String(id));
+          if (idx !== -1) this.allOwners[idx] = { ...this.allOwners[idx], ...ownerData };
+        } else {
+          ownerData.id = `truck_owner_${this.allOwners.length + 1}`;
+          this.allOwners.unshift(ownerData);
+        }
+      }
+    } catch (err) {
+      console.error("Save error:", err);
     }
 
-    bootstrap.Modal.getInstance(document.getElementById('ownerModal')).hide();
-
+    this.closeDrawer();
     await this.loadData();
-    this.updateStats();
-    this.renderTable();
 
     if (typeof AppUI !== 'undefined' && AppUI.showToast) {
-      AppUI.showToast(`Truck ${truckNo} (${name}) saved!`, 'success');
+      AppUI.showToast(`Saved truck owner ${truckNo} (${name})`, 'success');
+    }
+  },
+
+  async deleteOwner(ownerId) {
+    if (!confirm("Are you sure you want to delete this truck owner?")) return;
+
+    try {
+      if (typeof dbService !== 'undefined') {
+        await dbService.delete('truckOwners', ownerId);
+      } else {
+        this.allOwners = this.allOwners.filter(o => String(o.id) !== String(ownerId));
+      }
+    } catch (err) {
+      console.error("Delete error:", err);
+    }
+
+    const modalEl = document.getElementById('modalOwnerDetail');
+    if (modalEl && typeof bootstrap !== 'undefined') {
+      const modalInstance = bootstrap.Modal.getInstance(modalEl);
+      if (modalInstance) modalInstance.hide();
+    }
+
+    await this.loadData();
+    if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+      AppUI.showToast("Truck owner deleted successfully.", 'info');
+    }
+  },
+
+  toggleCardExpand(cardId) {
+    const card = document.getElementById(cardId);
+    if (!card) return;
+
+    const icon = card.querySelector('.expand-toggle-icon');
+    const isCurrentlyExpanded = card.classList.contains('is-expanded');
+
+    // Collapse all first
+    document.querySelectorAll('.appsheet-panel').forEach(c => {
+      c.classList.remove('is-expanded');
+      const i = c.querySelector('.expand-toggle-icon');
+      if (i) {
+        i.classList.remove('bi-arrows-angle-contract');
+        i.classList.add('bi-arrows-angle-expand');
+      }
+    });
+
+    if (!isCurrentlyExpanded) {
+      card.classList.add('is-expanded');
+      if (icon) {
+        icon.classList.remove('bi-arrows-angle-expand');
+        icon.classList.add('bi-arrows-angle-contract');
+      }
+      this.expandedCardId = cardId;
+    } else {
+      this.expandedCardId = null;
+    }
+  },
+
+  filterByDueYear(year) {
+    console.log("Selected Owner Due Year:", year);
+    if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+      AppUI.showToast(`Owner Due Year: ${year}`, 'info');
+    }
+  },
+
+  filterByPaidYear(year) {
+    console.log("Selected Owner Paid Year:", year);
+    if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+      AppUI.showToast(`Owner Paid Year: ${year}`, 'info');
     }
   },
 
   exportCSV() {
-    let csv = "Truck No.,Name,Mobile No.,Mobile No. 1,Owner Due (Rs),Owner Paid (Rs),Fleet Type\n";
+    let csv = "Truck No.,Name,Mobile No.,Mobile No. 1,Fleet Type\n";
     this.allOwners.forEach(o => {
       const name = (o.name || '').replace(/"/g, '""');
-      csv += `"${o.truckNo}","${name}","${o.mobile || ''}","${o.mobile1 || ''}",${o.dueAmount || 0},${o.paidAmount || 0},"${o.type}"\n`;
+      csv += `"${o.truckNo || ''}","${name}","${o.mobile || ''}","${o.mobile1 || ''}","${o.type || 'Market'}"\n`;
     });
 
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.setAttribute("href", url);
-    link.setAttribute("download", `AppSheet_Truck_Owners_${new Date().toISOString().split('T')[0]}.csv`);
+    link.setAttribute("download", `Truck_Owners_${new Date().toISOString().split('T')[0]}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

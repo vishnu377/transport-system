@@ -1,5 +1,5 @@
-// Authentic Truck Owners & Fleet Vehicles Directory
-window.INITIAL_TRUCK_OWNERS = [
+// Authentic Truck Owners & Fleet Vehicles Directory (Total 595 Matching AppSheet)
+var _INITIAL_TRUCK_OWNERS = [
   {
     "id": "truck_owner_1",
     "truckNo": "RJ42GA0451",
@@ -16159,9 +16159,9 @@ window.INITIAL_TRUCK_OWNERS = [
   },
   {
     "id": "truck_owner_577",
-    "truckNo": "RJ52GB1577",
-    "name": "Owner RJ52GB1577",
-    "mobile": "9828230022",
+    "truckNo": "RJ52GB5146",
+    "name": "Kailash Dhabas",
+    "mobile": "9983372986",
     "mobile1": "",
     "type": "Market",
     "dueAmount": 0.0,
@@ -16171,9 +16171,9 @@ window.INITIAL_TRUCK_OWNERS = [
   },
   {
     "id": "truck_owner_578",
-    "truckNo": "RJ52GB1578",
-    "name": "Owner RJ52GB1578",
-    "mobile": "9828230022",
+    "truckNo": "RJ52GA6603",
+    "name": "Laxmi Prakash Jat",
+    "mobile": "9571272336",
     "mobile1": "",
     "type": "Market",
     "dueAmount": 0.0,
@@ -16183,9 +16183,9 @@ window.INITIAL_TRUCK_OWNERS = [
   },
   {
     "id": "truck_owner_579",
-    "truckNo": "RJ52GB1579",
-    "name": "Owner RJ52GB1579",
-    "mobile": "9828230022",
+    "truckNo": "RJ52GB0721",
+    "name": "Laxmi Prakash Jat",
+    "mobile": "9571272336",
     "mobile1": "",
     "type": "Market",
     "dueAmount": 0.0,
@@ -16195,9 +16195,9 @@ window.INITIAL_TRUCK_OWNERS = [
   },
   {
     "id": "truck_owner_580",
-    "truckNo": "RJ52GB1580",
-    "name": "Owner RJ52GB1580",
-    "mobile": "9828230022",
+    "truckNo": "RJ52GA7037",
+    "name": "Heera Lal Saradhana",
+    "mobile": "9829230022",
     "mobile1": "",
     "type": "Market",
     "dueAmount": 0.0,
@@ -16207,9 +16207,9 @@ window.INITIAL_TRUCK_OWNERS = [
   },
   {
     "id": "truck_owner_581",
-    "truckNo": "RJ52GB1581",
-    "name": "Owner RJ52GB1581",
-    "mobile": "9828230022",
+    "truckNo": "RJ52GB4573",
+    "name": "Shree Mahaveer Transport",
+    "mobile": "9929898358",
     "mobile1": "",
     "type": "Market",
     "dueAmount": 0.0,
@@ -16219,9 +16219,9 @@ window.INITIAL_TRUCK_OWNERS = [
   },
   {
     "id": "truck_owner_582",
-    "truckNo": "RJ52GB1582",
-    "name": "Owner RJ52GB1582",
-    "mobile": "9828230022",
+    "truckNo": "RJ52GA7729",
+    "name": "Laxmi Prakash Jat",
+    "mobile": "9571272336",
     "mobile1": "",
     "type": "Market",
     "dueAmount": 0.0,
@@ -16231,9 +16231,9 @@ window.INITIAL_TRUCK_OWNERS = [
   },
   {
     "id": "truck_owner_583",
-    "truckNo": "RJ52GB1583",
-    "name": "Owner RJ52GB1583",
-    "mobile": "9828230022",
+    "truckNo": "RJ52GB5529",
+    "name": "Shree Mahaveer Transport",
+    "mobile": "9929898358",
     "mobile1": "",
     "type": "Market",
     "dueAmount": 0.0,
@@ -16243,9 +16243,9 @@ window.INITIAL_TRUCK_OWNERS = [
   },
   {
     "id": "truck_owner_584",
-    "truckNo": "RJ52GB1584",
-    "name": "Owner RJ52GB1584",
-    "mobile": "9828230022",
+    "truckNo": "RJ52GB0725",
+    "name": "Rameshwar Prasad",
+    "mobile": "9784053262",
     "mobile1": "",
     "type": "Market",
     "dueAmount": 0.0,
@@ -16255,9 +16255,9 @@ window.INITIAL_TRUCK_OWNERS = [
   },
   {
     "id": "truck_owner_585",
-    "truckNo": "RJ52GB1585",
-    "name": "Owner RJ52GB1585",
-    "mobile": "9828230022",
+    "truckNo": "RJ52GB3237",
+    "name": "Radhyeshyam Gurjar",
+    "mobile": "7610921241",
     "mobile1": "",
     "type": "Market",
     "dueAmount": 0.0,
@@ -16267,14 +16267,132 @@ window.INITIAL_TRUCK_OWNERS = [
   },
   {
     "id": "truck_owner_586",
-    "truckNo": "RJ52GB1586",
-    "name": "Owner RJ52GB1586",
-    "mobile": "9828230022",
+    "truckNo": "RJ52GA7309",
+    "name": "Laxmi Prakash Jat",
+    "mobile": "9571272336",
     "mobile1": "",
     "type": "Market",
     "dueAmount": 0.0,
     "paidAmount": 320000.0,
     "totalTrips": 5,
     "recentTrips": []
+  },
+  {
+    "id": "truck_owner_587",
+    "truckNo": "RJ32GB5876",
+    "name": "Shree Mahaveer Transport Company",
+    "mobile": "9929898358",
+    "mobile1": "",
+    "type": "Market",
+    "dueAmount": 0.0,
+    "paidAmount": 0.0,
+    "totalTrips": 0,
+    "recentTrips": []
+  },
+  {
+    "id": "truck_owner_588",
+    "truckNo": "RJ14GA1467",
+    "name": "Shanker Gurjar 686148",
+    "mobile": "8905440646",
+    "mobile1": "",
+    "type": "Market",
+    "dueAmount": 0.0,
+    "paidAmount": 0.0,
+    "totalTrips": 0,
+    "recentTrips": []
+  },
+  {
+    "id": "truck_owner_589",
+    "truckNo": "RJ52GB6148",
+    "name": "Deepak Dhabas",
+    "mobile": "7357694218",
+    "mobile1": "",
+    "type": "Market",
+    "dueAmount": 0.0,
+    "paidAmount": 0.0,
+    "totalTrips": 0,
+    "recentTrips": []
+  },
+  {
+    "id": "truck_owner_590",
+    "truckNo": "RJ52GA9433",
+    "name": "Hanuman Yadav Shrinagar",
+    "mobile": "9024959171",
+    "mobile1": "",
+    "type": "Market",
+    "dueAmount": 0.0,
+    "paidAmount": 0.0,
+    "totalTrips": 0,
+    "recentTrips": []
+  },
+  {
+    "id": "truck_owner_591",
+    "truckNo": "NL01AF9218",
+    "name": "Dev Karan Gurjar",
+    "mobile": "8239475626",
+    "mobile1": "",
+    "type": "Market",
+    "dueAmount": 0.0,
+    "paidAmount": 0.0,
+    "totalTrips": 0,
+    "recentTrips": []
+  },
+  {
+    "id": "truck_owner_592",
+    "truckNo": "RJ52GB5444",
+    "name": "Kallu Meena",
+    "mobile": "8819553406",
+    "mobile1": "",
+    "type": "Market",
+    "dueAmount": 0.0,
+    "paidAmount": 0.0,
+    "totalTrips": 0,
+    "recentTrips": []
+  },
+  {
+    "id": "truck_owner_593",
+    "truckNo": "RJ14GN7617",
+    "name": "Deepak Dhabas",
+    "mobile": "9079757926",
+    "mobile1": "",
+    "type": "Market",
+    "dueAmount": 0.0,
+    "paidAmount": 0.0,
+    "totalTrips": 0,
+    "recentTrips": []
+  },
+  {
+    "id": "truck_owner_594",
+    "truckNo": "RJ52GB5069",
+    "name": "Kallu Meena",
+    "mobile": "9024959171",
+    "mobile1": "",
+    "type": "Market",
+    "dueAmount": 0.0,
+    "paidAmount": 0.0,
+    "totalTrips": 0,
+    "recentTrips": []
+  },
+  {
+    "id": "truck_owner_595",
+    "truckNo": "RJ52GB6186",
+    "name": "Pantu Palsaniya",
+    "mobile": "9079757926",
+    "mobile1": "",
+    "type": "Market",
+    "dueAmount": 0.0,
+    "paidAmount": 0.0,
+    "totalTrips": 0,
+    "recentTrips": []
   }
 ];
+
+if (typeof window !== 'undefined') {
+  window.INITIAL_TRUCK_OWNERS = _INITIAL_TRUCK_OWNERS;
+} else if (typeof global !== 'undefined') {
+  if (!global.window) global.window = {};
+  global.window.INITIAL_TRUCK_OWNERS = _INITIAL_TRUCK_OWNERS;
+}
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = _INITIAL_TRUCK_OWNERS;
+}
