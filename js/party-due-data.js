@@ -1,7 +1,7 @@
 /**
  * party-due-data.js
  * Comprehensive Authentic Google AppSheet Party Due Dataset
- * Total Records: 413 (Matches Google AppSheet "Party Due" table screenshot 100%)
+ * Total Records: 413
  * 5 Row Color Schemes:
  *   - golden (Transit): #bfa100
  *   - light_blue (Party Payment Pending): #0088cc
@@ -60,7 +60,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Ramchandra Jat (Driver)"
   },
   {
     "id": "DUE_20262027_2580_0002",
@@ -106,7 +107,8 @@ var _PARTY_DUE_MASTER = [
         "address": "NH-8, Sukher, Udaipur"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Piru Gurjar (Driver)"
   },
   {
     "id": "DUE_20262027_242_0003",
@@ -152,7 +154,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Bhakroda, Rajsamand"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Suresh Raiya (Driver)"
   },
   {
     "id": "DUE_20262027_241_0004",
@@ -206,7 +209,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "22/10/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Monu Yogi (Driver)"
   },
   {
     "id": "DUE_20262027_22_0005",
@@ -218,18 +222,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 2116.58,
     "transport": "TTC",
     "consignee": "BirlaNu Ltd. -",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9414327192",
     "truckNo": "RJ52GB4506",
     "destination": "Jhajjar (Haryana)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Balwant Yadav R.B. Dyes and Che_",
-    "referenceMobile": "",
+    "referenceMobile": "7014698399",
     "owner": "Shree Mahaveer Transport Co.",
     "ownerName": "Shree Mahaveer Transport Co.",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Devaram Gurjar",
-    "driverMobile": "",
+    "driverMobile": "9571196389",
     "billingType": "Per Tonne",
     "biltyAmount": 2116.58,
     "weight": 40,
@@ -252,7 +256,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Jhajjar (Haryana)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Devaram Gurjar (Driver)"
   },
   {
     "id": "DUE_20262027_2596_0006",
@@ -298,7 +303,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Rajsamand"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Kailashchand Choudhary (Driver)"
   },
   {
     "id": "DUE_20262027_2592_0007",
@@ -344,7 +350,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Rajsamand"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Dhana Ram Saini (Driver)"
   },
   {
     "id": "DUE_20262027_2594_0008",
@@ -390,7 +397,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Rajsamand"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "LekhraJ Meena 7309 (Driver)"
   },
   {
     "id": "DUE_20262027_2606_0009",
@@ -436,7 +444,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Rajsamand"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Deva Bhava (Driver)"
   },
   {
     "id": "DUE_20262027_2605_0010",
@@ -482,7 +491,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Rajsamand"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Rajendra Kumar 7728 (Driver)"
   },
   {
     "id": "DUE_20262027_2607_0011",
@@ -528,7 +538,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Rajsamand"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Hardan (Driver)"
   },
   {
     "id": "DUE_20262027_2591_0012",
@@ -574,7 +585,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Udaipur"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Hem raj Natwadiya (Driver)"
   },
   {
     "id": "DUE_20262027_2590_0013",
@@ -620,7 +632,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Rajsamand"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Hiralal Saradana (Driver)"
   },
   {
     "id": "DUE_20262027_2608_0014",
@@ -674,7 +687,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "22/10/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Hardan (Driver)"
   },
   {
     "id": "DUE_20262027_2604_0015",
@@ -720,7 +734,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Rajsamand"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Ganesh Gurjar (Driver)"
   },
   {
     "id": "DUE_20262027_2602_0016",
@@ -766,7 +781,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Rajsamand"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "3ahbu Raiya (Driver)"
   },
   {
     "id": "DUE_20262027_2603_0017",
@@ -812,7 +828,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Rajsamand"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Raju Fagana (Driver)"
   },
   {
     "id": "DUE_20262027_238_0018",
@@ -858,7 +875,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Krishan Singh (Driver)"
   },
   {
     "id": "DUE_20262027_19_0019",
@@ -912,7 +930,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "21/10/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Asha ram Meena 3572 (Driver)"
   },
   {
     "id": "DUE_20262027_2573_0020",
@@ -958,7 +977,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Chetan Kumar Meena 7908 (Driver)"
   },
   {
     "id": "DUE_20262027_2582_0021",
@@ -970,18 +990,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 22200,
     "transport": "TTC",
     "consignee": "Sunshine Marbles A Division of A_",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "08AADFC367361Z2",
+    "consigneeMobile": "8824155870",
     "truckNo": "RJ52GA5922",
     "destination": "Delhi",
     "origin": "Rajsamand (Raj.)",
     "reference": "Kishan Lahoti",
-    "referenceMobile": "",
+    "referenceMobile": "9829987569",
     "owner": "Panchuram Gurjar",
     "ownerName": "Panchuram Gurjar",
-    "ownerMobile": "",
+    "ownerMobile": "9829405071",
     "driver": "Chote Lal Chavada 5922",
-    "driverMobile": "",
+    "driverMobile": "8824813262",
     "billingType": "Per Tonne",
     "biltyAmount": 22200,
     "weight": 40,
@@ -1004,7 +1024,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Delhi"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Chote Lal Chavada 5922 (Driver)"
   },
   {
     "id": "DUE_20262027_2569_0022",
@@ -1016,18 +1037,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 21900,
     "transport": "TTC",
     "consignee": "MOHD IKRAM FARID'",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9928593083",
     "truckNo": "R326GA8214",
     "destination": "Mirganj (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Kamlesh Teli",
-    "referenceMobile": "",
+    "referenceMobile": "9829737641",
     "owner": "Sitaram Meena",
     "ownerName": "Sitaram Meena",
-    "ownerMobile": "",
+    "ownerMobile": "9413571154",
     "driver": "Radheyshyam Meena",
-    "driverMobile": "",
+    "driverMobile": "9828230116",
     "billingType": "Per Tonne",
     "biltyAmount": 21900,
     "weight": 40,
@@ -1050,7 +1071,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Mirganj (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Radheyshyam Meena (Driver)"
   },
   {
     "id": "DUE_20262027_2579_0023",
@@ -1096,7 +1118,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Sunil Na twadiya (Driver)"
   },
   {
     "id": "DUE_20262027_2586_0024",
@@ -1150,7 +1173,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "21/10/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Nand Singh (Driver)"
   },
   {
     "id": "DUE_20262027_2567_0025",
@@ -1196,7 +1220,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Kaluram Jat Shrinagar (Driver)"
   },
   {
     "id": "DUE_20262027_2578_0026",
@@ -1242,7 +1267,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Bhagchand Gurjar 0721 (Driver)"
   },
   {
     "id": "DUE_20262027_2587_0027",
@@ -1254,18 +1280,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 700,
     "transport": "TTC",
     "consignee": "SHREE DEVBHOOMI TRADERS",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "PNNOONAAZZARARN",
+    "consigneeMobile": "9829304665",
     "truckNo": "RJ52GB5641",
     "destination": "Haridwar (U.K.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Ramniwas ji Nilkant Marble",
-    "referenceMobile": "",
+    "referenceMobile": "9829985505",
     "owner": "Shree Mahaveer Transport Co.",
     "ownerName": "Shree Mahaveer Transport Co.",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Mahaveer Choudhary",
-    "driverMobile": "",
+    "driverMobile": "9784742402",
     "billingType": "Per Tonne",
     "biltyAmount": 700,
     "weight": 40,
@@ -1288,7 +1314,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Haridwar (U.K.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Mahaveer Choudhary (Driver)"
   },
   {
     "id": "DUE_20262027_2577_0028",
@@ -1300,18 +1327,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 21750,
     "transport": "TTC",
     "consignee": "White Marble House",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "08AAUPR8764L1ZG",
+    "consigneeMobile": "9413319151",
     "truckNo": "R301GD0521",
     "destination": "Moradabad (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Aakash Sharma",
-    "referenceMobile": "",
+    "referenceMobile": "7014885551",
     "owner": "Kishan Rawat GDOS21",
     "ownerName": "Kishan Rawat GDOS21",
-    "ownerMobile": "",
+    "ownerMobile": "9571302629",
     "driver": "Sethu Singh",
-    "driverMobile": "",
+    "driverMobile": "9414863656",
     "billingType": "Per Tonne",
     "biltyAmount": 21750,
     "weight": 40,
@@ -1334,7 +1361,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Moradabad (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Sethu Singh (Driver)"
   },
   {
     "id": "DUE_20262027_2585_0029",
@@ -1346,18 +1374,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 100800,
     "transport": "TTC",
     "consignee": "Grasim Industries Limited Birla P.",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9829417929",
     "truckNo": "RJ52GC3237",
     "destination": "Ludhiana (Punjab)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Tanuj Kothari Udaipur",
-    "referenceMobile": "",
+    "referenceMobile": "9602409100",
     "owner": "Radhyeshyam Gurjar",
     "ownerName": "Radhyeshyam Gurjar",
-    "ownerMobile": "",
+    "ownerMobile": "9784053262",
     "driver": "Ashok Gurjar",
-    "driverMobile": "",
+    "driverMobile": "9571497221",
     "billingType": "Per Tonne",
     "biltyAmount": 100800,
     "weight": 40,
@@ -1388,7 +1416,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "21/10/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Ashok Gurjar (Driver)"
   },
   {
     "id": "DUE_20262027_2576_0030",
@@ -1400,18 +1429,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 700,
     "transport": "TTC",
     "consignee": "Shree Hari Enterprises",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "05AQAPK8264A128",
+    "consigneeMobile": "9460083178",
     "truckNo": "RJ52GB4507",
     "destination": "Haridwar (U.K.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Haridwar Rajkumar Saini",
-    "referenceMobile": "",
+    "referenceMobile": "9928600059",
     "owner": "Shree Mahaveer Transport Co.",
     "ownerName": "Shree Mahaveer Transport Co.",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Hansraj Gurjar Chandwaji",
-    "driverMobile": "",
+    "driverMobile": "9571699413",
     "billingType": "Per Tonne",
     "biltyAmount": 700,
     "weight": 40,
@@ -1434,7 +1463,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Haridwar (U.K.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Hansraj Gurjar Chandwaji (Driver)"
   },
   {
     "id": "DUE_20262027_2574_0031",
@@ -1446,18 +1476,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 2600,
     "transport": "TTC",
     "consignee": "DR.Hema Lohan'",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9602178116",
     "truckNo": "RJ52GA6337",
     "destination": "Dehradun (U.K.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Dharti Dhan Marble Praksah 31",
-    "referenceMobile": "",
+    "referenceMobile": "9784616538",
     "owner": "Prakash Chawadi 3awanpura",
     "ownerName": "Prakash Chawadi 3awanpura",
-    "ownerMobile": "",
+    "ownerMobile": "9950900337",
     "driver": "Prakash Chawadi aawanpura",
-    "driverMobile": "",
+    "driverMobile": "9571628077",
     "billingType": "Per Tonne",
     "biltyAmount": 2600,
     "weight": 40,
@@ -1480,7 +1510,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Dehradun (U.K.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Prakash Chawadi aawanpura (Driver)"
   },
   {
     "id": "DUE_20262027_32_0032",
@@ -1492,18 +1523,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 129022,
     "transport": "TTC",
     "consignee": "Party",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "08AHIPP2722L1Z1",
+    "consigneeMobile": "9829156852",
     "truckNo": "RJ52GB0725",
     "destination": "Delhi",
     "origin": "Rajsamand (Raj.)",
     "reference": "Satish Kumar 3hanwar",
-    "referenceMobile": "",
+    "referenceMobile": "9784535826",
     "owner": "Rameshwar Prasad",
     "ownerName": "Rameshwar Prasad",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Ram Kumar Raiya",
-    "driverMobile": "",
+    "driverMobile": "8058881707",
     "billingType": "Per Tonne",
     "biltyAmount": 129022,
     "weight": 40,
@@ -1526,7 +1557,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Delhi"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Ram Kumar Raiya (Driver)"
   },
   {
     "id": "DUE_20262027_240_0033",
@@ -1538,18 +1570,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 16700,
     "transport": "SMTC",
     "consignee": "Berger Paints India Ltd.",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "09AABCB0976E1ZT",
+    "consigneeMobile": "9928397387",
     "truckNo": "RJ52GB3486",
     "destination": "Sandila (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Rajesh Rao Udaipur",
-    "referenceMobile": "",
+    "referenceMobile": "9571314709",
     "owner": "Deepak Dhabas",
     "ownerName": "Deepak Dhabas",
-    "ownerMobile": "",
+    "ownerMobile": "9024959171",
     "driver": "Anil Meena 3486",
-    "driverMobile": "",
+    "driverMobile": "9762861307",
     "billingType": "Per Tonne",
     "biltyAmount": 16700,
     "weight": 40,
@@ -1572,7 +1604,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Meerut(U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Anil Meena 3486 (Driver)"
   },
   {
     "id": "DUE_20262027_34_0034",
@@ -1584,18 +1617,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "Riddhi Siddhi",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "06AAEPA0421F1ZO",
+    "consigneeMobile": "7014852831",
     "truckNo": "RJ52GB5444",
     "destination": "Gurugram (Haryana)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Banwari Vaishnav",
-    "referenceMobile": "",
+    "referenceMobile": "9414891808",
     "owner": "Dev Karan GurJar",
     "ownerName": "Dev Karan GurJar",
-    "ownerMobile": "",
+    "ownerMobile": "8619553406",
     "driver": "Tejaram Gurjar",
-    "driverMobile": "",
+    "driverMobile": "9829700353",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -1626,7 +1659,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "21/10/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Tejaram Gurjar (Driver)"
   },
   {
     "id": "DUE_20262027_2575_0035",
@@ -1672,7 +1706,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Dhrampal Gurjar 2590 (Driver)"
   },
   {
     "id": "DUE_20262027_36_0036",
@@ -1684,18 +1719,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 21400,
     "transport": "TTC",
     "consignee": "Party",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "08AHIPP2722L1Z1",
+    "consigneeMobile": "9829156852",
     "truckNo": "R314GP3675",
     "destination": "Delhi",
     "origin": "Rajsamand (Raj.)",
     "reference": "Anil Sharda",
-    "referenceMobile": "",
+    "referenceMobile": "9928309363",
     "owner": "Hansraj Gurjar",
     "ownerName": "Hansraj Gurjar",
-    "ownerMobile": "",
+    "ownerMobile": "9928595103",
     "driver": "Hansraj Girathi",
-    "driverMobile": "",
+    "driverMobile": "9928595103",
     "billingType": "Per Tonne",
     "biltyAmount": 21400,
     "weight": 40,
@@ -1718,7 +1753,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Delhi"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Hansraj Girathi (Driver)"
   },
   {
     "id": "DUE_20262027_2584_0037",
@@ -1730,18 +1766,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 81000,
     "transport": "TTC",
     "consignee": "PIDILITE INDUSTRIES LIMITED",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "03AAACP4156B1Z2",
+    "consigneeMobile": "9784265418",
     "truckNo": "R301GD4B65",
     "destination": "Raikot (P.B.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Saatvik Minerals Alwar Saurabh",
-    "referenceMobile": "",
+    "referenceMobile": "9928973003",
     "owner": "Chand Rawat Singh",
     "ownerName": "Chand Rawat Singh",
-    "ownerMobile": "",
+    "ownerMobile": "9928735404",
     "driver": "Driver 4865",
-    "driverMobile": "",
+    "driverMobile": "9928164676",
     "billingType": "Per Tonne",
     "biltyAmount": 81000,
     "weight": 40,
@@ -1764,7 +1800,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Raikot (P.B.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Driver 4865 (Driver)"
   },
   {
     "id": "DUE_20262027_2583_0038",
@@ -1776,18 +1813,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 1430,
     "transport": "TTC",
     "consignee": "Stark Paints Private Limited (Alw_",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9602829012",
     "truckNo": "RJ52GB5963",
     "destination": "Alwar",
     "origin": "Rajsamand (Raj.)",
     "reference": "Vishal Parikh",
-    "referenceMobile": "",
+    "referenceMobile": "9784976882",
     "owner": "Shree Mahaveer Transport Co.",
     "ownerName": "Shree Mahaveer Transport Co.",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Trilok saini",
-    "driverMobile": "",
+    "driverMobile": "9928417971",
     "billingType": "Per Tonne",
     "biltyAmount": 1430,
     "weight": 40,
@@ -1810,7 +1847,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Alwar"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Trilok saini (Driver)"
   },
   {
     "id": "DUE_20262027_2558_0039",
@@ -1864,7 +1902,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "20/10/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Mastram Meena 7719 (Driver)"
   },
   {
     "id": "DUE_20262027_2554_0040",
@@ -1910,7 +1949,8 @@ var _PARTY_DUE_MASTER = [
         "address": "F-49&50, APNA GHAR SHALIMAR, ALWAR"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Dinesh Khatik (Driver)"
   },
   {
     "id": "DUE_20262027_2559_0041",
@@ -1956,7 +1996,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Subhash Rawat (Driver)"
   },
   {
     "id": "DUE_20262027_2566_0042",
@@ -1968,18 +2009,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 112288,
     "transport": "TTC",
     "consignee": "NCI Builtek Limited",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "08DUYPM5778D1Z9",
+    "consigneeMobile": "9784214706",
     "truckNo": "RJ52GB2510",
     "destination": "Keshwana (Raj.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Pranjal Malani",
-    "referenceMobile": "",
+    "referenceMobile": "8824569886",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Talli Gur-jar Kotputli",
-    "driverMobile": "",
+    "driverMobile": "8824374574",
     "billingType": "Per Tonne",
     "biltyAmount": 112288,
     "weight": 40,
@@ -2002,7 +2043,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Keshwana (Raj.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Talli Gur-jar Kotputli (Driver)"
   },
   {
     "id": "DUE_20262027_2562_0043",
@@ -2048,7 +2090,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Kalu Meena 2274 (Driver)"
   },
   {
     "id": "DUE_20262027_2568_0044",
@@ -2102,7 +2145,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "20/10/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Aasharam Gurjar (Driver)"
   },
   {
     "id": "DUE_20262027_2563_0045",
@@ -2114,18 +2158,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 160820,
     "transport": "TTC",
     "consignee": "M/s Wonder Marble Granite",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "OSCKKPRO1I2C1Z",
+    "consigneeMobile": "9660836667",
     "truckNo": "RJ52GB0724",
     "destination": "Haridwar (U.K.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Ramniwas Chodhary Wonder Mar _",
-    "referenceMobile": "",
+    "referenceMobile": "8824224398",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Ramkishore Swami",
-    "driverMobile": "",
+    "driverMobile": "9784199658",
     "billingType": "Per Tonne",
     "biltyAmount": 160820,
     "weight": 40,
@@ -2148,7 +2192,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Haridwar (U.K.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Ramkishore Swami (Driver)"
   },
   {
     "id": "DUE_20262027_2570_0046",
@@ -2194,7 +2239,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Kalu Gurjar Hindoli (Driver)"
   },
   {
     "id": "DUE_20262027_2564_0047",
@@ -2240,7 +2286,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Laxman Gurjar 8614 (Driver)"
   },
   {
     "id": "DUE_20262027_2565_0048",
@@ -2286,7 +2333,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Laxman Gurjar 8614 (Driver)"
   },
   {
     "id": "DUE_20262027_2571_0049",
@@ -2298,18 +2346,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "Shreekant Marble & Granites",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "07ANZPS4910R1ZT",
+    "consigneeMobile": "7014309383",
     "truckNo": "RJ52GB5058",
     "destination": "Delhi",
     "origin": "Rajsamand (Raj.)",
     "reference": "Anil Sharda",
-    "referenceMobile": "",
+    "referenceMobile": "9928309363",
     "owner": "Shree Mahaveer Transport Co.",
     "ownerName": "Shree Mahaveer Transport Co.",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Dinesh Yadav 7729",
-    "driverMobile": "",
+    "driverMobile": "9571765253",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -2340,7 +2388,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "20/10/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Dinesh Yadav 7729 (Driver)"
   },
   {
     "id": "DUE_20262027_2572_0050",
@@ -2386,7 +2435,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Dinesh Yadav 7729 (Driver)"
   },
   {
     "id": "DUE_20262027_2595_0051",
@@ -2398,18 +2448,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "Tringa Marbles Tiles And Bath",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "09HRSPS0944B1ZC",
+    "consigneeMobile": "9286868674",
     "truckNo": "RJ52GB5054",
     "destination": "Meerut(U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Meerut Tiranga marble Sonu Bhai",
-    "referenceMobile": "",
+    "referenceMobile": "9414744512",
     "owner": "Shree Mahaveer Transport Co.",
     "ownerName": "Shree Mahaveer Transport Co.",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Vikram Gur-jar 4507",
-    "driverMobile": "",
+    "driverMobile": "7015018788",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -2432,7 +2482,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Meerut(U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Vikram Gur-jar 4507 (Driver)"
   },
   {
     "id": "DUE_20262027_2543_0052",
@@ -2444,18 +2495,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 176310,
     "transport": "TTC",
     "consignee": "Nova Products",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "#NAME?",
+    "consigneeMobile": "9887479777",
     "truckNo": "RJ52GB2S88",
     "destination": "Saharanpur (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Oswal Mineral Amet",
-    "referenceMobile": "",
+    "referenceMobile": "9928900947",
     "owner": "Rameshwar Prasad",
     "ownerName": "Rameshwar Prasad",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Mangalram Gurjar",
-    "driverMobile": "",
+    "driverMobile": "9829677777",
     "billingType": "Per Tonne",
     "biltyAmount": 176310,
     "weight": 40,
@@ -2478,7 +2529,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Saharanpur (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Mangalram Gurjar (Driver)"
   },
   {
     "id": "DUE_20262027_2534_0053",
@@ -2524,7 +2576,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "ManraJ Meena 9433 (Driver)"
   },
   {
     "id": "DUE_20262027_2551_0054",
@@ -2578,7 +2631,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "19/10/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Mahendra Bairwa (Driver)"
   },
   {
     "id": "DUE_20262027_2535_0055",
@@ -2624,7 +2678,8 @@ var _PARTY_DUE_MASTER = [
         "address": "G-339(F) & G-1-340(A), BHAMASHAH IND..."
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Ranjeet Gurjar 8796 (Driver)"
   },
   {
     "id": "DUE_20262027_2550_0056",
@@ -2636,18 +2691,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 109200,
     "transport": "TTC",
     "consignee": "M/s Kansai Nerolac Paints Ltd.",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "O9AAACG1376N1ZA UPSIDC",
+    "consigneeMobile": "9829766825",
     "truckNo": "RJ52GA8732",
     "destination": "Kanpur (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Kunal Micron Vijay Zain",
-    "referenceMobile": "",
+    "referenceMobile": "9784102146",
     "owner": "Rameshwar Prasad",
     "ownerName": "Rameshwar Prasad",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Gpoi Chand 8732",
-    "driverMobile": "",
+    "driverMobile": "9799854346",
     "billingType": "Per Tonne",
     "biltyAmount": 109200,
     "weight": 40,
@@ -2670,7 +2725,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Kanpur (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Gpoi Chand 8732 (Driver)"
   },
   {
     "id": "DUE_20262027_2552_0057",
@@ -2682,18 +2738,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 21900,
     "transport": "TTC",
     "consignee": "Akash Marble e Tiles",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9928731707",
     "truckNo": "RJ52GB3237",
     "destination": "Mohali (Punjab)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Rakesh Bihari",
-    "referenceMobile": "",
+    "referenceMobile": "9829335321",
     "owner": "Radhyeshyam Gurjar",
     "ownerName": "Radhyeshyam Gurjar",
-    "ownerMobile": "",
+    "ownerMobile": "9784053262",
     "driver": "Mahesh GurJar Govindpura",
-    "driverMobile": "",
+    "driverMobile": "9602587636",
     "billingType": "Per Tonne",
     "biltyAmount": 21900,
     "weight": 40,
@@ -2716,7 +2772,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Mohali (Punjab)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Mahesh GurJar Govindpura (Driver)"
   },
   {
     "id": "DUE_20262027_58_0058",
@@ -2728,18 +2785,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 136007,
     "transport": "TTC",
     "consignee": "SAKARNI PLASTER (INDIA) PVT.",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "O8AASCS3036P1ZL Neemrana",
+    "consigneeMobile": "8824326001",
     "truckNo": "RJ52GB5053",
     "destination": "Neemrana (Raj.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Sudhir Mishra Sarkani kareda",
-    "referenceMobile": "",
+    "referenceMobile": "9414489504",
     "owner": "%ree Mahaveer Transport Co.",
     "ownerName": "%ree Mahaveer Transport Co.",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Chand Gurjar",
-    "driverMobile": "",
+    "driverMobile": "9571102373",
     "billingType": "Per Tonne",
     "biltyAmount": 136007,
     "weight": 40,
@@ -2762,7 +2819,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Neemrana (Raj.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Chand Gurjar (Driver)"
   },
   {
     "id": "DUE_20262027_2538_0059",
@@ -2774,18 +2832,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 21900,
     "transport": "TTC",
     "consignee": "SHREE RADHE GRANITE AND MARm",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "PNNOONAAZZARARN",
+    "consigneeMobile": "7014868839",
     "truckNo": "RJ52GB3B67",
     "destination": "Kanpur (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Mahaveer Tholiya",
-    "referenceMobile": "",
+    "referenceMobile": "9829411881",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Pratap Singh",
-    "driverMobile": "",
+    "driverMobile": "9571194461",
     "billingType": "Per Tonne",
     "biltyAmount": 21900,
     "weight": 40,
@@ -2816,7 +2874,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "19/10/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Pratap Singh (Driver)"
   },
   {
     "id": "DUE_20262027_2553_0060",
@@ -2828,18 +2887,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 2169.016,
     "transport": "TTC",
     "consignee": "SWATI CHEMICALS",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9928242995",
     "truckNo": "RJ52GB4538",
     "destination": "Kanpur (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Mayank Sharma Vapi Krishna Indm",
-    "referenceMobile": "",
+    "referenceMobile": "9829965697",
     "owner": "Shree Mahaveer Transport Co.",
     "ownerName": "Shree Mahaveer Transport Co.",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Hanuman Singh Hindoli 453B",
-    "driverMobile": "",
+    "driverMobile": "9414629224",
     "billingType": "Per Tonne",
     "biltyAmount": 2169.016,
     "weight": 40,
@@ -2862,7 +2921,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Kanpur (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Hanuman Singh Hindoli 453B (Driver)"
   },
   {
     "id": "DUE_20262027_2560_0061",
@@ -2908,7 +2968,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "O.K. Meena348S (Driver)"
   },
   {
     "id": "DUE_20262027_2556_0062",
@@ -2954,7 +3015,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Lokesh Choudhary (Driver)"
   },
   {
     "id": "DUE_20262027_2561_0063",
@@ -2966,18 +3028,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "M.M. Marble",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "09BINPG2733B1ZG",
+    "consigneeMobile": "9928202779",
     "truckNo": "R326GB1136",
     "destination": "Agra (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Pushpendra Sharma",
-    "referenceMobile": "",
+    "referenceMobile": "8824947238",
     "owner": "Sitaram Meena",
     "ownerName": "Sitaram Meena",
-    "ownerMobile": "",
+    "ownerMobile": "9413571154",
     "driver": "Pradeep 1136",
-    "driverMobile": "",
+    "driverMobile": "9414666872",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -3000,7 +3062,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Agra (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Pradeep 1136 (Driver)"
   },
   {
     "id": "DUE_20262027_2557_0064",
@@ -3012,18 +3075,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 67637,
     "transport": "TTC",
     "consignee": "R.K. Marbles",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "09BFSPV4838K1ZC",
+    "consigneeMobile": "9571992277",
     "truckNo": "RJ52GB4537",
     "destination": "Ghaziabad (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Pankaj Jain Shahibabad",
-    "referenceMobile": "",
+    "referenceMobile": "9602599668",
     "owner": "Shree Mahaveer Transport Co.",
     "ownerName": "Shree Mahaveer Transport Co.",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Dataram Gurjar",
-    "driverMobile": "",
+    "driverMobile": "7427805354",
     "billingType": "Per Tonne",
     "biltyAmount": 67637,
     "weight": 40,
@@ -3054,7 +3117,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "19/10/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Dataram Gurjar (Driver)"
   },
   {
     "id": "DUE_20262027_2555_0065",
@@ -3066,18 +3130,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "Mahaveer Minorals",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "PNNOONAAZZARARN",
+    "consigneeMobile": "9784373354",
     "truckNo": "RJ52CAB61S",
     "destination": "Lucknow (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Madan Niklahth Granito 3étpura",
-    "referenceMobile": "",
+    "referenceMobile": "9414654552",
     "owner": "Sitaram",
     "ownerName": "Sitaram",
-    "ownerMobile": "",
+    "ownerMobile": "9928853179",
     "driver": "Suresh Curjar Tonk",
-    "driverMobile": "",
+    "driverMobile": "7014534759",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -3100,7 +3164,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Lucknow (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Suresh Curjar Tonk (Driver)"
   },
   {
     "id": "DUE_20262027_236_0066",
@@ -3146,7 +3211,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Bhiam Raj 8616 (Driver)"
   },
   {
     "id": "DUE_20262027_2542_0067",
@@ -3158,18 +3224,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 127500,
     "transport": "TTC",
     "consignee": "\"91- Faridabad",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9829383881",
     "truckNo": "RJ52GB2587",
     "destination": "Faridabad (Haryana)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Sanjay Parikh",
-    "referenceMobile": "",
+    "referenceMobile": "9928617219",
     "owner": "Rameshwar Prasad",
     "ownerName": "Rameshwar Prasad",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Krishna Saini",
-    "driverMobile": "",
+    "driverMobile": "9414786528",
     "billingType": "Per Tonne",
     "biltyAmount": 127500,
     "weight": 40,
@@ -3192,7 +3258,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Faridabad (Haryana)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Krishna Saini (Driver)"
   },
   {
     "id": "DUE_20262027_235_0068",
@@ -3238,7 +3305,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Deepu Gurjar (Driver)"
   },
   {
     "id": "DUE_20262027_2544_0069",
@@ -3250,18 +3318,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "White Marble House",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "08AAUPR8764L1ZG",
+    "consigneeMobile": "9413319151",
     "truckNo": "ROOIGD3567",
     "destination": "Moradabad (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Aakash Sharma",
-    "referenceMobile": "",
+    "referenceMobile": "7014885551",
     "owner": "Kuldeep Yadav",
     "ownerName": "Kuldeep Yadav",
-    "ownerMobile": "",
+    "ownerMobile": "9116773567",
     "driver": "Anil Yadav 3567",
-    "driverMobile": "",
+    "driverMobile": "9784157794",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -3292,7 +3360,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "18/10/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Anil Yadav 3567 (Driver)"
   },
   {
     "id": "DUE_20262027_2548_0070",
@@ -3304,18 +3373,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "M/s BABA MOHAN RAM MARBLEA_",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9571270365",
     "truckNo": "ROOIGE0121",
     "destination": "Noida (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Kanhaya Lal Bansal",
-    "referenceMobile": "",
+    "referenceMobile": "7014418559",
     "owner": "Dinesh Yadav Shrinagar",
     "ownerName": "Dinesh Yadav Shrinagar",
-    "ownerMobile": "",
+    "ownerMobile": "8290570160",
     "driver": "Rajesh",
-    "driverMobile": "",
+    "driverMobile": "7014630495",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -3338,7 +3407,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Noida (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Rajesh (Driver)"
   },
   {
     "id": "DUE_20262027_2540_0071",
@@ -3384,7 +3454,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Village Aaidana, Amet, Rajsamand (Raj.)..."
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Driver 3137 (Driver)"
   },
   {
     "id": "DUE_20262027_2539_0072",
@@ -3396,18 +3467,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 2119.35,
     "transport": "TTC",
     "consignee": "M/s R.K. Marbles and Granite",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9571779933",
     "truckNo": "RJ32GE5388",
     "destination": "Delhi",
     "origin": "Rajsamand (Raj.)",
     "reference": "Jain Marble Karjiyagati",
-    "referenceMobile": "",
+    "referenceMobile": "9928532499",
     "owner": "Billo Kasana",
     "ownerName": "Billo Kasana",
-    "ownerMobile": "",
+    "ownerMobile": "8290545425",
     "driver": "Deva B h aya",
-    "driverMobile": "",
+    "driverMobile": "7014701951",
     "billingType": "Per Tonne",
     "biltyAmount": 2119.35,
     "weight": 40,
@@ -3430,7 +3501,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Delhi"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Deva B h aya (Driver)"
   },
   {
     "id": "DUE_20262027_73_0073",
@@ -3442,18 +3514,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 148304,
     "transport": "TTC",
     "consignee": "Party",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "08AHIPP2722L1Z1",
+    "consigneeMobile": "9829156852",
     "truckNo": "RJ52GB5964",
     "destination": "Delhi",
     "origin": "Rajsamand (Raj.)",
     "reference": "Goyal Marble Mangolpuri Satish 3i",
-    "referenceMobile": "",
+    "referenceMobile": "9928919651",
     "owner": "Shree Mahaveer Transport Co.",
     "ownerName": "Shree Mahaveer Transport Co.",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Kush iram Gurjar",
-    "driverMobile": "",
+    "driverMobile": "9829759745",
     "billingType": "Per Tonne",
     "biltyAmount": 148304,
     "weight": 40,
@@ -3476,7 +3548,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Delhi"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Kush iram Gurjar (Driver)"
   },
   {
     "id": "DUE_20262027_2547_0074",
@@ -3531,7 +3604,8 @@ var _PARTY_DUE_MASTER = [
         "payTo": "TTC",
         "clearingDate": "02/11/2026"
       }
-    ]
+    ],
+    "podHandedOverTo": "Hardan (Driver)"
   },
   {
     "id": "DUE_20262027_2546_0075",
@@ -3586,7 +3660,8 @@ var _PARTY_DUE_MASTER = [
         "payTo": "TTC",
         "clearingDate": "03/11/2026"
       }
-    ]
+    ],
+    "podHandedOverTo": "Hardan (Driver)"
   },
   {
     "id": "DUE_20262027_76_0076",
@@ -3598,18 +3673,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 2160.974,
     "transport": "TTC",
     "consignee": "Party",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "08AHIPP2722L1Z1",
+    "consigneeMobile": "9829156852",
     "truckNo": "RJ52GA7729",
     "destination": "Delhi",
     "origin": "Rajsamand (Raj.)",
     "reference": "Sharif Tajmahal Marble",
-    "referenceMobile": "",
+    "referenceMobile": "8824878718",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Mahendraaat25B5",
-    "driverMobile": "",
+    "driverMobile": "8955266993",
     "billingType": "Per Tonne",
     "biltyAmount": 2160.974,
     "weight": 40,
@@ -3632,7 +3707,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Delhi"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Mahendraaat25B5 (Driver)"
   },
   {
     "id": "DUE_20262027_77_0077",
@@ -3644,18 +3720,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "Party",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "08AHIPP2722L1Z1",
+    "consigneeMobile": "9829156852",
     "truckNo": "RJ52GA7726",
     "destination": "Delhi",
     "origin": "Rajsamand (Raj.)",
     "reference": "Nishant",
-    "referenceMobile": "",
+    "referenceMobile": "7014671159",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Parkash Gurjar",
-    "driverMobile": "",
+    "driverMobile": "7568198094",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -3678,7 +3754,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Delhi"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Parkash Gurjar (Driver)"
   },
   {
     "id": "DUE_20262027_2541_0078",
@@ -3690,18 +3767,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 257980,
     "transport": "TTC",
     "consignee": "PROBUILDTECH ENGINEERSS PRI_",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "PNNOONAAZZARARN",
+    "consigneeMobile": "9414507008",
     "truckNo": "RJ52GAB679",
     "destination": "Lucknow (U. P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Virsun Industries",
-    "referenceMobile": "",
+    "referenceMobile": "7014724751",
     "owner": "Rameshwar Prasad",
     "ownerName": "Rameshwar Prasad",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Dwarka Gurjar",
-    "driverMobile": "",
+    "driverMobile": "9571928893",
     "billingType": "Per Tonne",
     "biltyAmount": 257980,
     "weight": 40,
@@ -3724,7 +3801,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Lucknow (U. P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Dwarka Gurjar (Driver)"
   },
   {
     "id": "DUE_20262027_2518_0079",
@@ -3778,7 +3856,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "17/10/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Kaluram Jat Shrinagar (Driver)"
   },
   {
     "id": "DUE_20262027_2522_0080",
@@ -3824,7 +3903,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "uday Lal Vaihnav (Driver)"
   },
   {
     "id": "DUE_20262027_2525_0081",
@@ -3836,18 +3916,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 143590,
     "transport": "TTC",
     "consignee": "M/s GS ENTERPRISES",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "09AAXFG5378A1ZV",
+    "consigneeMobile": "9571866733",
     "truckNo": "RJ52GA7310",
     "destination": "Robertsganj (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Gagan Bang",
-    "referenceMobile": "",
+    "referenceMobile": "8824890686",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Kalu Gurjar",
-    "driverMobile": "",
+    "driverMobile": "9784175913",
     "billingType": "Per Tonne",
     "biltyAmount": 143590,
     "weight": 40,
@@ -3870,7 +3950,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Robertsganj (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Kalu Gurjar (Driver)"
   },
   {
     "id": "DUE_20262027_2532_0082",
@@ -3916,7 +3997,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Dinesh Yadav 7729 (Driver)"
   },
   {
     "id": "DUE_20262027_2533_0083",
@@ -3962,7 +4044,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Dinesh Yadav 7729 (Driver)"
   },
   {
     "id": "DUE_20262027_2524_0084",
@@ -3974,18 +4057,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 103200,
     "transport": "TTC",
     "consignee": "M/s DUBEY MARBLE",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "09BWUPA0520L1ZF",
+    "consigneeMobile": "7014681383",
     "truckNo": "RJ32GD3412",
     "destination": "Chhibramau (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Preetam Jain Udaipur",
-    "referenceMobile": "",
+    "referenceMobile": "9602772340",
     "owner": "Kailash Dhabas",
     "ownerName": "Kailash Dhabas",
-    "ownerMobile": "",
+    "ownerMobile": "9983372986",
     "driver": "Dhanraj GurJar 3412",
-    "driverMobile": "",
+    "driverMobile": "9571169205",
     "billingType": "Per Tonne",
     "biltyAmount": 103200,
     "weight": 40,
@@ -4016,7 +4099,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "17/10/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Dhanraj GurJar 3412 (Driver)"
   },
   {
     "id": "DUE_20262027_85_0085",
@@ -4028,18 +4112,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 21730,
     "transport": "TTC",
     "consignee": "Party",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "08AHIPP2722L1Z1",
+    "consigneeMobile": "9829156852",
     "truckNo": "RJ52GB5965",
     "destination": "Delhi",
     "origin": "Rajsamand (Raj.)",
     "reference": "Anil Sharda",
-    "referenceMobile": "",
+    "referenceMobile": "9928309363",
     "owner": "Shree Mahaveer Transport Co.",
     "ownerName": "Shree Mahaveer Transport Co.",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Deva Bhava",
-    "driverMobile": "",
+    "driverMobile": "9784857426",
     "billingType": "Per Tonne",
     "biltyAmount": 21730,
     "weight": 40,
@@ -4062,7 +4146,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Delhi"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Deva Bhava (Driver)"
   },
   {
     "id": "DUE_20262027_17_0086",
@@ -4074,18 +4159,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 152490,
     "transport": "TTC",
     "consignee": "OKG Distribution",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "08TundefinedundefinedPundefined2393undefined1Z8",
+    "consigneeMobile": "9829835385",
     "truckNo": "RJ52GB2S03",
     "destination": "Delhi",
     "origin": "Rajsamand (Raj.)",
     "reference": "Arham Minerals Himanshu Kotha_",
-    "referenceMobile": "",
+    "referenceMobile": "9571556661",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Ram Swaroop",
-    "driverMobile": "",
+    "driverMobile": "9829269241",
     "billingType": "Per Tonne",
     "biltyAmount": 152490,
     "weight": 40,
@@ -4108,7 +4193,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Delhi"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Ram Swaroop (Driver)"
   },
   {
     "id": "DUE_20262027_234_0087",
@@ -4120,18 +4206,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 142140,
     "transport": "SMTC",
     "consignee": "SAKARNI PLASTER (INDIA) PVT.",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "O8AASCS3036P1ZL Neemrana",
+    "consigneeMobile": "8824326001",
     "truckNo": "RJ52GB5642",
     "destination": "Neemrana (Raj.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Sudhir Mishra Sarkani kareda",
-    "referenceMobile": "",
+    "referenceMobile": "9414489504",
     "owner": "%ree Mahaveer Transport Co.",
     "ownerName": "%ree Mahaveer Transport Co.",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Suresh Raiya",
-    "driverMobile": "",
+    "driverMobile": "9636017337",
     "billingType": "Per Tonne",
     "biltyAmount": 142140,
     "weight": 40,
@@ -4154,7 +4240,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Neemrana (Raj.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Suresh Raiya (Driver)"
   },
   {
     "id": "DUE_20262027_2519_0088",
@@ -4166,18 +4253,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "GANPATI ENTERPRISES",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "02AAUFG2197E1ZC",
+    "consigneeMobile": "8894426885",
     "truckNo": "RJ52GA6537",
     "destination": "Baddi(H.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Anil Mama",
-    "referenceMobile": "",
+    "referenceMobile": "9414650296",
     "owner": "Mukesh GurJar 6537",
     "ownerName": "Mukesh GurJar 6537",
-    "ownerMobile": "",
+    "ownerMobile": "8290405071",
     "driver": "Mukesh Gurjar 1837",
-    "driverMobile": "",
+    "driverMobile": "9928805259",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -4200,7 +4287,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Baddi(H.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Mukesh Gurjar 1837 (Driver)"
   },
   {
     "id": "DUE_20262027_2513_0089",
@@ -4212,18 +4300,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 156060,
     "transport": "TTC",
     "consignee": "Bharat Tiles",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "7014458703",
     "truckNo": "RJ52GB3485",
     "destination": "Dhanauri, cu.K.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Kailash",
-    "referenceMobile": "",
+    "referenceMobile": "9571711005",
     "owner": "Deepak Dhabas",
     "ownerName": "Deepak Dhabas",
-    "ownerMobile": "",
+    "ownerMobile": "9024959171",
     "driver": "Rajkumar Meena Devli",
-    "driverMobile": "",
+    "driverMobile": "9024959183",
     "billingType": "Per Tonne",
     "biltyAmount": 156060,
     "weight": 40,
@@ -4254,7 +4342,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "16/10/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Rajkumar Meena Devli (Driver)"
   },
   {
     "id": "DUE_20262027_2514_0090",
@@ -4266,18 +4355,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 164900,
     "transport": "TTC",
     "consignee": "M/s Shree G. Marble Traders",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "05SAGHPA62431ZM",
+    "consigneeMobile": "9897542937",
     "truckNo": "RJ52GB3483",
     "destination": "Haridwar (U.K.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Vishnu Khandelwal",
-    "referenceMobile": "",
+    "referenceMobile": "9784574418",
     "owner": "Deepak Dhabas",
     "ownerName": "Deepak Dhabas",
-    "ownerMobile": "",
+    "ownerMobile": "9024959171",
     "driver": "Mahaveer 3484",
-    "driverMobile": "",
+    "driverMobile": "9024959197",
     "billingType": "Per Tonne",
     "biltyAmount": 164900,
     "weight": 40,
@@ -4300,7 +4389,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Haridwar (U.K.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Mahaveer 3484 (Driver)"
   },
   {
     "id": "DUE_20262027_2511_0091",
@@ -4346,7 +4436,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Shishram Meena (Driver)"
   },
   {
     "id": "DUE_20262027_2521_0092",
@@ -4392,7 +4483,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Shishram Meena (Driver)"
   },
   {
     "id": "DUE_20262027_93_0093",
@@ -4404,18 +4496,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 300000,
     "transport": "TTC",
     "consignee": "Shree Shyam Marbles and Granites",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "05AYIPS3989A1Z6",
+    "consigneeMobile": "7976195426",
     "truckNo": "RJ52GB3119",
     "destination": "Haridwar(U.K.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Brijesh Sharma Haridwar",
-    "referenceMobile": "",
+    "referenceMobile": "9928636419",
     "owner": "Jagdish Kulhariya",
     "ownerName": "Jagdish Kulhariya",
-    "ownerMobile": "",
+    "ownerMobile": "9414312586",
     "driver": "Ranjeet gurjar 8392",
-    "driverMobile": "",
+    "driverMobile": "8824731526",
     "billingType": "Per Tonne",
     "biltyAmount": 300000,
     "weight": 40,
@@ -4438,7 +4530,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Haridwar(U.K.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Ranjeet gurjar 8392 (Driver)"
   },
   {
     "id": "DUE_20262027_2517_0094",
@@ -4450,18 +4543,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "Shree Bajrang Marble",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "07AFCPV5959A1ZA",
+    "consigneeMobile": "9571125773",
     "truckNo": "RJ52GB2510",
     "destination": "Delhi",
     "origin": "Rajsamand (Raj.)",
     "reference": "Shekhwat Chips Udhyog Nathdwm",
-    "referenceMobile": "",
+    "referenceMobile": "7014368135",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Talli Kotputli",
-    "driverMobile": "",
+    "driverMobile": "9414557728",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -4492,7 +4585,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "16/10/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Talli Kotputli (Driver)"
   },
   {
     "id": "DUE_20262027_2496_0095",
@@ -4538,7 +4632,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Baj rang Swami (Driver)"
   },
   {
     "id": "DUE_20262027_2503_0096",
@@ -4584,7 +4679,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Bablu Meena 7382 (Driver)"
   },
   {
     "id": "DUE_20262027_2493_0097",
@@ -4596,18 +4692,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "DEVI MARBLE AND GRANITE",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "09ABUPT5013H2Z6",
+    "consigneeMobile": "9784648450",
     "truckNo": "RJ52GA6366",
     "destination": "Kanpur (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Mahaveer Tholiya",
-    "referenceMobile": "",
+    "referenceMobile": "9829411881",
     "owner": "Rameshwar Prasad",
     "ownerName": "Rameshwar Prasad",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Rajesh",
-    "driverMobile": "",
+    "driverMobile": "7014630495",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -4630,7 +4726,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Kanpur (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Rajesh (Driver)"
   },
   {
     "id": "DUE_20262027_2508_0098",
@@ -4676,7 +4773,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Hardan (Driver)"
   },
   {
     "id": "DUE_20262027_2507_0099",
@@ -4688,18 +4786,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "Shreekant Marble & Granites",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "07ANZPS4910R1ZT",
+    "consigneeMobile": "7014309383",
     "truckNo": "RJ52GB5640",
     "destination": "Delhi",
     "origin": "Rajsamand (Raj.)",
     "reference": "Anil Sharda",
-    "referenceMobile": "",
+    "referenceMobile": "9928309363",
     "owner": "Shree Mahaveer Transport Co.",
     "ownerName": "Shree Mahaveer Transport Co.",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Hardan",
-    "driverMobile": "",
+    "driverMobile": "9414775800",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -4730,7 +4828,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "15/10/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Hardan (Driver)"
   },
   {
     "id": "DUE_20262027_15_0100",
@@ -4742,18 +4841,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 131037,
     "transport": "TTC",
     "consignee": "Home Pride Adhesive Pvt. Ltd. (R)",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "08AADCH2908O1Z6",
+    "consigneeMobile": "7014742543",
     "truckNo": "RJ52GB0729",
     "destination": "Bhindi (Raj.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Ritesh Sharma Madhusudhan",
-    "referenceMobile": "",
+    "referenceMobile": "9571796941",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Laxman Gurjar 8614",
-    "driverMobile": "",
+    "driverMobile": "9509026815",
     "billingType": "Per Tonne",
     "biltyAmount": 131037,
     "weight": 40,
@@ -4776,7 +4875,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Bhindi (Raj.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Laxman Gurjar 8614 (Driver)"
   },
   {
     "id": "DUE_20262027_2502_0101",
@@ -4788,18 +4888,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 34230,
     "transport": "TTC",
     "consignee": "Shree Tirupati Balaji Marble",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "09HMPPS9128P1ZM",
+    "consigneeMobile": "9999417853",
     "truckNo": "RJ52GA6603",
     "destination": "Meerut (u. P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Rahul Meerut",
-    "referenceMobile": "",
+    "referenceMobile": "9602427284",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Oahbu Raiya",
-    "driverMobile": "",
+    "driverMobile": "9784009724",
     "billingType": "Per Tonne",
     "biltyAmount": 34230,
     "weight": 40,
@@ -4822,7 +4922,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Meerut (u. P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Oahbu Raiya (Driver)"
   },
   {
     "id": "DUE_20262027_2498_0102",
@@ -4834,18 +4935,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 164720,
     "transport": "TTC",
     "consignee": "M/s BANSAL MARBLE & GRANITES",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "09ADLPB2010M1ZS",
+    "consigneeMobile": "9602826252",
     "truckNo": "RJ52GA8734",
     "destination": "Gorakhpur (u. PJ",
     "origin": "Rajsamand (Raj.)",
     "reference": "Vinod Choudhary Gajanad Marble",
-    "referenceMobile": "",
+    "referenceMobile": "9602968948",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Jitendra KhoJi",
-    "driverMobile": "",
+    "driverMobile": "8824684454",
     "billingType": "Per Tonne",
     "biltyAmount": 164720,
     "weight": 40,
@@ -4868,7 +4969,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Gorakhpur (u. PJ"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Jitendra KhoJi (Driver)"
   },
   {
     "id": "DUE_20262027_2509_0103",
@@ -4880,18 +4982,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "JAIPUR MARBAL",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "09FMKPM7297C1ZG",
+    "consigneeMobile": "9837972700",
     "truckNo": "R301GD0501",
     "destination": "HASANPUR (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Ram Babu Viayvergiye Kishangar_",
-    "referenceMobile": "",
+    "referenceMobile": "9571865229",
     "owner": "Amit Rajpurohit",
     "ownerName": "Amit Rajpurohit",
-    "ownerMobile": "",
+    "ownerMobile": "9828230022",
     "driver": "Dash rath Vaishnav",
-    "driverMobile": "",
+    "driverMobile": "7014453055",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -4914,7 +5016,8 @@ var _PARTY_DUE_MASTER = [
         "address": "HASANPUR (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Dash rath Vaishnav (Driver)"
   },
   {
     "id": "DUE_20262027_2505_0104",
@@ -4926,18 +5029,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 136320,
     "transport": "TTC",
     "consignee": "Zchem Polymers India Pvt.Ltd",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "09AABCU5683R1ZD",
+    "consigneeMobile": "9829115377",
     "truckNo": "RJ52GB5641",
     "destination": "Ghaziabad (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Ganpati Minerals",
-    "referenceMobile": "",
+    "referenceMobile": "7014779791",
     "owner": "Shree Mahaveer Transport Co.",
     "ownerName": "Shree Mahaveer Transport Co.",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Mahaveer Choudhary",
-    "driverMobile": "",
+    "driverMobile": "9784742402",
     "billingType": "Per Tonne",
     "biltyAmount": 136320,
     "weight": 40,
@@ -4968,7 +5071,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "15/10/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Mahaveer Choudhary (Driver)"
   },
   {
     "id": "DUE_20262027_233_0105",
@@ -4980,18 +5084,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 132540,
     "transport": "SMTC",
     "consignee": "SAKARNI PLASTER (INDIA) PVT.",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "O8AASCS3036P1ZL Neemrana",
+    "consigneeMobile": "8824326001",
     "truckNo": "RJ52GB5053",
     "destination": "Neemrana (Raj.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Sudhir Mishra Sarkani kareda",
-    "referenceMobile": "",
+    "referenceMobile": "9414489504",
     "owner": "%ree Mahaveer Transport Co.",
     "ownerName": "%ree Mahaveer Transport Co.",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Ka n haram Shahpura",
-    "driverMobile": "",
+    "driverMobile": "7014542087",
     "billingType": "Per Tonne",
     "biltyAmount": 132540,
     "weight": 40,
@@ -5014,7 +5118,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Neemrana (Raj.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Ka n haram Shahpura (Driver)"
   },
   {
     "id": "DUE_20262027_2501_0106",
@@ -5060,7 +5165,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "PappuAgra4713 (Driver)"
   },
   {
     "id": "DUE_20262027_2504_0107",
@@ -5072,18 +5178,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "M/s RAOENDER KUMAR SHARMA",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "END! Dp’nzoUoTT",
+    "consigneeMobile": "7014362927",
     "truckNo": "RJ26GA8214",
     "destination": "Alwar (Ran",
     "origin": "Rajsamand (Raj.)",
     "reference": "Virsun Industries",
-    "referenceMobile": "",
+    "referenceMobile": "7014724751",
     "owner": "Sitaram Meena",
     "ownerName": "Sitaram Meena",
-    "ownerMobile": "",
+    "ownerMobile": "9413571154",
     "driver": "Radheyshyam Meena",
-    "driverMobile": "",
+    "driverMobile": "9828230116",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -5106,7 +5212,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Alwar (Ran"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Radheyshyam Meena (Driver)"
   },
   {
     "id": "DUE_20262027_2484_0108",
@@ -5152,7 +5259,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Chinu Gurjar (Driver)"
   },
   {
     "id": "DUE_20262027_2467_0109",
@@ -5164,18 +5272,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "Indian Marble & Granite",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "09BITPA6643K1Z0",
+    "consigneeMobile": "6387992089",
     "truckNo": "RJ52GA7333",
     "destination": "Kanpur (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Manoj 3 aju",
-    "referenceMobile": "",
+    "referenceMobile": "9602240884",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Bhanwarchoudhary 7333",
-    "driverMobile": "",
+    "driverMobile": "9414543672",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -5206,7 +5314,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "14/10/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Bhanwarchoudhary 7333 (Driver)"
   },
   {
     "id": "DUE_20262027_232_0110",
@@ -5218,18 +5327,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 2270,
     "transport": "SMTC",
     "consignee": "SAKARNI PLASTER (INDIA) PVT.",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "O8AASCS3036P1ZL Neemrana",
+    "consigneeMobile": "8824326001",
     "truckNo": "RJ52GB5642",
     "destination": "Neemrana (Raj.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Sudhir Mishra Sarkani kareda",
-    "referenceMobile": "",
+    "referenceMobile": "9414489504",
     "owner": "%ree Mahaveer Transport Co.",
     "ownerName": "%ree Mahaveer Transport Co.",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Suresh Raiya",
-    "driverMobile": "",
+    "driverMobile": "9636017337",
     "billingType": "Per Tonne",
     "biltyAmount": 2270,
     "weight": 40,
@@ -5252,7 +5361,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Ghaziabad (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Suresh Raiya (Driver)"
   },
   {
     "id": "DUE_20262027_231_0111",
@@ -5264,18 +5374,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 13591,
     "transport": "SMTC",
     "consignee": "Berger Paints India Ltd.",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "09AABCB0976E1ZT",
+    "consigneeMobile": "9928397387",
     "truckNo": "RJ52GA5578",
     "destination": "Sandila (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Rajesh Rao Udaipur",
-    "referenceMobile": "",
+    "referenceMobile": "9571314709",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Monu Yogi",
-    "driverMobile": "",
+    "driverMobile": "7014560495",
     "billingType": "Per Tonne",
     "biltyAmount": 13591,
     "weight": 40,
@@ -5298,7 +5408,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Delhi"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Monu Yogi (Driver)"
   },
   {
     "id": "DUE_20262027_2485_0112",
@@ -5344,7 +5455,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Kalyan Meena (Driver)"
   },
   {
     "id": "DUE_20262027_2495_0113",
@@ -5356,18 +5468,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "White Marble House",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "08AAUPR8764L1ZG",
+    "consigneeMobile": "9413319151",
     "truckNo": "RJ52GB5966",
     "destination": "Moradabad (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Aakash Sharma",
-    "referenceMobile": "",
+    "referenceMobile": "7014885551",
     "owner": "Prahlad",
     "ownerName": "Prahlad",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Rahul",
-    "driverMobile": "",
+    "driverMobile": "9414522128",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -5390,7 +5502,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Moradabad (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Rahul (Driver)"
   },
   {
     "id": "DUE_20262027_2456_0114",
@@ -5444,7 +5557,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "13/10/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Hansraj 1235 (Driver)"
   },
   {
     "id": "DUE_20262027_2466_0115",
@@ -5456,18 +5570,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "Phenobond India Pvt.",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "09AAICP9056D1Z4",
+    "consigneeMobile": "9001050207",
     "truckNo": "RJ52GB2590",
     "destination": "Lucknow (u. P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Bharat Mineral Pasoond",
-    "referenceMobile": "",
+    "referenceMobile": "9602501132",
     "owner": "Rameshwar Prasad",
     "ownerName": "Rameshwar Prasad",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Kalu Gurjar Hindoli",
-    "driverMobile": "",
+    "driverMobile": "9571506029",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -5490,7 +5604,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Lucknow (u. P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Kalu Gurjar Hindoli (Driver)"
   },
   {
     "id": "DUE_20262027_116_0116",
@@ -5536,7 +5651,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Kalu Gurjar Hindoli (Driver)"
   },
   {
     "id": "DUE_20262027_228_0117",
@@ -5582,7 +5698,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Banti Meena tonk (Driver)"
   },
   {
     "id": "DUE_20262027_230_0118",
@@ -5594,18 +5711,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 141474,
     "transport": "SMTC",
     "consignee": "SAKARNI PLASTER (INDIA) PVT.",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "O8AASCS3036P1ZL Neemrana",
+    "consigneeMobile": "8824326001",
     "truckNo": "RJ52GB0724",
     "destination": "Neemrana (Raj.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Sudhir Mishra Sarkani kareda",
-    "referenceMobile": "",
+    "referenceMobile": "9414489504",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Ramkishore Swami",
-    "driverMobile": "",
+    "driverMobile": "9784199658",
     "billingType": "Per Tonne",
     "biltyAmount": 141474,
     "weight": 40,
@@ -5628,7 +5745,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Neemrana (Raj.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Ramkishore Swami (Driver)"
   },
   {
     "id": "DUE_20262027_2464_0119",
@@ -5640,18 +5758,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 94500,
     "transport": "TTC",
     "consignee": "\"ROSS COATINGS PRIVATE LIME",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9829115329",
     "truckNo": "RJ32GD3696",
     "destination": "Sikandrabad (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Rishi Aggarwal Maniyana",
-    "referenceMobile": "",
+    "referenceMobile": "7014948855",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Nand Singh",
-    "driverMobile": "",
+    "driverMobile": "9828230112",
     "billingType": "Per Tonne",
     "biltyAmount": 94500,
     "weight": 40,
@@ -5682,7 +5800,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "13/10/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Nand Singh (Driver)"
   },
   {
     "id": "DUE_20262027_2477_0120",
@@ -5737,7 +5856,8 @@ var _PARTY_DUE_MASTER = [
         "payTo": "TTC",
         "clearingDate": "25/10/2026"
       }
-    ]
+    ],
+    "podHandedOverTo": "Raju Munim (Driver)"
   },
   {
     "id": "DUE_20262027_2470_0121",
@@ -5792,7 +5912,8 @@ var _PARTY_DUE_MASTER = [
         "payTo": "TTC",
         "clearingDate": "25/10/2026"
       }
-    ]
+    ],
+    "podHandedOverTo": "Deva B h aya (Driver)"
   },
   {
     "id": "DUE_20262027_2481_0122",
@@ -5838,7 +5959,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Dinesh Yadav 7729 (Driver)"
   },
   {
     "id": "DUE_20262027_2468_0123",
@@ -5850,18 +5972,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 71076,
     "transport": "TTC",
     "consignee": "AGGARWAL ORGANIC CHEMICAL",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "08EINPA7794G1ZW",
+    "consigneeMobile": "7014946391",
     "truckNo": "RJ52GB4586",
     "destination": "Roorkee cu.K.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Gagan Bang",
-    "referenceMobile": "",
+    "referenceMobile": "8824890686",
     "owner": "Shree Mahaveer Transport Co.",
     "ownerName": "Shree Mahaveer Transport Co.",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Narendra Kumar Raiya",
-    "driverMobile": "",
+    "driverMobile": "9829230561",
     "billingType": "Per Tonne",
     "biltyAmount": 71076,
     "weight": 40,
@@ -5884,7 +6006,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Roorkee cu.K.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Narendra Kumar Raiya (Driver)"
   },
   {
     "id": "DUE_20262027_2474_0124",
@@ -5939,7 +6062,8 @@ var _PARTY_DUE_MASTER = [
         "payTo": "TTC",
         "clearingDate": "25/10/2026"
       }
-    ]
+    ],
+    "podHandedOverTo": "Pratap Singh (Driver)"
   },
   {
     "id": "DUE_20262027_2475_0125",
@@ -5951,18 +6075,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 2780,
     "transport": "TTC",
     "consignee": "Sun CNting and Chemical Co.",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9414445936",
     "truckNo": "RJ52GB2S87",
     "destination": "Karnal (Haryana)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Virsun Industries",
-    "referenceMobile": "",
+    "referenceMobile": "7014724751",
     "owner": "Rameshwar Prasad",
     "ownerName": "Rameshwar Prasad",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Kirshan Saini",
-    "driverMobile": "",
+    "driverMobile": "9602364396",
     "billingType": "Per Tonne",
     "biltyAmount": 2780,
     "weight": 40,
@@ -5985,7 +6109,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Karnal (Haryana)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Kirshan Saini (Driver)"
   },
   {
     "id": "DUE_20262027_2444_0126",
@@ -6031,7 +6156,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "ManraJ Meena 7719 (Driver)"
   },
   {
     "id": "DUE_20262027_2438_0127",
@@ -6077,7 +6203,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Devraj Gurjar (Driver)"
   },
   {
     "id": "DUE_20262027_2437_0128",
@@ -6089,18 +6216,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 2132.661,
     "transport": "TTC",
     "consignee": "Home Pride Adhesive Pvt. Ltd. (R)",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "08AADCH2908O1Z6",
+    "consigneeMobile": "7014742543",
     "truckNo": "RJ52GB5963",
     "destination": "Bhindi (Raj.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Ritesh Sharma Madhusudhan",
-    "referenceMobile": "",
+    "referenceMobile": "9571796941",
     "owner": "Shree Mahaveer Transport Co.",
     "ownerName": "Shree Mahaveer Transport Co.",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Trilok saini",
-    "driverMobile": "",
+    "driverMobile": "9928417971",
     "billingType": "Per Tonne",
     "biltyAmount": 2132.661,
     "weight": 40,
@@ -6123,7 +6250,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Bhindi (Raj.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Trilok saini (Driver)"
   },
   {
     "id": "DUE_20262027_2454_0129",
@@ -6177,7 +6305,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "12/10/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Bhagwan Singh Banna (Driver)"
   },
   {
     "id": "DUE_20262027_229_0130",
@@ -6189,18 +6318,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 50000,
     "transport": "SMTC",
     "consignee": "SAKARNI PLASTER (INDIA) PVT.",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "O8AASCS3036P1ZL Neemrana",
+    "consigneeMobile": "8824326001",
     "truckNo": "RJ52GB2S10",
     "destination": "Neemrana (Raj.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Sudhir Mishra Sarkani kareda",
-    "referenceMobile": "",
+    "referenceMobile": "9414489504",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Talli Gur-jar Kotputli",
-    "driverMobile": "",
+    "driverMobile": "8824374574",
     "billingType": "Per Tonne",
     "biltyAmount": 50000,
     "weight": 40,
@@ -6223,7 +6352,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Ludhiana (Punjab)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Talli Gur-jar Kotputli (Driver)"
   },
   {
     "id": "DUE_20262027_2461_0131",
@@ -6235,18 +6365,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "Natural Marble Pvt. Ltd.",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "07AACCN012761ZX",
+    "consigneeMobile": "8824884486",
     "truckNo": "RJ52GB5965",
     "destination": "Delhi",
     "origin": "Rajsamand (Raj.)",
     "reference": "Anil Sharda",
-    "referenceMobile": "",
+    "referenceMobile": "9928309363",
     "owner": "Shree Mahaveer Transport Co.",
     "ownerName": "Shree Mahaveer Transport Co.",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Raju Bhilwa",
-    "driverMobile": "",
+    "driverMobile": "9829289849",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -6269,7 +6399,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Delhi"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Raju Bhilwa (Driver)"
   },
   {
     "id": "DUE_20262027_2449_0132",
@@ -6315,7 +6446,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "LekhraJ Meena 7309 (Driver)"
   },
   {
     "id": "DUE_20262027_2448_0133",
@@ -6361,7 +6493,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Chetan Kumar Meena 7908 (Driver)"
   },
   {
     "id": "DUE_20262027_134_0134",
@@ -6415,7 +6548,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "12/10/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Mukesh Gurjar Badgam (Driver)"
   },
   {
     "id": "DUE_20262027_2462_0135",
@@ -6461,7 +6595,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Hardan (Driver)"
   },
   {
     "id": "DUE_20262027_2457_0136",
@@ -6507,7 +6642,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Shaitan Meena 9432 (Driver)"
   },
   {
     "id": "DUE_20262027_221_0137",
@@ -6553,7 +6689,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Ranjeet Gurjar 8796 (Driver)"
   },
   {
     "id": "DUE_20262027_2431_0138",
@@ -6599,7 +6736,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Sukhlal (Driver)"
   },
   {
     "id": "DUE_20262027_226_0139",
@@ -6653,7 +6791,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "11/10/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Suresh Raiya (Driver)"
   },
   {
     "id": "DUE_20262027_2429_0140",
@@ -6699,7 +6838,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Krishan Singh (Driver)"
   },
   {
     "id": "DUE_20262027_2436_0141",
@@ -6711,18 +6851,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 300000,
     "transport": "TTC",
     "consignee": "s.KMARBLE&TlLES",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9829369129",
     "truckNo": "ROOIGE3S67",
     "destination": "Meerut (u. P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Lokesh Sharma Guru ji",
-    "referenceMobile": "",
+    "referenceMobile": "8824700694",
     "owner": "Kuldeep Yadav",
     "ownerName": "Kuldeep Yadav",
-    "ownerMobile": "",
+    "ownerMobile": "9116773567",
     "driver": "Ramavtar Vaishnav",
-    "driverMobile": "",
+    "driverMobile": "8824482174",
     "billingType": "Per Tonne",
     "biltyAmount": 300000,
     "weight": 40,
@@ -6745,7 +6885,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Meerut (u. P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Ramavtar Vaishnav (Driver)"
   },
   {
     "id": "DUE_20262027_2435_0142",
@@ -6757,18 +6898,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 630,
     "transport": "TTC",
     "consignee": "New Indian Marbles",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "09BOPPT9576O1Z9",
+    "consigneeMobile": "9837509096",
     "truckNo": "RJ52GB5054",
     "destination": "Meerut (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Indian Marble Meerut",
-    "referenceMobile": "",
+    "referenceMobile": "8824282526",
     "owner": "Shree Mahaveer Transport Co.",
     "ownerName": "Shree Mahaveer Transport Co.",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Vikram Gut-jar 4507",
-    "driverMobile": "",
+    "driverMobile": "7015018788",
     "billingType": "Per Tonne",
     "biltyAmount": 630,
     "weight": 40,
@@ -6791,7 +6932,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Meerut (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Vikram Gut-jar 4507 (Driver)"
   },
   {
     "id": "DUE_20262027_2442_0143",
@@ -6837,7 +6979,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Sitaram (Driver)"
   },
   {
     "id": "DUE_20262027_2430_0144",
@@ -6849,18 +6992,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 180200,
     "transport": "TTC",
     "consignee": "M/s PIDILITE INDUSTRIES LIMITED",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "09AAACP4156B1ZQ",
+    "consigneeMobile": "9928329147",
     "truckNo": "RJ52GA9546",
     "destination": "Sandila (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Saatvik Minerals Alwar Saurabh",
-    "referenceMobile": "",
+    "referenceMobile": "9928973003",
     "owner": "Rameshwar Prasad",
     "ownerName": "Rameshwar Prasad",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Deepu Gurjar",
-    "driverMobile": "",
+    "driverMobile": "8824780846",
     "billingType": "Per Tonne",
     "biltyAmount": 180200,
     "weight": 40,
@@ -6891,7 +7034,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "11/10/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Deepu Gurjar (Driver)"
   },
   {
     "id": "DUE_20262027_2422_0145",
@@ -6937,7 +7081,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Asharam Meena 3572 (Driver)"
   },
   {
     "id": "DUE_20262027_224_0146",
@@ -6991,7 +7136,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "12/09/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Dinesh Khatik (Driver)"
   },
   {
     "id": "DUE_20262027_2419_0147",
@@ -7037,7 +7183,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Gpoi Chand 8732 (Driver)"
   },
   {
     "id": "DUE_20262027_223_0148",
@@ -7083,7 +7230,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Suresh Gurjar Tonk (Driver)"
   },
   {
     "id": "DUE_20262027_225_0149",
@@ -7137,7 +7285,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "10/10/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Mahendra Bairwa (Driver)"
   },
   {
     "id": "DUE_20262027_2423_0150",
@@ -7183,7 +7332,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Bhagchand Gurjar 0721 (Driver)"
   },
   {
     "id": "DUE_20262027_2421_0151",
@@ -7229,7 +7379,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Lilu saini (Driver)"
   },
   {
     "id": "DUE_20262027_2420_0152",
@@ -7275,7 +7426,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Man raj Meena 9433 (Driver)"
   },
   {
     "id": "DUE_20262027_2426_0153",
@@ -7287,18 +7439,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 200000,
     "transport": "TTC",
     "consignee": "SHRI SHYAM MARBLE TILE HOUSE",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "07AVZPT3197K1ZD",
+    "consigneeMobile": "9571958637",
     "truckNo": "RJ52GB5053",
     "destination": "Delhi",
     "origin": "Rajsamand (Raj.)",
     "reference": "Shekhwat Chips Udhyog Nathdw_",
-    "referenceMobile": "",
+    "referenceMobile": "9829368121",
     "owner": "Shree Mahaveer Transport Co.",
     "ownerName": "Shree Mahaveer Transport Co.",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Kanharam Shahpura",
-    "driverMobile": "",
+    "driverMobile": "9928569347",
     "billingType": "Per Tonne",
     "biltyAmount": 200000,
     "weight": 40,
@@ -7321,7 +7473,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Delhi"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Kanharam Shahpura (Driver)"
   },
   {
     "id": "DUE_20262027_219_0154",
@@ -7375,7 +7528,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "09/10/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Kalu Meena 2274 (Driver)"
   },
   {
     "id": "DUE_20262027_220_0155",
@@ -7387,18 +7541,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 121251,
     "transport": "SMTC",
     "consignee": "SAKARNI PLASTER (INDIA) PVT.",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "O8AASCS3036P1ZL Neemrana",
+    "consigneeMobile": "8824326001",
     "truckNo": "RJ52GB2S90",
     "destination": "Neemrana (Raj.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Sudhir Mishra Sarkani kareda",
-    "referenceMobile": "",
+    "referenceMobile": "9414489504",
     "owner": "Rameshwar Prasad",
     "ownerName": "Rameshwar Prasad",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Kalu Gurjar Hindoli",
-    "driverMobile": "",
+    "driverMobile": "9571506029",
     "billingType": "Per Tonne",
     "biltyAmount": 121251,
     "weight": 40,
@@ -7421,7 +7575,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Neemrana (Raj.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Kalu Gurjar Hindoli (Driver)"
   },
   {
     "id": "DUE_20262027_156_0156",
@@ -7467,7 +7622,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Naresh Gurjar 0837 (Driver)"
   },
   {
     "id": "DUE_20262027_2425_0157",
@@ -7513,7 +7669,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Kamal Raiya (Driver)"
   },
   {
     "id": "DUE_20262027_2408_0158",
@@ -7525,18 +7682,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 990,
     "transport": "TTC",
     "consignee": "GALLANT SPORTS AND INFRA PVT",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "7014985383",
     "truckNo": "RJ52GA16B8",
     "destination": "Noida (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Virsun Industries",
-    "referenceMobile": "",
+    "referenceMobile": "7014724751",
     "owner": "Gurjar",
     "ownerName": "Gurjar",
-    "ownerMobile": "",
+    "ownerMobile": "7014522839",
     "driver": "Sugan Gurjar",
-    "driverMobile": "",
+    "driverMobile": "9571319365",
     "billingType": "Per Tonne",
     "biltyAmount": 990,
     "weight": 40,
@@ -7559,7 +7716,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Noida (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Sugan Gurjar (Driver)"
   },
   {
     "id": "DUE_20262027_159_0159",
@@ -7614,7 +7772,8 @@ var _PARTY_DUE_MASTER = [
         "payTo": "TTC",
         "clearingDate": "25/10/2026"
       }
-    ]
+    ],
+    "podHandedOverTo": "Bajrang 2298 (Driver)"
   },
   {
     "id": "DUE_20262027_218_0160",
@@ -7660,7 +7819,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Maha veer Choudhary (Driver)"
   },
   {
     "id": "DUE_20262027_2399_0161",
@@ -7672,18 +7832,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 119190,
     "transport": "TTC",
     "consignee": "Alcolite India Road Safety Pvt. Ltd.",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "08AATCA6572D1ZC",
+    "consigneeMobile": "9414823232",
     "truckNo": "RJ52GB2S88",
     "destination": "Bhindi (Raj.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Aahish Aggarwal Alwar",
-    "referenceMobile": "",
+    "referenceMobile": "7014872727",
     "owner": "Rameshwar Prasad",
     "ownerName": "Rameshwar Prasad",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Ratan Gurjar 5578",
-    "driverMobile": "",
+    "driverMobile": "9602200124",
     "billingType": "Per Tonne",
     "biltyAmount": 119190,
     "weight": 40,
@@ -7706,7 +7866,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Bhindi (Raj.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Ratan Gurjar 5578 (Driver)"
   },
   {
     "id": "DUE_20262027_2405_0162",
@@ -7752,7 +7913,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Raju (Driver)"
   },
   {
     "id": "DUE_20262027_2388_0163",
@@ -7764,18 +7926,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 86100,
     "transport": "TTC",
     "consignee": "Export Panipat",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "06AABFD1226E1Z6",
+    "consigneeMobile": "9928732267",
     "truckNo": "RJ52GA3137",
     "destination": "Panipat (Haryana)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Jitendra Goyal",
-    "referenceMobile": "",
+    "referenceMobile": "9829809233",
     "owner": "Radhyeshyam Gurjar",
     "ownerName": "Radhyeshyam Gurjar",
-    "ownerMobile": "",
+    "ownerMobile": "9784053262",
     "driver": "Driver 3137",
-    "driverMobile": "",
+    "driverMobile": "9784990330",
     "billingType": "Per Tonne",
     "biltyAmount": 86100,
     "weight": 40,
@@ -7798,7 +7960,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Panipat (Haryana)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Driver 3137 (Driver)"
   },
   {
     "id": "DUE_20262027_2395_0164",
@@ -7810,18 +7973,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 124950,
     "transport": "TTC",
     "consignee": "SOMANY CERAMICS LIMITED",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "06AAECS0763K1Z9",
+    "consigneeMobile": "9602581948",
     "truckNo": "RJ52GA9489",
     "destination": "Bahadurgarh (Haryana)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Virsun Industries",
-    "referenceMobile": "",
+    "referenceMobile": "7014724751",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Bhagwan Singh Banna",
-    "driverMobile": "",
+    "driverMobile": "9928618131",
     "billingType": "Per Tonne",
     "biltyAmount": 124950,
     "weight": 40,
@@ -7852,7 +8015,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "08/10/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Bhagwan Singh Banna (Driver)"
   },
   {
     "id": "DUE_20262027_2398_0165",
@@ -7898,7 +8062,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Bablu Meena 7382 (Driver)"
   },
   {
     "id": "DUE_20262027_216_0166",
@@ -7944,7 +8109,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Mahaveer Panchal 5336 (Driver)"
   },
   {
     "id": "DUE_20262027_217_0167",
@@ -7990,7 +8156,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Bhiam Raj 8616 (Driver)"
   },
   {
     "id": "DUE_20262027_2377_0168",
@@ -8036,7 +8203,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Hemraj Natwadiya (Driver)"
   },
   {
     "id": "DUE_20262027_215_0169",
@@ -8091,7 +8259,8 @@ var _PARTY_DUE_MASTER = [
         "payTo": "TTC",
         "clearingDate": "02/10/2024"
       }
-    ]
+    ],
+    "podHandedOverTo": "LekhraJ Meena 7309 (Driver)"
   },
   {
     "id": "DUE_20262027_2369_0170",
@@ -8103,18 +8272,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "Prateek Tiles and Granite",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "PNNOONAAZZARARN",
+    "consigneeMobile": "9602310612",
     "truckNo": "RJ52GB0729",
     "destination": "Kanpur (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Mahaveer Bijarniya",
-    "referenceMobile": "",
+    "referenceMobile": "9414488992",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Bharat 8614",
-    "driverMobile": "",
+    "driverMobile": "9509026815",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -8137,7 +8306,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Kanpur (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Bharat 8614 (Driver)"
   },
   {
     "id": "DUE_20262027_2370_0171",
@@ -8149,18 +8319,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 150000,
     "transport": "TTC",
     "consignee": "Ram Raja Granites",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "09AKNPB7056Q1ZF",
+    "consigneeMobile": "9461821042",
     "truckNo": "RJ52GB0729",
     "destination": "Kanpur (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Mahaveer Bijarniya",
-    "referenceMobile": "",
+    "referenceMobile": "9414488992",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Bharat 8614",
-    "driverMobile": "",
+    "driverMobile": "9509026815",
     "billingType": "Per Tonne",
     "biltyAmount": 150000,
     "weight": 40,
@@ -8183,7 +8353,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Kanpur (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Bharat 8614 (Driver)"
   },
   {
     "id": "DUE_20262027_172_0172",
@@ -8195,18 +8366,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "RADHA MARBLES e TILES",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "8824759982",
     "truckNo": "RJ52GA6549",
     "destination": "Lucknow (U. P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "9793395467",
-    "referenceMobile": "",
+    "referenceMobile": "8824631230",
     "owner": "Sitaram Meena",
     "ownerName": "Sitaram Meena",
-    "ownerMobile": "",
+    "ownerMobile": "9413571154",
     "driver": "Kushiram Gurjar Tonk",
-    "driverMobile": "",
+    "driverMobile": "7742700182",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -8229,7 +8400,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Lucknow (U. P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Kushiram Gurjar Tonk (Driver)"
   },
   {
     "id": "DUE_20262027_2339_0173",
@@ -8241,18 +8413,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 12474,
     "transport": "TTC",
     "consignee": "M/s Zay Chemical Works",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9829951281",
     "truckNo": "RJ52GB2SB9",
     "destination": "Kanpur (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Ankush Bansal Jaipur",
-    "referenceMobile": "",
+    "referenceMobile": "9414337880",
     "owner": "Rameshwar Prasad",
     "ownerName": "Rameshwar Prasad",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Piru Gurjar",
-    "driverMobile": "",
+    "driverMobile": "9928667771",
     "billingType": "Per Tonne",
     "biltyAmount": 12474,
     "weight": 40,
@@ -8275,7 +8447,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Kanpur (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Piru Gurjar (Driver)"
   },
   {
     "id": "DUE_20262027_174_0174",
@@ -8329,7 +8502,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "05/10/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Kalyan Meena (Driver)"
   },
   {
     "id": "DUE_20262027_2351_0175",
@@ -8341,18 +8515,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 280000,
     "transport": "TTC",
     "consignee": "Pawan Tra \"s",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9928972827",
     "truckNo": "ROOIGE1235",
     "destination": "Dadri (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Pavan Bansal Dadri",
-    "referenceMobile": "",
+    "referenceMobile": "9928492731",
     "owner": "Kalu Ram Yadav Shri nagar",
     "ownerName": "Kalu Ram Yadav Shri nagar",
-    "ownerMobile": "",
+    "ownerMobile": "9928510723",
     "driver": "Hansraj 1235.",
-    "driverMobile": "",
+    "driverMobile": "9414206024",
     "billingType": "Per Tonne",
     "biltyAmount": 280000,
     "weight": 40,
@@ -8375,7 +8549,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Dadri (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Hansraj 1235. (Driver)"
   },
   {
     "id": "DUE_20262027_2354_0176",
@@ -8387,18 +8562,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 200000,
     "transport": "TTC",
     "consignee": "Zines hwar Stone",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9414899096",
     "truckNo": "RJ52GAB732",
     "destination": "Gurugram (Haryana)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Vimal porwal Mohi",
-    "referenceMobile": "",
+    "referenceMobile": "9829690745",
     "owner": "Rameshwar Prasad",
     "ownerName": "Rameshwar Prasad",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Gpoi Chand 8732",
-    "driverMobile": "",
+    "driverMobile": "9799854346",
     "billingType": "Per Tonne",
     "biltyAmount": 200000,
     "weight": 40,
@@ -8421,7 +8596,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Gurugram (Haryana)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Gpoi Chand 8732 (Driver)"
   },
   {
     "id": "DUE_20262027_177_0177",
@@ -8467,7 +8643,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Monu Yogi (Driver)"
   },
   {
     "id": "DUE_20262027_2361_0178",
@@ -8479,18 +8656,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "R.K. Marbles",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "09BFSPV4838K1ZC",
+    "consigneeMobile": "9571992277",
     "truckNo": "R314GK1136",
     "destination": "Agra up.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "RX Marble Agra",
-    "referenceMobile": "",
+    "referenceMobile": "8824138014",
     "owner": "Sitaram Meena",
     "ownerName": "Sitaram Meena",
-    "ownerMobile": "",
+    "ownerMobile": "9413571154",
     "driver": "Banti Meena tonk",
-    "driverMobile": "",
+    "driverMobile": "8302297347",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -8513,7 +8690,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Agra up.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Banti Meena tonk (Driver)"
   },
   {
     "id": "DUE_20262027_2362_0179",
@@ -8525,18 +8703,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "Tringa Marbles Tiles And Bath",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "09HRSPS0944B1ZC",
+    "consigneeMobile": "9286868674",
     "truckNo": "ROOIGE6708",
     "destination": "Meerut (u. P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Meerut Tiranga marble Sonu Bhai",
-    "referenceMobile": "",
+    "referenceMobile": "9414744512",
     "owner": "Lalaram Choudhary Shrinagm",
     "ownerName": "Lalaram Choudhary Shrinagm",
-    "ownerMobile": "",
+    "ownerMobile": "9414734328",
     "driver": "Nandaram",
-    "driverMobile": "",
+    "driverMobile": "9928084394",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -8567,7 +8745,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "05/10/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Nandaram (Driver)"
   },
   {
     "id": "DUE_20262027_180_0180",
@@ -8613,7 +8792,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Shaitan Meena 9432 (Driver)"
   },
   {
     "id": "DUE_20262027_2342_0181",
@@ -8659,7 +8839,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Kanharam Shahpura (Driver)"
   },
   {
     "id": "DUE_20262027_182_0182",
@@ -8705,7 +8886,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Chetan Kumar Meena 790B (Driver)"
   },
   {
     "id": "DUE_20262027_2347_0183",
@@ -8751,7 +8933,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Mahaveer Choudhary (Driver)"
   },
   {
     "id": "DUE_20262027_2315_0184",
@@ -8805,7 +8988,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "03/10/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Asha ram Meena 3572 (Driver)"
   },
   {
     "id": "DUE_20262027_2316_0185",
@@ -8851,7 +9035,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Man raj Mena 9433 (Driver)"
   },
   {
     "id": "DUE_20262027_209_0186",
@@ -8897,7 +9082,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Deepu Meena 7906 (Driver)"
   },
   {
     "id": "DUE_20262027_187_0187",
@@ -8909,18 +9095,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 2270,
     "transport": "TTC",
     "consignee": "Party",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "08AHIPP2722L1Z1",
+    "consigneeMobile": "9829156852",
     "truckNo": "RJ52GB2S08",
     "destination": "Delhi",
     "origin": "Rajsamand (Raj.)",
     "reference": "Naresh Paliwal Kelwa",
-    "referenceMobile": "",
+    "referenceMobile": "9928196331",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Raju",
-    "driverMobile": "",
+    "driverMobile": "9784839482",
     "billingType": "Per Tonne",
     "biltyAmount": 2270,
     "weight": 40,
@@ -8943,7 +9129,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Delhi"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Raju (Driver)"
   },
   {
     "id": "DUE_20262027_2305_0188",
@@ -8955,18 +9142,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 150000,
     "transport": "TTC",
     "consignee": "Ram Raja Granites",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "09AKNPB7056Q1ZF",
+    "consigneeMobile": "9461821042",
     "truckNo": "RJ26GA8214",
     "destination": "Kanpur (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Mahaveer Bijarniya",
-    "referenceMobile": "",
+    "referenceMobile": "9414488992",
     "owner": "Sitaram Meena",
     "ownerName": "Sitaram Meena",
-    "ownerMobile": "",
+    "ownerMobile": "9413571154",
     "driver": "Radheyshyam Meena",
-    "driverMobile": "",
+    "driverMobile": "9828230116",
     "billingType": "Per Tonne",
     "biltyAmount": 150000,
     "weight": 40,
@@ -8989,7 +9176,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Kanpur (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Radheyshyam Meena (Driver)"
   },
   {
     "id": "DUE_20262027_207_0189",
@@ -9043,7 +9231,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "02/10/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Dinesh Khatik (Driver)"
   },
   {
     "id": "DUE_20262027_2310_0190",
@@ -9089,7 +9278,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Kalu Gurjar Hindoli (Driver)"
   },
   {
     "id": "DUE_20262027_2309_0191",
@@ -9135,7 +9325,8 @@ var _PARTY_DUE_MASTER = [
         "address": "F-49&50, APNA GHAR SHALIMAR, ALWAR"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "So nveer Singh 9409 (Driver)"
   },
   {
     "id": "DUE_20262027_2304_0192",
@@ -9147,18 +9338,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 240000,
     "transport": "TTC",
     "consignee": "OCR Marbles and Granites",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "8824354822",
     "truckNo": "RJ52GB9237",
     "destination": "Delhi",
     "origin": "Rajsamand (Raj.)",
     "reference": "Chotu 3i Choudhary Venkatesh _",
-    "referenceMobile": "",
+    "referenceMobile": "8824107422",
     "owner": "Panchuram Gurjar",
     "ownerName": "Panchuram Gurjar",
-    "ownerMobile": "",
+    "ownerMobile": "9829405071",
     "driver": "Narsi Swami",
-    "driverMobile": "",
+    "driverMobile": "8824121198",
     "billingType": "Per Tonne",
     "biltyAmount": 240000,
     "weight": 40,
@@ -9181,7 +9372,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Delhi"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Narsi Swami (Driver)"
   },
   {
     "id": "DUE_20262027_206_0193",
@@ -9227,7 +9419,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Devilal Bhil (Driver)"
   },
   {
     "id": "DUE_20262027_2279_0194",
@@ -9239,18 +9432,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "Panchmukhi Granites",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "09CFTPC2181L1ZZ",
+    "consigneeMobile": "7014125103",
     "truckNo": "RJ52GB5966",
     "destination": "Lucknow (U. P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Divesh Chouhan Lucknow",
-    "referenceMobile": "",
+    "referenceMobile": "9414789592",
     "owner": "Shree Mahaveer Transport Co.",
     "ownerName": "Shree Mahaveer Transport Co.",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Ramchandra Jat",
-    "driverMobile": "",
+    "driverMobile": "9414770784",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -9281,7 +9474,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "30/09/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Ramchandra Jat (Driver)"
   },
   {
     "id": "DUE_20262027_195_0195",
@@ -9293,18 +9487,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 53660,
     "transport": "TTC",
     "consignee": "O.K GOLD MAX INDUSTRIES",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9602697124",
     "truckNo": "RJ52GA7728",
     "destination": "Delhi",
     "origin": "Rajsamand (Raj.)",
     "reference": "Jitendra Goyal",
-    "referenceMobile": "",
+    "referenceMobile": "9829809233",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Rajendra Kumar 7728",
-    "driverMobile": "",
+    "driverMobile": "9928203779",
     "billingType": "Per Tonne",
     "biltyAmount": 53660,
     "weight": 40,
@@ -9327,7 +9521,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Delhi"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Rajendra Kumar 7728 (Driver)"
   },
   {
     "id": "DUE_20262027_196_0196",
@@ -9339,18 +9534,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 180000,
     "transport": "TTC",
     "consignee": "Party",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "08AHIPP2722L1Z1",
+    "consigneeMobile": "9829156852",
     "truckNo": "RJ52GB5054",
     "destination": "Meerut (u. P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "M. K. Imported",
-    "referenceMobile": "",
+    "referenceMobile": "9784624674",
     "owner": "Shree Mahaveer Transport Co.",
     "ownerName": "Shree Mahaveer Transport Co.",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Vikram GurJar4.507",
-    "driverMobile": "",
+    "driverMobile": "7015018788",
     "billingType": "Per Tonne",
     "biltyAmount": 180000,
     "weight": 40,
@@ -9373,7 +9568,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Meerut (u. P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Vikram GurJar4.507 (Driver)"
   },
   {
     "id": "DUE_20262027_2235_0197",
@@ -9419,7 +9615,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Bhagwan Si ngh (Driver)"
   },
   {
     "id": "DUE_20262027_2226_0198",
@@ -9465,7 +9662,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Rajsamand"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Bhagwan Singh Banna (Driver)"
   },
   {
     "id": "DUE_20262027_2223_0199",
@@ -9519,7 +9717,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "26/09/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "BhanwarChoudhary7333 (Driver)"
   },
   {
     "id": "DUE_20262027_197_0200",
@@ -9565,7 +9764,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Krishan Singh (Driver)"
   },
   {
     "id": "DUE_20262027_2184_0201",
@@ -9577,18 +9777,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 200000,
     "transport": "TTC",
     "consignee": "M/s NEW HINDUSTAN MARBLES",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "05BBFPB5795N1Z9",
+    "consigneeMobile": "9928986355",
     "truckNo": "ROOIGDOS21",
     "destination": "Hapur(U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Mohd. Ahmed Hindustan Marble",
-    "referenceMobile": "",
+    "referenceMobile": "9602666908",
     "owner": "Kishan Rawat GD0521",
     "ownerName": "Kishan Rawat GD0521",
-    "ownerMobile": "",
+    "ownerMobile": "8824250278",
     "driver": "Bhagwan Si ngh",
-    "driverMobile": "",
+    "driverMobile": "9571932781",
     "billingType": "Per Tonne",
     "biltyAmount": 200000,
     "weight": 40,
@@ -9611,7 +9811,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Hapur(U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Bhagwan Si ngh (Driver)"
   },
   {
     "id": "DUE_20262027_2191_0202",
@@ -9657,7 +9858,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Driver8679 (Driver)"
   },
   {
     "id": "DUE_20262027_23_0203",
@@ -9669,18 +9871,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 240000,
     "transport": "TTC",
     "consignee": "OCR Marbles and Granites",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "8824354822",
     "truckNo": "RJ52GB4737",
     "destination": "Delhi",
     "origin": "Rajsamand (Raj.)",
     "reference": "Chotu 3i Choudhary Venkatesh _",
-    "referenceMobile": "",
+    "referenceMobile": "8824107422",
     "owner": "Panchuram Gurjar",
     "ownerName": "Panchuram Gurjar",
-    "ownerMobile": "",
+    "ownerMobile": "9829405071",
     "driver": "Matadin Gurjar4737",
-    "driverMobile": "",
+    "driverMobile": "9828230111",
     "billingType": "Per Tonne",
     "biltyAmount": 240000,
     "weight": 40,
@@ -9703,7 +9905,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Delhi"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Matadin Gurjar4737 (Driver)"
   },
   {
     "id": "DUE_20262027_2198_0204",
@@ -9757,7 +9960,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "23/09/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Mahaveer Choudhary (Driver)"
   },
   {
     "id": "DUE_20262027_2180_0205",
@@ -9803,7 +10007,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Deepu Gurjar (Driver)"
   },
   {
     "id": "DUE_20262027_2172_0206",
@@ -9815,18 +10020,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 211820,
     "transport": "TTC",
     "consignee": "Gomax Industries Private Li mited",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9829823089",
     "truckNo": "RJ52GB5966",
     "destination": "Karnal (Haryana)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Kailash Agarwal Alwar",
-    "referenceMobile": "",
+    "referenceMobile": "9571139173",
     "owner": "Shree Mahaveer Transport Co.",
     "ownerName": "Shree Mahaveer Transport Co.",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Devaram Gurjar",
-    "driverMobile": "",
+    "driverMobile": "9571196389",
     "billingType": "Per Tonne",
     "biltyAmount": 211820,
     "weight": 40,
@@ -9849,7 +10054,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Karnal (Haryana)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Devaram Gurjar (Driver)"
   },
   {
     "id": "DUE_20262027_207_0207",
@@ -9895,7 +10101,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Banti Meena tonk (Driver)"
   },
   {
     "id": "DUE_20262027_2146_0208",
@@ -9907,18 +10114,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 212100,
     "transport": "TTC",
     "consignee": "New Vanshika Agroindustries Pvt_",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9829271513",
     "truckNo": "RJ52GB2SB5",
     "destination": "Barabanki(U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Virsun Industries",
-    "referenceMobile": "",
+    "referenceMobile": "7014724751",
     "owner": "Rameshwar Prasad",
     "ownerName": "Rameshwar Prasad",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Shaitan Gurjar",
-    "driverMobile": "",
+    "driverMobile": "9024403802",
     "billingType": "Per Tonne",
     "biltyAmount": 212100,
     "weight": 40,
@@ -9941,7 +10148,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Barabanki(U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Shaitan Gurjar (Driver)"
   },
   {
     "id": "DUE_20262027_2157_0209",
@@ -9995,7 +10203,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "21/09/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Bajrang 2298 (Driver)"
   },
   {
     "id": "DUE_20262027_2164_0210",
@@ -10007,18 +10216,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 960,
     "transport": "TTC",
     "consignee": "Virsun Industries Rajsamand",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "08BIPPS5263M2ZB",
+    "consigneeMobile": "9314242911",
     "truckNo": "RJ14GL9911",
     "destination": "Alwar (Ran",
     "origin": "Rajsamand (Raj.)",
     "reference": "Virsun Industries",
-    "referenceMobile": "",
+    "referenceMobile": "7014724751",
     "owner": "Deepak Sharma Agra",
     "ownerName": "Deepak Sharma Agra",
-    "ownerMobile": "",
+    "ownerMobile": "9837365048",
     "driver": "Oeetram Gurjar",
-    "driverMobile": "",
+    "driverMobile": "9837365014",
     "billingType": "Per Tonne",
     "biltyAmount": 960,
     "weight": 40,
@@ -10041,7 +10250,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Alwar (Ran"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Oeetram Gurjar (Driver)"
   },
   {
     "id": "DUE_20262027_211_0211",
@@ -10053,18 +10263,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "MK I ndustries",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "08ZTYPZ4374G1Z9",
+    "consigneeMobile": "9602130060",
     "truckNo": "RJ52GA9489",
     "destination": "Rohtak (Haryana)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Aahish Aggarwal Alwar",
-    "referenceMobile": "",
+    "referenceMobile": "7014872727",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Bhagwan Singh Banna",
-    "driverMobile": "",
+    "driverMobile": "9928618131",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -10087,7 +10297,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Rohtak (Haryana)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Bhagwan Singh Banna (Driver)"
   },
   {
     "id": "DUE_20262027_2148_0212",
@@ -10099,18 +10310,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "Anand Paints",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "06AGKPA6604L1ZG",
+    "consigneeMobile": "9928558923",
     "truckNo": "RJ52GB5641",
     "destination": "Karnal (Haryana)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Ambalal Teli",
-    "referenceMobile": "",
+    "referenceMobile": "9784631778",
     "owner": "Shree Mahaveer Transport Co.",
     "ownerName": "Shree Mahaveer Transport Co.",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Mahaveer Choudhary",
-    "driverMobile": "",
+    "driverMobile": "9784742402",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -10133,7 +10344,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Karnal (Haryana)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Mahaveer Choudhary (Driver)"
   },
   {
     "id": "DUE_20262027_2144_0213",
@@ -10179,7 +10391,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Bhagchand0729 (Driver)"
   },
   {
     "id": "DUE_20262027_2134_0214",
@@ -10191,18 +10404,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "DHAMA MARBLE *OUSE",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "CN",
+    "consigneeMobile": "8824429678",
     "truckNo": "RJ52GC1572",
     "destination": "Kanpur (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Mukosh Mali Sardargarh",
-    "referenceMobile": "",
+    "referenceMobile": "9829675633",
     "owner": "Vinod Dhabas",
     "ownerName": "Vinod Dhabas",
-    "ownerMobile": "",
+    "ownerMobile": "8094550036",
     "driver": "VijayGurjar1572",
-    "driverMobile": "",
+    "driverMobile": "9571462565",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -10233,7 +10446,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "18/09/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "VijayGurjar1572 (Driver)"
   },
   {
     "id": "DUE_20262027_2139_0215",
@@ -10245,18 +10459,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 2113.6,
     "transport": "TTC",
     "consignee": "SOMANY CERAMICS LIMITED",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "06AAECS0763K1Z9",
+    "consigneeMobile": "9602581948",
     "truckNo": "RJ52GB2S88",
     "destination": "Bahadurgarh (Haryana)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Virsun Industries",
-    "referenceMobile": "",
+    "referenceMobile": "7014724751",
     "owner": "Rameshwar Prasad",
     "ownerName": "Rameshwar Prasad",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Ratan Gurjar5578",
-    "driverMobile": "",
+    "driverMobile": "8824191430",
     "billingType": "Per Tonne",
     "biltyAmount": 2113.6,
     "weight": 40,
@@ -10279,7 +10493,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Bahadurgarh (Haryana)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Ratan Gurjar5578 (Driver)"
   },
   {
     "id": "DUE_20262027_2091_0216",
@@ -10325,7 +10540,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Kanharam Shahpura (Driver)"
   },
   {
     "id": "DUE_20262027_2085_0217",
@@ -10371,7 +10587,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Birdichand (Driver)"
   },
   {
     "id": "DUE_20262027_2086_0218",
@@ -10417,7 +10634,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "BhiamRaj 8616 (Driver)"
   },
   {
     "id": "DUE_20262027_2098_0219",
@@ -10429,18 +10647,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 67600,
     "transport": "TTC",
     "consignee": "RANI MAHAL RESORT",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9414381224",
     "truckNo": "RJ52GB5523",
     "destination": "Ikauna up.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Rajkumar Jindal 3alore",
-    "referenceMobile": "",
+    "referenceMobile": "9571396061",
     "owner": "Manish Lunayat",
     "ownerName": "Manish Lunayat",
-    "ownerMobile": "",
+    "ownerMobile": "9582582370",
     "driver": "Sukhlal",
-    "driverMobile": "",
+    "driverMobile": "9414594072",
     "billingType": "Per Tonne",
     "biltyAmount": 67600,
     "weight": 40,
@@ -10471,7 +10689,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "15/09/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Sukhlal (Driver)"
   },
   {
     "id": "DUE_20262027_2096_0220",
@@ -10483,18 +10702,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 91518,
     "transport": "TTC",
     "consignee": "Devgiri Export Panipat",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "06AABFD1226E1Z6",
+    "consigneeMobile": "9571593469",
     "truckNo": "RJ52GB2503",
     "destination": "Panipat (Haryana)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Oitendra Goyal",
-    "referenceMobile": "",
+    "referenceMobile": "9602216108",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Ram Swaroop",
-    "driverMobile": "",
+    "driverMobile": "9829269241",
     "billingType": "Per Tonne",
     "biltyAmount": 91518,
     "weight": 40,
@@ -10517,7 +10736,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Panipat (Haryana)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Ram Swaroop (Driver)"
   },
   {
     "id": "DUE_20262027_2077_0221",
@@ -10563,7 +10783,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Kushiram Gurjar Tonk (Driver)"
   },
   {
     "id": "DUE_20262027_2083_0222",
@@ -10575,18 +10796,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 5800,
     "transport": "TTC",
     "consignee": "Shri Ram Marble Granite",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "04ADSPR1309L1Z9",
+    "consigneeMobile": "9814122760",
     "truckNo": "RJ52GB5377",
     "destination": "Kanpur (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Rakesh Bihari",
-    "referenceMobile": "",
+    "referenceMobile": "9829335321",
     "owner": "Panchuram Gurjar",
     "ownerName": "Panchuram Gurjar",
-    "ownerMobile": "",
+    "ownerMobile": "9829405071",
     "driver": "Subhash Rawat",
-    "driverMobile": "",
+    "driverMobile": "9829561257",
     "billingType": "Per Tonne",
     "biltyAmount": 5800,
     "weight": 40,
@@ -10609,7 +10830,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Rajsamand (Raj.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Subhash Rawat (Driver)"
   },
   {
     "id": "DUE_20262027_2056_0223",
@@ -10621,18 +10843,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 2620,
     "transport": "TTC",
     "consignee": "movgiri Export Panipat",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "8824673374",
     "truckNo": "RJ52GA5396",
     "destination": "Panipat (Haryana)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Jitendra Goyal",
-    "referenceMobile": "",
+    "referenceMobile": "9829809233",
     "owner": "Raju Gurjar",
     "ownerName": "Raju Gurjar",
-    "ownerMobile": "",
+    "ownerMobile": "9571525492",
     "driver": "Prakash Bajiya",
-    "driverMobile": "",
+    "driverMobile": "9602922684",
     "billingType": "Per Tonne",
     "biltyAmount": 2620,
     "weight": 40,
@@ -10655,7 +10877,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Panipat (Haryana)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Prakash Bajiya (Driver)"
   },
   {
     "id": "DUE_20262027_224_0224",
@@ -10709,7 +10932,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "12/09/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Raje ndra M eøna 7906 (Driver)"
   },
   {
     "id": "DUE_20262027_2051_0225",
@@ -10755,7 +10979,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Deepu Gurjar (Driver)"
   },
   {
     "id": "DUE_20262027_226_0226",
@@ -10801,7 +11026,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "MLA Sarkar Bandhanwada (Driver)"
   },
   {
     "id": "DUE_20262027_2024_0227",
@@ -10847,7 +11073,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Mukesh Nayak (Driver)"
   },
   {
     "id": "DUE_20262027_2035_0228",
@@ -10859,18 +11086,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 240000,
     "transport": "TTC",
     "consignee": "OCR Enterprises",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "CN",
+    "consigneeMobile": "9414571920",
     "truckNo": "RJ52GB4737",
     "destination": "Delhi",
     "origin": "Rajsamand (Raj.)",
     "reference": "Chotu 3i Choudhary Venkatesh _",
-    "referenceMobile": "",
+    "referenceMobile": "8824107422",
     "owner": "Panchuram Gurjar",
     "ownerName": "Panchuram Gurjar",
-    "ownerMobile": "",
+    "ownerMobile": "9829405071",
     "driver": "Matadin Gurjar4737",
-    "driverMobile": "",
+    "driverMobile": "9828230111",
     "billingType": "Per Tonne",
     "biltyAmount": 240000,
     "weight": 40,
@@ -10893,7 +11120,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Delhi"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Matadin Gurjar4737 (Driver)"
   },
   {
     "id": "DUE_20262027_2015_0229",
@@ -10947,7 +11175,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "09/09/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Dinesh 5523 (Driver)"
   },
   {
     "id": "DUE_20262027_1990_0230",
@@ -10959,18 +11188,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 11500,
     "transport": "TTC",
     "consignee": "MAHADEV MARBLE AND GRANITE",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "09ARIPK0287F1ZO",
+    "consigneeMobile": "8824717838",
     "truckNo": "RJ52GB0729",
     "destination": "Agra (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Pushpendra Sharma",
-    "referenceMobile": "",
+    "referenceMobile": "8824947238",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Asharam Choudhary",
-    "driverMobile": "",
+    "driverMobile": "9509026815",
     "billingType": "Per Tonne",
     "biltyAmount": 11500,
     "weight": 40,
@@ -10993,7 +11222,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Agra (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Asharam Choudhary (Driver)"
   },
   {
     "id": "DUE_20262027_231_0231",
@@ -11005,18 +11235,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 13591,
     "transport": "TTC",
     "consignee": "Party",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "08AHIPP2722L1Z1",
+    "consigneeMobile": "9829156852",
     "truckNo": "RJ52GB2S87",
     "destination": "Delhi",
     "origin": "Rajsamand (Raj.)",
     "reference": "Agarwal Dholpur",
-    "referenceMobile": "",
+    "referenceMobile": "7014690391",
     "owner": "Rameshwar Prasad",
     "ownerName": "Rameshwar Prasad",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Krishna Saini",
-    "driverMobile": "",
+    "driverMobile": "9414786528",
     "billingType": "Per Tonne",
     "biltyAmount": 13591,
     "weight": 40,
@@ -11039,7 +11269,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Delhi"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Krishna Saini (Driver)"
   },
   {
     "id": "DUE_20262027_232_0232",
@@ -11051,18 +11282,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 2270,
     "transport": "TTC",
     "consignee": "M/s Indian Granites and Stone",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "09ANXPT1717B1ZO",
+    "consigneeMobile": "7014401543",
     "truckNo": "NL01AFS972",
     "destination": "Ghaziabad (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Tyagi",
-    "referenceMobile": "",
+    "referenceMobile": "8824376990",
     "owner": "Prahlad",
     "ownerName": "Prahlad",
-    "ownerMobile": "",
+    "ownerMobile": "8824560358",
     "driver": "Kishanlal Choudhary",
-    "driverMobile": "",
+    "driverMobile": "9414500816",
     "billingType": "Per Tonne",
     "biltyAmount": 2270,
     "weight": 40,
@@ -11085,7 +11316,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Ghaziabad (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Kishanlal Choudhary (Driver)"
   },
   {
     "id": "DUE_20262027_1988_0233",
@@ -11131,7 +11363,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Tikkamsingh (Driver)"
   },
   {
     "id": "DUE_20262027_1989_0234",
@@ -11185,7 +11418,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "07/09/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "PappuAgra4713 (Driver)"
   },
   {
     "id": "DUE_20262027_1972_0235",
@@ -11240,7 +11474,8 @@ var _PARTY_DUE_MASTER = [
         "payTo": "TTC",
         "clearingDate": "25/10/2026"
       }
-    ]
+    ],
+    "podHandedOverTo": "• NandaRam Gurjar7037 (Driver)"
   },
   {
     "id": "DUE_20262027_1973_0236",
@@ -11295,7 +11530,8 @@ var _PARTY_DUE_MASTER = [
         "payTo": "TTC",
         "clearingDate": "25/10/2026"
       }
-    ]
+    ],
+    "podHandedOverTo": "Kalu Ram 5058 (Driver)"
   },
   {
     "id": "DUE_20262027_1970_0237",
@@ -11307,18 +11543,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 179970,
     "transport": "TTC",
     "consignee": "New Vanshika Agroindustries Pvt_",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9829271513",
     "truckNo": "RJ52GA6366",
     "destination": "Barabanki(U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Virsun Industries",
-    "referenceMobile": "",
+    "referenceMobile": "7014724751",
     "owner": "Rameshwar Prasad",
     "ownerName": "Rameshwar Prasad",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Rajesh Gurjar",
-    "driverMobile": "",
+    "driverMobile": "9414453432",
     "billingType": "Per Tonne",
     "biltyAmount": 179970,
     "weight": 40,
@@ -11341,7 +11577,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Barabanki(U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Rajesh Gurjar (Driver)"
   },
   {
     "id": "DUE_20262027_1967_0238",
@@ -11353,18 +11590,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 240000,
     "transport": "TTC",
     "consignee": "OCR Marbles and Granites",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "8824354822",
     "truckNo": "RJ52GB4737",
     "destination": "Delhi",
     "origin": "Rajsamand (Raj.)",
     "reference": "Chotu 3i Choudhary Venkatesh _",
-    "referenceMobile": "",
+    "referenceMobile": "8824107422",
     "owner": "Panchuram Gurjar",
     "ownerName": "Panchuram Gurjar",
-    "ownerMobile": "",
+    "ownerMobile": "9829405071",
     "driver": "Matadin Gurjar4737",
-    "driverMobile": "",
+    "driverMobile": "9828230111",
     "billingType": "Per Tonne",
     "biltyAmount": 240000,
     "weight": 40,
@@ -11387,7 +11624,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Delhi"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Matadin Gurjar4737 (Driver)"
   },
   {
     "id": "DUE_20262027_1950_0239",
@@ -11441,7 +11679,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "03/09/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Krishan Singh (Driver)"
   },
   {
     "id": "DUE_20262027_240_0240",
@@ -11453,18 +11692,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 16700,
     "transport": "TTC",
     "consignee": "Party",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "08AHIPP2722L1Z1",
+    "consigneeMobile": "9829156852",
     "truckNo": "RJ52GB2S08",
     "destination": "Meerut(U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Indian Marble Meerut",
-    "referenceMobile": "",
+    "referenceMobile": "8824282526",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Raju",
-    "driverMobile": "",
+    "driverMobile": "9784839482",
     "billingType": "Per Tonne",
     "biltyAmount": 16700,
     "weight": 40,
@@ -11487,7 +11726,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Meerut(U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Raju (Driver)"
   },
   {
     "id": "DUE_20262027_1944_0241",
@@ -11499,18 +11739,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "movgiri Export Panipat",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "8824673374",
     "truckNo": "RJ52GA8734",
     "destination": "Panipat (Haryana)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Jitendra Goyal",
-    "referenceMobile": "",
+    "referenceMobile": "9829809233",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "• Godara3413",
-    "driverMobile": "",
+    "driverMobile": "9571277429",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -11533,7 +11773,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Panipat (Haryana)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "• Godara3413 (Driver)"
   },
   {
     "id": "DUE_20262027_242_0242",
@@ -11579,7 +11820,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Bhakroda, Rajsamand"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Sitaram (Driver)"
   },
   {
     "id": "DUE_20262027_1906_0243",
@@ -11633,7 +11875,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "24/01/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "MLA Sarkar Bandhanwada (Driver)"
   },
   {
     "id": "DUE_20262027_1922_0244",
@@ -11687,7 +11930,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "31/08/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Mukesh Gurjar Badgam (Driver)"
   },
   {
     "id": "DUE_20262027_31_0245",
@@ -11699,18 +11943,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 30000,
     "transport": "TTC",
     "consignee": "Keshav Marble",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "#NAME?",
+    "consigneeMobile": "7417212121 EEE",
     "truckNo": "RJ52GA7729",
     "destination": "Muzaffarnagar (u. P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Keshav Marble",
-    "referenceMobile": "",
+    "referenceMobile": "9829551801",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Mahendraaat2S85",
-    "driverMobile": "",
+    "driverMobile": "8955266993",
     "billingType": "Per Tonne",
     "biltyAmount": 30000,
     "weight": 40,
@@ -11733,7 +11977,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Kanpur (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Mahendraaat2S85 (Driver)"
   },
   {
     "id": "DUE_20262027_1924_0246",
@@ -11779,7 +12024,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "RkDewanda 3114 (Driver)"
   },
   {
     "id": "DUE_20262027_247_0247",
@@ -11791,18 +12037,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 150000,
     "transport": "TTC",
     "consignee": "Party",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "08AHIPP2722L1Z1",
+    "consigneeMobile": "9829156852",
     "truckNo": "RJ52GB4586",
     "destination": "Khatauli (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Muskan Marble and T\"es House",
-    "referenceMobile": "",
+    "referenceMobile": "9571564021",
     "owner": "Shree Mahaveer Transport Co.",
     "ownerName": "Shree Mahaveer Transport Co.",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Narendra Kumar Raiya",
-    "driverMobile": "",
+    "driverMobile": "9829230561",
     "billingType": "Per Tonne",
     "biltyAmount": 150000,
     "weight": 40,
@@ -11825,7 +12071,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Khatauli (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Narendra Kumar Raiya (Driver)"
   },
   {
     "id": "DUE_20262027_1904_0248",
@@ -11871,7 +12118,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "uday Lal Vaihnav (Driver)"
   },
   {
     "id": "DUE_20262027_1865_0249",
@@ -11883,18 +12131,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "Gomax Industries Private Li mited",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9829823089",
     "truckNo": "RJ52GB5966",
     "destination": "Karnal (Haryana)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Kailash Agarwal Alwar",
-    "referenceMobile": "",
+    "referenceMobile": "9571139173",
     "owner": "Girdhari Si ngh",
     "ownerName": "Girdhari Si ngh",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Mahendra Rawat Shri nagar",
-    "driverMobile": "",
+    "driverMobile": "9414239776",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -11925,7 +12173,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "25/08/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Mahendra Rawat Shri nagar (Driver)"
   },
   {
     "id": "DUE_20262027_1869_0250",
@@ -11971,7 +12220,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Banti Meena tonk (Driver)"
   },
   {
     "id": "DUE_20262027_1868_0251",
@@ -12017,7 +12267,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "• Kalu Ramaat9434 (Driver)"
   },
   {
     "id": "DUE_20262027_1878_0252",
@@ -12029,18 +12280,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "SURYALAXMI SPINNERS PRIVATE",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "8824494294",
     "truckNo": "RJ52GA8733",
     "destination": "Panipat (Haryana)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Jitendra Goyal",
-    "referenceMobile": "",
+    "referenceMobile": "9829809233",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Dhana Ram Saini",
-    "driverMobile": "",
+    "driverMobile": "9166171579",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -12063,7 +12314,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Panipat (Haryana)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Dhana Ram Saini (Driver)"
   },
   {
     "id": "DUE_20262027_252_0253",
@@ -12109,7 +12361,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Raju 9438 (Driver)"
   },
   {
     "id": "DUE_20262027_1864_0254",
@@ -12121,18 +12374,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "M/s PIDILITE INDUSTRIES LIMITED",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "09AAACP4156B1ZQ",
+    "consigneeMobile": "9928329147",
     "truckNo": "RJ52GA733S",
     "destination": "Sandila (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Virsun Industries",
-    "referenceMobile": "",
+    "referenceMobile": "7014724751",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Bharat8614",
-    "driverMobile": "",
+    "driverMobile": "9928567755",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -12163,7 +12416,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "24/08/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Bharat8614 (Driver)"
   },
   {
     "id": "DUE_20262027_1840_0255",
@@ -12175,18 +12429,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "TO The Order Of Everest Bank Ltd",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9928662963",
     "truckNo": "RJ52GB2S09",
     "destination": "Bhairahawa Border (Nepal)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Vivek3ain",
-    "referenceMobile": "",
+    "referenceMobile": "9602826460",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Sattu Kha tana",
-    "driverMobile": "",
+    "driverMobile": "9571232341",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -12209,7 +12463,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Bhairahawa Border (Nepal)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Sattu Kha tana (Driver)"
   },
   {
     "id": "DUE_20262027_1839_0256",
@@ -12221,18 +12476,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "movgiri Export Panipat",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "8824673374",
     "truckNo": "RJ52GA5396",
     "destination": "Panipat (Haryana)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Jitendra Goyal",
-    "referenceMobile": "",
+    "referenceMobile": "9829809233",
     "owner": "Raju Gurjar",
     "ownerName": "Raju Gurjar",
-    "ownerMobile": "",
+    "ownerMobile": "9571525492",
     "driver": "Prakash Bajiya",
-    "driverMobile": "",
+    "driverMobile": "9602922684",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -12255,7 +12510,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Panipat (Haryana)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Prakash Bajiya (Driver)"
   },
   {
     "id": "DUE_20262027_257_0257",
@@ -12267,18 +12523,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "SINGLA e SONS",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9414679672",
     "truckNo": "RJ52GC3337",
     "destination": "Mohali (Punjab)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Shivam Vyas",
-    "referenceMobile": "",
+    "referenceMobile": "7014378951",
     "owner": "Radhyeshyam Gurjar",
     "ownerName": "Radhyeshyam Gurjar",
-    "ownerMobile": "",
+    "ownerMobile": "9784053262",
     "driver": "• Ganesh Gurjar3137",
-    "driverMobile": "",
+    "driverMobile": "9571453621",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -12301,7 +12557,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Mohali (Punjab)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "• Ganesh Gurjar3137 (Driver)"
   },
   {
     "id": "DUE_20262027_21_0258",
@@ -12313,18 +12570,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 80180,
     "transport": "TTC",
     "consignee": "New Vanshika Agroindustries Pvt_",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9829271513",
     "truckNo": "RJ52GB0964",
     "destination": "Barabanki(U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Virsun Industries",
-    "referenceMobile": "",
+    "referenceMobile": "7014724751",
     "owner": "Shishram Meena",
     "ownerName": "Shishram Meena",
-    "ownerMobile": "",
+    "ownerMobile": "9660573067",
     "driver": "Shishram Meena",
-    "driverMobile": "",
+    "driverMobile": "9828230105",
     "billingType": "Per Tonne",
     "biltyAmount": 80180,
     "weight": 40,
@@ -12347,7 +12604,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Barabanki(U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Shishram Meena (Driver)"
   },
   {
     "id": "DUE_20262027_1796_0259",
@@ -12401,7 +12659,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "20/08/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Mukesh Gurjar Badgaon (Driver)"
   },
   {
     "id": "DUE_20262027_1809_0260",
@@ -12413,18 +12672,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 132530,
     "transport": "TTC",
     "consignee": "GALLANT SPORTS AND INFRA PVT",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "7014985383",
     "truckNo": "RJ52GB4538",
     "destination": "Gurugram (Haryana)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Virsun Industries",
-    "referenceMobile": "",
+    "referenceMobile": "7014724751",
     "owner": "Shree Mahaveer Transport Co.",
     "ownerName": "Shree Mahaveer Transport Co.",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Hanuman Singh Hindoli 453B",
-    "driverMobile": "",
+    "driverMobile": "9414629224",
     "billingType": "Per Tonne",
     "biltyAmount": 132530,
     "weight": 40,
@@ -12447,7 +12706,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Gurugram (Haryana)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Hanuman Singh Hindoli 453B (Driver)"
   },
   {
     "id": "DUE_20262027_1750_0261",
@@ -12493,7 +12753,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "GurjarTonk4713 (Driver)"
   },
   {
     "id": "DUE_20262027_1766_0262",
@@ -12505,18 +12766,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 3320,
     "transport": "TTC",
     "consignee": "Export Panipat",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "06AABFD1226E1Z6",
+    "consigneeMobile": "9928732267",
     "truckNo": "RJ52GA7037",
     "destination": "Panipat (Haryana)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Jitendra Goyal",
-    "referenceMobile": "",
+    "referenceMobile": "9829809233",
     "owner": "Heera Lal Sarad hana",
     "ownerName": "Heera Lal Sarad hana",
-    "ownerMobile": "",
+    "ownerMobile": "7339743137",
     "driver": "NandaRam Gurjar7037",
-    "driverMobile": "",
+    "driverMobile": "8824118510",
     "billingType": "Per Tonne",
     "biltyAmount": 3320,
     "weight": 40,
@@ -12539,7 +12800,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Panipat (Haryana)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "NandaRam Gurjar7037 (Driver)"
   },
   {
     "id": "DUE_20262027_1755_0263",
@@ -12551,18 +12813,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 176463,
     "transport": "TTC",
     "consignee": "M/s PIDILITE INDUSTRIES LIMITED",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "09AAACP4156B1ZQ",
+    "consigneeMobile": "9928329147",
     "truckNo": "RJ52GA733S",
     "destination": "Sandila (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Virsun Industries",
-    "referenceMobile": "",
+    "referenceMobile": "7014724751",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Bharat8614",
-    "driverMobile": "",
+    "driverMobile": "9928567755",
     "billingType": "Per Tonne",
     "biltyAmount": 176463,
     "weight": 40,
@@ -12585,7 +12847,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Sandila (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Bharat8614 (Driver)"
   },
   {
     "id": "DUE_20262027_1748_0264",
@@ -12597,18 +12860,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "RADHA MARBLES e TILES",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "8824759982",
     "truckNo": "RJ52GB4538",
     "destination": "Lucknow (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Kishangarh 0m Stonex",
-    "referenceMobile": "",
+    "referenceMobile": "8824743718",
     "owner": "Shree Mahaveer Transport Co.",
     "ownerName": "Shree Mahaveer Transport Co.",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Hanuman Singh Hindoli 453B",
-    "driverMobile": "",
+    "driverMobile": "9414629224",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -12639,7 +12902,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "15/08/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Hanuman Singh Hindoli 453B (Driver)"
   },
   {
     "id": "DUE_20262027_265_0265",
@@ -12651,18 +12915,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 200000,
     "transport": "TTC",
     "consignee": "Ram Raja Granites",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "09AKNPB7056Q1ZF",
+    "consigneeMobile": "9461821042",
     "truckNo": "RJ52GB5147",
     "destination": "Kanpur (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Mahaveer Bijarniya",
-    "referenceMobile": "",
+    "referenceMobile": "9414488992",
     "owner": "Kailash Dhabas",
     "ownerName": "Kailash Dhabas",
-    "ownerMobile": "",
+    "ownerMobile": "9983372986",
     "driver": "Bird ichand",
-    "driverMobile": "",
+    "driverMobile": "9414439984",
     "billingType": "Per Tonne",
     "biltyAmount": 200000,
     "weight": 40,
@@ -12685,7 +12949,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Kanpur (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Bird ichand (Driver)"
   },
   {
     "id": "DUE_20262027_1660_0266",
@@ -12731,7 +12996,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Banti Meena tonk (Driver)"
   },
   {
     "id": "DUE_20262027_267_0267",
@@ -12743,18 +13009,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 150000,
     "transport": "TTC",
     "consignee": "Shankar Marbles",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "09AIHPC8576E1Z2",
+    "consigneeMobile": "945511177",
     "truckNo": "RJ52GB0964",
     "destination": "Lucknow (U. P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Shankar Marble Lucknow",
-    "referenceMobile": "",
+    "referenceMobile": "9414156552",
     "owner": "Shishram Meena",
     "ownerName": "Shishram Meena",
-    "ownerMobile": "",
+    "ownerMobile": "9660573067",
     "driver": "Shishram Meena",
-    "driverMobile": "",
+    "driverMobile": "9828230105",
     "billingType": "Per Tonne",
     "biltyAmount": 150000,
     "weight": 40,
@@ -12777,7 +13043,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Lucknow (U. P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Shishram Meena (Driver)"
   },
   {
     "id": "DUE_20262027_1642_0268",
@@ -12823,7 +13090,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Narayan 7333 (Driver)"
   },
   {
     "id": "DUE_20262027_269_0269",
@@ -12835,18 +13103,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 122740,
     "transport": "TTC",
     "consignee": "SOMANY CERAMICS LIMITED",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "06AAECS0763K1Z9",
+    "consigneeMobile": "9602581948",
     "truckNo": "RJ52GA7726",
     "destination": "Bahadurgarh (Haryana)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Virsun Industries",
-    "referenceMobile": "",
+    "referenceMobile": "7014724751",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Manoj Gurjar",
-    "driverMobile": "",
+    "driverMobile": "7568198094",
     "billingType": "Per Tonne",
     "biltyAmount": 122740,
     "weight": 40,
@@ -12877,7 +13145,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "07/08/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Manoj Gurjar (Driver)"
   },
   {
     "id": "DUE_20262027_1626_0270",
@@ -12889,18 +13158,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 197400,
     "transport": "TTC",
     "consignee": "New Vanshika Agroindustries Pvt_",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9829271513",
     "truckNo": "RJ52GB4573",
     "destination": "Barabanki(U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Virsun Industries",
-    "referenceMobile": "",
+    "referenceMobile": "7014724751",
     "owner": "Shree Mahaveer Transport Co.",
     "ownerName": "Shree Mahaveer Transport Co.",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Kaluram Khatik",
-    "driverMobile": "",
+    "driverMobile": "9928563571",
     "billingType": "Per Tonne",
     "biltyAmount": 197400,
     "weight": 40,
@@ -12923,7 +13192,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Barabanki(U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Kaluram Khatik (Driver)"
   },
   {
     "id": "DUE_20262027_1619_0271",
@@ -12969,7 +13239,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Rajesh Gurjar (Driver)"
   },
   {
     "id": "DUE_20262027_272_0272",
@@ -13015,7 +13286,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Monu Yogi (Driver)"
   },
   {
     "id": "DUE_20262027_1611_0273",
@@ -13027,18 +13299,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 45041,
     "transport": "TTC",
     "consignee": "GALLANTSPORTSANDINFRAPVI",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "8824803390",
     "truckNo": "RJ52GB4507",
     "destination": "Dharuheda (H.R.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Virsun Industries",
-    "referenceMobile": "",
+    "referenceMobile": "7014724751",
     "owner": "Shree Mahaveer Transport",
     "ownerName": "Shree Mahaveer Transport",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Dharmendra Gurjar",
-    "driverMobile": "",
+    "driverMobile": "9571725413",
     "billingType": "Per Tonne",
     "biltyAmount": 45041,
     "weight": 40,
@@ -13061,7 +13333,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Dharuheda (H.R.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Dharmendra Gurjar (Driver)"
   },
   {
     "id": "DUE_20262027_1524_0274",
@@ -13073,18 +13346,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "MAGICRETE BUILDING SOLUTION_",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9829712969",
     "truckNo": "RJ52GB2S10",
     "destination": "Ohajjar (Haryana)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Pranjal Malani",
-    "referenceMobile": "",
+    "referenceMobile": "8824569886",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Bheru Gur-jar",
-    "driverMobile": "",
+    "driverMobile": "9602545748",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -13115,7 +13388,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "27/07/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Bheru Gur-jar (Driver)"
   },
   {
     "id": "DUE_20262027_1457_0275",
@@ -13127,18 +13401,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "Shankar Marbles",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "09AIHPC8576E1Z2",
+    "consigneeMobile": "945511177",
     "truckNo": "RJ52GB5061",
     "destination": "Lucknow (U. P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Shankar Marble Lucknow",
-    "referenceMobile": "",
+    "referenceMobile": "9414156552",
     "owner": "Shree Mahaveer Transport Co.",
     "ownerName": "Shree Mahaveer Transport Co.",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Bhagchand0729",
-    "driverMobile": "",
+    "driverMobile": "9602564372",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -13161,7 +13435,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Lucknow (U. P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Bhagchand0729 (Driver)"
   },
   {
     "id": "DUE_20262027_1432_0276",
@@ -13207,7 +13482,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Oitendra Khoji (Driver)"
   },
   {
     "id": "DUE_20262027_1401_0277",
@@ -13253,7 +13529,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "GpoiChand 8732 (Driver)"
   },
   {
     "id": "DUE_20262027_278_0278",
@@ -13265,18 +13542,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "Party",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "08AHIPP2722L1Z1",
+    "consigneeMobile": "9829156852",
     "truckNo": "RJ52GA9428",
     "destination": "Agra (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Agra 3aypaI Singh",
-    "referenceMobile": "",
+    "referenceMobile": "9829131569",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Kaluram Khatik",
-    "driverMobile": "",
+    "driverMobile": "9928563571",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -13299,7 +13576,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Agra (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Kaluram Khatik (Driver)"
   },
   {
     "id": "DUE_20262027_279_0279",
@@ -13353,7 +13631,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "16/07/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "• Bhupendra 7721 (Driver)"
   },
   {
     "id": "DUE_20262027_1345_0280",
@@ -13399,7 +13678,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Narayan 7333 (Driver)"
   },
   {
     "id": "DUE_20262027_1245_0281",
@@ -13411,18 +13691,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 2180,
     "transport": "TTC",
     "consignee": "TO The Order Of Everest Bank Ltd",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9928662963",
     "truckNo": "RJ52GB5641",
     "destination": "Bhairahawa Border (Nepal)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Vivek3ain",
-    "referenceMobile": "",
+    "referenceMobile": "9602826460",
     "owner": "Shree Mahaveer Transport Co.",
     "ownerName": "Shree Mahaveer Transport Co.",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Tikkam Singh",
-    "driverMobile": "",
+    "driverMobile": "9784927866",
     "billingType": "Per Tonne",
     "biltyAmount": 2180,
     "weight": 40,
@@ -13445,7 +13725,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Bhairahawa Border (Nepal)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Tikkam Singh (Driver)"
   },
   {
     "id": "DUE_20262027_282_0282",
@@ -13457,18 +13738,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 21592,
     "transport": "TTC",
     "consignee": "M/s Kansai Nerolac Paints Ltd.",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "O9AAACG1376N1ZA UPSIDC",
+    "consigneeMobile": "9829766825",
     "truckNo": "ROOBGB2298",
     "destination": "Kanpur (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Kunal Micron Vijay Zain",
-    "referenceMobile": "",
+    "referenceMobile": "9784102146",
     "owner": "Pratap Singh",
     "ownerName": "Pratap Singh",
-    "ownerMobile": "",
+    "ownerMobile": "9610992196",
     "driver": "• Bajrang 2298",
-    "driverMobile": "",
+    "driverMobile": "9784389898",
     "billingType": "Per Tonne",
     "biltyAmount": 21592,
     "weight": 40,
@@ -13491,7 +13772,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Kanpur (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "• Bajrang 2298 (Driver)"
   },
   {
     "id": "DUE_20262027_1164_0283",
@@ -13503,18 +13785,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 356000,
     "transport": "TTC",
     "consignee": "MAGICRETE BUILDING SOLUTION_",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9829712969",
     "truckNo": "RJ52GA3137",
     "destination": "Ohajjar (Haryana)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Pranjal Malani",
-    "referenceMobile": "",
+    "referenceMobile": "8824569886",
     "owner": "Radhyeshyam Gurjar",
     "ownerName": "Radhyeshyam Gurjar",
-    "ownerMobile": "",
+    "ownerMobile": "9784053262",
     "driver": "Prakash Bajiya",
-    "driverMobile": "",
+    "driverMobile": "9602922684",
     "billingType": "Per Tonne",
     "biltyAmount": 356000,
     "weight": 40,
@@ -13537,7 +13819,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Ohajjar (Haryana)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Prakash Bajiya (Driver)"
   },
   {
     "id": "DUE_20262027_1138_0284",
@@ -13591,7 +13874,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "26/06/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Driver 2169 (Driver)"
   },
   {
     "id": "DUE_20262027_1129_0285",
@@ -13637,7 +13921,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Rajesh saini (Driver)"
   },
   {
     "id": "DUE_20262027_286_0286",
@@ -13683,7 +13968,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Kasana (Driver)"
   },
   {
     "id": "DUE_20262027_287_0287",
@@ -13729,7 +14015,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Oeetram Gurjar (Driver)"
   },
   {
     "id": "DUE_20262027_288_0288",
@@ -13775,7 +14062,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Kalu Ramaat9434 (Driver)"
   },
   {
     "id": "DUE_20262027_982_0289",
@@ -13787,18 +14075,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "MAGICRETE BUILDING SOLUTION_",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9829712969",
     "truckNo": "RJ52GC3337",
     "destination": "Ohajjar (Haryana)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Pranjal Malani",
-    "referenceMobile": "",
+    "referenceMobile": "8824569886",
     "owner": "Radhyeshyam Gurjar",
     "ownerName": "Radhyeshyam Gurjar",
-    "ownerMobile": "",
+    "ownerMobile": "9784053262",
     "driver": "Radheylal Yadav",
-    "driverMobile": "",
+    "driverMobile": "9829686945",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -13829,7 +14117,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "13/06/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Radheylal Yadav (Driver)"
   },
   {
     "id": "DUE_20262027_1014_0290",
@@ -13841,18 +14130,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 29900,
     "transport": "TTC",
     "consignee": "0M SAI PLASTER",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9928207691",
     "truckNo": "RJ52GA7729",
     "destination": "Rohtak (Haryana)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Sudhir Mishra Sarkani kareda",
-    "referenceMobile": "",
+    "referenceMobile": "9414489504",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Dinesh Yadav 7729",
-    "driverMobile": "",
+    "driverMobile": "8955266993",
     "billingType": "Per Tonne",
     "biltyAmount": 29900,
     "weight": 40,
@@ -13875,7 +14164,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Rohtak (Haryana)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Dinesh Yadav 7729 (Driver)"
   },
   {
     "id": "DUE_20262027_291_0291",
@@ -13921,7 +14211,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "• 7720 (Driver)"
   },
   {
     "id": "DUE_20262027_292_0292",
@@ -13933,18 +14224,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 30000,
     "transport": "TTC",
     "consignee": "M/s Kansai Nerolac Paints Ltd.",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "O9AAACG1376N1ZA UPSIDC",
+    "consigneeMobile": "9829766825",
     "truckNo": "RJ52GA7296",
     "destination": "Kanpur (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Kunal Micron Vijay Zain",
-    "referenceMobile": "",
+    "referenceMobile": "9784102146",
     "owner": "Kailash Dhabas",
     "ownerName": "Kailash Dhabas",
-    "ownerMobile": "",
+    "ownerMobile": "9983372986",
     "driver": "ShivrajGA7296",
-    "driverMobile": "",
+    "driverMobile": "9928162315",
     "billingType": "Per Tonne",
     "biltyAmount": 30000,
     "weight": 40,
@@ -13967,7 +14258,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Kanpur (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "ShivrajGA7296 (Driver)"
   },
   {
     "id": "DUE_20262027_915_0293",
@@ -14013,7 +14305,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Sanjay Yadav (Driver)"
   },
   {
     "id": "DUE_20262027_898_0294",
@@ -14067,7 +14360,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "07/06/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Samshad Khan 0534 (Driver)"
   },
   {
     "id": "DUE_20262027_880_0295",
@@ -14079,18 +14373,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "SNG MARBLE AND GRANITES",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9829804905",
     "truckNo": "RJ52GB0729",
     "destination": "Shahjahanpur (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Bharat Das Vaishnav",
-    "referenceMobile": "",
+    "referenceMobile": "9414640080",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Lokesh Choudhary",
-    "driverMobile": "",
+    "driverMobile": "6367985362",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -14113,7 +14407,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Shahjahanpur (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Lokesh Choudhary (Driver)"
   },
   {
     "id": "DUE_20262027_854_0296",
@@ -14159,7 +14454,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Bajrang 2298 (Driver)"
   },
   {
     "id": "DUE_20262027_843_0297",
@@ -14205,7 +14501,8 @@ var _PARTY_DUE_MASTER = [
         "address": "F-49&50, APNA GHAR SHALIMAR, ALWAR"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Kallu Meena (Driver)"
   },
   {
     "id": "DUE_20262027_835_0298",
@@ -14217,18 +14514,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 4840,
     "transport": "TTC",
     "consignee": "M/s. PRABHU MENERALS AND CH.",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "<eaemaa",
+    "consigneeMobile": "9784565394",
     "truckNo": "RJ52GB3B67",
     "destination": "Kanpur (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Sunil ostie",
-    "referenceMobile": "",
+    "referenceMobile": "9928513883",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Pratap Singh",
-    "driverMobile": "",
+    "driverMobile": "9571194461",
     "billingType": "Per Tonne",
     "biltyAmount": 4840,
     "weight": 40,
@@ -14251,7 +14548,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Kanpur (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Pratap Singh (Driver)"
   },
   {
     "id": "DUE_20262027_794_0299",
@@ -14305,7 +14603,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "30/05/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "D\"kush Gurjar Kekari (Driver)"
   },
   {
     "id": "DUE_20262027_83_0300",
@@ -14351,7 +14650,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Devaram Gurjar (Driver)"
   },
   {
     "id": "DUE_20262027_750_0301",
@@ -14363,18 +14663,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 6800,
     "transport": "TTC",
     "consignee": "M/s ROCK MARBLE AND GRANITE",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "09CHEPK1705K1ZC",
+    "consigneeMobile": "9784551330",
     "truckNo": "RJ52GB2S09",
     "destination": "Aligarh (U. P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Nikhil Sharma Aliigarh",
-    "referenceMobile": "",
+    "referenceMobile": "9602204092",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Tikkam Singh",
-    "driverMobile": "",
+    "driverMobile": "9784927866",
     "billingType": "Per Tonne",
     "biltyAmount": 6800,
     "weight": 40,
@@ -14397,7 +14697,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Aligarh (U. P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Tikkam Singh (Driver)"
   },
   {
     "id": "DUE_20262027_702_0302",
@@ -14443,7 +14744,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Hari R am Khoji (Driver)"
   },
   {
     "id": "DUE_20262027_303_0303",
@@ -14455,18 +14757,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 4285.5,
     "transport": "TTC",
     "consignee": "M/s Kansai Nerolac Paints Ltd.",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "O9AAACG1376N1ZA UPSIDC",
+    "consigneeMobile": "9829766825",
     "truckNo": "RJ52GB0745",
     "destination": "Kanpur (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Kunal Micron Vijay Zain",
-    "referenceMobile": "",
+    "referenceMobile": "9784102146",
     "owner": "Suresh Rolaniya",
     "ownerName": "Suresh Rolaniya",
-    "ownerMobile": "",
+    "ownerMobile": "7297968745",
     "driver": "Mukesh Meena 0745",
-    "driverMobile": "",
+    "driverMobile": "9829934129",
     "billingType": "Per Tonne",
     "biltyAmount": 4285.5,
     "weight": 40,
@@ -14489,7 +14791,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Kanpur (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Mukesh Meena 0745 (Driver)"
   },
   {
     "id": "DUE_20262027_570_0304",
@@ -14543,7 +14846,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "11/05/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Sarvan Gurjar9438 (Driver)"
   },
   {
     "id": "DUE_20262027_549_0305",
@@ -14589,7 +14893,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Sunil Natwadiya (Driver)"
   },
   {
     "id": "DUE_20262027_541_0306",
@@ -14601,18 +14906,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "Grasim Industries Limited Birla P _",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9602644132",
     "truckNo": "ROOIGD3707",
     "destination": "Ludhiana (Punjab)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Tanuj Kothari Udaipur",
-    "referenceMobile": "",
+    "referenceMobile": "9602409100",
     "owner": "Lalaram Choudhary Shrinagm",
     "ownerName": "Lalaram Choudhary Shrinagm",
-    "ownerMobile": "",
+    "ownerMobile": "9414734328",
     "driver": "NEERU Ge6195",
-    "driverMobile": "",
+    "driverMobile": "9602457540",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -14635,7 +14940,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Ludhiana (Punjab)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "NEERU Ge6195 (Driver)"
   },
   {
     "id": "DUE_20262027_519_0307",
@@ -14681,7 +14987,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "MLA Sarkar Bandhanwada (Driver)"
   },
   {
     "id": "DUE_20262027_308_0308",
@@ -14693,18 +15000,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 30000,
     "transport": "TTC",
     "consignee": "M/s Kansai Nerolac Paints Ltd.",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "O9AAACG1376N1ZA UPSIDC",
+    "consigneeMobile": "9829766825",
     "truckNo": "RJ52GA7906",
     "destination": "Kanpur (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Kunal Micron Vijay Zain",
-    "referenceMobile": "",
+    "referenceMobile": "9784102146",
     "owner": "Kailash Dhabas",
     "ownerName": "Kailash Dhabas",
-    "ownerMobile": "",
+    "ownerMobile": "9983372986",
     "driver": "• Dvr7906",
-    "driverMobile": "",
+    "driverMobile": "9784478890",
     "billingType": "Per Tonne",
     "biltyAmount": 30000,
     "weight": 40,
@@ -14727,7 +15034,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Kanpur (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "• Dvr7906 (Driver)"
   },
   {
     "id": "DUE_20262027_439_0309",
@@ -14781,7 +15089,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "03/05/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "BhiamRaj 8616 (Driver)"
   },
   {
     "id": "DUE_20262027_448_0310",
@@ -14793,18 +15102,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 2769,
     "transport": "TTC",
     "consignee": "BirlaNu Ltd. Jhajjar Putty Plant -",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "06AAACH2676O124",
+    "consigneeMobile": "9928205899",
     "truckNo": "RJ52GB0724",
     "destination": "Ohajjar (Haryana)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Balwant Yadav R.B. Dyes and Che_",
-    "referenceMobile": "",
+    "referenceMobile": "7014698399",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Ramkishor•e Swami",
-    "driverMobile": "",
+    "driverMobile": "9414474256",
     "billingType": "Per Tonne",
     "biltyAmount": 2769,
     "weight": 40,
@@ -14827,7 +15136,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Ohajjar (Haryana)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Ramkishor•e Swami (Driver)"
   },
   {
     "id": "DUE_20262027_424_0311",
@@ -14873,7 +15183,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Laxman Meena Kishangrah4_ (Driver)"
   },
   {
     "id": "DUE_20262027_410_0312",
@@ -14885,18 +15196,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 30000,
     "transport": "TTC",
     "consignee": "M/s Kansai Nerolac Paints Ltd.",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "O9AAACG1376N1ZA UPSIDC",
+    "consigneeMobile": "9829766825",
     "truckNo": "RJ52GB2736",
     "destination": "Kanpur (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Kunal Micron Vijay Zain",
-    "referenceMobile": "",
+    "referenceMobile": "9784102146",
     "owner": "Suresh Rolaniya",
     "ownerName": "Suresh Rolaniya",
-    "ownerMobile": "",
+    "ownerMobile": "7297968745",
     "driver": "Mukesh Salvi",
-    "driverMobile": "",
+    "driverMobile": "9414917960",
     "billingType": "Per Tonne",
     "biltyAmount": 30000,
     "weight": 40,
@@ -14919,7 +15230,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Kanpur (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Mukesh Salvi (Driver)"
   },
   {
     "id": "DUE_20262027_409_0313",
@@ -14965,7 +15277,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "SanjayYadav (Driver)"
   },
   {
     "id": "DUE_20262027_314_0314",
@@ -15019,7 +15332,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "29/04/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Kalyan Meena (Driver)"
   },
   {
     "id": "DUE_20262027_389_0315",
@@ -15031,18 +15345,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 30000,
     "transport": "TTC",
     "consignee": "ASIAN PAINTS PPG PRIVATE LIMIT_",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9829636809",
     "truckNo": "RJ52GB084B",
     "destination": "Kanpur (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Kunal Micron Vijay Zain",
-    "referenceMobile": "",
+    "referenceMobile": "9784102146",
     "owner": "Bajranj 3angid Shahpura",
     "ownerName": "Bajranj 3angid Shahpura",
-    "ownerMobile": "",
+    "ownerMobile": "9602260164",
     "driver": "Keshi Ram Meena Tonk084B",
-    "driverMobile": "",
+    "driverMobile": "8824307542",
     "billingType": "Per Tonne",
     "biltyAmount": 30000,
     "weight": 40,
@@ -15065,7 +15379,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Kanpur (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Keshi Ram Meena Tonk084B (Driver)"
   },
   {
     "id": "DUE_20262027_316_0316",
@@ -15077,18 +15392,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 30000,
     "transport": "TTC",
     "consignee": "M/s Kansai Nerolac Paints Ltd.",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "O9AAACG1376N1ZA UPSIDC",
+    "consigneeMobile": "9829766825",
     "truckNo": "RJ14GP6349",
     "destination": "Kanpur (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Kunal Micron Vijay Zain",
-    "referenceMobile": "",
+    "referenceMobile": "9784102146",
     "owner": "Suresh Rolaniya",
     "ownerName": "Suresh Rolaniya",
-    "ownerMobile": "",
+    "ownerMobile": "7297968745",
     "driver": "Vinod Meena 6349",
-    "driverMobile": "",
+    "driverMobile": "9784752274",
     "billingType": "Per Tonne",
     "biltyAmount": 30000,
     "weight": 40,
@@ -15111,7 +15426,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Kanpur (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Vinod Meena 6349 (Driver)"
   },
   {
     "id": "DUE_20262027_375_0317",
@@ -15157,7 +15473,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "2043 (Driver)"
   },
   {
     "id": "DUE_20262027_348_0318",
@@ -15169,18 +15486,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 291556,
     "transport": "TTC",
     "consignee": "Berger Paints India Ltd.",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "09AABCB0976E1ZT",
+    "consigneeMobile": "9928397387",
     "truckNo": "RJ52GA7720",
     "destination": "Sandila (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Kunal Micron Vijay Zain",
-    "referenceMobile": "",
+    "referenceMobile": "9784102146",
     "owner": "Kailash Dhabas",
     "ownerName": "Kailash Dhabas",
-    "ownerMobile": "",
+    "ownerMobile": "9983372986",
     "driver": "Harish Saini",
-    "driverMobile": "",
+    "driverMobile": "9928412251",
     "billingType": "Per Tonne",
     "biltyAmount": 291556,
     "weight": 40,
@@ -15203,7 +15520,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Greater Noida (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Harish Saini (Driver)"
   },
   {
     "id": "DUE_20262027_319_0319",
@@ -15257,7 +15575,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "24/04 /2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Sunil Natwadiya (Driver)"
   },
   {
     "id": "DUE_20262027_321_0320",
@@ -15269,18 +15588,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 30000,
     "transport": "TTC",
     "consignee": "M/s Kansai Nerolac Paints Ltd.",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "O9AAACG1376N1ZA UPSIDC",
+    "consigneeMobile": "9829766825",
     "truckNo": "RJ52GB0236",
     "destination": "Kanpur (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Kunal Micron Vijay Zain",
-    "referenceMobile": "",
+    "referenceMobile": "9784102146",
     "owner": "Kailash Dhabas",
     "ownerName": "Kailash Dhabas",
-    "ownerMobile": "",
+    "ownerMobile": "9983372986",
     "driver": "Kalunath Shahpura",
-    "driverMobile": "",
+    "driverMobile": "9784957546",
     "billingType": "Per Tonne",
     "biltyAmount": 30000,
     "weight": 40,
@@ -15303,7 +15622,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Kanpur (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Kalunath Shahpura (Driver)"
   },
   {
     "id": "DUE_20262027_296_0321",
@@ -15349,7 +15669,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "• BhiamRaj 8616 (Driver)"
   },
   {
     "id": "DUE_20262027_304_0322",
@@ -15395,7 +15716,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Narayan 7333 (Driver)"
   },
   {
     "id": "DUE_20262027_323_0323",
@@ -15441,7 +15763,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Mahendra SI 46 (Driver)"
   },
   {
     "id": "DUE_20262027_324_0324",
@@ -15495,7 +15818,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "20/04/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Nand Singh (Driver)"
   },
   {
     "id": "DUE_20262027_286_0325",
@@ -15541,7 +15865,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "aahbu Raiya (Driver)"
   },
   {
     "id": "DUE_20262027_326_0326",
@@ -15553,18 +15878,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 30000,
     "transport": "TTC",
     "consignee": "ASIAN PAINTS PPG PRIVATE LIMIT_",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9829636809",
     "truckNo": "RJ14GP9911",
     "destination": "Kanpur (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Kunal Micron Vijay Zain",
-    "referenceMobile": "",
+    "referenceMobile": "9784102146",
     "owner": "Dilip Sharma",
     "ownerName": "Dilip Sharma",
-    "ownerMobile": "",
+    "ownerMobile": "9837365048",
     "driver": "Bada' Nayak9911",
-    "driverMobile": "",
+    "driverMobile": "9837365056",
     "billingType": "Per Tonne",
     "biltyAmount": 30000,
     "weight": 40,
@@ -15587,7 +15912,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Kanpur (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Bada' Nayak9911 (Driver)"
   },
   {
     "id": "DUE_20262027_229_0327",
@@ -15599,18 +15925,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 50000,
     "transport": "TTC",
     "consignee": "Grasim Industries Limited Birla P.",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9829417929",
     "truckNo": "ROOIGD6708",
     "destination": "Ludhiana (Punjab)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Tanuj Kothari Udaipur",
-    "referenceMobile": "",
+    "referenceMobile": "9602409100",
     "owner": "Lalaram Choudhary Shrinagm",
     "ownerName": "Lalaram Choudhary Shrinagm",
-    "ownerMobile": "",
+    "ownerMobile": "9414734328",
     "driver": "Nandaram",
-    "driverMobile": "",
+    "driverMobile": "9928084394",
     "billingType": "Per Tonne",
     "biltyAmount": 50000,
     "weight": 40,
@@ -15633,7 +15959,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Ludhiana (Punjab)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Nandaram (Driver)"
   },
   {
     "id": "DUE_20262027_227_0328",
@@ -15679,7 +16006,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "7720 (Driver)"
   },
   {
     "id": "DUE_20262027_329_0329",
@@ -15733,7 +16061,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "16/04/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Kalyan Meena (Driver)"
   },
   {
     "id": "DUE_20262027_191_0330",
@@ -15779,7 +16108,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Dvr7906 (Driver)"
   },
   {
     "id": "DUE_20262027_192_0331",
@@ -15825,7 +16155,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Mukesh Gurjar Badgaon (Driver)"
   },
   {
     "id": "DUE_20262027_332_0332",
@@ -15871,7 +16202,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Rajesh saini (Driver)"
   },
   {
     "id": "DUE_20262027_333_0333",
@@ -15917,7 +16249,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Bhagchand0729 (Driver)"
   },
   {
     "id": "DUE_20262027_138_0334",
@@ -15971,7 +16304,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "10/04/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Sintu Prajapat Lamba Hari Si_ (Driver)"
   },
   {
     "id": "DUE_20262027_335_0335",
@@ -16017,7 +16351,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Shankar GurJar (Driver)"
   },
   {
     "id": "DUE_20262027_46_0336",
@@ -16029,18 +16364,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 12659,
     "transport": "TTC",
     "consignee": "M/s Shri Krishna Marbles",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "09ANTPS8821R1ZL",
+    "consigneeMobile": "9650340572",
     "truckNo": "RJ52GB5966",
     "destination": "Noida (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Krishiv stone 9829619588",
-    "referenceMobile": "",
+    "referenceMobile": "9602735796",
     "owner": "Pradhan Choudhary",
     "ownerName": "Pradhan Choudhary",
-    "ownerMobile": "",
+    "ownerMobile": "9351612826",
     "driver": "Devi Singh Rawat",
-    "driverMobile": "",
+    "driverMobile": "9414843272",
     "billingType": "Per Tonne",
     "biltyAmount": 12659,
     "weight": 40,
@@ -16063,7 +16398,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Noida (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Devi Singh Rawat (Driver)"
   },
   {
     "id": "DUE_20262027_82_0337",
@@ -16109,7 +16445,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "7720 (Driver)"
   },
   {
     "id": "DUE_20262027_31_0338",
@@ -16121,18 +16458,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 30000,
     "transport": "TTC",
     "consignee": "M/s Kansai Nerolac Paints Ltd.",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "O9AAACG1376N1ZA UPSIDC",
+    "consigneeMobile": "9829766825",
     "truckNo": "RJ32GD3413",
     "destination": "Kanpur (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Kunal Micron Vijay Zain",
-    "referenceMobile": "",
+    "referenceMobile": "9784102146",
     "owner": "Kailash Dhabas",
     "ownerName": "Kailash Dhabas",
-    "ownerMobile": "",
+    "ownerMobile": "9983372986",
     "driver": "Batveer Choudhary 3413",
-    "driverMobile": "",
+    "driverMobile": "9829386169",
     "billingType": "Per Tonne",
     "biltyAmount": 30000,
     "weight": 40,
@@ -16155,7 +16492,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Kanpur (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Batveer Choudhary 3413 (Driver)"
   },
   {
     "id": "DUE_20252026_2798_0339",
@@ -16167,18 +16505,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 30000,
     "transport": "TTC",
     "consignee": "ASIAN PAINTS PPG PRIVATE LIMIT_",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9829636809",
     "truckNo": "R030GA7311",
     "destination": "Kanpur (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Kunal Micron Vijay Zain",
-    "referenceMobile": "",
+    "referenceMobile": "9784102146",
     "owner": "3agdamba Transport",
     "ownerName": "3agdamba Transport",
-    "ownerMobile": "",
+    "ownerMobile": "7014298719",
     "driver": "Suresh Gurjar7311",
-    "driverMobile": "",
+    "driverMobile": "9829482953",
     "billingType": "Per Tonne",
     "biltyAmount": 30000,
     "weight": 40,
@@ -16209,7 +16547,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "30/03/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Suresh Gurjar7311 (Driver)"
   },
   {
     "id": "DUE_20252026_2797_0340",
@@ -16255,7 +16594,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Monu Yogi (Driver)"
   },
   {
     "id": "DUE_20252026_2751_0341",
@@ -16301,7 +16641,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Bhupendra 7721 (Driver)"
   },
   {
     "id": "DUE_20252026_342_0342",
@@ -16347,7 +16688,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Kanharam Gurjar (Driver)"
   },
   {
     "id": "DUE_20252026_2704_0343",
@@ -16393,7 +16735,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Kalu Ram 5058 (Driver)"
   },
   {
     "id": "DUE_20252026_2709_0344",
@@ -16447,7 +16790,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "24/03/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "• Driver 6337 (Driver)"
   },
   {
     "id": "DUE_20252026_2680_0345",
@@ -16459,18 +16803,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 53978,
     "transport": "TTC",
     "consignee": "M/s Marble",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "09AOCPG8874N1Z7",
+    "consigneeMobile": "9602307756",
     "truckNo": "RJ52GB5966",
     "destination": "Moradabad (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Saif Marble Moradabad",
-    "referenceMobile": "",
+    "referenceMobile": "9829954409",
     "owner": "Lalaram Choudhary Shrinagm",
     "ownerName": "Lalaram Choudhary Shrinagm",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Gopal Rawat Shrinagar",
-    "driverMobile": "",
+    "driverMobile": "7014347815",
     "billingType": "Per Tonne",
     "biltyAmount": 53978,
     "weight": 40,
@@ -16493,7 +16837,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Moradabad (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Gopal Rawat Shrinagar (Driver)"
   },
   {
     "id": "DUE_20252026_2659_0346",
@@ -16505,18 +16850,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 30000,
     "transport": "TTC",
     "consignee": "ASIAN PAINTS PPG PRIVATE LIMIT_",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9829636809",
     "truckNo": "RJ32GD3771",
     "destination": "Kanpur (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Kunal Micron Vijay Zain",
-    "referenceMobile": "",
+    "referenceMobile": "9784102146",
     "owner": "Vinod Dhabas",
     "ownerName": "Vinod Dhabas",
-    "ownerMobile": "",
+    "ownerMobile": "8094550036",
     "driver": "Mukesh Gurjar RJ52GB5172",
-    "driverMobile": "",
+    "driverMobile": "7014511047",
     "billingType": "Per Tonne",
     "biltyAmount": 30000,
     "weight": 40,
@@ -16539,7 +16884,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Kanpur (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Mukesh Gurjar RJ52GB5172 (Driver)"
   },
   {
     "id": "DUE_20252026_347_0347",
@@ -16585,7 +16931,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Kalunath Shahpura (Driver)"
   },
   {
     "id": "DUE_20252026_348_0348",
@@ -16597,18 +16944,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 291556,
     "transport": "TTC",
     "consignee": "Chaudhary Traders",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "09EBQPM3740C1ZI",
+    "consigneeMobile": "7836995115,",
     "truckNo": "RJ52GB5966",
     "destination": "Greater Noida (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Chacha",
-    "referenceMobile": "",
+    "referenceMobile": "9414387488",
     "owner": "Prahlad",
     "ownerName": "Prahlad",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Krishan 5377",
-    "driverMobile": "",
+    "driverMobile": "9784111258",
     "billingType": "Per Tonne",
     "biltyAmount": 291556,
     "weight": 40,
@@ -16631,7 +16978,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Greater Noida (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Krishan 5377 (Driver)"
   },
   {
     "id": "DUE_20252026_2599_0349",
@@ -16685,7 +17033,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "17/03/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Sunil Natwadiya (Driver)"
   },
   {
     "id": "DUE_20252026_2579_0350",
@@ -16731,7 +17080,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Krishan singh (Driver)"
   },
   {
     "id": "DUE_20252026_2560_0351",
@@ -16777,7 +17127,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "BhiamRaj 8616 (Driver)"
   },
   {
     "id": "DUE_20252026_2526_0352",
@@ -16789,18 +17140,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "Excellence Marmo India",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "07AAMFE7248L1ZV",
+    "consigneeMobile": "7014644663",
     "truckNo": "RJ52GB5966",
     "destination": "Delhi",
     "origin": "Rajsamand (Raj.)",
     "reference": "Shree Sharan Associates",
-    "referenceMobile": "",
+    "referenceMobile": "7014499615",
     "owner": "Shree Mahaveer Transport Co.",
     "ownerName": "Shree Mahaveer Transport Co.",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Hardan",
-    "driverMobile": "",
+    "driverMobile": "9414775800",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -16823,7 +17174,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Delhi"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Hardan (Driver)"
   },
   {
     "id": "DUE_20252026_353_0353",
@@ -16835,18 +17187,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 30000,
     "transport": "TTC",
     "consignee": "ASIAN PAINTS PPG PRIVATE LIMIT_",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9829636809",
     "truckNo": "ROOBGB2298",
     "destination": "Kanpur (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Kunal Micron Vijay Zain",
-    "referenceMobile": "",
+    "referenceMobile": "9784102146",
     "owner": "Pratap Singh",
     "ownerName": "Pratap Singh",
-    "ownerMobile": "",
+    "ownerMobile": "9610992196",
     "driver": "Bajrang 2298",
-    "driverMobile": "",
+    "driverMobile": "9602790956",
     "billingType": "Per Tonne",
     "biltyAmount": 30000,
     "weight": 40,
@@ -16869,7 +17221,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Kanpur (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Bajrang 2298 (Driver)"
   },
   {
     "id": "DUE_20252026_354_0354",
@@ -16923,7 +17276,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "08/03/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Kaluram Khatik (Driver)"
   },
   {
     "id": "DUE_20252026_2416_0355",
@@ -16969,7 +17323,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "GpoiChand 8732 (Driver)"
   },
   {
     "id": "DUE_20252026_356_0356",
@@ -16981,18 +17336,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "ASIAN PAINTS PPG PRIVATE LIMIT_",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9829636809",
     "truckNo": "ROOBGB2298",
     "destination": "Kanpur (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Kunal Micron Vijay Zain",
-    "referenceMobile": "",
+    "referenceMobile": "9784102146",
     "owner": "Pratap Singh",
     "ownerName": "Pratap Singh",
-    "ownerMobile": "",
+    "ownerMobile": "9610992196",
     "driver": "Bajrang 2298",
-    "driverMobile": "",
+    "driverMobile": "9602790956",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -17015,7 +17370,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Kanpur (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Bajrang 2298 (Driver)"
   },
   {
     "id": "DUE_20252026_357_0357",
@@ -17027,18 +17383,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 8827.5,
     "transport": "TTC",
     "consignee": "ASIAN PAINTS PPG PRIVATE LIMIT_",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9829636809",
     "truckNo": "RJ52GAB679",
     "destination": "Kanpur (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Kunal Micron Vijay Zain",
-    "referenceMobile": "",
+    "referenceMobile": "9784102146",
     "owner": "Rameshwar Prasad",
     "ownerName": "Rameshwar Prasad",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "D\"kush Gurjar Kekari",
-    "driverMobile": "",
+    "driverMobile": "9571436429",
     "billingType": "Per Tonne",
     "biltyAmount": 8827.5,
     "weight": 40,
@@ -17061,7 +17417,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Kanpur (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "D\"kush Gurjar Kekari (Driver)"
   },
   {
     "id": "DUE_20252026_2348_0358",
@@ -17073,18 +17430,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 5021.6,
     "transport": "TTC",
     "consignee": "M/s Kansai Nerolac Paints Ltd.",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "O9AAACG1376N1ZA UPSIDC",
+    "consigneeMobile": "9829766825",
     "truckNo": "RJ52GA8733",
     "destination": "Kanpur (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Kunal Micron Vijay Zain",
-    "referenceMobile": "",
+    "referenceMobile": "9784102146",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Hemraj8733",
-    "driverMobile": "",
+    "driverMobile": "9166171579",
     "billingType": "Per Tonne",
     "biltyAmount": 5021.6,
     "weight": 40,
@@ -17107,7 +17464,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Kanpur (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Hemraj8733 (Driver)"
   },
   {
     "id": "DUE_20252026_2349_0359",
@@ -17161,7 +17519,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "25/02/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Mahendra Bairwa (Driver)"
   },
   {
     "id": "DUE_20252026_2246_0360",
@@ -17207,7 +17566,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Rajesh saini (Driver)"
   },
   {
     "id": "DUE_20252026_2212_0361",
@@ -17253,7 +17613,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Ratan Gurjar5578 (Driver)"
   },
   {
     "id": "DUE_20252026_2209_0362",
@@ -17299,7 +17660,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Bharat8614 (Driver)"
   },
   {
     "id": "DUE_20252026_2197_0363",
@@ -17345,7 +17707,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Shishram Meena (Driver)"
   },
   {
     "id": "DUE_20252026_2149_0364",
@@ -17399,7 +17762,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "11/02/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "• Oitendra Khoji (Driver)"
   },
   {
     "id": "DUE_20252026_2119_0365",
@@ -17445,7 +17809,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Bharat8614 (Driver)"
   },
   {
     "id": "DUE_20252026_2059_0366",
@@ -17491,7 +17856,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Bhagchand0729 (Driver)"
   },
   {
     "id": "DUE_20252026_499_0367",
@@ -17503,18 +17869,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 279296,
     "transport": "SMTC",
     "consignee": "RBL Natural Resources Ltd.",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "Cae",
+    "consigneeMobile": "9414190728",
     "truckNo": "RJ52GAB67B",
     "destination": "Udaipur (Raj.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Rajesh Rao Udaipur",
-    "referenceMobile": "",
+    "referenceMobile": "9571314709",
     "owner": "Rameshwar Prasad",
     "ownerName": "Rameshwar Prasad",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Ramraj GurjarViJaynagar",
-    "driverMobile": "",
+    "driverMobile": "9414226032",
     "billingType": "Per Tonne",
     "biltyAmount": 279296,
     "weight": 40,
@@ -17537,7 +17903,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Udaipur (Raj.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Ramraj GurjarViJaynagar (Driver)"
   },
   {
     "id": "DUE_20252026_1917_0368",
@@ -17583,7 +17950,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Krishan singh (Driver)"
   },
   {
     "id": "DUE_20252026_1906_0369",
@@ -17637,7 +18005,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "24/01/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Narayan Gurjar 5442 (Driver)"
   },
   {
     "id": "DUE_20252026_370_0370",
@@ -17683,7 +18052,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Pratap Singh (Driver)"
   },
   {
     "id": "DUE_20252026_1824_0371",
@@ -17729,7 +18099,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Krishan singh (Driver)"
   },
   {
     "id": "DUE_20252026_1820_0372",
@@ -17775,7 +18146,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Driver 2274 (Driver)"
   },
   {
     "id": "DUE_20252026_1782_0373",
@@ -17821,7 +18193,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Godara3413 (Driver)"
   },
   {
     "id": "DUE_20252026_1725_0374",
@@ -17833,18 +18206,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 2969,
     "transport": "TTC",
     "consignee": "Atals Marbal private limited",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "09AAMCA0734A1Z3",
+    "consigneeMobile": "7042350861",
     "truckNo": "RJ52GB4507",
     "destination": "Ghaziabad (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Bhanwar Saini SKY",
-    "referenceMobile": "",
+    "referenceMobile": "9602186924",
     "owner": "Shree Mahaveer Transport Co.",
     "ownerName": "Shree Mahaveer Transport Co.",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Vikram GurJar4.507",
-    "driverMobile": "",
+    "driverMobile": "9829906353",
     "billingType": "Per Tonne",
     "biltyAmount": 2969,
     "weight": 40,
@@ -17875,7 +18248,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "11/01/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Vikram GurJar4.507 (Driver)"
   },
   {
     "id": "DUE_20252026_375_0375",
@@ -17921,7 +18295,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Hanuman Singh Hindoli 453B (Driver)"
   },
   {
     "id": "DUE_20252026_1644_0376",
@@ -17967,7 +18342,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Narayan GurJar7731 (Driver)"
   },
   {
     "id": "DUE_20252026_1633_0377",
@@ -17979,18 +18355,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 34000,
     "transport": "TTC",
     "consignee": "PIDILITE INDUSTRIES LIMITED",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "03AAACP4156B1Z2",
+    "consigneeMobile": "9784265418",
     "truckNo": "RJ52GB5966",
     "destination": "Raikot (P.B.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Ajay EXPO",
-    "referenceMobile": "",
+    "referenceMobile": "9829712465",
     "owner": "Batveer Yadav",
     "ownerName": "Batveer Yadav",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Annu Rawat",
-    "driverMobile": "",
+    "driverMobile": "7014788911",
     "billingType": "Per Tonne",
     "biltyAmount": 34000,
     "weight": 40,
@@ -18013,7 +18389,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Raikot (P.B.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Annu Rawat (Driver)"
   },
   {
     "id": "DUE_20252026_1634_0378",
@@ -18025,18 +18402,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 211500,
     "transport": "TTC",
     "consignee": "SHAH ENTERPRISES",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "09MZSPS0543M1Z9",
+    "consigneeMobile": "8824152494",
     "truckNo": "RJ52GA7391",
     "destination": "Kanpur (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Jagdish Singh Suvidha Marble",
-    "referenceMobile": "",
+    "referenceMobile": "9784553394",
     "owner": "Rameshwar Prasad",
     "ownerName": "Rameshwar Prasad",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Mahaveer Choudhary",
-    "driverMobile": "",
+    "driverMobile": "9784742402",
     "billingType": "Per Tonne",
     "biltyAmount": 211500,
     "weight": 40,
@@ -18059,7 +18436,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Kanpur (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Mahaveer Choudhary (Driver)"
   },
   {
     "id": "DUE_20252026_03_0379",
@@ -18071,18 +18449,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 2300,
     "transport": "TTC",
     "consignee": "M/s Everest Industries Limited",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "05AAACE7550N1ZG",
+    "consigneeMobile": "9571192637",
     "truckNo": "RJ52GB5966",
     "destination": "Bhagwanpur (U.K.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Mayur Bhang Maheshwari",
-    "referenceMobile": "",
+    "referenceMobile": "9829589169",
     "owner": "Mahendra Rawat Shrinagar",
     "ownerName": "Mahendra Rawat Shrinagar",
-    "ownerMobile": "",
+    "ownerMobile": "8502873309",
     "driver": "Mitoo Shrinagar",
-    "driverMobile": "",
+    "driverMobile": "9829918769",
     "billingType": "Per Tonne",
     "biltyAmount": 2300,
     "weight": 40,
@@ -18113,7 +18491,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "03/01/2026",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Mitoo Shrinagar (Driver)"
   },
   {
     "id": "DUE_20252026_380_0380",
@@ -18159,7 +18538,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "• Godara3413 (Driver)"
   },
   {
     "id": "DUE_20252026_1460_0381",
@@ -18205,7 +18585,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Kalyan Meena (Driver)"
   },
   {
     "id": "DUE_20252026_382_0382",
@@ -18217,18 +18598,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 24298,
     "transport": "MTC",
     "consignee": "Vimal Probuild Pvt. Ltd.",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "06AAECV6550O12G",
+    "consigneeMobile": "8824508686",
     "truckNo": "RJ52GC4737",
     "destination": "Gurugram (Haryana)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Ravi Gupta Zalore Vimal Granite",
-    "referenceMobile": "",
+    "referenceMobile": "9928399923",
     "owner": "Panchuram Gurjar",
     "ownerName": "Panchuram Gurjar",
-    "ownerMobile": "",
+    "ownerMobile": "9829405071",
     "driver": "Ramesh Chavada",
-    "driverMobile": "",
+    "driverMobile": "9414197088",
     "billingType": "Per Tonne",
     "biltyAmount": 24298,
     "weight": 40,
@@ -18251,7 +18632,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Gurugram (Haryana)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Ramesh Chavada (Driver)"
   },
   {
     "id": "DUE_20252026_1437_0383",
@@ -18297,7 +18679,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "aeevraJ3at7333 (Driver)"
   },
   {
     "id": "DUE_20252026_1357_0384",
@@ -18351,7 +18734,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "30/11/2025",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Sukhlal (Driver)"
   },
   {
     "id": "DUE_20252026_1324_0385",
@@ -18397,7 +18781,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Banti Meena tonk (Driver)"
   },
   {
     "id": "DUE_20252026_1137_0386",
@@ -18409,18 +18794,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "MTC",
     "consignee": "Shyam Minerals",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "08AIYPG783862Z9",
+    "consigneeMobile": "9414281677",
     "truckNo": "ROOIGD6036",
     "destination": "Oalandhar ( Punjab)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Shyam Minerals Punjab",
-    "referenceMobile": "",
+    "referenceMobile": "9829306569",
     "owner": "Kanhaiya Lal Vaishnav",
     "ownerName": "Kanhaiya Lal Vaishnav",
-    "ownerMobile": "",
+    "ownerMobile": "7733004236",
     "driver": "Ganpat",
-    "driverMobile": "",
+    "driverMobile": "7014839023",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -18443,7 +18828,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Delhi"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Ganpat (Driver)"
   },
   {
     "id": "DUE_20252026_387_0387",
@@ -18455,18 +18841,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 14900,
     "transport": "TTC",
     "consignee": "Shyam Minerals",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "08AIYPG783862Z9",
+    "consigneeMobile": "9414281677",
     "truckNo": "RJ52GAB617",
     "destination": "Oalandhar (Punjab)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Shyam Minerals Punjab",
-    "referenceMobile": "",
+    "referenceMobile": "9829306569",
     "owner": "Rameshwar Prasad",
     "ownerName": "Rameshwar Prasad",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Mangalram Gurjar Antela",
-    "driverMobile": "",
+    "driverMobile": "9784117026",
     "billingType": "Per Tonne",
     "biltyAmount": 14900,
     "weight": 40,
@@ -18489,7 +18875,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Oalandhar (Punjab)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Mangalram Gurjar Antela (Driver)"
   },
   {
     "id": "DUE_20252026_1024_0388",
@@ -18501,18 +18888,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 450000,
     "transport": "MTC",
     "consignee": "SUNRISE MARANA MARBLE",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "00AAAAAT1N1BBBB",
+    "consigneeMobile": "9602605692",
     "truckNo": "NL01AF9064",
     "destination": "Bareilly (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Prithvi Charan 3aIore",
-    "referenceMobile": "",
+    "referenceMobile": "9784608306",
     "owner": "Lalaram Choudhary Shrinagm",
     "ownerName": "Lalaram Choudhary Shrinagm",
-    "ownerMobile": "",
+    "ownerMobile": "9828071017",
     "driver": "Nandaram",
-    "driverMobile": "",
+    "driverMobile": "9928084394",
     "billingType": "Per Tonne",
     "biltyAmount": 450000,
     "weight": 40,
@@ -18535,7 +18922,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Bareilly (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Nandaram (Driver)"
   },
   {
     "id": "DUE_20252026_1195_0389",
@@ -18589,7 +18977,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "02/11/2025",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Ramkishor•e Swami (Driver)"
   },
   {
     "id": "DUE_20252026_390_0390",
@@ -18601,18 +18990,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 900,
     "transport": "TTC",
     "consignee": "OAGDAMBA MARBLE & GRANITE",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9928417195",
     "truckNo": "RJ52GB0725",
     "destination": "Kanpur (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Arjun Choudhary Udaipur",
-    "referenceMobile": "",
+    "referenceMobile": "9829406337",
     "owner": "Rameshwar Prasad",
     "ownerName": "Rameshwar Prasad",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Ram Kumar Raiya",
-    "driverMobile": "",
+    "driverMobile": "8058881707",
     "billingType": "Per Tonne",
     "biltyAmount": 900,
     "weight": 40,
@@ -18635,7 +19024,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Kanpur (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Ram Kumar Raiya (Driver)"
   },
   {
     "id": "DUE_20252026_1137_0391",
@@ -18647,18 +19037,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "Aggarwal Dholpur & Granite",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "07AOQPM4637P1Z2",
+    "consigneeMobile": "8527108629",
     "truckNo": "RJ52GB0725",
     "destination": "Delhi",
     "origin": "Rajsamand (Raj.)",
     "reference": "Agarwal Dholpur",
-    "referenceMobile": "",
+    "referenceMobile": "7014690391",
     "owner": "Rameshwar Prasad",
     "ownerName": "Rameshwar Prasad",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Ram Kumar Raiya",
-    "driverMobile": "",
+    "driverMobile": "8058881707",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -18681,7 +19071,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Delhi"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Ram Kumar Raiya (Driver)"
   },
   {
     "id": "DUE_20252026_902_0392",
@@ -18693,18 +19084,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 211794,
     "transport": "MTC",
     "consignee": "Megha Mineral",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "02BLAPS4407O1Z0",
+    "consigneeMobile": "9816828527",
     "truckNo": "RJ52GB5037",
     "destination": "Paonta (Himachal Pradesh)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Karan Shari n Paonta",
-    "referenceMobile": "",
+    "referenceMobile": "9928682947",
     "owner": "Panchuram Gurjar",
     "ownerName": "Panchuram Gurjar",
-    "ownerMobile": "",
+    "ownerMobile": "9829405071",
     "driver": "Subash",
-    "driverMobile": "",
+    "driverMobile": "8824687894",
     "billingType": "Per Tonne",
     "biltyAmount": 211794,
     "weight": 40,
@@ -18727,7 +19118,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Paonta (Himachal Pradesh)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Subash (Driver)"
   },
   {
     "id": "DUE_20252026_1085_0393",
@@ -18773,7 +19165,8 @@ var _PARTY_DUE_MASTER = [
         "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Radheyshyam Meena (Driver)"
   },
   {
     "id": "DUE_20252026_1087_0394",
@@ -18827,7 +19220,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "11/10/2025",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Kushiram Gurjar Tonk (Driver)"
   },
   {
     "id": "DUE_20252026_950_0395",
@@ -18839,18 +19233,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 42800,
     "transport": "TTC",
     "consignee": "Radha Sarwehwar Stone",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "06ABAFR9285P1ZD",
+    "consigneeMobile": "9571868453",
     "truckNo": "RJ52GB0725",
     "destination": "Panipat (Haryana)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Naresh Paliwal Kelwa",
-    "referenceMobile": "",
+    "referenceMobile": "9928196331",
     "owner": "Rameshwar Prasad",
     "ownerName": "Rameshwar Prasad",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Ram Kumar Raiya",
-    "driverMobile": "",
+    "driverMobile": "8058881707",
     "billingType": "Per Tonne",
     "biltyAmount": 42800,
     "weight": 40,
@@ -18873,7 +19267,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Panipat (Haryana)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Ram Kumar Raiya (Driver)"
   },
   {
     "id": "DUE_20252026_29_0396",
@@ -18885,18 +19280,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "MTC",
     "consignee": "Ram Raja Granites",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "09AKNPB7056Q1ZF",
+    "consigneeMobile": "9461821042",
     "truckNo": "RJ52GA2391",
     "destination": "Kanpur (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Mahaveer Bijarniya",
-    "referenceMobile": "",
+    "referenceMobile": "9414488992",
     "owner": "Buttha Gurjar Shiv Mandir",
     "ownerName": "Buttha Gurjar Shiv Mandir",
-    "ownerMobile": "",
+    "ownerMobile": "9829926836",
     "driver": "Dharma Bhargad",
-    "driverMobile": "",
+    "driverMobile": "9829926889",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -18919,7 +19314,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Kanpur (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Dharma Bhargad (Driver)"
   },
   {
     "id": "DUE_20252026_638_0397",
@@ -18931,18 +19327,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 7600,
     "transport": "TTC",
     "consignee": "M/s Wonder Marble Granite",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "OSCKKPRO1I2C1Z",
+    "consigneeMobile": "9660836667",
     "truckNo": "RJ52GB2S90",
     "destination": "Haridwar(U.K.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Ramniwas Chodhary Wonder Mar.",
-    "referenceMobile": "",
+    "referenceMobile": "7014876351",
     "owner": "Rameshwar Prasad",
     "ownerName": "Rameshwar Prasad",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Tejaram Gurjar",
-    "driverMobile": "",
+    "driverMobile": "9829700353",
     "billingType": "Per Tonne",
     "biltyAmount": 7600,
     "weight": 40,
@@ -18965,7 +19361,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Haridwar(U.K.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Tejaram Gurjar (Driver)"
   },
   {
     "id": "DUE_20252026_141_0398",
@@ -18977,18 +19374,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 2103.34,
     "transport": "TTC",
     "consignee": "Party",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "08AHIPP2722L1Z1",
+    "consigneeMobile": "9829156852",
     "truckNo": "RJ52GA3498",
     "destination": "Varanasi (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Bhiwaram Murotiya Kishangarh",
-    "referenceMobile": "",
+    "referenceMobile": "7014651551",
     "owner": "Kallu Meena",
     "ownerName": "Kallu Meena",
-    "ownerMobile": "",
+    "ownerMobile": "9079757926",
     "driver": "Mahendra M e e na 349B",
-    "driverMobile": "",
+    "driverMobile": "9828230102",
     "billingType": "Per Tonne",
     "biltyAmount": 2103.34,
     "weight": 40,
@@ -19011,7 +19408,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Varanasi (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Mahendra M e e na 349B (Driver)"
   },
   {
     "id": "DUE_20252026_399_0399",
@@ -19023,18 +19421,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "Party",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "08AHIPP2722L1Z1",
+    "consigneeMobile": "9829156852",
     "truckNo": "ROOIGDOSOI",
     "destination": "Meerut (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Bhiwaram Murotiya Kishangarh",
-    "referenceMobile": "",
+    "referenceMobile": "7014651551",
     "owner": "Amit Rajpurohit",
     "ownerName": "Amit Rajpurohit",
-    "ownerMobile": "",
+    "ownerMobile": "9828230022",
     "driver": "Raju Gurjar Shrinagar",
-    "driverMobile": "",
+    "driverMobile": "8824231126",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -19065,7 +19463,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "06/07/2025",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Raju Gurjar Shrinagar (Driver)"
   },
   {
     "id": "DUE_20252026_400_0400",
@@ -19077,18 +19476,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 7220,
     "transport": "TTC",
     "consignee": "Party",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "08AHIPP2722L1Z1",
+    "consigneeMobile": "9829156852",
     "truckNo": "RJ52GA7310",
     "destination": "Gurugram (Haryana)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Ravi Gupta Zalore Vimal Granite",
-    "referenceMobile": "",
+    "referenceMobile": "9928399923",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Kalu Gurjar",
-    "driverMobile": "",
+    "driverMobile": "9784175913",
     "billingType": "Per Tonne",
     "biltyAmount": 7220,
     "weight": 40,
@@ -19111,7 +19510,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Gurugram (Haryana)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Kalu Gurjar (Driver)"
   },
   {
     "id": "DUE_20252026_26_0401",
@@ -19123,18 +19523,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 150000,
     "transport": "TTC",
     "consignee": "Party",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "08AHIPP2722L1Z1",
+    "consigneeMobile": "9829156852",
     "truckNo": "RJ52GB0964",
     "destination": "Lucknow (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Lehari Lal Teli kelwa",
-    "referenceMobile": "",
+    "referenceMobile": "9784394346",
     "owner": "Shishram Meena",
     "ownerName": "Shishram Meena",
-    "ownerMobile": "",
+    "ownerMobile": "9660573067",
     "driver": "Shishram Meena",
-    "driverMobile": "",
+    "driverMobile": "9828230105",
     "billingType": "Per Tonne",
     "biltyAmount": 150000,
     "weight": 40,
@@ -19157,7 +19557,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Lucknow (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Shishram Meena (Driver)"
   },
   {
     "id": "DUE_20252026_30_0402",
@@ -19169,18 +19570,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 108440,
     "transport": "TTC",
     "consignee": "Swaraj En eterprises",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "CN",
+    "consigneeMobile": "9928175179",
     "truckNo": "RJ52GA7310",
     "destination": "Ballia (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Kalu Mohi",
-    "referenceMobile": "",
+    "referenceMobile": "9602263684",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Kalu Gurjar",
-    "driverMobile": "",
+    "driverMobile": "9784175913",
     "billingType": "Per Tonne",
     "biltyAmount": 108440,
     "weight": 40,
@@ -19203,7 +19604,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Ballia (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Kalu Gurjar (Driver)"
   },
   {
     "id": "DUE_20252026_403_0403",
@@ -19215,18 +19617,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 70000,
     "transport": "MTC",
     "consignee": "Swaraj En eterprises",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "CN",
+    "consigneeMobile": "9928175179",
     "truckNo": "RJ52GA7294",
     "destination": "Ballia (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Kalu Mohi",
-    "referenceMobile": "",
+    "referenceMobile": "9602263684",
     "owner": "Kailash Dhabas",
     "ownerName": "Kailash Dhabas",
-    "ownerMobile": "",
+    "ownerMobile": "9983372986",
     "driver": "Hanuman Gurjar Bijwad Tonk",
-    "driverMobile": "",
+    "driverMobile": "8824461950",
     "billingType": "Per Tonne",
     "biltyAmount": 70000,
     "weight": 40,
@@ -19249,7 +19651,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Ballia (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Hanuman Gurjar Bijwad Tonk (Driver)"
   },
   {
     "id": "DUE_20252026_135_0404",
@@ -19261,18 +19664,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 2064,
     "transport": "TTC",
     "consignee": "Swaraj En eterprises",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "CN",
+    "consigneeMobile": "9928175179",
     "truckNo": "RJ52GA8734",
     "destination": "Ballia (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Swaraj Pandey Baliya",
-    "referenceMobile": "",
+    "referenceMobile": "7014325575",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Driver 0366",
-    "driverMobile": "",
+    "driverMobile": "9928902971",
     "billingType": "Per Tonne",
     "biltyAmount": 2064,
     "weight": 40,
@@ -19303,7 +19706,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "27/04/2025",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Driver 0366 (Driver)"
   },
   {
     "id": "DUE_20252026_121_0405",
@@ -19315,18 +19719,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 5020,
     "transport": "MTC",
     "consignee": "S.S. Group of industries",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "06AIFPB7397H1Z2",
+    "consigneeMobile": "9784526778",
     "truckNo": "RJ52GB5037",
     "destination": "Raipur Rani (Haryana)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Karan Shari n Paonta",
-    "referenceMobile": "",
+    "referenceMobile": "9928682947",
     "owner": "Panchuram Gurjar",
     "ownerName": "Panchuram Gurjar",
-    "ownerMobile": "",
+    "ownerMobile": "9829405071",
     "driver": "Zaidayal Gurjar",
-    "driverMobile": "",
+    "driverMobile": "9784536242",
     "billingType": "Per Tonne",
     "biltyAmount": 5020,
     "weight": 40,
@@ -19349,7 +19753,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Raipur Rani (Haryana)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Zaidayal Gurjar (Driver)"
   },
   {
     "id": "DUE_20252026_55_0406",
@@ -19361,18 +19766,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "TTC",
     "consignee": "LG Marble",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "09CMOPG1471M2Z9",
+    "consigneeMobile": "9368888844",
     "truckNo": "RJ52GB2SB9",
     "destination": "Mawana (u. P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "BN Marble Piparda",
-    "referenceMobile": "",
+    "referenceMobile": "8824916854",
     "owner": "Rameshwar Prasad",
     "ownerName": "Rameshwar Prasad",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Bhagwan Singh Banna",
-    "driverMobile": "",
+    "driverMobile": "9928618131",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -19395,7 +19800,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Mawana (u. P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Bhagwan Singh Banna (Driver)"
   },
   {
     "id": "DUE_20242025_407_0407",
@@ -19407,18 +19813,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 25000,
     "transport": "MTC",
     "consignee": "M/s KHWA3A MARBLE",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9829885625",
     "truckNo": "RJ14GH0366",
     "destination": "Sultanpur (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Rajendra Singh Pasoond",
-    "referenceMobile": "",
+    "referenceMobile": "9414501472",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Poluram Meena",
-    "driverMobile": "",
+    "driverMobile": "8824287286",
     "billingType": "Per Tonne",
     "biltyAmount": 25000,
     "weight": 40,
@@ -19441,7 +19847,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Sultanpur (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Poluram Meena (Driver)"
   },
   {
     "id": "DUE_20242025_1484_0408",
@@ -19453,18 +19860,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 240000,
     "transport": "MTC",
     "consignee": "M/s Surya Trading & Company",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "09BZNPK7077A2Z2",
+    "consigneeMobile": "9571121165",
     "truckNo": "RJ52GA7296",
     "destination": "Lucknow (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Ratan Khatik Mohi",
-    "referenceMobile": "",
+    "referenceMobile": "9928489603",
     "owner": "Kailash Dhabas",
     "ownerName": "Kailash Dhabas",
-    "ownerMobile": "",
+    "ownerMobile": "9983372986",
     "driver": "Hemraj Natwadiya",
-    "driverMobile": "",
+    "driverMobile": "9116356077",
     "billingType": "Per Tonne",
     "biltyAmount": 240000,
     "weight": 40,
@@ -19487,7 +19894,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Lucknow (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Hemraj Natwadiya (Driver)"
   },
   {
     "id": "DUE_20242025_1455_0409",
@@ -19499,18 +19907,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 113883,
     "transport": "TTC",
     "consignee": "Bulk MRO Industrial supply Fwt.",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "9829676313",
     "truckNo": "RJ32GD3696",
     "destination": "Kanpur (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "AR. Stone Udaipur",
-    "referenceMobile": "",
+    "referenceMobile": "9414499768",
     "owner": "Laxmi Prakash Jat",
     "ownerName": "Laxmi Prakash Jat",
-    "ownerMobile": "",
+    "ownerMobile": "9571272336",
     "driver": "Nand Singh",
-    "driverMobile": "",
+    "driverMobile": "9828230112",
     "billingType": "Per Tonne",
     "biltyAmount": 113883,
     "weight": 40,
@@ -19541,7 +19949,8 @@ var _PARTY_DUE_MASTER = [
         "chequeDate": "24/01/2025",
         "status": "Pending"
       }
-    ]
+    ],
+    "podHandedOverTo": "Nand Singh (Driver)"
   },
   {
     "id": "DUE_20242025_1421_0410",
@@ -19553,18 +19962,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 230000,
     "transport": "TTC",
     "consignee": "zay Ambay Marbles",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "———",
+    "consigneeMobile": "8824100118",
     "truckNo": "RJ52GAB732",
     "destination": "Pharenda (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Balaji Marble Deopura",
-    "referenceMobile": "",
+    "referenceMobile": "9602871692",
     "owner": "Rameshwar Prasad",
     "ownerName": "Rameshwar Prasad",
-    "ownerMobile": "",
+    "ownerMobile": "9414659401",
     "driver": "Shaitan Bagariya",
-    "driverMobile": "",
+    "driverMobile": "9602925780",
     "billingType": "Per Tonne",
     "biltyAmount": 230000,
     "weight": 40,
@@ -19587,7 +19996,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Pharenda (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Shaitan Bagariya (Driver)"
   },
   {
     "id": "DUE_20242025_1081_0411",
@@ -19599,18 +20009,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 21160,
     "transport": "MTC",
     "consignee": "M/s Shri Krishna Marbles",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "09ANTPS8821R1ZL",
+    "consigneeMobile": "9650340572",
     "truckNo": "ROOIGD0221",
     "destination": "Noida (U.P.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Monark Ghaziabad",
-    "referenceMobile": "",
+    "referenceMobile": "9829759297",
     "owner": "Batveer Yadav",
     "ownerName": "Batveer Yadav",
-    "ownerMobile": "",
+    "ownerMobile": "9784439970",
     "driver": "Pradhan",
-    "driverMobile": "",
+    "driverMobile": "9414437360",
     "billingType": "Per Tonne",
     "biltyAmount": 21160,
     "weight": 40,
@@ -19633,7 +20043,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Noida (U.P.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Pradhan (Driver)"
   },
   {
     "id": "DUE_20262027_855_0412",
@@ -19645,18 +20056,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 14823,
     "transport": "MTC",
     "consignee": "Megha Mineral",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "02BLAPS4407O1Z0",
+    "consigneeMobile": "9816828527",
     "truckNo": "RJ52GC4136",
     "destination": "Raipur Rani (Haryana)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Karan Shari n Paonta",
-    "referenceMobile": "",
+    "referenceMobile": "9928682947",
     "owner": "Kanhaiya Lal Vaishnav",
     "ownerName": "Kanhaiya Lal Vaishnav",
-    "ownerMobile": "",
+    "ownerMobile": "7733004236",
     "driver": "KanhaiyaLaI Vaishnav",
-    "driverMobile": "",
+    "driverMobile": "9602137788",
     "billingType": "Per Tonne",
     "biltyAmount": 14823,
     "weight": 40,
@@ -19679,7 +20090,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Raipur Rani (Haryana)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "KanhaiyaLaI Vaishnav (Driver)"
   },
   {
     "id": "DUE_20242025_413_0413",
@@ -19691,18 +20103,18 @@ var _PARTY_DUE_MASTER = [
     "dueAmount": 300000,
     "transport": "MTC",
     "consignee": "Sach Marble",
-    "consigneeGstin": "",
-    "consigneeMobile": "",
+    "consigneeGstin": "05CWLPS417261Z8",
+    "consigneeMobile": "9058050777",
     "truckNo": "RJ52GB5966",
     "destination": "Manglaur (U.K.)",
     "origin": "Rajsamand (Raj.)",
     "reference": "Mukesh Choudhary",
-    "referenceMobile": "",
+    "referenceMobile": "9414846576",
     "owner": "Kalim Khan",
     "ownerName": "Kalim Khan",
-    "ownerMobile": "",
+    "ownerMobile": "9057537817",
     "driver": "Rakesh Bambi",
-    "driverMobile": "",
+    "driverMobile": "9928420851",
     "billingType": "Per Tonne",
     "biltyAmount": 300000,
     "weight": 40,
@@ -19725,7 +20137,8 @@ var _PARTY_DUE_MASTER = [
         "address": "Manglaur (U.K.)"
       }
     ],
-    "cheques": []
+    "cheques": [],
+    "podHandedOverTo": "Rakesh Bambi (Driver)"
   }
 ];
 

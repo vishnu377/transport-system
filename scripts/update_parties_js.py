@@ -287,7 +287,11 @@ const PartiesModule = {
 
     if (typeof document !== 'undefined' && document.addEventListener) {
       document.addEventListener('click', (e) => {
-        if (!e.target || !e.target.closest || !e.target.closest('.appsheet-status-dropdown-wrap')) {
+        if (!e.target || !e.target.closest || 
+            (!e.target.closest('.appsheet-status-dropdown-wrap') && 
+             !e.target.closest('#due-date-filter-wrap') && 
+             !e.target.closest('.appsheet-select-menu') &&
+             !e.target.closest('.dropdown'))) {
           this.closeAllDropdowns();
         }
       });
@@ -1869,6 +1873,25 @@ const PartiesModule = {
     if (tfPodWeight) tfPodWeight.value = t.podWeight || '';
     this.setPodTo(t.podTo || 'Shipper');
 
+    // 8 Additional Fields from AppSheet
+    const tfPodHanded = document.getElementById('tf-pod-handed-over-to');
+    const tfReference = document.getElementById('tf-reference');
+    const tfRefMobile = document.getElementById('tf-reference-mobile');
+    const tfDriver = document.getElementById('tf-driver');
+    const tfDriverMobile = document.getElementById('tf-driver-mobile');
+    const tfOwner = document.getElementById('tf-owner');
+    const tfOwnerMobile = document.getElementById('tf-owner-mobile');
+    const tfBillNo = document.getElementById('tf-bill-no');
+
+    if (tfPodHanded) tfPodHanded.value = t.podHandedOverTo || '';
+    if (tfReference) tfReference.value = t.reference || '';
+    if (tfRefMobile) tfRefMobile.value = t.referenceMobile || '';
+    if (tfDriver) tfDriver.value = t.driver || '';
+    if (tfDriverMobile) tfDriverMobile.value = t.driverMobile || '';
+    if (tfOwner) tfOwner.value = t.owner || t.ownerName || '';
+    if (tfOwnerMobile) tfOwnerMobile.value = t.ownerMobile || '';
+    if (tfBillNo) tfBillNo.value = t.billNo || '';
+
     // Show/hide Other B for Cheque Due
     const otherBRow = document.getElementById('tf-row-other-b');
     if (otherBRow) {
@@ -1926,22 +1949,40 @@ const PartiesModule = {
       }
     }
 
+    // Read 8 Additional Fields
+    t.podHandedOverTo = document.getElementById('tf-pod-handed-over-to')?.value || t.podHandedOverTo || '';
+    t.reference = document.getElementById('tf-reference')?.value || t.reference || '';
+    t.referenceMobile = document.getElementById('tf-reference-mobile')?.value || t.referenceMobile || '';
+    t.driver = document.getElementById('tf-driver')?.value || t.driver || '';
+    t.driverMobile = document.getElementById('tf-driver-mobile')?.value || t.driverMobile || '';
+    t.owner = document.getElementById('tf-owner')?.value || t.owner || '';
+    t.ownerName = t.owner;
+    t.ownerMobile = document.getElementById('tf-owner-mobile')?.value || t.ownerMobile || '';
+    t.billNo = document.getElementById('tf-bill-no')?.value || t.billNo || '';
+
     if (t.status === 'Cheque Due') {
       t.otherB = parseFloat(document.getElementById('tf-other-b')?.value || t.otherB || 0);
     }
 
-    // Save to Firestore
-    if (typeof dbService !== 'undefined' && dbService.update) {
+    // Update in-memory master array
+    const tripIdx = (this.allPartyDueTrips || []).findIndex(x => x.id === t.id);
+    if (tripIdx !== -1) {
+      this.allPartyDueTrips[tripIdx] = { ...t };
+    }
+
+    // Save directly to Firestore collection 'party_due'
+    if (typeof firebase !== 'undefined' && firebase.firestore) {
+      try {
+        await firebase.firestore().collection('party_due').doc(t.id).set(t, { merge: true });
+        console.log('[PartiesModule] Trip updated directly in Firestore party_due:', t.id);
+      } catch (e) {
+        console.warn('Firestore trip update error:', e);
+      }
+    } else if (typeof dbService !== 'undefined' && dbService.update) {
       try {
         await dbService.update('party_due', t.id, t);
       } catch (e) {
         console.warn('dbService trip update error:', e);
-      }
-    } else if (typeof firebase !== 'undefined' && firebase.firestore) {
-      try {
-        await firebase.firestore().collection('party_due').doc(t.id).set(t, { merge: true });
-      } catch (e) {
-        console.warn('Firestore trip update error:', e);
       }
     }
 
@@ -2182,9 +2223,60 @@ const PartiesModule = {
   },
 
   downloadTripSlip() {
-    if (typeof AppUI !== 'undefined' && AppUI.showToast) {
-      AppUI.showToast(`Downloading Bilty Slip for trip ${this.selectedTrip?.grNo}...`, 'success');
+    const t = this.selectedTrip;
+    if (!t) return;
+    const content = `=======================================================
+TRIP DETAILS REPORT - ${t.grNo}
+=======================================================
+G.R. No:            ${t.grNo}
+Short GR No:        ${t.shortGrNo || ''}
+Bill No:            ${t.billNo || '-'}
+Date:               ${t.tripStartDate || ''}
+Truck No:           ${t.truckNo || ''}
+Origin:             ${t.origin || ''}
+Destination:        ${t.destination || ''}
+Billing Type:       ${t.billingType || 'Per Tonne'}
+Weight:             ${t.weight || 0} Tonnes
+Rate:               ₹${t.rate || 0}
+Bilty Amount:       ₹${t.biltyAmount || 0}
+Freight:            ₹${t.freight || 0}
+Total Freight:      ₹${t.totalFreight || t.freight || 0}
+Due Amount:         ₹${t.dueAmount || 0}
+Status:             ${t.status || ''}
+
+CONSIGNEE DETAILS:
+Name:               ${t.consignee || ''}
+GSTIN:              ${t.consigneeGstin || '-'}
+Mobile:             ${t.consigneeMobile || '-'}
+
+TRUCK OWNER & DRIVER:
+Owner:              ${t.owner || t.ownerName || ''}
+Owner Mobile:       ${t.ownerMobile || '-'}
+Driver:             ${t.driver || ''}
+Driver Mobile:      ${t.driverMobile || '-'}
+Reference:          ${t.reference || ''}
+Reference Mobile:   ${t.referenceMobile || '-'}
+POD Handed Over To: ${t.podHandedOverTo || '-'}
+
+Generated on: ${new Date().toLocaleString('en-IN')}
+=======================================================`;
+
+    try {
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const filename = `Trip_${(t.grNo || 'Details').replace(/[^a-zA-Z0-9_-]/g, '_')}.txt`;
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      console.warn('Download error:', e);
     }
+
+    this.showToast(`Downloaded trip report for ${t.grNo}`, 'success');
   },
 
   toggleFullscreen() {
@@ -2329,7 +2421,4 @@ if (typeof module !== 'undefined' && module.exports) {
 }
 '''
 
-with open('js/modules/parties.js', 'w', encoding='utf-8') as f:
-    f.write(parties_js_code)
-
-print("Updated js/modules/parties.js successfully")
+if __name__ == " __main__\:
