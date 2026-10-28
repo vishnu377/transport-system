@@ -55,7 +55,7 @@ console.log("✔ HTML Structure & Static Verification PASSED");
 // 2. Verify js/sample-truck-owners-data.js
 const ownersData = require('../js/sample-truck-owners-data.js');
 assert(Array.isArray(ownersData), "sample-truck-owners-data.js must export an array");
-assert.strictEqual(ownersData.length, 595, `Expected exactly 595 truck owners, got ${ownersData.length}`);
+assert.strictEqual(ownersData.length, 596, `Expected exactly 596 truck owners, got ${ownersData.length}`);
 
 // Verify that there are no placeholder names
 const placeholderCount = ownersData.filter(o => o.name && o.name.startsWith('Owner RJ')).length;
@@ -67,10 +67,9 @@ assert.strictEqual(ownersData[0].name, 'Abcd', "First owner name must be Abcd");
 assert.strictEqual(ownersData[0].mobile, '7898424750', "First mobile must be 7898424750");
 
 const lastOwner = ownersData[ownersData.length - 1];
-assert(lastOwner.truckNo, "Last truck must have valid truckNo");
-assert(lastOwner.name, "Last truck must have valid name");
+assert.strictEqual(lastOwner.truckNo, 'RJ52GA8577', "596th truck must be RJ52GA8577");
 
-console.log(`✔ Master Dataset Verification: Exactly 595 Authentic Truck Owners Verified PASSED`);
+console.log(`✔ Master Dataset Verification: Exactly 596 Authentic Truck Owners Verified PASSED`);
 
 // 3. Verify js/modules/owners.js module functionality
 const ownersJsPath = path.join(__dirname, '../js/modules/owners.js');

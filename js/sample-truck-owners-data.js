@@ -1,4 +1,4 @@
-// Authentic Truck Owners & Fleet Vehicles Directory (Total 595 Matching AppSheet)
+// Authentic Truck Owners & Fleet Vehicles Directory (Total 596 Matching AppSheet)
 var _INITIAL_TRUCK_OWNERS = [
   {
     "id": "truck_owner_1",
@@ -16379,6 +16379,18 @@ var _INITIAL_TRUCK_OWNERS = [
     "name": "Pantu Palsaniya",
     "mobile": "9079757926",
     "mobile1": "",
+    "type": "Market",
+    "dueAmount": 0.0,
+    "paidAmount": 0.0,
+    "totalTrips": 0,
+    "recentTrips": []
+  },
+  {
+    "id": "truck_owner_596",
+    "truckNo": "RJ52GA8577",
+    "name": "Panchuram Gurjar",
+    "mobile": "9828230022",
+    "mobile1": "9314000521",
     "type": "Market",
     "dueAmount": 0.0,
     "paidAmount": 0.0,

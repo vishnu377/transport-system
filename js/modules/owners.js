@@ -5,7 +5,7 @@
  * 2. Dedicated Truck Owners Full View (screencapture-appsheet-start-...-19_02_49.png)
  * 3. Single Truck Owner Details View (screencapture-appsheet-start-...-19_04_54.png)
  * 4. Slide Drawer for Add/Edit Truck Owner (media_1793163696469_88990520.jpg)
- * Total 595 Trucks & Owners (Header: 'Truck No. Number 595')
+ * Total 596 Trucks & Owners (Header: 'Truck No. Number 596') with Bottom Pagination
  */
 
 const OwnersModule = {
@@ -13,6 +13,10 @@ const OwnersModule = {
   searchQuery: '',
   currentView: 'dashboard', // 'dashboard' | 'truckOwnersList' | 'details'
   currentOwnerId: null,
+
+  // Pagination state
+  pageSize: 50,
+  currentPage: 1,
 
   async init() {
     if (typeof AppUI !== 'undefined' && AppUI.renderSidebar) {
@@ -40,7 +44,7 @@ const OwnersModule = {
       tbody.innerHTML = `
         <tr>
           <td colspan="5" class="text-center py-5 text-muted">
-            <div class="spinner-border spinner-border-sm text-secondary me-2"></div> Loading 595 truck owners...
+            <div class="spinner-border spinner-border-sm text-secondary me-2"></div> Loading 596 truck owners...
           </td>
         </tr>
       `;
@@ -89,31 +93,88 @@ const OwnersModule = {
 
   handleSearch(query) {
     this.searchQuery = (query || '').toLowerCase().trim();
+    this.currentPage = 1; // Reset to first page on search
     this.renderTable();
+  },
+
+  // Pagination Controls
+  changePageSize(newSize) {
+    if (newSize === 'all') {
+      this.pageSize = 'all';
+    } else {
+      this.pageSize = parseInt(newSize, 10) || 50;
+    }
+    this.currentPage = 1;
+    this.renderTable();
+  },
+
+  goToPage(p) {
+    this.currentPage = Math.max(1, p);
+    this.renderTable();
+  },
+
+  prevPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.renderTable();
+    }
+  },
+
+  nextPage() {
+    const totalPages = this.getTotalPages();
+    if (this.currentPage < totalPages) {
+      this.currentPage++;
+      this.renderTable();
+    }
+  },
+
+  goToLastPage() {
+    this.currentPage = this.getTotalPages();
+    this.renderTable();
+  },
+
+  getFilteredOwners() {
+    if (!this.searchQuery) return this.allOwners;
+    return this.allOwners.filter(o => {
+      const text = `${o.truckNo || ''} ${o.name || ''} ${o.mobile || ''} ${o.mobile1 || ''}`.toLowerCase();
+      return text.includes(this.searchQuery);
+    });
+  },
+
+  getTotalPages() {
+    const filtered = this.getFilteredOwners();
+    if (this.pageSize === 'all') return 1;
+    return Math.ceil(filtered.length / this.pageSize) || 1;
   },
 
   renderTable() {
     const tbody = document.getElementById('truck-owners-tbody');
     if (!tbody) return;
 
-    let filtered = this.allOwners;
-    if (this.searchQuery) {
-      filtered = this.allOwners.filter(o => {
-        const text = `${o.truckNo || ''} ${o.name || ''} ${o.mobile || ''} ${o.mobile1 || ''}`.toLowerCase();
-        return text.includes(this.searchQuery);
-      });
+    const filtered = this.getFilteredOwners();
+    const totalCount = this.allOwners.length;
+    const filteredCount = filtered.length;
+    const totalPages = this.getTotalPages();
+
+    if (this.currentPage > totalPages) {
+      this.currentPage = totalPages;
     }
 
     const showingText = document.getElementById('table-showing-text');
     if (showingText) {
       if (this.searchQuery) {
-        showingText.innerText = `${filtered.length} of ${this.allOwners.length} records`;
+        showingText.innerText = `${filteredCount} of ${totalCount} records`;
       } else {
-        showingText.innerText = `${this.allOwners.length} records`;
+        showingText.innerText = `${totalCount} records`;
       }
     }
 
-    if (filtered.length === 0) {
+    // Pagination calculations
+    let pageItems = [];
+    let startIdx = 0;
+    let endIdx = 0;
+
+    if (filteredCount === 0) {
       tbody.innerHTML = `
         <tr>
           <td colspan="5" class="text-center py-5 text-muted">
@@ -121,14 +182,23 @@ const OwnersModule = {
           </td>
         </tr>
       `;
+      this.updatePaginationUI(0, 0, 0, 1, 1);
       return;
     }
 
-    // Render up to 300 rows immediately, then remaining progressively
-    let html = '';
-    const initialChunk = filtered.slice(0, 300);
+    if (this.pageSize === 'all') {
+      pageItems = filtered;
+      startIdx = 1;
+      endIdx = filteredCount;
+    } else {
+      startIdx = (this.currentPage - 1) * this.pageSize + 1;
+      endIdx = Math.min(this.currentPage * this.pageSize, filteredCount);
+      pageItems = filtered.slice(startIdx - 1, endIdx);
+    }
 
-    initialChunk.forEach(o => {
+    // Render page items
+    let html = '';
+    pageItems.forEach(o => {
       const isSelf = o.type === 'Self' || (o.name && o.name.includes('MTC Fleet'));
       const safeId = String(o.id || o.truckNo);
 
@@ -164,32 +234,33 @@ const OwnersModule = {
     });
 
     tbody.innerHTML = html;
+    this.updatePaginationUI(startIdx, endIdx, filteredCount, this.currentPage, totalPages);
+  },
 
-    if (filtered.length > 300) {
-      setTimeout(() => {
-        let remainingHtml = '';
-        for (let i = 300; i < filtered.length; i++) {
-          const o = filtered[i];
-          const isSelf = o.type === 'Self' || (o.name && o.name.includes('MTC Fleet'));
-          const safeId = String(o.id || o.truckNo);
-          remainingHtml += `
-            <tr class="appsheet-row" onclick="OwnersModule.showOwnerDetails('${safeId}')">
-              <td>
-                <span class="fw-bold font-monospace ${isSelf ? 'text-primary' : 'text-dark'}">${o.truckNo}</span>
-                ${isSelf ? '<span class="badge bg-warning text-dark ms-1" style="font-size: 0.65rem;">Own 10</span>' : ''}
-              </td>
-              <td>
-                <div class="fw-normal text-dark text-truncate" style="max-width: 220px;" title="${o.name || ''}">${o.name || '-'}</div>
-              </td>
-              <td><span class="font-monospace text-muted">${o.mobile || '-'}</span></td>
-              <td><span class="font-monospace text-muted">${o.mobile1 || '-'}</span></td>
-              <td class="text-end text-muted"><i class="bi bi-chevron-right small"></i></td>
-            </tr>
-          `;
-        }
-        tbody.insertAdjacentHTML('beforeend', remainingHtml);
-      }, 50);
+  updatePaginationUI(start, end, total, current, totalPages) {
+    const infoEl = document.getElementById('pagination-info');
+    if (infoEl) {
+      if (total === 0) {
+        infoEl.innerText = '0 of 0';
+      } else {
+        infoEl.innerText = `${start} - ${end} of ${total}`;
+      }
     }
+
+    const pageNumEl = document.getElementById('pagination-page-num');
+    if (pageNumEl) {
+      pageNumEl.innerText = `Page ${current} of ${totalPages}`;
+    }
+
+    const btnFirst = document.getElementById('btn-page-first');
+    const btnPrev = document.getElementById('btn-page-prev');
+    const btnNext = document.getElementById('btn-page-next');
+    const btnLast = document.getElementById('btn-page-last');
+
+    if (btnFirst) btnFirst.disabled = current <= 1;
+    if (btnPrev) btnPrev.disabled = current <= 1;
+    if (btnNext) btnNext.disabled = current >= totalPages;
+    if (btnLast) btnLast.disabled = current >= totalPages;
   },
 
   // View Navigation
@@ -362,6 +433,10 @@ const OwnersModule = {
     document.getElementById('drawer-owner-id').value = '';
     document.getElementById('drawerTitle').innerText = 'Details';
     this.showDrawer();
+    setTimeout(() => {
+      const input = document.getElementById('drawer-truck-no');
+      if (input) input.focus();
+    }, 150);
   },
 
   openEditDrawer(ownerId) {
