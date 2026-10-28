@@ -45,10 +45,8 @@ assert(html.includes('id="viewOwnerDetails"'), "Dedicated Details View container
 assert(html.includes('id="detail-truck-no"'), "Detail field 'Truck No.' must exist");
 assert(html.includes('id="detail-owner-name"'), "Detail field 'Name' must exist");
 assert(html.includes('id="detail-owner-mobile"'), "Detail field 'Mobile No.' must exist");
-assert(html.includes('id="detail-owner-mobile1"'), "Detail field 'Mobile No. 1' must exist");
-assert(html.includes('openEditCurrentOwner()'), "Details view must have Edit action");
-assert(html.includes('deleteCurrentOwner()'), "Details view must have Delete action");
-assert(html.includes('closeDetailsView()'), "Details view must have Back action");
+assert(html.includes('id="detail-mobile1-container"'), "Detail field 'Mobile No. 1' container must exist");
+assert(html.includes('appsheet-details-card'), "AppSheet Details Card class must exist");
 
 console.log("[TEST 3] Single Owner Details View (19_04_54.png) Verified ✔");
 

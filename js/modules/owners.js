@@ -4,7 +4,7 @@
  * 1. 3-Card Dashboard View (screencapture-appsheet-start-...-18_55_06.png)
  * 2. Dedicated Truck Owners Full View (screencapture-appsheet-start-...-19_02_49.png)
  * 3. Single Truck Owner Details View (screencapture-appsheet-start-...-19_04_54.png)
- * 4. Slide Drawer for Add/Edit Truck Owner (screencapture-appsheet-start-...-19_05_06.png & 19_05_24.png)
+ * 4. Slide Drawer for Add/Edit Truck Owner (media_1793163696469_88990520.jpg)
  * Total 595 Trucks & Owners (Header: 'Truck No. Number 595')
  */
 
@@ -67,8 +67,16 @@ const OwnersModule = {
       }
     }
 
+    this.populateNameDatalist();
     this.updateStats();
     this.renderTable();
+  },
+
+  populateNameDatalist() {
+    const datalist = document.getElementById('owner-name-datalist');
+    if (!datalist) return;
+    const distinctNames = Array.from(new Set(this.allOwners.map(o => (o.name || '').trim()).filter(Boolean))).sort();
+    datalist.innerHTML = distinctNames.map(n => `<option value="${n}">`).join('');
   },
 
   updateStats() {
@@ -209,6 +217,9 @@ const OwnersModule = {
       bc.innerHTML = `<span>Home</span> <i class="bi bi-chevron-right text-muted small"></i> <span class="active">Owners</span>`;
     }
 
+    const bcActions = document.getElementById('breadcrumbActions');
+    if (bcActions) bcActions.innerHTML = '';
+
     const searchInput = document.getElementById('search-owners');
     if (searchInput) searchInput.placeholder = 'Search Owners';
   },
@@ -243,6 +254,9 @@ const OwnersModule = {
       `;
     }
 
+    const bcActions = document.getElementById('breadcrumbActions');
+    if (bcActions) bcActions.innerHTML = '';
+
     const searchInput = document.getElementById('search-owners');
     if (searchInput) searchInput.placeholder = 'Search Truck Owners';
   },
@@ -264,7 +278,7 @@ const OwnersModule = {
     if (viewDash) viewDash.style.display = 'none';
     if (viewDetails) viewDetails.style.display = 'block';
 
-    // Populate Details Card (Matching 19_04_54_crop.png)
+    // Populate Details Card (Exact match to screencapture-appsheet-start-...-19_04_54.png)
     const truckNoEl = document.getElementById('detail-truck-no');
     const nameEl = document.getElementById('detail-owner-name');
     const mobileEl = document.getElementById('detail-owner-mobile');
@@ -273,39 +287,12 @@ const OwnersModule = {
 
     if (truckNoEl) truckNoEl.innerText = o.truckNo || '-';
     if (nameEl) nameEl.innerText = o.name || '-';
-
-    if (mobileEl) {
-      if (o.mobile) {
-        mobileEl.innerHTML = `
-          <div class="d-flex align-items-center gap-3">
-            <span>${o.mobile}</span>
-            <a href="tel:${o.mobile}" class="btn btn-sm btn-outline-primary py-0 px-2" title="Call">
-              <i class="bi bi-telephone"></i>
-            </a>
-            <a href="https://wa.me/91${o.mobile}" target="_blank" class="btn btn-sm btn-outline-success py-0 px-2" title="WhatsApp">
-              <i class="bi bi-whatsapp"></i>
-            </a>
-          </div>
-        `;
-      } else {
-        mobileEl.innerText = '-';
-      }
-    }
+    if (mobileEl) mobileEl.innerText = o.mobile || '-';
 
     if (mobile1Box && mobile1El) {
       if (o.mobile1) {
         mobile1Box.style.display = 'block';
-        mobile1El.innerHTML = `
-          <div class="d-flex align-items-center gap-3">
-            <span>${o.mobile1}</span>
-            <a href="tel:${o.mobile1}" class="btn btn-sm btn-outline-primary py-0 px-2" title="Call">
-              <i class="bi bi-telephone"></i>
-            </a>
-            <a href="https://wa.me/91${o.mobile1}" target="_blank" class="btn btn-sm btn-outline-success py-0 px-2" title="WhatsApp">
-              <i class="bi bi-whatsapp"></i>
-            </a>
-          </div>
-        `;
+        mobile1El.innerText = o.mobile1;
       } else {
         mobile1Box.style.display = 'none';
       }
@@ -320,6 +307,15 @@ const OwnersModule = {
         <a href="javascript:void(0)" onclick="OwnersModule.showTruckOwnersList()">Truck Owners</a>
         <i class="bi bi-chevron-right text-muted small"></i>
         <span class="active">Details</span>
+      `;
+    }
+
+    // Top Right Action Icons: Edit (pencil) & Delete (trash)
+    const bcActions = document.getElementById('breadcrumbActions');
+    if (bcActions) {
+      bcActions.innerHTML = `
+        <i class="bi bi-pencil" onclick="OwnersModule.openEditCurrentOwner()" title="Edit"></i>
+        <i class="bi bi-trash" onclick="OwnersModule.deleteCurrentOwner()" title="Delete"></i>
       `;
     }
   },
@@ -359,13 +355,12 @@ const OwnersModule = {
     }
   },
 
-  // Slide Drawer for Add / Edit Owner (Matching 19_05_06_crop.png and 19_05_24.png)
+  // Slide Drawer for Add / Edit Owner (Exact Match to media_1793163696469_88990520.jpg)
   openAddDrawer() {
     const form = document.getElementById('ownerDrawerForm');
     if (form) form.reset();
     document.getElementById('drawer-owner-id').value = '';
     document.getElementById('drawerTitle').innerText = 'Details';
-    document.getElementById('drawer-owner-due').value = '0';
     this.showDrawer();
   },
 
@@ -378,8 +373,6 @@ const OwnersModule = {
     document.getElementById('drawer-owner-name').value = o.name || '';
     document.getElementById('drawer-owner-mobile').value = o.mobile || '';
     document.getElementById('drawer-owner-mobile1').value = o.mobile1 || '';
-    document.getElementById('drawer-owner-type').value = o.type || 'Market';
-    document.getElementById('drawer-owner-due').value = o.dueAmount || 0;
 
     document.getElementById('drawerTitle').innerText = 'Details';
     this.showDrawer();
@@ -406,8 +399,6 @@ const OwnersModule = {
     const name = document.getElementById('drawer-owner-name').value.trim();
     const mobile = document.getElementById('drawer-owner-mobile').value.trim();
     const mobile1 = document.getElementById('drawer-owner-mobile1').value.trim();
-    const type = document.getElementById('drawer-owner-type').value;
-    const dueAmount = parseFloat(document.getElementById('drawer-owner-due').value) || 0;
 
     if (!truckNo || !name || !mobile) {
       alert("Please fill all required fields: Truck No.*, Name*, and Mobile No.*");
@@ -418,15 +409,15 @@ const OwnersModule = {
       truckNo,
       name,
       mobile,
-      mobile1,
-      type,
-      dueAmount
+      mobile1
     };
 
     try {
       if (id && typeof dbService !== 'undefined') {
         await dbService.update('truckOwners', id, ownerData);
       } else if (typeof dbService !== 'undefined') {
+        ownerData.type = 'Market';
+        ownerData.dueAmount = 0;
         ownerData.paidAmount = 0;
         ownerData.totalTrips = 0;
         ownerData.recentTrips = [];
@@ -437,6 +428,11 @@ const OwnersModule = {
           if (idx !== -1) this.allOwners[idx] = { ...this.allOwners[idx], ...ownerData };
         } else {
           ownerData.id = `truck_owner_${this.allOwners.length + 1}`;
+          ownerData.type = 'Market';
+          ownerData.dueAmount = 0;
+          ownerData.paidAmount = 0;
+          ownerData.totalTrips = 0;
+          ownerData.recentTrips = [];
           this.allOwners.unshift(ownerData);
         }
       }
@@ -516,10 +512,10 @@ const OwnersModule = {
   },
 
   exportCSV() {
-    let csv = "Truck No.,Name,Mobile No.,Mobile No. 1,Fleet Type\n";
+    let csv = "Truck No.,Name,Mobile No.,Mobile No. 1\n";
     this.allOwners.forEach(o => {
       const name = (o.name || '').replace(/"/g, '""');
-      csv += `"${o.truckNo || ''}","${name}","${o.mobile || ''}","${o.mobile1 || ''}","${o.type || 'Market'}"\n`;
+      csv += `"${o.truckNo || ''}","${name}","${o.mobile || ''}","${o.mobile1 || ''}"\n`;
     });
 
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });

@@ -71,7 +71,16 @@
       color: var(--appsheet-text);
     }
 
-    /* AppSheet Breadcrumbs */
+    /* AppSheet Breadcrumbs Row */
+    .appsheet-breadcrumb-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px 6px 16px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
     .appsheet-breadcrumb {
       font-size: 0.92rem;
       color: var(--appsheet-muted);
@@ -92,6 +101,22 @@
     .appsheet-breadcrumb span.active {
       color: var(--appsheet-text);
       font-weight: 600;
+    }
+
+    .breadcrumb-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--appsheet-muted);
+    }
+    .breadcrumb-actions i {
+      cursor: pointer;
+      font-size: 1.05rem;
+      color: var(--appsheet-muted);
+      transition: color 0.15s;
+    }
+    .breadcrumb-actions i:hover {
+      color: var(--appsheet-text);
     }
 
     /* AppSheet Gold Button */
@@ -117,7 +142,7 @@
 
     /* Dashboard Layout */
     .owners-dashboard-container {
-      padding: 12px 16px;
+      padding: 6px 16px 16px 16px;
       max-width: 100%;
     }
 
@@ -215,7 +240,7 @@
       margin-left: 0.35rem;
     }
 
-    /* Card 1 Table Layout */
+    /* Table Layout */
     .appsheet-table-wrap {
       flex: 1;
       overflow-y: auto;
@@ -301,76 +326,58 @@
       font-weight: 500;
     }
 
-    /* Dedicated Single Details View Card (Matching 19_04_54_crop.png) */
-    .owner-details-view-container {
-      max-width: 760px;
-      margin: 20px auto;
+    /* ======================================================== */
+    /* GOOGLE APPSHEET AUTHENTIC DETAILS CARD (19_04_54_crop.png) */
+    /* ======================================================== */
+    .appsheet-details-card {
+      max-width: 580px;
+      margin: 36px auto;
       background: #ffffff;
       border: 1px solid var(--appsheet-border);
-      border-radius: 6px;
-      box-shadow: 0 1px 3px rgba(60,64,67,0.08);
-      overflow: hidden;
-    }
-
-    .owner-details-view-header {
-      padding: 12px 18px;
-      background: #fafafa;
-      border-bottom: 1px solid var(--appsheet-border-light);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .owner-details-card-body {
+      border-radius: 4px;
+      box-shadow: 0 1px 2px rgba(60,64,67,0.08);
       padding: 24px 28px;
+      cursor: pointer;
+      transition: box-shadow 0.15s ease;
+    }
+    .appsheet-details-card:hover {
+      box-shadow: 0 2px 6px rgba(60,64,67,0.12);
     }
 
-    .detail-field-group {
-      margin-bottom: 22px;
-      border-bottom: 1px solid #f1f3f4;
-      padding-bottom: 16px;
+    .appsheet-detail-item {
+      padding: 4px 0;
     }
-    .detail-field-group:last-child {
-      border-bottom: none;
-      margin-bottom: 0;
-      padding-bottom: 0;
-    }
-    .detail-field-label {
+    .appsheet-detail-label {
       color: var(--appsheet-muted);
       font-size: 0.82rem;
       font-weight: 500;
-      margin-bottom: 4px;
+      margin-bottom: 5px;
     }
-    .detail-field-value-truck {
-      color: var(--appsheet-text);
-      font-size: 1.4rem;
-      font-weight: 700;
-      font-family: monospace;
-    }
-    .detail-field-value-name {
-      color: var(--appsheet-text);
-      font-size: 1.15rem;
-      font-weight: 600;
-    }
-    .detail-field-value-mobile {
+    .appsheet-detail-value {
       color: var(--appsheet-text);
       font-size: 1.05rem;
       font-weight: 500;
-      font-family: monospace;
+    }
+    .appsheet-detail-divider {
+      height: 1px;
+      background-color: var(--appsheet-border-light);
+      margin: 14px 0;
     }
 
-    /* AppSheet Slide Drawer (Matching 19_05_06_crop.png and 19_05_24.png) */
+    /* ======================================================== */
+    /* GOOGLE APPSHEET AUTHENTIC SLIDE DRAWER (Image 3 exact UI) */
+    /* ======================================================== */
     .appsheet-drawer {
       position: fixed;
       top: 0;
-      right: -440px;
-      width: 420px;
-      max-width: 92vw;
+      right: -760px;
+      width: 720px;
+      max-width: 95vw;
       height: 100vh;
       background: #ffffff;
-      box-shadow: -4px 0 18px rgba(0, 0, 0, 0.16);
+      box-shadow: -4px 0 24px rgba(0, 0, 0, 0.18);
       z-index: 1060;
-      transition: right 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: right 0.26s cubic-bezier(0.4, 0, 0.2, 1);
       display: flex;
       flex-direction: column;
     }
@@ -383,7 +390,7 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(0, 0, 0, 0.35);
+      background: rgba(0, 0, 0, 0.38);
       z-index: 1055;
       display: none;
     }
@@ -391,69 +398,134 @@
       display: block;
     }
 
+    /* Top Drawer Header matching media_1793163696469_88990520.jpg */
     .drawer-header {
-      padding: 12px 18px;
+      padding: 14px 24px;
       border-bottom: 1px solid var(--appsheet-border);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: #fafafa;
+      background: #ffffff;
+      flex-shrink: 0;
     }
-    .drawer-title {
-      font-size: 1.02rem;
-      font-weight: 600;
-      color: var(--appsheet-text);
-      margin: 0;
+    .drawer-header-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
     }
-    .drawer-close {
+    .drawer-close-btn {
       cursor: pointer;
       font-size: 1.25rem;
       color: var(--appsheet-muted);
       border: none;
       background: transparent;
-      padding: 4px;
+      padding: 2px 4px;
       line-height: 1;
+      display: flex;
+      align-items: center;
     }
-    .drawer-close:hover {
+    .drawer-close-btn:hover {
       color: #000;
     }
+    .drawer-title {
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: var(--appsheet-text);
+      margin: 0;
+    }
 
+    .drawer-header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-drawer-cancel {
+      background: #ffffff;
+      border: 1px solid var(--appsheet-border);
+      color: #3c4043;
+      font-weight: 500;
+      font-size: 0.85rem;
+      padding: 5px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+    .btn-drawer-cancel:hover {
+      background: #f1f3f4;
+    }
+    .btn-drawer-save {
+      background: #d1d5db;
+      border: 1px solid transparent;
+      color: #202124;
+      font-weight: 500;
+      font-size: 0.85rem;
+      padding: 5px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+    .btn-drawer-save.active,
+    .btn-drawer-save:hover {
+      background: #1a73e8;
+      color: #ffffff;
+    }
+
+    /* Drawer Form Body (2-Column Horizontal Grid matching Image 3) */
     .drawer-body {
-      padding: 18px;
+      padding: 32px 36px;
       overflow-y: auto;
       flex: 1;
     }
 
-    .drawer-footer {
-      padding: 12px 18px;
-      border-top: 1px solid var(--appsheet-border);
-      background: #fafafa;
-      display: flex;
+    .appsheet-form-row {
+      display: grid;
+      grid-template-columns: 160px 1fr;
       align-items: center;
-      justify-content: flex-end;
-      gap: 10px;
+      margin-bottom: 24px;
+      gap: 16px;
     }
 
-    .appsheet-input-label {
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: #3c4043;
-      margin-bottom: 5px;
-      display: block;
+    @media (max-width: 600px) {
+      .appsheet-form-row {
+        grid-template-columns: 1fr;
+        gap: 6px;
+      }
     }
-    .appsheet-input {
+
+    .appsheet-form-label {
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: #3c4043;
+      margin: 0;
+    }
+    .appsheet-form-input-wrap {
       width: 100%;
-      padding: 7px 12px;
+      max-width: 460px;
+      position: relative;
+    }
+    .appsheet-form-control {
+      width: 100%;
+      padding: 8px 12px;
       border: 1px solid var(--appsheet-border);
       border-radius: 4px;
-      font-size: 0.9rem;
+      font-size: 0.92rem;
+      color: var(--appsheet-text);
       outline: none;
-      transition: border-color 0.15s;
+      transition: border-color 0.15s, box-shadow 0.15s;
       background: #ffffff;
     }
-    .appsheet-input:focus {
+    .appsheet-form-control:focus {
       border-color: #1a73e8;
       box-shadow: 0 0 0 1px #1a73e8;
+    }
+    .dropdown-chevron-icon {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      color: #5f6368;
+      font-size: 11px;
     }
   </style>
 </head>
@@ -496,10 +568,13 @@
     <!-- Page Content Container -->
     <main class="owners-dashboard-container">
 
-      <!-- Breadcrumbs Bar -->
-      <div class="d-flex align-items-center justify-content-between mb-2 flex-wrap gap-2">
+      <!-- Breadcrumbs Bar with Action Icons matching Google AppSheet -->
+      <div class="appsheet-breadcrumb-row">
         <div class="appsheet-breadcrumb" id="appsheetBreadcrumb">
           <a href="javascript:void(0)" onclick="OwnersModule.showDashboard()">Owners</a>
+        </div>
+        <div class="breadcrumb-actions" id="breadcrumbActions">
+          <!-- Populated dynamically in Details view (Edit pencil & Delete trash) -->
         </div>
       </div>
 
@@ -691,47 +766,40 @@
         </div>
       </div>
 
-      <!-- VIEW 2: Single Truck Owner Details View (Matching 19_04_54_crop.png) -->
-      <div id="viewOwnerDetails" data-modal="modalOwnerDetail" style="display: none;">
-        <span id="modalOwnerDetail" style="display:none;"></span>
-        <div class="owner-details-view-container">
-          <div class="owner-details-view-header">
-            <button class="btn btn-sm btn-light border" onclick="OwnersModule.closeDetailsView()">
-              <i class="bi bi-arrow-left me-1"></i> Back
-            </button>
-            <div class="d-flex align-items-center gap-2">
-              <button class="btn btn-sm btn-light border" onclick="OwnersModule.openEditCurrentOwner()" title="Edit Owner">
-                <i class="bi bi-pencil me-1"></i> Edit
-              </button>
-              <button class="btn btn-sm btn-outline-danger" onclick="OwnersModule.deleteCurrentOwner()" title="Delete Owner">
-                <i class="bi bi-trash"></i>
-              </button>
-            </div>
+      <!-- VIEW 2: Single Truck Owner Details View (Exact Match to screencapture-appsheet-start-...-19_04_54.png) -->
+      <div id="viewOwnerDetails" style="display: none;">
+        <span id="modalOwnerDetail" style="display: none;"></span>
+        
+        <!-- Clean Centered Details Card matching real AppSheet -->
+        <div class="appsheet-details-card" onclick="OwnersModule.openEditCurrentOwner()" title="Click to Edit">
+          <!-- 1. Truck No. -->
+          <div class="appsheet-detail-item">
+            <div class="appsheet-detail-label">Truck No.</div>
+            <div class="appsheet-detail-value font-monospace fw-bold fs-5 text-dark" id="detail-truck-no">-</div>
           </div>
 
-          <div class="owner-details-card-body">
-            <!-- 1. Truck No. -->
-            <div class="detail-field-group">
-              <div class="detail-field-label">Truck No.</div>
-              <div class="detail-field-value-truck" id="detail-truck-no">-</div>
-            </div>
+          <div class="appsheet-detail-divider"></div>
 
-            <!-- 2. Name -->
-            <div class="detail-field-group">
-              <div class="detail-field-label">Name</div>
-              <div class="detail-field-value-name" id="detail-owner-name">-</div>
-            </div>
+          <!-- 2. Name -->
+          <div class="appsheet-detail-item">
+            <div class="appsheet-detail-label">Name</div>
+            <div class="appsheet-detail-value fw-semibold text-dark" id="detail-owner-name">-</div>
+          </div>
 
-            <!-- 3. Mobile No. -->
-            <div class="detail-field-group">
-              <div class="detail-field-label">Mobile No.</div>
-              <div class="detail-field-value-mobile" id="detail-owner-mobile">-</div>
-            </div>
+          <div class="appsheet-detail-divider"></div>
 
-            <!-- 4. Mobile No. 1 -->
-            <div class="detail-field-group" id="detail-mobile1-container">
-              <div class="detail-field-label">Mobile No. 1</div>
-              <div class="detail-field-value-mobile" id="detail-owner-mobile1">-</div>
+          <!-- 3. Mobile No. -->
+          <div class="appsheet-detail-item">
+            <div class="appsheet-detail-label">Mobile No.</div>
+            <div class="appsheet-detail-value font-monospace" id="detail-owner-mobile">-</div>
+          </div>
+
+          <!-- 4. Mobile No. 1 -->
+          <div id="detail-mobile1-container" style="display: none;">
+            <div class="appsheet-detail-divider"></div>
+            <div class="appsheet-detail-item">
+              <div class="appsheet-detail-label">Mobile No. 1</div>
+              <div class="appsheet-detail-value font-monospace text-muted" id="detail-owner-mobile1">-</div>
             </div>
           </div>
         </div>
@@ -740,53 +808,62 @@
     </main>
   </div>
 
-  <!-- AppSheet Slide-in Drawer for Add / Edit Owner (Matching 19_05_06_crop.png and 19_05_24.png) -->
+  <!-- AppSheet Slide-in Drawer for Add / Edit Owner (Exact Match to media_1793163696469_88990520.jpg) -->
   <div class="appsheet-drawer-backdrop" id="ownerDrawerBackdrop" onclick="OwnersModule.closeDrawer()"></div>
   <aside class="appsheet-drawer" id="ownerDrawer">
+    <!-- Header with ✕ Details on left, and Cancel & Save on right -->
     <div class="drawer-header">
-      <h6 class="drawer-title" id="drawerTitle">Details</h6>
-      <button type="button" class="drawer-close" onclick="OwnersModule.closeDrawer()">&times;</button>
+      <div class="drawer-header-left">
+        <button type="button" class="drawer-close-btn" onclick="OwnersModule.closeDrawer()" title="Close">
+          <i class="bi bi-x fs-4"></i>
+        </button>
+        <h5 class="drawer-title" id="drawerTitle">Details</h5>
+      </div>
+      <div class="drawer-header-right">
+        <button type="button" class="btn-drawer-cancel" onclick="OwnersModule.closeDrawer()">Cancel</button>
+        <button type="submit" form="ownerDrawerForm" class="btn-drawer-save active" id="btnDrawerSave">Save</button>
+      </div>
     </div>
+
+    <!-- Form Body matching authentic 2-column horizontal layout -->
     <form id="ownerDrawerForm" onsubmit="OwnersModule.saveOwnerDrawer(event)">
       <div class="drawer-body">
         <input type="hidden" id="drawer-owner-id">
 
-        <div class="mb-3">
-          <label class="appsheet-input-label">Truck No. <span class="text-danger">*</span></label>
-          <input type="text" id="drawer-truck-no" class="appsheet-input font-monospace text-uppercase fw-bold" placeholder="e.g. RJ42GA0451" required>
+        <!-- Row 1: Truck No. * -->
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label" for="drawer-truck-no">Truck No. <span class="text-danger">*</span></label>
+          <div class="appsheet-form-input-wrap">
+            <input type="text" id="drawer-truck-no" class="appsheet-form-control font-monospace text-uppercase fw-bold" placeholder="RJ42GA0451" required>
+          </div>
         </div>
 
-        <div class="mb-3">
-          <label class="appsheet-input-label">Name <span class="text-danger">*</span></label>
-          <input type="text" id="drawer-owner-name" class="appsheet-input" placeholder="e.g. ABCD" required>
+        <!-- Row 2: Name * -->
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label" for="drawer-owner-name">Name <span class="text-danger">*</span></label>
+          <div class="appsheet-form-input-wrap">
+            <input type="text" id="drawer-owner-name" class="appsheet-form-control pe-4" placeholder="ABCD" required list="owner-name-datalist">
+            <i class="bi bi-caret-down-fill dropdown-chevron-icon"></i>
+            <datalist id="owner-name-datalist"></datalist>
+          </div>
         </div>
 
-        <div class="mb-3">
-          <label class="appsheet-input-label">Mobile No. <span class="text-danger">*</span></label>
-          <input type="tel" id="drawer-owner-mobile" class="appsheet-input font-monospace" placeholder="e.g. 7898424750" required>
+        <!-- Row 3: Mobile No. * -->
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label" for="drawer-owner-mobile">Mobile No. <span class="text-danger">*</span></label>
+          <div class="appsheet-form-input-wrap">
+            <input type="tel" id="drawer-owner-mobile" class="appsheet-form-control font-monospace" placeholder="7898424750" required>
+          </div>
         </div>
 
-        <div class="mb-3">
-          <label class="appsheet-input-label">Mobile No. 1</label>
-          <input type="tel" id="drawer-owner-mobile1" class="appsheet-input font-monospace" placeholder="e.g. 6376737463">
+        <!-- Row 4: Mobile No. 1 -->
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label" for="drawer-owner-mobile1">Mobile No. 1</label>
+          <div class="appsheet-form-input-wrap">
+            <input type="tel" id="drawer-owner-mobile1" class="appsheet-form-control font-monospace" placeholder="Secondary mobile">
+          </div>
         </div>
 
-        <div class="mb-3">
-          <label class="appsheet-input-label">Fleet Category</label>
-          <select id="drawer-owner-type" class="appsheet-input">
-            <option value="Market">Market / Attached Truck</option>
-            <option value="Self">Self Owned (VIP 10 Trucks)</option>
-          </select>
-        </div>
-
-        <div class="mb-3">
-          <label class="appsheet-input-label">Opening Due Balance (₹)</label>
-          <input type="number" id="drawer-owner-due" class="appsheet-input" value="0" min="0" step="any">
-        </div>
-      </div>
-      <div class="drawer-footer">
-        <button type="button" class="btn btn-sm btn-light border px-3" onclick="OwnersModule.closeDrawer()">Cancel</button>
-        <button type="submit" class="btn btn-sm btn-dark px-4 shadow-sm">Save</button>
       </div>
     </form>
   </aside>
