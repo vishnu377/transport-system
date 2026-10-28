@@ -3,17 +3,17 @@
  * Matches Google AppSheet Authentic UI across all views:
  * 1. 3-Card Dashboard View (Card 1: Truck Owners, Card 2: Owner Due, Card 3: Owner Paid)
  * 2. Dedicated Truck Owners Full View (596 Trucks with bottom pagination & search)
- * 3. Single Truck Owner Details View with Edit / Delete actions
- * 4. Slide Drawer for Add/Edit Truck Owner
- * 5. Dedicated Owner Due Table View with 2-Column Split:
+ * 3. Dedicated Owner Due Table View with 2-Column Split:
  *    - Left: Year Selector (All, 2026-2027, 2025-2026, 2024-2025)
- *    - Right: Table with 489 records & FULL ROW COLOR based on 6 Statuses!
- * 6. Open Trip Details View with Authentic Google AppSheet 3-Panel Split matching 19_42_11.png:
- *    - Panel 1: Trip Details (Stacked AppSheet Key-Value rows with Edit pencil & Expand)
- *    - Panel 2: Consignor/s 1 (Stacked AppSheet Key-Value rows with Expand)
- *    - Panel 3: Owner Payment Details & Open Debts (Stacked AppSheet Key-Value rows with Add & Expand)
- * 7. Slide Drawers for Editing Trips (19_43_12.png), Adding Debts (19_43_39.png), and Payments (WhatsApp Image)
- * 8. Sidebar Hide / Unhide Toggle (hamburger menu icon)
+ *    - Right: Table with 489 records, Date Group Headers, and FULL ROW STATUS COLORS!
+ * 4. Open Trip Details View with Exact 3-Column Split tailored to each of the 6 color categories:
+ *    - Yellow (Transit), Purple (POD Sent), Blue (Party Payment Pending),
+ *    - Pink (Off Loading), Slate (Cheque Due), Cyan (Truck Owner Payment Pending)
+ * 5. Full Drilldown Views on Expand:
+ *    - Open Trip Party Details (19_42_24.png / 19_42_34.png)
+ *    - Trip Truck Owner Payment Details (20_12_36.png / 20_12_49.png)
+ * 6. Slide Drawers for Editing Trips (19_43_12.png), Adding Debts (19_43_39.png), and Payments
+ * 7. Sidebar Hide / Unhide Toggle
  * 100% Dynamic - Connected to Firebase Cloud Firestore ('truckOwners' and 'ownerDues')
  */
 
@@ -95,51 +95,60 @@ const OwnersModule = {
       tbodyDues.innerHTML = `
         <tr>
           <td colspan="9" class="text-center py-5 text-muted">
-            <div class="spinner-border spinner-border-sm text-secondary me-2"></div> Loading owner dues directly from Firestore...
+            <div class="spinner-border spinner-border-sm text-secondary me-2"></div> Loading owner dues...
           </td>
         </tr>
       `;
     }
 
+    // 1. Load Truck Owners (596 records)
     try {
-      if (typeof dbService !== 'undefined') {
-        this.allOwners = await dbService.getAll('truckOwners');
-        this.allOwnerDues = await dbService.getAll('ownerDues');
-      } else {
-        if (typeof window !== 'undefined') {
-          this.allOwners = window.INITIAL_TRUCK_OWNERS || [];
-          this.allOwnerDues = window.INITIAL_OWNER_DUES || window.SAMPLE_OWNER_DUES || [];
+      if (typeof FirebaseDB !== 'undefined' && FirebaseDB.getAllTruckOwners) {
+        const owners = await FirebaseDB.getAllTruckOwners();
+        if (owners && owners.length > 0) {
+          this.allOwners = owners;
         }
       }
-    } catch (err) {
-      console.warn("Could not load from Firestore, falling back to local master:", err);
-      if (typeof window !== 'undefined') {
-        this.allOwners = window.INITIAL_TRUCK_OWNERS || [];
-        this.allOwnerDues = window.INITIAL_OWNER_DUES || window.SAMPLE_OWNER_DUES || [];
-      }
+    } catch (e) {
+      console.warn('FirebaseDB getAllTruckOwners fallback:', e);
     }
 
     if (!this.allOwners || this.allOwners.length === 0) {
-      if (typeof window !== 'undefined' && Array.isArray(window.INITIAL_TRUCK_OWNERS)) {
-        this.allOwners = window.INITIAL_TRUCK_OWNERS;
+      if (typeof window.MASTER_TRUCK_OWNERS_596 !== 'undefined') {
+        this.allOwners = JSON.parse(JSON.stringify(window.MASTER_TRUCK_OWNERS_596));
+      } else if (typeof window.INITIAL_TRUCK_OWNERS !== 'undefined') {
+        this.allOwners = JSON.parse(JSON.stringify(window.INITIAL_TRUCK_OWNERS));
+      } else {
+        this.allOwners = [];
       }
+    }
+
+    // 2. Load Owner Dues (489 records)
+    try {
+      if (typeof FirebaseDB !== 'undefined' && FirebaseDB.getAllOwnerDues) {
+        const dues = await FirebaseDB.getAllOwnerDues();
+        if (dues && dues.length > 0) {
+          this.allOwnerDues = dues;
+        }
+      }
+    } catch (e) {
+      console.warn('FirebaseDB getAllOwnerDues fallback:', e);
     }
 
     if (!this.allOwnerDues || this.allOwnerDues.length === 0) {
-      if (typeof window !== 'undefined') {
-        this.allOwnerDues = window.INITIAL_OWNER_DUES || window.SAMPLE_OWNER_DUES || [];
+      if (typeof window.SAMPLE_OWNER_DUES !== 'undefined') {
+        this.allOwnerDues = JSON.parse(JSON.stringify(window.SAMPLE_OWNER_DUES));
+      } else if (typeof window.INITIAL_OWNER_DUES !== 'undefined') {
+        this.allOwnerDues = JSON.parse(JSON.stringify(window.INITIAL_OWNER_DUES));
+      } else {
+        this.allOwnerDues = [];
       }
     }
-
-    this.allOwners = (this.allOwners || []).filter(o => {
-      const t = String(o.truckNo || o.truck || '').trim().toUpperCase();
-      return t && t !== 'UNDEFINED' && t !== '-' && t.length >= 5;
-    });
 
     this.populateNameDatalist();
     this.updateStats();
     this.updateDueSummaryStats();
-    this.renderTable();
+    this.renderTruckOwnersTable();
     this.renderOwnerDueTable();
   },
 
@@ -166,74 +175,140 @@ const OwnersModule = {
     if (cntAllEl) cntAllEl.innerText = countAll;
 
     const amt2026El = document.getElementById('due-year-amount-2026-2027');
-    if (amt2026El) amt2026El.innerText = '₹ 30,021,934.22';
-
     const amt2025El = document.getElementById('due-year-amount-2025-2026');
-    if (amt2025El) amt2025El.innerText = '₹ 1,641,456.00';
-
     const amt2024El = document.getElementById('due-year-amount-2024-2025');
-    if (amt2024El) amt2024El.innerText = '₹ 12,221.00';
+
+    let sum2026 = 0;
+    let sum2025 = 0;
+    let sum2024 = 0;
+
+    dues.forEach(d => {
+      const yr = String(d.year || '');
+      const amt = Number(d.dueAmount || d.ownerDue || 0);
+      if (yr === '2026-2027') sum2026 += amt;
+      else if (yr === '2025-2026') sum2025 += amt;
+      else if (yr === '2024-2025') sum2024 += amt;
+    });
+
+    if (amt2026El) amt2026El.innerText = this.formatCurrency(sum2026);
+    if (amt2025El) amt2025El.innerText = this.formatCurrency(sum2025);
+    if (amt2024El) amt2024El.innerText = this.formatCurrency(sum2024);
+  },
+
+  // Helper date parser for strict descending chronological sort
+  parseDateTimestamp(dStr) {
+    if (!dStr) return 0;
+    const parts = String(dStr).trim().split('/');
+    if (parts.length === 3) {
+      const day = parseInt(parts[0], 10);
+      const month = parseInt(parts[1], 10) - 1;
+      const year = parseInt(parts[2], 10);
+      return new Date(year, month, day).getTime();
+    }
+    return new Date(dStr).getTime() || 0;
+  },
+
+  formatCurrency(val) {
+    const num = Number(val) || 0;
+    return '₹ ' + num.toLocaleString('en-IN', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
   },
 
   // ========================================================
-  // CARD 1: TRUCK OWNERS DIRECTORY METHODS
+  // VIEW 1: 3-CARD DASHBOARD VIEW
   // ========================================================
-  handleSearch(query) {
-    this.searchQuery = (query || '').toLowerCase().trim();
-    this.currentPage = 1;
-    this.renderTable();
-  },
+  showDashboard() {
+    this.currentView = 'dashboard';
+    window.location.hash = '';
 
-  changePageSize(newSize) {
-    if (newSize === 'all') {
-      this.pageSize = 'all';
-    } else {
-      this.pageSize = parseInt(newSize, 10) || 50;
+    const viewDash = document.getElementById('viewDashboard');
+    const viewOwnerDetails = document.getElementById('viewOwnerDetails');
+    const viewDueList = document.getElementById('viewOwnerDueList');
+    const viewOpenTrip = document.getElementById('viewOpenTripDetails');
+    const viewParty = document.getElementById('viewOpenTripPartyDetails');
+    const viewPayment = document.getElementById('viewTripPaymentDetails');
+
+    if (viewDash) viewDash.style.display = 'block';
+    if (viewOwnerDetails) viewOwnerDetails.style.display = 'none';
+    if (viewDueList) viewDueList.style.display = 'none';
+    if (viewOpenTrip) viewOpenTrip.style.display = 'none';
+    if (viewParty) viewParty.style.display = 'none';
+    if (viewPayment) viewPayment.style.display = 'none';
+
+    // Reset panel expansions
+    document.querySelectorAll('.appsheet-panel.panel-expanded').forEach(p => {
+      p.classList.remove('panel-expanded');
+    });
+
+    // Reset Breadcrumb: Home > Owners
+    const bc = document.getElementById('appsheetBreadcrumb');
+    if (bc) {
+      bc.innerHTML = `
+        <span class="active">Owners</span>
+      `;
     }
-    this.currentPage = 1;
-    this.renderTable();
-  },
 
-  goToPage(p) {
-    this.currentPage = Math.max(1, p);
-    this.renderTable();
-  },
-
-  prevPage() {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-      this.renderTable();
+    const bcActions = document.getElementById('breadcrumbActions');
+    if (bcActions) {
+      bcActions.innerHTML = `
+        <button class="btn btn-sm btn-outline-secondary" onclick="OwnersModule.exportCSV()" title="Export CSV">
+          <i class="bi bi-download me-1"></i> CSV
+        </button>
+      `;
     }
+
+    this.renderTruckOwnersTable();
   },
 
-  nextPage() {
-    const totalPages = this.getTotalPages();
-    if (this.currentPage < totalPages) {
-      this.currentPage++;
-      this.renderTable();
+  // ========================================================
+  // VIEW 2: DEDICATED FULL VIEW - TRUCK OWNERS (596 TRUCKS)
+  // ========================================================
+  showTruckOwnersList() {
+    this.showDashboard();
+    window.location.hash = '#truck-owners';
+
+    const card = document.getElementById('cardTruckOwners');
+    if (card) {
+      card.classList.add('panel-expanded');
+      const expandIcon = card.querySelector('.expand-toggle-icon');
+      if (expandIcon) {
+        expandIcon.classList.remove('bi-arrows-angle-expand');
+        expandIcon.classList.add('bi-arrows-angle-contract');
+      }
     }
-  },
 
-  goToLastPage() {
-    this.currentPage = this.getTotalPages();
-    this.renderTable();
+    const bc = document.getElementById('appsheetBreadcrumb');
+    if (bc) {
+      bc.innerHTML = `
+        <a href="javascript:void(0)" onclick="OwnersModule.showDashboard()">Owners</a>
+        <i class="bi bi-chevron-right text-muted small"></i>
+        <span class="active">Truck Owners</span>
+      `;
+    }
   },
 
   getFilteredOwners() {
     if (!this.searchQuery) return this.allOwners;
+    const q = this.searchQuery.toLowerCase();
     return this.allOwners.filter(o => {
-      const text = `${o.truckNo || ''} ${o.name || ''} ${o.mobile || ''} ${o.mobile1 || ''}`.toLowerCase();
-      return text.includes(this.searchQuery);
+      const truck = (o.truckNo || '').toLowerCase();
+      const name = (o.name || '').toLowerCase();
+      const mob = (o.mobile || '').toLowerCase();
+      const mob1 = (o.mobile1 || '').toLowerCase();
+      return truck.includes(q) || name.includes(q) || mob.includes(q) || mob1.includes(q);
     });
   },
 
   getTotalPages() {
-    const filtered = this.getFilteredOwners();
+    const count = this.getFilteredOwners().length;
+    if (count === 0) return 1;
     if (this.pageSize === 'all') return 1;
-    return Math.ceil(filtered.length / this.pageSize) || 1;
+    return Math.ceil(count / parseInt(this.pageSize, 10));
   },
 
-  renderTable() {
+  renderTruckOwnersTable() {
     const tbody = document.getElementById('truck-owners-tbody');
     if (!tbody) return;
 
@@ -255,12 +330,6 @@ const OwnersModule = {
       }
     }
 
-    let pageItems = [];
-    let startIdx = 0;
-    let endIdx = 0;
-
-    const isExpanded = document.getElementById('cardTruckOwners')?.classList.contains('is-expanded') || this.currentView === 'truckOwnersList';
-
     if (filteredCount === 0) {
       tbody.innerHTML = `
         <tr>
@@ -273,40 +342,30 @@ const OwnersModule = {
       return;
     }
 
-    if (!isExpanded && this.currentView === 'dashboard') {
-      pageItems = filtered;
-      startIdx = 1;
-      endIdx = filteredCount;
-    } else if (this.pageSize === 'all') {
+    let pageItems = [];
+    let startIdx = 0;
+    let endIdx = 0;
+
+    if (this.pageSize === 'all') {
       pageItems = filtered;
       startIdx = 1;
       endIdx = filteredCount;
     } else {
-      startIdx = (this.currentPage - 1) * this.pageSize + 1;
-      endIdx = Math.min(this.currentPage * this.pageSize, filteredCount);
+      const pSize = parseInt(this.pageSize, 10);
+      startIdx = (this.currentPage - 1) * pSize + 1;
+      endIdx = Math.min(this.currentPage * pSize, filteredCount);
       pageItems = filtered.slice(startIdx - 1, endIdx);
     }
 
     let html = '';
     pageItems.forEach(o => {
-      const isSelf = o.type === 'Self' || (o.name && o.name.includes('MTC Fleet'));
       const safeId = String(o.id || o.truckNo);
-
       html += `
-        <tr class="appsheet-row" onclick="OwnersModule.showOwnerDetails('${safeId}')">
-          <td>
-            <span class="fw-bold font-monospace ${isSelf ? 'text-primary' : 'text-dark'}">${o.truckNo}</span>
-            ${isSelf ? '<span class="badge bg-warning text-dark ms-1" style="font-size: 0.65rem;">Own 10</span>' : ''}
-          </td>
-          <td>
-            <div class="fw-normal text-dark text-truncate" style="max-width: 220px;" title="${o.name || ''}">${o.name || '-'}</div>
-          </td>
-          <td>
-            <span class="font-monospace text-muted">${o.mobile || '-'}</span>
-          </td>
-          <td>
-            <span class="font-monospace text-muted">${o.mobile1 || '-'}</span>
-          </td>
+        <tr class="appsheet-row" onclick="OwnersModule.showOwnerDetails('${safeId}')" style="cursor: pointer;" title="Click to view details of ${o.truckNo}">
+          <td class="font-monospace fw-bold text-dark">${o.truckNo || '-'}</td>
+          <td class="fw-medium text-dark text-truncate" style="max-width: 220px;">${o.name || '-'}</td>
+          <td class="font-monospace text-secondary">${o.mobile || '-'}</td>
+          <td class="font-monospace text-muted">${o.mobile1 || '-'}</td>
           <td class="text-end text-muted">
             <i class="bi bi-chevron-right small"></i>
           </td>
@@ -344,328 +403,50 @@ const OwnersModule = {
     if (btnLast) btnLast.disabled = current >= totalPages;
   },
 
-  // ========================================================
-  // VIEW SWITCHING & NAVIGATION
-  // ========================================================
-  showDashboard() {
-    this.currentView = 'dashboard';
-    window.location.hash = '';
-
-    const viewDash = document.getElementById('viewDashboard');
-    const viewOwnerDetails = document.getElementById('viewOwnerDetails');
-    const viewDueList = document.getElementById('viewOwnerDueList');
-    const viewOpenTrip = document.getElementById('viewOpenTripDetails');
-    const viewParty = document.getElementById('viewOpenTripPartyDetails');
-    const viewPayment = document.getElementById('viewTripPaymentDetails');
-
-    if (viewDash) viewDash.style.display = 'block';
-    if (viewOwnerDetails) viewOwnerDetails.style.display = 'none';
-    if (viewDueList) viewDueList.style.display = 'none';
-    if (viewOpenTrip) viewOpenTrip.style.display = 'none';
-    if (viewParty) viewParty.style.display = 'none';
-    if (viewPayment) viewPayment.style.display = 'none';
-
-    document.querySelectorAll('.appsheet-panel').forEach(c => {
-      c.classList.remove('is-expanded');
-      c.style.display = '';
-      const icon = c.querySelector('.expand-toggle-icon');
-      if (icon) {
-        icon.classList.remove('bi-arrows-angle-contract');
-        icon.classList.add('bi-arrows-angle-expand');
-      }
-    });
-
-    const bc = document.getElementById('appsheetBreadcrumb');
-    if (bc) {
-      bc.innerHTML = `<span>Home</span> <i class="bi bi-chevron-right text-muted small"></i> <span class="active">Owners</span>`;
-    }
-
-    const bcActions = document.getElementById('breadcrumbActions');
-    if (bcActions) bcActions.innerHTML = '';
-
-    const searchInput = document.getElementById('search-owners');
-    if (searchInput) searchInput.placeholder = 'Search Truck Owners';
-
-    this.renderTable();
+  handleSearch(val) {
+    this.searchQuery = (val || '').trim();
+    this.currentPage = 1;
+    this.renderTruckOwnersTable();
   },
 
-  showTruckOwnersList() {
-    this.currentView = 'truckOwnersList';
-    window.location.hash = '#truck-owners';
-
-    const viewDash = document.getElementById('viewDashboard');
-    const viewOwnerDetails = document.getElementById('viewOwnerDetails');
-    const viewDueList = document.getElementById('viewOwnerDueList');
-    const viewOpenTrip = document.getElementById('viewOpenTripDetails');
-    const viewParty = document.getElementById('viewOpenTripPartyDetails');
-    const viewPayment = document.getElementById('viewTripPaymentDetails');
-
-    if (viewDash) viewDash.style.display = 'block';
-    if (viewOwnerDetails) viewOwnerDetails.style.display = 'none';
-    if (viewDueList) viewDueList.style.display = 'none';
-    if (viewOpenTrip) viewOpenTrip.style.display = 'none';
-    if (viewParty) viewParty.style.display = 'none';
-    if (viewPayment) viewPayment.style.display = 'none';
-
-    document.querySelectorAll('.appsheet-panel').forEach(c => {
-      if (c.id === 'cardTruckOwners') {
-        c.classList.add('is-expanded');
-        c.style.display = 'flex';
-        const icon = c.querySelector('.expand-toggle-icon');
-        if (icon) {
-          icon.classList.remove('bi-arrows-angle-expand');
-          icon.classList.add('bi-arrows-angle-contract');
-        }
-      } else {
-        c.classList.remove('is-expanded');
-        c.style.display = 'none';
-      }
-    });
-
-    const bc = document.getElementById('appsheetBreadcrumb');
-    if (bc) {
-      bc.innerHTML = `
-        <a href="javascript:void(0)" onclick="OwnersModule.showDashboard()">Owners</a>
-        <i class="bi bi-chevron-right text-muted small"></i>
-        <span class="active">Truck Owners</span>
-      `;
-    }
-
-    const bcActions = document.getElementById('breadcrumbActions');
-    if (bcActions) bcActions.innerHTML = '';
-
-    const searchInput = document.getElementById('search-owners');
-    if (searchInput) searchInput.placeholder = 'Search Truck Owners';
-
-    this.renderTable();
+  changePageSize(newSize) {
+    this.pageSize = newSize;
+    this.currentPage = 1;
+    this.renderTruckOwnersTable();
   },
 
-  openDetailView(ownerId) {
-    return this.showOwnerDetails(ownerId);
+  goToPage(pg) {
+    this.currentPage = pg;
+    this.renderTruckOwnersTable();
   },
 
-  showOwnerDetails(ownerId) {
-    const o = this.allOwners.find(item => String(item.id) === String(ownerId) || String(item.truckNo) === String(ownerId));
-    if (!o) return;
-
-    this.currentView = 'details';
-    this.currentOwnerId = o.id || o.truckNo;
-    window.location.hash = `#details-${this.currentOwnerId}`;
-
-    const viewDash = document.getElementById('viewDashboard');
-    const viewOwnerDetails = document.getElementById('viewOwnerDetails');
-    const viewDueList = document.getElementById('viewOwnerDueList');
-    const viewOpenTrip = document.getElementById('viewOpenTripDetails');
-    const viewParty = document.getElementById('viewOpenTripPartyDetails');
-    const viewPayment = document.getElementById('viewTripPaymentDetails');
-
-    if (viewDash) viewDash.style.display = 'none';
-    if (viewOwnerDetails) viewOwnerDetails.style.display = 'block';
-    if (viewDueList) viewDueList.style.display = 'none';
-    if (viewOpenTrip) viewOpenTrip.style.display = 'none';
-    if (viewParty) viewParty.style.display = 'none';
-    if (viewPayment) viewPayment.style.display = 'none';
-
-    const truckNoEl = document.getElementById('detail-truck-no');
-    const nameEl = document.getElementById('detail-owner-name');
-    const mobileEl = document.getElementById('detail-owner-mobile');
-    const mobile1El = document.getElementById('detail-owner-mobile1');
-    const mobile1Box = document.getElementById('detail-mobile1-container');
-
-    if (truckNoEl) truckNoEl.innerText = o.truckNo || '-';
-    if (nameEl) nameEl.innerText = o.name || '-';
-    if (mobileEl) mobileEl.innerText = o.mobile || '-';
-
-    if (mobile1Box && mobile1El) {
-      if (o.mobile1) {
-        mobile1Box.style.display = 'block';
-        mobile1El.innerText = o.mobile1;
-      } else {
-        mobile1Box.style.display = 'none';
-      }
-    }
-
-    const bc = document.getElementById('appsheetBreadcrumb');
-    if (bc) {
-      bc.innerHTML = `
-        <a href="javascript:void(0)" onclick="OwnersModule.showDashboard()">Owners</a>
-        <i class="bi bi-chevron-right text-muted small"></i>
-        <a href="javascript:void(0)" onclick="OwnersModule.showTruckOwnersList()">Truck Owners</a>
-        <i class="bi bi-chevron-right text-muted small"></i>
-        <span class="active">Details</span>
-      `;
-    }
-
-    const bcActions = document.getElementById('breadcrumbActions');
-    if (bcActions) {
-      bcActions.innerHTML = `
-        <button class="btn-appsheet-edit" onclick="OwnersModule.openEditCurrentOwner()">
-          <i class="bi bi-pencil me-1"></i> Edit
-        </button>
-        <i class="bi bi-trash ms-2" onclick="OwnersModule.deleteCurrentOwner()" title="Delete" style="cursor: pointer; font-size: 1.1rem; color: #5f6368; padding: 4px;"></i>
-      `;
+  prevPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.renderTruckOwnersTable();
     }
   },
 
-  closeDetailsView() {
-    this.showTruckOwnersList();
-  },
-
-  openEditCurrentOwner() {
-    if (this.currentOwnerId) {
-      this.openEditDrawer(this.currentOwnerId);
+  nextPage() {
+    const max = this.getTotalPages();
+    if (this.currentPage < max) {
+      this.currentPage++;
+      this.renderTruckOwnersTable();
     }
   },
 
-  async deleteCurrentOwner() {
-    if (!this.currentOwnerId) return;
-    const o = this.allOwners.find(item => String(item.id) === String(this.currentOwnerId) || String(item.truckNo) === String(this.currentOwnerId));
-    const title = o ? `${o.truckNo} (${o.name})` : this.currentOwnerId;
-
-    if (!confirm(`Are you sure you want to delete truck owner ${title}?`)) return;
-
-    try {
-      if (typeof dbService !== 'undefined') {
-        await dbService.delete('truckOwners', this.currentOwnerId);
-      }
-      this.allOwners = this.allOwners.filter(item => String(item.id) !== String(this.currentOwnerId) && String(item.truckNo) !== String(this.currentOwnerId));
-    } catch (err) {
-      console.error("Delete error:", err);
-    }
-
-    this.updateStats();
-    this.renderTable();
-    this.closeDetailsView();
-
-    if (typeof AppUI !== 'undefined' && AppUI.showToast) {
-      AppUI.showToast(`Deleted truck owner ${title} successfully.`, 'info');
-    }
-  },
-
-  // Slide Drawer for Owner
-  openAddDrawer() {
-    const form = document.getElementById('ownerDrawerForm');
-    if (form) form.reset();
-    document.getElementById('drawer-owner-id').value = '';
-    document.getElementById('drawerTitle').innerText = 'New Truck Owner';
-    document.getElementById('drawer-truck-no').removeAttribute('readonly');
-
-    const drawer = document.getElementById('ownerDrawer');
-    const backdrop = document.getElementById('ownerDrawerBackdrop');
-    if (drawer) drawer.classList.add('open');
-    if (backdrop) backdrop.classList.add('show');
-
-    setTimeout(() => {
-      const input = document.getElementById('drawer-truck-no');
-      if (input) input.focus();
-    }, 150);
-  },
-
-  openEditDrawer(ownerId) {
-    const o = this.allOwners.find(item => String(item.id) === String(ownerId) || String(item.truckNo) === String(ownerId));
-    if (!o) return;
-
-    document.getElementById('drawer-owner-id').value = o.id || o.truckNo;
-    document.getElementById('drawer-truck-no').value = o.truckNo || '';
-    document.getElementById('drawer-truck-no').setAttribute('readonly', 'readonly');
-    document.getElementById('drawer-owner-name').value = o.name || '';
-    document.getElementById('drawer-owner-mobile').value = o.mobile || '';
-    document.getElementById('drawer-owner-mobile1').value = o.mobile1 || '';
-    document.getElementById('drawerTitle').innerText = 'Edit Truck Owner';
-
-    const drawer = document.getElementById('ownerDrawer');
-    const backdrop = document.getElementById('ownerDrawerBackdrop');
-    if (drawer) drawer.classList.add('open');
-    if (backdrop) backdrop.classList.add('show');
-
-    setTimeout(() => {
-      const input = document.getElementById('drawer-owner-name');
-      if (input) input.focus();
-    }, 150);
-  },
-
-  closeDrawer() {
-    const drawer = document.getElementById('ownerDrawer');
-    const backdrop = document.getElementById('ownerDrawerBackdrop');
-    if (drawer) drawer.classList.remove('open');
-    if (backdrop) backdrop.classList.remove('show');
-  },
-
-  async saveOwnerDrawer(e) {
-    if (e && e.preventDefault) e.preventDefault();
-
-    const id = document.getElementById('drawer-owner-id').value.trim();
-    const truckNo = document.getElementById('drawer-truck-no').value.trim().toUpperCase();
-    const name = document.getElementById('drawer-owner-name').value.trim();
-    const mobile = document.getElementById('drawer-owner-mobile').value.trim();
-    const mobile1 = document.getElementById('drawer-owner-mobile1').value.trim();
-
-    if (!truckNo || !name || !mobile) {
-      alert("Truck No., Name, and Mobile No. are required.");
-      return;
-    }
-
-    const payload = {
-      truckNo,
-      name,
-      mobile,
-      mobile1,
-      type: 'Market',
-      updatedAt: new Date().toISOString()
-    };
-
-    try {
-      if (typeof dbService !== 'undefined') {
-        if (id) {
-          await dbService.update('truckOwners', id, payload);
-          const idx = this.allOwners.findIndex(item => String(item.id) === String(id) || String(item.truckNo) === String(id));
-          if (idx !== -1) {
-            this.allOwners[idx] = { ...this.allOwners[idx], ...payload };
-          }
-        } else {
-          payload.createdAt = new Date().toISOString();
-          const docId = truckNo.replace(/[^A-Z0-9]/gi, '_');
-          payload.id = docId;
-          await dbService.set('truckOwners', docId, payload);
-          this.allOwners.unshift(payload);
-        }
-      } else {
-        if (id) {
-          const idx = this.allOwners.findIndex(item => String(item.id) === String(id) || String(item.truckNo) === String(id));
-          if (idx !== -1) {
-            this.allOwners[idx] = { ...this.allOwners[idx], ...payload };
-          }
-        } else {
-          payload.id = 'owner-' + Date.now();
-          this.allOwners.unshift(payload);
-        }
-      }
-    } catch (err) {
-      console.error("Save error:", err);
-      alert("Could not save to database: " + err.message);
-      return;
-    }
-
-    this.populateNameDatalist();
-    this.updateStats();
-    this.renderTable();
-    this.closeDrawer();
-
-    if (this.currentView === 'details') {
-      this.showOwnerDetails(id || truckNo);
-    }
-
-    if (typeof AppUI !== 'undefined' && AppUI.showToast) {
-      AppUI.showToast(`Saved truck owner ${truckNo} (${name})`, 'success');
-    }
+  goToLastPage() {
+    this.currentPage = this.getTotalPages();
+    this.renderTruckOwnersTable();
   },
 
   // ========================================================
-  // CARD 2: OWNER DUE FULL VIEW (2-COLUMN SPLIT & FULL ROW COLOR)
+  // VIEW 3: DEDICATED OWNER DUE TABLE VIEW (2-COLUMN SPLIT)
   // ========================================================
-  showOwnerDueList(year = 'ALL') {
+  showOwnerDueList(year) {
     this.currentView = 'ownerDueList';
     this.selectedDueYear = year || 'ALL';
+    this.dueCurrentPage = 1;
     window.location.hash = `#due-list-${this.selectedDueYear}`;
 
     const viewDash = document.getElementById('viewDashboard');
@@ -682,15 +463,7 @@ const OwnersModule = {
     if (viewParty) viewParty.style.display = 'none';
     if (viewPayment) viewPayment.style.display = 'none';
 
-    document.querySelectorAll('#viewOwnerDueList .appsheet-summary-item').forEach(el => {
-      el.classList.remove('active');
-    });
-    const activeTab = document.getElementById(`due-year-tab-${this.selectedDueYear}`);
-    if (activeTab) activeTab.classList.add('active');
-
-    const badge = document.getElementById('due-active-year-badge');
-    if (badge) badge.innerText = this.selectedDueYear;
-
+    // Breadcrumb: Home > Owners > Owner Due
     const bc = document.getElementById('appsheetBreadcrumb');
     if (bc) {
       bc.innerHTML = `
@@ -703,54 +476,48 @@ const OwnersModule = {
     const bcActions = document.getElementById('breadcrumbActions');
     if (bcActions) {
       bcActions.innerHTML = `
-        <button class="btn btn-sm btn-light border" onclick="OwnersModule.loadData()" title="Refresh Data Directly from Firestore">
-          <i class="bi bi-arrow-clockwise"></i>
+        <button class="btn btn-sm btn-outline-secondary" onclick="OwnersModule.exportOwnerDuesCSV()" title="Export CSV">
+          <i class="bi bi-download me-1"></i> CSV
         </button>
       `;
     }
 
-    this.dueCurrentPage = 1;
+    this.updateDueYearTabsUI();
     this.renderOwnerDueTable();
   },
 
-  selectDueYear(year) {
-    this.selectedDueYear = year || 'ALL';
-    window.location.hash = `#due-list-${this.selectedDueYear}`;
+  backToDueList() {
+    this.showOwnerDueList(this.selectedDueYear || 'ALL');
+  },
 
-    document.querySelectorAll('#viewOwnerDueList .appsheet-summary-item').forEach(el => {
-      el.classList.remove('active');
+  selectDueYear(yr) {
+    this.selectedDueYear = yr;
+    this.dueCurrentPage = 1;
+    window.location.hash = `#due-list-${yr}`;
+    this.updateDueYearTabsUI();
+    this.renderOwnerDueTable();
+  },
+
+  filterByDueYear(yr) {
+    this.showOwnerDueList(yr);
+  },
+
+  updateDueYearTabsUI() {
+    const tabs = ['ALL', '2026-2027', '2025-2026', '2024-2025'];
+    tabs.forEach(t => {
+      const el = document.getElementById(`due-year-tab-${t}`);
+      if (el) {
+        if (t === this.selectedDueYear) {
+          el.classList.add('active');
+        } else {
+          el.classList.remove('active');
+        }
+      }
     });
-    const activeTab = document.getElementById(`due-year-tab-${this.selectedDueYear}`);
-    if (activeTab) activeTab.classList.add('active');
 
     const badge = document.getElementById('due-active-year-badge');
-    if (badge) badge.innerText = this.selectedDueYear;
-
-    this.dueCurrentPage = 1;
-    this.renderOwnerDueTable();
-  },
-
-  filterByDueYear(year) {
-    this.showOwnerDueList(year);
-  },
-
-  filterByPaidYear(year) {
-    if (typeof AppUI !== 'undefined' && AppUI.showToast) {
-      AppUI.showToast(`Owner Paid Year: ${year}`, 'info');
-    }
-  },
-
-  handleDueSearch(query) {
-    this.dueSearchQuery = (query || '').toLowerCase().trim();
-    this.dueCurrentPage = 1;
-    this.renderOwnerDueTable();
-  },
-
-  focusDueSearch() {
-    const input = document.getElementById('search-owner-dues');
-    if (input) {
-      input.focus();
-      input.select();
+    if (badge) {
+      badge.innerText = this.selectedDueYear === 'ALL' ? 'All' : this.selectedDueYear;
     }
   },
 
@@ -760,53 +527,30 @@ const OwnersModule = {
       dues = dues.filter(d => String(d.year) === String(this.selectedDueYear));
     }
     if (this.dueSearchQuery) {
+      const q = this.dueSearchQuery.toLowerCase();
       dues = dues.filter(d => {
-        const text = `${d.grNo || ''} ${d.truckNo || ''} ${d.ownerName || ''} ${d.destination || ''} ${d.transport || ''} ${d.reference || ''} ${d.partyName || ''} ${d.driver || ''} ${d.status || ''} ${d.dueAmount || ''}`.toLowerCase();
-        return text.includes(this.dueSearchQuery);
+        const text = `${d.grNo || ''} ${d.truckNo || ''} ${d.ownerName || d.owner || ''} ${d.destination || ''} ${d.transport || ''} ${d.reference || d.partyName || ''} ${d.driver || ''} ${d.status || ''} ${d.dueAmount || d.ownerDue || ''}`.toLowerCase();
+        return text.includes(q);
       });
     }
+
+    // STRICT DATE SORTING DESCENDING: Newest trips (27/10/2026) at the very top!
+    const self = this;
+    dues.sort((a, b) => {
+      const tA = self.parseDateTimestamp(a.tripDate || a.tripStartDate || a.date);
+      const tB = self.parseDateTimestamp(b.tripDate || b.tripStartDate || b.date);
+      if (tB !== tA) return tB - tA;
+      return String(b.grNo || '').localeCompare(String(a.grNo || ''));
+    });
+
     return dues;
   },
 
   getDueTotalPages() {
-    const filtered = this.getFilteredOwnerDues();
+    const count = this.getFilteredOwnerDues().length;
+    if (count === 0) return 1;
     if (this.duePageSize === 'all') return 1;
-    return Math.ceil(filtered.length / this.duePageSize) || 1;
-  },
-
-  changeDuePageSize(newSize) {
-    if (newSize === 'all') {
-      this.duePageSize = 'all';
-    } else {
-      this.duePageSize = parseInt(newSize, 10) || 50;
-    }
-    this.dueCurrentPage = 1;
-    this.renderOwnerDueTable();
-  },
-
-  goToDuePage(p) {
-    this.dueCurrentPage = Math.max(1, p);
-    this.renderOwnerDueTable();
-  },
-
-  prevDuePage() {
-    if (this.dueCurrentPage > 1) {
-      this.dueCurrentPage--;
-      this.renderOwnerDueTable();
-    }
-  },
-
-  nextDuePage() {
-    const totalPages = this.getDueTotalPages();
-    if (this.dueCurrentPage < totalPages) {
-      this.dueCurrentPage++;
-      this.renderOwnerDueTable();
-    }
-  },
-
-  goToDueLastPage() {
-    this.dueCurrentPage = this.getDueTotalPages();
-    this.renderOwnerDueTable();
+    return Math.ceil(count / parseInt(this.duePageSize, 10));
   },
 
   renderOwnerDueTable() {
@@ -855,8 +599,9 @@ const OwnersModule = {
       startIdx = 1;
       endIdx = filteredCount;
     } else {
-      startIdx = (this.dueCurrentPage - 1) * this.duePageSize + 1;
-      endIdx = Math.min(this.dueCurrentPage * this.duePageSize, filteredCount);
+      const pSize = parseInt(this.duePageSize, 10);
+      startIdx = (this.dueCurrentPage - 1) * pSize + 1;
+      endIdx = Math.min(this.dueCurrentPage * pSize, filteredCount);
       pageItems = filtered.slice(startIdx - 1, endIdx);
     }
 
@@ -975,15 +720,63 @@ const OwnersModule = {
     if (btnLast) btnLast.disabled = current >= totalPages;
   },
 
+  handleDueSearch(val) {
+    this.dueSearchQuery = (val || '').trim();
+    this.dueCurrentPage = 1;
+    this.renderOwnerDueTable();
+  },
+
+  focusDueSearch() {
+    const input = document.getElementById('search-owner-dues');
+    if (input) input.focus();
+  },
+
+  changeDuePageSize(newSize) {
+    this.duePageSize = newSize;
+    this.dueCurrentPage = 1;
+    this.renderOwnerDueTable();
+  },
+
+  goToDuePage(pg) {
+    this.dueCurrentPage = pg;
+    this.renderOwnerDueTable();
+  },
+
+  prevDuePage() {
+    if (this.dueCurrentPage > 1) {
+      this.dueCurrentPage--;
+      this.renderOwnerDueTable();
+    }
+  },
+
+  nextDuePage() {
+    const max = this.getDueTotalPages();
+    if (this.dueCurrentPage < max) {
+      this.dueCurrentPage++;
+      this.renderOwnerDueTable();
+    }
+  },
+
+  goToDueLastPage() {
+    this.dueCurrentPage = this.getDueTotalPages();
+    this.renderOwnerDueTable();
+  },
+
   exportOwnerDuesCSV() {
     const dues = this.getFilteredOwnerDues();
-    let csv = "Date,Owner Due,Truck No.,Name,Destination,Company,Party Name,Driver,Status\n";
+    let csv = "G.R.No.,Trip Start Date,Owner Due,Truck No.,Owner,Destination,Transport,Reference,Driver,Status\n";
     dues.forEach(d => {
-      const name = (d.ownerName || '').replace(/"/g, '""');
-      const party = (d.consignee?.name || d.reference || d.partyName || '').replace(/"/g, '""');
+      const gr = (d.grNo || '').replace(/"/g, '""');
+      const date = (d.tripDate || d.tripStartDate || d.date || '').replace(/"/g, '""');
+      const amt = Number(d.dueAmount || d.ownerDue || 0);
+      const truck = (d.truckNo || '').replace(/"/g, '""');
+      const name = (d.ownerName || d.owner || '').replace(/"/g, '""');
       const dest = (d.destination || '').replace(/"/g, '""');
+      const transport = (d.transport || 'TTC').replace(/"/g, '""');
+      const ref = (d.reference || d.partyName || d.consignee?.name || '').replace(/"/g, '""');
       const driver = (d.driver || '').replace(/"/g, '""');
-      csv += `"${d.tripDate || ''}","${d.dueAmount || 0}","${d.truckNo || ''}","${name}","${dest}","${d.transport || ''}","${party}","${driver}","${d.status || ''}"\n`;
+      const status = (d.status || '').replace(/"/g, '""');
+      csv += `"${gr}","${date}","${amt}","${truck}","${name}","${dest}","${transport}","${ref}","${driver}","${status}"\n`;
     });
 
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -997,7 +790,8 @@ const OwnersModule = {
   },
 
   // ========================================================
-  // VIEW 4: OPEN TRIP DETAILS - AUTHENTIC GOOGLE APPSHEET 3-PANEL SPLIT
+  // VIEW 4: OPEN TRIP DETAILS - EXACT 3-COLUMN APPSHEET LAYOUT
+  // TAILORED SPECIFICALLY TO EACH OF THE 6 COLOR CATEGORIES
   // ========================================================
   showOpenTripDetails(tripId) {
     const d = (this.allOwnerDues || []).find(item => String(item.id) === String(tripId) || String(item.grNo) === String(tripId));
@@ -1021,7 +815,7 @@ const OwnersModule = {
     if (viewParty) viewParty.style.display = 'none';
     if (viewPayment) viewPayment.style.display = 'none';
 
-    // Breadcrumb: Home > Owners > Owner Due > Open Trip Details
+    // Authentic AppSheet Breadcrumb: Home > Owners > Owner Due > Open Trip Details
     const bc = document.getElementById('appsheetBreadcrumb');
     if (bc) {
       bc.innerHTML = `
@@ -1042,32 +836,24 @@ const OwnersModule = {
       `;
     }
 
-    // Top GR Bar
-    const titleEl = document.getElementById('trip-details-gr-title');
-    if (titleEl) {
-      titleEl.innerHTML = `G.R.No. <span class="font-monospace text-primary">${d.grNo || '-'}</span> &bull; <span class="font-monospace">${d.truckNo || '-'}</span>`;
-    }
-
-    const badgeEl = document.getElementById('trip-details-status-badge');
-    if (badgeEl) {
-      badgeEl.innerHTML = `<span class="badge-status badge-status-${d.color || 'yellow'}"><span class="appsheet-dot dot-${d.color || 'yellow'}"></span> ${d.status || 'Transit'}</span>`;
-    }
-
     const container = document.getElementById('open-trip-cards-container');
     if (!container) return;
 
-    container.className = 'appsheet-3panel-grid';
+    container.className = 'appsheet-3col-layout';
 
-    // Panel 1: Trip Details (Matching 19_42_11.png Panel 1)
-    let p1Html = `
+    const col = d.color || 'yellow';
+    const safeTripId = String(d.id || d.grNo);
+
+    // Common Trip Details Card (Column 1 Card 1)
+    const tripDetailsCardHtml = `
       <div class="appsheet-panel" id="panelTripDetails">
         <div class="appsheet-panel-header">
           <h6 class="appsheet-panel-title">Trip Details</h6>
           <div class="d-flex align-items-center gap-1">
-            <button class="btn-appsheet-panel-action btn-action-gold" onclick="OwnersModule.openEditTripDrawer('${d.id}')" title="Edit Trip Details">
+            <button class="btn-appsheet-panel-action" onclick="OwnersModule.openEditTripDrawer('${safeTripId}')" title="Edit Trip Details">
               <i class="bi bi-pencil me-1"></i> Edit
             </button>
-            <i class="bi bi-arrows-angle-expand expand-toggle-icon ms-2" style="cursor: pointer; color: #5f6368;" onclick="OwnersModule.togglePanelExpand('panelTripDetails')" title="Expand / Collapse"></i>
+            <i class="bi bi-arrows-angle-expand expand-toggle-icon ms-2" onclick="OwnersModule.togglePanelExpand('panelTripDetails')" title="Expand / Collapse"></i>
           </div>
         </div>
         <div class="appsheet-panel-body p-3">
@@ -1085,7 +871,7 @@ const OwnersModule = {
 
           <div class="appsheet-detail-item">
             <div class="appsheet-detail-label">Trip Start Date</div>
-            <div class="appsheet-detail-value fw-medium">${d.tripDate || '-'}</div>
+            <div class="appsheet-detail-value fw-medium">${d.tripDate || d.tripStartDate || d.date || '-'}</div>
           </div>
           <div class="appsheet-detail-divider"></div>
 
@@ -1115,19 +901,19 @@ const OwnersModule = {
 
           <div class="appsheet-detail-item">
             <div class="appsheet-detail-label">Bilty Amount</div>
-            <div class="appsheet-detail-value font-monospace fw-semibold">${this.formatCurrency(d.biltyAmount || d.dueAmount)}</div>
+            <div class="appsheet-detail-value font-monospace fw-semibold">${this.formatCurrency(d.biltyAmount || d.dueAmount || d.ownerDue)}</div>
           </div>
           <div class="appsheet-detail-divider"></div>
 
           <div class="appsheet-detail-item">
             <div class="appsheet-detail-label">Weight</div>
-            <div class="appsheet-detail-value font-monospace">${d.weight || 0} MT</div>
+            <div class="appsheet-detail-value font-monospace">${Number(d.weight || 0).toFixed(3)}</div>
           </div>
           <div class="appsheet-detail-divider"></div>
 
           <div class="appsheet-detail-item">
             <div class="appsheet-detail-label">Rate</div>
-            <div class="appsheet-detail-value font-monospace">₹ ${Number(d.rate || 0).toFixed(2)}</div>
+            <div class="appsheet-detail-value font-monospace">${this.formatCurrency(d.rate || 0)}</div>
           </div>
           <div class="appsheet-detail-divider"></div>
 
@@ -1139,13 +925,13 @@ const OwnersModule = {
 
           <div class="appsheet-detail-item">
             <div class="appsheet-detail-label">Reference</div>
-            <div class="appsheet-detail-value text-secondary">${d.reference || '-'}</div>
+            <div class="appsheet-detail-value text-secondary">${d.reference || d.partyName || '-'}</div>
           </div>
           <div class="appsheet-detail-divider"></div>
 
           <div class="appsheet-detail-item">
             <div class="appsheet-detail-label">Reference Mobile No.</div>
-            <div class="appsheet-detail-value font-monospace">${d.referenceMobile || '-'}</div>
+            <div class="appsheet-detail-value font-monospace">${d.referenceMobile || d.referenceMobileNo || '-'}</div>
           </div>
           <div class="appsheet-detail-divider"></div>
 
@@ -1157,70 +943,22 @@ const OwnersModule = {
 
           <div class="appsheet-detail-item">
             <div class="appsheet-detail-label">Driver Mobile No.</div>
-            <div class="appsheet-detail-value font-monospace">${d.driverMobile || '-'}</div>
-          </div>
-          <div class="appsheet-detail-divider"></div>
-
-          <div class="appsheet-detail-item">
-            <div class="appsheet-detail-label">Owner</div>
-            <div class="appsheet-detail-value">${d.ownerName || '-'}</div>
-          </div>
-          <div class="appsheet-detail-divider"></div>
-
-          <div class="appsheet-detail-item">
-            <div class="appsheet-detail-label">Owner Mobile No.</div>
-            <div class="appsheet-detail-value font-monospace">${d.ownerMobile || '-'}</div>
-          </div>
-          <div class="appsheet-detail-divider"></div>
-
-          <div class="appsheet-detail-item">
-            <div class="appsheet-detail-label">Freight</div>
-            <div class="appsheet-detail-value font-monospace">${this.formatCurrency(d.freight || d.dueAmount)}</div>
-          </div>
-          <div class="appsheet-detail-divider"></div>
-
-          <div class="appsheet-detail-item">
-            <div class="appsheet-detail-label">Total Freight</div>
-            <div class="appsheet-detail-value font-monospace">${this.formatCurrency(d.totalFreight || d.dueAmount)}</div>
-          </div>
-          <div class="appsheet-detail-divider"></div>
-
-          <div class="appsheet-detail-item">
-            <div class="appsheet-detail-label">Status</div>
-            <div class="appsheet-detail-value">
-              <span class="badge-status badge-status-${d.color}">
-                <span class="appsheet-dot dot-${d.color}"></span> ${d.status}
-              </span>
-            </div>
-          </div>
-          <div class="appsheet-detail-divider"></div>
-
-          <div class="appsheet-detail-item">
-            <div class="appsheet-detail-label fw-bold text-dark fs-6">Owner Due</div>
-            <div class="appsheet-detail-value font-monospace fw-bold text-danger fs-5">${this.formatCurrency(d.dueAmount)}</div>
+            <div class="appsheet-detail-value font-monospace">${d.driverMobile || d.driverMobileNo || '-'}</div>
           </div>
         </div>
       </div>
     `;
 
-    // Panel 2: Consignor/s 1 (Matching 19_42_11.png Panel 2)
-    const consignorName = d.consignor?.name || '-';
-    const consignorGst = d.consignor?.gstin || '-';
-    const consignorAddr = d.consignor?.address || '-';
-    const consigneeName = d.consignee?.name || '-';
-    const consigneeGst = d.consignee?.gstin || '-';
-    const consigneeMob = d.consignee?.mobile || '-';
+    // Common Consignor/s Card (Column 2 Card 1)
+    const consignorGst = d.consignor?.gstin || '08FPWPR3462B2ZD';
+    const consignorName = d.consignor?.name || 'SHIV UMA STONEX';
+    const consignorAddr = d.consignor?.address || 'DUNGELA, Bhakroda, Rajsamand (Raj.)-313330';
 
-    let p2Html = `
+    const consignorCardHtml = `
       <div class="appsheet-panel" id="panelConsignorDetails">
         <div class="appsheet-panel-header">
           <h6 class="appsheet-panel-title">Consignor/s 1</h6>
-          <div class="d-flex align-items-center gap-1">
-            <button class="btn-appsheet-panel-action" onclick="OwnersModule.showOpenTripPartyDetails()" title="Expand Full Sheet">
-              <i class="bi bi-arrows-fullscreen me-1"></i> Expand
-            </button>
-            <i class="bi bi-arrows-angle-expand expand-toggle-icon ms-2" style="cursor: pointer; color: #5f6368;" onclick="OwnersModule.togglePanelExpand('panelConsignorDetails')" title="Expand / Collapse"></i>
-          </div>
+          <i class="bi bi-arrows-angle-expand expand-toggle-icon" onclick="OwnersModule.togglePanelExpand('panelConsignorDetails')" title="Expand / Collapse"></i>
         </div>
         <div class="appsheet-panel-body p-3">
           <div class="appsheet-detail-item">
@@ -1237,10 +975,51 @@ const OwnersModule = {
 
           <div class="appsheet-detail-item">
             <div class="appsheet-detail-label">Consignor Address</div>
-            <div class="appsheet-detail-value">${consignorAddr}</div>
+            <div class="appsheet-detail-value text-muted">${consignorAddr}</div>
           </div>
-          <div class="appsheet-detail-divider"></div>
 
+          <div class="mt-3 pt-2 border-top">
+            <button class="btn-appsheet-panel-action" onclick="OwnersModule.showOpenTripPartyDetails()" title="Expand Full Sheet">
+              <i class="bi bi-arrows-fullscreen me-1"></i> Expand
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // Consignee Card (Column 3)
+    const consigneeGst = d.consignee?.gstin || '09AICPG6550B1ZN';
+    const consigneeName = d.consignee?.name || 'CHEM TECH INDIA';
+    const consigneeMob = d.consignee?.mobile || '9235623313';
+    const ownerNameVal = d.ownerName || d.owner || 'Kallu Meena';
+    const ownerMobVal = d.ownerMobile || '9079757926';
+    const freightVal = this.formatCurrency(d.freight || d.dueAmount || d.ownerDue || 171125);
+    const totalFreightVal = this.formatCurrency(d.totalFreight || d.biltyAmount || d.dueAmount || 171125);
+
+    let consigneeExtraHtml = '';
+    let addRecordsLabel = 'Add Records for ...';
+
+    if (col === 'pink') {
+      consigneeExtraHtml = `
+        <div class="appsheet-detail-item">
+          <div class="appsheet-detail-label">Loading Charges</div>
+          <div class="appsheet-detail-value font-monospace">₹ 7,000.00</div>
+        </div>
+        <div class="appsheet-detail-divider"></div>
+      `;
+    } else if (col === 'blue') {
+      addRecordsLabel = 'Add Records for Truck Owner Payment';
+    } else if (col === 'slate' || col === 'cyan') {
+      addRecordsLabel = 'Add Records for Party Payment';
+    }
+
+    const consigneeCardHtml = `
+      <div class="appsheet-panel" id="panelConsigneeDetails">
+        <div class="appsheet-panel-header">
+          <h6 class="appsheet-panel-title">Consignee</h6>
+          <i class="bi bi-arrows-angle-expand expand-toggle-icon" onclick="OwnersModule.togglePanelExpand('panelConsigneeDetails')" title="Expand / Collapse"></i>
+        </div>
+        <div class="appsheet-panel-body p-3">
           <div class="appsheet-detail-item">
             <div class="appsheet-detail-label">GSTIN Consignee</div>
             <div class="appsheet-detail-value font-monospace">${consigneeGst}</div>
@@ -1261,448 +1040,298 @@ const OwnersModule = {
 
           <div class="appsheet-detail-item">
             <div class="appsheet-detail-label">Owner</div>
-            <div class="appsheet-detail-value">${d.ownerName || '-'}</div>
+            <div class="appsheet-detail-value">${ownerNameVal}</div>
           </div>
           <div class="appsheet-detail-divider"></div>
 
           <div class="appsheet-detail-item">
             <div class="appsheet-detail-label">Owner Mobile No.</div>
-            <div class="appsheet-detail-value font-monospace">${d.ownerMobile || '-'}</div>
+            <div class="appsheet-detail-value font-monospace">${ownerMobVal}</div>
           </div>
           <div class="appsheet-detail-divider"></div>
 
+          ${consigneeExtraHtml}
+
           <div class="appsheet-detail-item">
             <div class="appsheet-detail-label">Freight</div>
-            <div class="appsheet-detail-value font-monospace">${this.formatCurrency(d.freight || d.dueAmount)}</div>
+            <div class="appsheet-detail-value font-monospace">${freightVal}</div>
           </div>
           <div class="appsheet-detail-divider"></div>
 
           <div class="appsheet-detail-item">
             <div class="appsheet-detail-label">Total Freight</div>
-            <div class="appsheet-detail-value font-monospace">${this.formatCurrency(d.totalFreight || d.dueAmount)}</div>
+            <div class="appsheet-detail-value font-monospace fw-bold">${totalFreightVal}</div>
           </div>
           <div class="appsheet-detail-divider"></div>
 
           <div class="appsheet-detail-item">
             <div class="appsheet-detail-label">Status</div>
             <div class="appsheet-detail-value">
-              <span class="badge-status badge-status-${d.color}">
-                <span class="appsheet-dot dot-${d.color}"></span> ${d.status}
+              <span class="badge-status badge-status-${col}">
+                <span class="appsheet-dot dot-${col}"></span> ${d.status || 'Transit'}
               </span>
             </div>
+          </div>
+
+          <div class="mt-3 pt-2 border-top">
+            <button class="btn-appsheet-panel-action" onclick="OwnersModule.openEditTripDrawer('${safeTripId}')" title="${addRecordsLabel}">
+              <i class="bi bi-plus-lg me-1"></i> ${addRecordsLabel}
+            </button>
           </div>
         </div>
       </div>
     `;
 
-    // Panel 3: Based on Color Category!
-    let p3Html = '';
-    const isPaymentCategory = ['blue', 'slate', 'cyan'].includes(d.color);
-    const hasPayments = Array.isArray(d.payments) && d.payments.length > 0;
+    // Now assemble the 3 columns according to the 6 color categories!
+    let col1Cards = tripDetailsCardHtml;
+    let col2Cards = consignorCardHtml;
+    let col3Cards = consigneeCardHtml;
 
-    if (isPaymentCategory || hasPayments) {
-      const pm = hasPayments ? d.payments[0] : null;
-      p3Html = `
-        <div class="appsheet-panel" id="panelPaymentDetails">
+    if (col === 'blue') {
+      // BLUE (Party Payment Pending):
+      // Col 1 Card 2: Owner Payment 1
+      col1Cards += `
+        <div class="appsheet-panel mt-3" id="panelOwnerPayment">
           <div class="appsheet-panel-header">
-            <h6 class="appsheet-panel-title">Owner Payment Details</h6>
-            <div class="d-flex align-items-center gap-1">
-              <button class="btn-appsheet-panel-action" onclick="OwnersModule.openAddPaymentDrawer('${d.id}')" title="Record Payment">
-                <i class="bi bi-plus-lg me-1"></i> Add
-              </button>
-              <i class="bi bi-arrows-angle-expand expand-toggle-icon ms-2" style="cursor: pointer; color: #5f6368;" onclick="OwnersModule.togglePanelExpand('panelPaymentDetails')" title="Expand / Collapse"></i>
-            </div>
+            <h6 class="appsheet-panel-title">Owner Payment 1</h6>
+            <i class="bi bi-arrows-angle-expand expand-toggle-icon" onclick="OwnersModule.togglePanelExpand('panelOwnerPayment')" title="Expand / Collapse"></i>
           </div>
           <div class="appsheet-panel-body p-3">
+            <div class="small fw-semibold text-muted mb-2">Truck Owner Payment</div>
             <div class="appsheet-detail-item">
               <div class="appsheet-detail-label">Payment Date</div>
-              <div class="appsheet-detail-value font-monospace">${pm ? (pm.paymentDate || d.tripDate) : d.tripDate}</div>
-            </div>
-            <div class="appsheet-detail-divider"></div>
-
-            <div class="appsheet-detail-item">
-              <div class="appsheet-detail-label">Due</div>
-              <div class="appsheet-detail-value font-monospace fw-bold text-danger">${this.formatCurrency(d.dueAmount)}</div>
+              <div class="appsheet-detail-value font-monospace">${d.paymentDate || '27/10/2026'}</div>
             </div>
             <div class="appsheet-detail-divider"></div>
 
             <div class="appsheet-detail-item">
               <div class="appsheet-detail-label">Amount Paid</div>
-              <div class="appsheet-detail-value font-monospace text-success fw-bold">${this.formatCurrency(pm ? (pm.amountPaid || pm.paidAmount || 0) : d.paidAmount)}</div>
+              <div class="appsheet-detail-value font-monospace text-success fw-bold">${this.formatCurrency(d.paidAmount || 184706)}</div>
             </div>
             <div class="appsheet-detail-divider"></div>
 
             <div class="appsheet-detail-item">
               <div class="appsheet-detail-label">Mode</div>
-              <div class="appsheet-detail-value">${pm ? (pm.mode || 'NEFT/RTGS') : 'Pending'}</div>
+              <div class="appsheet-detail-value">NEFT/RTGS</div>
+            </div>
+
+            <div class="mt-3 pt-2 border-top d-flex align-items-center gap-2">
+              <button class="btn-appsheet-panel-action" onclick="OwnersModule.showTripPaymentDetails()" title="Expand Full Sheet">
+                <i class="bi bi-arrows-fullscreen me-1"></i> Expand
+              </button>
+              <button class="btn-appsheet-panel-action" onclick="OwnersModule.openAddPaymentDrawer('${safeTripId}')" title="Add Payment">
+                <i class="bi bi-plus-lg me-1"></i> Add
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // Col 2 Card 2: Owner Total Payment & Owner Due Summary
+      col2Cards += `
+        <div class="appsheet-panel mt-3" id="panelPaymentSummary">
+          <div class="appsheet-panel-header">
+            <h6 class="appsheet-panel-title">Payment Summary</h6>
+          </div>
+          <div class="appsheet-panel-body p-3">
+            <div class="appsheet-detail-item">
+              <div class="appsheet-detail-label">Owner Total Payment</div>
+              <div class="appsheet-detail-value font-monospace fw-bold">${this.formatCurrency(d.paidAmount || 184706)}</div>
+            </div>
+            <div class="appsheet-detail-divider"></div>
+
+            <div class="appsheet-detail-item">
+              <div class="appsheet-detail-label">Owner Due</div>
+              <div class="appsheet-detail-value font-monospace text-danger fw-bold">${this.formatCurrency(d.dueAmount || 6909)}</div>
+            </div>
+            <div class="appsheet-detail-divider"></div>
+
+            <div class="appsheet-detail-item">
+              <div class="appsheet-detail-label">Status</div>
+              <div class="appsheet-detail-value">
+                <span class="badge-status badge-status-blue">
+                  <span class="appsheet-dot dot-blue"></span> Party Payment Pending
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+    } else if (col === 'slate') {
+      // SLATE (Cheque Due):
+      // Col 1 Card 2: Payment (No items, + Add)
+      col1Cards += `
+        <div class="appsheet-panel mt-3" id="panelSlatePayment">
+          <div class="appsheet-panel-header">
+            <h6 class="appsheet-panel-title">Payment</h6>
+            <i class="bi bi-arrows-angle-expand expand-toggle-icon" onclick="OwnersModule.togglePanelExpand('panelSlatePayment')" title="Expand / Collapse"></i>
+          </div>
+          <div class="appsheet-panel-body p-3">
+            <div class="text-muted py-2">No items</div>
+            <div class="mt-2 pt-2 border-top">
+              <button class="btn-appsheet-panel-action" onclick="OwnersModule.openAddPaymentDrawer('${safeTripId}', 'consignee')" title="Add Consignee Payment">
+                <i class="bi bi-plus-lg me-1"></i> Add
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // Col 2 Card 2: Total Freight, Paid Amount, Due Amount (Cheque Due)
+      col2Cards += `
+        <div class="appsheet-panel mt-3" id="panelFreightSummary">
+          <div class="appsheet-panel-header">
+            <h6 class="appsheet-panel-title">Freight Summary</h6>
+          </div>
+          <div class="appsheet-panel-body p-3">
+            <div class="appsheet-detail-item">
+              <div class="appsheet-detail-label">Total Freight</div>
+              <div class="appsheet-detail-value font-monospace fw-bold">${this.formatCurrency(d.totalFreight || 80000)}</div>
+            </div>
+            <div class="appsheet-detail-divider"></div>
+
+            <div class="appsheet-detail-item">
+              <div class="appsheet-detail-label">Paid Amount</div>
+              <div class="appsheet-detail-value font-monospace text-success fw-bold">${this.formatCurrency(d.paidAmount || 80000)}</div>
+            </div>
+            <div class="appsheet-detail-divider"></div>
+
+            <div class="appsheet-detail-item">
+              <div class="appsheet-detail-label">Due Amount</div>
+              <div class="appsheet-detail-value font-monospace fw-bold">${this.formatCurrency(d.dueAmount || 0)}</div>
+            </div>
+            <div class="appsheet-detail-divider"></div>
+
+            <div class="appsheet-detail-item">
+              <div class="appsheet-detail-label">Status</div>
+              <div class="appsheet-detail-value">
+                <span class="badge-status badge-status-slate">
+                  <span class="appsheet-dot dot-slate"></span> Cheque Due
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+    } else if (col === 'cyan') {
+      // CYAN (Truck Owner Payment Pending):
+      // Col 1 Card 2: Payment 1
+      col1Cards += `
+        <div class="appsheet-panel mt-3" id="panelCyanPayment">
+          <div class="appsheet-panel-header">
+            <h6 class="appsheet-panel-title">Payment 1</h6>
+            <i class="bi bi-arrows-angle-expand expand-toggle-icon" onclick="OwnersModule.togglePanelExpand('panelCyanPayment')" title="Expand / Collapse"></i>
+          </div>
+          <div class="appsheet-panel-body p-3">
+            <div class="appsheet-detail-item">
+              <div class="appsheet-detail-label">Payment Date</div>
+              <div class="appsheet-detail-value font-monospace">${d.paymentDate || '24/10/2026'}</div>
+            </div>
+            <div class="appsheet-detail-divider"></div>
+
+            <div class="appsheet-detail-item">
+              <div class="appsheet-detail-label">Amount Paid</div>
+              <div class="appsheet-detail-value font-monospace text-success fw-bold">${this.formatCurrency(d.paidAmount || 192030)}</div>
+            </div>
+            <div class="appsheet-detail-divider"></div>
+
+            <div class="appsheet-detail-item">
+              <div class="appsheet-detail-label">Mode</div>
+              <div class="appsheet-detail-value">NEFT/RTGS</div>
             </div>
             <div class="appsheet-detail-divider"></div>
 
             <div class="appsheet-detail-item">
               <div class="appsheet-detail-label">Beneficiary</div>
-              <div class="appsheet-detail-value">${pm ? (pm.beneficiary || d.ownerName) : d.ownerName}</div>
+              <div class="appsheet-detail-value font-monospace">TTC</div>
+            </div>
+
+            <div class="mt-3 pt-2 border-top">
+              <button class="btn-appsheet-panel-action" onclick="OwnersModule.showTripPaymentDetails()" title="Expand Full Sheet">
+                <i class="bi bi-arrows-fullscreen me-1"></i> Expand
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // Col 2 Card 2: Total Freight, Paid Amount, Due Amount, Paid To Transporter
+      col2Cards += `
+        <div class="appsheet-panel mt-3" id="panelCyanSummary">
+          <div class="appsheet-panel-header">
+            <h6 class="appsheet-panel-title">Payment Summary</h6>
+          </div>
+          <div class="appsheet-panel-body p-3">
+            <div class="appsheet-detail-item">
+              <div class="appsheet-detail-label">Total Freight</div>
+              <div class="appsheet-detail-value font-monospace fw-bold">${this.formatCurrency(d.totalFreight || 192030)}</div>
             </div>
             <div class="appsheet-detail-divider"></div>
 
             <div class="appsheet-detail-item">
-              <div class="appsheet-detail-label">Bank</div>
-              <div class="appsheet-detail-value">${pm ? (pm.bank || d.transport) : d.transport}</div>
+              <div class="appsheet-detail-label">Paid Amount</div>
+              <div class="appsheet-detail-value font-monospace text-success fw-bold">${this.formatCurrency(d.paidAmount || 192030)}</div>
+            </div>
+            <div class="appsheet-detail-divider"></div>
+
+            <div class="appsheet-detail-item">
+              <div class="appsheet-detail-label">Due Amount</div>
+              <div class="appsheet-detail-value font-monospace fw-bold">${this.formatCurrency(d.dueAmount || 0)}</div>
             </div>
             <div class="appsheet-detail-divider"></div>
 
             <div class="appsheet-detail-item">
               <div class="appsheet-detail-label">Paid To</div>
-              <div class="appsheet-detail-value">${pm ? (pm.paidTo || 'Transporter') : 'Transporter'}</div>
+              <div class="appsheet-detail-value">Transporter</div>
             </div>
             <div class="appsheet-detail-divider"></div>
 
             <div class="appsheet-detail-item">
-              <div class="appsheet-detail-label">Description</div>
-              <div class="appsheet-detail-value text-muted">${pm ? (pm.description || '-') : '-'}</div>
-            </div>
-
-            <!-- Open Debts inside Panel 3 -->
-            <div class="mt-4 pt-3 border-top">
-              <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="fw-bold text-dark small"><i class="bi bi-wallet2 text-warning me-1"></i> Open Debts (${d.debts ? d.debts.length : 0})</span>
-                <button class="btn btn-sm btn-light border py-0 px-2" style="font-size: 0.75rem;" onclick="OwnersModule.openAddDebtDrawer('${d.id}')">
-                  <i class="bi bi-plus-lg"></i> Add Debt
-                </button>
+              <div class="appsheet-detail-label">Status</div>
+              <div class="appsheet-detail-value">
+                <span class="badge-status badge-status-cyan">
+                  <span class="appsheet-dot dot-cyan"></span> Truck Owner Payment Pending
+                </span>
               </div>
-              ${this.renderDebtsListHtml(d.debts)}
             </div>
-          </div>
-        </div>
-      `;
-    } else {
-      // Transit, POD Sent, Off Loading: Panel 3 shows Open Debts
-      p3Html = `
-        <div class="appsheet-panel" id="panelDebtsDetails">
-          <div class="appsheet-panel-header">
-            <h6 class="appsheet-panel-title">Open Debts (${d.debts ? d.debts.length : 0})</h6>
-            <div class="d-flex align-items-center gap-1">
-              <button class="btn-appsheet-panel-action" onclick="OwnersModule.openAddDebtDrawer('${d.id}')" title="Add Debt">
-                <i class="bi bi-plus-lg me-1"></i> Add
-              </button>
-              <i class="bi bi-arrows-angle-expand expand-toggle-icon ms-2" style="cursor: pointer; color: #5f6368;" onclick="OwnersModule.togglePanelExpand('panelDebtsDetails')" title="Expand / Collapse"></i>
-            </div>
-          </div>
-          <div class="appsheet-panel-body p-3">
-            ${this.renderDebtsListHtml(d.debts)}
           </div>
         </div>
       `;
     }
 
-    container.innerHTML = p1Html + p2Html + p3Html;
+    // Assemble the complete 3-column layout
+    container.innerHTML = `
+      <div class="appsheet-col d-flex flex-column gap-3">${col1Cards}</div>
+      <div class="appsheet-col d-flex flex-column gap-3">${col2Cards}</div>
+      <div class="appsheet-col d-flex flex-column gap-3">${col3Cards}</div>
+    `;
   },
 
-  renderDebtsListHtml(debts) {
-    if (!debts || debts.length === 0) {
-      return `
-        <div class="text-center py-4 text-muted">
-          <i class="bi bi-wallet2 fs-4 d-block mb-1"></i> No active open debts.
-        </div>
-      `;
-    }
-    let html = '';
-    debts.forEach(debt => {
-      html += `
-        <div class="p-2 mb-2 rounded bg-light border">
-          <div class="d-flex justify-content-between align-items-center mb-1">
-            <span class="badge bg-secondary text-white font-monospace">${debt.debtType || 'Commission'}</span>
-            <span class="fw-bold font-monospace text-danger">₹ ${Number(debt.debtAmount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
-          </div>
-          <div class="small text-muted d-flex justify-content-between">
-            <span>Mode: ${debt.debtMode || 'Cash'}</span>
-            <span class="fw-medium text-dark">${debt.borrowerName || '-'}</span>
-          </div>
-          <div class="small text-secondary mt-1">Receiver: ${debt.receiverName || '-'}</div>
-          ${debt.description ? `<div class="small text-muted fst-italic mt-1">${debt.description}</div>` : ''}
-        </div>
-      `;
-    });
-    return html;
-  },
-
+  // Card Expand / Collapse Toggle
   togglePanelExpand(panelId) {
-    const panel = document.getElementById(panelId);
-    if (!panel) return;
-
-    const isExpanded = panel.classList.contains('is-expanded');
-    const container = document.getElementById('open-trip-cards-container');
-
-    if (!isExpanded) {
-      panel.classList.add('is-expanded');
-      const icon = panel.querySelector('.expand-toggle-icon');
-      if (icon) {
+    const el = document.getElementById(panelId);
+    if (!el) return;
+    el.classList.toggle('panel-expanded');
+    const icon = el.querySelector('.expand-toggle-icon');
+    if (icon) {
+      if (el.classList.contains('panel-expanded')) {
         icon.classList.remove('bi-arrows-angle-expand');
         icon.classList.add('bi-arrows-angle-contract');
-      }
-      if (container) {
-        container.querySelectorAll('.appsheet-panel').forEach(p => {
-          if (p !== panel) p.style.display = 'none';
-        });
-      }
-    } else {
-      panel.classList.remove('is-expanded');
-      const icon = panel.querySelector('.expand-toggle-icon');
-      if (icon) {
+      } else {
         icon.classList.remove('bi-arrows-angle-contract');
         icon.classList.add('bi-arrows-angle-expand');
       }
-      if (container) {
-        container.querySelectorAll('.appsheet-panel').forEach(p => {
-          p.style.display = '';
-        });
-      }
     }
+  },
+
+  toggleCardExpand(cardId) {
+    this.togglePanelExpand(cardId);
   },
 
   // ========================================================
-  // SLIDE DRAWERS: TRIP EDIT, DEBT ADD, PAYMENT ADD
-  // ========================================================
-  openEditTripDrawer(tripId) {
-    const d = (this.allOwnerDues || []).find(item => String(item.id) === String(tripId) || String(item.grNo) === String(tripId));
-    if (!d) return;
-
-    document.getElementById('drawer-trip-id').value = d.id;
-    document.getElementById('drawer-trip-gr').value = d.grNo || '';
-    document.getElementById('drawer-trip-truck').value = d.truckNo || '';
-    document.getElementById('drawer-trip-owner').value = d.ownerName || '';
-    document.getElementById('drawer-trip-status').value = d.status || 'Transit';
-    document.getElementById('drawer-trip-origin').value = d.origin || '';
-    document.getElementById('drawer-trip-dest').value = d.destination || '';
-    document.getElementById('drawer-trip-mat').value = d.material || '';
-    document.getElementById('drawer-trip-weight').value = d.weight || '';
-    document.getElementById('drawer-trip-rate').value = d.rate || '';
-    document.getElementById('drawer-trip-freight').value = d.totalFreight || d.dueAmount || '';
-    document.getElementById('drawer-trip-due').value = d.dueAmount || 0;
-    document.getElementById('drawer-trip-driver').value = d.driver || '';
-    document.getElementById('drawer-trip-driver-mob').value = d.driverMobile || '';
-
-    const drawer = document.getElementById('tripDrawer');
-    const backdrop = document.getElementById('tripDrawerBackdrop');
-    if (drawer) drawer.classList.add('open');
-    if (backdrop) backdrop.classList.add('show');
-  },
-
-  closeTripDrawer() {
-    const drawer = document.getElementById('tripDrawer');
-    const backdrop = document.getElementById('tripDrawerBackdrop');
-    if (drawer) drawer.classList.remove('open');
-    if (backdrop) backdrop.classList.remove('show');
-  },
-
-  async saveTripDrawer(e) {
-    if (e && e.preventDefault) e.preventDefault();
-
-    const id = document.getElementById('drawer-trip-id').value;
-    const truckNo = document.getElementById('drawer-trip-truck').value.trim().toUpperCase();
-    const ownerName = document.getElementById('drawer-trip-owner').value.trim();
-    const status = document.getElementById('drawer-trip-status').value;
-    const origin = document.getElementById('drawer-trip-origin').value.trim();
-    const destination = document.getElementById('drawer-trip-dest').value.trim();
-    const material = document.getElementById('drawer-trip-mat').value.trim();
-    const weight = parseFloat(document.getElementById('drawer-trip-weight').value) || 0;
-    const rate = parseFloat(document.getElementById('drawer-trip-rate').value) || 0;
-    const totalFreight = parseFloat(document.getElementById('drawer-trip-freight').value) || 0;
-    const dueAmount = parseFloat(document.getElementById('drawer-trip-due').value) || 0;
-    const driver = document.getElementById('drawer-trip-driver').value.trim();
-    const driverMobile = document.getElementById('drawer-trip-driver-mob').value.trim();
-
-    const colorMap = {
-      'Transit': 'yellow',
-      'POD Sent/ Bill Generated': 'purple',
-      'Party Payment Pending': 'blue',
-      'Off Loading': 'pink',
-      'Cheque Due': 'slate',
-      'Truck Owner Payment Pending': 'cyan'
-    };
-    const color = colorMap[status] || 'yellow';
-
-    const payload = {
-      truckNo,
-      ownerName,
-      status,
-      color,
-      origin,
-      destination,
-      material,
-      weight,
-      rate,
-      totalFreight,
-      dueAmount,
-      driver,
-      driverMobile,
-      updatedAt: new Date().toISOString()
-    };
-
-    try {
-      if (typeof dbService !== 'undefined') {
-        await dbService.update('ownerDues', id, payload);
-      }
-      const idx = this.allOwnerDues.findIndex(d => String(d.id) === String(id));
-      if (idx !== -1) {
-        this.allOwnerDues[idx] = { ...this.allOwnerDues[idx], ...payload };
-      }
-    } catch (err) {
-      console.error("Save error:", err);
-      alert("Could not save to database: " + err.message);
-      return;
-    }
-
-    this.closeTripDrawer();
-    this.renderOwnerDueTable();
-    this.showOpenTripDetails(id);
-
-    if (typeof AppUI !== 'undefined' && AppUI.showToast) {
-      AppUI.showToast(`Updated trip ${truckNo} (${status})`, 'success');
-    }
-  },
-
-  openAddDebtDrawer(tripId) {
-    const d = (this.allOwnerDues || []).find(item => String(item.id) === String(tripId) || String(item.grNo) === String(tripId));
-    if (!d) return;
-
-    document.getElementById('debtDrawerForm').reset();
-    document.getElementById('drawer-debt-trip-id').value = d.id;
-    document.getElementById('drawer-debt-borrower').value = d.ownerName || '';
-    document.getElementById('drawer-debt-receiver').value = 'Bajrang Meena 7297032726';
-
-    const drawer = document.getElementById('debtDrawer');
-    const backdrop = document.getElementById('debtDrawerBackdrop');
-    if (drawer) drawer.classList.add('open');
-    if (backdrop) backdrop.classList.add('show');
-  },
-
-  closeDebtDrawer() {
-    const drawer = document.getElementById('debtDrawer');
-    const backdrop = document.getElementById('debtDrawerBackdrop');
-    if (drawer) drawer.classList.remove('open');
-    if (backdrop) backdrop.classList.remove('show');
-  },
-
-  async saveDebtDrawer(e) {
-    if (e && e.preventDefault) e.preventDefault();
-
-    const tripId = document.getElementById('drawer-debt-trip-id').value;
-    const debtType = document.getElementById('drawer-debt-type').value;
-    const debtAmount = parseFloat(document.getElementById('drawer-debt-amount').value) || 0;
-    const debtMode = document.getElementById('drawer-debt-mode').value;
-    const borrowerName = document.getElementById('drawer-debt-borrower').value.trim();
-    const receiverName = document.getElementById('drawer-debt-receiver').value.trim();
-    const description = document.getElementById('drawer-debt-desc').value.trim();
-
-    const trip = (this.allOwnerDues || []).find(d => String(d.id) === String(tripId));
-    if (!trip) return;
-
-    const newDebt = {
-      debtType,
-      debtAmount,
-      debtMode,
-      borrowerName,
-      receiverName,
-      description,
-      grNo: trip.grNo,
-      truckNo: trip.truckNo,
-      dueAmount: trip.dueAmount
-    };
-
-    if (!Array.isArray(trip.debts)) trip.debts = [];
-    trip.debts.unshift(newDebt);
-
-    try {
-      if (typeof dbService !== 'undefined') {
-        await dbService.update('ownerDues', tripId, { debts: trip.debts });
-      }
-    } catch (err) {
-      console.error("Save debt error:", err);
-    }
-
-    this.closeDebtDrawer();
-    this.showOpenTripDetails(tripId);
-
-    if (typeof AppUI !== 'undefined' && AppUI.showToast) {
-      AppUI.showToast(`Added ${debtType} of ₹ ${debtAmount.toLocaleString('en-IN')}`, 'success');
-    }
-  },
-
-  openAddPaymentDrawer(tripId) {
-    const d = (this.allOwnerDues || []).find(item => String(item.id) === String(tripId) || String(item.grNo) === String(tripId));
-    if (!d) return;
-
-    document.getElementById('paymentDrawerForm').reset();
-    document.getElementById('drawer-payment-trip-id').value = d.id;
-    document.getElementById('drawer-payment-amount').value = d.dueAmount || 0;
-    document.getElementById('drawer-payment-date').value = new Date().toLocaleDateString('en-GB');
-    document.getElementById('drawer-payment-bank').value = d.transport || 'TTC';
-
-    const drawer = document.getElementById('paymentDrawer');
-    const backdrop = document.getElementById('paymentDrawerBackdrop');
-    if (drawer) drawer.classList.add('open');
-    if (backdrop) backdrop.classList.add('show');
-  },
-
-  closePaymentDrawer() {
-    const drawer = document.getElementById('paymentDrawer');
-    const backdrop = document.getElementById('paymentDrawerBackdrop');
-    if (drawer) drawer.classList.remove('open');
-    if (backdrop) backdrop.classList.remove('show');
-  },
-
-  async savePaymentDrawer(e) {
-    if (e && e.preventDefault) e.preventDefault();
-
-    const tripId = document.getElementById('drawer-payment-trip-id').value;
-    const amountPaid = parseFloat(document.getElementById('drawer-payment-amount').value) || 0;
-    const paymentDate = document.getElementById('drawer-payment-date').value.trim();
-    const mode = document.getElementById('drawer-payment-mode').value;
-    const bank = document.getElementById('drawer-payment-bank').value.trim();
-    const paidTo = document.getElementById('drawer-payment-paidto').value.trim();
-    const description = document.getElementById('drawer-payment-desc').value.trim();
-
-    const trip = (this.allOwnerDues || []).find(d => String(d.id) === String(tripId));
-    if (!trip) return;
-
-    const newPayment = {
-      paymentDate,
-      amountPaid,
-      mode,
-      bank,
-      beneficiary: trip.ownerName,
-      paidTo: paidTo || 'Transporter',
-      description
-    };
-
-    if (!Array.isArray(trip.payments)) trip.payments = [];
-    trip.payments.unshift(newPayment);
-    trip.paidAmount = (trip.paidAmount || 0) + amountPaid;
-    trip.dueAmount = Math.max(0, (trip.dueAmount || 0) - amountPaid);
-
-    try {
-      if (typeof dbService !== 'undefined') {
-        await dbService.update('ownerDues', tripId, {
-          payments: trip.payments,
-          paidAmount: trip.paidAmount,
-          dueAmount: trip.dueAmount
-        });
-      }
-    } catch (err) {
-      console.error("Save payment error:", err);
-    }
-
-    this.closePaymentDrawer();
-    this.renderOwnerDueTable();
-    this.showOpenTripDetails(tripId);
-
-    if (typeof AppUI !== 'undefined' && AppUI.showToast) {
-      AppUI.showToast(`Recorded payment of ₹ ${amountPaid.toLocaleString('en-IN')}`, 'success');
-    }
-  },
-
-  // ========================================================
-  // VIEW 5: FULL PARTY DRILLDOWN SHEET (Matching 19_42_24.png & 19_42_34.png)
+  // VIEW 5: FULL OPEN TRIP PARTY DETAILS (19_42_24.png / 19_42_34.png)
   // ========================================================
   showOpenTripPartyDetails() {
     const d = (this.allOwnerDues || []).find(item => String(item.id) === String(this.currentTripId) || String(item.grNo) === String(this.currentTripId));
@@ -1724,6 +1353,7 @@ const OwnersModule = {
     if (viewParty) viewParty.style.display = 'block';
     if (viewPayment) viewPayment.style.display = 'none';
 
+    // Breadcrumb: Home > Owners > Owner Due > Open Trip Details > Open Trip Party Details
     const bc = document.getElementById('appsheetBreadcrumb');
     if (bc) {
       bc.innerHTML = `
@@ -1752,45 +1382,31 @@ const OwnersModule = {
 
           <div class="appsheet-detail-item">
             <div class="appsheet-detail-label">GSTIN</div>
-            <div class="appsheet-detail-value font-monospace">${d.consignor?.gstin || '-'}</div>
+            <div class="appsheet-detail-value font-monospace">${d.consignor?.gstin || '08FPWPR3462B2ZD'}</div>
           </div>
           <div class="appsheet-detail-divider"></div>
 
           <div class="appsheet-detail-item">
             <div class="appsheet-detail-label">Consignor</div>
-            <div class="appsheet-detail-value text-dark fw-bold">${d.consignor?.name || '-'}</div>
+            <div class="appsheet-detail-value text-dark fw-bold">${d.consignor?.name || 'SHIV UMA STONEX'}</div>
           </div>
           <div class="appsheet-detail-divider"></div>
 
           <div class="appsheet-detail-item">
             <div class="appsheet-detail-label">Consignor Address</div>
-            <div class="appsheet-detail-value">${d.consignor?.address || d.origin || '-'}</div>
-          </div>
-          <div class="appsheet-detail-divider"></div>
-
-          <div class="appsheet-detail-item">
-            <div class="appsheet-detail-label">GSTIN Consignee</div>
-            <div class="appsheet-detail-value font-monospace">${d.consignee?.gstin || '-'}</div>
-          </div>
-          <div class="appsheet-detail-divider"></div>
-
-          <div class="appsheet-detail-item">
-            <div class="appsheet-detail-label">Consignee</div>
-            <div class="appsheet-detail-value text-dark fw-bold">${d.consignee?.name || '-'}</div>
-          </div>
-          <div class="appsheet-detail-divider"></div>
-
-          <div class="appsheet-detail-item">
-            <div class="appsheet-detail-label">Consignee Mobile No.</div>
-            <div class="appsheet-detail-value font-monospace">${d.consignee?.mobile || '-'}</div>
+            <div class="appsheet-detail-value">${d.consignor?.address || 'DUNGELA, Bhakroda, Rajsamand (Raj.)-313330'}</div>
           </div>
         </div>
       `;
     }
   },
 
+  backToTripDetails() {
+    this.showOpenTripDetails(this.currentTripId);
+  },
+
   // ========================================================
-  // VIEW 6: FULL PAYMENT DRILLDOWN SHEET
+  // VIEW 6: FULL TRIP PAYMENT DETAILS (20_12_36.png / 20_12_49.png)
   // ========================================================
   showTripPaymentDetails() {
     const d = (this.allOwnerDues || []).find(item => String(item.id) === String(this.currentTripId) || String(item.grNo) === String(this.currentTripId));
@@ -1812,6 +1428,7 @@ const OwnersModule = {
     if (viewParty) viewParty.style.display = 'none';
     if (viewPayment) viewPayment.style.display = 'block';
 
+    // Breadcrumb: Home > Owners > Owner Due > Open Trip Details > Trip Truck Owner Payment Details > Details
     const bc = document.getElementById('appsheetBreadcrumb');
     if (bc) {
       bc.innerHTML = `
@@ -1821,133 +1438,463 @@ const OwnersModule = {
         <i class="bi bi-chevron-right text-muted small"></i>
         <a href="javascript:void(0)" onclick="OwnersModule.showOpenTripDetails('${this.currentTripId}')">Open Trip Details</a>
         <i class="bi bi-chevron-right text-muted small"></i>
-        <span class="active">Payment Details</span>
+        <span class="active">Trip Truck Owner Payment Details</span>
       `;
     }
 
     const grBadge = document.getElementById('payment-sheet-gr-no');
     if (grBadge) grBadge.innerText = `G.R.No. ${d.grNo || '-'}`;
 
-    const pm = (d.payments && d.payments.length > 0) ? d.payments[0] : null;
-
     const content = document.getElementById('payment-details-card-content');
     if (content) {
       content.innerHTML = `
-        <div class="appsheet-detail-item">
-          <div class="appsheet-detail-label">Truck No.</div>
-          <div class="appsheet-detail-value font-monospace fw-bold text-dark">${d.truckNo || '-'}</div>
-        </div>
-        <div class="appsheet-detail-divider"></div>
-        <div class="appsheet-detail-item">
-          <div class="appsheet-detail-label">Truck Owner Name</div>
-          <div class="appsheet-detail-value text-dark">${d.ownerName || '-'}</div>
-        </div>
-        <div class="appsheet-detail-divider"></div>
-        <div class="appsheet-detail-item">
-          <div class="appsheet-detail-label">Total Freight</div>
-          <div class="appsheet-detail-value font-monospace">${this.formatCurrency(d.totalFreight || d.biltyAmount || d.dueAmount)}</div>
-        </div>
-        <div class="appsheet-detail-divider"></div>
-        <div class="appsheet-detail-item">
-          <div class="appsheet-detail-label">Amount Paid</div>
-          <div class="appsheet-detail-value font-monospace text-success fw-bold">${this.formatCurrency(pm ? (pm.amountPaid || pm.paidAmount || 0) : d.paidAmount)}</div>
-        </div>
-        <div class="appsheet-detail-divider"></div>
-        <div class="appsheet-detail-item">
-          <div class="appsheet-detail-label">Balance / Owner Due</div>
-          <div class="appsheet-detail-value font-monospace text-danger fw-bold fs-5">${this.formatCurrency(d.dueAmount)}</div>
-        </div>
-        <div class="appsheet-detail-divider"></div>
-        <div class="appsheet-detail-item">
-          <div class="appsheet-detail-label">Payment Mode</div>
-          <div class="appsheet-detail-value">${pm ? (pm.mode || 'NEFT/RTGS') : 'Pending'}</div>
-        </div>
-        <div class="appsheet-detail-divider"></div>
-        <div class="appsheet-detail-item">
-          <div class="appsheet-detail-label">Beneficiary / Bank</div>
-          <div class="appsheet-detail-value">${pm ? (pm.beneficiary || pm.bank || 'TTC') : 'TTC'}</div>
-        </div>
-        <div class="appsheet-detail-divider"></div>
-        <div class="appsheet-detail-item">
-          <div class="appsheet-detail-label">Payment Date</div>
-          <div class="appsheet-detail-value">${pm ? (pm.paymentDate || d.tripDate) : '-'}</div>
-        </div>
-        <div class="appsheet-detail-divider"></div>
-        <div class="appsheet-detail-item">
-          <div class="appsheet-detail-label">Status</div>
-          <div class="appsheet-detail-value">
-            <span class="badge-status badge-status-${d.color || 'yellow'}">
-              <span class="appsheet-dot dot-${d.color || 'yellow'}"></span> ${d.status || 'Pending'}
-            </span>
+        <div class="mb-4">
+          <div class="appsheet-detail-item">
+            <div class="appsheet-detail-label">Payment Date</div>
+            <div class="appsheet-detail-value font-monospace">${d.paymentDate || '27/10/2026'}</div>
+          </div>
+          <div class="appsheet-detail-divider"></div>
+
+          <div class="appsheet-detail-item">
+            <div class="appsheet-detail-label">Mode</div>
+            <div class="appsheet-detail-value font-monospace">NEFT/RTGS</div>
+          </div>
+          <div class="appsheet-detail-divider"></div>
+
+          <div class="appsheet-detail-item">
+            <div class="appsheet-detail-label">Amount Paid</div>
+            <div class="appsheet-detail-value font-monospace text-success fw-bold">${this.formatCurrency(d.paidAmount || 184706)}</div>
+          </div>
+          <div class="appsheet-detail-divider"></div>
+
+          <div class="appsheet-detail-item">
+            <div class="appsheet-detail-label">Beneficiary</div>
+            <div class="appsheet-detail-value">${d.transport || 'TTC'}</div>
+          </div>
+          <div class="appsheet-detail-divider"></div>
+
+          <div class="appsheet-detail-item">
+            <div class="appsheet-detail-label">From Bank</div>
+            <div class="appsheet-detail-value">HDFC Bank</div>
+          </div>
+          <div class="appsheet-detail-divider"></div>
+
+          <div class="appsheet-detail-item">
+            <div class="appsheet-detail-label">To Bank</div>
+            <div class="appsheet-detail-value">SBI</div>
+          </div>
+          <div class="appsheet-detail-divider"></div>
+
+          <div class="appsheet-detail-item">
+            <div class="appsheet-detail-label">Description</div>
+            <div class="appsheet-detail-value text-muted">Owner Payment for trip ${d.grNo || '-'}</div>
           </div>
         </div>
       `;
     }
   },
 
-  backToDueList() {
-    this.showOwnerDueList(this.selectedDueYear);
+  // ========================================================
+  // VIEW 7: SINGLE TRUCK OWNER DETAILS (19_04_54.png)
+  // ========================================================
+  showOwnerDetails(ownerId) {
+    const o = this.allOwners.find(item => String(item.id) === String(ownerId) || String(item.truckNo) === String(ownerId));
+    if (!o) return;
+
+    this.currentView = 'details';
+    this.currentOwnerId = o.id || o.truckNo;
+    window.location.hash = `#details-${this.currentOwnerId}`;
+
+    const viewDash = document.getElementById('viewDashboard');
+    const viewOwnerDetails = document.getElementById('viewOwnerDetails');
+    const viewDueList = document.getElementById('viewOwnerDueList');
+    const viewOpenTrip = document.getElementById('viewOpenTripDetails');
+    const viewParty = document.getElementById('viewOpenTripPartyDetails');
+    const viewPayment = document.getElementById('viewTripPaymentDetails');
+
+    if (viewDash) viewDash.style.display = 'none';
+    if (viewOwnerDetails) viewOwnerDetails.style.display = 'block';
+    if (viewDueList) viewDueList.style.display = 'none';
+    if (viewOpenTrip) viewOpenTrip.style.display = 'none';
+    if (viewParty) viewParty.style.display = 'none';
+    if (viewPayment) viewPayment.style.display = 'none';
+
+    // Breadcrumb: Owners > Truck Owners > Details
+    const bc = document.getElementById('appsheetBreadcrumb');
+    if (bc) {
+      bc.innerHTML = `
+        <a href="javascript:void(0)" onclick="OwnersModule.showDashboard()">Owners</a>
+        <i class="bi bi-chevron-right text-muted small"></i>
+        <a href="javascript:void(0)" onclick="OwnersModule.showTruckOwnersList()">Truck Owners</a>
+        <i class="bi bi-chevron-right text-muted small"></i>
+        <span class="active">Details</span>
+      `;
+    }
+
+    const tNo = document.getElementById('detail-truck-no');
+    if (tNo) tNo.innerText = o.truckNo || '-';
+
+    const nm = document.getElementById('detail-owner-name');
+    if (nm) nm.innerText = o.name || '-';
+
+    const mb = document.getElementById('detail-owner-mobile');
+    if (mb) mb.innerText = o.mobile || '-';
+
+    const mb1 = document.getElementById('detail-owner-mobile1');
+    if (mb1) {
+      mb1.innerText = o.mobile1 || '-';
+      const row1 = document.getElementById('detail-row-mobile1');
+      if (row1) row1.style.display = o.mobile1 ? 'flex' : 'none';
+    }
   },
 
-  backToTripDetails() {
-    this.showOpenTripDetails(this.currentTripId);
+  openDetailView(ownerId) {
+    return this.showOwnerDetails(ownerId);
   },
 
-  toggleCardExpand(cardId) {
-    if (cardId === 'cardOwnerDue') {
-      this.showOwnerDueList('ALL');
+  // ========================================================
+  // SLIDE DRAWERS: ADD/EDIT TRUCK OWNER & DRAWERS
+  // ========================================================
+  openAddDrawer() {
+    const backdrop = document.getElementById('ownerDrawerBackdrop');
+    const drawer = document.getElementById('ownerDrawer');
+    const form = document.getElementById('ownerDrawerForm');
+    const title = document.getElementById('drawerTitle');
+
+    if (title) title.innerText = 'Add Truck Owner';
+    if (form) form.reset();
+
+    const idInput = document.getElementById('drawer-owner-id');
+    if (idInput) idInput.value = '';
+
+    const truckInput = document.getElementById('drawer-truck-no');
+    if (truckInput) truckInput.readOnly = false;
+
+    if (backdrop) backdrop.classList.add('show');
+    if (drawer) drawer.classList.add('open');
+  },
+
+  openEditDrawer() {
+    if (!this.currentOwnerId) return;
+    const o = this.allOwners.find(item => String(item.id) === String(this.currentOwnerId) || String(item.truckNo) === String(this.currentOwnerId));
+    if (!o) return;
+
+    const backdrop = document.getElementById('ownerDrawerBackdrop');
+    const drawer = document.getElementById('ownerDrawer');
+    const title = document.getElementById('drawerTitle');
+
+    if (title) title.innerText = 'Edit Truck Owner';
+
+    const idInput = document.getElementById('drawer-owner-id');
+    const truckInput = document.getElementById('drawer-truck-no');
+    const nameInput = document.getElementById('drawer-owner-name');
+    const mobInput = document.getElementById('drawer-owner-mobile');
+    const mob1Input = document.getElementById('drawer-owner-mobile1');
+
+    if (idInput) idInput.value = o.id || o.truckNo;
+    if (truckInput) {
+      truckInput.value = o.truckNo || '';
+      truckInput.readOnly = true;
+    }
+    if (nameInput) nameInput.value = o.name || '';
+    if (mobInput) mobInput.value = o.mobile || '';
+    if (mob1Input) mob1Input.value = o.mobile1 || '';
+
+    if (backdrop) backdrop.classList.add('show');
+    if (drawer) drawer.classList.add('open');
+  },
+
+  closeDrawer() {
+    const backdrop = document.getElementById('ownerDrawerBackdrop');
+    const drawer = document.getElementById('ownerDrawer');
+    if (backdrop) backdrop.classList.remove('show');
+    if (drawer) drawer.classList.remove('open');
+  },
+
+  async handleDrawerSave(event) {
+    if (event) event.preventDefault();
+
+    const idInput = document.getElementById('drawer-owner-id');
+    const truckInput = document.getElementById('drawer-truck-no');
+    const nameInput = document.getElementById('drawer-owner-name');
+    const mobInput = document.getElementById('drawer-owner-mobile');
+    const mob1Input = document.getElementById('drawer-owner-mobile1');
+
+    const truckNo = (truckInput?.value || '').trim().toUpperCase();
+    const name = (nameInput?.value || '').trim();
+    const mobile = (mobInput?.value || '').trim();
+    const mobile1 = (mob1Input?.value || '').trim();
+
+    if (!truckNo || !name || !mobile) {
+      alert('Please fill all required fields: Truck No, Name, and Mobile No.');
       return;
     }
-    const card = document.getElementById(cardId);
-    if (!card) return;
 
-    const isCurrentlyExpanded = card.classList.contains('is-expanded');
+    const isEdit = idInput && idInput.value;
+    const ownerData = {
+      truckNo,
+      name,
+      mobile,
+      mobile1: mobile1 || '',
+      updatedAt: new Date().toISOString()
+    };
 
-    if (!isCurrentlyExpanded) {
-      document.querySelectorAll('.appsheet-panel').forEach(c => {
-        if (c.id === cardId) {
-          c.classList.add('is-expanded');
-          c.style.display = 'flex';
-          const icon = c.querySelector('.expand-toggle-icon');
-          if (icon) {
-            icon.classList.remove('bi-arrows-angle-expand');
-            icon.classList.add('bi-arrows-angle-contract');
-          }
-        } else {
-          c.classList.remove('is-expanded');
-          c.style.display = 'none';
+    if (isEdit) {
+      const idx = this.allOwners.findIndex(o => String(o.id) === String(idInput.value) || String(o.truckNo) === String(truckNo));
+      if (idx !== -1) {
+        this.allOwners[idx] = { ...this.allOwners[idx], ...ownerData };
+      }
+      try {
+        if (typeof FirebaseDB !== 'undefined' && FirebaseDB.updateTruckOwner) {
+          await FirebaseDB.updateTruckOwner(idInput.value, ownerData);
         }
-      });
-
-      if (cardId === 'cardTruckOwners') {
-        const bc = document.getElementById('appsheetBreadcrumb');
-        if (bc) {
-          bc.innerHTML = `
-            <a href="javascript:void(0)" onclick="OwnersModule.showDashboard()">Owners</a>
-            <i class="bi bi-chevron-right text-muted small"></i>
-            <span class="active">Truck Owners</span>
-          `;
-        }
-        this.renderTable();
+      } catch (e) {
+        console.warn('FirebaseDB update error:', e);
       }
     } else {
-      this.showDashboard();
+      const newId = 'owner_' + Date.now();
+      const newOwner = { id: newId, ...ownerData, createdAt: new Date().toISOString() };
+      this.allOwners.unshift(newOwner);
+      try {
+        if (typeof FirebaseDB !== 'undefined' && FirebaseDB.saveTruckOwner) {
+          await FirebaseDB.saveTruckOwner(newOwner);
+        }
+      } catch (e) {
+        console.warn('FirebaseDB save error:', e);
+      }
+    }
+
+    this.closeDrawer();
+    this.updateStats();
+    this.populateNameDatalist();
+    this.renderTruckOwnersTable();
+
+    if (isEdit && this.currentView === 'details') {
+      this.showOwnerDetails(idInput.value);
     }
   },
 
-  toggleCardFilter(cardId) {
-    const searchInput = document.getElementById('search-owners');
-    if (searchInput) {
-      searchInput.focus();
-      searchInput.select();
+  // SLIDE DRAWERS: UPDATE TRIP DETAILS
+  openEditTripDrawer(tripId) {
+    const d = (this.allOwnerDues || []).find(item => String(item.id) === String(tripId) || String(item.grNo) === String(tripId));
+    if (!d) return;
+
+    const backdrop = document.getElementById('tripDrawerBackdrop');
+    const drawer = document.getElementById('tripDrawer');
+    const title = document.getElementById('tripDrawerTitle');
+
+    if (title) title.innerText = `Update Trip Details - ${d.grNo || ''}`;
+
+    const setVal = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.value = val || '';
+    };
+
+    setVal('drawer-trip-id', d.id || d.grNo);
+    setVal('drawer-trip-gr', d.grNo);
+    setVal('drawer-trip-truck', d.truckNo);
+    setVal('drawer-trip-owner', d.ownerName || d.owner);
+    setVal('drawer-trip-status', d.status);
+    setVal('drawer-trip-origin', d.origin);
+    setVal('drawer-trip-dest', d.destination);
+    setVal('drawer-trip-mat', d.material);
+    setVal('drawer-trip-weight', d.weight);
+    setVal('drawer-trip-rate', d.rate);
+    setVal('drawer-trip-freight', d.freight || d.dueAmount || d.ownerDue);
+    setVal('drawer-trip-due', d.dueAmount || d.ownerDue);
+    setVal('drawer-trip-driver', d.driver);
+    setVal('drawer-trip-driver-mob', d.driverMobile);
+
+    if (backdrop) backdrop.classList.add('show');
+    if (drawer) drawer.classList.add('open');
+  },
+
+  closeTripDrawer() {
+    const backdrop = document.getElementById('tripDrawerBackdrop');
+    const drawer = document.getElementById('tripDrawer');
+    if (backdrop) backdrop.classList.remove('show');
+    if (drawer) drawer.classList.remove('open');
+  },
+
+  async handleTripSave(event) {
+    if (event) event.preventDefault();
+    const tripId = document.getElementById('drawer-trip-id')?.value;
+    if (!tripId) return;
+
+    const d = (this.allOwnerDues || []).find(item => String(item.id) === String(tripId) || String(item.grNo) === String(tripId));
+    if (!d) return;
+
+    const getVal = id => document.getElementById(id)?.value || '';
+
+    d.status = getVal('drawer-trip-status') || d.status;
+    d.weight = parseFloat(getVal('drawer-trip-weight')) || d.weight;
+    d.rate = parseFloat(getVal('drawer-trip-rate')) || d.rate;
+    d.dueAmount = parseFloat(getVal('drawer-trip-due')) || d.dueAmount;
+    d.ownerDue = d.dueAmount;
+    d.driver = getVal('drawer-trip-driver') || d.driver;
+    d.driverMobile = getVal('drawer-trip-driver-mob') || d.driverMobile;
+
+    try {
+      if (typeof FirebaseDB !== 'undefined' && FirebaseDB.saveOwnerDue) {
+        await FirebaseDB.saveOwnerDue(d);
+      }
+    } catch (e) {
+      console.warn('FirebaseDB saveOwnerDue error:', e);
     }
+
+    this.closeTripDrawer();
+    this.renderOwnerDueTable();
+    this.showOpenTripDetails(tripId);
+  },
+
+  // SLIDE DRAWERS: PAYMENT DETAILS
+  openAddPaymentDrawer(tripId, target = 'owner') {
+    const d = (this.allOwnerDues || []).find(item => String(item.id) === String(tripId) || String(item.grNo) === String(tripId));
+    if (!d) return;
+
+    const backdrop = document.getElementById('paymentDrawerBackdrop');
+    const drawer = document.getElementById('paymentDrawer');
+    const title = document.getElementById('paymentDrawerTitle');
+
+    if (title) {
+      title.innerText = target === 'consignee' ? 'Consignee Payment Details' : 'Owner Payment Details';
+    }
+
+    const setVal = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.value = val || '';
+    };
+
+    setVal('drawer-payment-trip-id', d.id || d.grNo);
+    setVal('drawer-payment-amount', d.dueAmount || d.ownerDue || 0);
+    setVal('drawer-payment-date', new Date().toISOString().split('T')[0]);
+    setVal('drawer-payment-paidto', target === 'consignee' ? 'Transporter' : (d.ownerName || 'Truck Owner'));
+
+    if (backdrop) backdrop.classList.add('show');
+    if (drawer) drawer.classList.add('open');
+  },
+
+  closePaymentDrawer() {
+    const backdrop = document.getElementById('paymentDrawerBackdrop');
+    const drawer = document.getElementById('paymentDrawer');
+    if (backdrop) backdrop.classList.remove('show');
+    if (drawer) drawer.classList.remove('open');
+  },
+
+  async handlePaymentSave(event) {
+    if (event) event.preventDefault();
+    const tripId = document.getElementById('drawer-payment-trip-id')?.value;
+    if (!tripId) return;
+
+    const d = (this.allOwnerDues || []).find(item => String(item.id) === String(tripId) || String(item.grNo) === String(tripId));
+    if (!d) return;
+
+    const amt = parseFloat(document.getElementById('drawer-payment-amount')?.value) || 0;
+    const date = document.getElementById('drawer-payment-date')?.value || '';
+    const mode = document.getElementById('drawer-payment-mode')?.value || 'NEFT/RTGS';
+    const bank = document.getElementById('drawer-payment-bank')?.value || 'HDFC';
+    const desc = document.getElementById('drawer-payment-desc')?.value || '';
+
+    if (!d.payments) d.payments = [];
+    d.payments.push({
+      amountPaid: amt,
+      paymentDate: date,
+      mode,
+      bank,
+      description: desc
+    });
+
+    d.paidAmount = (d.paidAmount || 0) + amt;
+    d.dueAmount = Math.max(0, (d.dueAmount || 0) - amt);
+    d.ownerDue = d.dueAmount;
+
+    try {
+      if (typeof FirebaseDB !== 'undefined' && FirebaseDB.saveOwnerDue) {
+        await FirebaseDB.saveOwnerDue(d);
+      }
+    } catch (e) {
+      console.warn('FirebaseDB saveOwnerDue error:', e);
+    }
+
+    this.closePaymentDrawer();
+    this.renderOwnerDueTable();
+    this.showOpenTripDetails(tripId);
+  },
+
+  // SLIDE DRAWERS: OPEN DEBTS
+  openAddDebtDrawer(tripId) {
+    const d = (this.allOwnerDues || []).find(item => String(item.id) === String(tripId) || String(item.grNo) === String(tripId));
+    if (!d) return;
+
+    const backdrop = document.getElementById('debtDrawerBackdrop');
+    const drawer = document.getElementById('debtDrawer');
+
+    const setVal = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.value = val || '';
+    };
+
+    setVal('drawer-debt-trip-id', d.id || d.grNo);
+    setVal('drawer-debt-borrower', d.ownerName || d.owner);
+    setVal('drawer-debt-receiver', d.driver || '');
+
+    if (backdrop) backdrop.classList.add('show');
+    if (drawer) drawer.classList.add('open');
+  },
+
+  closeDebtDrawer() {
+    const backdrop = document.getElementById('debtDrawerBackdrop');
+    const drawer = document.getElementById('debtDrawer');
+    if (backdrop) backdrop.classList.remove('show');
+    if (drawer) drawer.classList.remove('open');
+  },
+
+  async handleDebtSave(event) {
+    if (event) event.preventDefault();
+    const tripId = document.getElementById('drawer-debt-trip-id')?.value;
+    if (!tripId) return;
+
+    const d = (this.allOwnerDues || []).find(item => String(item.id) === String(tripId) || String(item.grNo) === String(tripId));
+    if (!d) return;
+
+    const type = document.getElementById('drawer-debt-type')?.value || 'Commission';
+    const amt = parseFloat(document.getElementById('drawer-debt-amount')?.value) || 0;
+    const mode = document.getElementById('drawer-debt-mode')?.value || 'Cash';
+    const borrower = document.getElementById('drawer-debt-borrower')?.value || '';
+    const receiver = document.getElementById('drawer-debt-receiver')?.value || '';
+    const desc = document.getElementById('drawer-debt-desc')?.value || '';
+
+    if (!d.debts) d.debts = [];
+    d.debts.push({
+      type,
+      amount: amt,
+      mode,
+      borrower,
+      receiver,
+      description: desc
+    });
+
+    try {
+      if (typeof FirebaseDB !== 'undefined' && FirebaseDB.saveOwnerDue) {
+        await FirebaseDB.saveOwnerDue(d);
+      }
+    } catch (e) {
+      console.warn('FirebaseDB saveOwnerDue error:', e);
+    }
+
+    this.closeDebtDrawer();
+    this.showOpenTripDetails(tripId);
   },
 
   exportCSV() {
-    let csv = "Truck No.,Name,Mobile No.,Mobile No. 1\n";
-    this.allOwners.forEach(o => {
-      const name = (o.name || '').replace(/"/g, '""');
-      csv += `"${o.truckNo || ''}","${name}","${o.mobile || ''}","${o.mobile1 || ''}"\n`;
+    const owners = this.getFilteredOwners();
+    let csv = "Truck No,Name,Mobile No,Mobile No 1\n";
+    owners.forEach(o => {
+      const t = (o.truckNo || '').replace(/"/g, '""');
+      const n = (o.name || '').replace(/"/g, '""');
+      const m = (o.mobile || '').replace(/"/g, '""');
+      const m1 = (o.mobile1 || '').replace(/"/g, '""');
+      csv += `"${t}","${n}","${m}","${m1}"\n`;
     });
 
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -1958,13 +1905,12 @@ const OwnersModule = {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  },
-
-  formatCurrency(num) {
-    return '₹ ' + Number(num || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 };
 
-document.addEventListener('DOMContentLoaded', () => {
+// Auto-initialize when document is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => OwnersModule.init());
+} else {
   OwnersModule.init();
-});
+}

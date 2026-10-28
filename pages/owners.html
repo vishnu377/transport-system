@@ -898,6 +898,27 @@
       filter: brightness(0.97);
     }
 
+  
+    /* Google AppSheet Exact 3-Column Layout for Open Trip Details */
+    .appsheet-3col-layout {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      align-items: start;
+    }
+    @media (max-width: 1024px) {
+      .appsheet-3col-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+    .appsheet-3col-layout .appsheet-panel.panel-expanded {
+      grid-column: 1 / -1 !important;
+      width: 100% !important;
+    }
+    .appsheet-col {
+      min-width: 0;
+    }
+
   </style>
 </head>
 <body>
