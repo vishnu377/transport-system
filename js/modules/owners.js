@@ -244,12 +244,22 @@ const OwnersModule = {
     if (viewParty) viewParty.style.display = 'none';
     if (viewPayment) viewPayment.style.display = 'none';
 
-    // Reset panel expansions
+    // Reset grid layout expansion
+    const grid = document.getElementById('ownersDashboardGrid');
+    if (grid) grid.classList.remove('card1-expanded');
+
+    // Reset panel expansions and restore toggle icons
     document.querySelectorAll('.appsheet-panel.panel-expanded').forEach(p => {
       p.classList.remove('panel-expanded');
+      const icon = p.querySelector('.expand-toggle-icon');
+      if (icon) {
+        icon.classList.remove('bi-arrows-angle-contract');
+        icon.classList.add('bi-arrows-angle-expand');
+        icon.setAttribute('title', 'Expand / Full View');
+      }
     });
 
-    // Reset Breadcrumb: Home > Owners
+    // Reset Breadcrumb: Owners
     const bc = document.getElementById('appsheetBreadcrumb');
     if (bc) {
       bc.innerHTML = `
@@ -273,8 +283,29 @@ const OwnersModule = {
   // VIEW 2: DEDICATED FULL VIEW - TRUCK OWNERS (596 TRUCKS)
   // ========================================================
   showTruckOwnersList() {
-    this.showDashboard();
+    this.expandTruckOwners();
+  },
+
+  expandTruckOwners() {
+    this.currentView = 'dashboard';
     window.location.hash = '#truck-owners';
+
+    const viewDash = document.getElementById('viewDashboard');
+    const viewOwnerDetails = document.getElementById('viewOwnerDetails');
+    const viewDueList = document.getElementById('viewOwnerDueList');
+    const viewOpenTrip = document.getElementById('viewOpenTripDetails');
+    const viewParty = document.getElementById('viewOpenTripPartyDetails');
+    const viewPayment = document.getElementById('viewTripPaymentDetails');
+
+    if (viewDash) viewDash.style.display = 'block';
+    if (viewOwnerDetails) viewOwnerDetails.style.display = 'none';
+    if (viewDueList) viewDueList.style.display = 'none';
+    if (viewOpenTrip) viewOpenTrip.style.display = 'none';
+    if (viewParty) viewParty.style.display = 'none';
+    if (viewPayment) viewPayment.style.display = 'none';
+
+    const grid = document.getElementById('ownersDashboardGrid');
+    if (grid) grid.classList.add('card1-expanded');
 
     const card = document.getElementById('cardTruckOwners');
     if (card) {
@@ -283,17 +314,36 @@ const OwnersModule = {
       if (expandIcon) {
         expandIcon.classList.remove('bi-arrows-angle-expand');
         expandIcon.classList.add('bi-arrows-angle-contract');
+        expandIcon.setAttribute('title', 'Collapse to Dashboard');
       }
     }
 
     const bc = document.getElementById('appsheetBreadcrumb');
     if (bc) {
       bc.innerHTML = `
-        <a href="javascript:void(0)" onclick="OwnersModule.showDashboard()">Owners</a>
+        <a href="javascript:void(0)" onclick="OwnersModule.collapseTruckOwners()">Owners</a>
         <i class="bi bi-chevron-right text-muted small"></i>
         <span class="active">Truck Owners</span>
       `;
     }
+
+    this.renderTruckOwnersTable();
+  },
+
+  collapseTruckOwners() {
+    const card = document.getElementById('cardTruckOwners');
+    const grid = document.getElementById('ownersDashboardGrid');
+    if (grid) grid.classList.remove('card1-expanded');
+    if (card) {
+      card.classList.remove('panel-expanded');
+      const expandIcon = card.querySelector('.expand-toggle-icon');
+      if (expandIcon) {
+        expandIcon.classList.remove('bi-arrows-angle-contract');
+        expandIcon.classList.add('bi-arrows-angle-expand');
+        expandIcon.setAttribute('title', 'Expand / Full View');
+      }
+    }
+    this.showDashboard();
   },
 
   getFilteredOwners() {
@@ -1411,6 +1461,16 @@ const OwnersModule = {
   },
 
   toggleCardExpand(cardId) {
+    if (cardId === 'cardTruckOwners') {
+      const card = document.getElementById('cardTruckOwners');
+      const isExpanded = card && (card.classList.contains('panel-expanded') || document.getElementById('ownersDashboardGrid')?.classList.contains('card1-expanded'));
+      if (isExpanded) {
+        this.collapseTruckOwners();
+      } else {
+        this.expandTruckOwners();
+      }
+      return;
+    }
     this.togglePanelExpand(cardId);
   },
 
@@ -1582,7 +1642,11 @@ const OwnersModule = {
   // VIEW 7: SINGLE TRUCK OWNER DETAILS (19_04_54.png)
   // ========================================================
   showOwnerDetails(ownerId) {
-    const o = this.allOwners.find(item => String(item.id) === String(ownerId) || String(item.truckNo) === String(ownerId));
+    const target = String(ownerId || '').trim().toUpperCase();
+    const o = (this.allOwners || []).find(item => 
+      String(item.id || '').trim().toUpperCase() === target || 
+      String(item.truckNo || '').trim().toUpperCase() === target
+    );
     if (!o) return;
 
     this.currentView = 'details';
@@ -1618,7 +1682,7 @@ const OwnersModule = {
     const bcActions = document.getElementById('breadcrumbActions');
     if (bcActions) {
       bcActions.innerHTML = `
-        <button class="btn btn-sm btn-outline-secondary px-3 py-1 d-flex align-items-center gap-1 shadow-sm" onclick="OwnersModule.openEditCurrentOwner()" title="Edit Owner">
+        <button class="btn btn-sm btn-outline-secondary px-3 py-1 d-flex align-items-center gap-1 shadow-sm" onclick="OwnersModule.openEditCurrentOwner('${o.id || o.truckNo}')" title="Edit Owner">
           <i class="bi bi-pencil me-1"></i> Edit
         </button>
         <button class="btn btn-sm btn-light border px-3 py-1 d-flex align-items-center gap-1 ms-1" onclick="OwnersModule.showDashboard()" title="Back to Truck Owners">
@@ -1637,10 +1701,16 @@ const OwnersModule = {
     if (mb) mb.innerText = o.mobile || '-';
 
     const mb1 = document.getElementById('detail-owner-mobile1');
+    const cont1 = document.getElementById('detail-mobile1-container');
+    const row1 = document.getElementById('detail-row-mobile1');
     if (mb1) {
       mb1.innerText = o.mobile1 || '-';
-      const row1 = document.getElementById('detail-row-mobile1');
-      if (row1) row1.style.display = o.mobile1 ? 'flex' : 'none';
+    }
+    if (cont1) {
+      cont1.style.display = o.mobile1 ? 'block' : 'none';
+    }
+    if (row1) {
+      row1.style.display = o.mobile1 ? 'flex' : 'none';
     }
   },
 
@@ -1649,7 +1719,7 @@ const OwnersModule = {
   },
 
   // ========================================================
-  // SLIDE DRAWERS: ADD/EDIT TRUCK OWNER & DRAWERS
+  // SLIDE DRAWERS: ADD/EDIT TRUCK OWNER & DRAWERS (19_05_06.png)
   // ========================================================
   openAddDrawer() {
     const backdrop = document.getElementById('ownerDrawerBackdrop');
@@ -1657,7 +1727,7 @@ const OwnersModule = {
     const form = document.getElementById('ownerDrawerForm');
     const title = document.getElementById('drawerTitle');
 
-    if (title) title.innerText = 'Add Truck Owner';
+    if (title) title.innerText = 'New Truck Owner';
     if (form) form.reset();
 
     const idInput = document.getElementById('drawer-owner-id');
@@ -1670,16 +1740,24 @@ const OwnersModule = {
     if (drawer) drawer.classList.add('open');
   },
 
-  openEditDrawer() {
-    if (!this.currentOwnerId) return;
-    const o = this.allOwners.find(item => String(item.id) === String(this.currentOwnerId) || String(item.truckNo) === String(this.currentOwnerId));
+  openEditDrawer(ownerId) {
+    const targetId = ownerId || this.currentOwnerId || document.getElementById('detail-truck-no')?.innerText?.trim();
+    if (!targetId || targetId === '-') return;
+
+    const target = String(targetId).trim().toUpperCase();
+    const o = (this.allOwners || []).find(item => 
+      String(item.id || '').trim().toUpperCase() === target || 
+      String(item.truckNo || '').trim().toUpperCase() === target
+    );
     if (!o) return;
+
+    this.currentOwnerId = o.id || o.truckNo;
 
     const backdrop = document.getElementById('ownerDrawerBackdrop');
     const drawer = document.getElementById('ownerDrawer');
     const title = document.getElementById('drawerTitle');
 
-    if (title) title.innerText = 'Edit Truck Owner';
+    if (title) title.innerText = 'Details';
 
     const idInput = document.getElementById('drawer-owner-id');
     const truckInput = document.getElementById('drawer-truck-no');
@@ -1690,7 +1768,7 @@ const OwnersModule = {
     if (idInput) idInput.value = o.id || o.truckNo;
     if (truckInput) {
       truckInput.value = o.truckNo || '';
-      truckInput.readOnly = true;
+      truckInput.readOnly = false;
     }
     if (nameInput) nameInput.value = o.name || '';
     if (mobInput) mobInput.value = o.mobile || '';
@@ -1698,6 +1776,14 @@ const OwnersModule = {
 
     if (backdrop) backdrop.classList.add('show');
     if (drawer) drawer.classList.add('open');
+  },
+
+  openEditCurrentOwner(ownerId) {
+    this.openEditDrawer(ownerId);
+  },
+
+  async saveOwnerDrawer(event) {
+    return this.handleDrawerSave(event);
   },
 
   closeDrawer() {
@@ -2004,9 +2090,19 @@ const OwnersModule = {
   }
 };
 
+// Window & Node export
+if (typeof window !== 'undefined') {
+  window.OwnersModule = OwnersModule;
+}
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = OwnersModule;
+}
+
 // Auto-initialize when document is ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => OwnersModule.init());
-} else {
-  OwnersModule.init();
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => OwnersModule.init());
+  } else if (typeof OwnersModule.init === 'function') {
+    OwnersModule.init();
+  }
 }

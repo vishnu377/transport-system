@@ -867,16 +867,67 @@
       color: #202124;
     }
 
-    /* Hide Card 1 Pagination in Dashboard Normal View (Only show when expanded!) */
-    #cardTruckOwners:not(.panel-expanded) .appsheet-panel-footer {
+    /* ======================================================== */
+    /* DASHBOARD GRID & EXPANDED CARD 1 PAGINATION */
+    /* ======================================================== */
+    /* In normal 3-column view: Card 1 table wrap is scrollable with clean height matching sibling cards */
+    #cardTruckOwners:not(.panel-expanded) .appsheet-table-wrap {
+      max-height: 520px;
+      overflow-y: auto;
+    }
+
+    /* CARD 1 PAGINATION: STRICTLY HIDDEN IN NORMAL VIEW! */
+    #cardTruckOwners .appsheet-panel-footer,
+    #cardTruckOwners:not(.panel-expanded) .appsheet-panel-footer,
+    .owners-grid:not(.card1-expanded) #cardTruckOwners .appsheet-panel-footer {
       display: none !important;
     }
+
+    /* EXPANDED CARD 1 FULL VIEW: */
+    .owners-grid.card1-expanded {
+      grid-template-columns: 1fr !important;
+    }
+    .owners-grid.card1-expanded #cardOwnerDue,
+    .owners-grid.card1-expanded #cardOwnerPaid {
+      display: none !important;
+    }
+    .owners-grid.card1-expanded #cardTruckOwners,
+    #cardTruckOwners.panel-expanded {
+      grid-column: 1 / -1 !important;
+      width: 100% !important;
+      min-height: calc(100vh - 130px);
+    }
+    .owners-grid.card1-expanded #cardTruckOwners .appsheet-table-wrap,
+    #cardTruckOwners.panel-expanded .appsheet-table-wrap {
+      max-height: calc(100vh - 225px) !important;
+      overflow-y: auto;
+    }
+
+    /* ONLY show Card 1 pagination at bottom when expanded! */
+    .owners-grid.card1-expanded #cardTruckOwners .appsheet-panel-footer,
     #cardTruckOwners.panel-expanded .appsheet-panel-footer {
       display: flex !important;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      bottom: 0;
+      background: #ffffff;
+      border-top: 1px solid var(--appsheet-border-light);
+      padding: 8px 16px;
+      z-index: 10;
     }
-    #cardTruckOwners:not(.panel-expanded) .appsheet-table-wrap {
-      max-height: 480px;
-      overflow-y: auto;
+
+    /* View 3 Owner Due Table Pagination Footer (Always docked at bottom) */
+    #viewOwnerDueList .appsheet-panel-footer {
+      display: flex !important;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      bottom: 0;
+      background: #ffffff;
+      border-top: 1px solid var(--appsheet-border-light);
+      padding: 8px 16px;
+      z-index: 10;
     }
 
     /* Google AppSheet Date Group Header */
