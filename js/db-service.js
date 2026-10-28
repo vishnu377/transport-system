@@ -157,6 +157,9 @@ class DBService {
     if (collectionName === 'truckOwners') {
       return this.getAllTruckOwners(cloudItems);
     }
+    if (collectionName === 'ownerDues') {
+      return this.getAllOwnerDues(cloudItems);
+    }
     if (collectionName === 'cheques') {
       return this.getAllCheques(cloudItems);
     }
@@ -737,6 +740,45 @@ class DBService {
       return t && t !== 'UNDEFINED' && t.length >= 5;
     });
 
+    all.sort((a, b) => (Number(b.dueAmount) || 0) - (Number(a.dueAmount) || 0));
+    return all;
+  }
+
+  // --- Authentic Owner Due Engine ---
+  getAllOwnerDues(cloudItems = []) {
+    const baseDues = (typeof window !== 'undefined' && Array.isArray(window.INITIAL_OWNER_DUES))
+      ? window.INITIAL_OWNER_DUES
+      : [];
+
+    const dueMap = new Map();
+    const deletedSet = this.deletedIds.ownerDues || new Set();
+
+    // 1. Base Dues
+    for (const d of baseDues) {
+      if (d && d.id && !deletedSet.has(String(d.id))) {
+        dueMap.set(String(d.id), d);
+      }
+    }
+
+    // 2. Cloud items from Firebase Cloud Firestore
+    if (Array.isArray(cloudItems)) {
+      for (const d of cloudItems) {
+        if (!d || !d.id || deletedSet.has(String(d.id))) continue;
+        const existing = dueMap.get(String(d.id)) || {};
+        dueMap.set(String(d.id), { ...existing, ...d });
+      }
+    }
+
+    // 3. In-memory session dues
+    if (this.sessionStore.ownerDues) {
+      this.sessionStore.ownerDues.forEach((d, id) => {
+        if (!d || deletedSet.has(String(id))) return;
+        const existing = dueMap.get(String(id)) || {};
+        dueMap.set(String(id), { ...existing, ...d });
+      });
+    }
+
+    const all = Array.from(dueMap.values());
     all.sort((a, b) => (Number(b.dueAmount) || 0) - (Number(a.dueAmount) || 0));
     return all;
   }
