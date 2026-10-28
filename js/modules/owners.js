@@ -5,9 +5,16 @@
  * 2. Dedicated Truck Owners Full View (596 Trucks with bottom pagination & search)
  * 3. Single Truck Owner Details View with Edit / Delete actions
  * 4. Slide Drawer for Add/Edit Truck Owner
- * 5. Dedicated Owner Due Table View with 2-Column Split (Left: Year, Right: Table with 489 records & pagination)
- * 6. Open Trip Details View with 4 dynamic inner cards matching 6 Color categories
- * 7. Drilldown sheets for Consignor/Consignee & Trip Payment Details
+ * 5. Dedicated Owner Due Table View with 2-Column Split:
+ *    - Left: Year Selector (All, 2026-2027, 2025-2026, 2024-2025)
+ *    - Right: Table with 489 records & FULL ROW COLOR based on 6 Statuses!
+ * 6. Open Trip Details View with 4 dynamic inner cards matching Google AppSheet:
+ *    - Card 1: Trip Details (with Edit, Expand)
+ *    - Card 2: Consignor/s 1 (with Add, Edit, Expand)
+ *    - Card 3: Trip Truck Owner Payment Details (with Add, Edit, Expand)
+ *    - Card 4: Open Debts (with Add, Expand)
+ * 7. Slide Drawers for Editing Trips, Adding Debts, and Recording Payments directly to Firebase!
+ * 8. Sidebar Hide / Unhide Toggle
  * 100% Dynamic - Connected to Firebase Cloud Firestore ('truckOwners' and 'ownerDues')
  */
 
@@ -15,7 +22,7 @@ const OwnersModule = {
   // Truck Owners Master State (Card 1)
   allOwners: [],
   searchQuery: '',
-  currentView: 'dashboard', // 'dashboard' | 'truckOwnersList' | 'details' | 'ownerDueList' | 'openTripDetails' | 'partyDetails' | 'paymentDetails'
+  currentView: 'dashboard',
   currentOwnerId: null,
   pageSize: 50,
   currentPage: 1,
@@ -29,11 +36,29 @@ const OwnersModule = {
   currentTripId: null,
 
   async init() {
+    this.checkSidebarPref();
     if (typeof AppUI !== 'undefined' && AppUI.renderSidebar) {
       AppUI.renderSidebar('owners');
     }
     await this.loadData();
     this.checkInitialRoute();
+  },
+
+  // Sidebar Hide / Unhide Toggle
+  toggleSidebar() {
+    document.body.classList.toggle('sidebar-hidden');
+    const isHidden = document.body.classList.contains('sidebar-hidden');
+    try {
+      localStorage.setItem('sidebar_hidden_pref', isHidden ? 'true' : 'false');
+    } catch (e) {}
+  },
+
+  checkSidebarPref() {
+    try {
+      if (localStorage.getItem('sidebar_hidden_pref') === 'true') {
+        document.body.classList.add('sidebar-hidden');
+      }
+    } catch (e) {}
   },
 
   checkInitialRoute() {
@@ -55,7 +80,6 @@ const OwnersModule = {
   },
 
   async loadData() {
-    // 1. Truck Owners Tbody Spinner
     const tbodyOwners = document.getElementById('truck-owners-tbody');
     if (tbodyOwners && (!this.allOwners || this.allOwners.length === 0)) {
       tbodyOwners.innerHTML = `
@@ -67,19 +91,17 @@ const OwnersModule = {
       `;
     }
 
-    // 2. Owner Dues Tbody Spinner
     const tbodyDues = document.getElementById('owner-dues-tbody');
     if (tbodyDues && (!this.allOwnerDues || this.allOwnerDues.length === 0)) {
       tbodyDues.innerHTML = `
         <tr>
           <td colspan="9" class="text-center py-5 text-muted">
-            <div class="spinner-border spinner-border-sm text-secondary me-2"></div> Loading owner dues...
+            <div class="spinner-border spinner-border-sm text-secondary me-2"></div> Loading owner dues directly from Firestore...
           </td>
         </tr>
       `;
     }
 
-    // Load Truck Owners from dbService or window.INITIAL_TRUCK_OWNERS
     try {
       if (typeof dbService !== 'undefined') {
         this.allOwners = await dbService.getAll('truckOwners');
@@ -91,7 +113,7 @@ const OwnersModule = {
         }
       }
     } catch (err) {
-      console.warn("Could not load from Firestore, falling back:", err);
+      console.warn("Could not load from Firestore, falling back to local master:", err);
       if (typeof window !== 'undefined') {
         this.allOwners = window.INITIAL_TRUCK_OWNERS || [];
         this.allOwnerDues = window.INITIAL_OWNER_DUES || window.SAMPLE_OWNER_DUES || [];
@@ -110,7 +132,6 @@ const OwnersModule = {
       }
     }
 
-    // Filter valid truck owners
     this.allOwners = (this.allOwners || []).filter(o => {
       const t = String(o.truckNo || o.truck || '').trim().toUpperCase();
       return t && t !== 'UNDEFINED' && t !== '-' && t.length >= 5;
@@ -160,7 +181,6 @@ const OwnersModule = {
       }
     });
 
-    // Update Split Left Panel
     const cntAllEl = document.getElementById('due-year-count-ALL');
     if (cntAllEl) cntAllEl.innerText = countAll;
 
@@ -541,9 +561,7 @@ const OwnersModule = {
     }
   },
 
-  // ========================================================
-  // SLIDE DRAWER (ADD / EDIT TRUCK OWNER)
-  // ========================================================
+  // Slide Drawer for Owner
   openAddDrawer() {
     const form = document.getElementById('ownerDrawerForm');
     if (form) form.reset();
@@ -601,16 +619,8 @@ const OwnersModule = {
     const mobile = document.getElementById('drawer-owner-mobile').value.trim();
     const mobile1 = document.getElementById('drawer-owner-mobile1').value.trim();
 
-    if (!truckNo) {
-      alert("Truck No. is required.");
-      return;
-    }
-    if (!name) {
-      alert("Name is required.");
-      return;
-    }
-    if (!mobile) {
-      alert("Mobile No. is required.");
+    if (!truckNo || !name || !mobile) {
+      alert("Truck No., Name, and Mobile No. are required.");
       return;
     }
 
@@ -670,7 +680,7 @@ const OwnersModule = {
   },
 
   // ========================================================
-  // CARD 2: OWNER DUE FULL VIEW METHODS (SPLIT SCREEN)
+  // CARD 2: OWNER DUE FULL VIEW (2-COLUMN SPLIT & FULL ROW COLOR)
   // ========================================================
   showOwnerDueList(year = 'ALL') {
     this.currentView = 'ownerDueList';
@@ -691,7 +701,6 @@ const OwnersModule = {
     if (viewParty) viewParty.style.display = 'none';
     if (viewPayment) viewPayment.style.display = 'none';
 
-    // Highlight active year tab
     document.querySelectorAll('#viewOwnerDueList .appsheet-summary-item').forEach(el => {
       el.classList.remove('active');
     });
@@ -713,7 +722,7 @@ const OwnersModule = {
     const bcActions = document.getElementById('breadcrumbActions');
     if (bcActions) {
       bcActions.innerHTML = `
-        <button class="btn btn-sm btn-light border" onclick="OwnersModule.loadData()" title="Refresh Data">
+        <button class="btn btn-sm btn-light border" onclick="OwnersModule.loadData()" title="Refresh Data Directly from Firestore">
           <i class="bi bi-arrow-clockwise"></i>
         </button>
       `;
@@ -874,13 +883,15 @@ const OwnersModule = {
     pageItems.forEach(d => {
       const safeTripId = String(d.id || d.grNo);
       const partyTitle = d.consignee?.name || d.reference || d.partyName || '-';
+      const col = d.color || 'yellow';
 
+      // PURI KI PURI ROW KA COLOR AATA HAI (.row-status-${col})
       html += `
-        <tr class="appsheet-row" onclick="OwnersModule.showOpenTripDetails('${safeTripId}')" style="cursor: pointer;">
-          <!-- 1. Date with Colored Dot -->
+        <tr class="appsheet-row row-status-${col}" onclick="OwnersModule.showOpenTripDetails('${safeTripId}')" style="cursor: pointer;" title="Status: ${d.status}">
+          <!-- 1. Date with Dot -->
           <td>
-            <span class="appsheet-dot dot-${d.color || 'yellow'}"></span>
-            <span class="text-dark fw-medium">${d.tripDate || '-'}</span>
+            <span class="appsheet-dot dot-${col}"></span>
+            <span class="text-dark fw-bold">${d.tripDate || '-'}</span>
           </td>
 
           <!-- 2. Owner Due Amount -->
@@ -895,7 +906,7 @@ const OwnersModule = {
 
           <!-- 4. Owner Name -->
           <td>
-            <div class="fw-normal text-dark text-truncate" style="max-width: 170px;" title="${d.ownerName || ''}">${d.ownerName || '-'}</div>
+            <div class="fw-semibold text-dark text-truncate" style="max-width: 170px;" title="${d.ownerName || ''}">${d.ownerName || '-'}</div>
           </td>
 
           <!-- 5. Destination -->
@@ -905,12 +916,12 @@ const OwnersModule = {
 
           <!-- 6. Company -->
           <td>
-            <span class="badge bg-light text-dark border font-monospace">${d.transport || '-'}</span>
+            <span class="badge bg-white text-dark border font-monospace shadow-sm">${d.transport || '-'}</span>
           </td>
 
           <!-- 7. Party Name -->
           <td>
-            <div class="text-dark text-truncate" style="max-width: 180px;" title="${partyTitle}">${partyTitle}</div>
+            <div class="text-dark text-truncate fw-medium" style="max-width: 180px;" title="${partyTitle}">${partyTitle}</div>
           </td>
 
           <!-- 8. Driver -->
@@ -978,7 +989,7 @@ const OwnersModule = {
   },
 
   // ========================================================
-  // VIEW 4: OPEN TRIP DETAILS & 6 COLOR INNER CARDS
+  // VIEW 4: OPEN TRIP DETAILS - AUTHENTIC APPSHEET INNER CARDS
   // ========================================================
   showOpenTripDetails(tripId) {
     const d = (this.allOwnerDues || []).find(item => String(item.id) === String(tripId) || String(item.grNo) === String(tripId));
@@ -1023,7 +1034,7 @@ const OwnersModule = {
       `;
     }
 
-    // Title & Status Badge
+    // Top GR Bar
     const titleEl = document.getElementById('trip-details-gr-title');
     if (titleEl) {
       titleEl.innerHTML = `GR: <span class="font-monospace text-primary">${d.grNo || '-'}</span> &bull; <span class="font-monospace">${d.truckNo || '-'}</span>`;
@@ -1034,67 +1045,107 @@ const OwnersModule = {
       badgeEl.innerHTML = `<span class="badge-status badge-status-${d.color || 'yellow'}"><span class="appsheet-dot dot-${d.color || 'yellow'}"></span> ${d.status || 'Transit'}</span>`;
     }
 
-    // Generate Dynamic Inner Cards Container (#open-trip-cards-container)
     const container = document.getElementById('open-trip-cards-container');
     if (!container) return;
 
     let cardsHtml = '';
 
-    // CARD 1: Trip Details (Matching all 6 color subfolders)
+    // CARD 1: Trip Details (Matching authentic suraj_19_42_11.png with Edit & Expand)
     cardsHtml += `
-      <div class="trip-detail-card">
+      <div class="trip-detail-card" id="innerCardTripDetails">
         <div class="trip-detail-card-header">
           <h6 class="trip-detail-card-title">
             <i class="bi bi-truck text-primary"></i> Trip Details
           </h6>
-          <span class="badge bg-light text-secondary border font-monospace">${d.transport || 'TTC'}</span>
+          <div class="d-flex align-items-center gap-1">
+            <button class="btn-appsheet-panel-action btn-action-gold" onclick="OwnersModule.openEditTripDrawer('${d.id}')" title="Edit Trip Details">
+              <i class="bi bi-pencil me-1"></i> Edit
+            </button>
+            <i class="bi bi-arrows-angle-expand expand-toggle-icon ms-2" style="cursor: pointer; color: #5f6368;" onclick="OwnersModule.toggleInnerCardExpand('innerCardTripDetails')" title="Expand / Collapse"></i>
+          </div>
         </div>
         <div class="trip-detail-card-body">
           <div class="trip-field-row">
-            <span class="trip-field-label">Trip Date</span>
-            <span class="trip-field-value">${d.tripDate || '-'}</span>
-          </div>
-          <div class="trip-field-row">
-            <span class="trip-field-label">Trip End Date</span>
-            <span class="trip-field-value text-muted">${d.tripEndDate || '-'}</span>
+            <span class="trip-field-label">G.R. No.</span>
+            <span class="trip-field-value font-monospace fw-bold text-primary">${d.grNo || '-'}</span>
           </div>
           <div class="trip-field-row">
             <span class="trip-field-label">Truck No.</span>
             <span class="trip-field-value font-monospace fw-bold text-dark">${d.truckNo || '-'}</span>
           </div>
           <div class="trip-field-row">
-            <span class="trip-field-label">Owner Name</span>
-            <span class="trip-field-value">${d.ownerName || '-'} ${d.ownerMobile ? '(' + d.ownerMobile + ')' : ''}</span>
+            <span class="trip-field-label">Trip Start Date</span>
+            <span class="trip-field-value fw-semibold text-dark">${d.tripDate || '-'}</span>
+          </div>
+          <div class="trip-field-row">
+            <span class="trip-field-label">Trip End Date</span>
+            <span class="trip-field-value text-muted">${d.tripEndDate || '-'}</span>
+          </div>
+          <div class="trip-field-row">
+            <span class="trip-field-label">Origin</span>
+            <span class="trip-field-value">${d.origin || 'Rajsamand (Raj.)'}</span>
+          </div>
+          <div class="trip-field-row">
+            <span class="trip-field-label">Destination</span>
+            <span class="trip-field-value fw-semibold text-dark">${d.destination || '-'}</span>
+          </div>
+          <div class="trip-field-row">
+            <span class="trip-field-label">Billing Type</span>
+            <span class="trip-field-value">${d.billingType || 'Per Tonne'}</span>
+          </div>
+          <div class="trip-field-row">
+            <span class="trip-field-label">Bilty Amount</span>
+            <span class="trip-field-value font-monospace">${this.formatCurrency(d.biltyAmount || d.dueAmount)}</span>
+          </div>
+          <div class="trip-field-row">
+            <span class="trip-field-label">Weight</span>
+            <span class="trip-field-value font-monospace">${d.weight || 0} MT</span>
+          </div>
+          <div class="trip-field-row">
+            <span class="trip-field-label">Rate</span>
+            <span class="trip-field-value font-monospace">₹ ${Number(d.rate || 0).toFixed(2)}</span>
+          </div>
+          <div class="trip-field-row">
+            <span class="trip-field-label">Material</span>
+            <span class="trip-field-value">${d.material || 'Marble Powder'}</span>
+          </div>
+          <div class="trip-field-row">
+            <span class="trip-field-label">Reference</span>
+            <span class="trip-field-value text-secondary">${d.reference || '-'}</span>
           </div>
           <div class="trip-field-row">
             <span class="trip-field-label">Driver</span>
-            <span class="trip-field-value">${d.driver || '-'}</span>
+            <span class="trip-field-value">${d.driver || '-'} ${d.driverMobile ? '(' + d.driverMobile + ')' : ''}</span>
           </div>
           <div class="trip-field-row">
-            <span class="trip-field-label">Route</span>
-            <span class="trip-field-value fw-medium text-dark">${d.origin || 'Rajsamand'} &rarr; ${d.destination || '-'}</span>
+            <span class="trip-field-label">Owner</span>
+            <span class="trip-field-value">${d.ownerName || '-'} ${d.ownerMobile ? '(' + d.ownerMobile + ')' : ''}</span>
           </div>
           <div class="trip-field-row">
-            <span class="trip-field-label">Material & Weight</span>
-            <span class="trip-field-value">${d.material || 'Marble Powder'} (${d.weight || 0} MT @ ₹${d.rate || 0})</span>
+            <span class="trip-field-label">Freight</span>
+            <span class="trip-field-value font-monospace">${this.formatCurrency(d.freight || d.dueAmount)}</span>
           </div>
           <div class="trip-field-row">
             <span class="trip-field-label">Total Freight</span>
-            <span class="trip-field-value font-monospace">${this.formatCurrency(d.totalFreight || d.biltyAmount || d.dueAmount)}</span>
+            <span class="trip-field-value font-monospace">${this.formatCurrency(d.totalFreight || d.dueAmount)}</span>
           </div>
           <div class="trip-field-row">
-            <span class="trip-field-label">Advance / Paid</span>
-            <span class="trip-field-value font-monospace text-success">${this.formatCurrency(d.paidAmount || 0)}</span>
+            <span class="trip-field-label">Status</span>
+            <span class="trip-field-value">
+              <span class="badge-status badge-status-${d.color || 'yellow'}">
+                <span class="appsheet-dot dot-${d.color || 'yellow'}"></span> ${d.status || 'Transit'}
+              </span>
+            </span>
           </div>
           <div class="trip-field-row pt-2 border-top">
-            <span class="trip-field-label fw-bold text-dark">Owner Due</span>
-            <span class="trip-field-value fw-bold font-monospace fs-6 text-danger">${this.formatCurrency(d.dueAmount)}</span>
+            <span class="trip-field-label fw-bold text-dark fs-6">Owner Due</span>
+            <span class="trip-field-value fw-bold font-monospace fs-5 text-danger">${this.formatCurrency(d.dueAmount)}</span>
           </div>
         </div>
       </div>
     `;
 
-    // CARD 2: Consignor & Consignee Details (Clickable)
+    // CARD 2: Consignor/s 1 (Matching authentic screenshot with Add, Edit, Expand)
     const consignorName = d.consignor?.name || '-';
     const consignorGst = d.consignor?.gstin || '-';
     const consignorAddr = d.consignor?.address || '-';
@@ -1103,131 +1154,462 @@ const OwnersModule = {
     const consigneeMob = d.consignee?.mobile || '-';
 
     cardsHtml += `
-      <div class="trip-detail-card is-clickable" onclick="OwnersModule.showOpenTripPartyDetails()" title="Click to view full consignor & consignee details">
+      <div class="trip-detail-card" id="innerCardPartyDetails">
         <div class="trip-detail-card-header">
           <h6 class="trip-detail-card-title">
-            <i class="bi bi-building text-info"></i> Consignor & Consignee Details
+            <i class="bi bi-building text-info"></i> Consignor/s 1
           </h6>
-          <i class="bi bi-chevron-right text-muted small"></i>
+          <div class="d-flex align-items-center gap-1">
+            <button class="btn-appsheet-panel-action" onclick="OwnersModule.showOpenTripPartyDetails()" title="Expand / View Full Sheet">
+              <i class="bi bi-arrows-fullscreen me-1"></i> Expand
+            </button>
+            <i class="bi bi-arrows-angle-expand expand-toggle-icon ms-2" style="cursor: pointer; color: #5f6368;" onclick="OwnersModule.toggleInnerCardExpand('innerCardPartyDetails')" title="Expand / Collapse"></i>
+          </div>
         </div>
         <div class="trip-detail-card-body">
+          <div class="trip-field-row">
+            <span class="trip-field-label">GSTIN</span>
+            <span class="trip-field-value font-monospace text-muted small">${consignorGst}</span>
+          </div>
           <div class="trip-field-row">
             <span class="trip-field-label">Consignor</span>
             <span class="trip-field-value fw-bold text-dark">${consignorName}</span>
           </div>
           <div class="trip-field-row">
-            <span class="trip-field-label">Consignor GST</span>
-            <span class="trip-field-value font-monospace text-muted small">${consignorGst}</span>
-          </div>
-          <div class="trip-field-row">
-            <span class="trip-field-label">Address</span>
-            <span class="trip-field-value small text-muted text-truncate" style="max-width: 200px;" title="${consignorAddr}">${consignorAddr}</span>
+            <span class="trip-field-label">Consignor Address</span>
+            <span class="trip-field-value small text-muted text-truncate" style="max-width: 220px;" title="${consignorAddr}">${consignorAddr}</span>
           </div>
           <div class="trip-field-row border-top pt-2">
+            <span class="trip-field-label">GSTIN Consignee</span>
+            <span class="trip-field-value font-monospace text-muted small">${consigneeGst}</span>
+          </div>
+          <div class="trip-field-row">
             <span class="trip-field-label">Consignee</span>
             <span class="trip-field-value fw-bold text-dark">${consigneeName}</span>
           </div>
           <div class="trip-field-row">
-            <span class="trip-field-label">Consignee GST</span>
-            <span class="trip-field-value font-monospace text-muted small">${consigneeGst}</span>
-          </div>
-          <div class="trip-field-row">
-            <span class="trip-field-label">Mobile</span>
+            <span class="trip-field-label">Consignee Mobile No.</span>
             <span class="trip-field-value font-monospace">${consigneeMob}</span>
           </div>
           <div class="trip-field-row">
             <span class="trip-field-label">Reference</span>
             <span class="trip-field-value text-secondary">${d.reference || d.partyName || '-'}</span>
           </div>
-          <div class="text-center pt-2 mt-2 border-top">
-            <span class="text-primary small fw-medium">Click to view full consignor & consignee details &rarr;</span>
+          <div class="text-center pt-2 mt-3 border-top">
+            <button class="btn btn-sm btn-light border w-100" onclick="OwnersModule.showOpenTripPartyDetails()">
+              View Complete Party Details Sheet &rarr;
+            </button>
           </div>
         </div>
       </div>
     `;
 
-    // CARD 3: Trip Truck Owner Payment Details
+    // CARD 3: Trip Truck Owner Payment Details (with Add, Edit, Expand)
     const hasPayments = Array.isArray(d.payments) && d.payments.length > 0;
     const isPaymentStatus = ['blue', 'slate', 'cyan'].includes(d.color);
 
     if (hasPayments || isPaymentStatus) {
       const pm = hasPayments ? d.payments[0] : null;
       cardsHtml += `
-        <div class="trip-detail-card is-clickable" onclick="OwnersModule.showTripPaymentDetails()" title="Click to view full payment details">
+        <div class="trip-detail-card" id="innerCardPaymentDetails">
           <div class="trip-detail-card-header">
             <h6 class="trip-detail-card-title">
               <i class="bi bi-credit-card text-success"></i> Trip Truck Owner Payment Details
             </h6>
-            <i class="bi bi-chevron-right text-muted small"></i>
+            <div class="d-flex align-items-center gap-1">
+              <button class="btn-appsheet-panel-action" onclick="OwnersModule.openAddPaymentDrawer('${d.id}')" title="Record New Payment">
+                <i class="bi bi-plus-lg me-1"></i> Add
+              </button>
+              <i class="bi bi-arrows-angle-expand expand-toggle-icon ms-2" style="cursor: pointer; color: #5f6368;" onclick="OwnersModule.toggleInnerCardExpand('innerCardPaymentDetails')" title="Expand / Collapse"></i>
+            </div>
           </div>
           <div class="trip-detail-card-body">
             <div class="trip-field-row">
+              <span class="trip-field-label">Payment Date</span>
+              <span class="trip-field-value font-monospace">${pm ? (pm.paymentDate || d.tripDate) : d.tripDate}</span>
+            </div>
+            <div class="trip-field-row">
               <span class="trip-field-label">Owner Due</span>
-              <span class="trip-field-value font-monospace fw-bold">${this.formatCurrency(d.dueAmount)}</span>
+              <span class="trip-field-value font-monospace fw-bold text-danger">${this.formatCurrency(d.dueAmount)}</span>
             </div>
             <div class="trip-field-row">
               <span class="trip-field-label">Amount Paid</span>
               <span class="trip-field-value font-monospace text-success fw-bold">${this.formatCurrency(pm ? (pm.amountPaid || pm.paidAmount || 0) : d.paidAmount)}</span>
             </div>
             <div class="trip-field-row">
-              <span class="trip-field-label">Payment Mode</span>
+              <span class="trip-field-label">Mode</span>
               <span class="trip-field-value">${pm ? (pm.mode || pm.paymentMode || 'NEFT/RTGS') : 'Pending'}</span>
             </div>
             <div class="trip-field-row">
-              <span class="trip-field-label">Bank / Beneficiary</span>
-              <span class="trip-field-value">${pm ? (pm.beneficiary || pm.bank || 'TTC') : 'TTC'}</span>
+              <span class="trip-field-label">Beneficiary</span>
+              <span class="trip-field-value">${pm ? (pm.beneficiary || 'Truck Owner') : 'Truck Owner'}</span>
             </div>
             <div class="trip-field-row">
-              <span class="trip-field-label">Payment Status</span>
+              <span class="trip-field-label">Bank</span>
+              <span class="trip-field-value">${pm ? (pm.bank || d.transport || 'TTC') : (d.transport || 'TTC')}</span>
+            </div>
+            <div class="trip-field-row">
+              <span class="trip-field-label">Paid To</span>
+              <span class="trip-field-value">${pm ? (pm.paidTo || 'Transporter') : 'Transporter'}</span>
+            </div>
+            <div class="trip-field-row">
+              <span class="trip-field-label">Status</span>
               <span class="trip-field-value">
                 <span class="badge ${d.dueAmount > 0 ? 'bg-warning-subtle text-warning-emphasis' : 'bg-success-subtle text-success-emphasis'} border">${d.status}</span>
               </span>
             </div>
-            <div class="text-center pt-2 mt-2 border-top">
-              <span class="text-success small fw-medium">Click to view full payment transaction sheet &rarr;</span>
+            <div class="text-center pt-2 mt-3 border-top">
+              <button class="btn btn-sm btn-light border w-100" onclick="OwnersModule.showTripPaymentDetails()">
+                View Transaction Sheet &rarr;
+              </button>
             </div>
           </div>
         </div>
       `;
     }
 
-    // CARD 4: Open Debts / Other Due
-    const hasDebts = Array.isArray(d.debts) && d.debts.length > 0;
-    if (hasDebts) {
-      let debtsListHtml = '';
-      d.debts.forEach(debt => {
+    // CARD 4: Open Debts (Matching authentic screencapture-appsheet-start-...-19_43_39.png with Add & Expand)
+    const debtsList = Array.isArray(d.debts) ? d.debts : [];
+    let debtsListHtml = '';
+
+    if (debtsList.length === 0) {
+      debtsListHtml = `
+        <div class="text-center py-4 text-muted">
+          <i class="bi bi-wallet2 fs-4 d-block mb-1"></i> No active debts for this trip.
+          <button class="btn btn-sm btn-outline-primary mt-2" onclick="OwnersModule.openAddDebtDrawer('${d.id}')">
+            <i class="bi bi-plus-lg me-1"></i> Add Debt Record
+          </button>
+        </div>
+      `;
+    } else {
+      debtsList.forEach((debt, dIdx) => {
         debtsListHtml += `
-          <div class="p-2 mb-2 rounded bg-light border">
+          <div class="p-3 mb-2 rounded bg-light border">
             <div class="d-flex justify-content-between align-items-center mb-1">
-              <span class="badge bg-secondary text-white">${debt.debtType || 'Debt'}</span>
-              <span class="fw-bold font-monospace text-danger">₹ ${Number(debt.debtAmount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+              <span class="badge bg-secondary text-white font-monospace">${debt.debtType || 'Commission'}</span>
+              <span class="fw-bold font-monospace text-danger fs-6">₹ ${Number(debt.debtAmount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
             </div>
-            <div class="small text-muted d-flex justify-content-between">
-              <span>Borrower: ${debt.borrowerName || '-'}</span>
-              <span>Mode: ${debt.debtMode || 'Cash'}</span>
+            <div class="trip-field-row py-1">
+              <span class="trip-field-label small text-muted">Debt Mode:</span>
+              <span class="trip-field-value small">${debt.debtMode || 'Cash'}</span>
             </div>
-            <div class="small text-secondary mt-1">Receiver: ${debt.receiverName || '-'}</div>
-            ${debt.description ? `<div class="small text-muted fst-italic mt-1">${debt.description}</div>` : ''}
+            <div class="trip-field-row py-1">
+              <span class="trip-field-label small text-muted">Borrower Name:</span>
+              <span class="trip-field-value small fw-semibold text-dark">${debt.borrowerName || d.ownerName || '-'}</span>
+            </div>
+            <div class="trip-field-row py-1">
+              <span class="trip-field-label small text-muted">Receiver Name:</span>
+              <span class="trip-field-value small">${debt.receiverName || '-'}</span>
+            </div>
+            ${debt.description ? `
+            <div class="trip-field-row py-1 border-0">
+              <span class="trip-field-label small text-muted">Description:</span>
+              <span class="trip-field-value small fst-italic">${debt.description}</span>
+            </div>` : ''}
           </div>
         `;
       });
-
-      cardsHtml += `
-        <div class="trip-detail-card">
-          <div class="trip-detail-card-header">
-            <h6 class="trip-detail-card-title">
-              <i class="bi bi-wallet2 text-warning"></i> Open Debts (${d.debts.length})
-            </h6>
-            <span class="badge bg-danger-subtle text-danger border">Active Debts</span>
-          </div>
-          <div class="trip-detail-card-body">
-            ${debtsListHtml}
-          </div>
-        </div>
-      `;
     }
 
+    cardsHtml += `
+      <div class="trip-detail-card" id="innerCardDebtDetails">
+        <div class="trip-detail-card-header">
+          <h6 class="trip-detail-card-title">
+            <i class="bi bi-wallet2 text-warning"></i> Open Debts (${debtsList.length})
+          </h6>
+          <div class="d-flex align-items-center gap-1">
+            <button class="btn-appsheet-panel-action" onclick="OwnersModule.openAddDebtDrawer('${d.id}')" title="Add Debt">
+              <i class="bi bi-plus-lg me-1"></i> Add
+            </button>
+            <i class="bi bi-arrows-angle-expand expand-toggle-icon ms-2" style="cursor: pointer; color: #5f6368;" onclick="OwnersModule.toggleInnerCardExpand('innerCardDebtDetails')" title="Expand / Collapse"></i>
+          </div>
+        </div>
+        <div class="trip-detail-card-body">
+          ${debtsListHtml}
+        </div>
+      </div>
+    `;
+
     container.innerHTML = cardsHtml;
+  },
+
+  // Toggle Inner Card Expand (xpeded)
+  toggleInnerCardExpand(cardId) {
+    const card = document.getElementById(cardId);
+    if (!card) return;
+
+    const isExpanded = card.classList.contains('is-inner-expanded');
+    const container = document.getElementById('open-trip-cards-container');
+
+    if (!isExpanded) {
+      card.classList.add('is-inner-expanded');
+      const icon = card.querySelector('.expand-toggle-icon');
+      if (icon) {
+        icon.classList.remove('bi-arrows-angle-expand');
+        icon.classList.add('bi-arrows-angle-contract');
+      }
+      // Hide other cards so this card takes 100% of the screen
+      if (container) {
+        container.querySelectorAll('.trip-detail-card').forEach(c => {
+          if (c !== card) c.style.display = 'none';
+        });
+      }
+    } else {
+      card.classList.remove('is-inner-expanded');
+      const icon = card.querySelector('.expand-toggle-icon');
+      if (icon) {
+        icon.classList.remove('bi-arrows-angle-contract');
+        icon.classList.add('bi-arrows-angle-expand');
+      }
+      if (container) {
+        container.querySelectorAll('.trip-detail-card').forEach(c => {
+          c.style.display = '';
+        });
+      }
+    }
+  },
+
+  // ========================================================
+  // SLIDE DRAWERS: TRIP EDIT, DEBT ADD, PAYMENT ADD
+  // ========================================================
+  openEditTripDrawer(tripId) {
+    const d = (this.allOwnerDues || []).find(item => String(item.id) === String(tripId) || String(item.grNo) === String(tripId));
+    if (!d) return;
+
+    document.getElementById('drawer-trip-id').value = d.id;
+    document.getElementById('drawer-trip-gr').value = d.grNo || '';
+    document.getElementById('drawer-trip-truck').value = d.truckNo || '';
+    document.getElementById('drawer-trip-owner').value = d.ownerName || '';
+    document.getElementById('drawer-trip-status').value = d.status || 'Transit';
+    document.getElementById('drawer-trip-origin').value = d.origin || '';
+    document.getElementById('drawer-trip-dest').value = d.destination || '';
+    document.getElementById('drawer-trip-mat').value = d.material || '';
+    document.getElementById('drawer-trip-weight').value = d.weight || '';
+    document.getElementById('drawer-trip-rate').value = d.rate || '';
+    document.getElementById('drawer-trip-freight').value = d.totalFreight || d.dueAmount || '';
+    document.getElementById('drawer-trip-due').value = d.dueAmount || 0;
+    document.getElementById('drawer-trip-driver').value = d.driver || '';
+    document.getElementById('drawer-trip-driver-mob').value = d.driverMobile || '';
+
+    const drawer = document.getElementById('tripDrawer');
+    const backdrop = document.getElementById('tripDrawerBackdrop');
+    if (drawer) drawer.classList.add('open');
+    if (backdrop) backdrop.classList.add('show');
+  },
+
+  closeTripDrawer() {
+    const drawer = document.getElementById('tripDrawer');
+    const backdrop = document.getElementById('tripDrawerBackdrop');
+    if (drawer) drawer.classList.remove('open');
+    if (backdrop) backdrop.classList.remove('show');
+  },
+
+  async saveTripDrawer(e) {
+    if (e && e.preventDefault) e.preventDefault();
+
+    const id = document.getElementById('drawer-trip-id').value;
+    const truckNo = document.getElementById('drawer-trip-truck').value.trim().toUpperCase();
+    const ownerName = document.getElementById('drawer-trip-owner').value.trim();
+    const status = document.getElementById('drawer-trip-status').value;
+    const origin = document.getElementById('drawer-trip-origin').value.trim();
+    const destination = document.getElementById('drawer-trip-dest').value.trim();
+    const material = document.getElementById('drawer-trip-mat').value.trim();
+    const weight = parseFloat(document.getElementById('drawer-trip-weight').value) || 0;
+    const rate = parseFloat(document.getElementById('drawer-trip-rate').value) || 0;
+    const totalFreight = parseFloat(document.getElementById('drawer-trip-freight').value) || 0;
+    const dueAmount = parseFloat(document.getElementById('drawer-trip-due').value) || 0;
+    const driver = document.getElementById('drawer-trip-driver').value.trim();
+    const driverMobile = document.getElementById('drawer-trip-driver-mob').value.trim();
+
+    // Map status to color
+    const colorMap = {
+      'Transit': 'yellow',
+      'POD Sent/ Bill Generated': 'purple',
+      'Party Payment Pending': 'blue',
+      'Off Loading': 'pink',
+      'Cheque Due': 'slate',
+      'Truck Owner Payment Pending': 'cyan'
+    };
+    const color = colorMap[status] || 'yellow';
+
+    const payload = {
+      truckNo,
+      ownerName,
+      status,
+      color,
+      origin,
+      destination,
+      material,
+      weight,
+      rate,
+      totalFreight,
+      dueAmount,
+      driver,
+      driverMobile,
+      updatedAt: new Date().toISOString()
+    };
+
+    try {
+      if (typeof dbService !== 'undefined') {
+        await dbService.update('ownerDues', id, payload);
+      }
+      const idx = this.allOwnerDues.findIndex(d => String(d.id) === String(id));
+      if (idx !== -1) {
+        this.allOwnerDues[idx] = { ...this.allOwnerDues[idx], ...payload };
+      }
+    } catch (err) {
+      console.error("Save error:", err);
+      alert("Could not save to database: " + err.message);
+      return;
+    }
+
+    this.closeTripDrawer();
+    this.renderOwnerDueTable();
+    this.showOpenTripDetails(id);
+
+    if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+      AppUI.showToast(`Updated trip ${truckNo} (${status})`, 'success');
+    }
+  },
+
+  openAddDebtDrawer(tripId) {
+    const d = (this.allOwnerDues || []).find(item => String(item.id) === String(tripId) || String(item.grNo) === String(tripId));
+    if (!d) return;
+
+    document.getElementById('debtDrawerForm').reset();
+    document.getElementById('drawer-debt-trip-id').value = d.id;
+    document.getElementById('drawer-debt-borrower').value = d.ownerName || '';
+    document.getElementById('drawer-debt-receiver').value = 'Bajrang Meena 7297032726';
+
+    const drawer = document.getElementById('debtDrawer');
+    const backdrop = document.getElementById('debtDrawerBackdrop');
+    if (drawer) drawer.classList.add('open');
+    if (backdrop) backdrop.classList.add('show');
+  },
+
+  closeDebtDrawer() {
+    const drawer = document.getElementById('debtDrawer');
+    const backdrop = document.getElementById('debtDrawerBackdrop');
+    if (drawer) drawer.classList.remove('open');
+    if (backdrop) backdrop.classList.remove('show');
+  },
+
+  async saveDebtDrawer(e) {
+    if (e && e.preventDefault) e.preventDefault();
+
+    const tripId = document.getElementById('drawer-debt-trip-id').value;
+    const debtType = document.getElementById('drawer-debt-type').value;
+    const debtAmount = parseFloat(document.getElementById('drawer-debt-amount').value) || 0;
+    const debtMode = document.getElementById('drawer-debt-mode').value;
+    const borrowerName = document.getElementById('drawer-debt-borrower').value.trim();
+    const receiverName = document.getElementById('drawer-debt-receiver').value.trim();
+    const description = document.getElementById('drawer-debt-desc').value.trim();
+
+    const trip = (this.allOwnerDues || []).find(d => String(d.id) === String(tripId));
+    if (!trip) return;
+
+    const newDebt = {
+      debtType,
+      debtAmount,
+      debtMode,
+      borrowerName,
+      receiverName,
+      description,
+      grNo: trip.grNo,
+      truckNo: trip.truckNo,
+      dueAmount: trip.dueAmount
+    };
+
+    if (!Array.isArray(trip.debts)) trip.debts = [];
+    trip.debts.unshift(newDebt);
+
+    try {
+      if (typeof dbService !== 'undefined') {
+        await dbService.update('ownerDues', tripId, { debts: trip.debts });
+      }
+    } catch (err) {
+      console.error("Save debt error:", err);
+    }
+
+    this.closeDebtDrawer();
+    this.showOpenTripDetails(tripId);
+
+    if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+      AppUI.showToast(`Added ${debtType} of ₹ ${debtAmount.toLocaleString('en-IN')}`, 'success');
+    }
+  },
+
+  openAddPaymentDrawer(tripId) {
+    const d = (this.allOwnerDues || []).find(item => String(item.id) === String(tripId) || String(item.grNo) === String(tripId));
+    if (!d) return;
+
+    document.getElementById('paymentDrawerForm').reset();
+    document.getElementById('drawer-payment-trip-id').value = d.id;
+    document.getElementById('drawer-payment-amount').value = d.dueAmount || 0;
+    document.getElementById('drawer-payment-date').value = new Date().toLocaleDateString('en-GB');
+    document.getElementById('drawer-payment-bank').value = d.transport || 'TTC';
+
+    const drawer = document.getElementById('paymentDrawer');
+    const backdrop = document.getElementById('paymentDrawerBackdrop');
+    if (drawer) drawer.classList.add('open');
+    if (backdrop) backdrop.classList.add('show');
+  },
+
+  closePaymentDrawer() {
+    const drawer = document.getElementById('paymentDrawer');
+    const backdrop = document.getElementById('paymentDrawerBackdrop');
+    if (drawer) drawer.classList.remove('open');
+    if (backdrop) backdrop.classList.remove('show');
+  },
+
+  async savePaymentDrawer(e) {
+    if (e && e.preventDefault) e.preventDefault();
+
+    const tripId = document.getElementById('drawer-payment-trip-id').value;
+    const amountPaid = parseFloat(document.getElementById('drawer-payment-amount').value) || 0;
+    const paymentDate = document.getElementById('drawer-payment-date').value.trim();
+    const mode = document.getElementById('drawer-payment-mode').value;
+    const bank = document.getElementById('drawer-payment-bank').value.trim();
+    const paidTo = document.getElementById('drawer-payment-paidto').value.trim();
+    const description = document.getElementById('drawer-payment-desc').value.trim();
+
+    const trip = (this.allOwnerDues || []).find(d => String(d.id) === String(tripId));
+    if (!trip) return;
+
+    const newPayment = {
+      paymentDate,
+      amountPaid,
+      mode,
+      bank,
+      beneficiary: trip.ownerName,
+      paidTo: paidTo || 'Transporter',
+      description
+    };
+
+    if (!Array.isArray(trip.payments)) trip.payments = [];
+    trip.payments.unshift(newPayment);
+    trip.paidAmount = (trip.paidAmount || 0) + amountPaid;
+    trip.dueAmount = Math.max(0, (trip.dueAmount || 0) - amountPaid);
+
+    try {
+      if (typeof dbService !== 'undefined') {
+        await dbService.update('ownerDues', tripId, {
+          payments: trip.payments,
+          paidAmount: trip.paidAmount,
+          dueAmount: trip.dueAmount
+        });
+      }
+    } catch (err) {
+      console.error("Save payment error:", err);
+    }
+
+    this.closePaymentDrawer();
+    this.renderOwnerDueTable();
+    this.showOpenTripDetails(tripId);
+
+    if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+      AppUI.showToast(`Recorded payment of ₹ ${amountPaid.toLocaleString('en-IN')}`, 'success');
+    }
   },
 
   // ========================================================
