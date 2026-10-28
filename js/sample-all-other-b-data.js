@@ -35,7 +35,7 @@ window.ALL_OTHER_B_DATA = [
     "driverMobile": "9829012345",
     "owner": "Rameshwar Prasad",
     "ownerMobile": "9414123456",
-    "weight": 25.5,
+    "weight": 25.5, 
     "rate": 1500.0,
     "material": "Marble Slabs",
     "freight": 38250.0,
