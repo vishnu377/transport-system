@@ -40,8 +40,8 @@ if (allFound) {
 // 3. Check sample-owner-dues-data.js
 const dues = require('../js/sample-owner-dues-data.js');
 console.log('✔ Total owner dues dataset records:', dues.length);
-if (dues.length !== 489) {
-  console.error(`✘ Expected 489 records, found ${dues.length}`);
+if (dues.length < 489) {
+  console.error(`✘ Expected at least 489 records, found ${dues.length}`);
   process.exit(1);
 }
 

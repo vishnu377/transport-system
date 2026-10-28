@@ -376,6 +376,13 @@
       gap: 14px;
       align-items: stretch;
       min-height: calc(100vh - 130px);
+      transition: all 0.2s ease;
+    }
+    .owners-due-split.sidebar-hidden {
+      grid-template-columns: 1fr !important;
+    }
+    .owners-due-split.sidebar-hidden #dueYearSidebarPanel {
+      display: none !important;
     }
     @media (max-width: 900px) {
       .owners-due-split {
@@ -1049,12 +1056,12 @@
           </div>
 
           <!-- CARD 2: Owner Due (Matching AppSheet screenshot exactly) -->
-          <div class="appsheet-panel" id="cardOwnerDue">
+          <div class="appsheet-panel" id="cardOwnerDue" onclick="OwnersModule.showOwnerDueList('ALL')" style="cursor: pointer;" title="Click to view all Owner Dues">
             <div class="appsheet-panel-header">
               <h6 class="appsheet-panel-title">Owner Due</h6>
               <div class="appsheet-panel-tools">
                 <i class="bi bi-funnel" title="Filter"></i>
-                <i class="bi bi-arrows-angle-expand expand-toggle-icon" title="Expand / Collapse" onclick="OwnersModule.toggleCardExpand('cardOwnerDue')"></i>
+                <i class="bi bi-arrows-angle-expand expand-toggle-icon" title="Open Owner Due View" onclick="event.stopPropagation(); OwnersModule.showOwnerDueList('ALL')"></i>
               </div>
             </div>
 
@@ -1078,7 +1085,7 @@
                   <span class="fw-semibold text-dark">2026-2027</span>
                 </div>
                 <div class="d-flex align-items-center gap-2">
-                  <span class="summary-amount">₹ 30,021,934.22</span>
+                  <span class="summary-amount" id="dash-due-amount-2026-2027">₹ 29,469,381.22</span>
                   <i class="bi bi-chevron-right text-muted small"></i>
                 </div>
               </div>
@@ -1090,7 +1097,7 @@
                   <span class="fw-semibold text-dark">2025-2026</span>
                 </div>
                 <div class="d-flex align-items-center gap-2">
-                  <span class="summary-amount">₹ 1,641,456.00</span>
+                  <span class="summary-amount" id="dash-due-amount-2025-2026">₹ 1,641,456.00</span>
                   <i class="bi bi-chevron-right text-muted small"></i>
                 </div>
               </div>
@@ -1102,7 +1109,7 @@
                   <span class="fw-semibold text-dark">2024-2025</span>
                 </div>
                 <div class="d-flex align-items-center gap-2">
-                  <span class="summary-amount">₹ 12,221.00</span>
+                  <span class="summary-amount" id="dash-due-amount-2024-2025">₹ 12,221.00</span>
                   <i class="bi bi-chevron-right text-muted small"></i>
                 </div>
               </div>
@@ -1227,9 +1234,9 @@
     
       <!-- VIEW 3: Owner Due Split Table View (Exact Match to screencapture-appsheet-start-...-19_33_45.png) -->
       <div id="viewOwnerDueList" style="display: none;">
-        <div class="owners-due-split">
+        <div class="owners-due-split" id="ownersDueSplitLayout">
           <!-- Left Column: Year Filter Card -->
-          <div class="appsheet-panel" style="height: 100%; border-radius: 6px;">
+          <div class="appsheet-panel" id="dueYearSidebarPanel" style="height: 100%; border-radius: 6px;">
             <div class="appsheet-panel-header">
               <h6 class="appsheet-panel-title">Owner Due</h6>
             </div>
@@ -1285,6 +1292,9 @@
           <div class="appsheet-panel" style="height: 100%; border-radius: 6px;">
             <div class="appsheet-panel-header">
               <div class="d-flex align-items-center gap-2">
+                <button class="btn btn-sm btn-light border py-1 px-2" id="btn-toggle-due-sidebar" onclick="OwnersModule.toggleDueSidebar()" title="Toggle Sidebar">
+                  <i class="bi bi-layout-sidebar-inset"></i> <span class="d-none d-md-inline ms-1">Sidebar</span>
+                </button>
                 <h6 class="appsheet-panel-title">Owner Due</h6>
                 <span class="badge bg-secondary-subtle text-secondary fw-medium" id="due-active-year-badge">All</span>
               </div>

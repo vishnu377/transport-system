@@ -193,6 +193,13 @@ const OwnersModule = {
     if (amt2026El) amt2026El.innerText = this.formatCurrency(sum2026);
     if (amt2025El) amt2025El.innerText = this.formatCurrency(sum2025);
     if (amt2024El) amt2024El.innerText = this.formatCurrency(sum2024);
+
+    const dashAmt2026 = document.getElementById('dash-due-amount-2026-2027');
+    const dashAmt2025 = document.getElementById('dash-due-amount-2025-2026');
+    const dashAmt2024 = document.getElementById('dash-due-amount-2024-2025');
+    if (dashAmt2026) dashAmt2026.innerText = this.formatCurrency(sum2026);
+    if (dashAmt2025) dashAmt2025.innerText = this.formatCurrency(sum2025);
+    if (dashAmt2024) dashAmt2024.innerText = this.formatCurrency(sum2024);
   },
 
   // Helper date parser for strict descending chronological sort
@@ -490,6 +497,20 @@ const OwnersModule = {
     this.showOwnerDueList(this.selectedDueYear || 'ALL');
   },
 
+  toggleDueSidebar() {
+    const split = document.getElementById('ownersDueSplitLayout');
+    if (!split) return;
+    split.classList.toggle('sidebar-hidden');
+    const isHidden = split.classList.contains('sidebar-hidden');
+    const btn = document.getElementById('btn-toggle-due-sidebar');
+    if (btn) {
+      btn.innerHTML = isHidden
+        ? '<i class="bi bi-layout-sidebar"></i> <span class="d-none d-md-inline ms-1">Show Sidebar</span>'
+        : '<i class="bi bi-layout-sidebar-inset"></i> <span class="d-none d-md-inline ms-1">Sidebar</span>';
+      btn.title = isHidden ? 'Show Year Sidebar' : 'Hide Year Sidebar';
+    }
+  },
+
   selectDueYear(yr) {
     this.selectedDueYear = yr;
     this.dueCurrentPage = 1;
@@ -540,7 +561,7 @@ const OwnersModule = {
       const tA = self.parseDateTimestamp(a.tripDate || a.tripStartDate || a.date);
       const tB = self.parseDateTimestamp(b.tripDate || b.tripStartDate || b.date);
       if (tB !== tA) return tB - tA;
-      return String(b.grNo || '').localeCompare(String(a.grNo || ''));
+      return 0; // preserve authentic AppSheet sequence within same date
     });
 
     return dues;
