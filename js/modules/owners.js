@@ -180,6 +180,8 @@ const OwnersModule = {
     let startIdx = 0;
     let endIdx = 0;
 
+    const isExpanded = document.getElementById('cardTruckOwners')?.classList.contains('is-expanded') || this.currentView === 'truckOwnersList';
+
     if (filteredCount === 0) {
       tbody.innerHTML = `
         <tr>
@@ -192,7 +194,12 @@ const OwnersModule = {
       return;
     }
 
-    if (this.pageSize === 'all') {
+    if (!isExpanded && this.currentView === 'dashboard') {
+      // In compact 3-card overview, show all items so user can scroll smoothly through records without needing pagination bar
+      pageItems = filtered;
+      startIdx = 1;
+      endIdx = filteredCount;
+    } else if (this.pageSize === 'all') {
       pageItems = filtered;
       startIdx = 1;
       endIdx = filteredCount;
@@ -279,9 +286,10 @@ const OwnersModule = {
     if (viewDash) viewDash.style.display = 'block';
     if (viewDetails) viewDetails.style.display = 'none';
 
-    // Un-expand all panels
+    // Un-expand all panels and restore display
     document.querySelectorAll('.appsheet-panel').forEach(c => {
       c.classList.remove('is-expanded');
+      c.style.display = '';
       const icon = c.querySelector('.expand-toggle-icon');
       if (icon) {
         icon.classList.remove('bi-arrows-angle-contract');
@@ -299,6 +307,8 @@ const OwnersModule = {
 
     const searchInput = document.getElementById('search-owners');
     if (searchInput) searchInput.placeholder = 'Search Owners';
+
+    this.renderTable();
   },
 
   showTruckOwnersList() {
@@ -310,16 +320,23 @@ const OwnersModule = {
     if (viewDash) viewDash.style.display = 'block';
     if (viewDetails) viewDetails.style.display = 'none';
 
-    // Expand Card 1 to full width
+    // Expand Card 1 to full width and hide other panels
     const card1 = document.getElementById('cardTruckOwners');
     if (card1) {
-      document.querySelectorAll('.appsheet-panel').forEach(c => c.classList.remove('is-expanded'));
-      card1.classList.add('is-expanded');
-      const icon = card1.querySelector('.expand-toggle-icon');
-      if (icon) {
-        icon.classList.remove('bi-arrows-angle-expand');
-        icon.classList.add('bi-arrows-angle-contract');
-      }
+      document.querySelectorAll('.appsheet-panel').forEach(c => {
+        if (c.id === 'cardTruckOwners') {
+          c.classList.add('is-expanded');
+          c.style.display = 'flex';
+          const icon = c.querySelector('.expand-toggle-icon');
+          if (icon) {
+            icon.classList.remove('bi-arrows-angle-expand');
+            icon.classList.add('bi-arrows-angle-contract');
+          }
+        } else {
+          c.classList.remove('is-expanded');
+          c.style.display = 'none';
+        }
+      });
     }
 
     const bc = document.getElementById('appsheetBreadcrumb');
@@ -336,6 +353,8 @@ const OwnersModule = {
 
     const searchInput = document.getElementById('search-owners');
     if (searchInput) searchInput.placeholder = 'Search Truck Owners';
+
+    this.renderTable();
   },
 
   openDetailView(ownerId) {
@@ -387,12 +406,14 @@ const OwnersModule = {
       `;
     }
 
-    // Top Right Action Icons: Edit (pencil) & Delete (trash)
+    // Top Right Action: Gold Edit Button (matching AppSheet) & Delete (trash)
     const bcActions = document.getElementById('breadcrumbActions');
     if (bcActions) {
       bcActions.innerHTML = `
-        <i class="bi bi-pencil" onclick="OwnersModule.openEditCurrentOwner()" title="Edit"></i>
-        <i class="bi bi-trash" onclick="OwnersModule.deleteCurrentOwner()" title="Delete"></i>
+        <button class="btn-appsheet-edit" onclick="OwnersModule.openEditCurrentOwner()">
+          <i class="bi bi-pencil me-1"></i> Edit
+        </button>
+        <i class="bi bi-trash ms-2" onclick="OwnersModule.deleteCurrentOwner()" title="Delete" style="cursor: pointer; font-size: 1.1rem; color: #5f6368; padding: 4px;"></i>
       `;
     }
   },
@@ -538,25 +559,25 @@ const OwnersModule = {
     const card = document.getElementById(cardId);
     if (!card) return;
 
-    const icon = card.querySelector('.expand-toggle-icon');
     const isCurrentlyExpanded = card.classList.contains('is-expanded');
 
-    // Collapse all
-    document.querySelectorAll('.appsheet-panel').forEach(c => {
-      c.classList.remove('is-expanded');
-      const i = c.querySelector('.expand-toggle-icon');
-      if (i) {
-        i.classList.remove('bi-arrows-angle-contract');
-        i.classList.add('bi-arrows-angle-expand');
-      }
-    });
-
     if (!isCurrentlyExpanded) {
-      card.classList.add('is-expanded');
-      if (icon) {
-        icon.classList.remove('bi-arrows-angle-expand');
-        icon.classList.add('bi-arrows-angle-contract');
-      }
+      // Expand selected card and hide other cards so it takes 100% width
+      document.querySelectorAll('.appsheet-panel').forEach(c => {
+        if (c.id === cardId) {
+          c.classList.add('is-expanded');
+          c.style.display = 'flex';
+          const icon = c.querySelector('.expand-toggle-icon');
+          if (icon) {
+            icon.classList.remove('bi-arrows-angle-expand');
+            icon.classList.add('bi-arrows-angle-contract');
+          }
+        } else {
+          c.classList.remove('is-expanded');
+          c.style.display = 'none';
+        }
+      });
+
       if (cardId === 'cardTruckOwners') {
         const bc = document.getElementById('appsheetBreadcrumb');
         if (bc) {
@@ -566,6 +587,7 @@ const OwnersModule = {
             <span class="active">Truck Owners</span>
           `;
         }
+        this.renderTable();
       }
     } else {
       this.showDashboard();
