@@ -1,19 +1,37 @@
 /**
  * Truck Owners Master Directory Module - MTC & TTC Logistics
- * Matches Google AppSheet Authentic 3-Card Layout (screencapture-appsheet-start-...-18_55_06.png)
+ * Matches Google AppSheet Authentic UI across all views:
+ * 1. 3-Card Dashboard View (screencapture-appsheet-start-...-18_55_06.png)
+ * 2. Dedicated Truck Owners Full View (screencapture-appsheet-start-...-19_02_49.png)
+ * 3. Single Truck Owner Details View (screencapture-appsheet-start-...-19_04_54.png)
+ * 4. Slide Drawer for Add/Edit Truck Owner (screencapture-appsheet-start-...-19_05_06.png & 19_05_24.png)
  * Total 595 Trucks & Owners (Header: 'Truck No. Number 595')
  */
 
 const OwnersModule = {
   allOwners: [],
   searchQuery: '',
-  expandedCardId: null,
+  currentView: 'dashboard', // 'dashboard' | 'truckOwnersList' | 'details'
+  currentOwnerId: null,
 
   async init() {
     if (typeof AppUI !== 'undefined' && AppUI.renderSidebar) {
       AppUI.renderSidebar('owners');
     }
     await this.loadData();
+    this.checkInitialRoute();
+  },
+
+  checkInitialRoute() {
+    const hash = window.location.hash;
+    if (hash === '#truck-owners') {
+      this.showTruckOwnersList();
+    } else if (hash.startsWith('#details-')) {
+      const id = hash.replace('#details-', '');
+      this.showOwnerDetails(id);
+    } else {
+      this.showDashboard();
+    }
   },
 
   async loadData() {
@@ -43,7 +61,6 @@ const OwnersModule = {
       }
     }
 
-    // Default fallback if database empty
     if (!this.allOwners || this.allOwners.length === 0) {
       if (typeof window !== 'undefined' && Array.isArray(window.INITIAL_TRUCK_OWNERS)) {
         this.allOwners = window.INITIAL_TRUCK_OWNERS;
@@ -99,16 +116,16 @@ const OwnersModule = {
       return;
     }
 
-    // Smooth rendering for all rows (progressive chunk or full list)
+    // Render up to 300 rows immediately, then remaining progressively
     let html = '';
-    const displayList = filtered.slice(0, 300); // render first 300 for snappy performance
+    const initialChunk = filtered.slice(0, 300);
 
-    displayList.forEach(o => {
+    initialChunk.forEach(o => {
       const isSelf = o.type === 'Self' || (o.name && o.name.includes('MTC Fleet'));
       const safeId = String(o.id || o.truckNo);
 
       html += `
-        <tr class="appsheet-row" onclick="OwnersModule.openDetailView('${safeId}')">
+        <tr class="appsheet-row" onclick="OwnersModule.showOwnerDetails('${safeId}')">
           <!-- 1. Truck No. -->
           <td>
             <span class="fw-bold font-monospace ${isSelf ? 'text-primary' : 'text-dark'}">${o.truckNo}</span>
@@ -140,7 +157,6 @@ const OwnersModule = {
 
     tbody.innerHTML = html;
 
-    // Render remaining rows in background if dataset > 300
     if (filtered.length > 300) {
       setTimeout(() => {
         let remainingHtml = '';
@@ -149,7 +165,7 @@ const OwnersModule = {
           const isSelf = o.type === 'Self' || (o.name && o.name.includes('MTC Fleet'));
           const safeId = String(o.id || o.truckNo);
           remainingHtml += `
-            <tr class="appsheet-row" onclick="OwnersModule.openDetailView('${safeId}')">
+            <tr class="appsheet-row" onclick="OwnersModule.showOwnerDetails('${safeId}')">
               <td>
                 <span class="fw-bold font-monospace ${isSelf ? 'text-primary' : 'text-dark'}">${o.truckNo}</span>
                 ${isSelf ? '<span class="badge bg-warning text-dark ms-1" style="font-size: 0.65rem;">Own 10</span>' : ''}
@@ -168,73 +184,182 @@ const OwnersModule = {
     }
   },
 
+  // View Navigation
+  showDashboard() {
+    this.currentView = 'dashboard';
+    window.location.hash = '';
+
+    const viewDash = document.getElementById('viewDashboard');
+    const viewDetails = document.getElementById('viewOwnerDetails');
+    if (viewDash) viewDash.style.display = 'block';
+    if (viewDetails) viewDetails.style.display = 'none';
+
+    // Un-expand all panels
+    document.querySelectorAll('.appsheet-panel').forEach(c => {
+      c.classList.remove('is-expanded');
+      const icon = c.querySelector('.expand-toggle-icon');
+      if (icon) {
+        icon.classList.remove('bi-arrows-angle-contract');
+        icon.classList.add('bi-arrows-angle-expand');
+      }
+    });
+
+    const bc = document.getElementById('appsheetBreadcrumb');
+    if (bc) {
+      bc.innerHTML = `<span>Home</span> <i class="bi bi-chevron-right text-muted small"></i> <span class="active">Owners</span>`;
+    }
+
+    const searchInput = document.getElementById('search-owners');
+    if (searchInput) searchInput.placeholder = 'Search Owners';
+  },
+
+  showTruckOwnersList() {
+    this.currentView = 'truckOwnersList';
+    window.location.hash = '#truck-owners';
+
+    const viewDash = document.getElementById('viewDashboard');
+    const viewDetails = document.getElementById('viewOwnerDetails');
+    if (viewDash) viewDash.style.display = 'block';
+    if (viewDetails) viewDetails.style.display = 'none';
+
+    // Expand Card 1 to full width
+    const card1 = document.getElementById('cardTruckOwners');
+    if (card1) {
+      document.querySelectorAll('.appsheet-panel').forEach(c => c.classList.remove('is-expanded'));
+      card1.classList.add('is-expanded');
+      const icon = card1.querySelector('.expand-toggle-icon');
+      if (icon) {
+        icon.classList.remove('bi-arrows-angle-expand');
+        icon.classList.add('bi-arrows-angle-contract');
+      }
+    }
+
+    const bc = document.getElementById('appsheetBreadcrumb');
+    if (bc) {
+      bc.innerHTML = `
+        <a href="javascript:void(0)" onclick="OwnersModule.showDashboard()">Owners</a>
+        <i class="bi bi-chevron-right text-muted small"></i>
+        <span class="active">Truck Owners</span>
+      `;
+    }
+
+    const searchInput = document.getElementById('search-owners');
+    if (searchInput) searchInput.placeholder = 'Search Truck Owners';
+  },
+
   openDetailView(ownerId) {
+    return this.showOwnerDetails(ownerId);
+  },
+
+  showOwnerDetails(ownerId) {
     const o = this.allOwners.find(item => String(item.id) === String(ownerId) || String(item.truckNo) === String(ownerId));
     if (!o) return;
 
-    const modalBody = document.getElementById('owner-detail-body');
-    const modalFooter = document.getElementById('owner-detail-footer');
+    this.currentView = 'details';
+    this.currentOwnerId = o.id || o.truckNo;
+    window.location.hash = `#details-${this.currentOwnerId}`;
 
-    const isSelf = o.type === 'Self' || (o.name && o.name.includes('MTC Fleet'));
+    const viewDash = document.getElementById('viewDashboard');
+    const viewDetails = document.getElementById('viewOwnerDetails');
+    if (viewDash) viewDash.style.display = 'none';
+    if (viewDetails) viewDetails.style.display = 'block';
 
-    modalBody.innerHTML = `
-      <!-- AppSheet Authentic Vertical Layout (Matching 19_04_54_crop.png) -->
-      <div class="d-flex flex-column gap-3">
-        <div class="border-bottom pb-2">
-          <div class="text-muted small fw-semibold">Truck No.</div>
-          <div class="fs-4 fw-bold font-monospace text-dark mt-1">${o.truckNo}</div>
-        </div>
+    // Populate Details Card (Matching 19_04_54_crop.png)
+    const truckNoEl = document.getElementById('detail-truck-no');
+    const nameEl = document.getElementById('detail-owner-name');
+    const mobileEl = document.getElementById('detail-owner-mobile');
+    const mobile1El = document.getElementById('detail-owner-mobile1');
+    const mobile1Box = document.getElementById('detail-mobile1-container');
 
-        <div class="border-bottom pb-2">
-          <div class="text-muted small fw-semibold">Name</div>
-          <div class="fs-5 fw-semibold text-dark mt-1">${o.name || '-'}</div>
-        </div>
+    if (truckNoEl) truckNoEl.innerText = o.truckNo || '-';
+    if (nameEl) nameEl.innerText = o.name || '-';
 
-        <div class="border-bottom pb-2">
-          <div class="text-muted small fw-semibold">Mobile No.</div>
-          <div class="font-monospace fs-6 mt-1">
-            ${o.mobile ? `<a href="tel:${o.mobile}" class="text-dark text-decoration-none"><i class="bi bi-telephone text-primary me-2"></i>${o.mobile}</a>` : '<span class="text-muted">-</span>'}
+    if (mobileEl) {
+      if (o.mobile) {
+        mobileEl.innerHTML = `
+          <div class="d-flex align-items-center gap-3">
+            <span>${o.mobile}</span>
+            <a href="tel:${o.mobile}" class="btn btn-sm btn-outline-primary py-0 px-2" title="Call">
+              <i class="bi bi-telephone"></i>
+            </a>
+            <a href="https://wa.me/91${o.mobile}" target="_blank" class="btn btn-sm btn-outline-success py-0 px-2" title="WhatsApp">
+              <i class="bi bi-whatsapp"></i>
+            </a>
           </div>
-        </div>
+        `;
+      } else {
+        mobileEl.innerText = '-';
+      }
+    }
 
-        ${o.mobile1 ? `
-        <div class="border-bottom pb-2">
-          <div class="text-muted small fw-semibold">Mobile No. 1</div>
-          <div class="font-monospace fs-6 mt-1">
-            <a href="https://wa.me/91${o.mobile1}" target="_blank" class="text-dark text-decoration-none"><i class="bi bi-whatsapp text-success me-2"></i>${o.mobile1}</a>
+    if (mobile1Box && mobile1El) {
+      if (o.mobile1) {
+        mobile1Box.style.display = 'block';
+        mobile1El.innerHTML = `
+          <div class="d-flex align-items-center gap-3">
+            <span>${o.mobile1}</span>
+            <a href="tel:${o.mobile1}" class="btn btn-sm btn-outline-primary py-0 px-2" title="Call">
+              <i class="bi bi-telephone"></i>
+            </a>
+            <a href="https://wa.me/91${o.mobile1}" target="_blank" class="btn btn-sm btn-outline-success py-0 px-2" title="WhatsApp">
+              <i class="bi bi-whatsapp"></i>
+            </a>
           </div>
-        </div>
-        ` : ''}
+        `;
+      } else {
+        mobile1Box.style.display = 'none';
+      }
+    }
 
-        <div class="pt-1">
-          <div class="text-muted small fw-semibold">Fleet Type</div>
-          <div class="mt-1">
-            ${isSelf ? '<span class="badge bg-warning text-dark"><i class="bi bi-star-fill me-1"></i> Own Fleet (10 Trucks)</span>' : '<span class="badge bg-light text-dark border">Market Attached Truck</span>'}
-          </div>
-        </div>
-      </div>
-    `;
-
-    modalFooter.innerHTML = `
-      <div>
-        <button type="button" class="btn btn-sm btn-outline-danger" onclick="OwnersModule.deleteOwner('${o.id}')" title="Delete Truck Owner">
-          <i class="bi bi-trash"></i>
-        </button>
-      </div>
-      <div class="d-flex align-items-center gap-2">
-        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-sm btn-dark" onclick="bootstrap.Modal.getInstance(document.getElementById('modalOwnerDetail')).hide(); OwnersModule.openEditDrawer('${o.id}')">
-          <i class="bi bi-pencil me-1"></i> Edit
-        </button>
-      </div>
-    `;
-
-    const modalEl = document.getElementById('modalOwnerDetail');
-    if (modalEl && typeof bootstrap !== 'undefined') {
-      new bootstrap.Modal(modalEl).show();
+    // Update Breadcrumb: Owners > Truck Owners > Details
+    const bc = document.getElementById('appsheetBreadcrumb');
+    if (bc) {
+      bc.innerHTML = `
+        <a href="javascript:void(0)" onclick="OwnersModule.showDashboard()">Owners</a>
+        <i class="bi bi-chevron-right text-muted small"></i>
+        <a href="javascript:void(0)" onclick="OwnersModule.showTruckOwnersList()">Truck Owners</a>
+        <i class="bi bi-chevron-right text-muted small"></i>
+        <span class="active">Details</span>
+      `;
     }
   },
 
+  closeDetailsView() {
+    this.showTruckOwnersList();
+  },
+
+  openEditCurrentOwner() {
+    if (this.currentOwnerId) {
+      this.openEditDrawer(this.currentOwnerId);
+    }
+  },
+
+  async deleteCurrentOwner() {
+    if (!this.currentOwnerId) return;
+    const o = this.allOwners.find(item => String(item.id) === String(this.currentOwnerId) || String(item.truckNo) === String(this.currentOwnerId));
+    const title = o ? `${o.truckNo} (${o.name})` : this.currentOwnerId;
+
+    if (!confirm(`Are you sure you want to delete truck owner ${title}?`)) return;
+
+    try {
+      if (typeof dbService !== 'undefined') {
+        await dbService.delete('truckOwners', this.currentOwnerId);
+      }
+      this.allOwners = this.allOwners.filter(item => String(item.id) !== String(this.currentOwnerId) && String(item.truckNo) !== String(this.currentOwnerId));
+    } catch (err) {
+      console.error("Delete error:", err);
+    }
+
+    this.updateStats();
+    this.renderTable();
+    this.closeDetailsView();
+
+    if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+      AppUI.showToast(`Deleted truck owner ${title} successfully.`, 'info');
+    }
+  },
+
+  // Slide Drawer for Add / Edit Owner (Matching 19_05_06_crop.png and 19_05_24.png)
   openAddDrawer() {
     const form = document.getElementById('ownerDrawerForm');
     if (form) form.reset();
@@ -285,7 +410,7 @@ const OwnersModule = {
     const dueAmount = parseFloat(document.getElementById('drawer-owner-due').value) || 0;
 
     if (!truckNo || !name || !mobile) {
-      alert("Please fill all required fields: Truck No., Name, and Mobile No.");
+      alert("Please fill all required fields: Truck No.*, Name*, and Mobile No.*");
       return;
     }
 
@@ -307,7 +432,6 @@ const OwnersModule = {
         ownerData.recentTrips = [];
         await dbService.add('truckOwners', ownerData);
       } else {
-        // Local in-memory update
         if (id) {
           const idx = this.allOwners.findIndex(o => String(o.id) === String(id));
           if (idx !== -1) this.allOwners[idx] = { ...this.allOwners[idx], ...ownerData };
@@ -323,33 +447,13 @@ const OwnersModule = {
     this.closeDrawer();
     await this.loadData();
 
+    // If currently viewing this owner's details, refresh the view
+    if (this.currentView === 'details' && this.currentOwnerId) {
+      this.showOwnerDetails(id || truckNo);
+    }
+
     if (typeof AppUI !== 'undefined' && AppUI.showToast) {
       AppUI.showToast(`Saved truck owner ${truckNo} (${name})`, 'success');
-    }
-  },
-
-  async deleteOwner(ownerId) {
-    if (!confirm("Are you sure you want to delete this truck owner?")) return;
-
-    try {
-      if (typeof dbService !== 'undefined') {
-        await dbService.delete('truckOwners', ownerId);
-      } else {
-        this.allOwners = this.allOwners.filter(o => String(o.id) !== String(ownerId));
-      }
-    } catch (err) {
-      console.error("Delete error:", err);
-    }
-
-    const modalEl = document.getElementById('modalOwnerDetail');
-    if (modalEl && typeof bootstrap !== 'undefined') {
-      const modalInstance = bootstrap.Modal.getInstance(modalEl);
-      if (modalInstance) modalInstance.hide();
-    }
-
-    await this.loadData();
-    if (typeof AppUI !== 'undefined' && AppUI.showToast) {
-      AppUI.showToast("Truck owner deleted successfully.", 'info');
     }
   },
 
@@ -360,7 +464,7 @@ const OwnersModule = {
     const icon = card.querySelector('.expand-toggle-icon');
     const isCurrentlyExpanded = card.classList.contains('is-expanded');
 
-    // Collapse all first
+    // Collapse all
     document.querySelectorAll('.appsheet-panel').forEach(c => {
       c.classList.remove('is-expanded');
       const i = c.querySelector('.expand-toggle-icon');
@@ -376,21 +480,36 @@ const OwnersModule = {
         icon.classList.remove('bi-arrows-angle-expand');
         icon.classList.add('bi-arrows-angle-contract');
       }
-      this.expandedCardId = cardId;
+      if (cardId === 'cardTruckOwners') {
+        const bc = document.getElementById('appsheetBreadcrumb');
+        if (bc) {
+          bc.innerHTML = `
+            <a href="javascript:void(0)" onclick="OwnersModule.showDashboard()">Owners</a>
+            <i class="bi bi-chevron-right text-muted small"></i>
+            <span class="active">Truck Owners</span>
+          `;
+        }
+      }
     } else {
-      this.expandedCardId = null;
+      this.showDashboard();
+    }
+  },
+
+  toggleCardFilter(cardId) {
+    const searchInput = document.getElementById('search-owners');
+    if (searchInput) {
+      searchInput.focus();
+      searchInput.select();
     }
   },
 
   filterByDueYear(year) {
-    console.log("Selected Owner Due Year:", year);
     if (typeof AppUI !== 'undefined' && AppUI.showToast) {
       AppUI.showToast(`Owner Due Year: ${year}`, 'info');
     }
   },
 
   filterByPaidYear(year) {
-    console.log("Selected Owner Paid Year:", year);
     if (typeof AppUI !== 'undefined' && AppUI.showToast) {
       AppUI.showToast(`Owner Paid Year: ${year}`, 'info');
     }
