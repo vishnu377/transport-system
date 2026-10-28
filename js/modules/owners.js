@@ -911,7 +911,7 @@ const OwnersModule = {
           <button class="btn btn-sm btn-light border py-1 px-2 text-secondary" title="Truck Details"><i class="bi bi-truck"></i></button>
           <button class="btn btn-sm btn-light border py-1 px-2 text-secondary" title="Bilty / GR Document"><i class="bi bi-file-earmark-text"></i></button>
           <button class="btn btn-sm btn-light border py-1 px-2 text-secondary" onclick="window.print()" title="Download / Print"><i class="bi bi-download"></i></button>
-          <button class="btn btn-sm btn-outline-primary fw-semibold py-1 px-3 d-flex align-items-center gap-1 shadow-sm" onclick="OwnersModule.openEditTripDrawer('${safeTripId}')" title="Edit Trip Details">
+          <button class="btn-appsheet-edit shadow-sm" onclick="OwnersModule.openEditTripDrawer('${safeTripId}')" title="Edit Trip Details">
             <i class="bi bi-pencil me-1"></i> Edit
           </button>
           <button class="btn btn-sm btn-light border py-1 px-2 ms-1 text-secondary" onclick="OwnersModule.backToDueList()" title="Back to Owner Due">
@@ -932,7 +932,7 @@ const OwnersModule = {
         <div class="appsheet-panel-header">
           <h6 class="appsheet-panel-title">Trip Details</h6>
           <div class="d-flex align-items-center gap-1">
-            <button class="btn-appsheet-panel-action" onclick="OwnersModule.openEditTripDrawer('${safeTripId}')" title="Edit Trip Details">
+            <button class="btn-appsheet-edit btn-sm py-1 px-2 shadow-sm" onclick="OwnersModule.openEditTripDrawer('${safeTripId}')" title="Edit Trip Details">
               <i class="bi bi-pencil me-1"></i> Edit
             </button>
             <i class="bi bi-arrows-angle-expand expand-toggle-icon ms-2" onclick="OwnersModule.togglePanelExpand('panelTripDetails')" title="Expand / Collapse"></i>
@@ -1208,7 +1208,7 @@ const OwnersModule = {
           </div>
 
           <div class="mt-3 pt-2 border-top">
-            <button class="btn-appsheet-panel-action" onclick="OwnersModule.openEditTripDrawer('${safeTripId}')" title="${addRecordsLabel}">
+            <button class="btn-appsheet-add shadow-sm" onclick="OwnersModule.openEditTripDrawer('${safeTripId}')" title="${addRecordsLabel}">
               <i class="bi bi-plus-lg me-1"></i> ${addRecordsLabel}
             </button>
           </div>
@@ -1253,7 +1253,7 @@ const OwnersModule = {
               <button class="btn-appsheet-panel-action" onclick="OwnersModule.showTripPaymentDetails()" title="Expand Full Sheet">
                 <i class="bi bi-arrows-fullscreen me-1"></i> Expand
               </button>
-              <button class="btn-appsheet-panel-action" onclick="OwnersModule.openAddPaymentDrawer('${safeTripId}')" title="Add Payment">
+              <button class="btn-appsheet-add shadow-sm" onclick="OwnersModule.openAddPaymentDrawer('${safeTripId}')" title="Add Payment">
                 <i class="bi bi-plus-lg me-1"></i> Add
               </button>
             </div>
@@ -1304,7 +1304,7 @@ const OwnersModule = {
           <div class="appsheet-panel-body p-3">
             <div class="text-muted py-2">No items</div>
             <div class="mt-2 pt-2 border-top">
-              <button class="btn-appsheet-panel-action" onclick="OwnersModule.openAddPaymentDrawer('${safeTripId}', 'consignee')" title="Add Consignee Payment">
+              <button class="btn-appsheet-add shadow-sm" onclick="OwnersModule.openAddPaymentDrawer('${safeTripId}', 'consignee')" title="Add Consignee Payment">
                 <i class="bi bi-plus-lg me-1"></i> Add
               </button>
             </div>
@@ -1682,10 +1682,10 @@ const OwnersModule = {
     const bcActions = document.getElementById('breadcrumbActions');
     if (bcActions) {
       bcActions.innerHTML = `
-        <button class="btn btn-sm btn-outline-secondary px-3 py-1 d-flex align-items-center gap-1 shadow-sm" onclick="OwnersModule.openEditCurrentOwner('${o.id || o.truckNo}')" title="Edit Owner">
+        <button class="btn-appsheet-edit shadow-sm" onclick="OwnersModule.openEditCurrentOwner('${o.id || o.truckNo}')" title="Edit Owner">
           <i class="bi bi-pencil me-1"></i> Edit
         </button>
-        <button class="btn btn-sm btn-light border px-3 py-1 d-flex align-items-center gap-1 ms-1" onclick="OwnersModule.showDashboard()" title="Back to Truck Owners">
+        <button class="btn btn-sm btn-light border px-3 py-1 d-flex align-items-center gap-1 ms-1 text-secondary" onclick="OwnersModule.showDashboard()" title="Back to Truck Owners">
           <i class="bi bi-arrow-left me-1"></i> Back
         </button>
       `;
