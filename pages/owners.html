@@ -1205,33 +1205,8 @@
       <div id="viewOwnerDetails" style="display: none;">
         <span id="modalOwnerDetail" style="display: none;"></span>
 
-        <!-- Header Actions Bar with Back and Edit Buttons -->
-        <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
-          <div class="d-flex align-items-center gap-2">
-            <button class="btn btn-sm btn-light border py-1 px-3 d-flex align-items-center gap-1" onclick="OwnersModule.showDashboard()">
-              <i class="bi bi-arrow-left"></i> <span>Back</span>
-            </button>
-            <span class="fw-bold fs-5 text-dark" id="detail-header-truck-title">Truck Owner Details</span>
-          </div>
-          <div class="d-flex align-items-center gap-2">
-            <button class="btn btn-sm btn-primary py-1 px-3 d-flex align-items-center gap-1 shadow-sm" onclick="OwnersModule.openEditCurrentOwner()" title="Edit Owner Details">
-              <i class="bi bi-pencil-square me-1"></i> <span>Edit</span>
-            </button>
-          </div>
-        </div>
-        
-        <!-- Clean Centered Details Card matching real AppSheet -->
-        <div class="appsheet-details-card">
-          <div class="d-flex align-items-center justify-content-between pb-3 border-bottom mb-3">
-            <div>
-              <div class="text-uppercase text-muted small fw-semibold" style="letter-spacing: 0.5px;">Truck Owner</div>
-              <h5 class="fw-bold text-dark mb-0 font-monospace" id="detail-card-truck-title">-</h5>
-            </div>
-            <button class="btn btn-sm btn-outline-primary d-flex align-items-center gap-1" onclick="OwnersModule.openEditCurrentOwner()">
-              <i class="bi bi-pencil me-1"></i> Edit
-            </button>
-          </div>
-
+        <!-- Clean Centered Details Card matching real AppSheet (19_04_54.png) -->
+        <div class="appsheet-details-card" onclick="OwnersModule.openEditCurrentOwner()" style="cursor: pointer;" title="Click anywhere to Edit">
           <!-- 1. Truck No. -->
           <div class="appsheet-detail-item">
             <div class="appsheet-detail-label">Truck No.</div>
@@ -1251,7 +1226,7 @@
           <!-- 3. Mobile No. -->
           <div class="appsheet-detail-item">
             <div class="appsheet-detail-label">Mobile No.</div>
-            <div class="appsheet-detail-value font-monospace" id="detail-owner-mobile">-</div>
+            <div class="appsheet-detail-value font-monospace text-dark" id="detail-owner-mobile">-</div>
           </div>
 
           <!-- 4. Mobile No. 1 -->
@@ -1261,16 +1236,6 @@
               <div class="appsheet-detail-label">Mobile No. 1</div>
               <div class="appsheet-detail-value font-monospace text-muted" id="detail-owner-mobile1">-</div>
             </div>
-          </div>
-
-          <!-- Card Bottom Action Bar -->
-          <div class="mt-4 pt-3 border-top d-flex align-items-center justify-content-end gap-2">
-            <button class="btn btn-sm btn-light border px-3" onclick="OwnersModule.showDashboard()">
-              <i class="bi bi-arrow-left me-1"></i> Back
-            </button>
-            <button class="btn btn-sm btn-primary px-3 d-flex align-items-center gap-1 shadow-sm" onclick="OwnersModule.openEditCurrentOwner()">
-              <i class="bi bi-pencil-fill me-1"></i> Edit Owner
-            </button>
           </div>
         </div>
       </div>

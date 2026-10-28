@@ -1615,19 +1615,13 @@ const OwnersModule = {
       `;
     }
 
-    const hdrTitle = document.getElementById('detail-header-truck-title');
-    if (hdrTitle) hdrTitle.innerText = `${o.truckNo || '-'} Details`;
-
-    const cardTitle = document.getElementById('detail-card-truck-title');
-    if (cardTitle) cardTitle.innerText = o.truckNo || '-';
-
     const bcActions = document.getElementById('breadcrumbActions');
     if (bcActions) {
       bcActions.innerHTML = `
-        <button class="btn btn-sm btn-primary" onclick="OwnersModule.openEditCurrentOwner()" title="Edit Truck Owner">
-          <i class="bi bi-pencil-square me-1"></i> Edit Owner
+        <button class="btn btn-sm btn-outline-secondary px-3 py-1 d-flex align-items-center gap-1 shadow-sm" onclick="OwnersModule.openEditCurrentOwner()" title="Edit Owner">
+          <i class="bi bi-pencil me-1"></i> Edit
         </button>
-        <button class="btn btn-sm btn-outline-secondary" onclick="OwnersModule.showDashboard()" title="Back">
+        <button class="btn btn-sm btn-light border px-3 py-1 d-flex align-items-center gap-1 ms-1" onclick="OwnersModule.showDashboard()" title="Back to Truck Owners">
           <i class="bi bi-arrow-left me-1"></i> Back
         </button>
       `;
