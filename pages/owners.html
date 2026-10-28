@@ -175,8 +175,9 @@
       flex-direction: column;
       position: relative;
       height: 100%;
-      min-height: 480px;
-      max-height: calc(100vh - 130px);
+      min-height: 500px;
+      max-height: calc(100vh - 125px);
+      overflow: hidden;
       transition: all 0.2s ease-in-out;
     }
 
@@ -246,9 +247,11 @@
 
     /* Table Layout */
     .appsheet-table-wrap {
-      flex: 1;
+      flex: 1 1 auto;
+      min-height: 0;
       overflow-y: auto;
       overflow-x: auto;
+      background: #ffffff;
     }
 
     .appsheet-table {
@@ -291,7 +294,13 @@
     /* Bottom Pagination Bar */
     .appsheet-panel-footer {
       flex-shrink: 0;
-      background: #fafafa;
+      background: #ffffff;
+      border-top: 1px solid var(--appsheet-border-light);
+      padding: 8px 12px;
+      border-bottom-left-radius: 4px;
+      border-bottom-right-radius: 4px;
+      box-sizing: border-box;
+      z-index: 5;
     }
 
     /* Side breakdown lists (Card 2: Owner Due & Card 3: Owner Paid) */

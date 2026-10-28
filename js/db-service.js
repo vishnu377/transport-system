@@ -678,21 +678,41 @@ class DBService {
       : [];
 
     const ownerMap = new Map();
+    const truckIndex = new Map(); // normalized truckNo -> id
     const deletedSet = this.deletedIds.truckOwners || new Set();
+
+    const cleanTruckKey = (t) => String(t || '').trim().toUpperCase().replace(/\s+/g, '');
 
     // 1. Base owners
     for (const o of baseOwners) {
-      if (!deletedSet.has(String(o.id))) {
-        ownerMap.set(String(o.id), o);
+      const truckKey = cleanTruckKey(o.truckNo || o.truck);
+      if (truckKey && truckKey !== 'UNDEFINED' && !deletedSet.has(String(o.id))) {
+        ownerMap.set(String(o.id), { ...o, truckNo: o.truckNo || truckKey });
+        truckIndex.set(truckKey, String(o.id));
       }
     }
 
     // 2. Cloud items from Firebase Cloud Firestore
     if (Array.isArray(cloudItems)) {
       for (const o of cloudItems) {
-        if (o && o.id && !deletedSet.has(String(o.id))) {
-          const existing = ownerMap.get(String(o.id)) || {};
-          ownerMap.set(String(o.id), { ...existing, ...o });
+        if (!o) continue;
+        const truckKey = cleanTruckKey(o.truckNo || o.truck);
+        // Discard orphan or invalid documents with no valid truck number or 'undefined'
+        if (!truckKey || truckKey === 'UNDEFINED' || truckKey.length < 5) {
+          continue;
+        }
+
+        if (deletedSet.has(String(o.id))) continue;
+
+        // If this truck exists in truckIndex, merge into existing owner by truckKey
+        const existingId = truckIndex.get(truckKey);
+        if (existingId && ownerMap.has(existingId)) {
+          const existing = ownerMap.get(existingId) || {};
+          ownerMap.set(existingId, { ...existing, ...o, truckNo: existing.truckNo || truckKey });
+        } else if (o.id && !deletedSet.has(String(o.id))) {
+          // New valid truck from cloud
+          ownerMap.set(String(o.id), { ...o, truckNo: o.truckNo || truckKey });
+          truckIndex.set(truckKey, String(o.id));
         }
       }
     }
@@ -700,14 +720,23 @@ class DBService {
     // 3. In-memory session owners
     if (this.sessionStore.truckOwners) {
       this.sessionStore.truckOwners.forEach((o, id) => {
-        if (!deletedSet.has(String(id))) {
-          const existing = ownerMap.get(String(id)) || {};
-          ownerMap.set(String(id), { ...existing, ...o });
-        }
+        if (!o || deletedSet.has(String(id))) return;
+        const truckKey = cleanTruckKey(o.truckNo || o.truck);
+        if (!truckKey || truckKey === 'UNDEFINED' || truckKey.length < 5) return;
+
+        const existingId = truckIndex.get(truckKey) || String(id);
+        const existing = ownerMap.get(existingId) || {};
+        ownerMap.set(existingId, { ...existing, ...o, truckNo: existing.truckNo || truckKey });
+        truckIndex.set(truckKey, existingId);
       });
     }
 
-    const all = Array.from(ownerMap.values());
+    // Ensure every single owner has a valid truckNo
+    const all = Array.from(ownerMap.values()).filter(o => {
+      const t = cleanTruckKey(o.truckNo);
+      return t && t !== 'UNDEFINED' && t.length >= 5;
+    });
+
     all.sort((a, b) => (Number(b.dueAmount) || 0) - (Number(a.dueAmount) || 0));
     return all;
   }

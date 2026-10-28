@@ -71,6 +71,12 @@ const OwnersModule = {
       }
     }
 
+    // Filter out any invalid orphan documents without valid truck number
+    this.allOwners = (this.allOwners || []).filter(o => {
+      const t = String(o.truckNo || o.truck || '').trim().toUpperCase();
+      return t && t !== 'UNDEFINED' && t !== '-' && t.length >= 5;
+    });
+
     this.populateNameDatalist();
     this.updateStats();
     this.renderTable();
