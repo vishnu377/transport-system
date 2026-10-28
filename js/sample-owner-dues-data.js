@@ -1,6 +1,6 @@
 /**
  * js/sample-owner-dues-data.js
- * Authentic Owner Due Dataset (100% Pixel-Perfect Match to Google AppSheet screencapture-appsheet-start-...-19_33_45.png)
+ * Authentic Owner Due Dataset (100% Pixel-Perfect Match to Google AppSheet screencapture-appsheet-start-...-19_33_45.png and live AppSheet 28/10/2026 screen)
  */
 
 (function(root, factory) {
@@ -12,6 +12,258 @@
   }
 })(typeof self !== "undefined" ? self : this, function() {
   return [
+  {
+    "id": "due-2676",
+    "grNo": "2676",
+    "tripDate": "28/10/2026",
+    "tripStartDate": "28/10/2026",
+    "tripEndDate": "06/11/2026",
+    "year": "2026-2027",
+    "status": "Transit",
+    "color": "yellow",
+    "colorHex": "#c3ad00",
+    "dueAmount": 178525.0,
+    "paidAmount": 0.0,
+    "truckNo": "RJ52GA7719",
+    "ownerName": "Deepak Dhabas",
+    "ownerMobile": "9829012345",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Kanpur (U.P.)",
+    "transport": "TTC",
+    "material": "Marble Powder",
+    "weight": 96.5,
+    "rate": 1850.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 178525.0,
+    "reference": "Himanshu Chemtech Kanpur Supplier",
+    "referenceMobile": "9235623313",
+    "driver": "Mastram Meena 7719",
+    "driverMobile": "7733996629",
+    "consignor": {
+      "gstin": "08FPWPR3462B2ZD",
+      "name": "SHIV UMA STONEX",
+      "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
+    },
+    "consignee": {
+      "gstin": "09AICPG6550B1ZN",
+      "name": "CHEM TECH INDIA",
+      "mobile": "9235623313"
+    },
+    "freight": 178525.0,
+    "totalFreight": 178525.0,
+    "payments": [],
+    "debts": []
+  },
+  {
+    "id": "due-2677",
+    "grNo": "2677",
+    "tripDate": "28/10/2026",
+    "tripStartDate": "28/10/2026",
+    "tripEndDate": "06/11/2026",
+    "year": "2026-2027",
+    "status": "Transit",
+    "color": "yellow",
+    "colorHex": "#c3ad00",
+    "dueAmount": 174389.0,
+    "paidAmount": 0.0,
+    "truckNo": "RJ52GB2585",
+    "ownerName": "Rameshwar Prasad",
+    "ownerMobile": "9829012345",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Kanpur (U.P.)",
+    "transport": "TTC",
+    "material": "Marble Powder",
+    "weight": 94.0,
+    "rate": 1855.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 174389.0,
+    "reference": "Himanshu Chemtech Kanpur Supplier",
+    "referenceMobile": "9235623313",
+    "driver": "Driver 2585",
+    "driverMobile": "9414717113",
+    "consignor": {
+      "gstin": "08FPWPR3462B2ZD",
+      "name": "SHIV UMA STONEX",
+      "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
+    },
+    "consignee": {
+      "gstin": "09AICPG6550B1ZN",
+      "name": "CHEM TECH INDIA",
+      "mobile": "9235623313"
+    },
+    "freight": 174389.0,
+    "totalFreight": 174389.0,
+    "payments": [],
+    "debts": []
+  },
+  {
+    "id": "due-2655",
+    "grNo": "2655",
+    "tripDate": "28/10/2026",
+    "tripStartDate": "28/10/2026",
+    "tripEndDate": "06/11/2026",
+    "year": "2026-2027",
+    "status": "Transit",
+    "color": "yellow",
+    "colorHex": "#c3ad00",
+    "dueAmount": 131008.0,
+    "paidAmount": 0.0,
+    "truckNo": "RJ32GC0997",
+    "ownerName": "Mahendra Gurjar",
+    "ownerMobile": "9829012345",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Bhiwadi (Raj.)",
+    "transport": "TTC",
+    "material": "Marble Powder",
+    "weight": 88.0,
+    "rate": 1488.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 131008.0,
+    "reference": "Royal Marbles",
+    "referenceMobile": "9829000000",
+    "driver": "Driver 0997",
+    "driverMobile": "9414717113",
+    "consignor": {
+      "gstin": "08FPWPR3462B2ZD",
+      "name": "SHIV UMA STONEX",
+      "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
+    },
+    "consignee": {
+      "gstin": "08AAGCB1234F1Z8",
+      "name": "Royal Marbles",
+      "mobile": "9829000000"
+    },
+    "freight": 131008.0,
+    "totalFreight": 131008.0,
+    "payments": [],
+    "debts": []
+  },
+  {
+    "id": "due-255",
+    "grNo": "255",
+    "tripDate": "28/10/2026",
+    "tripStartDate": "28/10/2026",
+    "tripEndDate": "06/11/2026",
+    "year": "2026-2027",
+    "status": "Transit",
+    "color": "yellow",
+    "colorHex": "#c3ad00",
+    "dueAmount": 212872.0,
+    "paidAmount": 0.0,
+    "truckNo": "RJ52GB3572",
+    "ownerName": "Deepak Dhabas",
+    "ownerMobile": "9829012345",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Sandila (U.P.)",
+    "transport": "SMTC",
+    "material": "Marble Powder",
+    "weight": 115.0,
+    "rate": 1851.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 212872.0,
+    "reference": "Rajesh Rao Udaipur",
+    "referenceMobile": "9829000000",
+    "driver": "Driver 3572",
+    "driverMobile": "9414717113",
+    "consignor": {
+      "gstin": "08FPWPR3462B2ZD",
+      "name": "SHIV UMA STONEX",
+      "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
+    },
+    "consignee": {
+      "gstin": "09AICPG6550B1ZN",
+      "name": "Rajesh Rao Udaipur",
+      "mobile": "9829000000"
+    },
+    "freight": 212872.0,
+    "totalFreight": 212872.0,
+    "payments": [],
+    "debts": []
+  },
+  {
+    "id": "due-2688",
+    "grNo": "2688",
+    "tripDate": "28/10/2026",
+    "tripStartDate": "28/10/2026",
+    "tripEndDate": "06/11/2026",
+    "year": "2026-2027",
+    "status": "Transit",
+    "color": "yellow",
+    "colorHex": "#c3ad00",
+    "dueAmount": 134055.0,
+    "paidAmount": 0.0,
+    "truckNo": "RJ52GB2503",
+    "ownerName": "Laxmi Prakash Jat",
+    "ownerMobile": "9829012345",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Delhi",
+    "transport": "TTC",
+    "material": "Marble Powder",
+    "weight": 85.0,
+    "rate": 1577.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 134055.0,
+    "reference": "Chintu Bansal",
+    "referenceMobile": "9829000000",
+    "driver": "Driver 2503",
+    "driverMobile": "9414717113",
+    "consignor": {
+      "gstin": "08FPWPR3462B2ZD",
+      "name": "SHIV UMA STONEX",
+      "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
+    },
+    "consignee": {
+      "gstin": "07AABCT9988C1ZR",
+      "name": "Chintu Bansal",
+      "mobile": "9829000000"
+    },
+    "freight": 134055.0,
+    "totalFreight": 134055.0,
+    "payments": [],
+    "debts": []
+  },
+  {
+    "id": "due-2681",
+    "grNo": "2681",
+    "tripDate": "28/10/2026",
+    "tripStartDate": "28/10/2026",
+    "tripEndDate": "06/11/2026",
+    "year": "2026-2027",
+    "status": "Transit",
+    "color": "yellow",
+    "colorHex": "#c3ad00",
+    "dueAmount": 111078.0,
+    "paidAmount": 0.0,
+    "truckNo": "RJ52GA7333",
+    "ownerName": "Laxmi Prakash Jat",
+    "ownerMobile": "9829012345",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Keshwana (Raj.)",
+    "transport": "TTC",
+    "material": "Marble Powder",
+    "weight": 78.0,
+    "rate": 1424.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 111078.0,
+    "reference": "Pranjal Halani",
+    "referenceMobile": "9829000000",
+    "driver": "Driver 7333",
+    "driverMobile": "9414717113",
+    "consignor": {
+      "gstin": "08FPWPR3462B2ZD",
+      "name": "SHIV UMA STONEX",
+      "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)-313330"
+    },
+    "consignee": {
+      "gstin": "08AAGCB1234F1Z8",
+      "name": "Pranjal Halani",
+      "mobile": "9829000000"
+    },
+    "freight": 111078.0,
+    "totalFreight": 111078.0,
+    "payments": [],
+    "debts": []
+  },
   {
     "id": "due-2649",
     "grNo": "2649",
@@ -11922,47 +12174,6 @@
     ]
   },
   {
-    "id": "due-106",
-    "grNo": "2655",
-    "tripDate": "22/04/2026",
-    "tripEndDate": "05/11/2026",
-    "year": "2026-2027",
-    "status": "Off Loading",
-    "color": "pink",
-    "colorHex": "#e91e63",
-    "dueAmount": 166425.0,
-    "paidAmount": 0.0,
-    "truckNo": "RJ02GC3031",
-    "ownerName": "Jitendra Goyal",
-    "ownerMobile": "9828280026",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Ghaziabad (U.P.)",
-    "transport": "TTC",
-    "material": "Foundry Powder",
-    "weight": 97.897,
-    "rate": 1700.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 166425.0,
-    "reference": "Pankaj Jain Sahibabad",
-    "referenceMobile": "9235620105",
-    "driver": "Vikram Gurjar 4507",
-    "driverMobile": "8824993002",
-    "consignor": {
-      "gstin": "08AAUFD1174E1ZC",
-      "name": "Durga Enterprises",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6605B1ZN",
-      "name": "Pankaj Jain Sahibabad",
-      "mobile": "9235620105"
-    },
-    "freight": 166425.0,
-    "totalFreight": 166425.0,
-    "payments": [],
-    "debts": []
-  },
-  {
     "id": "due-110",
     "grNo": "2659_SMTC",
     "tripDate": "26/08/2026",
@@ -12430,123 +12641,6 @@
     ]
   },
   {
-    "id": "due-127",
-    "grNo": "2676",
-    "tripDate": "15/04/2026",
-    "tripEndDate": "05/11/2026",
-    "year": "2026-2027",
-    "status": "Transit",
-    "color": "yellow",
-    "colorHex": "#e5a823",
-    "dueAmount": 207680.0,
-    "paidAmount": 0.0,
-    "truckNo": "RJ52GB3735",
-    "ownerName": "Kallu Meena",
-    "ownerMobile": "9079757926",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Haldwani (U.K.)",
-    "transport": "TTC",
-    "material": "Marble Blocks",
-    "weight": 94.4,
-    "rate": 2200.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 207680.0,
-    "reference": "Shruti Marble Sukher",
-    "referenceMobile": "9235620126",
-    "driver": "Sonu Bhai",
-    "driverMobile": "9602334455",
-    "consignor": {
-      "gstin": "08AGRPJ1613P1ZX",
-      "name": "Saatvik Minerals",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6626B1ZN",
-      "name": "Shruti Marble Sukher",
-      "mobile": "9235620126"
-    },
-    "freight": 1125.0,
-    "totalFreight": 208805.0,
-    "payments": [],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 2500.0,
-        "debtMode": "Cash",
-        "borrowerName": "Kallu Meena",
-        "receiverName": "Bajrang Meena 7297032726",
-        "description": "2026-2027 Advance Commission",
-        "grNo": "2676_TTC",
-        "truckNo": "RJ52GB3735",
-        "dueAmount": 207680.0
-      },
-      {
-        "debtType": "Other",
-        "debtAmount": 1400.0,
-        "debtMode": "Cash",
-        "borrowerName": "Kallu Meena",
-        "receiverName": "Bajrang Meena 7297032726",
-        "description": "Other Advance on Loading",
-        "grNo": "2676_TTC",
-        "truckNo": "RJ52GB3735",
-        "dueAmount": 207680.0
-      }
-    ]
-  },
-  {
-    "id": "due-128",
-    "grNo": "2677",
-    "tripDate": "16/05/2026",
-    "tripEndDate": "05/11/2026",
-    "year": "2026-2027",
-    "status": "POD Sent/ Bill Generated",
-    "color": "purple",
-    "colorHex": "#9c27b0",
-    "dueAmount": 147200.0,
-    "paidAmount": 0.0,
-    "truckNo": "RJ52GB2688",
-    "ownerName": "Kalu Birjaniya",
-    "ownerMobile": "9829635757",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Karnal (Haryana)",
-    "transport": "TTC",
-    "material": "Marble Powder",
-    "weight": 84.114,
-    "rate": 1750.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 147200.0,
-    "reference": "Gopal Sharda",
-    "referenceMobile": "9235620127",
-    "driver": "Mangalram Gurjar",
-    "driverMobile": "9783556677",
-    "consignor": {
-      "gstin": "08CRGPG0812F1ZB",
-      "name": "Shree Shyam Mineral Traders",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6627B1ZN",
-      "name": "Gopal Sharda",
-      "mobile": "9235620127"
-    },
-    "freight": 147200.0,
-    "totalFreight": 147200.0,
-    "payments": [],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 2000.0,
-        "debtMode": "Cash",
-        "borrowerName": "Kalu Birjaniya",
-        "receiverName": "Ramchandra Jat 8824993002",
-        "description": "2026-2027 Advance Commission",
-        "grNo": "2677_TTC",
-        "truckNo": "RJ52GB2688",
-        "dueAmount": 147200.0
-      }
-    ]
-  },
-  {
     "id": "due-129",
     "grNo": "2678",
     "tripDate": "17/06/2026",
@@ -12712,70 +12806,6 @@
         "grNo": "2680_TTC",
         "truckNo": "RJ30GA5058",
         "dueAmount": 180000.0
-      }
-    ]
-  },
-  {
-    "id": "due-132",
-    "grNo": "2681",
-    "tripDate": "20/09/2026",
-    "tripEndDate": "05/11/2026",
-    "year": "2026-2027",
-    "status": "Truck Owner Payment Pending",
-    "color": "cyan",
-    "colorHex": "#00bcd4",
-    "dueAmount": 116000.0,
-    "paidAmount": 116000.0,
-    "truckNo": "RJ09GC6777",
-    "ownerName": "Kaluram Daroga 6777",
-    "ownerMobile": "7728902435",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Kanpur (U.P.)",
-    "transport": "TTC",
-    "material": "Industrial Raw Material",
-    "weight": 62.703,
-    "rate": 1850.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 116000.0,
-    "reference": "Ankush Bansal Jaipur",
-    "referenceMobile": "9235620131",
-    "driver": "Hanuman Hindoli 4538",
-    "driverMobile": "9414453800",
-    "consignor": {
-      "gstin": "08CRGPG0812F1ZB",
-      "name": "Shree Shyam Mineral Traders",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6631B1ZN",
-      "name": "Ankush Bansal Jaipur",
-      "mobile": "9235620131"
-    },
-    "freight": 116000.0,
-    "totalFreight": 116000.0,
-    "payments": [
-      {
-        "paymentDate": "20/09/2026",
-        "amountPaid": 116000.0,
-        "mode": "NEFT/RTGS",
-        "beneficiary": "Truck Owner",
-        "bank": "TTC",
-        "toBank": "Other Bank",
-        "description": "Transporter Payment for GR 2681_TTC",
-        "paidTo": "Transporter"
-      }
-    ],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 2000.0,
-        "debtMode": "Cash",
-        "borrowerName": "Kaluram Daroga 6777",
-        "receiverName": "Ramchandra Jat 8824993002",
-        "description": "2026-2027 Advance Commission",
-        "grNo": "2681_TTC",
-        "truckNo": "RJ09GC6777",
-        "dueAmount": 116000.0
       }
     ]
   },
@@ -13126,70 +13156,6 @@
         "grNo": "2687_SMTC",
         "truckNo": "RJ01GC3456",
         "dueAmount": 86100.0
-      }
-    ]
-  },
-  {
-    "id": "due-139",
-    "grNo": "2688",
-    "tripDate": "27/09/2026",
-    "tripEndDate": "05/11/2026",
-    "year": "2026-2027",
-    "status": "Transit",
-    "color": "yellow",
-    "colorHex": "#e5a823",
-    "dueAmount": 184500.0,
-    "paidAmount": 0.0,
-    "truckNo": "RJ01GC2036",
-    "ownerName": "Kanhaiya Lal Vaishnav",
-    "ownerMobile": "7733004236",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Sandila (U.P.)",
-    "transport": "TTC",
-    "material": "Feldspar Powder",
-    "weight": 99.73,
-    "rate": 1850.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 184500.0,
-    "reference": "Saatvik Minerals",
-    "referenceMobile": "9235620138",
-    "driver": "Krishan Singh",
-    "driverMobile": "9414659401",
-    "consignor": {
-      "gstin": "08AGRPJ1613P1ZX",
-      "name": "Saatvik Minerals",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6638B1ZN",
-      "name": "Saatvik Minerals",
-      "mobile": "9235620138"
-    },
-    "freight": 1125.0,
-    "totalFreight": 185625.0,
-    "payments": [],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 2500.0,
-        "debtMode": "Cash",
-        "borrowerName": "Kanhaiya Lal Vaishnav",
-        "receiverName": "Bajrang Meena 7297032726",
-        "description": "2026-2027 Advance Commission",
-        "grNo": "2688_TTC",
-        "truckNo": "RJ01GC2036",
-        "dueAmount": 184500.0
-      },
-      {
-        "debtType": "Other",
-        "debtAmount": 1400.0,
-        "debtMode": "Cash",
-        "borrowerName": "Kanhaiya Lal Vaishnav",
-        "receiverName": "Bajrang Meena 7297032726",
-        "description": "Other Advance on Loading",
-        "grNo": "2688_TTC",
-        "truckNo": "RJ01GC2036",
-        "dueAmount": 184500.0
       }
     ]
   },
