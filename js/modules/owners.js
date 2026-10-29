@@ -94,7 +94,7 @@ const OwnersModule = {
     if (tbodyDues && (!this.allOwnerDues || this.allOwnerDues.length === 0)) {
       tbodyDues.innerHTML = `
         <tr>
-          <td colspan="9" class="text-center py-5 text-muted">
+          <td colspan="10" class="text-center py-5 text-muted">
             <div class="spinner-border spinner-border-sm text-secondary me-2"></div> Loading owner dues...
           </td>
         </tr>
@@ -154,6 +154,62 @@ const OwnersModule = {
     this.updateDueSummaryStats();
     this.renderTruckOwnersTable();
     this.renderOwnerDueTable();
+    this.setupFirestoreListeners();
+  },
+
+  setupFirestoreListeners() {
+    if (this._firestoreListenersAttached) return;
+    if (typeof firebase === 'undefined' || !firebase.firestore) return;
+
+    try {
+      const db = firebase.firestore();
+      this._firestoreListenersAttached = true;
+
+      // 1. Real-time dynamic Firestore sync for truckOwners
+      db.collection('truckOwners').onSnapshot(snapshot => {
+        if (!snapshot || snapshot.empty) return;
+        const ownersMap = new Map((this.allOwners || []).map(o => [String(o.id || o.truckNo), o]));
+        snapshot.docChanges().forEach(change => {
+          const docData = { id: change.doc.id, ...change.doc.data() };
+          const key = String(docData.id || docData.truckNo);
+          if (change.type === 'removed') {
+            ownersMap.delete(key);
+          } else {
+            const existing = ownersMap.get(key) || {};
+            ownersMap.set(key, { ...existing, ...docData });
+          }
+        });
+        this.allOwners = Array.from(ownersMap.values());
+        this.populateNameDatalist();
+        this.updateStats();
+        this.renderTruckOwnersTable();
+      }, err => {
+        console.warn('Realtime truckOwners listener:', err);
+      });
+
+      // 2. Real-time dynamic Firestore sync for ownerDues
+      db.collection('ownerDues').onSnapshot(snapshot => {
+        if (!snapshot || snapshot.empty) return;
+        const duesMap = new Map((this.allOwnerDues || []).map(d => [String(d.id || d.grNo), d]));
+        snapshot.docChanges().forEach(change => {
+          const docData = { id: change.doc.id, ...change.doc.data() };
+          const key = String(docData.id || docData.grNo);
+          if (change.type === 'removed') {
+            duesMap.delete(key);
+          } else {
+            const existing = duesMap.get(key) || {};
+            duesMap.set(key, { ...existing, ...docData });
+          }
+        });
+        this.allOwnerDues = Array.from(duesMap.values());
+        this.updateDueSummaryStats();
+        this.renderOwnerDueTable();
+      }, err => {
+        console.warn('Realtime ownerDues listener:', err);
+      });
+    } catch (e) {
+      console.warn('setupFirestoreListeners initialization:', e);
+    }
   },
 
   populateNameDatalist() {

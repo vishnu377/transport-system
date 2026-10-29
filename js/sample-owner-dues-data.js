@@ -15,8 +15,8 @@
   {
     "id": "due-2676",
     "grNo": "2676",
-    "tripDate": "28/10/2026",
-    "tripStartDate": "28/10/2026",
+    "tripDate": "20/10/2026",
+    "tripStartDate": "20/10/2026",
     "tripEndDate": "06/11/2026",
     "year": "2026-2027",
     "status": "Transit",
@@ -52,13 +52,14 @@
     "freight": 178525.0,
     "totalFreight": 178525.0,
     "payments": [],
-    "debts": []
+    "debts": [],
+    "date": "20/10/2026"
   },
   {
     "id": "due-2677",
     "grNo": "2677",
-    "tripDate": "28/10/2026",
-    "tripStartDate": "28/10/2026",
+    "tripDate": "20/10/2026",
+    "tripStartDate": "20/10/2026",
     "tripEndDate": "06/11/2026",
     "year": "2026-2027",
     "status": "Transit",
@@ -94,13 +95,14 @@
     "freight": 174389.0,
     "totalFreight": 174389.0,
     "payments": [],
-    "debts": []
+    "debts": [],
+    "date": "20/10/2026"
   },
   {
     "id": "due-2655",
     "grNo": "2655",
-    "tripDate": "28/10/2026",
-    "tripStartDate": "28/10/2026",
+    "tripDate": "20/10/2026",
+    "tripStartDate": "20/10/2026",
     "tripEndDate": "06/11/2026",
     "year": "2026-2027",
     "status": "Transit",
@@ -136,13 +138,14 @@
     "freight": 131008.0,
     "totalFreight": 131008.0,
     "payments": [],
-    "debts": []
+    "debts": [],
+    "date": "20/10/2026"
   },
   {
     "id": "due-255",
     "grNo": "255",
-    "tripDate": "28/10/2026",
-    "tripStartDate": "28/10/2026",
+    "tripDate": "20/10/2026",
+    "tripStartDate": "20/10/2026",
     "tripEndDate": "06/11/2026",
     "year": "2026-2027",
     "status": "Transit",
@@ -178,13 +181,14 @@
     "freight": 212872.0,
     "totalFreight": 212872.0,
     "payments": [],
-    "debts": []
+    "debts": [],
+    "date": "20/10/2026"
   },
   {
     "id": "due-2688",
     "grNo": "2688",
-    "tripDate": "28/10/2026",
-    "tripStartDate": "28/10/2026",
+    "tripDate": "20/10/2026",
+    "tripStartDate": "20/10/2026",
     "tripEndDate": "06/11/2026",
     "year": "2026-2027",
     "status": "Transit",
@@ -220,13 +224,14 @@
     "freight": 134055.0,
     "totalFreight": 134055.0,
     "payments": [],
-    "debts": []
+    "debts": [],
+    "date": "20/10/2026"
   },
   {
     "id": "due-2681",
     "grNo": "2681",
-    "tripDate": "28/10/2026",
-    "tripStartDate": "28/10/2026",
+    "tripDate": "20/10/2026",
+    "tripStartDate": "20/10/2026",
     "tripEndDate": "06/11/2026",
     "year": "2026-2027",
     "status": "Transit",
@@ -262,7 +267,8 @@
     "freight": 111078.0,
     "totalFreight": 111078.0,
     "payments": [],
-    "debts": []
+    "debts": [],
+    "date": "20/10/2026"
   },
   {
     "id": "due-2649",
@@ -2949,7 +2955,7 @@
     "dueAmount": 2191.16,
     "paidAmount": 0.0,
     "truckNo": "RJ52CB3484",
-    "ownerName": "Depak Dhabås",
+    "ownerName": "Depak Dhab\u00e5s",
     "ownerMobile": "9829012345",
     "origin": "Rajsamand (Raj.)",
     "destination": "Kanpur(u.p.)",
@@ -2959,7 +2965,7 @@
     "rate": 1450.0,
     "billingType": "Per Tonne",
     "biltyAmount": 2191.16,
-    "reference": "Rishi Kapur Kaøsons India",
+    "reference": "Rishi Kapur Ka\u00f8sons India",
     "referenceMobile": "9235620000",
     "driver": "Dhanraj Moona 0986",
     "driverMobile": "9414717113",
@@ -2970,7 +2976,7 @@
     },
     "consignee": {
       "gstin": "07AABCT9988C1ZR",
-      "name": "Rishi Kapur Kaøsons India",
+      "name": "Rishi Kapur Ka\u00f8sons India",
       "mobile": "9235620000"
     },
     "freight": 1752.9279999999999,
@@ -2981,7 +2987,7 @@
         "debtType": "Commission",
         "debtAmount": 2500.0,
         "debtMode": "Cash",
-        "borrowerName": "Depak Dhabås",
+        "borrowerName": "Depak Dhab\u00e5s",
         "receiverName": "Dhanraj Moona 0986",
         "debtDate": "23/10/2026"
       }
@@ -3457,7 +3463,7 @@
     "rate": 1450.0,
     "billingType": "Per Tonne",
     "biltyAmount": 20.0,
-    "reference": "Rakßh",
+    "reference": "Rak\u00dfh",
     "referenceMobile": "9235620000",
     "driver": "Kailashchand Choudhary",
     "driverMobile": "9414717113",
@@ -3468,7 +3474,7 @@
     },
     "consignee": {
       "gstin": "09AICPG6500B1ZN",
-      "name": "Rakßh",
+      "name": "Rak\u00dfh",
       "mobile": "9235620000"
     },
     "freight": 16.0,
@@ -5425,7 +5431,7 @@
     "rate": 1450.0,
     "billingType": "Per Tonne",
     "biltyAmount": 20.0,
-    "reference": "Rakßh",
+    "reference": "Rak\u00dfh",
     "referenceMobile": "9235620000",
     "driver": "Mahesh Gurjar Govindpura",
     "driverMobile": "9414717113",
@@ -5436,7 +5442,7 @@
     },
     "consignee": {
       "gstin": "07AABCT9988C1ZR",
-      "name": "Rakßh",
+      "name": "Rak\u00dfh",
       "mobile": "9235620000"
     },
     "freight": 16.0,

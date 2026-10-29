@@ -50,6 +50,7 @@ class DBService {
       debts: new Map(),
       parties: new Map(),
       truckOwners: new Map(),
+      ownerDues: new Map(),
       cheques: new Map(),
       drivers: new Map(),
       brokers: new Map(),
@@ -73,6 +74,7 @@ class DBService {
       debts: new Set(),
       parties: new Set(),
       truckOwners: new Set(),
+      ownerDues: new Set(),
       cheques: new Set(),
       drivers: new Set(),
       brokers: new Set(),
@@ -752,9 +754,11 @@ class DBService {
     if (cloudItems === undefined) {
       return await this.getAll('ownerDues');
     }
-    const baseDues = (typeof window !== 'undefined' && Array.isArray(window.INITIAL_OWNER_DUES))
-      ? window.INITIAL_OWNER_DUES
-      : [];
+    const baseDues = (typeof window !== 'undefined' && Array.isArray(window.SAMPLE_OWNER_DUES))
+      ? window.SAMPLE_OWNER_DUES
+      : ((typeof window !== 'undefined' && Array.isArray(window.INITIAL_OWNER_DUES))
+        ? window.INITIAL_OWNER_DUES
+        : []);
 
     const dueMap = new Map();
     const deletedSet = this.deletedIds.ownerDues || new Set();

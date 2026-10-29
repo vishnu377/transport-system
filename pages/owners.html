@@ -720,94 +720,157 @@
       font-size: 0.85rem;
     }
 
+    /* Authentic Google AppSheet Table Row Styles: Clean White Background & Full-Row Font Coloring */
+    .appsheet-row {
+      background-color: #ffffff !important;
+      border-bottom: 1px solid #f1f3f4 !important;
+      border-left: none !important;
+    }
+    .appsheet-row:hover {
+      background-color: #f8f9fa !important;
+    }
+
     /* 1. Yellow (Transit) */
-    .appsheet-row.row-status-yellow {
-      background-color: #fefce8 !important; /* Soft yellow pastel */
-      border-left: 4.5px solid #c3ad00 !important;
+    .appsheet-row.row-status-yellow,
+    .appsheet-row.row-theme-golden,
+    .appsheet-row.row-theme-yellow {
+      background-color: #ffffff !important;
+      border-left: none !important;
     }
     .appsheet-row.row-status-yellow td,
-    .appsheet-row.row-status-yellow td span:not(.due-amount-red):not(.badge),
-    .appsheet-row.row-status-yellow td div {
-      color: #854d0e !important; /* Deep readable yellow/amber text */
+    .appsheet-row.row-status-yellow td *,
+    .appsheet-row.row-theme-golden td,
+    .appsheet-row.row-theme-golden td *,
+    .appsheet-row.row-theme-yellow td,
+    .appsheet-row.row-theme-yellow td * {
+      color: #c3ad00 !important;
+      font-weight: 500;
     }
-    .appsheet-row.row-status-yellow:hover {
-      background-color: #fef9c3 !important;
+    .appsheet-row.row-status-yellow:hover,
+    .appsheet-row.row-theme-golden:hover,
+    .appsheet-row.row-theme-yellow:hover {
+      background-color: #f8f9fa !important;
     }
 
     /* 2. Purple (POD Sent) */
-    .appsheet-row.row-status-purple {
-      background-color: #faf5ff !important; /* Soft purple pastel */
-      border-left: 4.5px solid #8000ff !important;
+    .appsheet-row.row-status-purple,
+    .appsheet-row.row-theme-purple,
+    .appsheet-row.row-theme-dark_blue,
+    .appsheet-row.row-theme-dark-blue {
+      background-color: #ffffff !important;
+      border-left: none !important;
     }
     .appsheet-row.row-status-purple td,
-    .appsheet-row.row-status-purple td span:not(.due-amount-red):not(.badge),
-    .appsheet-row.row-status-purple td div {
-      color: #6b21a8 !important; /* Deep readable purple text */
+    .appsheet-row.row-status-purple td *,
+    .appsheet-row.row-theme-purple td,
+    .appsheet-row.row-theme-purple td *,
+    .appsheet-row.row-theme-dark_blue td,
+    .appsheet-row.row-theme-dark_blue td * {
+      color: #7c00ff !important;
+      font-weight: 500;
     }
-    .appsheet-row.row-status-purple:hover {
-      background-color: #f3e8ff !important;
+    .appsheet-row.row-status-purple:hover,
+    .appsheet-row.row-theme-purple:hover,
+    .appsheet-row.row-theme-dark_blue:hover {
+      background-color: #f8f9fa !important;
     }
 
     /* 3. Blue (Party Payment Pending) */
-    .appsheet-row.row-status-blue {
-      background-color: #eff6ff !important; /* Soft sky blue pastel */
-      border-left: 4.5px solid #037be4 !important;
+    .appsheet-row.row-status-blue,
+    .appsheet-row.row-theme-blue {
+      background-color: #ffffff !important;
+      border-left: none !important;
     }
     .appsheet-row.row-status-blue td,
-    .appsheet-row.row-status-blue td span:not(.due-amount-red):not(.badge),
-    .appsheet-row.row-status-blue td div {
-      color: #1d4ed8 !important; /* Deep readable blue text */
+    .appsheet-row.row-status-blue td *,
+    .appsheet-row.row-theme-blue td,
+    .appsheet-row.row-theme-blue td * {
+      color: #037be4 !important;
+      font-weight: 500;
     }
-    .appsheet-row.row-status-blue:hover {
-      background-color: #dbeafe !important;
+    .appsheet-row.row-status-blue:hover,
+    .appsheet-row.row-theme-blue:hover {
+      background-color: #f8f9fa !important;
     }
 
     /* 4. Pink (Off Loading) */
-    .appsheet-row.row-status-pink {
-      background-color: #fdf2f8 !important; /* Soft pink pastel */
-      border-left: 4.5px solid #fb0a82 !important;
+    .appsheet-row.row-status-pink,
+    .appsheet-row.row-theme-pink {
+      background-color: #ffffff !important;
+      border-left: none !important;
     }
     .appsheet-row.row-status-pink td,
-    .appsheet-row.row-status-pink td span:not(.due-amount-red):not(.badge),
-    .appsheet-row.row-status-pink td div {
-      color: #9d174d !important; /* Deep readable pink text */
+    .appsheet-row.row-status-pink td *,
+    .appsheet-row.row-theme-pink td,
+    .appsheet-row.row-theme-pink td * {
+      color: #fb0a82 !important;
+      font-weight: 500;
     }
-    .appsheet-row.row-status-pink:hover {
-      background-color: #fce7f3 !important;
+    .appsheet-row.row-status-pink:hover,
+    .appsheet-row.row-theme-pink:hover {
+      background-color: #f8f9fa !important;
     }
 
     /* 5. Slate (Cheque Due) */
-    .appsheet-row.row-status-slate {
-      background-color: #f8fafc !important; /* Soft slate pastel */
-      border-left: 4.5px solid #4a5d74 !important;
+    .appsheet-row.row-status-slate,
+    .appsheet-row.row-theme-slate {
+      background-color: #ffffff !important;
+      border-left: none !important;
     }
     .appsheet-row.row-status-slate td,
-    .appsheet-row.row-status-slate td span:not(.due-amount-red):not(.badge),
-    .appsheet-row.row-status-slate td div {
-      color: #334155 !important; /* Deep readable slate text */
+    .appsheet-row.row-status-slate td *,
+    .appsheet-row.row-theme-slate td,
+    .appsheet-row.row-theme-slate td * {
+      color: #5f6368 !important;
+      font-weight: 500;
     }
-    .appsheet-row.row-status-slate:hover {
-      background-color: #f1f5f9 !important;
+    .appsheet-row.row-status-slate:hover,
+    .appsheet-row.row-theme-slate:hover {
+      background-color: #f8f9fa !important;
     }
 
     /* 6. Cyan (Truck Owner Payment Pending) */
-    .appsheet-row.row-status-cyan {
-      background-color: #ecfeff !important; /* Soft cyan pastel */
-      border-left: 4.5px solid #0891b2 !important;
+    .appsheet-row.row-status-cyan,
+    .appsheet-row.row-theme-cyan,
+    .appsheet-row.row-theme-light_blue,
+    .appsheet-row.row-theme-light-blue {
+      background-color: #ffffff !important;
+      border-left: none !important;
     }
     .appsheet-row.row-status-cyan td,
-    .appsheet-row.row-status-cyan td span:not(.due-amount-red):not(.badge),
-    .appsheet-row.row-status-cyan td div {
-      color: #0e7490 !important; /* Deep readable cyan text */
+    .appsheet-row.row-status-cyan td *,
+    .appsheet-row.row-theme-cyan td,
+    .appsheet-row.row-theme-cyan td *,
+    .appsheet-row.row-theme-light_blue td,
+    .appsheet-row.row-theme-light_blue td * {
+      color: #01cebc !important;
+      font-weight: 500;
     }
-    .appsheet-row.row-status-cyan:hover {
-      background-color: #cffafe !important;
+    .appsheet-row.row-status-cyan:hover,
+    .appsheet-row.row-theme-cyan:hover,
+    .appsheet-row.row-theme-light_blue:hover {
+      background-color: #f8f9fa !important;
     }
 
     /* Owner Due Amount is ALWAYS Bold Red in Google AppSheet */
-    .appsheet-row .due-amount-red {
+    .appsheet-row .due-amount-red,
+    .appsheet-row td.due-amount-red,
+    .appsheet-row td.due-amount-red *,
+    .appsheet-row.row-status-yellow td.due-amount-red,
+    .appsheet-row.row-status-yellow td.due-amount-red *,
+    .appsheet-row.row-status-cyan td.due-amount-red,
+    .appsheet-row.row-status-cyan td.due-amount-red *,
+    .appsheet-row.row-status-purple td.due-amount-red,
+    .appsheet-row.row-status-purple td.due-amount-red *,
+    .appsheet-row.row-status-blue td.due-amount-red,
+    .appsheet-row.row-status-blue td.due-amount-red *,
+    .appsheet-row.row-status-pink td.due-amount-red,
+    .appsheet-row.row-status-pink td.due-amount-red *,
+    .appsheet-row.row-status-slate td.due-amount-red,
+    .appsheet-row.row-status-slate td.due-amount-red * {
       color: #cc0b0b !important;
       font-weight: 700 !important;
+      font-variant-numeric: tabular-nums;
     }
     .appsheet-row .due-amount-zero {
       color: #5f6368 !important;
@@ -1790,6 +1853,7 @@
                 <div class="d-flex align-items-center gap-2">
                   <span class="small">Rows:</span>
                   <select id="due-page-size-select" class="form-select form-select-sm py-0 px-2 text-muted" style="width: auto; font-size: 0.82rem; height: 28px;" onchange="OwnersModule.changeDuePageSize(this.value)">
+                    <option value="25">25</option>
                     <option value="50" selected>50</option>
                     <option value="100">100</option>
                     <option value="200">200</option>

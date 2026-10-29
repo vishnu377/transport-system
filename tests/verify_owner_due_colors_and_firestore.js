@@ -12,30 +12,23 @@ console.log("=== RUNNING VERIFICATION: OWNER DUE TABLE & FIRESTORE INTEGRITY ===
 const htmlContent = fs.readFileSync('pages/owners.html', 'utf-8');
 
 console.log("\n[TEST 1] Verifying CSS in pages/owners.html...");
-assert(!htmlContent.includes('.appsheet-row {\r\n      background-color: #ffffff !important;') &&
-       !htmlContent.includes('.appsheet-row {\n      background-color: #ffffff !important;'),
-       "Conflicting white background rule should not exist in .appsheet-row!");
-console.log("✔ No conflicting white background rule overriding row status background");
+assert(htmlContent.includes('background-color: #ffffff'),
+       "White background rule must exist for authentic AppSheet rows!");
+console.log("✔ Clean white background rule verified for authentic AppSheet look");
 
 const requiredCssSnippets = [
   '.appsheet-row.row-status-yellow',
-  'background-color: #fefce8 !important;',
-  'color: #854d0e !important;',
+  'color: #c3ad00 !important;',
   '.appsheet-row.row-status-purple',
-  'background-color: #faf5ff !important;',
-  'color: #6b21a8 !important;',
+  'color: #7c00ff !important;',
   '.appsheet-row.row-status-blue',
-  'background-color: #eff6ff !important;',
-  'color: #1d4ed8 !important;',
+  'color: #037be4 !important;',
   '.appsheet-row.row-status-pink',
-  'background-color: #fdf2f8 !important;',
-  'color: #9d174d !important;',
+  'color: #fb0a82 !important;',
   '.appsheet-row.row-status-slate',
-  'background-color: #f8fafc !important;',
-  'color: #334155 !important;',
+  'color: #5f6368 !important;',
   '.appsheet-row.row-status-cyan',
-  'background-color: #ecfeff !important;',
-  'color: #0e7490 !important;',
+  'color: #01cebc !important;',
   '.appsheet-row .due-amount-red',
   'color: #cc0b0b !important;'
 ];
@@ -43,7 +36,7 @@ const requiredCssSnippets = [
 requiredCssSnippets.forEach(snippet => {
   assert(htmlContent.includes(snippet), `Missing CSS snippet: ${snippet}`);
 });
-console.log("✔ All 6 full-row pastel backgrounds and readable status text colors verified in CSS!");
+console.log("✔ All 6 full-row status font colors and clean white background verified in CSS!");
 console.log("✔ Strict bold red amount (.due-amount-red: #cc0b0b) verified in CSS!");
 
 // 2. Verify db-service.js direct Firestore mutations and FirebaseDB binding
