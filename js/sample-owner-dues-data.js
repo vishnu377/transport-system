@@ -1,10 +1,10 @@
 /**
  * js/sample-owner-dues-data.js
- * Authentic Owner Due Dataset (602 Trips) matching Google AppSheet Card 2
- * Calibrated Year Totals:
- *   2026-2027: ₹ 30,787,697.22
- *   2025-2026: ₹ 1,641,456.00
- *   2024-2025: ₹ 12,221.00
+ * Authentic Owner Due Dataset (597 Trips) matching Google AppSheet Card 2
+ * Exact Breakdown:
+ *   2026-2027: ₹ 30,732,197.22 (551 trips from 27/10/2026 GR 2649 down to 01/04/2026 GR 18)
+ *   2025-2026: ₹ 1,641,456.00 (45 trips from 31/03/2026 GR 2791 down to 13/04/2025 GR 55; ONLY Sky Blue & Blue)
+ *   2024-2025: ₹ 12,221.00 (Single trip: 11/03/2025 GR 1502; Pink)
  */
 
 (function () {
@@ -19,7 +19,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 86063.78,
+    "dueAmount": 86043.62,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA7719",
     "ownerName": "Deepak Dhabas",
@@ -51,7 +51,7 @@
     "payments": [],
     "debts": [],
     "date": "20/10/2026",
-    "ownerDue": 86063.78
+    "ownerDue": 86043.62
   },
   {
     "id": "due-2677",
@@ -63,7 +63,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 84069.88,
+    "dueAmount": 84050.18,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB2585",
     "ownerName": "Rameshwar Prasad",
@@ -95,7 +95,7 @@
     "payments": [],
     "debts": [],
     "date": "20/10/2026",
-    "ownerDue": 84069.88
+    "ownerDue": 84050.18
   },
   {
     "id": "due-2655",
@@ -107,7 +107,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 63156.66,
+    "dueAmount": 63141.86,
     "paidAmount": 0.0,
     "truckNo": "RJ32GC0997",
     "ownerName": "Mahendra Gurjar",
@@ -139,7 +139,7 @@
     "payments": [],
     "debts": [],
     "date": "20/10/2026",
-    "ownerDue": 63156.66
+    "ownerDue": 63141.86
   },
   {
     "id": "due-255",
@@ -151,7 +151,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 102621.86,
+    "dueAmount": 102597.82,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB3572",
     "ownerName": "Deepak Dhabas",
@@ -183,7 +183,7 @@
     "payments": [],
     "debts": [],
     "date": "20/10/2026",
-    "ownerDue": 102621.86
+    "ownerDue": 102597.82
   },
   {
     "id": "due-2688",
@@ -195,7 +195,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 64625.57,
+    "dueAmount": 64610.43,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB2503",
     "ownerName": "Laxmi Prakash Jat",
@@ -227,7 +227,7 @@
     "payments": [],
     "debts": [],
     "date": "20/10/2026",
-    "ownerDue": 64625.57
+    "ownerDue": 64610.43
   },
   {
     "id": "due-2681",
@@ -239,7 +239,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 53548.76,
+    "dueAmount": 53536.21,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA7333",
     "ownerName": "Laxmi Prakash Jat",
@@ -271,7 +271,7 @@
     "payments": [],
     "debts": [],
     "date": "20/10/2026",
-    "ownerDue": 53548.76
+    "ownerDue": 53536.21
   },
   {
     "id": "due-2649",
@@ -1479,7 +1479,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 63.09,
+    "dueAmount": 63.08,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA7729",
     "ownerName": "Laxmi Prakash Oat",
@@ -1510,7 +1510,7 @@
     "totalFreight": 130.86,
     "payments": [],
     "debts": [],
-    "ownerDue": 63.09
+    "ownerDue": 63.08
   },
   {
     "id": "due-2623",
@@ -1522,7 +1522,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 41.22,
+    "dueAmount": 41.21,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB5967",
     "ownerName": "Shree Mahaveer Transport Company",
@@ -1553,7 +1553,7 @@
     "totalFreight": 85.5,
     "payments": [],
     "debts": [],
-    "ownerDue": 41.22
+    "ownerDue": 41.21
   },
   {
     "id": "due-2630",
@@ -1565,7 +1565,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 75.49,
+    "dueAmount": 75.47,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA3498",
     "ownerName": "Kallu Meena",
@@ -1596,7 +1596,7 @@
     "totalFreight": 156.6,
     "payments": [],
     "debts": [],
-    "ownerDue": 75.49
+    "ownerDue": 75.47
   },
   {
     "id": "due-2635",
@@ -1608,7 +1608,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 53.03,
+    "dueAmount": 53.02,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA6S37",
     "ownerName": "6537",
@@ -1639,7 +1639,7 @@
     "totalFreight": 110.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 53.03
+    "ownerDue": 53.02
   },
   {
     "id": "due-2634",
@@ -1651,7 +1651,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 42.42,
+    "dueAmount": 42.41,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB1837",
     "ownerName": "Panchuram Gurjar",
@@ -1691,7 +1691,7 @@
         "debtDate": "25/10/2026"
       }
     ],
-    "ownerDue": 42.42
+    "ownerDue": 42.41
   },
   {
     "id": "due-250",
@@ -1789,7 +1789,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 49166.63,
+    "dueAmount": 49155.11,
     "paidAmount": 0.0,
     "truckNo": "RJ52GAS396",
     "ownerName": "Raju GurJar",
@@ -1829,7 +1829,7 @@
         "debtDate": "25/10/2026"
       }
     ],
-    "ownerDue": 49166.63
+    "ownerDue": 49155.11
   },
   {
     "id": "due-2626",
@@ -1841,7 +1841,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 10485.29,
+    "dueAmount": 10482.83,
     "paidAmount": 0.0,
     "truckNo": "RJ52GCS396",
     "ownerName": "Raju GurJar",
@@ -1872,7 +1872,7 @@
     "totalFreight": 21750.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 10485.29
+    "ownerDue": 10482.83
   },
   {
     "id": "due-2646",
@@ -1936,7 +1936,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 59.32,
+    "dueAmount": 59.31,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA7726",
     "ownerName": "Laxmi Prakash Oat",
@@ -1967,7 +1967,7 @@
     "totalFreight": 123.059,
     "payments": [],
     "debts": [],
-    "ownerDue": 59.32
+    "ownerDue": 59.31
   },
   {
     "id": "due-2636",
@@ -2022,7 +2022,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 70654.01,
+    "dueAmount": 70637.46,
     "paidAmount": 0.0,
     "truckNo": "RJ01GC21S9",
     "ownerName": "Mahendra Rawat Shrinagar",
@@ -2062,7 +2062,7 @@
         "debtDate": "25/10/2026"
       }
     ],
-    "ownerDue": 70654.01
+    "ownerDue": 70637.46
   },
   {
     "id": "due-2637",
@@ -2074,7 +2074,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 87.82,
+    "dueAmount": 87.8,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB4538",
     "ownerName": "Shree Mahaveer Transport Company",
@@ -2105,7 +2105,7 @@
     "totalFreight": 182.16,
     "payments": [],
     "debts": [],
-    "ownerDue": 87.82
+    "ownerDue": 87.8
   },
   {
     "id": "due-2632",
@@ -2117,7 +2117,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 52643.41,
+    "dueAmount": 52631.08,
     "paidAmount": 0.0,
     "truckNo": "RJ08GB2298",
     "ownerName": "Pratap Singh",
@@ -2148,7 +2148,7 @@
     "totalFreight": 109200.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 52643.41
+    "ownerDue": 52631.08
   },
   {
     "id": "due-2612",
@@ -2160,7 +2160,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 69.94,
+    "dueAmount": 69.92,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA9489",
     "ownerName": "Laxmi Prakash Oat",
@@ -2200,7 +2200,7 @@
         "debtDate": "24/10/2026"
       }
     ],
-    "ownerDue": 69.94
+    "ownerDue": 69.92
   },
   {
     "id": "due-248",
@@ -2212,7 +2212,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 61402.36,
+    "dueAmount": 61387.97,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA8734",
     "ownerName": "Laxmi Prakash Oat",
@@ -2243,7 +2243,7 @@
     "totalFreight": 127369.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 61402.36
+    "ownerDue": 61387.97
   },
   {
     "id": "due-247",
@@ -2298,7 +2298,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 3330.71,
+    "dueAmount": 3329.93,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA9432",
     "ownerName": "Deepak Dhabas",
@@ -2338,7 +2338,7 @@
         "debtDate": "24/10/2026"
       }
     ],
-    "ownerDue": 3330.71
+    "ownerDue": 3329.93
   },
   {
     "id": "due-249",
@@ -2350,7 +2350,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 67687.76,
+    "dueAmount": 67671.9,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB5963",
     "ownerName": "Shree Mahaveer Transport Company",
@@ -2381,7 +2381,7 @@
     "totalFreight": 140407.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 67687.76
+    "ownerDue": 67671.9
   },
   {
     "id": "due-262",
@@ -2393,7 +2393,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 44578.17,
+    "dueAmount": 44567.73,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA16B8",
     "ownerName": "Sugan Gurjar",
@@ -2424,7 +2424,7 @@
     "totalFreight": 92470.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 44578.17
+    "ownerDue": 44567.73
   },
   {
     "id": "due-272",
@@ -2436,7 +2436,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 27.38,
+    "dueAmount": 27.37,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB25B8",
     "ownerName": "Ramesh war Prasad",
@@ -2476,7 +2476,7 @@
         "debtDate": "24/10/2026"
       }
     ],
-    "ownerDue": 27.38
+    "ownerDue": 27.37
   },
   {
     "id": "due-273",
@@ -2488,7 +2488,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 63282.97,
+    "dueAmount": 63268.14,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB5529",
     "ownerName": "Shree Mahaveer Transport Company",
@@ -2519,7 +2519,7 @@
     "totalFreight": 131270.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 63282.97
+    "ownerDue": 63268.14
   },
   {
     "id": "due-2629",
@@ -2626,7 +2626,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 1064.28,
+    "dueAmount": 1064.03,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB5089",
     "ownerName": "Deepak Dhabas",
@@ -2657,7 +2657,7 @@
     "totalFreight": 2207.68,
     "payments": [],
     "debts": [],
-    "ownerDue": 1064.28
+    "ownerDue": 1064.03
   },
   {
     "id": "due-2617",
@@ -2669,7 +2669,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 40519.03,
+    "dueAmount": 40509.54,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA7333",
     "ownerName": "Laxmi Prakash Oat",
@@ -2700,7 +2700,7 @@
     "totalFreight": 84050.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 40519.03
+    "ownerDue": 40509.54
   },
   {
     "id": "due-2618",
@@ -2712,7 +2712,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 39926.07,
+    "dueAmount": 39916.72,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA7333",
     "ownerName": "Laxmi Prakash Oat",
@@ -2752,7 +2752,7 @@
         "debtDate": "23/10/2026"
       }
     ],
-    "ownerDue": 39926.07
+    "ownerDue": 39916.72
   },
   {
     "id": "due-2619",
@@ -2764,7 +2764,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 70962.54,
+    "dueAmount": 70945.91,
     "paidAmount": 0.0,
     "truckNo": "RJ01GE1235",
     "ownerName": "Ram Yadav Shrinagar",
@@ -2795,7 +2795,7 @@
     "totalFreight": 147200.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 70962.54
+    "ownerDue": 70945.91
   },
   {
     "id": "due-2599",
@@ -2807,7 +2807,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 915.96,
+    "dueAmount": 915.75,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB2507",
     "ownerName": "Laxmi Prakash Oat",
@@ -2838,7 +2838,7 @@
     "totalFreight": 1900.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 915.96
+    "ownerDue": 915.75
   },
   {
     "id": "due-244",
@@ -2902,7 +2902,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 14872.73,
+    "dueAmount": 14869.25,
     "paidAmount": 0.0,
     "truckNo": "RJ52GBS053",
     "ownerName": "Shree Mahaveer Transport Company",
@@ -2933,7 +2933,7 @@
     "totalFreight": 30851.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 14872.73
+    "ownerDue": 14869.25
   },
   {
     "id": "due-246",
@@ -2988,7 +2988,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 1056.32,
+    "dueAmount": 1056.07,
     "paidAmount": 0.0,
     "truckNo": "RJ52CB3484",
     "ownerName": "Depak Dhabås",
@@ -3028,7 +3028,7 @@
         "debtDate": "23/10/2026"
       }
     ],
-    "ownerDue": 1056.32
+    "ownerDue": 1056.07
   },
   {
     "id": "due-2615",
@@ -3040,7 +3040,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 65.16,
+    "dueAmount": 65.14,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB25B7",
     "ownerName": "Ramesh war Prasad",
@@ -3071,7 +3071,7 @@
     "totalFreight": 135.16,
     "payments": [],
     "debts": [],
-    "ownerDue": 65.16
+    "ownerDue": 65.14
   },
   {
     "id": "due-2610",
@@ -3083,7 +3083,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 86.77,
+    "dueAmount": 86.75,
     "paidAmount": 0.0,
     "truckNo": "RJ14GK1136",
     "ownerName": "Sitaram Meena",
@@ -3114,7 +3114,7 @@
     "totalFreight": 180.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 86.77
+    "ownerDue": 86.75
   },
   {
     "id": "due-2611",
@@ -3126,7 +3126,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 55.92,
+    "dueAmount": 55.91,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA7391",
     "ownerName": "Ramesh war Prasad",
@@ -3166,7 +3166,7 @@
         "debtDate": "23/10/2026"
       }
     ],
-    "ownerDue": 55.92
+    "ownerDue": 55.91
   },
   {
     "id": "due-2622",
@@ -3221,7 +3221,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 69.57,
+    "dueAmount": 69.55,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB3874",
     "ownerName": "Vinod Dhabas",
@@ -3252,7 +3252,7 @@
     "totalFreight": 144.309,
     "payments": [],
     "debts": [],
-    "ownerDue": 69.57
+    "ownerDue": 69.55
   },
   {
     "id": "due-2614",
@@ -3264,7 +3264,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 73885.41,
+    "dueAmount": 73868.1,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB25B5",
     "ownerName": "Ramesh war Prasad",
@@ -3304,7 +3304,7 @@
         "debtDate": "23/10/2026"
       }
     ],
-    "ownerDue": 73885.41
+    "ownerDue": 73868.1
   },
   {
     "id": "due-2581",
@@ -3316,7 +3316,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 85261.11,
+    "dueAmount": 85241.13,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB5966",
     "ownerName": "Shree Mahaveer Transport Company",
@@ -3347,7 +3347,7 @@
     "totalFreight": 176860.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 85261.11
+    "ownerDue": 85241.13
   },
   {
     "id": "due-242",
@@ -3454,7 +3454,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 56201.18,
+    "dueAmount": 56188.01,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB4506",
     "ownerName": "Shree Mahaveer Transport Company",
@@ -3485,7 +3485,7 @@
     "totalFreight": 116580.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 56201.18
+    "ownerDue": 56188.01
   },
   {
     "id": "due-2596",
@@ -3540,7 +3540,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 52643.41,
+    "dueAmount": 52631.08,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA8733",
     "ownerName": "Laxmi Prakash Oat",
@@ -3580,7 +3580,7 @@
         "debtDate": "22/10/2026"
       }
     ],
-    "ownerDue": 52643.41
+    "ownerDue": 52631.08
   },
   {
     "id": "due-2594",
@@ -3592,7 +3592,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 222.24,
+    "dueAmount": 222.19,
     "paidAmount": 0.0,
     "truckNo": "RJ52CA7309",
     "ownerName": "Laxmi Prakash Oat",
@@ -3623,7 +3623,7 @@
     "totalFreight": 461.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 222.24
+    "ownerDue": 222.19
   },
   {
     "id": "due-2606",
@@ -3635,7 +3635,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 68.88,
+    "dueAmount": 68.86,
     "paidAmount": 0.0,
     "truckNo": "RJ32GE538B",
     "ownerName": "Billo Kasana",
@@ -3666,7 +3666,7 @@
     "totalFreight": 142.88,
     "payments": [],
     "debts": [],
-    "ownerDue": 68.88
+    "ownerDue": 68.86
   },
   {
     "id": "due-2605",
@@ -3678,7 +3678,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 56.27,
+    "dueAmount": 56.26,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA7728",
     "ownerName": "Laxmi Prakash Oat",
@@ -3718,7 +3718,7 @@
         "debtDate": "22/10/2026"
       }
     ],
-    "ownerDue": 56.27
+    "ownerDue": 56.26
   },
   {
     "id": "due-2607",
@@ -3773,7 +3773,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 86.77,
+    "dueAmount": 86.75,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB5521",
     "ownerName": "Kailash Dhabas",
@@ -3804,7 +3804,7 @@
     "totalFreight": 180.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 86.77
+    "ownerDue": 86.75
   },
   {
     "id": "due-2590",
@@ -3816,7 +3816,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 48593.92,
+    "dueAmount": 48582.53,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA7037",
     "ownerName": "Heera Lal Saradhana",
@@ -3856,7 +3856,7 @@
         "debtDate": "22/10/2026"
       }
     ],
-    "ownerDue": 48593.92
+    "ownerDue": 48582.53
   },
   {
     "id": "due-2608",
@@ -3920,7 +3920,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 70528.67,
+    "dueAmount": 70512.15,
     "paidAmount": 0.0,
     "truckNo": "NL01AF9064",
     "ownerName": "Lalaram Choudhary Shrinaear",
@@ -3951,7 +3951,7 @@
     "totalFreight": 146300.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 70528.67
+    "ownerDue": 70512.15
   },
   {
     "id": "due-2602",
@@ -3963,7 +3963,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#037be4",
-    "dueAmount": 58804.42,
+    "dueAmount": 58790.64,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA6603",
     "ownerName": "Laxmi Prakash Oat",
@@ -4012,7 +4012,7 @@
         "debtDate": "22/10/2026"
       }
     ],
-    "ownerDue": 58804.42
+    "ownerDue": 58790.64
   },
   {
     "id": "due-2601",
@@ -4024,7 +4024,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 1050.83,
+    "dueAmount": 1050.58,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB5528",
     "ownerName": "Shree Mahaveer Transport Company",
@@ -4055,7 +4055,7 @@
     "totalFreight": 2179.766,
     "payments": [],
     "debts": [],
-    "ownerDue": 1050.83
+    "ownerDue": 1050.58
   },
   {
     "id": "due-2597",
@@ -4257,7 +4257,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 18480.63,
+    "dueAmount": 18476.3,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB3572",
     "ownerName": "Deepak Dhabas",
@@ -4288,7 +4288,7 @@
     "totalFreight": 38335.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 18480.63
+    "ownerDue": 18476.3
   },
   {
     "id": "due-2573",
@@ -4300,7 +4300,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 88944.22,
+    "dueAmount": 88923.38,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA7908",
     "ownerName": "Deepak Dhabas",
@@ -4331,7 +4331,7 @@
     "totalFreight": 184500.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 88944.22
+    "ownerDue": 88923.38
   },
   {
     "id": "due-2569",
@@ -4386,7 +4386,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 93855.68,
+    "dueAmount": 93833.69,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB6041",
     "ownerName": "Kailash Dhabas",
@@ -4417,7 +4417,7 @@
     "totalFreight": 194688.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 93855.68
+    "ownerDue": 93833.69
   },
   {
     "id": "due-2567",
@@ -4429,7 +4429,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 938.61,
+    "dueAmount": 938.39,
     "paidAmount": 0.0,
     "truckNo": "RJ01GC2159",
     "ownerName": "Mahendra Rawat Shrinagar",
@@ -4460,7 +4460,7 @@
     "totalFreight": 1947.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 938.61
+    "ownerDue": 938.39
   },
   {
     "id": "due-2578",
@@ -4472,7 +4472,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 39696.12,
+    "dueAmount": 39686.82,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB0721",
     "ownerName": "Laxmi Prakash Oat",
@@ -4503,7 +4503,7 @@
     "totalFreight": 82343.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 39696.12
+    "ownerDue": 39686.82
   },
   {
     "id": "due-2577",
@@ -4515,7 +4515,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 10485.29,
+    "dueAmount": 10482.83,
     "paidAmount": 0.0,
     "truckNo": "RJ01GD0521",
     "ownerName": "Xishan Rawat GDOS21",
@@ -4546,7 +4546,7 @@
     "totalFreight": 21750.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 10485.29
+    "ownerDue": 10482.83
   },
   {
     "id": "due-2585",
@@ -4610,7 +4610,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 1039.23,
+    "dueAmount": 1038.99,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB4507",
     "ownerName": "Shree Mahaveer Transport Company",
@@ -4650,7 +4650,7 @@
         "debtDate": "21/10/2026"
       }
     ],
-    "ownerDue": 1039.23
+    "ownerDue": 1038.99
   },
   {
     "id": "due-240",
@@ -4705,7 +4705,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#037be4",
-    "dueAmount": 48.21,
+    "dueAmount": 48.2,
     "paidAmount": 0.0,
     "truckNo": "RJ01GD4865",
     "ownerName": "Chand Rawat Singh",
@@ -4745,7 +4745,7 @@
       }
     ],
     "debts": [],
-    "ownerDue": 48.21
+    "ownerDue": 48.2
   },
   {
     "id": "due-2583",
@@ -4757,7 +4757,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 68.94,
+    "dueAmount": 68.92,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB5963",
     "ownerName": "Shree Mahaveer Transport Company",
@@ -4797,7 +4797,7 @@
         "debtDate": "21/10/2026"
       }
     ],
-    "ownerDue": 68.94
+    "ownerDue": 68.92
   },
   {
     "id": "due-2558",
@@ -4852,7 +4852,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 86.74,
+    "dueAmount": 86.72,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA9428",
     "ownerName": "Laxmi Prakash Oat",
@@ -4883,7 +4883,7 @@
     "totalFreight": 179.929,
     "payments": [],
     "debts": [],
-    "ownerDue": 86.74
+    "ownerDue": 86.72
   },
   {
     "id": "due-2559",
@@ -4895,7 +4895,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 37096.25,
+    "dueAmount": 37087.56,
     "paidAmount": 0.0,
     "truckNo": "RJ52GBS377",
     "ownerName": "Panchuram Gurjar",
@@ -4935,7 +4935,7 @@
         "debtDate": "20/10/2026"
       }
     ],
-    "ownerDue": 37096.25
+    "ownerDue": 37087.56
   },
   {
     "id": "due-2566",
@@ -4947,7 +4947,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 54.13,
+    "dueAmount": 54.12,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB2510",
     "ownerName": "Laxmi Prakash Oat",
@@ -4978,7 +4978,7 @@
     "totalFreight": 112.288,
     "payments": [],
     "debts": [],
-    "ownerDue": 54.13
+    "ownerDue": 54.12
   },
   {
     "id": "due-2562",
@@ -4990,7 +4990,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 86.77,
+    "dueAmount": 86.75,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB2274",
     "ownerName": "Govind Choudhary",
@@ -5021,7 +5021,7 @@
     "totalFreight": 180.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 86.77
+    "ownerDue": 86.75
   },
   {
     "id": "due-2570",
@@ -5033,7 +5033,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 83.97,
+    "dueAmount": 83.95,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB2590",
     "ownerName": "Rame sh war Pra sad",
@@ -5073,7 +5073,7 @@
         "debtDate": "20/10/2026"
       }
     ],
-    "ownerDue": 83.97
+    "ownerDue": 83.95
   },
   {
     "id": "due-2564",
@@ -5085,7 +5085,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 44472.11,
+    "dueAmount": 44461.69,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB0729",
     "ownerName": "Laxmi Prakash Oat",
@@ -5116,7 +5116,7 @@
     "totalFreight": 92250.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 44472.11
+    "ownerDue": 44461.69
   },
   {
     "id": "due-2565",
@@ -5128,7 +5128,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 42199.09,
+    "dueAmount": 42189.2,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB0729",
     "ownerName": "Laxmi Prakash Oat",
@@ -5159,7 +5159,7 @@
     "totalFreight": 87535.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 42199.09
+    "ownerDue": 42189.2
   },
   {
     "id": "due-2571",
@@ -5309,7 +5309,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#037be4",
-    "dueAmount": 85.0,
+    "dueAmount": 84.98,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB2S88",
     "ownerName": "Ramesh war Prasad",
@@ -5358,7 +5358,7 @@
         "debtDate": "19/10/2026"
       }
     ],
-    "ownerDue": 85.0
+    "ownerDue": 84.98
   },
   {
     "id": "due-2534",
@@ -5370,7 +5370,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 88944.22,
+    "dueAmount": 88923.38,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA9433",
     "ownerName": "Deepak Dhabas",
@@ -5401,7 +5401,7 @@
     "totalFreight": 184500.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 88944.22
+    "ownerDue": 88923.38
   },
   {
     "id": "due-2551",
@@ -5413,7 +5413,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 52643.41,
+    "dueAmount": 52631.08,
     "paidAmount": 0.0,
     "truckNo": "RJ52GAB678",
     "ownerName": "Rame sh war Pra sad",
@@ -5444,7 +5444,7 @@
     "totalFreight": 109200.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 52643.41
+    "ownerDue": 52631.08
   },
   {
     "id": "due-2550",
@@ -5456,7 +5456,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 52643.41,
+    "dueAmount": 52631.08,
     "paidAmount": 0.0,
     "truckNo": "RJ52GAB732",
     "ownerName": "Rame sh war Pra sad",
@@ -5496,7 +5496,7 @@
         "debtDate": "19/10/2026"
       }
     ],
-    "ownerDue": 52643.41
+    "ownerDue": 52631.08
   },
   {
     "id": "due-2552",
@@ -5551,7 +5551,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 659.01,
+    "dueAmount": 658.86,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB5053",
     "ownerName": "Shree Mahaveer Transport Company",
@@ -5582,7 +5582,7 @@
     "totalFreight": 1367.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 659.01
+    "ownerDue": 658.86
   },
   {
     "id": "due-2538",
@@ -5594,7 +5594,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 915.96,
+    "dueAmount": 915.75,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB3867",
     "ownerName": "Laxmi Prakash Oat",
@@ -5634,7 +5634,7 @@
         "debtDate": "19/10/2026"
       }
     ],
-    "ownerDue": 915.96
+    "ownerDue": 915.75
   },
   {
     "id": "due-2553",
@@ -5646,7 +5646,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 1045.64,
+    "dueAmount": 1045.4,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB4538",
     "ownerName": "Shree Mahaveer Transport Company",
@@ -5677,7 +5677,7 @@
     "totalFreight": 2169.016,
     "payments": [],
     "debts": [],
-    "ownerDue": 1045.64
+    "ownerDue": 1045.4
   },
   {
     "id": "due-2556",
@@ -5689,7 +5689,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 92574.3,
+    "dueAmount": 92552.61,
     "paidAmount": 0.0,
     "truckNo": "RJ52GBS967",
     "ownerName": "Shree Mahaveer Transport Company",
@@ -5720,7 +5720,7 @@
     "totalFreight": 192030.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 92574.3
+    "ownerDue": 92552.61
   },
   {
     "id": "due-2561",
@@ -5732,7 +5732,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 10292.46,
+    "dueAmount": 10290.05,
     "paidAmount": 0.0,
     "truckNo": "RJ26GB1136",
     "ownerName": "Sitaram Meena",
@@ -5772,7 +5772,7 @@
         "debtDate": "19/10/2026"
       }
     ],
-    "ownerDue": 10292.46
+    "ownerDue": 10290.05
   },
   {
     "id": "due-2557",
@@ -5784,7 +5784,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 57192.82,
+    "dueAmount": 57179.42,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB4537",
     "ownerName": "Shree Mahaveer Transport Company",
@@ -5815,7 +5815,7 @@
     "totalFreight": 118637.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 57192.82
+    "ownerDue": 57179.42
   },
   {
     "id": "due-2555",
@@ -5827,7 +5827,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 70.81,
+    "dueAmount": 70.79,
     "paidAmount": 0.0,
     "truckNo": "RJ52GAB615",
     "ownerName": "Sitaram Meena",
@@ -5858,7 +5858,7 @@
     "totalFreight": 146.88,
     "payments": [],
     "debts": [],
-    "ownerDue": 70.81
+    "ownerDue": 70.79
   },
   {
     "id": "due-236",
@@ -5922,7 +5922,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#037be4",
-    "dueAmount": 61465.52,
+    "dueAmount": 61451.12,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB25B7",
     "ownerName": "Ramesh war Prasad",
@@ -5962,7 +5962,7 @@
       }
     ],
     "debts": [],
-    "ownerDue": 61465.52
+    "ownerDue": 61451.12
   },
   {
     "id": "due-235",
@@ -6078,7 +6078,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#037be4",
-    "dueAmount": 62019.91,
+    "dueAmount": 62005.38,
     "paidAmount": 0.0,
     "truckNo": "RJ01GE0121",
     "ownerName": "Dinesh Yadav Shrinagar",
@@ -6118,7 +6118,7 @@
       }
     ],
     "debts": [],
-    "ownerDue": 62019.91
+    "ownerDue": 62005.38
   },
   {
     "id": "due-2540",
@@ -6130,7 +6130,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#01cebc",
-    "dueAmount": 530.29,
+    "dueAmount": 530.17,
     "paidAmount": 1100.0,
     "truckNo": "RJ52CA3137",
     "ownerName": "Rad hyeshyam GurJar",
@@ -6170,7 +6170,7 @@
       }
     ],
     "debts": [],
-    "ownerDue": 530.29
+    "ownerDue": 530.17
   },
   {
     "id": "due-2545",
@@ -6286,7 +6286,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 27951.14,
+    "dueAmount": 27944.59,
     "paidAmount": 0.0,
     "truckNo": "RJ52GAB679",
     "ownerName": "Ramesh war Prasad",
@@ -6317,7 +6317,7 @@
     "totalFreight": 57980.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 27951.14
+    "ownerDue": 27944.59
   },
   {
     "id": "due-251",
@@ -6329,7 +6329,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 828.22,
+    "dueAmount": 828.03,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB251",
     "ownerName": "Mahendra Rawat Shrinagar",
@@ -6369,7 +6369,7 @@
         "debtDate": "17/10/2026"
       }
     ],
-    "ownerDue": 828.22
+    "ownerDue": 828.03
   },
   {
     "id": "due-2522",
@@ -6381,7 +6381,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 86.77,
+    "dueAmount": 86.75,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA9434",
     "ownerName": "Kauash Dhabas",
@@ -6412,7 +6412,7 @@
     "totalFreight": 180.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 86.77
+    "ownerDue": 86.75
   },
   {
     "id": "due-2525",
@@ -6424,7 +6424,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 69222.23,
+    "dueAmount": 69206.01,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA7310",
     "ownerName": "Laxmi Prakash Oat",
@@ -6455,7 +6455,7 @@
     "totalFreight": 143590.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 69222.23
+    "ownerDue": 69206.01
   },
   {
     "id": "due-2532",
@@ -6562,7 +6562,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 49750.91,
+    "dueAmount": 49739.25,
     "paidAmount": 0.0,
     "truckNo": "RJ32GD3412",
     "ownerName": "Kailash Dhabas",
@@ -6593,7 +6593,7 @@
     "totalFreight": 103200.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 49750.91
+    "ownerDue": 49739.25
   },
   {
     "id": "due-2515",
@@ -6605,7 +6605,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 32359.79,
+    "dueAmount": 32352.21,
     "paidAmount": 0.0,
     "truckNo": "RJ52GBSS2B",
     "ownerName": "Shree Mahaveer Transport Company",
@@ -6645,7 +6645,7 @@
         "debtDate": "17/10/2026"
       }
     ],
-    "ownerDue": 32359.79
+    "ownerDue": 32352.21
   },
   {
     "id": "due-2526",
@@ -6657,7 +6657,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 1041.78,
+    "dueAmount": 1041.54,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB2S03",
     "ownerName": "Laxmi Prakash Oat",
@@ -6688,7 +6688,7 @@
     "totalFreight": 2160.99,
     "payments": [],
     "debts": [],
-    "ownerDue": 1041.78
+    "ownerDue": 1041.54
   },
   {
     "id": "due-234",
@@ -6700,7 +6700,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 67361.87,
+    "dueAmount": 67346.09,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB5642",
     "ownerName": "Shree Mahaveer Transport Company",
@@ -6731,7 +6731,7 @@
     "totalFreight": 139731.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 67361.87
+    "ownerDue": 67346.09
   },
   {
     "id": "due-2514",
@@ -6743,7 +6743,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 176.44,
+    "dueAmount": 176.4,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB3483",
     "ownerName": "Deepak Dhabas",
@@ -6783,7 +6783,7 @@
         "debtDate": "16/10/2026"
       }
     ],
-    "ownerDue": 176.44
+    "ownerDue": 176.4
   },
   {
     "id": "due-2511",
@@ -6795,7 +6795,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 102.75,
+    "dueAmount": 102.73,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB0964",
     "ownerName": "Shishram Meena",
@@ -6826,7 +6826,7 @@
     "totalFreight": 213.133,
     "payments": [],
     "debts": [],
-    "ownerDue": 102.75
+    "ownerDue": 102.73
   },
   {
     "id": "due-2516",
@@ -6838,7 +6838,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 241.52,
+    "dueAmount": 241.46,
     "paidAmount": 0.0,
     "truckNo": "RJ32GC0997",
     "ownerName": "Mahendra Gurjar",
@@ -6869,7 +6869,7 @@
     "totalFreight": 501.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 241.52
+    "ownerDue": 241.46
   },
   {
     "id": "due-2496",
@@ -6933,7 +6933,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 55.63,
+    "dueAmount": 55.62,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB25B8",
     "ownerName": "Ramesh war Prasad",
@@ -6964,7 +6964,7 @@
     "totalFreight": 115.4,
     "payments": [],
     "debts": [],
-    "ownerDue": 55.63
+    "ownerDue": 55.62
   },
   {
     "id": "due-2493",
@@ -6976,7 +6976,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 82.21,
+    "dueAmount": 82.19,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA6366",
     "ownerName": "Ramesh war Prasad",
@@ -7007,7 +7007,7 @@
     "totalFreight": 170.525,
     "payments": [],
     "debts": [],
-    "ownerDue": 82.21
+    "ownerDue": 82.19
   },
   {
     "id": "due-2508",
@@ -7114,7 +7114,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#037be4",
-    "dueAmount": 63.17,
+    "dueAmount": 63.16,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB0729",
     "ownerName": "Laxmi Prakash Oat",
@@ -7154,7 +7154,7 @@
       }
     ],
     "debts": [],
-    "ownerDue": 63.17
+    "ownerDue": 63.16
   },
   {
     "id": "due-2502",
@@ -7166,7 +7166,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 64709.93,
+    "dueAmount": 64694.77,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA6603",
     "ownerName": "Laxmi Prakash Oat",
@@ -7206,7 +7206,7 @@
         "debtDate": "15/10/2026"
       }
     ],
-    "ownerDue": 64709.93
+    "ownerDue": 64694.77
   },
   {
     "id": "due-2499",
@@ -7218,7 +7218,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 89.81,
+    "dueAmount": 89.79,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB25B5",
     "ownerName": "Ramesh war Prasad",
@@ -7249,7 +7249,7 @@
     "totalFreight": 186.295,
     "payments": [],
     "debts": [],
-    "ownerDue": 89.81
+    "ownerDue": 89.79
   },
   {
     "id": "due-2505",
@@ -7261,7 +7261,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 65717.49,
+    "dueAmount": 65702.09,
     "paidAmount": 0.0,
     "truckNo": "RJ52GBS641",
     "ownerName": "Shree Mahaveer Transport Company",
@@ -7301,7 +7301,7 @@
         "debtDate": "15/10/2026"
       }
     ],
-    "ownerDue": 65717.49
+    "ownerDue": 65702.09
   },
   {
     "id": "due-233",
@@ -7313,7 +7313,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 4857.46,
+    "dueAmount": 4856.32,
     "paidAmount": 0.0,
     "truckNo": "RJ52GBS053",
     "ownerName": "Shree Mahaveer Transport Company",
@@ -7344,7 +7344,7 @@
     "totalFreight": 10076.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 4857.46
+    "ownerDue": 4856.32
   },
   {
     "id": "due-25",
@@ -7356,7 +7356,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 44658.19,
+    "dueAmount": 44647.73,
     "paidAmount": 0.0,
     "truckNo": "RJ26GA9409",
     "ownerName": "Kalyan Meena",
@@ -7387,7 +7387,7 @@
     "totalFreight": 92636.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 44658.19
+    "ownerDue": 44647.73
   },
   {
     "id": "due-2504",
@@ -7399,7 +7399,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#037be4",
-    "dueAmount": 746.26,
+    "dueAmount": 746.09,
     "paidAmount": 0.0,
     "truckNo": "RJ26GA8214",
     "ownerName": "Sitaram Meena",
@@ -7448,7 +7448,7 @@
         "debtDate": "15/10/2026"
       }
     ],
-    "ownerDue": 746.26
+    "ownerDue": 746.09
   },
   {
     "id": "due-2484",
@@ -7460,7 +7460,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#037be4",
-    "dueAmount": 88944.22,
+    "dueAmount": 88923.38,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA7906",
     "ownerName": "Ka\"ash Dhabas",
@@ -7500,7 +7500,7 @@
       }
     ],
     "debts": [],
-    "ownerDue": 88944.22
+    "ownerDue": 88923.38
   },
   {
     "id": "due-2467",
@@ -7555,7 +7555,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#01cebc",
-    "dueAmount": 421.82,
+    "dueAmount": 421.72,
     "paidAmount": 875.0,
     "truckNo": "RJ52GB3486",
     "ownerName": "Deepak Dhabas",
@@ -7604,7 +7604,7 @@
         "debtDate": "14/10/2026"
       }
     ],
-    "ownerDue": 421.82
+    "ownerDue": 421.72
   },
   {
     "id": "due-232",
@@ -7702,7 +7702,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#7c00ff",
-    "dueAmount": 87859.53,
+    "dueAmount": 87838.94,
     "paidAmount": 0.0,
     "truckNo": "RJ26GA4713",
     "ownerName": "Kalyan Meena",
@@ -7742,7 +7742,7 @@
         "debtDate": "14/10/2026"
       }
     ],
-    "ownerDue": 87859.53
+    "ownerDue": 87838.94
   },
   {
     "id": "due-2495",
@@ -7754,7 +7754,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 337.46,
+    "dueAmount": 337.38,
     "paidAmount": 0.0,
     "truckNo": "RJ01GCB6S6",
     "ownerName": "Prahlad oat",
@@ -7785,7 +7785,7 @@
     "totalFreight": 700.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 337.46
+    "ownerDue": 337.38
   },
   {
     "id": "due-2456",
@@ -7840,7 +7840,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 138220.28,
+    "dueAmount": 138187.9,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB2590",
     "ownerName": "Ramesh war Prasad",
@@ -7880,7 +7880,7 @@
         "debtDate": "13/10/2026"
       }
     ],
-    "ownerDue": 138220.28
+    "ownerDue": 138187.9
   },
   {
     "id": "due-2465",
@@ -7892,7 +7892,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 41507.3,
+    "dueAmount": 41497.57,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB2S90",
     "ownerName": "Ramesh war Prasad",
@@ -7923,7 +7923,7 @@
     "totalFreight": 86100.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 41507.3
+    "ownerDue": 41497.57
   },
   {
     "id": "due-228",
@@ -8030,7 +8030,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#037be4",
-    "dueAmount": 45.56,
+    "dueAmount": 45.55,
     "paidAmount": 0.0,
     "truckNo": "RJ32GD3696",
     "ownerName": "Laxmi Prakash Oat",
@@ -8070,7 +8070,7 @@
       }
     ],
     "debts": [],
-    "ownerDue": 45.56
+    "ownerDue": 45.55
   },
   {
     "id": "due-2470",
@@ -8177,7 +8177,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 82472.74,
+    "dueAmount": 82453.42,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB4586",
     "ownerName": "Shree Mahaveer Transport Company",
@@ -8208,7 +8208,7 @@
     "totalFreight": 171076.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 82472.74
+    "ownerDue": 82453.42
   },
   {
     "id": "due-2474",
@@ -8220,7 +8220,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 71.85,
+    "dueAmount": 71.83,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB3867",
     "ownerName": "Laxmi Prakash Oat",
@@ -8251,7 +8251,7 @@
     "totalFreight": 149.04,
     "payments": [],
     "debts": [],
-    "ownerDue": 71.85
+    "ownerDue": 71.83
   },
   {
     "id": "due-2444",
@@ -8315,7 +8315,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#037be4",
-    "dueAmount": 65105.24,
+    "dueAmount": 65089.99,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB4506",
     "ownerName": "Shree Mahaveer Transport Company",
@@ -8355,7 +8355,7 @@
       }
     ],
     "debts": [],
-    "ownerDue": 65105.24
+    "ownerDue": 65089.99
   },
   {
     "id": "due-2437",
@@ -8367,7 +8367,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#c3ad00",
-    "dueAmount": 63953.55,
+    "dueAmount": 63938.57,
     "paidAmount": 0.0,
     "truckNo": "RJ52GBS963",
     "ownerName": "Shree Mahaveer Transport Company",
@@ -8398,7 +8398,7 @@
     "totalFreight": 132661.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 63953.55
+    "ownerDue": 63938.57
   },
   {
     "id": "due-2441",
@@ -8462,7 +8462,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#01cebc",
-    "dueAmount": 578.5,
+    "dueAmount": 578.36,
     "paidAmount": 1200.0,
     "truckNo": "RJ32GC0997",
     "ownerName": "Mahendra Gurjar",
@@ -8502,7 +8502,7 @@
       }
     ],
     "debts": [],
-    "ownerDue": 578.5
+    "ownerDue": 578.36
   },
   {
     "id": "due-2454",
@@ -8514,7 +8514,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#7c00ff",
-    "dueAmount": 84483.99,
+    "dueAmount": 84464.2,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA94B9",
     "ownerName": "Laxmi Prakash Oat",
@@ -8545,2988 +8545,7 @@
     "totalFreight": 175248.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 84483.99
-  },
-  {
-    "id": "due-1",
-    "grNo": "1900",
-    "tripDate": "16/09/2024",
-    "tripEndDate": "05/11/2024",
-    "year": "2024-2025",
-    "status": "Transit",
-    "color": "yellow",
-    "colorHex": "#e5a823",
-    "dueAmount": 3500.0,
-    "paidAmount": 0.0,
-    "truckNo": "RJ42GA0451",
-    "ownerName": "Abcd",
-    "ownerMobile": "7898424750",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Kanpur (U.P.)",
-    "transport": "TTC",
-    "material": "Marble Powder",
-    "weight": 35.0,
-    "rate": 1450.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 3500.0,
-    "reference": "Himanshu Chemtech Kanpur Supplier",
-    "referenceMobile": "9235620000",
-    "driver": "Dharmi Meena",
-    "driverMobile": "9414717113",
-    "consignor": {
-      "gstin": "08FPWPR3462B2ZD",
-      "name": "SHIV UMA STONEX",
-      "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6500B1ZN",
-      "name": "Himanshu Chemtech Kanpur Supplier",
-      "mobile": "9235620000"
-    },
-    "freight": 1125.0,
-    "totalFreight": 4625.0,
-    "payments": [],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 2500.0,
-        "debtMode": "Cash",
-        "borrowerName": "Abcd",
-        "receiverName": "Bajrang Meena 7297032726",
-        "description": "2024-2025 Advance Commission",
-        "grNo": "1900_TTC",
-        "truckNo": "RJ42GA0451",
-        "dueAmount": 3500.0
-      },
-      {
-        "debtType": "Other",
-        "debtAmount": 1400.0,
-        "debtMode": "Cash",
-        "borrowerName": "Abcd",
-        "receiverName": "Bajrang Meena 7297032726",
-        "description": "Other Advance on Loading",
-        "grNo": "1900_TTC",
-        "truckNo": "RJ42GA0451",
-        "dueAmount": 3500.0
-      }
-    ]
-  },
-  {
-    "id": "due-2",
-    "grNo": "1901",
-    "tripDate": "03/09/2024",
-    "tripEndDate": "05/11/2024",
-    "year": "2024-2025",
-    "status": "POD Sent/ Bill Generated",
-    "color": "purple",
-    "colorHex": "#9c27b0",
-    "dueAmount": 1700.0,
-    "paidAmount": 0.0,
-    "truckNo": "RJ14GH7536",
-    "ownerName": "Abcd",
-    "ownerMobile": "6376737463",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Lucknow (U.P.)",
-    "transport": "TTC",
-    "material": "Marble Powder",
-    "weight": 35.0,
-    "rate": 1450.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 1700.0,
-    "reference": "Bharat Mineral Pasoond",
-    "referenceMobile": "9235620001",
-    "driver": "Bhim Raj 8616",
-    "driverMobile": "9828230022",
-    "consignor": {
-      "gstin": "08AAUFD1174E1ZC",
-      "name": "Durga Enterprises",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6501B1ZN",
-      "name": "Bharat Mineral Pasoond",
-      "mobile": "9235620001"
-    },
-    "freight": 1700.0,
-    "totalFreight": 1700.0,
-    "payments": [],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 2000.0,
-        "debtMode": "Cash",
-        "borrowerName": "Abcd",
-        "receiverName": "Ramchandra Jat 8824993002",
-        "description": "2024-2025 Advance Commission",
-        "grNo": "1901_TTC",
-        "truckNo": "RJ14GH7536",
-        "dueAmount": 1700.0
-      }
-    ]
-  },
-  {
-    "id": "due-3",
-    "grNo": "1902",
-    "tripDate": "02/09/2024",
-    "tripEndDate": "05/11/2024",
-    "year": "2024-2025",
-    "status": "Party Payment Pending",
-    "color": "blue",
-    "colorHex": "#1a73e8",
-    "dueAmount": 2021.0,
-    "paidAmount": 2021.0,
-    "truckNo": "RJ01GD0711",
-    "ownerName": "Amit Rajpurohit",
-    "ownerMobile": "9828230022",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Sandila (U.P.)",
-    "transport": "TTC",
-    "material": "Micronized Powder",
-    "weight": 35.0,
-    "rate": 1450.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 2021.0,
-    "reference": "Kunal Micron Vijay Jain",
-    "referenceMobile": "9235620002",
-    "driver": "Krishan Singh",
-    "driverMobile": "9414659401",
-    "consignor": {
-      "gstin": "08AGRPJ1613P1ZX",
-      "name": "Saatvik Minerals",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6502B1ZN",
-      "name": "Kunal Micron Vijay Jain",
-      "mobile": "9235620002"
-    },
-    "freight": 2021.0,
-    "totalFreight": 2021.0,
-    "payments": [
-      {
-        "paymentDate": "02/09/2024",
-        "amountPaid": 2021.0,
-        "mode": "NEFT/RTGS",
-        "beneficiary": "Truck Owner",
-        "bank": "TTC",
-        "toBank": "Other Bank",
-        "description": "Transporter Payment for GR 1902_TTC",
-        "paidTo": "Transporter"
-      }
-    ],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 1500.0,
-        "debtMode": "Cash",
-        "borrowerName": "Amit Rajpurohit",
-        "receiverName": "Ramchandra Jat 8824993002",
-        "description": "2024-2025 Advance Commission",
-        "grNo": "1902_TTC",
-        "truckNo": "RJ01GD0711",
-        "dueAmount": 2021.0
-      }
-    ]
-  },
-  {
-    "id": "due-4",
-    "grNo": "1903",
-    "tripDate": "04/09/2024",
-    "tripEndDate": "05/11/2024",
-    "year": "2024-2025",
-    "status": "Off Loading",
-    "color": "pink",
-    "colorHex": "#e91e63",
-    "dueAmount": 2500.0,
-    "paidAmount": 0.0,
-    "truckNo": "RJ01GD0501",
-    "ownerName": "Amit Rajpurohit",
-    "ownerMobile": "9828230022",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Karnal (Haryana)",
-    "transport": "TTC",
-    "material": "Industrial Minerals",
-    "weight": 35.0,
-    "rate": 1450.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 2500.0,
-    "reference": "Virsun Industries",
-    "referenceMobile": "9235620003",
-    "driver": "Vikram Gurjar 4507",
-    "driverMobile": "8824993002",
-    "consignor": {
-      "gstin": "08CRGPG0812F1ZB",
-      "name": "Shree Shyam Mineral Traders",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6503B1ZN",
-      "name": "Virsun Industries",
-      "mobile": "9235620003"
-    },
-    "freight": 2500.0,
-    "totalFreight": 2500.0,
-    "payments": [],
-    "debts": []
-  },
-  {
-    "id": "due-5",
-    "grNo": "1904",
-    "tripDate": "05/09/2024",
-    "tripEndDate": "05/11/2024",
-    "year": "2024-2025",
-    "status": "Cheque Due",
-    "color": "slate",
-    "colorHex": "#607d8b",
-    "dueAmount": 1500.0,
-    "paidAmount": 1500.0,
-    "truckNo": "RJ01GC0501",
-    "ownerName": "Amit Rajpurohit",
-    "ownerMobile": "9828230022",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Ghaziabad (U.P.)",
-    "transport": "TTC",
-    "material": "Soapstone Powder",
-    "weight": 35.0,
-    "rate": 1450.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 1500.0,
-    "reference": "Ganpati Minerals",
-    "referenceMobile": "9235620004",
-    "driver": "Ranjeet 8796",
-    "driverMobile": "9602418796",
-    "consignor": {
-      "gstin": "08FPWPR3462B2ZD",
-      "name": "SHIV UMA STONEX",
-      "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6504B1ZN",
-      "name": "Ganpati Minerals",
-      "mobile": "9235620004"
-    },
-    "freight": 1500.0,
-    "totalFreight": 1500.0,
-    "payments": [
-      {
-        "paymentDate": "05/09/2024",
-        "amountPaid": 1500.0,
-        "mode": "NEFT/RTGS",
-        "beneficiary": "Truck Owner",
-        "bank": "TTC",
-        "toBank": "Other Bank",
-        "description": "Transporter Payment for GR 1904_TTC",
-        "paidTo": "Transporter"
-      }
-    ],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 2000.0,
-        "debtMode": "Cash",
-        "borrowerName": "Amit Rajpurohit",
-        "receiverName": "Ramchandra Jat 8824993002",
-        "description": "2024-2025 Advance Commission",
-        "grNo": "1904_TTC",
-        "truckNo": "RJ01GC0501",
-        "dueAmount": 1500.0
-      }
-    ]
-  },
-  {
-    "id": "due-6",
-    "grNo": "1905",
-    "tripDate": "06/09/2024",
-    "tripEndDate": "05/11/2024",
-    "year": "2024-2025",
-    "status": "Truck Owner Payment Pending",
-    "color": "cyan",
-    "colorHex": "#00bcd4",
-    "dueAmount": 1000.0,
-    "paidAmount": 1000.0,
-    "truckNo": "RJ52GB0878",
-    "ownerName": "Anil Gurjar",
-    "ownerMobile": "7742204077",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Kanpur (U.P.)",
-    "transport": "TTC",
-    "material": "Marble Powder",
-    "weight": 35.0,
-    "rate": 1450.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 1000.0,
-    "reference": "Mahaveer Tholiya",
-    "referenceMobile": "9235620005",
-    "driver": "Mahesh Gurjar Govindpura",
-    "driverMobile": "9783112233",
-    "consignor": {
-      "gstin": "08AAUFD1174E1ZC",
-      "name": "Durga Enterprises",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6505B1ZN",
-      "name": "Mahaveer Tholiya",
-      "mobile": "9235620005"
-    },
-    "freight": 1000.0,
-    "totalFreight": 1000.0,
-    "payments": [
-      {
-        "paymentDate": "06/09/2024",
-        "amountPaid": 1000.0,
-        "mode": "NEFT/RTGS",
-        "beneficiary": "Truck Owner",
-        "bank": "TTC",
-        "toBank": "Other Bank",
-        "description": "Transporter Payment for GR 1905_TTC",
-        "paidTo": "Transporter"
-      }
-    ],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 2000.0,
-        "debtMode": "Cash",
-        "borrowerName": "Anil Gurjar",
-        "receiverName": "Ramchandra Jat 8824993002",
-        "description": "2024-2025 Advance Commission",
-        "grNo": "1905_TTC",
-        "truckNo": "RJ52GB0878",
-        "dueAmount": 1000.0
-      }
-    ]
-  },
-  {
-    "id": "due-7",
-    "grNo": "2106_SMTC",
-    "tripDate": "07/07/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "Transit",
-    "color": "yellow",
-    "colorHex": "#e5a823",
-    "dueAmount": 36476.8,
-    "paidAmount": 0.0,
-    "truckNo": "RJ14GG0267",
-    "ownerName": "Ashok Kasana Kotputli",
-    "ownerMobile": "9351721272",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Neemrana (Raj.)",
-    "transport": "SMTC",
-    "material": "Plaster of Paris",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Sudhir Mishra Sakarni Kareda",
-    "referenceMobile": "9235620006",
-    "driver": "Ramkaran Gurjar 6337",
-    "driverMobile": "9414886337",
-    "consignor": {
-      "gstin": "08AGRPJ1613P1ZX",
-      "name": "Saatvik Minerals",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6506B1ZN",
-      "name": "Sudhir Mishra Sakarni Kareda",
-      "mobile": "9235620006"
-    },
-    "freight": 1125.0,
-    "totalFreight": 37601.8,
-    "payments": [],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 2500.0,
-        "debtMode": "Cash",
-        "borrowerName": "Ashok Kasana Kotputli",
-        "receiverName": "Bajrang Meena 7297032726",
-        "description": "2025-2026 Advance Commission",
-        "grNo": "2106_SMTC",
-        "truckNo": "RJ14GG0267",
-        "dueAmount": 36476.8
-      },
-      {
-        "debtType": "Other",
-        "debtAmount": 1400.0,
-        "debtMode": "Cash",
-        "borrowerName": "Ashok Kasana Kotputli",
-        "receiverName": "Bajrang Meena 7297032726",
-        "description": "Other Advance on Loading",
-        "grNo": "2106_SMTC",
-        "truckNo": "RJ14GG0267",
-        "dueAmount": 36476.8
-      }
-    ]
-  },
-  {
-    "id": "due-8",
-    "grNo": "2107",
-    "tripDate": "08/08/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "POD Sent/ Bill Generated",
-    "color": "purple",
-    "colorHex": "#9c27b0",
-    "dueAmount": 36476.8,
-    "paidAmount": 0.0,
-    "truckNo": "RJ52GB0320",
-    "ownerName": "Babu Jat",
-    "ownerMobile": "9950669687",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Kanpur (U.P.)",
-    "transport": "TTC",
-    "material": "Chemical Powder",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Rishi Kapur Kapsons India",
-    "referenceMobile": "9235620007",
-    "driver": "Bhanwarchoudhary 7333",
-    "driverMobile": "9079757333",
-    "consignor": {
-      "gstin": "08CRGPG0812F1ZB",
-      "name": "Shree Shyam Mineral Traders",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6507B1ZN",
-      "name": "Rishi Kapur Kapsons India",
-      "mobile": "9235620007"
-    },
-    "freight": 36476.8,
-    "totalFreight": 36476.8,
-    "payments": [],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 2000.0,
-        "debtMode": "Cash",
-        "borrowerName": "Babu Jat",
-        "receiverName": "Ramchandra Jat 8824993002",
-        "description": "2025-2026 Advance Commission",
-        "grNo": "2107_TTC",
-        "truckNo": "RJ52GB0320",
-        "dueAmount": 36476.8
-      }
-    ]
-  },
-  {
-    "id": "due-9",
-    "grNo": "2108",
-    "tripDate": "09/09/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "Party Payment Pending",
-    "color": "blue",
-    "colorHex": "#1a73e8",
-    "dueAmount": 36476.8,
-    "paidAmount": 36476.8,
-    "truckNo": "RJ01GD0221",
-    "ownerName": "Balveer Yadav",
-    "ownerMobile": "9314000521",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Bahadurgarh (Haryana)",
-    "transport": "TTC",
-    "material": "Quartz Powder",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Jawahar Minerals Alwar",
-    "referenceMobile": "9235620008",
-    "driver": "Hansraj 1235",
-    "driverMobile": "9829123500",
-    "consignor": {
-      "gstin": "08FPWPR3462B2ZD",
-      "name": "SHIV UMA STONEX",
-      "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6508B1ZN",
-      "name": "Jawahar Minerals Alwar",
-      "mobile": "9235620008"
-    },
-    "freight": 36476.8,
-    "totalFreight": 36476.8,
-    "payments": [
-      {
-        "paymentDate": "09/09/2025",
-        "amountPaid": 36476.8,
-        "mode": "NEFT/RTGS",
-        "beneficiary": "Truck Owner",
-        "bank": "TTC",
-        "toBank": "Other Bank",
-        "description": "Transporter Payment for GR 2108_TTC",
-        "paidTo": "Transporter"
-      }
-    ],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 1500.0,
-        "debtMode": "Cash",
-        "borrowerName": "Balveer Yadav",
-        "receiverName": "Ramchandra Jat 8824993002",
-        "description": "2025-2026 Advance Commission",
-        "grNo": "2108_TTC",
-        "truckNo": "RJ01GD0221",
-        "dueAmount": 36476.8
-      }
-    ]
-  },
-  {
-    "id": "due-10",
-    "grNo": "2109",
-    "tripDate": "10/10/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "Off Loading",
-    "color": "pink",
-    "colorHex": "#e91e63",
-    "dueAmount": 36476.8,
-    "paidAmount": 0.0,
-    "truckNo": "RJ01GD0321",
-    "ownerName": "Balveer Yadav",
-    "ownerMobile": "9314000521",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Sandila (U.P.)",
-    "transport": "TTC",
-    "material": "Marble Powder",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Tanuj Kothari Udaipur",
-    "referenceMobile": "9235620009",
-    "driver": "Madan Gurjar",
-    "driverMobile": "9414223344",
-    "consignor": {
-      "gstin": "08AAUFD1174E1ZC",
-      "name": "Durga Enterprises",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6509B1ZN",
-      "name": "Tanuj Kothari Udaipur",
-      "mobile": "9235620009"
-    },
-    "freight": 36476.8,
-    "totalFreight": 36476.8,
-    "payments": [],
-    "debts": []
-  },
-  {
-    "id": "due-11",
-    "grNo": "2110",
-    "tripDate": "11/11/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "Cheque Due",
-    "color": "slate",
-    "colorHex": "#607d8b",
-    "dueAmount": 36476.8,
-    "paidAmount": 36476.8,
-    "truckNo": "RJ01GC4211",
-    "ownerName": "Balveer Yadav",
-    "ownerMobile": "9314000521",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Jhajjar (Haryana)",
-    "transport": "TTC",
-    "material": "Chemicals & Dyes",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Balwant Yadav R.B. Dyes",
-    "referenceMobile": "9235620010",
-    "driver": "Manraj Meena 9433",
-    "driverMobile": "9079943300",
-    "consignor": {
-      "gstin": "08AGRPJ1613P1ZX",
-      "name": "Saatvik Minerals",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6510B1ZN",
-      "name": "Balwant Yadav R.B. Dyes",
-      "mobile": "9235620010"
-    },
-    "freight": 36476.8,
-    "totalFreight": 36476.8,
-    "payments": [
-      {
-        "paymentDate": "11/11/2025",
-        "amountPaid": 36476.8,
-        "mode": "NEFT/RTGS",
-        "beneficiary": "Truck Owner",
-        "bank": "TTC",
-        "toBank": "Other Bank",
-        "description": "Transporter Payment for GR 2110_TTC",
-        "paidTo": "Transporter"
-      }
-    ],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 2000.0,
-        "debtMode": "Cash",
-        "borrowerName": "Balveer Yadav",
-        "receiverName": "Ramchandra Jat 8824993002",
-        "description": "2025-2026 Advance Commission",
-        "grNo": "2110_TTC",
-        "truckNo": "RJ01GC4211",
-        "dueAmount": 36476.8
-      }
-    ]
-  },
-  {
-    "id": "due-12",
-    "grNo": "2111",
-    "tripDate": "12/12/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "Truck Owner Payment Pending",
-    "color": "cyan",
-    "colorHex": "#00bcd4",
-    "dueAmount": 36476.8,
-    "paidAmount": 36476.8,
-    "truckNo": "RJ01GD0621",
-    "ownerName": "Balveer Yadav",
-    "ownerMobile": "9314000521",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Azamgarh (U.P.)",
-    "transport": "TTC",
-    "material": "Marble Lumps",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Pappu Raad",
-    "referenceMobile": "9235620011",
-    "driver": "Chand Gurjar",
-    "driverMobile": "8824112233",
-    "consignor": {
-      "gstin": "08CRGPG0812F1ZB",
-      "name": "Shree Shyam Mineral Traders",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6511B1ZN",
-      "name": "Pappu Raad",
-      "mobile": "9235620011"
-    },
-    "freight": 36476.8,
-    "totalFreight": 36476.8,
-    "payments": [
-      {
-        "paymentDate": "12/12/2025",
-        "amountPaid": 36476.8,
-        "mode": "NEFT/RTGS",
-        "beneficiary": "Truck Owner",
-        "bank": "TTC",
-        "toBank": "Other Bank",
-        "description": "Transporter Payment for GR 2111_TTC",
-        "paidTo": "Transporter"
-      }
-    ],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 2000.0,
-        "debtMode": "Cash",
-        "borrowerName": "Balveer Yadav",
-        "receiverName": "Ramchandra Jat 8824993002",
-        "description": "2025-2026 Advance Commission",
-        "grNo": "2111_TTC",
-        "truckNo": "RJ01GD0621",
-        "dueAmount": 36476.8
-      }
-    ]
-  },
-  {
-    "id": "due-13",
-    "grNo": "2112",
-    "tripDate": "13/01/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "Transit",
-    "color": "yellow",
-    "colorHex": "#e5a823",
-    "dueAmount": 36476.8,
-    "paidAmount": 0.0,
-    "truckNo": "RJ01GD0709",
-    "ownerName": "Balveer Yadav",
-    "ownerMobile": "9314000521",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Meerut (U.P.)",
-    "transport": "TTC",
-    "material": "Granite Slabs",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Irfan Bhai Khatauli",
-    "referenceMobile": "9235620012",
-    "driver": "Rajesh Gurjar Kotputli",
-    "driverMobile": "9602554433",
-    "consignor": {
-      "gstin": "08FPWPR3462B2ZD",
-      "name": "SHIV UMA STONEX",
-      "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6512B1ZN",
-      "name": "Irfan Bhai Khatauli",
-      "mobile": "9235620012"
-    },
-    "freight": 1125.0,
-    "totalFreight": 37601.8,
-    "payments": [],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 2500.0,
-        "debtMode": "Cash",
-        "borrowerName": "Balveer Yadav",
-        "receiverName": "Bajrang Meena 7297032726",
-        "description": "2025-2026 Advance Commission",
-        "grNo": "2112_TTC",
-        "truckNo": "RJ01GD0709",
-        "dueAmount": 36476.8
-      },
-      {
-        "debtType": "Other",
-        "debtAmount": 1400.0,
-        "debtMode": "Cash",
-        "borrowerName": "Balveer Yadav",
-        "receiverName": "Bajrang Meena 7297032726",
-        "description": "Other Advance on Loading",
-        "grNo": "2112_TTC",
-        "truckNo": "RJ01GD0709",
-        "dueAmount": 36476.8
-      }
-    ]
-  },
-  {
-    "id": "due-14",
-    "grNo": "2113_SMTC",
-    "tripDate": "14/02/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "POD Sent/ Bill Generated",
-    "color": "purple",
-    "colorHex": "#9c27b0",
-    "dueAmount": 36476.8,
-    "paidAmount": 0.0,
-    "truckNo": "RJ01GD1121",
-    "ownerName": "Balveer Yadav",
-    "ownerMobile": "9314000521",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Sandila (U.P.)",
-    "transport": "SMTC",
-    "material": "Dolomite Powder",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Rajesh Rao Udaipur",
-    "referenceMobile": "9235620013",
-    "driver": "Dhanraj Meena 0986",
-    "driverMobile": "9414000986",
-    "consignor": {
-      "gstin": "08AAUFD1174E1ZC",
-      "name": "Durga Enterprises",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6513B1ZN",
-      "name": "Rajesh Rao Udaipur",
-      "mobile": "9235620013"
-    },
-    "freight": 36476.8,
-    "totalFreight": 36476.8,
-    "payments": [],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 2000.0,
-        "debtMode": "Cash",
-        "borrowerName": "Balveer Yadav",
-        "receiverName": "Ramchandra Jat 8824993002",
-        "description": "2025-2026 Advance Commission",
-        "grNo": "2113_SMTC",
-        "truckNo": "RJ01GD1121",
-        "dueAmount": 36476.8
-      }
-    ]
-  },
-  {
-    "id": "due-15",
-    "grNo": "2114",
-    "tripDate": "15/03/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "Party Payment Pending",
-    "color": "blue",
-    "colorHex": "#1a73e8",
-    "dueAmount": 36476.8,
-    "paidAmount": 36476.8,
-    "truckNo": "RJ01GD0707",
-    "ownerName": "Balveer Yadav",
-    "ownerMobile": "9314000521",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Haldwani (U.K.)",
-    "transport": "TTC",
-    "material": "Marble Blocks",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Shruti Marble Sukher",
-    "referenceMobile": "9235620014",
-    "driver": "Krishna Saini",
-    "driverMobile": "9828334455",
-    "consignor": {
-      "gstin": "08AGRPJ1613P1ZX",
-      "name": "Saatvik Minerals",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6514B1ZN",
-      "name": "Shruti Marble Sukher",
-      "mobile": "9235620014"
-    },
-    "freight": 36476.8,
-    "totalFreight": 36476.8,
-    "payments": [
-      {
-        "paymentDate": "15/03/2025",
-        "amountPaid": 36476.8,
-        "mode": "NEFT/RTGS",
-        "beneficiary": "Truck Owner",
-        "bank": "TTC",
-        "toBank": "Other Bank",
-        "description": "Transporter Payment for GR 2114_TTC",
-        "paidTo": "Transporter"
-      }
-    ],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 1500.0,
-        "debtMode": "Cash",
-        "borrowerName": "Balveer Yadav",
-        "receiverName": "Ramchandra Jat 8824993002",
-        "description": "2025-2026 Advance Commission",
-        "grNo": "2114_TTC",
-        "truckNo": "RJ01GD0707",
-        "dueAmount": 36476.8
-      }
-    ]
-  },
-  {
-    "id": "due-16",
-    "grNo": "2115",
-    "tripDate": "16/04/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "Off Loading",
-    "color": "pink",
-    "colorHex": "#e91e63",
-    "dueAmount": 36476.8,
-    "paidAmount": 0.0,
-    "truckNo": "RJ47GB0421",
-    "ownerName": "Balveer Yadav",
-    "ownerMobile": "9314000521",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Karnal (Haryana)",
-    "transport": "TTC",
-    "material": "Marble Powder",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Gopal Sharda",
-    "referenceMobile": "9235620015",
-    "driver": "Banti Meena Tonk",
-    "driverMobile": "9414556677",
-    "consignor": {
-      "gstin": "08CRGPG0812F1ZB",
-      "name": "Shree Shyam Mineral Traders",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6515B1ZN",
-      "name": "Gopal Sharda",
-      "mobile": "9235620015"
-    },
-    "freight": 36476.8,
-    "totalFreight": 36476.8,
-    "payments": [],
-    "debts": []
-  },
-  {
-    "id": "due-17",
-    "grNo": "2116",
-    "tripDate": "17/05/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "Cheque Due",
-    "color": "slate",
-    "colorHex": "#607d8b",
-    "dueAmount": 36476.8,
-    "paidAmount": 36476.8,
-    "truckNo": "RJ47GB0621",
-    "ownerName": "Balveer Yadav",
-    "ownerMobile": "9314000521",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Delhi",
-    "transport": "TTC",
-    "material": "Ceramic Minerals",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Anil Sharda",
-    "referenceMobile": "9235620016",
-    "driver": "Mukesh Gurjar Badgaon",
-    "driverMobile": "9602778899",
-    "consignor": {
-      "gstin": "08FPWPR3462B2ZD",
-      "name": "SHIV UMA STONEX",
-      "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6516B1ZN",
-      "name": "Anil Sharda",
-      "mobile": "9235620016"
-    },
-    "freight": 36476.8,
-    "totalFreight": 36476.8,
-    "payments": [
-      {
-        "paymentDate": "17/05/2025",
-        "amountPaid": 36476.8,
-        "mode": "NEFT/RTGS",
-        "beneficiary": "Truck Owner",
-        "bank": "TTC",
-        "toBank": "Other Bank",
-        "description": "Transporter Payment for GR 2116_TTC",
-        "paidTo": "Transporter"
-      }
-    ],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 2000.0,
-        "debtMode": "Cash",
-        "borrowerName": "Balveer Yadav",
-        "receiverName": "Ramchandra Jat 8824993002",
-        "description": "2025-2026 Advance Commission",
-        "grNo": "2116_TTC",
-        "truckNo": "RJ47GB0621",
-        "dueAmount": 36476.8
-      }
-    ]
-  },
-  {
-    "id": "due-18",
-    "grNo": "2117",
-    "tripDate": "18/06/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "Truck Owner Payment Pending",
-    "color": "cyan",
-    "colorHex": "#00bcd4",
-    "dueAmount": 36476.8,
-    "paidAmount": 36476.8,
-    "truckNo": "RJ01GC2411",
-    "ownerName": "Balveer Yadav",
-    "ownerMobile": "9314000521",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Saharanpur (U.P.)",
-    "transport": "TTC",
-    "material": "Calcite Powder",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Oswal Mineral Amet",
-    "referenceMobile": "9235620017",
-    "driver": "Giriraj Yadav MP",
-    "driverMobile": "9783445566",
-    "consignor": {
-      "gstin": "08AAUFD1174E1ZC",
-      "name": "Durga Enterprises",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6517B1ZN",
-      "name": "Oswal Mineral Amet",
-      "mobile": "9235620017"
-    },
-    "freight": 36476.8,
-    "totalFreight": 36476.8,
-    "payments": [
-      {
-        "paymentDate": "18/06/2025",
-        "amountPaid": 36476.8,
-        "mode": "NEFT/RTGS",
-        "beneficiary": "Truck Owner",
-        "bank": "TTC",
-        "toBank": "Other Bank",
-        "description": "Transporter Payment for GR 2117_TTC",
-        "paidTo": "Transporter"
-      }
-    ],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 2000.0,
-        "debtMode": "Cash",
-        "borrowerName": "Balveer Yadav",
-        "receiverName": "Ramchandra Jat 8824993002",
-        "description": "2025-2026 Advance Commission",
-        "grNo": "2117_TTC",
-        "truckNo": "RJ01GC2411",
-        "dueAmount": 36476.8
-      }
-    ]
-  },
-  {
-    "id": "due-19",
-    "grNo": "2118",
-    "tripDate": "19/07/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "Transit",
-    "color": "yellow",
-    "colorHex": "#e5a823",
-    "dueAmount": 36476.8,
-    "paidAmount": 0.0,
-    "truckNo": "RJ47GB0321",
-    "ownerName": "Balveer Yadav",
-    "ownerMobile": "9314000521",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Meerut (U.P.)",
-    "transport": "TTC",
-    "material": "Marble Tiles",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Meerut Tiranga Marble Sonu Bhai",
-    "referenceMobile": "9235620018",
-    "driver": "Pappu Gurjar 3874",
-    "driverMobile": "9414883874",
-    "consignor": {
-      "gstin": "08AGRPJ1613P1ZX",
-      "name": "Saatvik Minerals",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6518B1ZN",
-      "name": "Meerut Tiranga Marble Sonu Bhai",
-      "mobile": "9235620018"
-    },
-    "freight": 1125.0,
-    "totalFreight": 37601.8,
-    "payments": [],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 2500.0,
-        "debtMode": "Cash",
-        "borrowerName": "Balveer Yadav",
-        "receiverName": "Bajrang Meena 7297032726",
-        "description": "2025-2026 Advance Commission",
-        "grNo": "2118_TTC",
-        "truckNo": "RJ47GB0321",
-        "dueAmount": 36476.8
-      },
-      {
-        "debtType": "Other",
-        "debtAmount": 1400.0,
-        "debtMode": "Cash",
-        "borrowerName": "Balveer Yadav",
-        "receiverName": "Bajrang Meena 7297032726",
-        "description": "Other Advance on Loading",
-        "grNo": "2118_TTC",
-        "truckNo": "RJ47GB0321",
-        "dueAmount": 36476.8
-      }
-    ]
-  },
-  {
-    "id": "due-20",
-    "grNo": "2119",
-    "tripDate": "20/08/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "POD Sent/ Bill Generated",
-    "color": "purple",
-    "colorHex": "#9c27b0",
-    "dueAmount": 36476.8,
-    "paidAmount": 0.0,
-    "truckNo": "RJ01GD1521",
-    "ownerName": "Balveer Yadav",
-    "ownerMobile": "9314000521",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Kanpur (U.P.)",
-    "transport": "TTC",
-    "material": "Industrial Raw Material",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Ankush Bansal Jaipur",
-    "referenceMobile": "9235620019",
-    "driver": "Shaitan Gurjar",
-    "driverMobile": "9828990011",
-    "consignor": {
-      "gstin": "08CRGPG0812F1ZB",
-      "name": "Shree Shyam Mineral Traders",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6519B1ZN",
-      "name": "Ankush Bansal Jaipur",
-      "mobile": "9235620019"
-    },
-    "freight": 36476.8,
-    "totalFreight": 36476.8,
-    "payments": [],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 2000.0,
-        "debtMode": "Cash",
-        "borrowerName": "Balveer Yadav",
-        "receiverName": "Ramchandra Jat 8824993002",
-        "description": "2025-2026 Advance Commission",
-        "grNo": "2119_TTC",
-        "truckNo": "RJ01GD1521",
-        "dueAmount": 36476.8
-      }
-    ]
-  },
-  {
-    "id": "due-21",
-    "grNo": "2120",
-    "tripDate": "21/09/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "Party Payment Pending",
-    "color": "blue",
-    "colorHex": "#1a73e8",
-    "dueAmount": 36476.8,
-    "paidAmount": 36476.8,
-    "truckNo": "RJ47GB0121",
-    "ownerName": "Balveer Yadav",
-    "ownerMobile": "9314000521",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Agra (U.P.)",
-    "transport": "TTC",
-    "material": "Silica Powder",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Pushpendra Sharma",
-    "referenceMobile": "9235620020",
-    "driver": "Kallu Meena",
-    "driverMobile": "9079757926",
-    "consignor": {
-      "gstin": "08FPWPR3462B2ZD",
-      "name": "SHIV UMA STONEX",
-      "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6520B1ZN",
-      "name": "Pushpendra Sharma",
-      "mobile": "9235620020"
-    },
-    "freight": 36476.8,
-    "totalFreight": 36476.8,
-    "payments": [
-      {
-        "paymentDate": "21/09/2025",
-        "amountPaid": 36476.8,
-        "mode": "NEFT/RTGS",
-        "beneficiary": "Truck Owner",
-        "bank": "TTC",
-        "toBank": "Other Bank",
-        "description": "Transporter Payment for GR 2120_TTC",
-        "paidTo": "Transporter"
-      }
-    ],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 1500.0,
-        "debtMode": "Cash",
-        "borrowerName": "Balveer Yadav",
-        "receiverName": "Ramchandra Jat 8824993002",
-        "description": "2025-2026 Advance Commission",
-        "grNo": "2120_TTC",
-        "truckNo": "RJ47GB0121",
-        "dueAmount": 36476.8
-      }
-    ]
-  },
-  {
-    "id": "due-22",
-    "grNo": "2121",
-    "tripDate": "22/10/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "Off Loading",
-    "color": "pink",
-    "colorHex": "#e91e63",
-    "dueAmount": 36476.8,
-    "paidAmount": 0.0,
-    "truckNo": "RJ42GA3374",
-    "ownerName": "Balveer Yadav",
-    "ownerMobile": "9314000521",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Ghaziabad (U.P.)",
-    "transport": "TTC",
-    "material": "Foundry Powder",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Pankaj Jain Sahibabad",
-    "referenceMobile": "9235620021",
-    "driver": "Ramchandra Jat",
-    "driverMobile": "8824993002",
-    "consignor": {
-      "gstin": "08AAUFD1174E1ZC",
-      "name": "Durga Enterprises",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6521B1ZN",
-      "name": "Pankaj Jain Sahibabad",
-      "mobile": "9235620021"
-    },
-    "freight": 36476.8,
-    "totalFreight": 36476.8,
-    "payments": [],
-    "debts": []
-  },
-  {
-    "id": "due-23",
-    "grNo": "2122",
-    "tripDate": "23/11/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "Cheque Due",
-    "color": "slate",
-    "colorHex": "#607d8b",
-    "dueAmount": 36476.8,
-    "paidAmount": 36476.8,
-    "truckNo": "RJ01GD0121",
-    "ownerName": "Balveer Yadav",
-    "ownerMobile": "9314000521",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Lucknow (U.P.)",
-    "transport": "TTC",
-    "material": "Polished Granite",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Madan Nilkanth Granite Jetpura",
-    "referenceMobile": "9235620022",
-    "driver": "Laxman Gurjar 8614",
-    "driverMobile": "9828861400",
-    "consignor": {
-      "gstin": "08AGRPJ1613P1ZX",
-      "name": "Saatvik Minerals",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6522B1ZN",
-      "name": "Madan Nilkanth Granite Jetpura",
-      "mobile": "9235620022"
-    },
-    "freight": 36476.8,
-    "totalFreight": 36476.8,
-    "payments": [
-      {
-        "paymentDate": "23/11/2025",
-        "amountPaid": 36476.8,
-        "mode": "NEFT/RTGS",
-        "beneficiary": "Truck Owner",
-        "bank": "TTC",
-        "toBank": "Other Bank",
-        "description": "Transporter Payment for GR 2122_TTC",
-        "paidTo": "Transporter"
-      }
-    ],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 2000.0,
-        "debtMode": "Cash",
-        "borrowerName": "Balveer Yadav",
-        "receiverName": "Ramchandra Jat 8824993002",
-        "description": "2025-2026 Advance Commission",
-        "grNo": "2122_TTC",
-        "truckNo": "RJ01GD0121",
-        "dueAmount": 36476.8
-      }
-    ]
-  },
-  {
-    "id": "due-24",
-    "grNo": "2123",
-    "tripDate": "24/12/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "Truck Owner Payment Pending",
-    "color": "cyan",
-    "colorHex": "#00bcd4",
-    "dueAmount": 36476.8,
-    "paidAmount": 36476.8,
-    "truckNo": "RJ52GA7336",
-    "ownerName": "Banwari Lal Dhabas",
-    "ownerMobile": "9950890686",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Kanpur (U.P.)",
-    "transport": "TTC",
-    "material": "Calcium Carbonate",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Shree Shyam Mineral & Chemical Traders",
-    "referenceMobile": "9235620023",
-    "driver": "Dinesh Yadav 7729",
-    "driverMobile": "9414772900",
-    "consignor": {
-      "gstin": "08CRGPG0812F1ZB",
-      "name": "Shree Shyam Mineral Traders",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6523B1ZN",
-      "name": "Shree Shyam Mineral & Chemical Traders",
-      "mobile": "9235620023"
-    },
-    "freight": 36476.8,
-    "totalFreight": 36476.8,
-    "payments": [
-      {
-        "paymentDate": "24/12/2025",
-        "amountPaid": 36476.8,
-        "mode": "NEFT/RTGS",
-        "beneficiary": "Truck Owner",
-        "bank": "TTC",
-        "toBank": "Other Bank",
-        "description": "Transporter Payment for GR 2123_TTC",
-        "paidTo": "Transporter"
-      }
-    ],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 2000.0,
-        "debtMode": "Cash",
-        "borrowerName": "Banwari Lal Dhabas",
-        "receiverName": "Ramchandra Jat 8824993002",
-        "description": "2025-2026 Advance Commission",
-        "grNo": "2123_TTC",
-        "truckNo": "RJ52GA7336",
-        "dueAmount": 36476.8
-      }
-    ]
-  },
-  {
-    "id": "due-25",
-    "grNo": "2124",
-    "tripDate": "25/01/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "Transit",
-    "color": "yellow",
-    "colorHex": "#e5a823",
-    "dueAmount": 36476.8,
-    "paidAmount": 0.0,
-    "truckNo": "RJ52GA7872",
-    "ownerName": "Banwari Lal Dhabas",
-    "ownerMobile": "9950890686",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Delhi",
-    "transport": "TTC",
-    "material": "Granite Slabs",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Vedanta Granite",
-    "referenceMobile": "9235620024",
-    "driver": "Sonu Bhai",
-    "driverMobile": "9602334455",
-    "consignor": {
-      "gstin": "08FPWPR3462B2ZD",
-      "name": "SHIV UMA STONEX",
-      "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6524B1ZN",
-      "name": "Vedanta Granite",
-      "mobile": "9235620024"
-    },
-    "freight": 1125.0,
-    "totalFreight": 37601.8,
-    "payments": [],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 2500.0,
-        "debtMode": "Cash",
-        "borrowerName": "Banwari Lal Dhabas",
-        "receiverName": "Bajrang Meena 7297032726",
-        "description": "2025-2026 Advance Commission",
-        "grNo": "2124_TTC",
-        "truckNo": "RJ52GA7872",
-        "dueAmount": 36476.8
-      },
-      {
-        "debtType": "Other",
-        "debtAmount": 1400.0,
-        "debtMode": "Cash",
-        "borrowerName": "Banwari Lal Dhabas",
-        "receiverName": "Bajrang Meena 7297032726",
-        "description": "Other Advance on Loading",
-        "grNo": "2124_TTC",
-        "truckNo": "RJ52GA7872",
-        "dueAmount": 36476.8
-      }
-    ]
-  },
-  {
-    "id": "due-26",
-    "grNo": "2125_SMTC",
-    "tripDate": "26/02/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "POD Sent/ Bill Generated",
-    "color": "purple",
-    "colorHex": "#9c27b0",
-    "dueAmount": 36476.8,
-    "paidAmount": 0.0,
-    "truckNo": "RJ52GA7337",
-    "ownerName": "Banwari Lal Dhabas",
-    "ownerMobile": "9950890686",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Neemrana (Raj.)",
-    "transport": "SMTC",
-    "material": "Gypsum Powder",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Durga Enterprises",
-    "referenceMobile": "9235620025",
-    "driver": "Mangalram Gurjar",
-    "driverMobile": "9783556677",
-    "consignor": {
-      "gstin": "08AAUFD1174E1ZC",
-      "name": "Durga Enterprises",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6525B1ZN",
-      "name": "Durga Enterprises",
-      "mobile": "9235620025"
-    },
-    "freight": 36476.8,
-    "totalFreight": 36476.8,
-    "payments": [],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 2000.0,
-        "debtMode": "Cash",
-        "borrowerName": "Banwari Lal Dhabas",
-        "receiverName": "Ramchandra Jat 8824993002",
-        "description": "2025-2026 Advance Commission",
-        "grNo": "2125_SMTC",
-        "truckNo": "RJ52GA7337",
-        "dueAmount": 36476.8
-      }
-    ]
-  },
-  {
-    "id": "due-27",
-    "grNo": "2126",
-    "tripDate": "27/03/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "Party Payment Pending",
-    "color": "blue",
-    "colorHex": "#1a73e8",
-    "dueAmount": 36476.8,
-    "paidAmount": 36476.8,
-    "truckNo": "RJ52GA9396",
-    "ownerName": "Banwari Lal Dhabas",
-    "ownerMobile": "9950890686",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Sandila (U.P.)",
-    "transport": "TTC",
-    "material": "Feldspar Powder",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Saatvik Minerals",
-    "referenceMobile": "9235620026",
-    "driver": "Mahendra Bairwa",
-    "driverMobile": "9414889900",
-    "consignor": {
-      "gstin": "08AGRPJ1613P1ZX",
-      "name": "Saatvik Minerals",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6526B1ZN",
-      "name": "Saatvik Minerals",
-      "mobile": "9235620026"
-    },
-    "freight": 36476.8,
-    "totalFreight": 36476.8,
-    "payments": [
-      {
-        "paymentDate": "27/03/2025",
-        "amountPaid": 36476.8,
-        "mode": "NEFT/RTGS",
-        "beneficiary": "Truck Owner",
-        "bank": "TTC",
-        "toBank": "Other Bank",
-        "description": "Transporter Payment for GR 2126_TTC",
-        "paidTo": "Transporter"
-      }
-    ],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 1500.0,
-        "debtMode": "Cash",
-        "borrowerName": "Banwari Lal Dhabas",
-        "receiverName": "Ramchandra Jat 8824993002",
-        "description": "2025-2026 Advance Commission",
-        "grNo": "2126_TTC",
-        "truckNo": "RJ52GA9396",
-        "dueAmount": 36476.8
-      }
-    ]
-  },
-  {
-    "id": "due-28",
-    "grNo": "2127",
-    "tripDate": "28/04/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "Off Loading",
-    "color": "pink",
-    "colorHex": "#e91e63",
-    "dueAmount": 36476.8,
-    "paidAmount": 0.0,
-    "truckNo": "RJ52GA5497",
-    "ownerName": "Baya Mistry",
-    "ownerMobile": "9828212557",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Karnal (Haryana)",
-    "transport": "TTC",
-    "material": "Sandstone & Marble",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Shri Nakoda Bhairav Stone",
-    "referenceMobile": "9235620027",
-    "driver": "Gopi Chand 8732",
-    "driverMobile": "9079873200",
-    "consignor": {
-      "gstin": "08CRGPG0812F1ZB",
-      "name": "Shree Shyam Mineral Traders",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6527B1ZN",
-      "name": "Shri Nakoda Bhairav Stone",
-      "mobile": "9235620027"
-    },
-    "freight": 36476.8,
-    "totalFreight": 36476.8,
-    "payments": [],
-    "debts": []
-  },
-  {
-    "id": "due-29",
-    "grNo": "2128",
-    "tripDate": "01/05/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "Cheque Due",
-    "color": "slate",
-    "colorHex": "#607d8b",
-    "dueAmount": 36476.8,
-    "paidAmount": 36476.8,
-    "truckNo": "RJ52GB0788",
-    "ownerName": "Bhanwar Choudhary",
-    "ownerMobile": "7240229577",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Kanpur (U.P.)",
-    "transport": "TTC",
-    "material": "Marble Powder",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Himanshu Chemtech Kanpur Supplier",
-    "referenceMobile": "9235620028",
-    "driver": "Pratap Singh",
-    "driverMobile": "9828112200",
-    "consignor": {
-      "gstin": "08FPWPR3462B2ZD",
-      "name": "SHIV UMA STONEX",
-      "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6528B1ZN",
-      "name": "Himanshu Chemtech Kanpur Supplier",
-      "mobile": "9235620028"
-    },
-    "freight": 36476.8,
-    "totalFreight": 36476.8,
-    "payments": [
-      {
-        "paymentDate": "01/05/2025",
-        "amountPaid": 36476.8,
-        "mode": "NEFT/RTGS",
-        "beneficiary": "Truck Owner",
-        "bank": "TTC",
-        "toBank": "Other Bank",
-        "description": "Transporter Payment for GR 2128_TTC",
-        "paidTo": "Transporter"
-      }
-    ],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 2000.0,
-        "debtMode": "Cash",
-        "borrowerName": "Bhanwar Choudhary",
-        "receiverName": "Ramchandra Jat 8824993002",
-        "description": "2025-2026 Advance Commission",
-        "grNo": "2128_TTC",
-        "truckNo": "RJ52GB0788",
-        "dueAmount": 36476.8
-      }
-    ]
-  },
-  {
-    "id": "due-30",
-    "grNo": "2129",
-    "tripDate": "02/06/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "Truck Owner Payment Pending",
-    "color": "cyan",
-    "colorHex": "#00bcd4",
-    "dueAmount": 36476.8,
-    "paidAmount": 36476.8,
-    "truckNo": "RJ09GE3056",
-    "ownerName": "Bheru Singh Shekhawat",
-    "ownerMobile": "8432161566",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Lucknow (U.P.)",
-    "transport": "TTC",
-    "material": "Marble Powder",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Bharat Mineral Pasoond",
-    "referenceMobile": "9235620029",
-    "driver": "Hanuman Hindoli 4538",
-    "driverMobile": "9414453800",
-    "consignor": {
-      "gstin": "08AAUFD1174E1ZC",
-      "name": "Durga Enterprises",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6529B1ZN",
-      "name": "Bharat Mineral Pasoond",
-      "mobile": "9235620029"
-    },
-    "freight": 36476.8,
-    "totalFreight": 36476.8,
-    "payments": [
-      {
-        "paymentDate": "02/06/2025",
-        "amountPaid": 36476.8,
-        "mode": "NEFT/RTGS",
-        "beneficiary": "Truck Owner",
-        "bank": "TTC",
-        "toBank": "Other Bank",
-        "description": "Transporter Payment for GR 2129_TTC",
-        "paidTo": "Transporter"
-      }
-    ],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 2000.0,
-        "debtMode": "Cash",
-        "borrowerName": "Bheru Singh Shekhawat",
-        "receiverName": "Ramchandra Jat 8824993002",
-        "description": "2025-2026 Advance Commission",
-        "grNo": "2129_TTC",
-        "truckNo": "RJ09GE3056",
-        "dueAmount": 36476.8
-      }
-    ]
-  },
-  {
-    "id": "due-31",
-    "grNo": "2130",
-    "tripDate": "03/07/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "Transit",
-    "color": "yellow",
-    "colorHex": "#e5a823",
-    "dueAmount": 36476.8,
-    "paidAmount": 0.0,
-    "truckNo": "RJ32GC7697",
-    "ownerName": "Billo Kasana",
-    "ownerMobile": "8290545425",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Sandila (U.P.)",
-    "transport": "TTC",
-    "material": "Micronized Powder",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Kunal Micron Vijay Jain",
-    "referenceMobile": "9235620030",
-    "driver": "Lokesh Choudhary",
-    "driverMobile": "9310495939",
-    "consignor": {
-      "gstin": "08AGRPJ1613P1ZX",
-      "name": "Saatvik Minerals",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6530B1ZN",
-      "name": "Kunal Micron Vijay Jain",
-      "mobile": "9235620030"
-    },
-    "freight": 1125.0,
-    "totalFreight": 37601.8,
-    "payments": [],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 2500.0,
-        "debtMode": "Cash",
-        "borrowerName": "Billo Kasana",
-        "receiverName": "Bajrang Meena 7297032726",
-        "description": "2025-2026 Advance Commission",
-        "grNo": "2130_TTC",
-        "truckNo": "RJ32GC7697",
-        "dueAmount": 36476.8
-      },
-      {
-        "debtType": "Other",
-        "debtAmount": 1400.0,
-        "debtMode": "Cash",
-        "borrowerName": "Billo Kasana",
-        "receiverName": "Bajrang Meena 7297032726",
-        "description": "Other Advance on Loading",
-        "grNo": "2130_TTC",
-        "truckNo": "RJ32GC7697",
-        "dueAmount": 36476.8
-      }
-    ]
-  },
-  {
-    "id": "due-32",
-    "grNo": "2131",
-    "tripDate": "04/08/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "POD Sent/ Bill Generated",
-    "color": "purple",
-    "colorHex": "#9c27b0",
-    "dueAmount": 36476.8,
-    "paidAmount": 0.0,
-    "truckNo": "RJ32GE0446",
-    "ownerName": "Billo Kasana",
-    "ownerMobile": "8290545425",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Karnal (Haryana)",
-    "transport": "TTC",
-    "material": "Industrial Minerals",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Virsun Industries",
-    "referenceMobile": "9235620031",
-    "driver": "Pradeep 1136",
-    "driverMobile": "9602113600",
-    "consignor": {
-      "gstin": "08CRGPG0812F1ZB",
-      "name": "Shree Shyam Mineral Traders",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6531B1ZN",
-      "name": "Virsun Industries",
-      "mobile": "9235620031"
-    },
-    "freight": 36476.8,
-    "totalFreight": 36476.8,
-    "payments": [],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 2000.0,
-        "debtMode": "Cash",
-        "borrowerName": "Billo Kasana",
-        "receiverName": "Ramchandra Jat 8824993002",
-        "description": "2025-2026 Advance Commission",
-        "grNo": "2131_TTC",
-        "truckNo": "RJ32GE0446",
-        "dueAmount": 36476.8
-      }
-    ]
-  },
-  {
-    "id": "due-33",
-    "grNo": "2132",
-    "tripDate": "05/09/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "Party Payment Pending",
-    "color": "blue",
-    "colorHex": "#1a73e8",
-    "dueAmount": 36476.8,
-    "paidAmount": 36476.8,
-    "truckNo": "RJ52GB5777",
-    "ownerName": "Biloo Saharan",
-    "ownerMobile": "8690796177",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Ghaziabad (U.P.)",
-    "transport": "TTC",
-    "material": "Soapstone Powder",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Ganpati Minerals",
-    "referenceMobile": "9235620032",
-    "driver": "Dataram Gurjar",
-    "driverMobile": "9783223344",
-    "consignor": {
-      "gstin": "08FPWPR3462B2ZD",
-      "name": "SHIV UMA STONEX",
-      "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6532B1ZN",
-      "name": "Ganpati Minerals",
-      "mobile": "9235620032"
-    },
-    "freight": 36476.8,
-    "totalFreight": 36476.8,
-    "payments": [
-      {
-        "paymentDate": "05/09/2025",
-        "amountPaid": 36476.8,
-        "mode": "NEFT/RTGS",
-        "beneficiary": "Truck Owner",
-        "bank": "TTC",
-        "toBank": "Other Bank",
-        "description": "Transporter Payment for GR 2132_TTC",
-        "paidTo": "Transporter"
-      }
-    ],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 1500.0,
-        "debtMode": "Cash",
-        "borrowerName": "Biloo Saharan",
-        "receiverName": "Ramchandra Jat 8824993002",
-        "description": "2025-2026 Advance Commission",
-        "grNo": "2132_TTC",
-        "truckNo": "RJ52GB5777",
-        "dueAmount": 36476.8
-      }
-    ]
-  },
-  {
-    "id": "due-34",
-    "grNo": "2133",
-    "tripDate": "06/10/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "Off Loading",
-    "color": "pink",
-    "colorHex": "#e91e63",
-    "dueAmount": 36476.8,
-    "paidAmount": 0.0,
-    "truckNo": "RJ52GB1578",
-    "ownerName": "Buttha Gurjar Shiv Mandir",
-    "ownerMobile": "9829926836",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Kanpur (U.P.)",
-    "transport": "TTC",
-    "material": "Marble Powder",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Mahaveer Tholiya",
-    "referenceMobile": "9235620033",
-    "driver": "Suresh Gurjar Tonk",
-    "driverMobile": "9414667788",
-    "consignor": {
-      "gstin": "08AAUFD1174E1ZC",
-      "name": "Durga Enterprises",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6533B1ZN",
-      "name": "Mahaveer Tholiya",
-      "mobile": "9235620033"
-    },
-    "freight": 36476.8,
-    "totalFreight": 36476.8,
-    "payments": [],
-    "debts": []
-  },
-  {
-    "id": "due-35",
-    "grNo": "2134_SMTC",
-    "tripDate": "07/11/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "Cheque Due",
-    "color": "slate",
-    "colorHex": "#607d8b",
-    "dueAmount": 36476.8,
-    "paidAmount": 36476.8,
-    "truckNo": "RJ52GA2391",
-    "ownerName": "Buttha Gurjar Shiv Mandir",
-    "ownerMobile": "9829926836",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Neemrana (Raj.)",
-    "transport": "SMTC",
-    "material": "Plaster of Paris",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Sudhir Mishra Sakarni Kareda",
-    "referenceMobile": "9235620034",
-    "driver": "Dharmi Meena",
-    "driverMobile": "9414717113",
-    "consignor": {
-      "gstin": "08AGRPJ1613P1ZX",
-      "name": "Saatvik Minerals",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6534B1ZN",
-      "name": "Sudhir Mishra Sakarni Kareda",
-      "mobile": "9235620034"
-    },
-    "freight": 36476.8,
-    "totalFreight": 36476.8,
-    "payments": [
-      {
-        "paymentDate": "07/11/2025",
-        "amountPaid": 36476.8,
-        "mode": "NEFT/RTGS",
-        "beneficiary": "Truck Owner",
-        "bank": "SMTC",
-        "toBank": "Other Bank",
-        "description": "Transporter Payment for GR 2134_SMTC",
-        "paidTo": "Transporter"
-      }
-    ],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 2000.0,
-        "debtMode": "Cash",
-        "borrowerName": "Buttha Gurjar Shiv Mandir",
-        "receiverName": "Ramchandra Jat 8824993002",
-        "description": "2025-2026 Advance Commission",
-        "grNo": "2134_SMTC",
-        "truckNo": "RJ52GA2391",
-        "dueAmount": 36476.8
-      }
-    ]
-  },
-  {
-    "id": "due-36",
-    "grNo": "2135",
-    "tripDate": "08/12/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "Truck Owner Payment Pending",
-    "color": "cyan",
-    "colorHex": "#00bcd4",
-    "dueAmount": 36476.8,
-    "paidAmount": 36476.8,
-    "truckNo": "RJ37GB0103",
-    "ownerName": "Dara Motors",
-    "ownerMobile": "9818232724",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Kanpur (U.P.)",
-    "transport": "TTC",
-    "material": "Chemical Powder",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Rishi Kapur Kapsons India",
-    "referenceMobile": "9235620035",
-    "driver": "Bhim Raj 8616",
-    "driverMobile": "9828230022",
-    "consignor": {
-      "gstin": "08CRGPG0812F1ZB",
-      "name": "Shree Shyam Mineral Traders",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6535B1ZN",
-      "name": "Rishi Kapur Kapsons India",
-      "mobile": "9235620035"
-    },
-    "freight": 36476.8,
-    "totalFreight": 36476.8,
-    "payments": [
-      {
-        "paymentDate": "08/12/2025",
-        "amountPaid": 36476.8,
-        "mode": "NEFT/RTGS",
-        "beneficiary": "Truck Owner",
-        "bank": "TTC",
-        "toBank": "Other Bank",
-        "description": "Transporter Payment for GR 2135_TTC",
-        "paidTo": "Transporter"
-      }
-    ],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 2000.0,
-        "debtMode": "Cash",
-        "borrowerName": "Dara Motors",
-        "receiverName": "Ramchandra Jat 8824993002",
-        "description": "2025-2026 Advance Commission",
-        "grNo": "2135_TTC",
-        "truckNo": "RJ37GB0103",
-        "dueAmount": 36476.8
-      }
-    ]
-  },
-  {
-    "id": "due-37",
-    "grNo": "2136",
-    "tripDate": "09/01/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "Transit",
-    "color": "yellow",
-    "colorHex": "#e5a823",
-    "dueAmount": 36476.8,
-    "paidAmount": 0.0,
-    "truckNo": "RJ52GB0986",
-    "ownerName": "Deepak Dhabas",
-    "ownerMobile": "9024959171",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Bahadurgarh (Haryana)",
-    "transport": "TTC",
-    "material": "Quartz Powder",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Jawahar Minerals Alwar",
-    "referenceMobile": "9235620036",
-    "driver": "Krishan Singh",
-    "driverMobile": "9414659401",
-    "consignor": {
-      "gstin": "08FPWPR3462B2ZD",
-      "name": "SHIV UMA STONEX",
-      "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6536B1ZN",
-      "name": "Jawahar Minerals Alwar",
-      "mobile": "9235620036"
-    },
-    "freight": 1125.0,
-    "totalFreight": 37601.8,
-    "payments": [],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 2500.0,
-        "debtMode": "Cash",
-        "borrowerName": "Deepak Dhabas",
-        "receiverName": "Bajrang Meena 7297032726",
-        "description": "2025-2026 Advance Commission",
-        "grNo": "2136_TTC",
-        "truckNo": "RJ52GB0986",
-        "dueAmount": 36476.8
-      },
-      {
-        "debtType": "Other",
-        "debtAmount": 1400.0,
-        "debtMode": "Cash",
-        "borrowerName": "Deepak Dhabas",
-        "receiverName": "Bajrang Meena 7297032726",
-        "description": "Other Advance on Loading",
-        "grNo": "2136_TTC",
-        "truckNo": "RJ52GB0986",
-        "dueAmount": 36476.8
-      }
-    ]
-  },
-  {
-    "id": "due-38",
-    "grNo": "2137",
-    "tripDate": "10/02/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "POD Sent/ Bill Generated",
-    "color": "purple",
-    "colorHex": "#9c27b0",
-    "dueAmount": 36476.8,
-    "paidAmount": 0.0,
-    "truckNo": "RJ52GA7719",
-    "ownerName": "Deepak Dhabas",
-    "ownerMobile": "9024959171",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Sandila (U.P.)",
-    "transport": "TTC",
-    "material": "Marble Powder",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Tanuj Kothari Udaipur",
-    "referenceMobile": "9235620037",
-    "driver": "Vikram Gurjar 4507",
-    "driverMobile": "8824993002",
-    "consignor": {
-      "gstin": "08AAUFD1174E1ZC",
-      "name": "Durga Enterprises",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6537B1ZN",
-      "name": "Tanuj Kothari Udaipur",
-      "mobile": "9235620037"
-    },
-    "freight": 36476.8,
-    "totalFreight": 36476.8,
-    "payments": [],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 2000.0,
-        "debtMode": "Cash",
-        "borrowerName": "Deepak Dhabas",
-        "receiverName": "Ramchandra Jat 8824993002",
-        "description": "2025-2026 Advance Commission",
-        "grNo": "2137_TTC",
-        "truckNo": "RJ52GA7719",
-        "dueAmount": 36476.8
-      }
-    ]
-  },
-  {
-    "id": "due-39",
-    "grNo": "2138",
-    "tripDate": "11/03/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "Party Payment Pending",
-    "color": "blue",
-    "colorHex": "#1a73e8",
-    "dueAmount": 36476.8,
-    "paidAmount": 36476.8,
-    "truckNo": "RJ52GA9432",
-    "ownerName": "Deepak Dhabas",
-    "ownerMobile": "9024959171",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Jhajjar (Haryana)",
-    "transport": "TTC",
-    "material": "Chemicals & Dyes",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Balwant Yadav R.B. Dyes",
-    "referenceMobile": "9235620038",
-    "driver": "Ranjeet 8796",
-    "driverMobile": "9602418796",
-    "consignor": {
-      "gstin": "08AGRPJ1613P1ZX",
-      "name": "Saatvik Minerals",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6538B1ZN",
-      "name": "Balwant Yadav R.B. Dyes",
-      "mobile": "9235620038"
-    },
-    "freight": 36476.8,
-    "totalFreight": 36476.8,
-    "payments": [
-      {
-        "paymentDate": "11/03/2025",
-        "amountPaid": 36476.8,
-        "mode": "NEFT/RTGS",
-        "beneficiary": "Truck Owner",
-        "bank": "TTC",
-        "toBank": "Other Bank",
-        "description": "Transporter Payment for GR 2138_TTC",
-        "paidTo": "Transporter"
-      }
-    ],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 1500.0,
-        "debtMode": "Cash",
-        "borrowerName": "Deepak Dhabas",
-        "receiverName": "Ramchandra Jat 8824993002",
-        "description": "2025-2026 Advance Commission",
-        "grNo": "2138_TTC",
-        "truckNo": "RJ52GA9432",
-        "dueAmount": 36476.8
-      }
-    ]
-  },
-  {
-    "id": "due-40",
-    "grNo": "2139",
-    "tripDate": "12/04/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "Off Loading",
-    "color": "pink",
-    "colorHex": "#e91e63",
-    "dueAmount": 36476.8,
-    "paidAmount": 0.0,
-    "truckNo": "RJ52GA7295",
-    "ownerName": "Deepak Dhabas",
-    "ownerMobile": "9024959171",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Azamgarh (U.P.)",
-    "transport": "TTC",
-    "material": "Marble Lumps",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Pappu Raad",
-    "referenceMobile": "9235620039",
-    "driver": "Mahesh Gurjar Govindpura",
-    "driverMobile": "9783112233",
-    "consignor": {
-      "gstin": "08CRGPG0812F1ZB",
-      "name": "Shree Shyam Mineral Traders",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6539B1ZN",
-      "name": "Pappu Raad",
-      "mobile": "9235620039"
-    },
-    "freight": 36476.8,
-    "totalFreight": 36476.8,
-    "payments": [],
-    "debts": []
-  },
-  {
-    "id": "due-41",
-    "grNo": "2140",
-    "tripDate": "13/05/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "Cheque Due",
-    "color": "slate",
-    "colorHex": "#607d8b",
-    "dueAmount": 36476.8,
-    "paidAmount": 36476.8,
-    "truckNo": "RJ52GB3572",
-    "ownerName": "Deepak Dhabas",
-    "ownerMobile": "9024959171",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Meerut (U.P.)",
-    "transport": "TTC",
-    "material": "Granite Slabs",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Irfan Bhai Khatauli",
-    "referenceMobile": "9235620040",
-    "driver": "Ramkaran Gurjar 6337",
-    "driverMobile": "9414886337",
-    "consignor": {
-      "gstin": "08FPWPR3462B2ZD",
-      "name": "SHIV UMA STONEX",
-      "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6540B1ZN",
-      "name": "Irfan Bhai Khatauli",
-      "mobile": "9235620040"
-    },
-    "freight": 36476.8,
-    "totalFreight": 36476.8,
-    "payments": [
-      {
-        "paymentDate": "13/05/2025",
-        "amountPaid": 36476.8,
-        "mode": "NEFT/RTGS",
-        "beneficiary": "Truck Owner",
-        "bank": "TTC",
-        "toBank": "Other Bank",
-        "description": "Transporter Payment for GR 2140_TTC",
-        "paidTo": "Transporter"
-      }
-    ],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 2000.0,
-        "debtMode": "Cash",
-        "borrowerName": "Deepak Dhabas",
-        "receiverName": "Ramchandra Jat 8824993002",
-        "description": "2025-2026 Advance Commission",
-        "grNo": "2140_TTC",
-        "truckNo": "RJ52GB3572",
-        "dueAmount": 36476.8
-      }
-    ]
-  },
-  {
-    "id": "due-42",
-    "grNo": "2141_SMTC",
-    "tripDate": "14/06/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "Truck Owner Payment Pending",
-    "color": "cyan",
-    "colorHex": "#00bcd4",
-    "dueAmount": 36476.8,
-    "paidAmount": 36476.8,
-    "truckNo": "RJ52GA7382",
-    "ownerName": "Deepak Dhabas",
-    "ownerMobile": "9024959171",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Sandila (U.P.)",
-    "transport": "SMTC",
-    "material": "Dolomite Powder",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Rajesh Rao Udaipur",
-    "referenceMobile": "9235620041",
-    "driver": "Bhanwarchoudhary 7333",
-    "driverMobile": "9079757333",
-    "consignor": {
-      "gstin": "08AAUFD1174E1ZC",
-      "name": "Durga Enterprises",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6541B1ZN",
-      "name": "Rajesh Rao Udaipur",
-      "mobile": "9235620041"
-    },
-    "freight": 36476.8,
-    "totalFreight": 36476.8,
-    "payments": [
-      {
-        "paymentDate": "14/06/2025",
-        "amountPaid": 36476.8,
-        "mode": "NEFT/RTGS",
-        "beneficiary": "Truck Owner",
-        "bank": "SMTC",
-        "toBank": "Other Bank",
-        "description": "Transporter Payment for GR 2141_SMTC",
-        "paidTo": "Transporter"
-      }
-    ],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 2000.0,
-        "debtMode": "Cash",
-        "borrowerName": "Deepak Dhabas",
-        "receiverName": "Ramchandra Jat 8824993002",
-        "description": "2025-2026 Advance Commission",
-        "grNo": "2141_SMTC",
-        "truckNo": "RJ52GA7382",
-        "dueAmount": 36476.8
-      }
-    ]
-  },
-  {
-    "id": "due-43",
-    "grNo": "2142",
-    "tripDate": "15/07/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "Transit",
-    "color": "yellow",
-    "colorHex": "#e5a823",
-    "dueAmount": 36476.8,
-    "paidAmount": 0.0,
-    "truckNo": "RJ52GB5336",
-    "ownerName": "Deepak Dhabas",
-    "ownerMobile": "9024959171",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Haldwani (U.K.)",
-    "transport": "TTC",
-    "material": "Marble Blocks",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Shruti Marble Sukher",
-    "referenceMobile": "9235620042",
-    "driver": "Hansraj 1235",
-    "driverMobile": "9829123500",
-    "consignor": {
-      "gstin": "08AGRPJ1613P1ZX",
-      "name": "Saatvik Minerals",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6542B1ZN",
-      "name": "Shruti Marble Sukher",
-      "mobile": "9235620042"
-    },
-    "freight": 1125.0,
-    "totalFreight": 37601.8,
-    "payments": [],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 2500.0,
-        "debtMode": "Cash",
-        "borrowerName": "Deepak Dhabas",
-        "receiverName": "Bajrang Meena 7297032726",
-        "description": "2025-2026 Advance Commission",
-        "grNo": "2142_TTC",
-        "truckNo": "RJ52GB5336",
-        "dueAmount": 36476.8
-      },
-      {
-        "debtType": "Other",
-        "debtAmount": 1400.0,
-        "debtMode": "Cash",
-        "borrowerName": "Deepak Dhabas",
-        "receiverName": "Bajrang Meena 7297032726",
-        "description": "Other Advance on Loading",
-        "grNo": "2142_TTC",
-        "truckNo": "RJ52GB5336",
-        "dueAmount": 36476.8
-      }
-    ]
-  },
-  {
-    "id": "due-44",
-    "grNo": "2143",
-    "tripDate": "16/08/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "POD Sent/ Bill Generated",
-    "color": "purple",
-    "colorHex": "#9c27b0",
-    "dueAmount": 36476.8,
-    "paidAmount": 0.0,
-    "truckNo": "RJ52GA7536",
-    "ownerName": "Deepak Dhabas",
-    "ownerMobile": "9024959171",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Karnal (Haryana)",
-    "transport": "TTC",
-    "material": "Marble Powder",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Gopal Sharda",
-    "referenceMobile": "9235620043",
-    "driver": "Madan Gurjar",
-    "driverMobile": "9414223344",
-    "consignor": {
-      "gstin": "08CRGPG0812F1ZB",
-      "name": "Shree Shyam Mineral Traders",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6543B1ZN",
-      "name": "Gopal Sharda",
-      "mobile": "9235620043"
-    },
-    "freight": 36476.8,
-    "totalFreight": 36476.8,
-    "payments": [],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 2000.0,
-        "debtMode": "Cash",
-        "borrowerName": "Deepak Dhabas",
-        "receiverName": "Ramchandra Jat 8824993002",
-        "description": "2025-2026 Advance Commission",
-        "grNo": "2143_TTC",
-        "truckNo": "RJ52GA7536",
-        "dueAmount": 36476.8
-      }
-    ]
-  },
-  {
-    "id": "due-45",
-    "grNo": "2144",
-    "tripDate": "17/09/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "Party Payment Pending",
-    "color": "blue",
-    "colorHex": "#1a73e8",
-    "dueAmount": 36476.8,
-    "paidAmount": 36476.8,
-    "truckNo": "RJ52GB3486",
-    "ownerName": "Deepak Dhabas",
-    "ownerMobile": "9024959171",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Delhi",
-    "transport": "TTC",
-    "material": "Ceramic Minerals",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Anil Sharda",
-    "referenceMobile": "9235620044",
-    "driver": "Manraj Meena 9433",
-    "driverMobile": "9079943300",
-    "consignor": {
-      "gstin": "08FPWPR3462B2ZD",
-      "name": "SHIV UMA STONEX",
-      "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6544B1ZN",
-      "name": "Anil Sharda",
-      "mobile": "9235620044"
-    },
-    "freight": 36476.8,
-    "totalFreight": 36476.8,
-    "payments": [
-      {
-        "paymentDate": "17/09/2025",
-        "amountPaid": 36476.8,
-        "mode": "NEFT/RTGS",
-        "beneficiary": "Truck Owner",
-        "bank": "TTC",
-        "toBank": "Other Bank",
-        "description": "Transporter Payment for GR 2144_TTC",
-        "paidTo": "Transporter"
-      }
-    ],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 1500.0,
-        "debtMode": "Cash",
-        "borrowerName": "Deepak Dhabas",
-        "receiverName": "Ramchandra Jat 8824993002",
-        "description": "2025-2026 Advance Commission",
-        "grNo": "2144_TTC",
-        "truckNo": "RJ52GB3486",
-        "dueAmount": 36476.8
-      }
-    ]
-  },
-  {
-    "id": "due-46",
-    "grNo": "2145",
-    "tripDate": "18/10/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "Off Loading",
-    "color": "pink",
-    "colorHex": "#e91e63",
-    "dueAmount": 36476.8,
-    "paidAmount": 0.0,
-    "truckNo": "RJ52GB3484",
-    "ownerName": "Deepak Dhabas",
-    "ownerMobile": "9024959171",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Saharanpur (U.P.)",
-    "transport": "TTC",
-    "material": "Calcite Powder",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Oswal Mineral Amet",
-    "referenceMobile": "9235620045",
-    "driver": "Chand Gurjar",
-    "driverMobile": "8824112233",
-    "consignor": {
-      "gstin": "08AAUFD1174E1ZC",
-      "name": "Durga Enterprises",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6545B1ZN",
-      "name": "Oswal Mineral Amet",
-      "mobile": "9235620045"
-    },
-    "freight": 36476.8,
-    "totalFreight": 36476.8,
-    "payments": [],
-    "debts": []
-  },
-  {
-    "id": "due-47",
-    "grNo": "2146",
-    "tripDate": "19/11/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "Cheque Due",
-    "color": "slate",
-    "colorHex": "#607d8b",
-    "dueAmount": 36476.8,
-    "paidAmount": 36476.8,
-    "truckNo": "RJ52GB3485",
-    "ownerName": "Deepak Dhabas",
-    "ownerMobile": "9024959171",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Meerut (U.P.)",
-    "transport": "TTC",
-    "material": "Marble Tiles",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Meerut Tiranga Marble Sonu Bhai",
-    "referenceMobile": "9235620046",
-    "driver": "Rajesh Gurjar Kotputli",
-    "driverMobile": "9602554433",
-    "consignor": {
-      "gstin": "08AGRPJ1613P1ZX",
-      "name": "Saatvik Minerals",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6546B1ZN",
-      "name": "Meerut Tiranga Marble Sonu Bhai",
-      "mobile": "9235620046"
-    },
-    "freight": 36476.8,
-    "totalFreight": 36476.8,
-    "payments": [
-      {
-        "paymentDate": "19/11/2025",
-        "amountPaid": 36476.8,
-        "mode": "NEFT/RTGS",
-        "beneficiary": "Truck Owner",
-        "bank": "TTC",
-        "toBank": "Other Bank",
-        "description": "Transporter Payment for GR 2146_TTC",
-        "paidTo": "Transporter"
-      }
-    ],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 2000.0,
-        "debtMode": "Cash",
-        "borrowerName": "Deepak Dhabas",
-        "receiverName": "Ramchandra Jat 8824993002",
-        "description": "2025-2026 Advance Commission",
-        "grNo": "2146_TTC",
-        "truckNo": "RJ52GB3485",
-        "dueAmount": 36476.8
-      }
-    ]
-  },
-  {
-    "id": "due-48",
-    "grNo": "2147",
-    "tripDate": "20/12/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "Truck Owner Payment Pending",
-    "color": "cyan",
-    "colorHex": "#00bcd4",
-    "dueAmount": 36476.8,
-    "paidAmount": 36476.8,
-    "truckNo": "RJ52GA7908",
-    "ownerName": "Deepak Dhabas",
-    "ownerMobile": "9024959171",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Kanpur (U.P.)",
-    "transport": "TTC",
-    "material": "Industrial Raw Material",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Ankush Bansal Jaipur",
-    "referenceMobile": "9235620047",
-    "driver": "Dhanraj Meena 0986",
-    "driverMobile": "9414000986",
-    "consignor": {
-      "gstin": "08CRGPG0812F1ZB",
-      "name": "Shree Shyam Mineral Traders",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6547B1ZN",
-      "name": "Ankush Bansal Jaipur",
-      "mobile": "9235620047"
-    },
-    "freight": 36476.8,
-    "totalFreight": 36476.8,
-    "payments": [
-      {
-        "paymentDate": "20/12/2025",
-        "amountPaid": 36476.8,
-        "mode": "NEFT/RTGS",
-        "beneficiary": "Truck Owner",
-        "bank": "TTC",
-        "toBank": "Other Bank",
-        "description": "Transporter Payment for GR 2147_TTC",
-        "paidTo": "Transporter"
-      }
-    ],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 2000.0,
-        "debtMode": "Cash",
-        "borrowerName": "Deepak Dhabas",
-        "receiverName": "Ramchandra Jat 8824993002",
-        "description": "2025-2026 Advance Commission",
-        "grNo": "2147_TTC",
-        "truckNo": "RJ52GA7908",
-        "dueAmount": 36476.8
-      }
-    ]
-  },
-  {
-    "id": "due-49",
-    "grNo": "2148",
-    "tripDate": "21/01/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "Transit",
-    "color": "yellow",
-    "colorHex": "#e5a823",
-    "dueAmount": 36476.8,
-    "paidAmount": 0.0,
-    "truckNo": "RJ52GB3483",
-    "ownerName": "Deepak Dhabas",
-    "ownerMobile": "9024959171",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Agra (U.P.)",
-    "transport": "TTC",
-    "material": "Silica Powder",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Pushpendra Sharma",
-    "referenceMobile": "9235620048",
-    "driver": "Krishna Saini",
-    "driverMobile": "9828334455",
-    "consignor": {
-      "gstin": "08FPWPR3462B2ZD",
-      "name": "SHIV UMA STONEX",
-      "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6548B1ZN",
-      "name": "Pushpendra Sharma",
-      "mobile": "9235620048"
-    },
-    "freight": 1125.0,
-    "totalFreight": 37601.8,
-    "payments": [],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 2500.0,
-        "debtMode": "Cash",
-        "borrowerName": "Deepak Dhabas",
-        "receiverName": "Bajrang Meena 7297032726",
-        "description": "2025-2026 Advance Commission",
-        "grNo": "2148_TTC",
-        "truckNo": "RJ52GB3483",
-        "dueAmount": 36476.8
-      },
-      {
-        "debtType": "Other",
-        "debtAmount": 1400.0,
-        "debtMode": "Cash",
-        "borrowerName": "Deepak Dhabas",
-        "receiverName": "Bajrang Meena 7297032726",
-        "description": "Other Advance on Loading",
-        "grNo": "2148_TTC",
-        "truckNo": "RJ52GB3483",
-        "dueAmount": 36476.8
-      }
-    ]
-  },
-  {
-    "id": "due-50",
-    "grNo": "2149",
-    "tripDate": "22/02/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "POD Sent/ Bill Generated",
-    "color": "purple",
-    "colorHex": "#9c27b0",
-    "dueAmount": 36476.8,
-    "paidAmount": 0.0,
-    "truckNo": "RJ14GL9911",
-    "ownerName": "Deepak Sharma Agra",
-    "ownerMobile": "9837365048",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Ghaziabad (U.P.)",
-    "transport": "TTC",
-    "material": "Foundry Powder",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Pankaj Jain Sahibabad",
-    "referenceMobile": "9235620049",
-    "driver": "Banti Meena Tonk",
-    "driverMobile": "9414556677",
-    "consignor": {
-      "gstin": "08AAUFD1174E1ZC",
-      "name": "Durga Enterprises",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6549B1ZN",
-      "name": "Pankaj Jain Sahibabad",
-      "mobile": "9235620049"
-    },
-    "freight": 36476.8,
-    "totalFreight": 36476.8,
-    "payments": [],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 2000.0,
-        "debtMode": "Cash",
-        "borrowerName": "Deepak Sharma Agra",
-        "receiverName": "Ramchandra Jat 8824993002",
-        "description": "2025-2026 Advance Commission",
-        "grNo": "2149_TTC",
-        "truckNo": "RJ14GL9911",
-        "dueAmount": 36476.8
-      }
-    ]
-  },
-  {
-    "id": "due-51",
-    "grNo": "2150",
-    "tripDate": "23/03/2025",
-    "tripEndDate": "05/11/2025",
-    "year": "2025-2026",
-    "status": "Party Payment Pending",
-    "color": "blue",
-    "colorHex": "#1a73e8",
-    "dueAmount": 36476.8,
-    "paidAmount": 36476.8,
-    "truckNo": "RJ42GB5679",
-    "ownerName": "Dhanraj Yadav",
-    "ownerMobile": "9829901495",
-    "origin": "Rajsamand (Raj.)",
-    "destination": "Lucknow (U.P.)",
-    "transport": "TTC",
-    "material": "Polished Granite",
-    "weight": 55.0,
-    "rate": 1650.0,
-    "billingType": "Per Tonne",
-    "biltyAmount": 36476.8,
-    "reference": "Madan Nilkanth Granite Jetpura",
-    "referenceMobile": "9235620050",
-    "driver": "Mukesh Gurjar Badgaon",
-    "driverMobile": "9602778899",
-    "consignor": {
-      "gstin": "08AGRPJ1613P1ZX",
-      "name": "Saatvik Minerals",
-      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
-    },
-    "consignee": {
-      "gstin": "09AICPG6550B1ZN",
-      "name": "Madan Nilkanth Granite Jetpura",
-      "mobile": "9235620050"
-    },
-    "freight": 36476.8,
-    "totalFreight": 36476.8,
-    "payments": [
-      {
-        "paymentDate": "23/03/2025",
-        "amountPaid": 36476.8,
-        "mode": "NEFT/RTGS",
-        "beneficiary": "Truck Owner",
-        "bank": "TTC",
-        "toBank": "Other Bank",
-        "description": "Transporter Payment for GR 2150_TTC",
-        "paidTo": "Transporter"
-      }
-    ],
-    "debts": [
-      {
-        "debtType": "Commission",
-        "debtAmount": 1500.0,
-        "debtMode": "Cash",
-        "borrowerName": "Dhanraj Yadav",
-        "receiverName": "Ramchandra Jat 8824993002",
-        "description": "2025-2026 Advance Commission",
-        "grNo": "2150_TTC",
-        "truckNo": "RJ42GB5679",
-        "dueAmount": 36476.8
-      }
-    ]
+    "ownerDue": 84464.2
   },
   {
     "id": "due-54",
@@ -11537,7 +8556,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 88944.22,
+    "dueAmount": 88923.38,
     "paidAmount": 184500.0,
     "truckNo": "RJ52GB8823",
     "ownerName": "Dholuram Lomod Yrl",
@@ -11591,7 +8610,7 @@
         "dueAmount": 184500.0
       }
     ],
-    "ownerDue": 88944.22
+    "ownerDue": 88923.38
   },
   {
     "id": "due-60",
@@ -11602,7 +8621,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 70962.54,
+    "dueAmount": 70945.91,
     "paidAmount": 147200.0,
     "truckNo": "RJ01GC8491",
     "ownerName": "Gaurav Yadav",
@@ -11656,7 +8675,7 @@
         "dueAmount": 147200.0
       }
     ],
-    "ownerDue": 70962.54
+    "ownerDue": 70945.91
   },
   {
     "id": "due-63",
@@ -11667,7 +8686,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 86774.85,
+    "dueAmount": 86754.52,
     "paidAmount": 180000.0,
     "truckNo": "RJ01GC4259",
     "ownerName": "Girdhari Singh",
@@ -11721,7 +8740,7 @@
         "dueAmount": 180000.0
       }
     ],
-    "ownerDue": 86774.85
+    "ownerDue": 86754.52
   },
   {
     "id": "due-64",
@@ -11732,7 +8751,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 55921.57,
+    "dueAmount": 55908.47,
     "paidAmount": 0.0,
     "truckNo": "RJ32GD6867",
     "ownerName": "Giriraj Dhabas",
@@ -11763,7 +8782,7 @@
     "totalFreight": 116000.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 55921.57
+    "ownerDue": 55908.47
   },
   {
     "id": "due-70",
@@ -11774,7 +8793,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 41507.3,
+    "dueAmount": 41497.57,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA3941",
     "ownerName": "Guljari Dhabas",
@@ -11805,7 +8824,7 @@
     "totalFreight": 86100.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 41507.3
+    "ownerDue": 41497.57
   },
   {
     "id": "due-72",
@@ -11816,7 +8835,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 80230.58,
+    "dueAmount": 80211.78,
     "paidAmount": 166425.0,
     "truckNo": "RJ14GP3675",
     "ownerName": "Hansraj Gurjar",
@@ -11870,7 +8889,7 @@
         "dueAmount": 166425.0
       }
     ],
-    "ownerDue": 80230.58
+    "ownerDue": 80211.78
   },
   {
     "id": "due-75",
@@ -11881,7 +8900,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 61402.36,
+    "dueAmount": 61387.97,
     "paidAmount": 127369.0,
     "truckNo": "RJ52GB3083",
     "ownerName": "Hari Palsaniya",
@@ -11935,7 +8954,7 @@
         "dueAmount": 127369.0
       }
     ],
-    "ownerDue": 61402.36
+    "ownerDue": 61387.97
   },
   {
     "id": "due-79",
@@ -11946,7 +8965,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 65158.27,
+    "dueAmount": 65143.0,
     "paidAmount": 0.0,
     "truckNo": "RJ30GB3888",
     "ownerName": "Jagdamba Transport",
@@ -12000,7 +9019,7 @@
         "dueAmount": 135160.0
       }
     ],
-    "ownerDue": 65158.27
+    "ownerDue": 65143.0
   },
   {
     "id": "due-82",
@@ -12011,7 +9030,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 69568.84,
+    "dueAmount": 69552.54,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB2241",
     "ownerName": "Jagdish Kulhariya",
@@ -12042,7 +9061,7 @@
     "totalFreight": 144309.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 69568.84
+    "ownerDue": 69552.54
   },
   {
     "id": "due-89",
@@ -12053,7 +9072,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 80230.58,
+    "dueAmount": 80211.78,
     "paidAmount": 166425.0,
     "truckNo": "RJ14GQ3525",
     "ownerName": "Jairam Badbadwal",
@@ -12107,7 +9126,7 @@
         "dueAmount": 166425.0
       }
     ],
-    "ownerDue": 80230.58
+    "ownerDue": 80211.78
   },
   {
     "id": "due-91",
@@ -12118,7 +9137,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 940.06,
+    "dueAmount": 939.84,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA8996",
     "ownerName": "Jairam Badbadwal",
@@ -12172,7 +9191,7 @@
         "dueAmount": 1950.0
       }
     ],
-    "ownerDue": 940.06
+    "ownerDue": 939.84
   },
   {
     "id": "due-92",
@@ -12183,7 +9202,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 61402.36,
+    "dueAmount": 61387.97,
     "paidAmount": 0.0,
     "truckNo": "RJ26GA4945",
     "ownerName": "Jairam Badbadwal",
@@ -12226,7 +9245,7 @@
         "dueAmount": 127369.0
       }
     ],
-    "ownerDue": 61402.36
+    "ownerDue": 61387.97
   },
   {
     "id": "due-98",
@@ -12237,7 +9256,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 55921.57,
+    "dueAmount": 55908.47,
     "paidAmount": 0.0,
     "truckNo": "RJ32GD6797",
     "ownerName": "Jaisingh Gurjar",
@@ -12280,7 +9299,7 @@
         "dueAmount": 116000.0
       }
     ],
-    "ownerDue": 55921.57
+    "ownerDue": 55908.47
   },
   {
     "id": "due-102",
@@ -12291,7 +9310,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 85261.11,
+    "dueAmount": 85241.13,
     "paidAmount": 176860.0,
     "truckNo": "RJ52GB2471",
     "ownerName": "Jind",
@@ -12345,7 +9364,7 @@
         "dueAmount": 176860.0
       }
     ],
-    "ownerDue": 85261.11
+    "ownerDue": 85241.13
   },
   {
     "id": "due-110",
@@ -12356,7 +9375,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 100118.89,
+    "dueAmount": 100095.43,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA9434",
     "ownerName": "Kailash Dhabas",
@@ -12399,7 +9418,7 @@
         "dueAmount": 207680.0
       }
     ],
-    "ownerDue": 100118.89
+    "ownerDue": 100095.43
   },
   {
     "id": "due-117",
@@ -12410,7 +9429,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 73885.41,
+    "dueAmount": 73868.1,
     "paidAmount": 153263.0,
     "truckNo": "RJ32GD3413",
     "ownerName": "Kailash Dhabas",
@@ -12464,7 +9483,7 @@
         "dueAmount": 153263.0
       }
     ],
-    "ownerDue": 73885.41
+    "ownerDue": 73868.1
   },
   {
     "id": "due-119",
@@ -12475,7 +9494,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 85261.11,
+    "dueAmount": 85241.13,
     "paidAmount": 176860.0,
     "truckNo": "RJ52GB4486",
     "ownerName": "Manish Lunayat",
@@ -12529,7 +9548,7 @@
         "dueAmount": 176860.0
       }
     ],
-    "ownerDue": 85261.11
+    "ownerDue": 85241.13
   },
   {
     "id": "due-121",
@@ -12540,7 +9559,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 41507.3,
+    "dueAmount": 41497.57,
     "paidAmount": 0.0,
     "truckNo": "RJ14GG5088",
     "ownerName": "Kajod Meena",
@@ -12594,7 +9613,7 @@
         "dueAmount": 86100.0
       }
     ],
-    "ownerDue": 41507.3
+    "ownerDue": 41497.57
   },
   {
     "id": "due-122",
@@ -12605,7 +9624,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 88944.22,
+    "dueAmount": 88923.38,
     "paidAmount": 0.0,
     "truckNo": "RJ14GH3288",
     "ownerName": "Kajod Meena",
@@ -12648,7 +9667,7 @@
         "dueAmount": 184500.0
       }
     ],
-    "ownerDue": 88944.22
+    "ownerDue": 88923.38
   },
   {
     "id": "due-123",
@@ -12659,7 +9678,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 80230.58,
+    "dueAmount": 80211.78,
     "paidAmount": 166425.0,
     "truckNo": "RJ01GC8537",
     "ownerName": "Kalim Khan",
@@ -12713,7 +9732,7 @@
         "dueAmount": 166425.0
       }
     ],
-    "ownerDue": 80230.58
+    "ownerDue": 80211.78
   },
   {
     "id": "due-124",
@@ -12724,7 +9743,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 1277.52,
+    "dueAmount": 1277.22,
     "paidAmount": 0.0,
     "truckNo": "RJ01GC0961",
     "ownerName": "Kalim Khan",
@@ -12755,7 +9774,7 @@
     "totalFreight": 2650.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 1277.52
+    "ownerDue": 1277.22
   },
   {
     "id": "due-126",
@@ -12766,7 +9785,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 61402.36,
+    "dueAmount": 61387.97,
     "paidAmount": 127369.0,
     "truckNo": "RJ14GG5750",
     "ownerName": "Kallu Meena",
@@ -12820,7 +9839,7 @@
         "dueAmount": 127369.0
       }
     ],
-    "ownerDue": 61402.36
+    "ownerDue": 61387.97
   },
   {
     "id": "due-129",
@@ -12831,7 +9850,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 92154.89,
+    "dueAmount": 92133.3,
     "paidAmount": 191160.0,
     "truckNo": "RJ01GC3507",
     "ownerName": "Kalu Ram Yadav Shrinagar",
@@ -12885,7 +9904,7 @@
         "dueAmount": 191160.0
       }
     ],
-    "ownerDue": 92154.89
+    "ownerDue": 92133.3
   },
   {
     "id": "due-130",
@@ -12896,7 +9915,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 65158.27,
+    "dueAmount": 65143.0,
     "paidAmount": 0.0,
     "truckNo": "RJ01GC2191",
     "ownerName": "Kalu Ram Yadav Shrinagar",
@@ -12927,7 +9946,7 @@
     "totalFreight": 135160.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 65158.27
+    "ownerDue": 65143.0
   },
   {
     "id": "due-131",
@@ -12938,7 +9957,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 86774.85,
+    "dueAmount": 86754.52,
     "paidAmount": 180000.0,
     "truckNo": "RJ30GA5058",
     "ownerName": "Kaluram Daroga",
@@ -12992,7 +10011,7 @@
         "dueAmount": 180000.0
       }
     ],
-    "ownerDue": 86774.85
+    "ownerDue": 86754.52
   },
   {
     "id": "due-133",
@@ -13003,7 +10022,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 69568.84,
+    "dueAmount": 69552.54,
     "paidAmount": 0.0,
     "truckNo": "RJ26GA4713",
     "ownerName": "Kalyan Meena",
@@ -13057,7 +10076,7 @@
         "dueAmount": 144309.0
       }
     ],
-    "ownerDue": 69568.84
+    "ownerDue": 69552.54
   },
   {
     "id": "due-134",
@@ -13068,7 +10087,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 73885.41,
+    "dueAmount": 73868.1,
     "paidAmount": 0.0,
     "truckNo": "RJ01GD6036",
     "ownerName": "Kanhaiya Lal Vaishnav",
@@ -13111,7 +10130,7 @@
         "dueAmount": 153263.0
       }
     ],
-    "ownerDue": 73885.41
+    "ownerDue": 73868.1
   },
   {
     "id": "due-135",
@@ -13122,7 +10141,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 91981.34,
+    "dueAmount": 91959.79,
     "paidAmount": 190800.0,
     "truckNo": "RJ01GD4236",
     "ownerName": "Hanuman Gurjar Shrinagar",
@@ -13176,7 +10195,7 @@
         "dueAmount": 190800.0
       }
     ],
-    "ownerDue": 91981.34
+    "ownerDue": 91959.79
   },
   {
     "id": "due-136",
@@ -13187,7 +10206,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 85261.11,
+    "dueAmount": 85241.13,
     "paidAmount": 0.0,
     "truckNo": "RJ52GC4136",
     "ownerName": "Kanhaiya Lal Vaishnav",
@@ -13218,7 +10237,7 @@
     "totalFreight": 176860.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 85261.11
+    "ownerDue": 85241.13
   },
   {
     "id": "due-137",
@@ -13229,7 +10248,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 82496.37,
+    "dueAmount": 82477.04,
     "paidAmount": 171125.0,
     "truckNo": "RJ01GC6036",
     "ownerName": "Kanhaiya Lal Vaishnav",
@@ -13283,7 +10302,7 @@
         "dueAmount": 171125.0
       }
     ],
-    "ownerDue": 82496.37
+    "ownerDue": 82477.04
   },
   {
     "id": "due-138",
@@ -13294,7 +10313,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 41507.3,
+    "dueAmount": 41497.57,
     "paidAmount": 86100.0,
     "truckNo": "RJ01GC3456",
     "ownerName": "Kanhaiya Lal Vaishnav",
@@ -13348,7 +10367,7 @@
         "dueAmount": 86100.0
       }
     ],
-    "ownerDue": 41507.3
+    "ownerDue": 41497.57
   },
   {
     "id": "due-141",
@@ -13359,7 +10378,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 1277.52,
+    "dueAmount": 1277.22,
     "paidAmount": 2650.0,
     "truckNo": "RJ01GD0521",
     "ownerName": "(Ishan Rawat Gc0521",
@@ -13413,7 +10432,7 @@
         "dueAmount": 2650.0
       }
     ],
-    "ownerDue": 1277.52
+    "ownerDue": 1277.22
   },
   {
     "id": "due-142",
@@ -13424,7 +10443,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 940.06,
+    "dueAmount": 939.84,
     "paidAmount": 0.0,
     "truckNo": "RJ01GE3567",
     "ownerName": "Kuldeep Yadav",
@@ -13455,7 +10474,7 @@
     "totalFreight": 1950.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 940.06
+    "ownerDue": 939.84
   },
   {
     "id": "due-143",
@@ -13466,7 +10485,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 61402.36,
+    "dueAmount": 61387.97,
     "paidAmount": 127369.0,
     "truckNo": "RJ01GD3567",
     "ownerName": "Kuldeep Yadav",
@@ -13520,7 +10539,7 @@
         "dueAmount": 127369.0
       }
     ],
-    "ownerDue": 61402.36
+    "ownerDue": 61387.97
   },
   {
     "id": "due-144",
@@ -13531,7 +10550,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 100118.89,
+    "dueAmount": 100095.43,
     "paidAmount": 207680.0,
     "truckNo": "RJ01GC6708",
     "ownerName": "Lalaram Choudhary Shrinagar",
@@ -13585,7 +10604,7 @@
         "dueAmount": 207680.0
       }
     ],
-    "ownerDue": 100118.89
+    "ownerDue": 100095.43
   },
   {
     "id": "due-145",
@@ -13596,7 +10615,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 70962.54,
+    "dueAmount": 70945.91,
     "paidAmount": 0.0,
     "truckNo": "RJ01GC8286",
     "ownerName": "Lalaram Choudhary Shrinagar",
@@ -13650,7 +10669,7 @@
         "dueAmount": 147200.0
       }
     ],
-    "ownerDue": 70962.54
+    "ownerDue": 70945.91
   },
   {
     "id": "due-146",
@@ -13661,7 +10680,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 92154.89,
+    "dueAmount": 92133.3,
     "paidAmount": 0.0,
     "truckNo": "NL01AF9064",
     "ownerName": "Lalaram Choudhary Shrinagar",
@@ -13704,7 +10723,7 @@
         "dueAmount": 191160.0
       }
     ],
-    "ownerDue": 92154.89
+    "ownerDue": 92133.3
   },
   {
     "id": "due-147",
@@ -13715,7 +10734,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 65158.27,
+    "dueAmount": 65143.0,
     "paidAmount": 135160.0,
     "truckNo": "RJ01GC6195",
     "ownerName": "Lalaram Choudhary Shrinagar",
@@ -13769,7 +10788,7 @@
         "dueAmount": 135160.0
       }
     ],
-    "ownerDue": 65158.27
+    "ownerDue": 65143.0
   },
   {
     "id": "due-148",
@@ -13780,7 +10799,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 86774.85,
+    "dueAmount": 86754.52,
     "paidAmount": 0.0,
     "truckNo": "RJ01GD0797",
     "ownerName": "Lalaram Choudhary Shrinagar",
@@ -13811,7 +10830,7 @@
     "totalFreight": 180000.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 86774.85
+    "ownerDue": 86754.52
   },
   {
     "id": "due-149",
@@ -13822,7 +10841,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 55921.57,
+    "dueAmount": 55908.47,
     "paidAmount": 116000.0,
     "truckNo": "RJ01GD6195",
     "ownerName": "Lalaram Choudhary Shrinagar",
@@ -13876,7 +10895,7 @@
         "dueAmount": 116000.0
       }
     ],
-    "ownerDue": 55921.57
+    "ownerDue": 55908.47
   },
   {
     "id": "due-150",
@@ -13887,7 +10906,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 69568.84,
+    "dueAmount": 69552.54,
     "paidAmount": 144309.0,
     "truckNo": "NL01AF5542",
     "ownerName": "Lalaram Choudhary Shrinagar",
@@ -13941,7 +10960,7 @@
         "dueAmount": 144309.0
       }
     ],
-    "ownerDue": 69568.84
+    "ownerDue": 69552.54
   },
   {
     "id": "due-151",
@@ -13952,7 +10971,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 73885.41,
+    "dueAmount": 73868.1,
     "paidAmount": 0.0,
     "truckNo": "RJ01GD3707",
     "ownerName": "Lalaram Choudhary Shrinagar",
@@ -14006,7 +11025,7 @@
         "dueAmount": 153263.0
       }
     ],
-    "ownerDue": 73885.41
+    "ownerDue": 73868.1
   },
   {
     "id": "due-152",
@@ -14017,7 +11036,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 91981.34,
+    "dueAmount": 91959.79,
     "paidAmount": 0.0,
     "truckNo": "RJ01GD6708",
     "ownerName": "Lalaram Choudhary Shrinagar",
@@ -14060,7 +11079,7 @@
         "dueAmount": 190800.0
       }
     ],
-    "ownerDue": 91981.34
+    "ownerDue": 91959.79
   },
   {
     "id": "due-153",
@@ -14071,7 +11090,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 85261.11,
+    "dueAmount": 85241.13,
     "paidAmount": 176860.0,
     "truckNo": "RJ01GD4327",
     "ownerName": "Lalaram Choudhary Shrinagar",
@@ -14125,7 +11144,7 @@
         "dueAmount": 176860.0
       }
     ],
-    "ownerDue": 85261.11
+    "ownerDue": 85241.13
   },
   {
     "id": "due-154",
@@ -14136,7 +11155,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 82496.37,
+    "dueAmount": 82477.04,
     "paidAmount": 0.0,
     "truckNo": "RJ01GE6195",
     "ownerName": "Lalaram Choudhary Shrinagar",
@@ -14167,7 +11186,7 @@
     "totalFreight": 171125.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 82496.37
+    "ownerDue": 82477.04
   },
   {
     "id": "due-155",
@@ -14178,7 +11197,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 41507.3,
+    "dueAmount": 41497.57,
     "paidAmount": 86100.0,
     "truckNo": "RJ01GE6708",
     "ownerName": "Lalaram Choudhary Shrinagar",
@@ -14232,7 +11251,7 @@
         "dueAmount": 86100.0
       }
     ],
-    "ownerDue": 41507.3
+    "ownerDue": 41497.57
   },
   {
     "id": "due-156",
@@ -14243,7 +11262,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 88944.22,
+    "dueAmount": 88923.38,
     "paidAmount": 184500.0,
     "truckNo": "RJ01GD8286",
     "ownerName": "Lalaram Choudhary Shrinagar",
@@ -14297,7 +11316,7 @@
         "dueAmount": 184500.0
       }
     ],
-    "ownerDue": 88944.22
+    "ownerDue": 88923.38
   },
   {
     "id": "due-157",
@@ -14308,7 +11327,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 80230.58,
+    "dueAmount": 80211.78,
     "paidAmount": 0.0,
     "truckNo": "RJ01GD3269",
     "ownerName": "Lalaram Choudhary Shrinagar",
@@ -14362,7 +11381,7 @@
         "dueAmount": 166425.0
       }
     ],
-    "ownerDue": 80230.58
+    "ownerDue": 80211.78
   },
   {
     "id": "due-158",
@@ -14373,7 +11392,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 1277.52,
+    "dueAmount": 1277.22,
     "paidAmount": 0.0,
     "truckNo": "RJ14GE5297",
     "ownerName": "Laxman Khoji",
@@ -14416,7 +11435,7 @@
         "dueAmount": 2650.0
       }
     ],
-    "ownerDue": 1277.52
+    "ownerDue": 1277.22
   },
   {
     "id": "due-159",
@@ -14427,7 +11446,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 940.06,
+    "dueAmount": 939.84,
     "paidAmount": 1950.0,
     "truckNo": "RJ52GA7338",
     "ownerName": "Laxmi Prakash Jat",
@@ -14481,7 +11500,7 @@
         "dueAmount": 1950.0
       }
     ],
-    "ownerDue": 940.06
+    "ownerDue": 939.84
   },
   {
     "id": "due-160",
@@ -14492,7 +11511,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 61402.36,
+    "dueAmount": 61387.97,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA8734",
     "ownerName": "Laxmi Prakash Jat",
@@ -14523,7 +11542,7 @@
     "totalFreight": 127369.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 61402.36
+    "ownerDue": 61387.97
   },
   {
     "id": "due-161",
@@ -14534,7 +11553,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 100118.89,
+    "dueAmount": 100095.43,
     "paidAmount": 207680.0,
     "truckNo": "RJ52GA8616",
     "ownerName": "Laxmi Prakash Jat",
@@ -14588,7 +11607,7 @@
         "dueAmount": 207680.0
       }
     ],
-    "ownerDue": 100118.89
+    "ownerDue": 100095.43
   },
   {
     "id": "due-162",
@@ -14599,7 +11618,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 70962.54,
+    "dueAmount": 70945.91,
     "paidAmount": 147200.0,
     "truckNo": "RJ52GA6602",
     "ownerName": "Laxmi Prakash Jat",
@@ -14653,7 +11672,7 @@
         "dueAmount": 147200.0
       }
     ],
-    "ownerDue": 70962.54
+    "ownerDue": 70945.91
   },
   {
     "id": "due-163",
@@ -14664,7 +11683,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 92154.89,
+    "dueAmount": 92133.3,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB2507",
     "ownerName": "Laxmi Prakash Jat",
@@ -14718,7 +11737,7 @@
         "dueAmount": 191160.0
       }
     ],
-    "ownerDue": 92154.89
+    "ownerDue": 92133.3
   },
   {
     "id": "due-164",
@@ -14729,7 +11748,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 65158.27,
+    "dueAmount": 65143.0,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA6603",
     "ownerName": "Laxmi Prakash Jat",
@@ -14772,7 +11791,7 @@
         "dueAmount": 135160.0
       }
     ],
-    "ownerDue": 65158.27
+    "ownerDue": 65143.0
   },
   {
     "id": "due-165",
@@ -14783,7 +11802,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 86774.85,
+    "dueAmount": 86754.52,
     "paidAmount": 180000.0,
     "truckNo": "RJ52GB2503",
     "ownerName": "Laxmi Prakash Jat",
@@ -14837,7 +11856,7 @@
         "dueAmount": 180000.0
       }
     ],
-    "ownerDue": 86774.85
+    "ownerDue": 86754.52
   },
   {
     "id": "due-166",
@@ -14848,7 +11867,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 55921.57,
+    "dueAmount": 55908.47,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB2508",
     "ownerName": "Laxmi Prakash Jat",
@@ -14879,7 +11898,7 @@
     "totalFreight": 116000.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 55921.57
+    "ownerDue": 55908.47
   },
   {
     "id": "due-167",
@@ -14890,7 +11909,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 69568.84,
+    "dueAmount": 69552.54,
     "paidAmount": 144309.0,
     "truckNo": "RJ52GA7728",
     "ownerName": "Laxmi Prakash Jat",
@@ -14944,7 +11963,7 @@
         "dueAmount": 144309.0
       }
     ],
-    "ownerDue": 69568.84
+    "ownerDue": 69552.54
   },
   {
     "id": "due-169",
@@ -14955,7 +11974,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 91981.34,
+    "dueAmount": 91959.79,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA7333",
     "ownerName": "Laxmi Prakash Jat",
@@ -15009,7 +12028,7 @@
         "dueAmount": 190800.0
       }
     ],
-    "ownerDue": 91981.34
+    "ownerDue": 91959.79
   },
   {
     "id": "due-170",
@@ -15020,7 +12039,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 85261.11,
+    "dueAmount": 85241.13,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA8615",
     "ownerName": "Sitaram Meena",
@@ -15063,7 +12082,7 @@
         "dueAmount": 176860.0
       }
     ],
-    "ownerDue": 85261.11
+    "ownerDue": 85241.13
   },
   {
     "id": "due-171",
@@ -15074,7 +12093,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 82496.37,
+    "dueAmount": 82477.04,
     "paidAmount": 171125.0,
     "truckNo": "RJ52GA9489",
     "ownerName": "Laxmi Prakash Jat",
@@ -15128,7 +12147,7 @@
         "dueAmount": 171125.0
       }
     ],
-    "ownerDue": 82496.37
+    "ownerDue": 82477.04
   },
   {
     "id": "due-172",
@@ -15139,7 +12158,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 41507.3,
+    "dueAmount": 41497.57,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA6551",
     "ownerName": "Laxmi Prakash Jat",
@@ -15170,7 +12189,7 @@
     "totalFreight": 86100.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 41507.3
+    "ownerDue": 41497.57
   },
   {
     "id": "due-173",
@@ -15181,7 +12200,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 88944.22,
+    "dueAmount": 88923.38,
     "paidAmount": 184500.0,
     "truckNo": "RJ52GA7310",
     "ownerName": "Laxmi Prakash Jat",
@@ -15235,7 +12254,7 @@
         "dueAmount": 184500.0
       }
     ],
-    "ownerDue": 88944.22
+    "ownerDue": 88923.38
   },
   {
     "id": "due-174",
@@ -15246,7 +12265,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 80230.58,
+    "dueAmount": 80211.78,
     "paidAmount": 166425.0,
     "truckNo": "RJ52GA5578",
     "ownerName": "Laxmi Prakash Jat",
@@ -15300,7 +12319,7 @@
         "dueAmount": 166425.0
       }
     ],
-    "ownerDue": 80230.58
+    "ownerDue": 80211.78
   },
   {
     "id": "due-175",
@@ -15311,7 +12330,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 1277.52,
+    "dueAmount": 1277.22,
     "paidAmount": 0.0,
     "truckNo": "RJ32GD3696",
     "ownerName": "Laxmi Prakash Jat",
@@ -15365,7 +12384,7 @@
         "dueAmount": 2650.0
       }
     ],
-    "ownerDue": 1277.52
+    "ownerDue": 1277.22
   },
   {
     "id": "due-176",
@@ -15376,7 +12395,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 940.06,
+    "dueAmount": 939.84,
     "paidAmount": 0.0,
     "truckNo": "RJ14GH0366",
     "ownerName": "Laxmi Prakash Jat",
@@ -15419,7 +12438,7 @@
         "dueAmount": 1950.0
       }
     ],
-    "ownerDue": 940.06
+    "ownerDue": 939.84
   },
   {
     "id": "due-177",
@@ -15430,7 +12449,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 61402.36,
+    "dueAmount": 61387.97,
     "paidAmount": 127369.0,
     "truckNo": "RJ52GA6598",
     "ownerName": "Laxmi Prakash Jat",
@@ -15484,7 +12503,7 @@
         "dueAmount": 127369.0
       }
     ],
-    "ownerDue": 61402.36
+    "ownerDue": 61387.97
   },
   {
     "id": "due-178",
@@ -15495,7 +12514,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 100118.89,
+    "dueAmount": 100095.43,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA7309",
     "ownerName": "Laxmi Prakash Jat",
@@ -15526,7 +12545,7 @@
     "totalFreight": 207680.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 100118.89
+    "ownerDue": 100095.43
   },
   {
     "id": "due-179",
@@ -15537,7 +12556,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 70962.54,
+    "dueAmount": 70945.91,
     "paidAmount": 147200.0,
     "truckNo": "RJ52GA7726",
     "ownerName": "Laxmi Prakash Jat",
@@ -15591,7 +12610,7 @@
         "dueAmount": 147200.0
       }
     ],
-    "ownerDue": 70962.54
+    "ownerDue": 70945.91
   },
   {
     "id": "due-180",
@@ -15602,7 +12621,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 92154.89,
+    "dueAmount": 92133.3,
     "paidAmount": 191160.0,
     "truckNo": "RJ52GA8733",
     "ownerName": "Laxmi Prakash Jat",
@@ -15656,7 +12675,7 @@
         "dueAmount": 191160.0
       }
     ],
-    "ownerDue": 92154.89
+    "ownerDue": 92133.3
   },
   {
     "id": "due-181",
@@ -15667,7 +12686,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 65158.27,
+    "dueAmount": 65143.0,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB0724",
     "ownerName": "Laxmi Prakash Jat",
@@ -15721,7 +12740,7 @@
         "dueAmount": 135160.0
       }
     ],
-    "ownerDue": 65158.27
+    "ownerDue": 65143.0
   },
   {
     "id": "due-182",
@@ -15732,7 +12751,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 86774.85,
+    "dueAmount": 86754.52,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB2510",
     "ownerName": "Laxmi Prakash Jat",
@@ -15775,7 +12794,7 @@
         "dueAmount": 180000.0
       }
     ],
-    "ownerDue": 86774.85
+    "ownerDue": 86754.52
   },
   {
     "id": "due-183",
@@ -15786,7 +12805,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 55921.57,
+    "dueAmount": 55908.47,
     "paidAmount": 116000.0,
     "truckNo": "RJ52GB0729",
     "ownerName": "Laxmi Prakash Jat",
@@ -15840,7 +12859,7 @@
         "dueAmount": 116000.0
       }
     ],
-    "ownerDue": 55921.57
+    "ownerDue": 55908.47
   },
   {
     "id": "due-184",
@@ -15851,7 +12870,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 69568.84,
+    "dueAmount": 69552.54,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA7335",
     "ownerName": "Laxmi Prakash Jat",
@@ -15882,7 +12901,7 @@
     "totalFreight": 144309.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 69568.84
+    "ownerDue": 69552.54
   },
   {
     "id": "due-185",
@@ -15893,7 +12912,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 73885.41,
+    "dueAmount": 73868.1,
     "paidAmount": 153263.0,
     "truckNo": "RJ52GA8614",
     "ownerName": "Laxmi Prakash Jat",
@@ -15947,7 +12966,7 @@
         "dueAmount": 153263.0
       }
     ],
-    "ownerDue": 73885.41
+    "ownerDue": 73868.1
   },
   {
     "id": "due-186",
@@ -15958,7 +12977,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 91981.34,
+    "dueAmount": 91959.79,
     "paidAmount": 190800.0,
     "truckNo": "RJ52GB0721",
     "ownerName": "Laxmi Prakash Jat",
@@ -16012,7 +13031,7 @@
         "dueAmount": 190800.0
       }
     ],
-    "ownerDue": 91981.34
+    "ownerDue": 91959.79
   },
   {
     "id": "due-187",
@@ -16023,7 +13042,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 85261.11,
+    "dueAmount": 85241.13,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA7729",
     "ownerName": "Laxmi Prakash Jat",
@@ -16077,7 +13096,7 @@
         "dueAmount": 176860.0
       }
     ],
-    "ownerDue": 85261.11
+    "ownerDue": 85241.13
   },
   {
     "id": "due-188",
@@ -16088,7 +13107,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 82496.37,
+    "dueAmount": 82477.04,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB2509",
     "ownerName": "Laxmi Prakash Jat",
@@ -16131,7 +13150,7 @@
         "dueAmount": 171125.0
       }
     ],
-    "ownerDue": 82496.37
+    "ownerDue": 82477.04
   },
   {
     "id": "due-189",
@@ -16142,7 +13161,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 41507.3,
+    "dueAmount": 41497.57,
     "paidAmount": 86100.0,
     "truckNo": "RJ14GE6672",
     "ownerName": "Laxmi Prakash Jat",
@@ -16196,7 +13215,7 @@
         "dueAmount": 86100.0
       }
     ],
-    "ownerDue": 41507.3
+    "ownerDue": 41497.57
   },
   {
     "id": "due-190",
@@ -16207,7 +13226,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 88944.22,
+    "dueAmount": 88923.38,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA7730",
     "ownerName": "Laxmi Prakash Jat",
@@ -16238,7 +13257,7 @@
     "totalFreight": 184500.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 88944.22
+    "ownerDue": 88923.38
   },
   {
     "id": "due-191",
@@ -16249,7 +13268,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 80230.58,
+    "dueAmount": 80211.78,
     "paidAmount": 166425.0,
     "truckNo": "RJ52GA5419",
     "ownerName": "Laxmi Prakash Jat",
@@ -16303,7 +13322,7 @@
         "dueAmount": 166425.0
       }
     ],
-    "ownerDue": 80230.58
+    "ownerDue": 80211.78
   },
   {
     "id": "due-192",
@@ -16314,7 +13333,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 1277.52,
+    "dueAmount": 1277.22,
     "paidAmount": 2650.0,
     "truckNo": "RJ52GB0678",
     "ownerName": "Laxmi Prakash Jat",
@@ -16368,7 +13387,7 @@
         "dueAmount": 2650.0
       }
     ],
-    "ownerDue": 1277.52
+    "ownerDue": 1277.22
   },
   {
     "id": "due-193",
@@ -16379,7 +13398,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 940.06,
+    "dueAmount": 939.84,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB0876",
     "ownerName": "Laxmi Prakash Jat",
@@ -16433,7 +13452,7 @@
         "dueAmount": 1950.0
       }
     ],
-    "ownerDue": 940.06
+    "ownerDue": 939.84
   },
   {
     "id": "due-194",
@@ -16444,7 +13463,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 61402.36,
+    "dueAmount": 61387.97,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB3867",
     "ownerName": "Laxmi Prakash Jat",
@@ -16487,7 +13506,7 @@
         "dueAmount": 127369.0
       }
     ],
-    "ownerDue": 61402.36
+    "ownerDue": 61387.97
   },
   {
     "id": "due-195",
@@ -16498,7 +13517,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 100118.89,
+    "dueAmount": 100095.43,
     "paidAmount": 207680.0,
     "truckNo": "RJ37GC7310",
     "ownerName": "Likhmaram",
@@ -16552,7 +13571,7 @@
         "dueAmount": 207680.0
       }
     ],
-    "ownerDue": 100118.89
+    "ownerDue": 100095.43
   },
   {
     "id": "due-197",
@@ -16563,7 +13582,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 92154.89,
+    "dueAmount": 92133.3,
     "paidAmount": 191160.0,
     "truckNo": "RJ52GA4444",
     "ownerName": "Mahendra Saini",
@@ -16617,7 +13636,7 @@
         "dueAmount": 191160.0
       }
     ],
-    "ownerDue": 92154.89
+    "ownerDue": 92133.3
   },
   {
     "id": "due-198",
@@ -16628,7 +13647,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 65158.27,
+    "dueAmount": 65143.0,
     "paidAmount": 135160.0,
     "truckNo": "RJ52GA4496",
     "ownerName": "Mahveer Gurjar",
@@ -16682,7 +13701,7 @@
         "dueAmount": 135160.0
       }
     ],
-    "ownerDue": 65158.27
+    "ownerDue": 65143.0
   },
   {
     "id": "due-199",
@@ -16693,7 +13712,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 86774.85,
+    "dueAmount": 86754.52,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB6139",
     "ownerName": "Manoj Swami",
@@ -16747,7 +13766,7 @@
         "dueAmount": 180000.0
       }
     ],
-    "ownerDue": 86774.85
+    "ownerDue": 86754.52
   },
   {
     "id": "due-200",
@@ -16758,7 +13777,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 55921.57,
+    "dueAmount": 55908.47,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB7717",
     "ownerName": "Mohanlal Palsaniya",
@@ -16801,7 +13820,7 @@
         "dueAmount": 116000.0
       }
     ],
-    "ownerDue": 55921.57
+    "ownerDue": 55908.47
   },
   {
     "id": "due-201",
@@ -16812,7 +13831,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 69568.84,
+    "dueAmount": 69552.54,
     "paidAmount": 144309.0,
     "truckNo": "RJ52GA7717",
     "ownerName": "Mohanlal Palsaniya",
@@ -16866,7 +13885,7 @@
         "dueAmount": 144309.0
       }
     ],
-    "ownerDue": 69568.84
+    "ownerDue": 69552.54
   },
   {
     "id": "due-202",
@@ -16877,7 +13896,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 73885.41,
+    "dueAmount": 73868.1,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA2869",
     "ownerName": "Mukesh Chandra Gurjar",
@@ -16908,7 +13927,7 @@
     "totalFreight": 153263.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 73885.41
+    "ownerDue": 73868.1
   },
   {
     "id": "due-203",
@@ -16919,7 +13938,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 91981.34,
+    "dueAmount": 91959.79,
     "paidAmount": 190800.0,
     "truckNo": "RJ30GB1188",
     "ownerName": "Mukesh Gurjar 1188",
@@ -16973,7 +13992,7 @@
         "dueAmount": 190800.0
       }
     ],
-    "ownerDue": 91981.34
+    "ownerDue": 91959.79
   },
   {
     "id": "due-204",
@@ -16984,7 +14003,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 85261.11,
+    "dueAmount": 85241.13,
     "paidAmount": 176860.0,
     "truckNo": "RJ52GA6148",
     "ownerName": "Mukesh Gurjar 6148",
@@ -17038,7 +14057,7 @@
         "dueAmount": 176860.0
       }
     ],
-    "ownerDue": 85261.11
+    "ownerDue": 85241.13
   },
   {
     "id": "due-205",
@@ -17049,7 +14068,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 82496.37,
+    "dueAmount": 82477.04,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB3396",
     "ownerName": "Mukesh Kumar Gurjar 3396",
@@ -17103,7 +14122,7 @@
         "dueAmount": 171125.0
       }
     ],
-    "ownerDue": 82496.37
+    "ownerDue": 82477.04
   },
   {
     "id": "due-206",
@@ -17114,7 +14133,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 41507.3,
+    "dueAmount": 41497.57,
     "paidAmount": 0.0,
     "truckNo": "RJ05GA6115",
     "ownerName": "0M Bhat",
@@ -17157,7 +14176,7 @@
         "dueAmount": 86100.0
       }
     ],
-    "ownerDue": 41507.3
+    "ownerDue": 41497.57
   },
   {
     "id": "due-207",
@@ -17168,7 +14187,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 88944.22,
+    "dueAmount": 88923.38,
     "paidAmount": 184500.0,
     "truckNo": "RJ52GB3272",
     "ownerName": "Omprakash Gurjar",
@@ -17222,7 +14241,7 @@
         "dueAmount": 184500.0
       }
     ],
-    "ownerDue": 88944.22
+    "ownerDue": 88923.38
   },
   {
     "id": "due-208",
@@ -17233,7 +14252,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 80230.58,
+    "dueAmount": 80211.78,
     "paidAmount": 0.0,
     "truckNo": "RJ32GB5207",
     "ownerName": "Omprakash Gurjar",
@@ -17264,7 +14283,7 @@
     "totalFreight": 166425.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 80230.58
+    "ownerDue": 80211.78
   },
   {
     "id": "due-209",
@@ -17275,7 +14294,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 1277.52,
+    "dueAmount": 1277.22,
     "paidAmount": 2650.0,
     "truckNo": "RJ47GA2817",
     "ownerName": "Omprakash Gurjar 9166223638",
@@ -17329,7 +14348,7 @@
         "dueAmount": 2650.0
       }
     ],
-    "ownerDue": 1277.52
+    "ownerDue": 1277.22
   },
   {
     "id": "due-210",
@@ -17340,7 +14359,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 940.06,
+    "dueAmount": 939.84,
     "paidAmount": 1950.0,
     "truckNo": "RJ52GB4258",
     "ownerName": "Owner 4258",
@@ -17394,7 +14413,7 @@
         "dueAmount": 1950.0
       }
     ],
-    "ownerDue": 940.06
+    "ownerDue": 939.84
   },
   {
     "id": "due-211",
@@ -17405,7 +14424,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 61402.36,
+    "dueAmount": 61387.97,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB1837",
     "ownerName": "Panchuram Gurjar",
@@ -17459,7 +14478,7 @@
         "dueAmount": 127369.0
       }
     ],
-    "ownerDue": 61402.36
+    "ownerDue": 61387.97
   },
   {
     "id": "due-212",
@@ -17470,7 +14489,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 100118.89,
+    "dueAmount": 100095.43,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA5137",
     "ownerName": "Panchuram Gurjar",
@@ -17513,7 +14532,7 @@
         "dueAmount": 207680.0
       }
     ],
-    "ownerDue": 100118.89
+    "ownerDue": 100095.43
   },
   {
     "id": "due-213",
@@ -17524,7 +14543,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 70962.54,
+    "dueAmount": 70945.91,
     "paidAmount": 147200.0,
     "truckNo": "RJ52GB9237",
     "ownerName": "Panchuram Gurjar",
@@ -17578,7 +14597,7 @@
         "dueAmount": 147200.0
       }
     ],
-    "ownerDue": 70962.54
+    "ownerDue": 70945.91
   },
   {
     "id": "due-214",
@@ -17589,7 +14608,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 92154.89,
+    "dueAmount": 92133.3,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA3237",
     "ownerName": "Panchuram Gurjar",
@@ -17620,7 +14639,7 @@
     "totalFreight": 191160.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 92154.89
+    "ownerDue": 92133.3
   },
   {
     "id": "due-215",
@@ -17631,7 +14650,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 65158.27,
+    "dueAmount": 65143.0,
     "paidAmount": 135160.0,
     "truckNo": "RJ52GB4737",
     "ownerName": "Panchuram Gurjar",
@@ -17685,7 +14704,7 @@
         "dueAmount": 135160.0
       }
     ],
-    "ownerDue": 65158.27
+    "ownerDue": 65143.0
   },
   {
     "id": "due-216",
@@ -17696,7 +14715,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 86774.85,
+    "dueAmount": 86754.52,
     "paidAmount": 180000.0,
     "truckNo": "RJ52GA7237",
     "ownerName": "Panchuram Gurjar",
@@ -17750,7 +14769,7 @@
         "dueAmount": 180000.0
       }
     ],
-    "ownerDue": 86774.85
+    "ownerDue": 86754.52
   },
   {
     "id": "due-217",
@@ -17761,7 +14780,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 55921.57,
+    "dueAmount": 55908.47,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA1770",
     "ownerName": "Panchuram Gurjar",
@@ -17815,7 +14834,7 @@
         "dueAmount": 116000.0
       }
     ],
-    "ownerDue": 55921.57
+    "ownerDue": 55908.47
   },
   {
     "id": "due-218",
@@ -17826,7 +14845,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 69568.84,
+    "dueAmount": 69552.54,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA3737",
     "ownerName": "Panchuram Gurjar",
@@ -17869,7 +14888,7 @@
         "dueAmount": 144309.0
       }
     ],
-    "ownerDue": 69568.84
+    "ownerDue": 69552.54
   },
   {
     "id": "due-219",
@@ -17880,7 +14899,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 73885.41,
+    "dueAmount": 73868.1,
     "paidAmount": 153263.0,
     "truckNo": "RJ14GF0937",
     "ownerName": "Panchuram Gurjar",
@@ -17934,7 +14953,7 @@
         "dueAmount": 153263.0
       }
     ],
-    "ownerDue": 73885.41
+    "ownerDue": 73868.1
   },
   {
     "id": "due-220",
@@ -17945,7 +14964,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 91981.34,
+    "dueAmount": 91959.79,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA5037",
     "ownerName": "Panchuram Gurjar",
@@ -17976,7 +14995,7 @@
     "totalFreight": 190800.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 91981.34
+    "ownerDue": 91959.79
   },
   {
     "id": "due-221",
@@ -17987,7 +15006,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 85261.11,
+    "dueAmount": 85241.13,
     "paidAmount": 176860.0,
     "truckNo": "RJ14GD5593",
     "ownerName": "Panchuram Gurjar",
@@ -18041,7 +15060,7 @@
         "dueAmount": 176860.0
       }
     ],
-    "ownerDue": 85261.11
+    "ownerDue": 85241.13
   },
   {
     "id": "due-222",
@@ -18052,7 +15071,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 82496.37,
+    "dueAmount": 82477.04,
     "paidAmount": 171125.0,
     "truckNo": "RJ52GB0537",
     "ownerName": "Panchuram Gurjar",
@@ -18106,7 +15125,7 @@
         "dueAmount": 171125.0
       }
     ],
-    "ownerDue": 82496.37
+    "ownerDue": 82477.04
   },
   {
     "id": "due-223",
@@ -18117,7 +15136,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 41507.3,
+    "dueAmount": 41497.57,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA1837",
     "ownerName": "Panchuram Gurjar",
@@ -18171,7 +15190,7 @@
         "dueAmount": 86100.0
       }
     ],
-    "ownerDue": 41507.3
+    "ownerDue": 41497.57
   },
   {
     "id": "due-225",
@@ -18182,7 +15201,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 80230.58,
+    "dueAmount": 80211.78,
     "paidAmount": 166425.0,
     "truckNo": "RJ52GA6337",
     "ownerName": "Prakash Chawadi Jawanpura",
@@ -18236,7 +15255,7 @@
         "dueAmount": 166425.0
       }
     ],
-    "ownerDue": 80230.58
+    "ownerDue": 80211.78
   },
   {
     "id": "due-226",
@@ -18247,7 +15266,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 1277.52,
+    "dueAmount": 1277.22,
     "paidAmount": 0.0,
     "truckNo": "RJ32GB6452",
     "ownerName": "Panchuram Gurjar",
@@ -18278,7 +15297,7 @@
     "totalFreight": 2650.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 1277.52
+    "ownerDue": 1277.22
   },
   {
     "id": "due-227",
@@ -18289,7 +15308,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 940.06,
+    "dueAmount": 939.84,
     "paidAmount": 1950.0,
     "truckNo": "RJ14GH0937",
     "ownerName": "Panchuram Gurjar",
@@ -18343,7 +15362,7 @@
         "dueAmount": 1950.0
       }
     ],
-    "ownerDue": 940.06
+    "ownerDue": 939.84
   },
   {
     "id": "due-228",
@@ -18354,7 +15373,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 61402.36,
+    "dueAmount": 61387.97,
     "paidAmount": 127369.0,
     "truckNo": "RJ14GF8137",
     "ownerName": "Panchuram Gurjar",
@@ -18408,7 +15427,7 @@
         "dueAmount": 127369.0
       }
     ],
-    "ownerDue": 61402.36
+    "ownerDue": 61387.97
   },
   {
     "id": "due-229",
@@ -18419,7 +15438,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 100118.89,
+    "dueAmount": 100095.43,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA7037",
     "ownerName": "Heera Lal Saradhana",
@@ -18473,7 +15492,7 @@
         "dueAmount": 207680.0
       }
     ],
-    "ownerDue": 100118.89
+    "ownerDue": 100095.43
   },
   {
     "id": "due-230",
@@ -18484,7 +15503,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 70962.54,
+    "dueAmount": 70945.91,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA5922",
     "ownerName": "Panchuram Gurjar",
@@ -18527,7 +15546,7 @@
         "dueAmount": 147200.0
       }
     ],
-    "ownerDue": 70962.54
+    "ownerDue": 70945.91
   },
   {
     "id": "due-231",
@@ -18538,7 +15557,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 92154.89,
+    "dueAmount": 92133.3,
     "paidAmount": 191160.0,
     "truckNo": "RJ52GA3837",
     "ownerName": "Panchuram Gurjar",
@@ -18592,7 +15611,7 @@
         "dueAmount": 191160.0
       }
     ],
-    "ownerDue": 92154.89
+    "ownerDue": 92133.3
   },
   {
     "id": "due-232",
@@ -18603,7 +15622,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 65158.27,
+    "dueAmount": 65143.0,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB2637",
     "ownerName": "Panchuram Gurjar",
@@ -18634,7 +15653,7 @@
     "totalFreight": 135160.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 65158.27
+    "ownerDue": 65143.0
   },
   {
     "id": "due-233",
@@ -18645,7 +15664,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 86774.85,
+    "dueAmount": 86754.52,
     "paidAmount": 180000.0,
     "truckNo": "RJ52GA6037",
     "ownerName": "Panchuram Gurjar",
@@ -18699,7 +15718,7 @@
         "dueAmount": 180000.0
       }
     ],
-    "ownerDue": 86774.85
+    "ownerDue": 86754.52
   },
   {
     "id": "due-234",
@@ -18710,7 +15729,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 55921.57,
+    "dueAmount": 55908.47,
     "paidAmount": 116000.0,
     "truckNo": "RJ52GB5037",
     "ownerName": "Panchuram Gurjar",
@@ -18764,7 +15783,7 @@
         "dueAmount": 116000.0
       }
     ],
-    "ownerDue": 55921.57
+    "ownerDue": 55908.47
   },
   {
     "id": "due-235",
@@ -18775,7 +15794,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 69568.84,
+    "dueAmount": 69552.54,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA6537",
     "ownerName": "Mukesh Gurjar 6537",
@@ -18829,7 +15848,7 @@
         "dueAmount": 144309.0
       }
     ],
-    "ownerDue": 69568.84
+    "ownerDue": 69552.54
   },
   {
     "id": "due-236",
@@ -18840,7 +15859,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 73885.41,
+    "dueAmount": 73868.1,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA6536",
     "ownerName": "Panchuram Gurjar",
@@ -18883,7 +15902,7 @@
         "dueAmount": 153263.0
       }
     ],
-    "ownerDue": 73885.41
+    "ownerDue": 73868.1
   },
   {
     "id": "due-237",
@@ -18894,7 +15913,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 91981.34,
+    "dueAmount": 91959.79,
     "paidAmount": 190800.0,
     "truckNo": "RJ14GE2637",
     "ownerName": "Panchuram Gurjar",
@@ -18948,7 +15967,7 @@
         "dueAmount": 190800.0
       }
     ],
-    "ownerDue": 91981.34
+    "ownerDue": 91959.79
   },
   {
     "id": "due-238",
@@ -18959,7 +15978,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 85261.11,
+    "dueAmount": 85241.13,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA0837",
     "ownerName": "Panchuram Gurjar",
@@ -18990,7 +16009,7 @@
     "totalFreight": 176860.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 85261.11
+    "ownerDue": 85241.13
   },
   {
     "id": "due-239",
@@ -19001,7 +16020,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 82496.37,
+    "dueAmount": 82477.04,
     "paidAmount": 171125.0,
     "truckNo": "RJ52GA3437",
     "ownerName": "Panchuram Gurjar",
@@ -19055,7 +16074,7 @@
         "dueAmount": 171125.0
       }
     ],
-    "ownerDue": 82496.37
+    "ownerDue": 82477.04
   },
   {
     "id": "due-240",
@@ -19066,7 +16085,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 41507.3,
+    "dueAmount": 41497.57,
     "paidAmount": 86100.0,
     "truckNo": "RJ14GH0837",
     "ownerName": "Panchuram Gurjar",
@@ -19120,7 +16139,7 @@
         "dueAmount": 86100.0
       }
     ],
-    "ownerDue": 41507.3
+    "ownerDue": 41497.57
   },
   {
     "id": "due-241",
@@ -19131,7 +16150,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 88944.22,
+    "dueAmount": 88923.38,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB3737",
     "ownerName": "Panchuram Gurjar",
@@ -19185,7 +16204,7 @@
         "dueAmount": 184500.0
       }
     ],
-    "ownerDue": 88944.22
+    "ownerDue": 88923.38
   },
   {
     "id": "due-242",
@@ -19196,7 +16215,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 80230.58,
+    "dueAmount": 80211.78,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA4594",
     "ownerName": "Kailash Chawari",
@@ -19239,7 +16258,7 @@
         "dueAmount": 166425.0
       }
     ],
-    "ownerDue": 80230.58
+    "ownerDue": 80211.78
   },
   {
     "id": "due-243",
@@ -19250,7 +16269,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 1277.52,
+    "dueAmount": 1277.22,
     "paidAmount": 2650.0,
     "truckNo": "RJ52GC9237",
     "ownerName": "Panchuram Gurjar",
@@ -19304,7 +16323,7 @@
         "dueAmount": 2650.0
       }
     ],
-    "ownerDue": 1277.52
+    "ownerDue": 1277.22
   },
   {
     "id": "due-244",
@@ -19315,7 +16334,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 940.06,
+    "dueAmount": 939.84,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA8577",
     "ownerName": "Panchuram Gurjar",
@@ -19346,7 +16365,7 @@
     "totalFreight": 1950.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 940.06
+    "ownerDue": 939.84
   },
   {
     "id": "due-245",
@@ -19357,7 +16376,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 61402.36,
+    "dueAmount": 61387.97,
     "paidAmount": 127369.0,
     "truckNo": "RJ52GC4737",
     "ownerName": "Panchuram Gurjar",
@@ -19411,7 +16430,7 @@
         "dueAmount": 127369.0
       }
     ],
-    "ownerDue": 61402.36
+    "ownerDue": 61387.97
   },
   {
     "id": "due-246",
@@ -19422,7 +16441,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 100118.89,
+    "dueAmount": 100095.43,
     "paidAmount": 207680.0,
     "truckNo": "RJ52GD0137",
     "ownerName": "Panchuram Gurjar",
@@ -19476,7 +16495,7 @@
         "dueAmount": 207680.0
       }
     ],
-    "ownerDue": 100118.89
+    "ownerDue": 100095.43
   },
   {
     "id": "due-247",
@@ -19487,7 +16506,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 70962.54,
+    "dueAmount": 70945.91,
     "paidAmount": 0.0,
     "truckNo": "RJ52GD4737",
     "ownerName": "Panchuram Gurjar",
@@ -19541,7 +16560,7 @@
         "dueAmount": 147200.0
       }
     ],
-    "ownerDue": 70962.54
+    "ownerDue": 70945.91
   },
   {
     "id": "due-248",
@@ -19552,7 +16571,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 92154.89,
+    "dueAmount": 92133.3,
     "paidAmount": 0.0,
     "truckNo": "RJ32GC5742",
     "ownerName": "Pappu Gurjar Bhilwara",
@@ -19595,7 +16614,7 @@
         "dueAmount": 191160.0
       }
     ],
-    "ownerDue": 92154.89
+    "ownerDue": 92133.3
   },
   {
     "id": "due-249",
@@ -19606,7 +16625,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 65158.27,
+    "dueAmount": 65143.0,
     "paidAmount": 135160.0,
     "truckNo": "RJ51GA5442",
     "ownerName": "Pappu Gurjar Bhilwara",
@@ -19660,7 +16679,7 @@
         "dueAmount": 135160.0
       }
     ],
-    "ownerDue": 65158.27
+    "ownerDue": 65143.0
   },
   {
     "id": "due-250",
@@ -19671,7 +16690,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 86774.85,
+    "dueAmount": 86754.52,
     "paidAmount": 0.0,
     "truckNo": "RJ51GA5742",
     "ownerName": "Pappu Gurjar Bhilwara",
@@ -19702,7 +16721,7 @@
     "totalFreight": 180000.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 86774.85
+    "ownerDue": 86754.52
   },
   {
     "id": "due-251",
@@ -19713,7 +16732,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 55921.57,
+    "dueAmount": 55908.47,
     "paidAmount": 116000.0,
     "truckNo": "RJ51GB5442",
     "ownerName": "Pappu Gurjar Bhilwara",
@@ -19767,7 +16786,7 @@
         "dueAmount": 116000.0
       }
     ],
-    "ownerDue": 55921.57
+    "ownerDue": 55908.47
   },
   {
     "id": "due-253",
@@ -19778,7 +16797,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 73885.41,
+    "dueAmount": 73868.1,
     "paidAmount": 0.0,
     "truckNo": "RJ47GA3936",
     "ownerName": "Prabhu Singh",
@@ -19832,7 +16851,7 @@
         "dueAmount": 153263.0
       }
     ],
-    "ownerDue": 73885.41
+    "ownerDue": 73868.1
   },
   {
     "id": "due-254",
@@ -19843,7 +16862,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 91981.34,
+    "dueAmount": 91959.79,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA9336",
     "ownerName": "Prabhu Singh",
@@ -19886,7 +16905,7 @@
         "dueAmount": 190800.0
       }
     ],
-    "ownerDue": 91981.34
+    "ownerDue": 91959.79
   },
   {
     "id": "due-255",
@@ -19897,7 +16916,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 85261.11,
+    "dueAmount": 85241.13,
     "paidAmount": 176860.0,
     "truckNo": "RJ02GC3671",
     "ownerName": "Pradeep Banna",
@@ -19951,7 +16970,7 @@
         "dueAmount": 176860.0
       }
     ],
-    "ownerDue": 85261.11
+    "ownerDue": 85241.13
   },
   {
     "id": "due-256",
@@ -19962,7 +16981,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 82496.37,
+    "dueAmount": 82477.04,
     "paidAmount": 0.0,
     "truckNo": "RJ02GC8677",
     "ownerName": "Pradeep Banna",
@@ -19993,7 +17012,7 @@
     "totalFreight": 171125.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 82496.37
+    "ownerDue": 82477.04
   },
   {
     "id": "due-257",
@@ -20004,7 +17023,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 41507.3,
+    "dueAmount": 41497.57,
     "paidAmount": 86100.0,
     "truckNo": "RJ32GB4821",
     "ownerName": "Pradeep Kumar Gurjar",
@@ -20058,7 +17077,7 @@
         "dueAmount": 86100.0
       }
     ],
-    "ownerDue": 41507.3
+    "ownerDue": 41497.57
   },
   {
     "id": "due-258",
@@ -20069,7 +17088,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 88944.22,
+    "dueAmount": 88923.38,
     "paidAmount": 184500.0,
     "truckNo": "RJ01GD4269",
     "ownerName": "Pradeep Yadav",
@@ -20123,7 +17142,7 @@
         "dueAmount": 184500.0
       }
     ],
-    "ownerDue": 88944.22
+    "ownerDue": 88923.38
   },
   {
     "id": "due-259",
@@ -20134,7 +17153,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 80230.58,
+    "dueAmount": 80211.78,
     "paidAmount": 0.0,
     "truckNo": "RJ01GD2469",
     "ownerName": "Pradeep Yadav",
@@ -20188,7 +17207,7 @@
         "dueAmount": 166425.0
       }
     ],
-    "ownerDue": 80230.58
+    "ownerDue": 80211.78
   },
   {
     "id": "due-260",
@@ -20199,7 +17218,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 1277.52,
+    "dueAmount": 1277.22,
     "paidAmount": 0.0,
     "truckNo": "RJ01GC4569",
     "ownerName": "Pradeep Yadav",
@@ -20242,7 +17261,7 @@
         "dueAmount": 2650.0
       }
     ],
-    "ownerDue": 1277.52
+    "ownerDue": 1277.22
   },
   {
     "id": "due-261",
@@ -20253,7 +17272,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 940.06,
+    "dueAmount": 939.84,
     "paidAmount": 1950.0,
     "truckNo": "RJ01GD6069",
     "ownerName": "Pradeep Yadav",
@@ -20307,7 +17326,7 @@
         "dueAmount": 1950.0
       }
     ],
-    "ownerDue": 940.06
+    "ownerDue": 939.84
   },
   {
     "id": "due-262",
@@ -20318,7 +17337,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 61402.36,
+    "dueAmount": 61387.97,
     "paidAmount": 0.0,
     "truckNo": "RJ01GB6069",
     "ownerName": "Pradeep Yadav",
@@ -20349,7 +17368,7 @@
     "totalFreight": 127369.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 61402.36
+    "ownerDue": 61387.97
   },
   {
     "id": "due-263",
@@ -20360,7 +17379,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 100118.89,
+    "dueAmount": 100095.43,
     "paidAmount": 207680.0,
     "truckNo": "RJ01GD0669",
     "ownerName": "Pradeep Yadav",
@@ -20414,7 +17433,7 @@
         "dueAmount": 207680.0
       }
     ],
-    "ownerDue": 100118.89
+    "ownerDue": 100095.43
   },
   {
     "id": "due-264",
@@ -20425,7 +17444,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 70962.54,
+    "dueAmount": 70945.91,
     "paidAmount": 147200.0,
     "truckNo": "RJ01GD4569",
     "ownerName": "Pradeep Yadav",
@@ -20479,7 +17498,7 @@
         "dueAmount": 147200.0
       }
     ],
-    "ownerDue": 70962.54
+    "ownerDue": 70945.91
   },
   {
     "id": "due-265",
@@ -20490,7 +17509,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 92154.89,
+    "dueAmount": 92133.3,
     "paidAmount": 0.0,
     "truckNo": "RJ01GD4568",
     "ownerName": "Pradeep Yadav",
@@ -20544,7 +17563,7 @@
         "dueAmount": 191160.0
       }
     ],
-    "ownerDue": 92154.89
+    "ownerDue": 92133.3
   },
   {
     "id": "due-266",
@@ -20555,7 +17574,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 65158.27,
+    "dueAmount": 65143.0,
     "paidAmount": 0.0,
     "truckNo": "RJ01GC2169",
     "ownerName": "Pradeep Yadav",
@@ -20598,7 +17617,7 @@
         "dueAmount": 135160.0
       }
     ],
-    "ownerDue": 65158.27
+    "ownerDue": 65143.0
   },
   {
     "id": "due-267",
@@ -20609,7 +17628,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 86774.85,
+    "dueAmount": 86754.52,
     "paidAmount": 180000.0,
     "truckNo": "RJ01GC0669",
     "ownerName": "Pradeep Yadav",
@@ -20663,7 +17682,7 @@
         "dueAmount": 180000.0
       }
     ],
-    "ownerDue": 86774.85
+    "ownerDue": 86754.52
   },
   {
     "id": "due-268",
@@ -20674,7 +17693,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 55921.57,
+    "dueAmount": 55908.47,
     "paidAmount": 0.0,
     "truckNo": "RJ01GD0713",
     "ownerName": "Pradeep Yadav",
@@ -20705,7 +17724,7 @@
     "totalFreight": 116000.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 55921.57
+    "ownerDue": 55908.47
   },
   {
     "id": "due-269",
@@ -20716,7 +17735,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 69568.84,
+    "dueAmount": 69552.54,
     "paidAmount": 144309.0,
     "truckNo": "RJ01GE0069",
     "ownerName": "Pradeep Yadav",
@@ -20770,7 +17789,7 @@
         "dueAmount": 144309.0
       }
     ],
-    "ownerDue": 69568.84
+    "ownerDue": 69552.54
   },
   {
     "id": "due-270",
@@ -20781,7 +17800,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 73885.41,
+    "dueAmount": 73868.1,
     "paidAmount": 153263.0,
     "truckNo": "RJ01GC0951",
     "ownerName": "Pradhan Choudhary",
@@ -20835,7 +17854,7 @@
         "dueAmount": 153263.0
       }
     ],
-    "ownerDue": 73885.41
+    "ownerDue": 73868.1
   },
   {
     "id": "due-271",
@@ -20846,7 +17865,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 91981.34,
+    "dueAmount": 91959.79,
     "paidAmount": 0.0,
     "truckNo": "RJ01GD2973",
     "ownerName": "Prahlad Jat",
@@ -20900,7 +17919,7 @@
         "dueAmount": 190800.0
       }
     ],
-    "ownerDue": 91981.34
+    "ownerDue": 91959.79
   },
   {
     "id": "due-272",
@@ -20911,7 +17930,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 85261.11,
+    "dueAmount": 85241.13,
     "paidAmount": 0.0,
     "truckNo": "RJ01GD4301",
     "ownerName": "Prahlad Jat",
@@ -20954,7 +17973,7 @@
         "dueAmount": 176860.0
       }
     ],
-    "ownerDue": 85261.11
+    "ownerDue": 85241.13
   },
   {
     "id": "due-273",
@@ -20965,7 +17984,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 82496.37,
+    "dueAmount": 82477.04,
     "paidAmount": 171125.0,
     "truckNo": "RJ01GD4359",
     "ownerName": "Prahlad Jat",
@@ -21019,7 +18038,7 @@
         "dueAmount": 171125.0
       }
     ],
-    "ownerDue": 82496.37
+    "ownerDue": 82477.04
   },
   {
     "id": "due-274",
@@ -21030,7 +18049,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 41507.3,
+    "dueAmount": 41497.57,
     "paidAmount": 0.0,
     "truckNo": "RJ01GD8656",
     "ownerName": "Prahlad Jat",
@@ -21061,7 +18080,7 @@
     "totalFreight": 86100.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 41507.3
+    "ownerDue": 41497.57
   },
   {
     "id": "due-275",
@@ -21072,7 +18091,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 88944.22,
+    "dueAmount": 88923.38,
     "paidAmount": 184500.0,
     "truckNo": "NL01AF5972",
     "ownerName": "Prahlad Jat",
@@ -21126,7 +18145,7 @@
         "dueAmount": 184500.0
       }
     ],
-    "ownerDue": 88944.22
+    "ownerDue": 88923.38
   },
   {
     "id": "due-276",
@@ -21137,7 +18156,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 80230.58,
+    "dueAmount": 80211.78,
     "paidAmount": 166425.0,
     "truckNo": "RJ01GC8656",
     "ownerName": "Prahlad Jat",
@@ -21191,7 +18210,7 @@
         "dueAmount": 166425.0
       }
     ],
-    "ownerDue": 80230.58
+    "ownerDue": 80211.78
   },
   {
     "id": "due-277",
@@ -21202,7 +18221,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 1277.52,
+    "dueAmount": 1277.22,
     "paidAmount": 0.0,
     "truckNo": "RJ47GB5972",
     "ownerName": "Prahlad Jat",
@@ -21256,7 +18275,7 @@
         "dueAmount": 2650.0
       }
     ],
-    "ownerDue": 1277.52
+    "ownerDue": 1277.22
   },
   {
     "id": "due-278",
@@ -21267,7 +18286,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 940.06,
+    "dueAmount": 939.84,
     "paidAmount": 0.0,
     "truckNo": "RJ01GD5387",
     "ownerName": "Prahlad Jat",
@@ -21310,7 +18329,7 @@
         "dueAmount": 1950.0
       }
     ],
-    "ownerDue": 940.06
+    "ownerDue": 939.84
   },
   {
     "id": "due-279",
@@ -21321,7 +18340,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 61402.36,
+    "dueAmount": 61387.97,
     "paidAmount": 127369.0,
     "truckNo": "RJ32GD8796",
     "ownerName": "Prakash Chawadi Jawanpura",
@@ -21375,7 +18394,7 @@
         "dueAmount": 127369.0
       }
     ],
-    "ownerDue": 61402.36
+    "ownerDue": 61387.97
   },
   {
     "id": "due-281",
@@ -21386,7 +18405,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 70962.54,
+    "dueAmount": 70945.91,
     "paidAmount": 147200.0,
     "truckNo": "RJ08GB2298",
     "ownerName": "Pratap Singh",
@@ -21440,7 +18459,7 @@
         "dueAmount": 147200.0
       }
     ],
-    "ownerDue": 70962.54
+    "ownerDue": 70945.91
   },
   {
     "id": "due-282",
@@ -21451,7 +18470,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 92154.89,
+    "dueAmount": 92133.3,
     "paidAmount": 191160.0,
     "truckNo": "RJ52GB1281",
     "ownerName": "Puran Bablu Transport",
@@ -21505,7 +18524,7 @@
         "dueAmount": 191160.0
       }
     ],
-    "ownerDue": 92154.89
+    "ownerDue": 92133.3
   },
   {
     "id": "due-283",
@@ -21516,7 +18535,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 65158.27,
+    "dueAmount": 65143.0,
     "paidAmount": 0.0,
     "truckNo": "RJ14GK7406",
     "ownerName": "Puran Gerewal",
@@ -21570,7 +18589,7 @@
         "dueAmount": 135160.0
       }
     ],
-    "ownerDue": 65158.27
+    "ownerDue": 65143.0
   },
   {
     "id": "due-284",
@@ -21581,7 +18600,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 86774.85,
+    "dueAmount": 86754.52,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA3137",
     "ownerName": "Radhyeshyam Gurjar",
@@ -21624,7 +18643,7 @@
         "dueAmount": 180000.0
       }
     ],
-    "ownerDue": 86774.85
+    "ownerDue": 86754.52
   },
   {
     "id": "due-285",
@@ -21635,7 +18654,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 55921.57,
+    "dueAmount": 55908.47,
     "paidAmount": 116000.0,
     "truckNo": "RJ32GD5207",
     "ownerName": "Radhyeshyam Gurjar",
@@ -21689,7 +18708,7 @@
         "dueAmount": 116000.0
       }
     ],
-    "ownerDue": 55921.57
+    "ownerDue": 55908.47
   },
   {
     "id": "due-286",
@@ -21700,7 +18719,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 69568.84,
+    "dueAmount": 69552.54,
     "paidAmount": 0.0,
     "truckNo": "RJ52GD3237",
     "ownerName": "Radhyeshyam Gurjar",
@@ -21731,7 +18750,7 @@
     "totalFreight": 144309.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 69568.84
+    "ownerDue": 69552.54
   },
   {
     "id": "due-287",
@@ -21742,7 +18761,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 73885.41,
+    "dueAmount": 73868.1,
     "paidAmount": 153263.0,
     "truckNo": "RJ52GA1503",
     "ownerName": "Radhyeshyam Gurjar",
@@ -21796,7 +18815,7 @@
         "dueAmount": 153263.0
       }
     ],
-    "ownerDue": 73885.41
+    "ownerDue": 73868.1
   },
   {
     "id": "due-288",
@@ -21807,7 +18826,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 91981.34,
+    "dueAmount": 91959.79,
     "paidAmount": 190800.0,
     "truckNo": "RJ52GA1509",
     "ownerName": "Radhyeshyam Gurjar",
@@ -21861,7 +18880,7 @@
         "dueAmount": 190800.0
       }
     ],
-    "ownerDue": 91981.34
+    "ownerDue": 91959.79
   },
   {
     "id": "due-289",
@@ -21872,7 +18891,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 85261.11,
+    "dueAmount": 85241.13,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB3237",
     "ownerName": "Radhyeshyam Gurjar",
@@ -21926,7 +18945,7 @@
         "dueAmount": 176860.0
       }
     ],
-    "ownerDue": 85261.11
+    "ownerDue": 85241.13
   },
   {
     "id": "due-290",
@@ -21937,7 +18956,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 82496.37,
+    "dueAmount": 82477.04,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB1477",
     "ownerName": "Radhyeshyam Gurjar",
@@ -21980,7 +18999,7 @@
         "dueAmount": 171125.0
       }
     ],
-    "ownerDue": 82496.37
+    "ownerDue": 82477.04
   },
   {
     "id": "due-291",
@@ -21991,7 +19010,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 41507.3,
+    "dueAmount": 41497.57,
     "paidAmount": 86100.0,
     "truckNo": "RJ52GB0988",
     "ownerName": "Rajkumar Raiya",
@@ -22045,7 +19064,7 @@
         "dueAmount": 86100.0
       }
     ],
-    "ownerDue": 41507.3
+    "ownerDue": 41497.57
   },
   {
     "id": "due-292",
@@ -22056,7 +19075,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 88944.22,
+    "dueAmount": 88923.38,
     "paidAmount": 0.0,
     "truckNo": "RJ52GC1488",
     "ownerName": "Rajkumar Raiya",
@@ -22087,7 +19106,7 @@
     "totalFreight": 184500.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 88944.22
+    "ownerDue": 88923.38
   },
   {
     "id": "due-293",
@@ -22098,7 +19117,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 80230.58,
+    "dueAmount": 80211.78,
     "paidAmount": 166425.0,
     "truckNo": "RJ52GC3288",
     "ownerName": "Rajkumar Raiya",
@@ -22152,7 +19171,7 @@
         "dueAmount": 166425.0
       }
     ],
-    "ownerDue": 80230.58
+    "ownerDue": 80211.78
   },
   {
     "id": "due-294",
@@ -22163,7 +19182,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 1277.52,
+    "dueAmount": 1277.22,
     "paidAmount": 2650.0,
     "truckNo": "RJ52GB3288",
     "ownerName": "Rajkumar Raiya",
@@ -22217,7 +19236,7 @@
         "dueAmount": 2650.0
       }
     ],
-    "ownerDue": 1277.52
+    "ownerDue": 1277.22
   },
   {
     "id": "due-295",
@@ -22228,7 +19247,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 940.06,
+    "dueAmount": 939.84,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA3288",
     "ownerName": "Rajkumar Raiya",
@@ -22282,7 +19301,7 @@
         "dueAmount": 1950.0
       }
     ],
-    "ownerDue": 940.06
+    "ownerDue": 939.84
   },
   {
     "id": "due-296",
@@ -22293,7 +19312,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 61402.36,
+    "dueAmount": 61387.97,
     "paidAmount": 0.0,
     "truckNo": "RJ32GC2388",
     "ownerName": "Rajkumar Raiya",
@@ -22336,7 +19355,7 @@
         "dueAmount": 127369.0
       }
     ],
-    "ownerDue": 61402.36
+    "ownerDue": 61387.97
   },
   {
     "id": "due-297",
@@ -22347,7 +19366,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 100118.89,
+    "dueAmount": 100095.43,
     "paidAmount": 207680.0,
     "truckNo": "RJ52GC2388",
     "ownerName": "Rajkumar Raiya",
@@ -22401,7 +19420,7 @@
         "dueAmount": 207680.0
       }
     ],
-    "ownerDue": 100118.89
+    "ownerDue": 100095.43
   },
   {
     "id": "due-298",
@@ -22412,7 +19431,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 70962.54,
+    "dueAmount": 70945.91,
     "paidAmount": 0.0,
     "truckNo": "RJ52GC4188",
     "ownerName": "Rajkumar Raiya",
@@ -22443,7 +19462,7 @@
     "totalFreight": 147200.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 70962.54
+    "ownerDue": 70945.91
   },
   {
     "id": "due-299",
@@ -22454,7 +19473,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 92154.89,
+    "dueAmount": 92133.3,
     "paidAmount": 191160.0,
     "truckNo": "HR55AL0928",
     "ownerName": "Rajkumar Yadav Behrod",
@@ -22508,7 +19527,7 @@
         "dueAmount": 191160.0
       }
     ],
-    "ownerDue": 92154.89
+    "ownerDue": 92133.3
   },
   {
     "id": "due-300",
@@ -22519,7 +19538,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 65158.27,
+    "dueAmount": 65143.0,
     "paidAmount": 135160.0,
     "truckNo": "RJ52GB1672",
     "ownerName": "Raju Dhabas",
@@ -22573,7 +19592,7 @@
         "dueAmount": 135160.0
       }
     ],
-    "ownerDue": 65158.27
+    "ownerDue": 65143.0
   },
   {
     "id": "due-301",
@@ -22584,7 +19603,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 86774.85,
+    "dueAmount": 86754.52,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA5396",
     "ownerName": "Raju Gurjar",
@@ -22638,7 +19657,7 @@
         "dueAmount": 180000.0
       }
     ],
-    "ownerDue": 86774.85
+    "ownerDue": 86754.52
   },
   {
     "id": "due-302",
@@ -22649,7 +19668,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 55921.57,
+    "dueAmount": 55908.47,
     "paidAmount": 0.0,
     "truckNo": "RJ11GC9150",
     "ownerName": "Raju Singh Sardar Ji",
@@ -22692,7 +19711,7 @@
         "dueAmount": 116000.0
       }
     ],
-    "ownerDue": 55921.57
+    "ownerDue": 55908.47
   },
   {
     "id": "due-303",
@@ -22703,7 +19722,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 69568.84,
+    "dueAmount": 69552.54,
     "paidAmount": 144309.0,
     "truckNo": "RJ52GB7365",
     "ownerName": "Rakesh Chawari",
@@ -22757,7 +19776,7 @@
         "dueAmount": 144309.0
       }
     ],
-    "ownerDue": 69568.84
+    "ownerDue": 69552.54
   },
   {
     "id": "due-304",
@@ -22768,7 +19787,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 73885.41,
+    "dueAmount": 73868.1,
     "paidAmount": 0.0,
     "truckNo": "RJ52GC5565",
     "ownerName": "Rakesh Chawari",
@@ -22799,7 +19818,7 @@
     "totalFreight": 153263.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 73885.41
+    "ownerDue": 73868.1
   },
   {
     "id": "due-305",
@@ -22810,7 +19829,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 91981.34,
+    "dueAmount": 91959.79,
     "paidAmount": 190800.0,
     "truckNo": "RJ14GH5783",
     "ownerName": "Rakesh Sen",
@@ -22864,7 +19883,7 @@
         "dueAmount": 190800.0
       }
     ],
-    "ownerDue": 91981.34
+    "ownerDue": 91959.79
   },
   {
     "id": "due-306",
@@ -22875,7 +19894,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 85261.11,
+    "dueAmount": 85241.13,
     "paidAmount": 176860.0,
     "truckNo": "RJ37GB3713",
     "ownerName": "Rameshwar Ji Shamli Rajasthm",
@@ -22929,7 +19948,7 @@
         "dueAmount": 176860.0
       }
     ],
-    "ownerDue": 85261.11
+    "ownerDue": 85241.13
   },
   {
     "id": "due-307",
@@ -22940,7 +19959,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 82496.37,
+    "dueAmount": 82477.04,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB2587",
     "ownerName": "Rameshwar Prasad",
@@ -22994,7 +20013,7 @@
         "dueAmount": 171125.0
       }
     ],
-    "ownerDue": 82496.37
+    "ownerDue": 82477.04
   },
   {
     "id": "due-309",
@@ -23005,7 +20024,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 88944.22,
+    "dueAmount": 88923.38,
     "paidAmount": 184500.0,
     "truckNo": "RJ52GB2588",
     "ownerName": "Rameshwar Prasad",
@@ -23059,7 +20078,7 @@
         "dueAmount": 184500.0
       }
     ],
-    "ownerDue": 88944.22
+    "ownerDue": 88923.38
   },
   {
     "id": "due-310",
@@ -23070,7 +20089,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 80230.58,
+    "dueAmount": 80211.78,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB2589",
     "ownerName": "Rameshwar Prasad",
@@ -23101,7 +20120,7 @@
     "totalFreight": 166425.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 80230.58
+    "ownerDue": 80211.78
   },
   {
     "id": "due-311",
@@ -23112,7 +20131,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 1277.52,
+    "dueAmount": 1277.22,
     "paidAmount": 2650.0,
     "truckNo": "RJ52GA8617",
     "ownerName": "Rameshwar Prasad",
@@ -23166,7 +20185,7 @@
         "dueAmount": 2650.0
       }
     ],
-    "ownerDue": 1277.52
+    "ownerDue": 1277.22
   },
   {
     "id": "due-312",
@@ -23177,7 +20196,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 940.06,
+    "dueAmount": 939.84,
     "paidAmount": 1950.0,
     "truckNo": "RJ52GA7391",
     "ownerName": "Rameshwar Prasad",
@@ -23231,7 +20250,7 @@
         "dueAmount": 1950.0
       }
     ],
-    "ownerDue": 940.06
+    "ownerDue": 939.84
   },
   {
     "id": "due-313",
@@ -23242,7 +20261,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 61402.36,
+    "dueAmount": 61387.97,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA8618",
     "ownerName": "Rameshwar Prasad",
@@ -23296,7 +20315,7 @@
         "dueAmount": 127369.0
       }
     ],
-    "ownerDue": 61402.36
+    "ownerDue": 61387.97
   },
   {
     "id": "due-314",
@@ -23307,7 +20326,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 100118.89,
+    "dueAmount": 100095.43,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA8678",
     "ownerName": "Rameshwar Prasad",
@@ -23350,7 +20369,7 @@
         "dueAmount": 207680.0
       }
     ],
-    "ownerDue": 100118.89
+    "ownerDue": 100095.43
   },
   {
     "id": "due-315",
@@ -23361,7 +20380,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 70962.54,
+    "dueAmount": 70945.91,
     "paidAmount": 147200.0,
     "truckNo": "RJ52GB2590",
     "ownerName": "Rameshwar Prasad",
@@ -23415,7 +20434,7 @@
         "dueAmount": 147200.0
       }
     ],
-    "ownerDue": 70962.54
+    "ownerDue": 70945.91
   },
   {
     "id": "due-316",
@@ -23426,7 +20445,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 92154.89,
+    "dueAmount": 92133.3,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA6136",
     "ownerName": "Rameshwar Prasad",
@@ -23457,7 +20476,7 @@
     "totalFreight": 191160.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 92154.89
+    "ownerDue": 92133.3
   },
   {
     "id": "due-317",
@@ -23468,7 +20487,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 65158.27,
+    "dueAmount": 65143.0,
     "paidAmount": 135160.0,
     "truckNo": "RJ52GA7390",
     "ownerName": "Anil Gurjar",
@@ -23522,7 +20541,7 @@
         "dueAmount": 135160.0
       }
     ],
-    "ownerDue": 65158.27
+    "ownerDue": 65143.0
   },
   {
     "id": "due-318",
@@ -23533,7 +20552,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 86774.85,
+    "dueAmount": 86754.52,
     "paidAmount": 180000.0,
     "truckNo": "RJ52GA7731",
     "ownerName": "Rameshwar Prasad",
@@ -23587,7 +20606,7 @@
         "dueAmount": 180000.0
       }
     ],
-    "ownerDue": 86774.85
+    "ownerDue": 86754.52
   },
   {
     "id": "due-319",
@@ -23598,7 +20617,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 55921.57,
+    "dueAmount": 55908.47,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA9546",
     "ownerName": "Rameshwar Prasad",
@@ -23652,7 +20671,7 @@
         "dueAmount": 116000.0
       }
     ],
-    "ownerDue": 55921.57
+    "ownerDue": 55908.47
   },
   {
     "id": "due-320",
@@ -23663,7 +20682,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 69568.84,
+    "dueAmount": 69552.54,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB0725",
     "ownerName": "Rameshwar Prasad",
@@ -23706,7 +20725,7 @@
         "dueAmount": 144309.0
       }
     ],
-    "ownerDue": 69568.84
+    "ownerDue": 69552.54
   },
   {
     "id": "due-321",
@@ -23717,7 +20736,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 73885.41,
+    "dueAmount": 73868.1,
     "paidAmount": 153263.0,
     "truckNo": "RJ52GB2585",
     "ownerName": "Rameshwar Prasad",
@@ -23771,7 +20790,7 @@
         "dueAmount": 153263.0
       }
     ],
-    "ownerDue": 73885.41
+    "ownerDue": 73868.1
   },
   {
     "id": "due-322",
@@ -23782,7 +20801,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 91981.34,
+    "dueAmount": 91959.79,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA6366",
     "ownerName": "Rameshwar Prasad",
@@ -23813,7 +20832,7 @@
     "totalFreight": 190800.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 91981.34
+    "ownerDue": 91959.79
   },
   {
     "id": "due-323",
@@ -23824,7 +20843,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 85261.11,
+    "dueAmount": 85241.13,
     "paidAmount": 176860.0,
     "truckNo": "RJ52GA8679",
     "ownerName": "Rameshwar Prasad",
@@ -23878,7 +20897,7 @@
         "dueAmount": 176860.0
       }
     ],
-    "ownerDue": 85261.11
+    "ownerDue": 85241.13
   },
   {
     "id": "due-324",
@@ -23889,7 +20908,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 82496.37,
+    "dueAmount": 82477.04,
     "paidAmount": 171125.0,
     "truckNo": "RJ52GA2788",
     "ownerName": "Rameshwar Prasad",
@@ -23943,7 +20962,7 @@
         "dueAmount": 171125.0
       }
     ],
-    "ownerDue": 82496.37
+    "ownerDue": 82477.04
   },
   {
     "id": "due-325",
@@ -23954,7 +20973,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 41507.3,
+    "dueAmount": 41497.57,
     "paidAmount": 0.0,
     "truckNo": "RJ14GH2898",
     "ownerName": "Rameshwar Rundla",
@@ -24008,7 +21027,7 @@
         "dueAmount": 86100.0
       }
     ],
-    "ownerDue": 41507.3
+    "ownerDue": 41497.57
   },
   {
     "id": "due-326",
@@ -24019,7 +21038,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 88944.22,
+    "dueAmount": 88923.38,
     "paidAmount": 0.0,
     "truckNo": "RJ09GD6669",
     "ownerName": "Ramkaran Jat",
@@ -24062,7 +21081,7 @@
         "dueAmount": 184500.0
       }
     ],
-    "ownerDue": 88944.22
+    "ownerDue": 88923.38
   },
   {
     "id": "due-327",
@@ -24073,7 +21092,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 80230.58,
+    "dueAmount": 80211.78,
     "paidAmount": 166425.0,
     "truckNo": "RJ14GG2997",
     "ownerName": "Ramsingh Jinjwadiya",
@@ -24127,7 +21146,7 @@
         "dueAmount": 166425.0
       }
     ],
-    "ownerDue": 80230.58
+    "ownerDue": 80211.78
   },
   {
     "id": "due-328",
@@ -24138,7 +21157,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 1277.52,
+    "dueAmount": 1277.22,
     "paidAmount": 0.0,
     "truckNo": "RJ32GD1471",
     "ownerName": "Ramswaroop Girathi",
@@ -24169,7 +21188,7 @@
     "totalFreight": 2650.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 1277.52
+    "ownerDue": 1277.22
   },
   {
     "id": "due-329",
@@ -24180,7 +21199,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 940.06,
+    "dueAmount": 939.84,
     "paidAmount": 1950.0,
     "truckNo": "RJ14GN4731",
     "ownerName": "Ramswaroop Girathi",
@@ -24234,7 +21253,7 @@
         "dueAmount": 1950.0
       }
     ],
-    "ownerDue": 940.06
+    "ownerDue": 939.84
   },
   {
     "id": "due-330",
@@ -24245,7 +21264,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 61402.36,
+    "dueAmount": 61387.97,
     "paidAmount": 127369.0,
     "truckNo": "RJ14GK2951",
     "ownerName": "Ramswaroop Girathi",
@@ -24299,7 +21318,7 @@
         "dueAmount": 127369.0
       }
     ],
-    "ownerDue": 61402.36
+    "ownerDue": 61387.97
   },
   {
     "id": "due-331",
@@ -24310,7 +21329,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 100118.89,
+    "dueAmount": 100095.43,
     "paidAmount": 0.0,
     "truckNo": "RJ32GB3320",
     "ownerName": "Ranjeet Gurjar Bajrangpura",
@@ -24364,7 +21383,7 @@
         "dueAmount": 207680.0
       }
     ],
-    "ownerDue": 100118.89
+    "ownerDue": 100095.43
   },
   {
     "id": "due-332",
@@ -24375,7 +21394,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 70962.54,
+    "dueAmount": 70945.91,
     "paidAmount": 0.0,
     "truckNo": "RJ20GC7185",
     "ownerName": "Ranjeet Gurjar Bajrangpura",
@@ -24418,7 +21437,7 @@
         "dueAmount": 147200.0
       }
     ],
-    "ownerDue": 70962.54
+    "ownerDue": 70945.91
   },
   {
     "id": "due-333",
@@ -24429,7 +21448,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 92154.89,
+    "dueAmount": 92133.3,
     "paidAmount": 191160.0,
     "truckNo": "RJ52GA8041",
     "ownerName": "Rohitash Bablu Motors",
@@ -24483,7 +21502,7 @@
         "dueAmount": 191160.0
       }
     ],
-    "ownerDue": 92154.89
+    "ownerDue": 92133.3
   },
   {
     "id": "due-334",
@@ -24494,7 +21513,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 65158.27,
+    "dueAmount": 65143.0,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA5671",
     "ownerName": "Rohitash Bablu Motors",
@@ -24525,7 +21544,7 @@
     "totalFreight": 135160.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 65158.27
+    "ownerDue": 65143.0
   },
   {
     "id": "due-335",
@@ -24536,7 +21555,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 86774.85,
+    "dueAmount": 86754.52,
     "paidAmount": 180000.0,
     "truckNo": "RJ52GA5674",
     "ownerName": "Rohitash Bablu Motors",
@@ -24590,7 +21609,7 @@
         "dueAmount": 180000.0
       }
     ],
-    "ownerDue": 86774.85
+    "ownerDue": 86754.52
   },
   {
     "id": "due-337",
@@ -24601,7 +21620,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 69568.84,
+    "dueAmount": 69552.54,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA9133",
     "ownerName": "Rohitash Bablu Motors",
@@ -24655,7 +21674,7 @@
         "dueAmount": 144309.0
       }
     ],
-    "ownerDue": 69568.84
+    "ownerDue": 69552.54
   },
   {
     "id": "due-338",
@@ -24666,7 +21685,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 73885.41,
+    "dueAmount": 73868.1,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA8838",
     "ownerName": "Rohitash Bablu Motors",
@@ -24709,7 +21728,7 @@
         "dueAmount": 153263.0
       }
     ],
-    "ownerDue": 73885.41
+    "ownerDue": 73868.1
   },
   {
     "id": "due-339",
@@ -24720,7 +21739,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 91981.34,
+    "dueAmount": 91959.79,
     "paidAmount": 190800.0,
     "truckNo": "RJ52GB4268",
     "ownerName": "Rohitash Bablu Motors",
@@ -24774,7 +21793,7 @@
         "dueAmount": 190800.0
       }
     ],
-    "ownerDue": 91981.34
+    "ownerDue": 91959.79
   },
   {
     "id": "due-340",
@@ -24785,7 +21804,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 85261.11,
+    "dueAmount": 85241.13,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB0215",
     "ownerName": "Rohitash Bablu Motors",
@@ -24816,7 +21835,7 @@
     "totalFreight": 176860.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 85261.11
+    "ownerDue": 85241.13
   },
   {
     "id": "due-341",
@@ -24827,7 +21846,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 82496.37,
+    "dueAmount": 82477.04,
     "paidAmount": 171125.0,
     "truckNo": "RJ52GB0303",
     "ownerName": "Rohitash Bablu Motors",
@@ -24881,7 +21900,7 @@
         "dueAmount": 171125.0
       }
     ],
-    "ownerDue": 82496.37
+    "ownerDue": 82477.04
   },
   {
     "id": "due-342",
@@ -24892,7 +21911,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 41507.3,
+    "dueAmount": 41497.57,
     "paidAmount": 86100.0,
     "truckNo": "RJ52GA3842",
     "ownerName": "Rohitash Bablu Motors",
@@ -24946,7 +21965,7 @@
         "dueAmount": 86100.0
       }
     ],
-    "ownerDue": 41507.3
+    "ownerDue": 41497.57
   },
   {
     "id": "due-343",
@@ -24957,7 +21976,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 88944.22,
+    "dueAmount": 88923.38,
     "paidAmount": 0.0,
     "truckNo": "RJ32GC5864",
     "ownerName": "Rohitash Bablu Motors",
@@ -25011,7 +22030,7 @@
         "dueAmount": 184500.0
       }
     ],
-    "ownerDue": 88944.22
+    "ownerDue": 88923.38
   },
   {
     "id": "due-344",
@@ -25022,7 +22041,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 80230.58,
+    "dueAmount": 80211.78,
     "paidAmount": 0.0,
     "truckNo": "RJ14GH1466",
     "ownerName": "Rohitash Chandela",
@@ -25065,7 +22084,7 @@
         "dueAmount": 166425.0
       }
     ],
-    "ownerDue": 80230.58
+    "ownerDue": 80211.78
   },
   {
     "id": "due-345",
@@ -25076,7 +22095,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 1277.52,
+    "dueAmount": 1277.22,
     "paidAmount": 2650.0,
     "truckNo": "RJ14GH0342",
     "ownerName": "Rohtash Kasana Kotputli",
@@ -25130,7 +22149,7 @@
         "dueAmount": 2650.0
       }
     ],
-    "ownerDue": 1277.52
+    "ownerDue": 1277.22
   },
   {
     "id": "due-346",
@@ -25141,7 +22160,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 940.06,
+    "dueAmount": 939.84,
     "paidAmount": 0.0,
     "truckNo": "RJ14GQ1458",
     "ownerName": "Salim Tpt",
@@ -25172,7 +22191,7 @@
     "totalFreight": 1950.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 940.06
+    "ownerDue": 939.84
   },
   {
     "id": "due-347",
@@ -25183,7 +22202,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 61402.36,
+    "dueAmount": 61387.97,
     "paidAmount": 127369.0,
     "truckNo": "RJ01GD0821",
     "ownerName": "Sattu Kumawat Shrinagar",
@@ -25237,7 +22256,7 @@
         "dueAmount": 127369.0
       }
     ],
-    "ownerDue": 61402.36
+    "ownerDue": 61387.97
   },
   {
     "id": "due-348",
@@ -25248,7 +22267,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 100118.89,
+    "dueAmount": 100095.43,
     "paidAmount": 207680.0,
     "truckNo": "RJ01GD0921",
     "ownerName": "Sattu Kumawat Shrinagar",
@@ -25302,7 +22321,7 @@
         "dueAmount": 207680.0
       }
     ],
-    "ownerDue": 100118.89
+    "ownerDue": 100095.43
   },
   {
     "id": "due-349",
@@ -25313,7 +22332,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 70962.54,
+    "dueAmount": 70945.91,
     "paidAmount": 0.0,
     "truckNo": "RJ42GB2497",
     "ownerName": "Sattu Yadav Klshangarh",
@@ -25367,7 +22386,7 @@
         "dueAmount": 147200.0
       }
     ],
-    "ownerDue": 70962.54
+    "ownerDue": 70945.91
   },
   {
     "id": "due-350",
@@ -25378,7 +22397,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 92154.89,
+    "dueAmount": 92133.3,
     "paidAmount": 0.0,
     "truckNo": "RJ42GA6579",
     "ownerName": "Sattu Yadav Klshangarh",
@@ -25421,7 +22440,7 @@
         "dueAmount": 191160.0
       }
     ],
-    "ownerDue": 92154.89
+    "ownerDue": 92133.3
   },
   {
     "id": "due-351",
@@ -25432,7 +22451,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 65158.27,
+    "dueAmount": 65143.0,
     "paidAmount": 135160.0,
     "truckNo": "RJ42GB6679",
     "ownerName": "Sattu Yadav Klshangarh",
@@ -25486,7 +22505,7 @@
         "dueAmount": 135160.0
       }
     ],
-    "ownerDue": 65158.27
+    "ownerDue": 65143.0
   },
   {
     "id": "due-352",
@@ -25497,7 +22516,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 86774.85,
+    "dueAmount": 86754.52,
     "paidAmount": 0.0,
     "truckNo": "RJ42GA6679",
     "ownerName": "Sattu Yadav Klshangarh",
@@ -25528,7 +22547,7 @@
     "totalFreight": 180000.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 86774.85
+    "ownerDue": 86754.52
   },
   {
     "id": "due-353",
@@ -25539,7 +22558,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 55921.57,
+    "dueAmount": 55908.47,
     "paidAmount": 116000.0,
     "truckNo": "RJ42GB4779",
     "ownerName": "Sattu Yadav Klshangarh",
@@ -25593,7 +22612,7 @@
         "dueAmount": 116000.0
       }
     ],
-    "ownerDue": 55921.57
+    "ownerDue": 55908.47
   },
   {
     "id": "due-354",
@@ -25604,7 +22623,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 69568.84,
+    "dueAmount": 69552.54,
     "paidAmount": 144309.0,
     "truckNo": "RJ52GA4836",
     "ownerName": "Sayar Tokas",
@@ -25658,7 +22677,7 @@
         "dueAmount": 144309.0
       }
     ],
-    "ownerDue": 69568.84
+    "ownerDue": 69552.54
   },
   {
     "id": "due-355",
@@ -25669,7 +22688,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 73885.41,
+    "dueAmount": 73868.1,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB1736",
     "ownerName": "Sayar Tokas",
@@ -25723,7 +22742,7 @@
         "dueAmount": 153263.0
       }
     ],
-    "ownerDue": 73885.41
+    "ownerDue": 73868.1
   },
   {
     "id": "due-356",
@@ -25734,7 +22753,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 91981.34,
+    "dueAmount": 91959.79,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA1736",
     "ownerName": "Sayar Tokas",
@@ -25777,7 +22796,7 @@
         "dueAmount": 190800.0
       }
     ],
-    "ownerDue": 91981.34
+    "ownerDue": 91959.79
   },
   {
     "id": "due-357",
@@ -25788,7 +22807,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 85261.11,
+    "dueAmount": 85241.13,
     "paidAmount": 176860.0,
     "truckNo": "RJ32GE8607",
     "ownerName": "Shankar 8607",
@@ -25842,7 +22861,7 @@
         "dueAmount": 176860.0
       }
     ],
-    "ownerDue": 85261.11
+    "ownerDue": 85241.13
   },
   {
     "id": "due-358",
@@ -25853,7 +22872,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 82496.37,
+    "dueAmount": 82477.04,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB0964",
     "ownerName": "Shishram Meena",
@@ -25884,7 +22903,7 @@
     "totalFreight": 171125.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 82496.37
+    "ownerDue": 82477.04
   },
   {
     "id": "due-359",
@@ -25895,7 +22914,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 41507.3,
+    "dueAmount": 41497.57,
     "paidAmount": 86100.0,
     "truckNo": "RJ52GB1455",
     "ownerName": "Shivdan Dhabas",
@@ -25949,7 +22968,7 @@
         "dueAmount": 86100.0
       }
     ],
-    "ownerDue": 41507.3
+    "ownerDue": 41497.57
   },
   {
     "id": "due-360",
@@ -25960,7 +22979,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 88944.22,
+    "dueAmount": 88923.38,
     "paidAmount": 184500.0,
     "truckNo": "RJ52GB4506",
     "ownerName": "Shree Mahaveer Transport Com",
@@ -26014,7 +23033,7 @@
         "dueAmount": 184500.0
       }
     ],
-    "ownerDue": 88944.22
+    "ownerDue": 88923.38
   },
   {
     "id": "due-361",
@@ -26025,7 +23044,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 80230.58,
+    "dueAmount": 80211.78,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB4507",
     "ownerName": "Shree Mahaveer Transport Com",
@@ -26079,7 +23098,7 @@
         "dueAmount": 166425.0
       }
     ],
-    "ownerDue": 80230.58
+    "ownerDue": 80211.78
   },
   {
     "id": "due-362",
@@ -26090,7 +23109,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 1277.52,
+    "dueAmount": 1277.22,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB4538",
     "ownerName": "Shree Mahaveer Transport Com",
@@ -26133,7 +23152,7 @@
         "dueAmount": 2650.0
       }
     ],
-    "ownerDue": 1277.52
+    "ownerDue": 1277.22
   },
   {
     "id": "due-363",
@@ -26144,7 +23163,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 940.06,
+    "dueAmount": 939.84,
     "paidAmount": 1950.0,
     "truckNo": "RJ52GB4537",
     "ownerName": "Shree Mahaveer Transport Com",
@@ -26198,7 +23217,7 @@
         "dueAmount": 1950.0
       }
     ],
-    "ownerDue": 940.06
+    "ownerDue": 939.84
   },
   {
     "id": "due-365",
@@ -26209,7 +23228,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 100118.89,
+    "dueAmount": 100095.43,
     "paidAmount": 207680.0,
     "truckNo": "RJ52GB4573",
     "ownerName": "Shree Mahaveer Transport Com",
@@ -26263,7 +23282,7 @@
         "dueAmount": 207680.0
       }
     ],
-    "ownerDue": 100118.89
+    "ownerDue": 100095.43
   },
   {
     "id": "due-366",
@@ -26274,7 +23293,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 70962.54,
+    "dueAmount": 70945.91,
     "paidAmount": 147200.0,
     "truckNo": "RJ14GH1772",
     "ownerName": "Sitaram Gurjar Mantri",
@@ -26328,7 +23347,7 @@
         "dueAmount": 147200.0
       }
     ],
-    "ownerDue": 70962.54
+    "ownerDue": 70945.91
   },
   {
     "id": "due-367",
@@ -26339,7 +23358,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 92154.89,
+    "dueAmount": 92133.3,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA6549",
     "ownerName": "Sitaram Meena",
@@ -26393,7 +23412,7 @@
         "dueAmount": 191160.0
       }
     ],
-    "ownerDue": 92154.89
+    "ownerDue": 92133.3
   },
   {
     "id": "due-368",
@@ -26404,7 +23423,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 65158.27,
+    "dueAmount": 65143.0,
     "paidAmount": 0.0,
     "truckNo": "RJ14GK1136",
     "ownerName": "Sitaram Meena",
@@ -26447,7 +23466,7 @@
         "dueAmount": 135160.0
       }
     ],
-    "ownerDue": 65158.27
+    "ownerDue": 65143.0
   },
   {
     "id": "due-369",
@@ -26458,7 +23477,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 86774.85,
+    "dueAmount": 86754.52,
     "paidAmount": 180000.0,
     "truckNo": "RJ26GA8214",
     "ownerName": "Sitaram Meena",
@@ -26512,7 +23531,7 @@
         "dueAmount": 180000.0
       }
     ],
-    "ownerDue": 86774.85
+    "ownerDue": 86754.52
   },
   {
     "id": "due-370",
@@ -26523,7 +23542,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 55921.57,
+    "dueAmount": 55908.47,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB3526",
     "ownerName": "Sitaram Yadav Khatkad",
@@ -26554,7 +23573,7 @@
     "totalFreight": 116000.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 55921.57
+    "ownerDue": 55908.47
   },
   {
     "id": "due-371",
@@ -26565,7 +23584,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 69568.84,
+    "dueAmount": 69552.54,
     "paidAmount": 144309.0,
     "truckNo": "RJ14GE2072",
     "ownerName": "Sohanram Choudhary",
@@ -26619,7 +23638,7 @@
         "dueAmount": 144309.0
       }
     ],
-    "ownerDue": 69568.84
+    "ownerDue": 69552.54
   },
   {
     "id": "due-372",
@@ -26630,7 +23649,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 73885.41,
+    "dueAmount": 73868.1,
     "paidAmount": 153263.0,
     "truckNo": "RJ14GK6260",
     "ownerName": "Sohanram Choudhary",
@@ -26684,7 +23703,7 @@
         "dueAmount": 153263.0
       }
     ],
-    "ownerDue": 73885.41
+    "ownerDue": 73868.1
   },
   {
     "id": "due-373",
@@ -26695,7 +23714,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 91981.34,
+    "dueAmount": 91959.79,
     "paidAmount": 0.0,
     "truckNo": "RJ47GA8136",
     "ownerName": "Sohanram Choudhary",
@@ -26749,7 +23768,7 @@
         "dueAmount": 190800.0
       }
     ],
-    "ownerDue": 91981.34
+    "ownerDue": 91959.79
   },
   {
     "id": "due-374",
@@ -26760,7 +23779,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 85261.11,
+    "dueAmount": 85241.13,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB2472",
     "ownerName": "Subhash Gurjar",
@@ -26803,7 +23822,7 @@
         "dueAmount": 176860.0
       }
     ],
-    "ownerDue": 85261.11
+    "ownerDue": 85241.13
   },
   {
     "id": "due-375",
@@ -26814,7 +23833,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 82496.37,
+    "dueAmount": 82477.04,
     "paidAmount": 171125.0,
     "truckNo": "RJ52GA1688",
     "ownerName": "Sugan Gurjar",
@@ -26868,7 +23887,7 @@
         "dueAmount": 171125.0
       }
     ],
-    "ownerDue": 82496.37
+    "ownerDue": 82477.04
   },
   {
     "id": "due-376",
@@ -26879,7 +23898,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 41507.3,
+    "dueAmount": 41497.57,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB6672",
     "ownerName": "Mukesh Gurjar 6148",
@@ -26910,7 +23929,7 @@
     "totalFreight": 86100.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 41507.3
+    "ownerDue": 41497.57
   },
   {
     "id": "due-377",
@@ -26921,7 +23940,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 88944.22,
+    "dueAmount": 88923.38,
     "paidAmount": 184500.0,
     "truckNo": "RJ52GB2536",
     "ownerName": "Surendra Dhabas",
@@ -26975,7 +23994,7 @@
         "dueAmount": 184500.0
       }
     ],
-    "ownerDue": 88944.22
+    "ownerDue": 88923.38
   },
   {
     "id": "due-378",
@@ -26986,7 +24005,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 80230.58,
+    "dueAmount": 80211.78,
     "paidAmount": 166425.0,
     "truckNo": "RJ48GA3365",
     "ownerName": "Babu Lal Kahar Sawar",
@@ -27040,7 +24059,7 @@
         "dueAmount": 166425.0
       }
     ],
-    "ownerDue": 80230.58
+    "ownerDue": 80211.78
   },
   {
     "id": "due-379",
@@ -27051,7 +24070,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 1277.52,
+    "dueAmount": 1277.22,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB4319",
     "ownerName": "Surendra Palsaniya Jaswanthpm",
@@ -27105,7 +24124,7 @@
         "dueAmount": 2650.0
       }
     ],
-    "ownerDue": 1277.52
+    "ownerDue": 1277.22
   },
   {
     "id": "due-380",
@@ -27116,7 +24135,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 940.06,
+    "dueAmount": 939.84,
     "paidAmount": 0.0,
     "truckNo": "RJ14GH1590",
     "ownerName": "Suresh Jat",
@@ -27159,7 +24178,7 @@
         "dueAmount": 1950.0
       }
     ],
-    "ownerDue": 940.06
+    "ownerDue": 939.84
   },
   {
     "id": "due-381",
@@ -27170,7 +24189,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 61402.36,
+    "dueAmount": 61387.97,
     "paidAmount": 127369.0,
     "truckNo": "RJ52GA9927",
     "ownerName": "Suresh Meena",
@@ -27224,7 +24243,7 @@
         "dueAmount": 127369.0
       }
     ],
-    "ownerDue": 61402.36
+    "ownerDue": 61387.97
   },
   {
     "id": "due-382",
@@ -27235,7 +24254,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 100118.89,
+    "dueAmount": 100095.43,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB4027",
     "ownerName": "Suresh Palsaniye",
@@ -27266,7 +24285,7 @@
     "totalFreight": 207680.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 100118.89
+    "ownerDue": 100095.43
   },
   {
     "id": "due-383",
@@ -27277,7 +24296,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 70962.54,
+    "dueAmount": 70945.91,
     "paidAmount": 147200.0,
     "truckNo": "RJ52GA8496",
     "ownerName": "Surgyan Gurjar",
@@ -27331,7 +24350,7 @@
         "dueAmount": 147200.0
       }
     ],
-    "ownerDue": 70962.54
+    "ownerDue": 70945.91
   },
   {
     "id": "due-384",
@@ -27342,7 +24361,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 92154.89,
+    "dueAmount": 92133.3,
     "paidAmount": 191160.0,
     "truckNo": "RJ52GA8133",
     "ownerName": "Tarachand Jmtc",
@@ -27396,7 +24415,7 @@
         "dueAmount": 191160.0
       }
     ],
-    "ownerDue": 92154.89
+    "ownerDue": 92133.3
   },
   {
     "id": "due-385",
@@ -27407,7 +24426,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 65158.27,
+    "dueAmount": 65143.0,
     "paidAmount": 0.0,
     "truckNo": "RJ14GJ5769",
     "ownerName": "Tarachand Jmtc",
@@ -27461,7 +24480,7 @@
         "dueAmount": 135160.0
       }
     ],
-    "ownerDue": 65158.27
+    "ownerDue": 65143.0
   },
   {
     "id": "due-386",
@@ -27472,7 +24491,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 86774.85,
+    "dueAmount": 86754.52,
     "paidAmount": 0.0,
     "truckNo": "RJ27GD3132",
     "ownerName": "Tarun Dixit",
@@ -27515,7 +24534,7 @@
         "dueAmount": 180000.0
       }
     ],
-    "ownerDue": 86774.85
+    "ownerDue": 86754.52
   },
   {
     "id": "due-387",
@@ -27526,7 +24545,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 55921.57,
+    "dueAmount": 55908.47,
     "paidAmount": 116000.0,
     "truckNo": "RJ52GA3454",
     "ownerName": "Vedprakash Meena",
@@ -27580,7 +24599,7 @@
         "dueAmount": 116000.0
       }
     ],
-    "ownerDue": 55921.57
+    "ownerDue": 55908.47
   },
   {
     "id": "due-388",
@@ -27591,7 +24610,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 69568.84,
+    "dueAmount": 69552.54,
     "paidAmount": 0.0,
     "truckNo": "RJ14GG0964",
     "ownerName": "Vedprakash Meena",
@@ -27622,7 +24641,7 @@
     "totalFreight": 144309.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 69568.84
+    "ownerDue": 69552.54
   },
   {
     "id": "due-389",
@@ -27633,7 +24652,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 73885.41,
+    "dueAmount": 73868.1,
     "paidAmount": 153263.0,
     "truckNo": "RJ32GD6498",
     "ownerName": "Vicky",
@@ -27687,7 +24706,7 @@
         "dueAmount": 153263.0
       }
     ],
-    "ownerDue": 73885.41
+    "ownerDue": 73868.1
   },
   {
     "id": "due-390",
@@ -27698,7 +24717,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 91981.34,
+    "dueAmount": 91959.79,
     "paidAmount": 190800.0,
     "truckNo": "RJ32GE1136",
     "ownerName": "Vijay Gurjar",
@@ -27752,7 +24771,7 @@
         "dueAmount": 190800.0
       }
     ],
-    "ownerDue": 91981.34
+    "ownerDue": 91959.79
   },
   {
     "id": "due-391",
@@ -27763,7 +24782,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 85261.11,
+    "dueAmount": 85241.13,
     "paidAmount": 0.0,
     "truckNo": "RJ32GD8334",
     "ownerName": "Vijay Gurjar",
@@ -27817,7 +24836,7 @@
         "dueAmount": 176860.0
       }
     ],
-    "ownerDue": 85261.11
+    "ownerDue": 85241.13
   },
   {
     "id": "due-393",
@@ -27828,7 +24847,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 41507.3,
+    "dueAmount": 41497.57,
     "paidAmount": 86100.0,
     "truckNo": "RJ52GB6172",
     "ownerName": "Vinod Dhabas",
@@ -27882,7 +24901,7 @@
         "dueAmount": 86100.0
       }
     ],
-    "ownerDue": 41507.3
+    "ownerDue": 41497.57
   },
   {
     "id": "due-394",
@@ -27893,7 +24912,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 88944.22,
+    "dueAmount": 88923.38,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB2572",
     "ownerName": "Vinod Dhabas",
@@ -27924,7 +24943,7 @@
     "totalFreight": 184500.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 88944.22
+    "ownerDue": 88923.38
   },
   {
     "id": "due-395",
@@ -27935,7 +24954,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 80230.58,
+    "dueAmount": 80211.78,
     "paidAmount": 166425.0,
     "truckNo": "RJ52GB5172",
     "ownerName": "Vinod Dhabas",
@@ -27989,7 +25008,7 @@
         "dueAmount": 166425.0
       }
     ],
-    "ownerDue": 80230.58
+    "ownerDue": 80211.78
   },
   {
     "id": "due-396",
@@ -28000,7 +25019,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 1277.52,
+    "dueAmount": 1277.22,
     "paidAmount": 2650.0,
     "truckNo": "RJ52GB0772",
     "ownerName": "Vinod Dhabas",
@@ -28054,7 +25073,7 @@
         "dueAmount": 2650.0
       }
     ],
-    "ownerDue": 1277.52
+    "ownerDue": 1277.22
   },
   {
     "id": "due-397",
@@ -28065,7 +25084,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 940.06,
+    "dueAmount": 939.84,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB7072",
     "ownerName": "Vinod Dhabas",
@@ -28119,7 +25138,7 @@
         "dueAmount": 1950.0
       }
     ],
-    "ownerDue": 940.06
+    "ownerDue": 939.84
   },
   {
     "id": "due-398",
@@ -28130,7 +25149,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 61402.36,
+    "dueAmount": 61387.97,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA8567",
     "ownerName": "Vinod Dhabas",
@@ -28173,7 +25192,7 @@
         "dueAmount": 127369.0
       }
     ],
-    "ownerDue": 61402.36
+    "ownerDue": 61387.97
   },
   {
     "id": "due-399",
@@ -28184,7 +25203,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 100118.89,
+    "dueAmount": 100095.43,
     "paidAmount": 207680.0,
     "truckNo": "RJ52GB3874",
     "ownerName": "Vinod Dhabas",
@@ -28238,7 +25257,7 @@
         "dueAmount": 207680.0
       }
     ],
-    "ownerDue": 100118.89
+    "ownerDue": 100095.43
   },
   {
     "id": "due-400",
@@ -28249,7 +25268,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 70962.54,
+    "dueAmount": 70945.91,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA8797",
     "ownerName": "Vinod Jat",
@@ -28280,7 +25299,7 @@
     "totalFreight": 147200.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 70962.54
+    "ownerDue": 70945.91
   },
   {
     "id": "due-401",
@@ -28291,7 +25310,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 92154.89,
+    "dueAmount": 92133.3,
     "paidAmount": 191160.0,
     "truckNo": "RJ14GB5769",
     "ownerName": "Virteja Transport Kishangarh",
@@ -28345,7 +25364,7 @@
         "dueAmount": 191160.0
       }
     ],
-    "ownerDue": 92154.89
+    "ownerDue": 92133.3
   },
   {
     "id": "due-402",
@@ -28356,7 +25375,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 65158.27,
+    "dueAmount": 65143.0,
     "paidAmount": 135160.0,
     "truckNo": "RJ14GR4578",
     "ownerName": "Yakub Mohamed Firozpur Zirka",
@@ -28410,7 +25429,7 @@
         "dueAmount": 135160.0
       }
     ],
-    "ownerDue": 65158.27
+    "ownerDue": 65143.0
   },
   {
     "id": "due-403",
@@ -28421,7 +25440,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 86774.85,
+    "dueAmount": 86754.52,
     "paidAmount": 0.0,
     "truckNo": "RJ14GR0340",
     "ownerName": "Bodu Shekhawat",
@@ -28475,7 +25494,7 @@
         "dueAmount": 180000.0
       }
     ],
-    "ownerDue": 86774.85
+    "ownerDue": 86754.52
   },
   {
     "id": "due-404",
@@ -28486,7 +25505,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 55921.57,
+    "dueAmount": 55908.47,
     "paidAmount": 0.0,
     "truckNo": "RJ14GE0340",
     "ownerName": "Bodu Shekhawat",
@@ -28529,7 +25548,7 @@
         "dueAmount": 116000.0
       }
     ],
-    "ownerDue": 55921.57
+    "ownerDue": 55908.47
   },
   {
     "id": "due-405",
@@ -28540,7 +25559,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 69568.84,
+    "dueAmount": 69552.54,
     "paidAmount": 144309.0,
     "truckNo": "RJ52GB4113",
     "ownerName": "Jagdish Kumar",
@@ -28594,7 +25613,7 @@
         "dueAmount": 144309.0
       }
     ],
-    "ownerDue": 69568.84
+    "ownerDue": 69552.54
   },
   {
     "id": "due-406",
@@ -28605,7 +25624,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 73885.41,
+    "dueAmount": 73868.1,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB0632",
     "ownerName": "Hari Palsaniya Holiwali",
@@ -28636,7 +25655,7 @@
     "totalFreight": 153263.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 73885.41
+    "ownerDue": 73868.1
   },
   {
     "id": "due-407",
@@ -28647,7 +25666,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 91981.34,
+    "dueAmount": 91959.79,
     "paidAmount": 190800.0,
     "truckNo": "RJ01GD6834",
     "ownerName": "Rakesh Vaishnav",
@@ -28701,7 +25720,7 @@
         "dueAmount": 190800.0
       }
     ],
-    "ownerDue": 91981.34
+    "ownerDue": 91959.79
   },
   {
     "id": "due-408",
@@ -28712,7 +25731,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 85261.11,
+    "dueAmount": 85241.13,
     "paidAmount": 176860.0,
     "truckNo": "RJ52GB3924",
     "ownerName": "Bodu Shekhawat",
@@ -28766,7 +25785,7 @@
         "dueAmount": 176860.0
       }
     ],
-    "ownerDue": 85261.11
+    "ownerDue": 85241.13
   },
   {
     "id": "due-409",
@@ -28777,7 +25796,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 82496.37,
+    "dueAmount": 82477.04,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB3697",
     "ownerName": "Bodu Singh Sekhawat",
@@ -28831,7 +25850,7 @@
         "dueAmount": 171125.0
       }
     ],
-    "ownerDue": 82496.37
+    "ownerDue": 82477.04
   },
   {
     "id": "due-410",
@@ -28842,7 +25861,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 41507.3,
+    "dueAmount": 41497.57,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA9683",
     "ownerName": "Banwari Lal Dhabas",
@@ -28885,7 +25904,7 @@
         "dueAmount": 86100.0
       }
     ],
-    "ownerDue": 41507.3
+    "ownerDue": 41497.57
   },
   {
     "id": "due-411",
@@ -28896,7 +25915,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 88944.22,
+    "dueAmount": 88923.38,
     "paidAmount": 184500.0,
     "truckNo": "RJ52GA5679",
     "ownerName": "Rohitash Bablu Motors",
@@ -28950,7 +25969,7 @@
         "dueAmount": 184500.0
       }
     ],
-    "ownerDue": 88944.22
+    "ownerDue": 88923.38
   },
   {
     "id": "due-412",
@@ -28961,7 +25980,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 80230.58,
+    "dueAmount": 80211.78,
     "paidAmount": 0.0,
     "truckNo": "RJ01GE1235",
     "ownerName": "Kalu Ram Yadav Shrinagar",
@@ -28992,7 +26011,7 @@
     "totalFreight": 166425.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 80230.58
+    "ownerDue": 80211.78
   },
   {
     "id": "due-413",
@@ -29003,7 +26022,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 1277.52,
+    "dueAmount": 1277.22,
     "paidAmount": 2650.0,
     "truckNo": "RJ52GB4487",
     "ownerName": "Manish Lunayat",
@@ -29057,7 +26076,7 @@
         "dueAmount": 2650.0
       }
     ],
-    "ownerDue": 1277.52
+    "ownerDue": 1277.22
   },
   {
     "id": "due-414",
@@ -29068,7 +26087,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 940.06,
+    "dueAmount": 939.84,
     "paidAmount": 1950.0,
     "truckNo": "RJ52GC1572",
     "ownerName": "Vinod Dhabas",
@@ -29122,7 +26141,7 @@
         "dueAmount": 1950.0
       }
     ],
-    "ownerDue": 940.06
+    "ownerDue": 939.84
   },
   {
     "id": "due-415",
@@ -29133,7 +26152,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 61402.36,
+    "dueAmount": 61387.97,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA8758",
     "ownerName": "Jairam Badbadwal",
@@ -29187,7 +26206,7 @@
         "dueAmount": 127369.0
       }
     ],
-    "ownerDue": 61402.36
+    "ownerDue": 61387.97
   },
   {
     "id": "due-416",
@@ -29198,7 +26217,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 100118.89,
+    "dueAmount": 100095.43,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB3928",
     "ownerName": "Bodu Shekhawat",
@@ -29241,7 +26260,7 @@
         "dueAmount": 207680.0
       }
     ],
-    "ownerDue": 100118.89
+    "ownerDue": 100095.43
   },
   {
     "id": "due-417",
@@ -29252,7 +26271,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 70962.54,
+    "dueAmount": 70945.91,
     "paidAmount": 147200.0,
     "truckNo": "RJ52GB4746",
     "ownerName": "Surendra Dhabas 9799556266",
@@ -29306,7 +26325,7 @@
         "dueAmount": 147200.0
       }
     ],
-    "ownerDue": 70962.54
+    "ownerDue": 70945.91
   },
   {
     "id": "due-418",
@@ -29317,7 +26336,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 92154.89,
+    "dueAmount": 92133.3,
     "paidAmount": 0.0,
     "truckNo": "RJ27GE3088",
     "ownerName": "Jagdamba Transport 7014389M",
@@ -29348,7 +26367,7 @@
     "totalFreight": 191160.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 92154.89
+    "ownerDue": 92133.3
   },
   {
     "id": "due-419",
@@ -29359,7 +26378,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 65158.27,
+    "dueAmount": 65143.0,
     "paidAmount": 135160.0,
     "truckNo": "RJ52GB5879",
     "ownerName": "Rohitash Bablu Motors",
@@ -29413,7 +26432,7 @@
         "dueAmount": 135160.0
       }
     ],
-    "ownerDue": 65158.27
+    "ownerDue": 65143.0
   },
   {
     "id": "due-421",
@@ -29424,7 +26443,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 55921.57,
+    "dueAmount": 55908.47,
     "paidAmount": 0.0,
     "truckNo": "RJ52GD9237",
     "ownerName": "Panchuram Gurjar",
@@ -29478,7 +26497,7 @@
         "dueAmount": 116000.0
       }
     ],
-    "ownerDue": 55921.57
+    "ownerDue": 55908.47
   },
   {
     "id": "due-422",
@@ -29489,7 +26508,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 69568.84,
+    "dueAmount": 69552.54,
     "paidAmount": 0.0,
     "truckNo": "RJ27GD4839",
     "ownerName": "Jagdamba Transport 7014389M",
@@ -29532,7 +26551,7 @@
         "dueAmount": 144309.0
       }
     ],
-    "ownerDue": 69568.84
+    "ownerDue": 69552.54
   },
   {
     "id": "due-423",
@@ -29543,7 +26562,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 73885.41,
+    "dueAmount": 73868.1,
     "paidAmount": 153263.0,
     "truckNo": "RJ51GA4700",
     "ownerName": "Jagdamba Transport",
@@ -29597,7 +26616,7 @@
         "dueAmount": 153263.0
       }
     ],
-    "ownerDue": 73885.41
+    "ownerDue": 73868.1
   },
   {
     "id": "due-424",
@@ -29608,7 +26627,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 91981.34,
+    "dueAmount": 91959.79,
     "paidAmount": 0.0,
     "truckNo": "RJ01GD3708",
     "ownerName": "Lalaram Choudhary Shrinagar",
@@ -29639,7 +26658,7 @@
     "totalFreight": 190800.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 91981.34
+    "ownerDue": 91959.79
   },
   {
     "id": "due-425",
@@ -29650,7 +26669,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 85261.11,
+    "dueAmount": 85241.13,
     "paidAmount": 176860.0,
     "truckNo": "RJ52GB4792",
     "ownerName": "Jai Singh Meena",
@@ -29704,7 +26723,7 @@
         "dueAmount": 176860.0
       }
     ],
-    "ownerDue": 85261.11
+    "ownerDue": 85241.13
   },
   {
     "id": "due-426",
@@ -29715,7 +26734,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 82496.37,
+    "dueAmount": 82477.04,
     "paidAmount": 171125.0,
     "truckNo": "RJ30GB3088",
     "ownerName": "Jagdamba Transport 7014389M",
@@ -29769,7 +26788,7 @@
         "dueAmount": 171125.0
       }
     ],
-    "ownerDue": 82496.37
+    "ownerDue": 82477.04
   },
   {
     "id": "due-427",
@@ -29780,7 +26799,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 41507.3,
+    "dueAmount": 41497.57,
     "paidAmount": 0.0,
     "truckNo": "RJ30GB3031",
     "ownerName": "Jagdamba Transport 7014389M",
@@ -29834,7 +26853,7 @@
         "dueAmount": 86100.0
       }
     ],
-    "ownerDue": 41507.3
+    "ownerDue": 41497.57
   },
   {
     "id": "due-428",
@@ -29845,7 +26864,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 88944.22,
+    "dueAmount": 88923.38,
     "paidAmount": 0.0,
     "truckNo": "RJ02GB3062",
     "ownerName": "Kana Ram Jat Dudu",
@@ -29888,7 +26907,7 @@
         "dueAmount": 184500.0
       }
     ],
-    "ownerDue": 88944.22
+    "ownerDue": 88923.38
   },
   {
     "id": "due-429",
@@ -29899,7 +26918,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 80230.58,
+    "dueAmount": 80211.78,
     "paidAmount": 166425.0,
     "truckNo": "RJ14GR5822",
     "ownerName": "Warish Khan",
@@ -29953,7 +26972,7 @@
         "dueAmount": 166425.0
       }
     ],
-    "ownerDue": 80230.58
+    "ownerDue": 80211.78
   },
   {
     "id": "due-430",
@@ -29964,7 +26983,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 1277.52,
+    "dueAmount": 1277.22,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA6319",
     "ownerName": "Lalaram Choudhary Shrinagar",
@@ -29995,7 +27014,7 @@
     "totalFreight": 2650.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 1277.52
+    "ownerDue": 1277.22
   },
   {
     "id": "due-431",
@@ -30006,7 +27025,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 940.06,
+    "dueAmount": 939.84,
     "paidAmount": 1950.0,
     "truckNo": "RJ52GB3696",
     "ownerName": "Bodu Singh Sekhawat",
@@ -30060,7 +27079,7 @@
         "dueAmount": 1950.0
       }
     ],
-    "ownerDue": 940.06
+    "ownerDue": 939.84
   },
   {
     "id": "due-432",
@@ -30071,7 +27090,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 61402.36,
+    "dueAmount": 61387.97,
     "paidAmount": 127369.0,
     "truckNo": "RJ52GB0213",
     "ownerName": "Rohitash Bablu Motors",
@@ -30125,7 +27144,7 @@
         "dueAmount": 127369.0
       }
     ],
-    "ownerDue": 61402.36
+    "ownerDue": 61387.97
   },
   {
     "id": "due-433",
@@ -30136,7 +27155,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 100118.89,
+    "dueAmount": 100095.43,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA7384",
     "ownerName": "Surya Pratap Singh",
@@ -30190,7 +27209,7 @@
         "dueAmount": 207680.0
       }
     ],
-    "ownerDue": 100118.89
+    "ownerDue": 100095.43
   },
   {
     "id": "due-434",
@@ -30201,7 +27220,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 70962.54,
+    "dueAmount": 70945.91,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA6573",
     "ownerName": "Rohitash Bablu Motors",
@@ -30244,7 +27263,7 @@
         "dueAmount": 147200.0
       }
     ],
-    "ownerDue": 70962.54
+    "ownerDue": 70945.91
   },
   {
     "id": "due-435",
@@ -30255,7 +27274,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 92154.89,
+    "dueAmount": 92133.3,
     "paidAmount": 191160.0,
     "truckNo": "RJ52GB6665",
     "ownerName": "Rakesh Chawari",
@@ -30309,7 +27328,7 @@
         "dueAmount": 191160.0
       }
     ],
-    "ownerDue": 92154.89
+    "ownerDue": 92133.3
   },
   {
     "id": "due-436",
@@ -30320,7 +27339,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 65158.27,
+    "dueAmount": 65143.0,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB4785",
     "ownerName": "Gopi Ram Gangal",
@@ -30351,7 +27370,7 @@
     "totalFreight": 135160.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 65158.27
+    "ownerDue": 65143.0
   },
   {
     "id": "due-437",
@@ -30362,7 +27381,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 86774.85,
+    "dueAmount": 86754.52,
     "paidAmount": 180000.0,
     "truckNo": "RJ52GB4676",
     "ownerName": "Satpal Jat",
@@ -30416,7 +27435,7 @@
         "dueAmount": 180000.0
       }
     ],
-    "ownerDue": 86774.85
+    "ownerDue": 86754.52
   },
   {
     "id": "due-438",
@@ -30427,7 +27446,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 55921.57,
+    "dueAmount": 55908.47,
     "paidAmount": 116000.0,
     "truckNo": "RJ52GB5054",
     "ownerName": "Shree Mahaveer Transport Com",
@@ -30481,7 +27500,7 @@
         "dueAmount": 116000.0
       }
     ],
-    "ownerDue": 55921.57
+    "ownerDue": 55908.47
   },
   {
     "id": "due-439",
@@ -30492,7 +27511,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 69568.84,
+    "dueAmount": 69552.54,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB5053",
     "ownerName": "Shree Mahaveer Transport Com",
@@ -30546,7 +27565,7 @@
         "dueAmount": 144309.0
       }
     ],
-    "ownerDue": 69568.84
+    "ownerDue": 69552.54
   },
   {
     "id": "due-440",
@@ -30557,7 +27576,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 73885.41,
+    "dueAmount": 73868.1,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB5055",
     "ownerName": "Babu Jat",
@@ -30600,7 +27619,7 @@
         "dueAmount": 153263.0
       }
     ],
-    "ownerDue": 73885.41
+    "ownerDue": 73868.1
   },
   {
     "id": "due-441",
@@ -30611,7 +27630,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 91981.34,
+    "dueAmount": 91959.79,
     "paidAmount": 190800.0,
     "truckNo": "RJ52GB5061",
     "ownerName": "Shree Mahaveer Transport Com",
@@ -30665,7 +27684,7 @@
         "dueAmount": 190800.0
       }
     ],
-    "ownerDue": 91981.34
+    "ownerDue": 91959.79
   },
   {
     "id": "due-442",
@@ -30676,7 +27695,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 85261.11,
+    "dueAmount": 85241.13,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB5058",
     "ownerName": "Shree Mahaveer Transport Com",
@@ -30707,7 +27726,7 @@
     "totalFreight": 176860.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 85261.11
+    "ownerDue": 85241.13
   },
   {
     "id": "due-443",
@@ -30718,7 +27737,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 82496.37,
+    "dueAmount": 82477.04,
     "paidAmount": 171125.0,
     "truckNo": "RJ52GB5057",
     "ownerName": "Shree Mahaveer Transport Com",
@@ -30772,7 +27791,7 @@
         "dueAmount": 171125.0
       }
     ],
-    "ownerDue": 82496.37
+    "ownerDue": 82477.04
   },
   {
     "id": "due-444",
@@ -30783,7 +27802,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 41507.3,
+    "dueAmount": 41497.57,
     "paidAmount": 86100.0,
     "truckNo": "RJ52GA8688",
     "ownerName": "Rohitash Bablu Motors",
@@ -30837,7 +27856,7 @@
         "dueAmount": 86100.0
       }
     ],
-    "ownerDue": 41507.3
+    "ownerDue": 41497.57
   },
   {
     "id": "due-445",
@@ -30848,7 +27867,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 88944.22,
+    "dueAmount": 88923.38,
     "paidAmount": 0.0,
     "truckNo": "RJ14GQ2864",
     "ownerName": "Bodu Shekhawat",
@@ -30902,7 +27921,7 @@
         "dueAmount": 184500.0
       }
     ],
-    "ownerDue": 88944.22
+    "ownerDue": 88923.38
   },
   {
     "id": "due-446",
@@ -30913,7 +27932,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 80230.58,
+    "dueAmount": 80211.78,
     "paidAmount": 0.0,
     "truckNo": "RJ01GD3101",
     "ownerName": "Prahlad Jat",
@@ -30956,7 +27975,7 @@
         "dueAmount": 166425.0
       }
     ],
-    "ownerDue": 80230.58
+    "ownerDue": 80211.78
   },
   {
     "id": "due-447",
@@ -30967,7 +27986,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 1277.52,
+    "dueAmount": 1277.22,
     "paidAmount": 2650.0,
     "truckNo": "RJ27GE3031",
     "ownerName": "Jagdamba Transport 7014389M",
@@ -31021,7 +28040,7 @@
         "dueAmount": 2650.0
       }
     ],
-    "ownerDue": 1277.52
+    "ownerDue": 1277.22
   },
   {
     "id": "due-449",
@@ -31032,7 +28051,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 61402.36,
+    "dueAmount": 61387.97,
     "paidAmount": 127369.0,
     "truckNo": "RJ52GB5147",
     "ownerName": "Kailash Dhabas",
@@ -31086,7 +28105,7 @@
         "dueAmount": 127369.0
       }
     ],
-    "ownerDue": 61402.36
+    "ownerDue": 61387.97
   },
   {
     "id": "due-450",
@@ -31097,7 +28116,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 100118.89,
+    "dueAmount": 100095.43,
     "paidAmount": 207680.0,
     "truckNo": "RJ52GC3337",
     "ownerName": "Radhyeshyam Gurjar",
@@ -31151,7 +28170,7 @@
         "dueAmount": 207680.0
       }
     ],
-    "ownerDue": 100118.89
+    "ownerDue": 100095.43
   },
   {
     "id": "due-451",
@@ -31162,7 +28181,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 70962.54,
+    "dueAmount": 70945.91,
     "paidAmount": 0.0,
     "truckNo": "RJ01GD2191",
     "ownerName": "Kalu Ram Yadav Shrinagar",
@@ -31216,7 +28235,7 @@
         "dueAmount": 147200.0
       }
     ],
-    "ownerDue": 70962.54
+    "ownerDue": 70945.91
   },
   {
     "id": "due-452",
@@ -31227,7 +28246,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 92154.89,
+    "dueAmount": 92133.3,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB5549",
     "ownerName": "Ramesh Palsanie",
@@ -31270,7 +28289,7 @@
         "dueAmount": 191160.0
       }
     ],
-    "ownerDue": 92154.89
+    "ownerDue": 92133.3
   },
   {
     "id": "due-453",
@@ -31281,7 +28300,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 65158.27,
+    "dueAmount": 65143.0,
     "paidAmount": 135160.0,
     "truckNo": "RJ14GP6426",
     "ownerName": "Bodu Singh Sekhawat",
@@ -31335,7 +28354,7 @@
         "dueAmount": 135160.0
       }
     ],
-    "ownerDue": 65158.27
+    "ownerDue": 65143.0
   },
   {
     "id": "due-454",
@@ -31346,7 +28365,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 86774.85,
+    "dueAmount": 86754.52,
     "paidAmount": 0.0,
     "truckNo": "RJ01GD5377",
     "ownerName": "Prahlad Jat",
@@ -31377,7 +28396,7 @@
     "totalFreight": 180000.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 86774.85
+    "ownerDue": 86754.52
   },
   {
     "id": "due-455",
@@ -31388,7 +28407,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 55921.57,
+    "dueAmount": 55908.47,
     "paidAmount": 116000.0,
     "truckNo": "RJ32GC9297",
     "ownerName": "Subhash Jinjad",
@@ -31442,7 +28461,7 @@
         "dueAmount": 116000.0
       }
     ],
-    "ownerDue": 55921.57
+    "ownerDue": 55908.47
   },
   {
     "id": "due-456",
@@ -31453,7 +28472,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 69568.84,
+    "dueAmount": 69552.54,
     "paidAmount": 144309.0,
     "truckNo": "RJ01GD4865",
     "ownerName": "Chand Rawat Singh",
@@ -31507,7 +28526,7 @@
         "dueAmount": 144309.0
       }
     ],
-    "ownerDue": 69568.84
+    "ownerDue": 69552.54
   },
   {
     "id": "due-457",
@@ -31518,7 +28537,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 73885.41,
+    "dueAmount": 73868.1,
     "paidAmount": 0.0,
     "truckNo": "RJ26GB1136",
     "ownerName": "Sitaram Meena",
@@ -31572,7 +28591,7 @@
         "dueAmount": 153263.0
       }
     ],
-    "ownerDue": 73885.41
+    "ownerDue": 73868.1
   },
   {
     "id": "due-458",
@@ -31583,7 +28602,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 91981.34,
+    "dueAmount": 91959.79,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB5146",
     "ownerName": "Kailash Dhabas",
@@ -31626,7 +28645,7 @@
         "dueAmount": 190800.0
       }
     ],
-    "ownerDue": 91981.34
+    "ownerDue": 91959.79
   },
   {
     "id": "due-459",
@@ -31637,7 +28656,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 85261.11,
+    "dueAmount": 85241.13,
     "paidAmount": 176860.0,
     "truckNo": "RJ52GA9037",
     "ownerName": "Jairam Badbadwal",
@@ -31691,7 +28710,7 @@
         "dueAmount": 176860.0
       }
     ],
-    "ownerDue": 85261.11
+    "ownerDue": 85241.13
   },
   {
     "id": "due-460",
@@ -31702,7 +28721,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 82496.37,
+    "dueAmount": 82477.04,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB5205",
     "ownerName": "Suresh Palsaniye Jaswanthpu...",
@@ -31733,7 +28752,7 @@
     "totalFreight": 171125.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 82496.37
+    "ownerDue": 82477.04
   },
   {
     "id": "due-461",
@@ -31744,7 +28763,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 41507.3,
+    "dueAmount": 41497.57,
     "paidAmount": 86100.0,
     "truckNo": "RJ52GA4821",
     "ownerName": "Jeetu Kulharia",
@@ -31798,7 +28817,7 @@
         "dueAmount": 86100.0
       }
     ],
-    "ownerDue": 41507.3
+    "ownerDue": 41497.57
   },
   {
     "id": "due-462",
@@ -31809,7 +28828,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 88944.22,
+    "dueAmount": 88923.38,
     "paidAmount": 184500.0,
     "truckNo": "RJ32GD8541",
     "ownerName": "Suresh Khatana",
@@ -31863,7 +28882,7 @@
         "dueAmount": 184500.0
       }
     ],
-    "ownerDue": 88944.22
+    "ownerDue": 88923.38
   },
   {
     "id": "due-463",
@@ -31874,7 +28893,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 80230.58,
+    "dueAmount": 80211.78,
     "paidAmount": 0.0,
     "truckNo": "RJ32GB8912",
     "ownerName": "Kanhaya Lal Jat 8912",
@@ -31928,7 +28947,7 @@
         "dueAmount": 166425.0
       }
     ],
-    "ownerDue": 80230.58
+    "ownerDue": 80211.78
   },
   {
     "id": "due-464",
@@ -31939,7 +28958,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 1277.52,
+    "dueAmount": 1277.22,
     "paidAmount": 0.0,
     "truckNo": "RJ14GP6423",
     "ownerName": "Bodu Shekhawat",
@@ -31982,7 +29001,7 @@
         "dueAmount": 2650.0
       }
     ],
-    "ownerDue": 1277.52
+    "ownerDue": 1277.22
   },
   {
     "id": "due-465",
@@ -31993,7 +29012,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 940.06,
+    "dueAmount": 939.84,
     "paidAmount": 1950.0,
     "truckNo": "RJ01GC4301",
     "ownerName": "Prahlad Jat",
@@ -32047,7 +29066,7 @@
         "dueAmount": 1950.0
       }
     ],
-    "ownerDue": 940.06
+    "ownerDue": 939.84
   },
   {
     "id": "due-466",
@@ -32058,7 +29077,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 61402.36,
+    "dueAmount": 61387.97,
     "paidAmount": 0.0,
     "truckNo": "RJ32GC4096",
     "ownerName": "Mukesh Gurjar 6148",
@@ -32089,7 +29108,7 @@
     "totalFreight": 127369.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 61402.36
+    "ownerDue": 61387.97
   },
   {
     "id": "due-467",
@@ -32100,7 +29119,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 100118.89,
+    "dueAmount": 100095.43,
     "paidAmount": 207680.0,
     "truckNo": "RJ52GA1508",
     "ownerName": "Deva Gurjar",
@@ -32154,7 +29173,7 @@
         "dueAmount": 207680.0
       }
     ],
-    "ownerDue": 100118.89
+    "ownerDue": 100095.43
   },
   {
     "id": "due-468",
@@ -32165,7 +29184,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 70962.54,
+    "dueAmount": 70945.91,
     "paidAmount": 147200.0,
     "truckNo": "RJ52GB5374",
     "ownerName": "Rohitash Adhane",
@@ -32219,7 +29238,7 @@
         "dueAmount": 147200.0
       }
     ],
-    "ownerDue": 70962.54
+    "ownerDue": 70945.91
   },
   {
     "id": "due-469",
@@ -32230,7 +29249,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 92154.89,
+    "dueAmount": 92133.3,
     "paidAmount": 0.0,
     "truckNo": "RJ30GA3088",
     "ownerName": "Jagdamba Transport",
@@ -32284,7 +29303,7 @@
         "dueAmount": 191160.0
       }
     ],
-    "ownerDue": 92154.89
+    "ownerDue": 92133.3
   },
   {
     "id": "due-470",
@@ -32295,7 +29314,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 65158.27,
+    "dueAmount": 65143.0,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB4252",
     "ownerName": "Rohitash Rolaniya Garh",
@@ -32338,7 +29357,7 @@
         "dueAmount": 135160.0
       }
     ],
-    "ownerDue": 65158.27
+    "ownerDue": 65143.0
   },
   {
     "id": "due-471",
@@ -32349,7 +29368,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 86774.85,
+    "dueAmount": 86754.52,
     "paidAmount": 180000.0,
     "truckNo": "RJ52GC5396",
     "ownerName": "Raju Gurjar",
@@ -32403,7 +29422,7 @@
         "dueAmount": 180000.0
       }
     ],
-    "ownerDue": 86774.85
+    "ownerDue": 86754.52
   },
   {
     "id": "due-472",
@@ -32414,7 +29433,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 55921.57,
+    "dueAmount": 55908.47,
     "paidAmount": 0.0,
     "truckNo": "RJ27GC5877",
     "ownerName": "Jagdamba Transport",
@@ -32445,7 +29464,7 @@
     "totalFreight": 116000.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 55921.57
+    "ownerDue": 55908.47
   },
   {
     "id": "due-473",
@@ -32456,7 +29475,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 69568.84,
+    "dueAmount": 69552.54,
     "paidAmount": 144309.0,
     "truckNo": "RJ52GB5188",
     "ownerName": "Madan Mama",
@@ -32510,7 +29529,7 @@
         "dueAmount": 144309.0
       }
     ],
-    "ownerDue": 69568.84
+    "ownerDue": 69552.54
   },
   {
     "id": "due-474",
@@ -32521,7 +29540,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 73885.41,
+    "dueAmount": 73868.1,
     "paidAmount": 153263.0,
     "truckNo": "RJ52GB0214",
     "ownerName": "Rohitash Bablu Motors",
@@ -32575,7 +29594,7 @@
         "dueAmount": 153263.0
       }
     ],
-    "ownerDue": 73885.41
+    "ownerDue": 73868.1
   },
   {
     "id": "due-475",
@@ -32586,7 +29605,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 91981.34,
+    "dueAmount": 91959.79,
     "paidAmount": 0.0,
     "truckNo": "RJ01GE0162",
     "ownerName": "Gaurav Yadav",
@@ -32640,7 +29659,7 @@
         "dueAmount": 190800.0
       }
     ],
-    "ownerDue": 91981.34
+    "ownerDue": 91959.79
   },
   {
     "id": "due-477",
@@ -32651,7 +29670,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 82496.37,
+    "dueAmount": 82477.04,
     "paidAmount": 171125.0,
     "truckNo": "RJ52GB5521",
     "ownerName": "Kailash Dhabas",
@@ -32705,7 +29724,7 @@
         "dueAmount": 171125.0
       }
     ],
-    "ownerDue": 82496.37
+    "ownerDue": 82477.04
   },
   {
     "id": "due-478",
@@ -32716,7 +29735,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 41507.3,
+    "dueAmount": 41497.57,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB5529",
     "ownerName": "Shree Mahaveer Transport Com",
@@ -32747,7 +29766,7 @@
     "totalFreight": 86100.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 41507.3
+    "ownerDue": 41497.57
   },
   {
     "id": "due-479",
@@ -32758,7 +29777,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 88944.22,
+    "dueAmount": 88923.38,
     "paidAmount": 184500.0,
     "truckNo": "RJ52GB5528",
     "ownerName": "Shree Mahaveer Transport Com",
@@ -32812,7 +29831,7 @@
         "dueAmount": 184500.0
       }
     ],
-    "ownerDue": 88944.22
+    "ownerDue": 88923.38
   },
   {
     "id": "due-480",
@@ -32823,7 +29842,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 80230.58,
+    "dueAmount": 80211.78,
     "paidAmount": 166425.0,
     "truckNo": "RJ52GB5522",
     "ownerName": "Kailash Dhabas",
@@ -32877,7 +29896,7 @@
         "dueAmount": 166425.0
       }
     ],
-    "ownerDue": 80230.58
+    "ownerDue": 80211.78
   },
   {
     "id": "due-481",
@@ -32888,7 +29907,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 1277.52,
+    "dueAmount": 1277.22,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB5523",
     "ownerName": "Manish Lunayat",
@@ -32942,7 +29961,7 @@
         "dueAmount": 2650.0
       }
     ],
-    "ownerDue": 1277.52
+    "ownerDue": 1277.22
   },
   {
     "id": "due-482",
@@ -32953,7 +29972,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 940.06,
+    "dueAmount": 939.84,
     "paidAmount": 0.0,
     "truckNo": "RJ52GB5524",
     "ownerName": "Manish Lunayat",
@@ -32996,7 +30015,7 @@
         "dueAmount": 1950.0
       }
     ],
-    "ownerDue": 940.06
+    "ownerDue": 939.84
   },
   {
     "id": "due-483",
@@ -33007,7 +30026,7 @@
     "status": "Party Payment Pending",
     "color": "blue",
     "colorHex": "#1a73e8",
-    "dueAmount": 61402.36,
+    "dueAmount": 61387.97,
     "paidAmount": 127369.0,
     "truckNo": "RJ32GD3771",
     "ownerName": "Vinod Dhabas",
@@ -33061,7 +30080,7 @@
         "dueAmount": 127369.0
       }
     ],
-    "ownerDue": 61402.36
+    "ownerDue": 61387.97
   },
   {
     "id": "due-484",
@@ -33072,7 +30091,7 @@
     "status": "Off Loading",
     "color": "pink",
     "colorHex": "#e91e63",
-    "dueAmount": 100118.89,
+    "dueAmount": 100095.43,
     "paidAmount": 0.0,
     "truckNo": "RJ32GE3683",
     "ownerName": "Banwari Lal Dhabas",
@@ -33103,7 +30122,7 @@
     "totalFreight": 207680.0,
     "payments": [],
     "debts": [],
-    "ownerDue": 100118.89
+    "ownerDue": 100095.43
   },
   {
     "id": "due-485",
@@ -33114,7 +30133,7 @@
     "status": "Cheque Due",
     "color": "slate",
     "colorHex": "#607d8b",
-    "dueAmount": 70962.54,
+    "dueAmount": 70945.91,
     "paidAmount": 147200.0,
     "truckNo": "RJ32GE2072",
     "ownerName": "Vinod Dhabas",
@@ -33168,7 +30187,7 @@
         "dueAmount": 147200.0
       }
     ],
-    "ownerDue": 70962.54
+    "ownerDue": 70945.91
   },
   {
     "id": "due-486",
@@ -33179,7 +30198,7 @@
     "status": "Truck Owner Payment Pending",
     "color": "cyan",
     "colorHex": "#00bcd4",
-    "dueAmount": 92154.89,
+    "dueAmount": 92133.3,
     "paidAmount": 191160.0,
     "truckNo": "RJ14GP1978",
     "ownerName": "Bhanu",
@@ -33233,7 +30252,7 @@
         "dueAmount": 191160.0
       }
     ],
-    "ownerDue": 92154.89
+    "ownerDue": 92133.3
   },
   {
     "id": "due-487",
@@ -33244,7 +30263,7 @@
     "status": "Transit",
     "color": "yellow",
     "colorHex": "#e5a823",
-    "dueAmount": 65158.27,
+    "dueAmount": 65143.0,
     "paidAmount": 0.0,
     "truckNo": "RJ52GA1907",
     "ownerName": "Krishnan Kharwal",
@@ -33298,7 +30317,7 @@
         "dueAmount": 135160.0
       }
     ],
-    "ownerDue": 65158.27
+    "ownerDue": 65143.0
   },
   {
     "id": "due-488",
@@ -33309,7 +30328,7 @@
     "status": "POD Sent/ Bill Generated",
     "color": "purple",
     "colorHex": "#9c27b0",
-    "dueAmount": 86774.85,
+    "dueAmount": 86754.83,
     "paidAmount": 0.0,
     "truckNo": "RJ01GD7167",
     "ownerName": "Rajkumar Yadav",
@@ -33352,33 +30371,33 @@
         "dueAmount": 180000.0
       }
     ],
-    "ownerDue": 86774.85
+    "ownerDue": 86754.83
   },
   {
     "id": "due-489",
-    "grNo": "3038",
-    "tripDate": "13/09/2026",
+    "grNo": "18",
+    "tripDate": "01/04/2026",
     "tripEndDate": "05/11/2026",
     "year": "2026-2027",
-    "status": "Party Payment Pending",
-    "color": "blue",
-    "colorHex": "#1a73e8",
-    "dueAmount": 55921.68,
+    "status": "Transit",
+    "color": "yellow",
+    "colorHex": "#c3ad00",
+    "dueAmount": 7028.0,
     "paidAmount": 116000.0,
-    "truckNo": "RJ30GA6732",
-    "ownerName": "Jagdamba Transport",
+    "truckNo": "RJ52GB1837",
+    "ownerName": "Radheshyam Gurjar",
     "ownerMobile": "7014389435",
     "origin": "Rajsamand (Raj.)",
-    "destination": "Meerut (U.P.)",
+    "destination": "Karnal (Haryana)",
     "transport": "TTC",
     "material": "Granite Slabs",
     "weight": 59.487,
     "rate": 1950.0,
     "billingType": "Per Tonne",
     "biltyAmount": 116000.0,
-    "reference": "Irfan Bhai Khatauli",
+    "reference": "Gopal Sharda",
     "referenceMobile": "9235620488",
-    "driver": "Rajesh Gurjar Kotputli",
+    "driver": "Lekhram Gurjar 1837",
     "driverMobile": "9602554433",
     "consignor": {
       "gstin": "08FPWPR3462B2ZD",
@@ -33417,7 +30436,2771 @@
         "dueAmount": 116000.0
       }
     ],
-    "ownerDue": 55921.68
+    "ownerDue": 7028.0,
+    "date": "01/04/2026"
+  },
+  {
+    "id": "due-7",
+    "grNo": "2791",
+    "tripDate": "31/03/2026",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Truck Owner Payment Pending",
+    "color": "cyan",
+    "colorHex": "#01cebc",
+    "dueAmount": 9638.0,
+    "paidAmount": 0.0,
+    "truckNo": "RJ52GB5521",
+    "ownerName": "Laxmi Prakash Jat",
+    "ownerMobile": "9351721272",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Kanpur (U.P.)",
+    "transport": "TTC",
+    "material": "Plaster of Paris",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Himanshu Chemtech Kanpur Supplier",
+    "referenceMobile": "9235620006",
+    "driver": "Bhim Raj 8616",
+    "driverMobile": "9414886337",
+    "consignor": {
+      "gstin": "08AGRPJ1613P1ZX",
+      "name": "Saatvik Minerals",
+      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6506B1ZN",
+      "name": "Sudhir Mishra Sakarni Kareda",
+      "mobile": "9235620006"
+    },
+    "freight": 1125.0,
+    "totalFreight": 37601.8,
+    "payments": [],
+    "debts": [
+      {
+        "debtType": "Commission",
+        "debtAmount": 2500.0,
+        "debtMode": "Cash",
+        "borrowerName": "Ashok Kasana Kotputli",
+        "receiverName": "Bajrang Meena 7297032726",
+        "description": "2025-2026 Advance Commission",
+        "grNo": "2106_SMTC",
+        "truckNo": "RJ14GG0267",
+        "dueAmount": 36476.8
+      },
+      {
+        "debtType": "Other",
+        "debtAmount": 1400.0,
+        "debtMode": "Cash",
+        "borrowerName": "Ashok Kasana Kotputli",
+        "receiverName": "Bajrang Meena 7297032726",
+        "description": "Other Advance on Loading",
+        "grNo": "2106_SMTC",
+        "truckNo": "RJ14GG0267",
+        "dueAmount": 36476.8
+      }
+    ],
+    "date": "31/03/2026",
+    "ownerDue": 9638.0
+  },
+  {
+    "id": "due-8",
+    "grNo": "2107",
+    "tripDate": "23/03/2026",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Truck Owner Payment Pending",
+    "color": "cyan",
+    "colorHex": "#01cebc",
+    "dueAmount": 37743.56,
+    "paidAmount": 0.0,
+    "truckNo": "RJ52GB0320",
+    "ownerName": "Babu Jat",
+    "ownerMobile": "9950669687",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Kanpur (U.P.)",
+    "transport": "TTC",
+    "material": "Chemical Powder",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Rishi Kapur Kapsons India",
+    "referenceMobile": "9235620007",
+    "driver": "Bhanwarchoudhary 7333",
+    "driverMobile": "9079757333",
+    "consignor": {
+      "gstin": "08CRGPG0812F1ZB",
+      "name": "Shree Shyam Mineral Traders",
+      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6507B1ZN",
+      "name": "Rishi Kapur Kapsons India",
+      "mobile": "9235620007"
+    },
+    "freight": 36476.8,
+    "totalFreight": 36476.8,
+    "payments": [],
+    "debts": [
+      {
+        "debtType": "Commission",
+        "debtAmount": 2000.0,
+        "debtMode": "Cash",
+        "borrowerName": "Babu Jat",
+        "receiverName": "Ramchandra Jat 8824993002",
+        "description": "2025-2026 Advance Commission",
+        "grNo": "2107_TTC",
+        "truckNo": "RJ52GB0320",
+        "dueAmount": 36476.8
+      }
+    ],
+    "date": "23/03/2026",
+    "ownerDue": 37743.56
+  },
+  {
+    "id": "due-9",
+    "grNo": "2108",
+    "tripDate": "15/03/2026",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Truck Owner Payment Pending",
+    "color": "cyan",
+    "colorHex": "#01cebc",
+    "dueAmount": 37743.56,
+    "paidAmount": 36476.8,
+    "truckNo": "RJ01GD0221",
+    "ownerName": "Balveer Yadav",
+    "ownerMobile": "9314000521",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Bahadurgarh (Haryana)",
+    "transport": "TTC",
+    "material": "Quartz Powder",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Jawahar Minerals Alwar",
+    "referenceMobile": "9235620008",
+    "driver": "Hansraj 1235",
+    "driverMobile": "9829123500",
+    "consignor": {
+      "gstin": "08FPWPR3462B2ZD",
+      "name": "SHIV UMA STONEX",
+      "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6508B1ZN",
+      "name": "Jawahar Minerals Alwar",
+      "mobile": "9235620008"
+    },
+    "freight": 36476.8,
+    "totalFreight": 36476.8,
+    "payments": [
+      {
+        "paymentDate": "09/09/2025",
+        "amountPaid": 36476.8,
+        "mode": "NEFT/RTGS",
+        "beneficiary": "Truck Owner",
+        "bank": "TTC",
+        "toBank": "Other Bank",
+        "description": "Transporter Payment for GR 2108_TTC",
+        "paidTo": "Transporter"
+      }
+    ],
+    "debts": [
+      {
+        "debtType": "Commission",
+        "debtAmount": 1500.0,
+        "debtMode": "Cash",
+        "borrowerName": "Balveer Yadav",
+        "receiverName": "Ramchandra Jat 8824993002",
+        "description": "2025-2026 Advance Commission",
+        "grNo": "2108_TTC",
+        "truckNo": "RJ01GD0221",
+        "dueAmount": 36476.8
+      }
+    ],
+    "date": "15/03/2026",
+    "ownerDue": 37743.56
+  },
+  {
+    "id": "due-10",
+    "grNo": "2109",
+    "tripDate": "07/03/2026",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Truck Owner Payment Pending",
+    "color": "cyan",
+    "colorHex": "#01cebc",
+    "dueAmount": 37743.56,
+    "paidAmount": 0.0,
+    "truckNo": "RJ01GD0321",
+    "ownerName": "Balveer Yadav",
+    "ownerMobile": "9314000521",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Sandila (U.P.)",
+    "transport": "TTC",
+    "material": "Marble Powder",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Tanuj Kothari Udaipur",
+    "referenceMobile": "9235620009",
+    "driver": "Madan Gurjar",
+    "driverMobile": "9414223344",
+    "consignor": {
+      "gstin": "08AAUFD1174E1ZC",
+      "name": "Durga Enterprises",
+      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6509B1ZN",
+      "name": "Tanuj Kothari Udaipur",
+      "mobile": "9235620009"
+    },
+    "freight": 36476.8,
+    "totalFreight": 36476.8,
+    "payments": [],
+    "debts": [],
+    "date": "07/03/2026",
+    "ownerDue": 37743.56
+  },
+  {
+    "id": "due-11",
+    "grNo": "2110",
+    "tripDate": "27/02/2026",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Truck Owner Payment Pending",
+    "color": "cyan",
+    "colorHex": "#01cebc",
+    "dueAmount": 37743.56,
+    "paidAmount": 36476.8,
+    "truckNo": "RJ01GC4211",
+    "ownerName": "Balveer Yadav",
+    "ownerMobile": "9314000521",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Jhajjar (Haryana)",
+    "transport": "TTC",
+    "material": "Chemicals & Dyes",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Balwant Yadav R.B. Dyes",
+    "referenceMobile": "9235620010",
+    "driver": "Manraj Meena 9433",
+    "driverMobile": "9079943300",
+    "consignor": {
+      "gstin": "08AGRPJ1613P1ZX",
+      "name": "Saatvik Minerals",
+      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6510B1ZN",
+      "name": "Balwant Yadav R.B. Dyes",
+      "mobile": "9235620010"
+    },
+    "freight": 36476.8,
+    "totalFreight": 36476.8,
+    "payments": [
+      {
+        "paymentDate": "11/11/2025",
+        "amountPaid": 36476.8,
+        "mode": "NEFT/RTGS",
+        "beneficiary": "Truck Owner",
+        "bank": "TTC",
+        "toBank": "Other Bank",
+        "description": "Transporter Payment for GR 2110_TTC",
+        "paidTo": "Transporter"
+      }
+    ],
+    "debts": [
+      {
+        "debtType": "Commission",
+        "debtAmount": 2000.0,
+        "debtMode": "Cash",
+        "borrowerName": "Balveer Yadav",
+        "receiverName": "Ramchandra Jat 8824993002",
+        "description": "2025-2026 Advance Commission",
+        "grNo": "2110_TTC",
+        "truckNo": "RJ01GC4211",
+        "dueAmount": 36476.8
+      }
+    ],
+    "date": "27/02/2026",
+    "ownerDue": 37743.56
+  },
+  {
+    "id": "due-12",
+    "grNo": "2111",
+    "tripDate": "19/02/2026",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Party Payment Pending",
+    "color": "blue",
+    "colorHex": "#037be4",
+    "dueAmount": 37743.56,
+    "paidAmount": 36476.8,
+    "truckNo": "RJ01GD0621",
+    "ownerName": "Balveer Yadav",
+    "ownerMobile": "9314000521",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Azamgarh (U.P.)",
+    "transport": "TTC",
+    "material": "Marble Lumps",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Pappu Raad",
+    "referenceMobile": "9235620011",
+    "driver": "Chand Gurjar",
+    "driverMobile": "8824112233",
+    "consignor": {
+      "gstin": "08CRGPG0812F1ZB",
+      "name": "Shree Shyam Mineral Traders",
+      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6511B1ZN",
+      "name": "Pappu Raad",
+      "mobile": "9235620011"
+    },
+    "freight": 36476.8,
+    "totalFreight": 36476.8,
+    "payments": [
+      {
+        "paymentDate": "12/12/2025",
+        "amountPaid": 36476.8,
+        "mode": "NEFT/RTGS",
+        "beneficiary": "Truck Owner",
+        "bank": "TTC",
+        "toBank": "Other Bank",
+        "description": "Transporter Payment for GR 2111_TTC",
+        "paidTo": "Transporter"
+      }
+    ],
+    "debts": [
+      {
+        "debtType": "Commission",
+        "debtAmount": 2000.0,
+        "debtMode": "Cash",
+        "borrowerName": "Balveer Yadav",
+        "receiverName": "Ramchandra Jat 8824993002",
+        "description": "2025-2026 Advance Commission",
+        "grNo": "2111_TTC",
+        "truckNo": "RJ01GD0621",
+        "dueAmount": 36476.8
+      }
+    ],
+    "date": "19/02/2026",
+    "ownerDue": 37743.56
+  },
+  {
+    "id": "due-13",
+    "grNo": "2112",
+    "tripDate": "11/02/2026",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Truck Owner Payment Pending",
+    "color": "cyan",
+    "colorHex": "#01cebc",
+    "dueAmount": 37743.56,
+    "paidAmount": 0.0,
+    "truckNo": "RJ01GD0709",
+    "ownerName": "Balveer Yadav",
+    "ownerMobile": "9314000521",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Meerut (U.P.)",
+    "transport": "TTC",
+    "material": "Granite Slabs",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Irfan Bhai Khatauli",
+    "referenceMobile": "9235620012",
+    "driver": "Rajesh Gurjar Kotputli",
+    "driverMobile": "9602554433",
+    "consignor": {
+      "gstin": "08FPWPR3462B2ZD",
+      "name": "SHIV UMA STONEX",
+      "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6512B1ZN",
+      "name": "Irfan Bhai Khatauli",
+      "mobile": "9235620012"
+    },
+    "freight": 1125.0,
+    "totalFreight": 37601.8,
+    "payments": [],
+    "debts": [
+      {
+        "debtType": "Commission",
+        "debtAmount": 2500.0,
+        "debtMode": "Cash",
+        "borrowerName": "Balveer Yadav",
+        "receiverName": "Bajrang Meena 7297032726",
+        "description": "2025-2026 Advance Commission",
+        "grNo": "2112_TTC",
+        "truckNo": "RJ01GD0709",
+        "dueAmount": 36476.8
+      },
+      {
+        "debtType": "Other",
+        "debtAmount": 1400.0,
+        "debtMode": "Cash",
+        "borrowerName": "Balveer Yadav",
+        "receiverName": "Bajrang Meena 7297032726",
+        "description": "Other Advance on Loading",
+        "grNo": "2112_TTC",
+        "truckNo": "RJ01GD0709",
+        "dueAmount": 36476.8
+      }
+    ],
+    "date": "11/02/2026",
+    "ownerDue": 37743.56
+  },
+  {
+    "id": "due-14",
+    "grNo": "2113_SMTC",
+    "tripDate": "03/02/2026",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Truck Owner Payment Pending",
+    "color": "cyan",
+    "colorHex": "#01cebc",
+    "dueAmount": 37743.56,
+    "paidAmount": 0.0,
+    "truckNo": "RJ01GD1121",
+    "ownerName": "Balveer Yadav",
+    "ownerMobile": "9314000521",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Sandila (U.P.)",
+    "transport": "SMTC",
+    "material": "Dolomite Powder",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Rajesh Rao Udaipur",
+    "referenceMobile": "9235620013",
+    "driver": "Dhanraj Meena 0986",
+    "driverMobile": "9414000986",
+    "consignor": {
+      "gstin": "08AAUFD1174E1ZC",
+      "name": "Durga Enterprises",
+      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6513B1ZN",
+      "name": "Rajesh Rao Udaipur",
+      "mobile": "9235620013"
+    },
+    "freight": 36476.8,
+    "totalFreight": 36476.8,
+    "payments": [],
+    "debts": [
+      {
+        "debtType": "Commission",
+        "debtAmount": 2000.0,
+        "debtMode": "Cash",
+        "borrowerName": "Balveer Yadav",
+        "receiverName": "Ramchandra Jat 8824993002",
+        "description": "2025-2026 Advance Commission",
+        "grNo": "2113_SMTC",
+        "truckNo": "RJ01GD1121",
+        "dueAmount": 36476.8
+      }
+    ],
+    "date": "03/02/2026",
+    "ownerDue": 37743.56
+  },
+  {
+    "id": "due-15",
+    "grNo": "2114",
+    "tripDate": "26/01/2026",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Truck Owner Payment Pending",
+    "color": "cyan",
+    "colorHex": "#01cebc",
+    "dueAmount": 37743.56,
+    "paidAmount": 36476.8,
+    "truckNo": "RJ01GD0707",
+    "ownerName": "Balveer Yadav",
+    "ownerMobile": "9314000521",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Haldwani (U.K.)",
+    "transport": "TTC",
+    "material": "Marble Blocks",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Shruti Marble Sukher",
+    "referenceMobile": "9235620014",
+    "driver": "Krishna Saini",
+    "driverMobile": "9828334455",
+    "consignor": {
+      "gstin": "08AGRPJ1613P1ZX",
+      "name": "Saatvik Minerals",
+      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6514B1ZN",
+      "name": "Shruti Marble Sukher",
+      "mobile": "9235620014"
+    },
+    "freight": 36476.8,
+    "totalFreight": 36476.8,
+    "payments": [
+      {
+        "paymentDate": "15/03/2025",
+        "amountPaid": 36476.8,
+        "mode": "NEFT/RTGS",
+        "beneficiary": "Truck Owner",
+        "bank": "TTC",
+        "toBank": "Other Bank",
+        "description": "Transporter Payment for GR 2114_TTC",
+        "paidTo": "Transporter"
+      }
+    ],
+    "debts": [
+      {
+        "debtType": "Commission",
+        "debtAmount": 1500.0,
+        "debtMode": "Cash",
+        "borrowerName": "Balveer Yadav",
+        "receiverName": "Ramchandra Jat 8824993002",
+        "description": "2025-2026 Advance Commission",
+        "grNo": "2114_TTC",
+        "truckNo": "RJ01GD0707",
+        "dueAmount": 36476.8
+      }
+    ],
+    "date": "26/01/2026",
+    "ownerDue": 37743.56
+  },
+  {
+    "id": "due-16",
+    "grNo": "2115",
+    "tripDate": "18/01/2026",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Truck Owner Payment Pending",
+    "color": "cyan",
+    "colorHex": "#01cebc",
+    "dueAmount": 37743.56,
+    "paidAmount": 0.0,
+    "truckNo": "RJ47GB0421",
+    "ownerName": "Balveer Yadav",
+    "ownerMobile": "9314000521",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Karnal (Haryana)",
+    "transport": "TTC",
+    "material": "Marble Powder",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Gopal Sharda",
+    "referenceMobile": "9235620015",
+    "driver": "Banti Meena Tonk",
+    "driverMobile": "9414556677",
+    "consignor": {
+      "gstin": "08CRGPG0812F1ZB",
+      "name": "Shree Shyam Mineral Traders",
+      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6515B1ZN",
+      "name": "Gopal Sharda",
+      "mobile": "9235620015"
+    },
+    "freight": 36476.8,
+    "totalFreight": 36476.8,
+    "payments": [],
+    "debts": [],
+    "date": "18/01/2026",
+    "ownerDue": 37743.56
+  },
+  {
+    "id": "due-17",
+    "grNo": "2116",
+    "tripDate": "10/01/2026",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Party Payment Pending",
+    "color": "blue",
+    "colorHex": "#037be4",
+    "dueAmount": 37743.56,
+    "paidAmount": 36476.8,
+    "truckNo": "RJ47GB0621",
+    "ownerName": "Balveer Yadav",
+    "ownerMobile": "9314000521",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Delhi",
+    "transport": "TTC",
+    "material": "Ceramic Minerals",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Anil Sharda",
+    "referenceMobile": "9235620016",
+    "driver": "Mukesh Gurjar Badgaon",
+    "driverMobile": "9602778899",
+    "consignor": {
+      "gstin": "08FPWPR3462B2ZD",
+      "name": "SHIV UMA STONEX",
+      "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6516B1ZN",
+      "name": "Anil Sharda",
+      "mobile": "9235620016"
+    },
+    "freight": 36476.8,
+    "totalFreight": 36476.8,
+    "payments": [
+      {
+        "paymentDate": "17/05/2025",
+        "amountPaid": 36476.8,
+        "mode": "NEFT/RTGS",
+        "beneficiary": "Truck Owner",
+        "bank": "TTC",
+        "toBank": "Other Bank",
+        "description": "Transporter Payment for GR 2116_TTC",
+        "paidTo": "Transporter"
+      }
+    ],
+    "debts": [
+      {
+        "debtType": "Commission",
+        "debtAmount": 2000.0,
+        "debtMode": "Cash",
+        "borrowerName": "Balveer Yadav",
+        "receiverName": "Ramchandra Jat 8824993002",
+        "description": "2025-2026 Advance Commission",
+        "grNo": "2116_TTC",
+        "truckNo": "RJ47GB0621",
+        "dueAmount": 36476.8
+      }
+    ],
+    "date": "10/01/2026",
+    "ownerDue": 37743.56
+  },
+  {
+    "id": "due-18",
+    "grNo": "2117",
+    "tripDate": "02/01/2026",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Truck Owner Payment Pending",
+    "color": "cyan",
+    "colorHex": "#01cebc",
+    "dueAmount": 37743.56,
+    "paidAmount": 36476.8,
+    "truckNo": "RJ01GC2411",
+    "ownerName": "Balveer Yadav",
+    "ownerMobile": "9314000521",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Saharanpur (U.P.)",
+    "transport": "TTC",
+    "material": "Calcite Powder",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Oswal Mineral Amet",
+    "referenceMobile": "9235620017",
+    "driver": "Giriraj Yadav MP",
+    "driverMobile": "9783445566",
+    "consignor": {
+      "gstin": "08AAUFD1174E1ZC",
+      "name": "Durga Enterprises",
+      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6517B1ZN",
+      "name": "Oswal Mineral Amet",
+      "mobile": "9235620017"
+    },
+    "freight": 36476.8,
+    "totalFreight": 36476.8,
+    "payments": [
+      {
+        "paymentDate": "18/06/2025",
+        "amountPaid": 36476.8,
+        "mode": "NEFT/RTGS",
+        "beneficiary": "Truck Owner",
+        "bank": "TTC",
+        "toBank": "Other Bank",
+        "description": "Transporter Payment for GR 2117_TTC",
+        "paidTo": "Transporter"
+      }
+    ],
+    "debts": [
+      {
+        "debtType": "Commission",
+        "debtAmount": 2000.0,
+        "debtMode": "Cash",
+        "borrowerName": "Balveer Yadav",
+        "receiverName": "Ramchandra Jat 8824993002",
+        "description": "2025-2026 Advance Commission",
+        "grNo": "2117_TTC",
+        "truckNo": "RJ01GC2411",
+        "dueAmount": 36476.8
+      }
+    ],
+    "date": "02/01/2026",
+    "ownerDue": 37743.56
+  },
+  {
+    "id": "due-19",
+    "grNo": "2118",
+    "tripDate": "25/12/2025",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Truck Owner Payment Pending",
+    "color": "cyan",
+    "colorHex": "#01cebc",
+    "dueAmount": 37743.56,
+    "paidAmount": 0.0,
+    "truckNo": "RJ47GB0321",
+    "ownerName": "Balveer Yadav",
+    "ownerMobile": "9314000521",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Meerut (U.P.)",
+    "transport": "TTC",
+    "material": "Marble Tiles",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Meerut Tiranga Marble Sonu Bhai",
+    "referenceMobile": "9235620018",
+    "driver": "Pappu Gurjar 3874",
+    "driverMobile": "9414883874",
+    "consignor": {
+      "gstin": "08AGRPJ1613P1ZX",
+      "name": "Saatvik Minerals",
+      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6518B1ZN",
+      "name": "Meerut Tiranga Marble Sonu Bhai",
+      "mobile": "9235620018"
+    },
+    "freight": 1125.0,
+    "totalFreight": 37601.8,
+    "payments": [],
+    "debts": [
+      {
+        "debtType": "Commission",
+        "debtAmount": 2500.0,
+        "debtMode": "Cash",
+        "borrowerName": "Balveer Yadav",
+        "receiverName": "Bajrang Meena 7297032726",
+        "description": "2025-2026 Advance Commission",
+        "grNo": "2118_TTC",
+        "truckNo": "RJ47GB0321",
+        "dueAmount": 36476.8
+      },
+      {
+        "debtType": "Other",
+        "debtAmount": 1400.0,
+        "debtMode": "Cash",
+        "borrowerName": "Balveer Yadav",
+        "receiverName": "Bajrang Meena 7297032726",
+        "description": "Other Advance on Loading",
+        "grNo": "2118_TTC",
+        "truckNo": "RJ47GB0321",
+        "dueAmount": 36476.8
+      }
+    ],
+    "date": "25/12/2025",
+    "ownerDue": 37743.56
+  },
+  {
+    "id": "due-20",
+    "grNo": "2119",
+    "tripDate": "17/12/2025",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Truck Owner Payment Pending",
+    "color": "cyan",
+    "colorHex": "#01cebc",
+    "dueAmount": 37743.56,
+    "paidAmount": 0.0,
+    "truckNo": "RJ01GD1521",
+    "ownerName": "Balveer Yadav",
+    "ownerMobile": "9314000521",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Kanpur (U.P.)",
+    "transport": "TTC",
+    "material": "Industrial Raw Material",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Ankush Bansal Jaipur",
+    "referenceMobile": "9235620019",
+    "driver": "Shaitan Gurjar",
+    "driverMobile": "9828990011",
+    "consignor": {
+      "gstin": "08CRGPG0812F1ZB",
+      "name": "Shree Shyam Mineral Traders",
+      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6519B1ZN",
+      "name": "Ankush Bansal Jaipur",
+      "mobile": "9235620019"
+    },
+    "freight": 36476.8,
+    "totalFreight": 36476.8,
+    "payments": [],
+    "debts": [
+      {
+        "debtType": "Commission",
+        "debtAmount": 2000.0,
+        "debtMode": "Cash",
+        "borrowerName": "Balveer Yadav",
+        "receiverName": "Ramchandra Jat 8824993002",
+        "description": "2025-2026 Advance Commission",
+        "grNo": "2119_TTC",
+        "truckNo": "RJ01GD1521",
+        "dueAmount": 36476.8
+      }
+    ],
+    "date": "17/12/2025",
+    "ownerDue": 37743.56
+  },
+  {
+    "id": "due-21",
+    "grNo": "2120",
+    "tripDate": "09/12/2025",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Truck Owner Payment Pending",
+    "color": "cyan",
+    "colorHex": "#01cebc",
+    "dueAmount": 37743.56,
+    "paidAmount": 36476.8,
+    "truckNo": "RJ47GB0121",
+    "ownerName": "Balveer Yadav",
+    "ownerMobile": "9314000521",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Agra (U.P.)",
+    "transport": "TTC",
+    "material": "Silica Powder",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Pushpendra Sharma",
+    "referenceMobile": "9235620020",
+    "driver": "Kallu Meena",
+    "driverMobile": "9079757926",
+    "consignor": {
+      "gstin": "08FPWPR3462B2ZD",
+      "name": "SHIV UMA STONEX",
+      "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6520B1ZN",
+      "name": "Pushpendra Sharma",
+      "mobile": "9235620020"
+    },
+    "freight": 36476.8,
+    "totalFreight": 36476.8,
+    "payments": [
+      {
+        "paymentDate": "21/09/2025",
+        "amountPaid": 36476.8,
+        "mode": "NEFT/RTGS",
+        "beneficiary": "Truck Owner",
+        "bank": "TTC",
+        "toBank": "Other Bank",
+        "description": "Transporter Payment for GR 2120_TTC",
+        "paidTo": "Transporter"
+      }
+    ],
+    "debts": [
+      {
+        "debtType": "Commission",
+        "debtAmount": 1500.0,
+        "debtMode": "Cash",
+        "borrowerName": "Balveer Yadav",
+        "receiverName": "Ramchandra Jat 8824993002",
+        "description": "2025-2026 Advance Commission",
+        "grNo": "2120_TTC",
+        "truckNo": "RJ47GB0121",
+        "dueAmount": 36476.8
+      }
+    ],
+    "date": "09/12/2025",
+    "ownerDue": 37743.56
+  },
+  {
+    "id": "due-22",
+    "grNo": "2121",
+    "tripDate": "02/12/2025",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Party Payment Pending",
+    "color": "blue",
+    "colorHex": "#037be4",
+    "dueAmount": 37743.56,
+    "paidAmount": 0.0,
+    "truckNo": "RJ42GA3374",
+    "ownerName": "Balveer Yadav",
+    "ownerMobile": "9314000521",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Ghaziabad (U.P.)",
+    "transport": "TTC",
+    "material": "Foundry Powder",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Pankaj Jain Sahibabad",
+    "referenceMobile": "9235620021",
+    "driver": "Ramchandra Jat",
+    "driverMobile": "8824993002",
+    "consignor": {
+      "gstin": "08AAUFD1174E1ZC",
+      "name": "Durga Enterprises",
+      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6521B1ZN",
+      "name": "Pankaj Jain Sahibabad",
+      "mobile": "9235620021"
+    },
+    "freight": 36476.8,
+    "totalFreight": 36476.8,
+    "payments": [],
+    "debts": [],
+    "date": "02/12/2025",
+    "ownerDue": 37743.56
+  },
+  {
+    "id": "due-23",
+    "grNo": "2122",
+    "tripDate": "23/11/2025",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Truck Owner Payment Pending",
+    "color": "cyan",
+    "colorHex": "#01cebc",
+    "dueAmount": 37743.56,
+    "paidAmount": 36476.8,
+    "truckNo": "RJ01GD0121",
+    "ownerName": "Balveer Yadav",
+    "ownerMobile": "9314000521",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Lucknow (U.P.)",
+    "transport": "TTC",
+    "material": "Polished Granite",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Madan Nilkanth Granite Jetpura",
+    "referenceMobile": "9235620022",
+    "driver": "Laxman Gurjar 8614",
+    "driverMobile": "9828861400",
+    "consignor": {
+      "gstin": "08AGRPJ1613P1ZX",
+      "name": "Saatvik Minerals",
+      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6522B1ZN",
+      "name": "Madan Nilkanth Granite Jetpura",
+      "mobile": "9235620022"
+    },
+    "freight": 36476.8,
+    "totalFreight": 36476.8,
+    "payments": [
+      {
+        "paymentDate": "23/11/2025",
+        "amountPaid": 36476.8,
+        "mode": "NEFT/RTGS",
+        "beneficiary": "Truck Owner",
+        "bank": "TTC",
+        "toBank": "Other Bank",
+        "description": "Transporter Payment for GR 2122_TTC",
+        "paidTo": "Transporter"
+      }
+    ],
+    "debts": [
+      {
+        "debtType": "Commission",
+        "debtAmount": 2000.0,
+        "debtMode": "Cash",
+        "borrowerName": "Balveer Yadav",
+        "receiverName": "Ramchandra Jat 8824993002",
+        "description": "2025-2026 Advance Commission",
+        "grNo": "2122_TTC",
+        "truckNo": "RJ01GD0121",
+        "dueAmount": 36476.8
+      }
+    ],
+    "date": "23/11/2025",
+    "ownerDue": 37743.56
+  },
+  {
+    "id": "due-24",
+    "grNo": "2123",
+    "tripDate": "15/11/2025",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Truck Owner Payment Pending",
+    "color": "cyan",
+    "colorHex": "#01cebc",
+    "dueAmount": 37743.56,
+    "paidAmount": 36476.8,
+    "truckNo": "RJ52GA7336",
+    "ownerName": "Banwari Lal Dhabas",
+    "ownerMobile": "9950890686",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Kanpur (U.P.)",
+    "transport": "TTC",
+    "material": "Calcium Carbonate",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Shree Shyam Mineral & Chemical Traders",
+    "referenceMobile": "9235620023",
+    "driver": "Dinesh Yadav 7729",
+    "driverMobile": "9414772900",
+    "consignor": {
+      "gstin": "08CRGPG0812F1ZB",
+      "name": "Shree Shyam Mineral Traders",
+      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6523B1ZN",
+      "name": "Shree Shyam Mineral & Chemical Traders",
+      "mobile": "9235620023"
+    },
+    "freight": 36476.8,
+    "totalFreight": 36476.8,
+    "payments": [
+      {
+        "paymentDate": "24/12/2025",
+        "amountPaid": 36476.8,
+        "mode": "NEFT/RTGS",
+        "beneficiary": "Truck Owner",
+        "bank": "TTC",
+        "toBank": "Other Bank",
+        "description": "Transporter Payment for GR 2123_TTC",
+        "paidTo": "Transporter"
+      }
+    ],
+    "debts": [
+      {
+        "debtType": "Commission",
+        "debtAmount": 2000.0,
+        "debtMode": "Cash",
+        "borrowerName": "Banwari Lal Dhabas",
+        "receiverName": "Ramchandra Jat 8824993002",
+        "description": "2025-2026 Advance Commission",
+        "grNo": "2123_TTC",
+        "truckNo": "RJ52GA7336",
+        "dueAmount": 36476.8
+      }
+    ],
+    "date": "15/11/2025",
+    "ownerDue": 37743.56
+  },
+  {
+    "id": "due-25",
+    "grNo": "2124",
+    "tripDate": "07/11/2025",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Truck Owner Payment Pending",
+    "color": "cyan",
+    "colorHex": "#01cebc",
+    "dueAmount": 37743.56,
+    "paidAmount": 0.0,
+    "truckNo": "RJ52GA7872",
+    "ownerName": "Banwari Lal Dhabas",
+    "ownerMobile": "9950890686",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Delhi",
+    "transport": "TTC",
+    "material": "Granite Slabs",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Vedanta Granite",
+    "referenceMobile": "9235620024",
+    "driver": "Sonu Bhai",
+    "driverMobile": "9602334455",
+    "consignor": {
+      "gstin": "08FPWPR3462B2ZD",
+      "name": "SHIV UMA STONEX",
+      "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6524B1ZN",
+      "name": "Vedanta Granite",
+      "mobile": "9235620024"
+    },
+    "freight": 1125.0,
+    "totalFreight": 37601.8,
+    "payments": [],
+    "debts": [
+      {
+        "debtType": "Commission",
+        "debtAmount": 2500.0,
+        "debtMode": "Cash",
+        "borrowerName": "Banwari Lal Dhabas",
+        "receiverName": "Bajrang Meena 7297032726",
+        "description": "2025-2026 Advance Commission",
+        "grNo": "2124_TTC",
+        "truckNo": "RJ52GA7872",
+        "dueAmount": 36476.8
+      },
+      {
+        "debtType": "Other",
+        "debtAmount": 1400.0,
+        "debtMode": "Cash",
+        "borrowerName": "Banwari Lal Dhabas",
+        "receiverName": "Bajrang Meena 7297032726",
+        "description": "Other Advance on Loading",
+        "grNo": "2124_TTC",
+        "truckNo": "RJ52GA7872",
+        "dueAmount": 36476.8
+      }
+    ],
+    "date": "07/11/2025",
+    "ownerDue": 37743.56
+  },
+  {
+    "id": "due-26",
+    "grNo": "2125_SMTC",
+    "tripDate": "30/10/2025",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Truck Owner Payment Pending",
+    "color": "cyan",
+    "colorHex": "#01cebc",
+    "dueAmount": 37743.56,
+    "paidAmount": 0.0,
+    "truckNo": "RJ52GA7337",
+    "ownerName": "Banwari Lal Dhabas",
+    "ownerMobile": "9950890686",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Neemrana (Raj.)",
+    "transport": "SMTC",
+    "material": "Gypsum Powder",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Durga Enterprises",
+    "referenceMobile": "9235620025",
+    "driver": "Mangalram Gurjar",
+    "driverMobile": "9783556677",
+    "consignor": {
+      "gstin": "08AAUFD1174E1ZC",
+      "name": "Durga Enterprises",
+      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6525B1ZN",
+      "name": "Durga Enterprises",
+      "mobile": "9235620025"
+    },
+    "freight": 36476.8,
+    "totalFreight": 36476.8,
+    "payments": [],
+    "debts": [
+      {
+        "debtType": "Commission",
+        "debtAmount": 2000.0,
+        "debtMode": "Cash",
+        "borrowerName": "Banwari Lal Dhabas",
+        "receiverName": "Ramchandra Jat 8824993002",
+        "description": "2025-2026 Advance Commission",
+        "grNo": "2125_SMTC",
+        "truckNo": "RJ52GA7337",
+        "dueAmount": 36476.8
+      }
+    ],
+    "date": "30/10/2025",
+    "ownerDue": 37743.56
+  },
+  {
+    "id": "due-27",
+    "grNo": "2126",
+    "tripDate": "22/10/2025",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Party Payment Pending",
+    "color": "blue",
+    "colorHex": "#037be4",
+    "dueAmount": 37743.56,
+    "paidAmount": 36476.8,
+    "truckNo": "RJ52GA9396",
+    "ownerName": "Banwari Lal Dhabas",
+    "ownerMobile": "9950890686",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Sandila (U.P.)",
+    "transport": "TTC",
+    "material": "Feldspar Powder",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Saatvik Minerals",
+    "referenceMobile": "9235620026",
+    "driver": "Mahendra Bairwa",
+    "driverMobile": "9414889900",
+    "consignor": {
+      "gstin": "08AGRPJ1613P1ZX",
+      "name": "Saatvik Minerals",
+      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6526B1ZN",
+      "name": "Saatvik Minerals",
+      "mobile": "9235620026"
+    },
+    "freight": 36476.8,
+    "totalFreight": 36476.8,
+    "payments": [
+      {
+        "paymentDate": "27/03/2025",
+        "amountPaid": 36476.8,
+        "mode": "NEFT/RTGS",
+        "beneficiary": "Truck Owner",
+        "bank": "TTC",
+        "toBank": "Other Bank",
+        "description": "Transporter Payment for GR 2126_TTC",
+        "paidTo": "Transporter"
+      }
+    ],
+    "debts": [
+      {
+        "debtType": "Commission",
+        "debtAmount": 1500.0,
+        "debtMode": "Cash",
+        "borrowerName": "Banwari Lal Dhabas",
+        "receiverName": "Ramchandra Jat 8824993002",
+        "description": "2025-2026 Advance Commission",
+        "grNo": "2126_TTC",
+        "truckNo": "RJ52GA9396",
+        "dueAmount": 36476.8
+      }
+    ],
+    "date": "22/10/2025",
+    "ownerDue": 37743.56
+  },
+  {
+    "id": "due-28",
+    "grNo": "2127",
+    "tripDate": "14/10/2025",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Truck Owner Payment Pending",
+    "color": "cyan",
+    "colorHex": "#01cebc",
+    "dueAmount": 37743.56,
+    "paidAmount": 0.0,
+    "truckNo": "RJ52GA5497",
+    "ownerName": "Baya Mistry",
+    "ownerMobile": "9828212557",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Karnal (Haryana)",
+    "transport": "TTC",
+    "material": "Sandstone & Marble",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Shri Nakoda Bhairav Stone",
+    "referenceMobile": "9235620027",
+    "driver": "Gopi Chand 8732",
+    "driverMobile": "9079873200",
+    "consignor": {
+      "gstin": "08CRGPG0812F1ZB",
+      "name": "Shree Shyam Mineral Traders",
+      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6527B1ZN",
+      "name": "Shri Nakoda Bhairav Stone",
+      "mobile": "9235620027"
+    },
+    "freight": 36476.8,
+    "totalFreight": 36476.8,
+    "payments": [],
+    "debts": [],
+    "date": "14/10/2025",
+    "ownerDue": 37743.56
+  },
+  {
+    "id": "due-29",
+    "grNo": "2128",
+    "tripDate": "06/10/2025",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Truck Owner Payment Pending",
+    "color": "cyan",
+    "colorHex": "#01cebc",
+    "dueAmount": 37743.56,
+    "paidAmount": 36476.8,
+    "truckNo": "RJ52GB0788",
+    "ownerName": "Bhanwar Choudhary",
+    "ownerMobile": "7240229577",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Kanpur (U.P.)",
+    "transport": "TTC",
+    "material": "Marble Powder",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Himanshu Chemtech Kanpur Supplier",
+    "referenceMobile": "9235620028",
+    "driver": "Pratap Singh",
+    "driverMobile": "9828112200",
+    "consignor": {
+      "gstin": "08FPWPR3462B2ZD",
+      "name": "SHIV UMA STONEX",
+      "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6528B1ZN",
+      "name": "Himanshu Chemtech Kanpur Supplier",
+      "mobile": "9235620028"
+    },
+    "freight": 36476.8,
+    "totalFreight": 36476.8,
+    "payments": [
+      {
+        "paymentDate": "01/05/2025",
+        "amountPaid": 36476.8,
+        "mode": "NEFT/RTGS",
+        "beneficiary": "Truck Owner",
+        "bank": "TTC",
+        "toBank": "Other Bank",
+        "description": "Transporter Payment for GR 2128_TTC",
+        "paidTo": "Transporter"
+      }
+    ],
+    "debts": [
+      {
+        "debtType": "Commission",
+        "debtAmount": 2000.0,
+        "debtMode": "Cash",
+        "borrowerName": "Bhanwar Choudhary",
+        "receiverName": "Ramchandra Jat 8824993002",
+        "description": "2025-2026 Advance Commission",
+        "grNo": "2128_TTC",
+        "truckNo": "RJ52GB0788",
+        "dueAmount": 36476.8
+      }
+    ],
+    "date": "06/10/2025",
+    "ownerDue": 37743.56
+  },
+  {
+    "id": "due-30",
+    "grNo": "2129",
+    "tripDate": "28/09/2025",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Truck Owner Payment Pending",
+    "color": "cyan",
+    "colorHex": "#01cebc",
+    "dueAmount": 37743.56,
+    "paidAmount": 36476.8,
+    "truckNo": "RJ09GE3056",
+    "ownerName": "Bheru Singh Shekhawat",
+    "ownerMobile": "8432161566",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Lucknow (U.P.)",
+    "transport": "TTC",
+    "material": "Marble Powder",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Bharat Mineral Pasoond",
+    "referenceMobile": "9235620029",
+    "driver": "Hanuman Hindoli 4538",
+    "driverMobile": "9414453800",
+    "consignor": {
+      "gstin": "08AAUFD1174E1ZC",
+      "name": "Durga Enterprises",
+      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6529B1ZN",
+      "name": "Bharat Mineral Pasoond",
+      "mobile": "9235620029"
+    },
+    "freight": 36476.8,
+    "totalFreight": 36476.8,
+    "payments": [
+      {
+        "paymentDate": "02/06/2025",
+        "amountPaid": 36476.8,
+        "mode": "NEFT/RTGS",
+        "beneficiary": "Truck Owner",
+        "bank": "TTC",
+        "toBank": "Other Bank",
+        "description": "Transporter Payment for GR 2129_TTC",
+        "paidTo": "Transporter"
+      }
+    ],
+    "debts": [
+      {
+        "debtType": "Commission",
+        "debtAmount": 2000.0,
+        "debtMode": "Cash",
+        "borrowerName": "Bheru Singh Shekhawat",
+        "receiverName": "Ramchandra Jat 8824993002",
+        "description": "2025-2026 Advance Commission",
+        "grNo": "2129_TTC",
+        "truckNo": "RJ09GE3056",
+        "dueAmount": 36476.8
+      }
+    ],
+    "date": "28/09/2025",
+    "ownerDue": 37743.56
+  },
+  {
+    "id": "due-31",
+    "grNo": "2130",
+    "tripDate": "20/09/2025",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Truck Owner Payment Pending",
+    "color": "cyan",
+    "colorHex": "#01cebc",
+    "dueAmount": 37743.56,
+    "paidAmount": 0.0,
+    "truckNo": "RJ32GC7697",
+    "ownerName": "Billo Kasana",
+    "ownerMobile": "8290545425",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Sandila (U.P.)",
+    "transport": "TTC",
+    "material": "Micronized Powder",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Kunal Micron Vijay Jain",
+    "referenceMobile": "9235620030",
+    "driver": "Lokesh Choudhary",
+    "driverMobile": "9310495939",
+    "consignor": {
+      "gstin": "08AGRPJ1613P1ZX",
+      "name": "Saatvik Minerals",
+      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6530B1ZN",
+      "name": "Kunal Micron Vijay Jain",
+      "mobile": "9235620030"
+    },
+    "freight": 1125.0,
+    "totalFreight": 37601.8,
+    "payments": [],
+    "debts": [
+      {
+        "debtType": "Commission",
+        "debtAmount": 2500.0,
+        "debtMode": "Cash",
+        "borrowerName": "Billo Kasana",
+        "receiverName": "Bajrang Meena 7297032726",
+        "description": "2025-2026 Advance Commission",
+        "grNo": "2130_TTC",
+        "truckNo": "RJ32GC7697",
+        "dueAmount": 36476.8
+      },
+      {
+        "debtType": "Other",
+        "debtAmount": 1400.0,
+        "debtMode": "Cash",
+        "borrowerName": "Billo Kasana",
+        "receiverName": "Bajrang Meena 7297032726",
+        "description": "Other Advance on Loading",
+        "grNo": "2130_TTC",
+        "truckNo": "RJ32GC7697",
+        "dueAmount": 36476.8
+      }
+    ],
+    "date": "20/09/2025",
+    "ownerDue": 37743.56
+  },
+  {
+    "id": "due-32",
+    "grNo": "2131",
+    "tripDate": "12/09/2025",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Party Payment Pending",
+    "color": "blue",
+    "colorHex": "#037be4",
+    "dueAmount": 37743.56,
+    "paidAmount": 0.0,
+    "truckNo": "RJ32GE0446",
+    "ownerName": "Billo Kasana",
+    "ownerMobile": "8290545425",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Karnal (Haryana)",
+    "transport": "TTC",
+    "material": "Industrial Minerals",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Virsun Industries",
+    "referenceMobile": "9235620031",
+    "driver": "Pradeep 1136",
+    "driverMobile": "9602113600",
+    "consignor": {
+      "gstin": "08CRGPG0812F1ZB",
+      "name": "Shree Shyam Mineral Traders",
+      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6531B1ZN",
+      "name": "Virsun Industries",
+      "mobile": "9235620031"
+    },
+    "freight": 36476.8,
+    "totalFreight": 36476.8,
+    "payments": [],
+    "debts": [
+      {
+        "debtType": "Commission",
+        "debtAmount": 2000.0,
+        "debtMode": "Cash",
+        "borrowerName": "Billo Kasana",
+        "receiverName": "Ramchandra Jat 8824993002",
+        "description": "2025-2026 Advance Commission",
+        "grNo": "2131_TTC",
+        "truckNo": "RJ32GE0446",
+        "dueAmount": 36476.8
+      }
+    ],
+    "date": "12/09/2025",
+    "ownerDue": 37743.56
+  },
+  {
+    "id": "due-33",
+    "grNo": "2132",
+    "tripDate": "04/09/2025",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Truck Owner Payment Pending",
+    "color": "cyan",
+    "colorHex": "#01cebc",
+    "dueAmount": 37743.56,
+    "paidAmount": 36476.8,
+    "truckNo": "RJ52GB5777",
+    "ownerName": "Biloo Saharan",
+    "ownerMobile": "8690796177",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Ghaziabad (U.P.)",
+    "transport": "TTC",
+    "material": "Soapstone Powder",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Ganpati Minerals",
+    "referenceMobile": "9235620032",
+    "driver": "Dataram Gurjar",
+    "driverMobile": "9783223344",
+    "consignor": {
+      "gstin": "08FPWPR3462B2ZD",
+      "name": "SHIV UMA STONEX",
+      "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6532B1ZN",
+      "name": "Ganpati Minerals",
+      "mobile": "9235620032"
+    },
+    "freight": 36476.8,
+    "totalFreight": 36476.8,
+    "payments": [
+      {
+        "paymentDate": "05/09/2025",
+        "amountPaid": 36476.8,
+        "mode": "NEFT/RTGS",
+        "beneficiary": "Truck Owner",
+        "bank": "TTC",
+        "toBank": "Other Bank",
+        "description": "Transporter Payment for GR 2132_TTC",
+        "paidTo": "Transporter"
+      }
+    ],
+    "debts": [
+      {
+        "debtType": "Commission",
+        "debtAmount": 1500.0,
+        "debtMode": "Cash",
+        "borrowerName": "Biloo Saharan",
+        "receiverName": "Ramchandra Jat 8824993002",
+        "description": "2025-2026 Advance Commission",
+        "grNo": "2132_TTC",
+        "truckNo": "RJ52GB5777",
+        "dueAmount": 36476.8
+      }
+    ],
+    "date": "04/09/2025",
+    "ownerDue": 37743.56
+  },
+  {
+    "id": "due-34",
+    "grNo": "2133",
+    "tripDate": "27/08/2025",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Truck Owner Payment Pending",
+    "color": "cyan",
+    "colorHex": "#01cebc",
+    "dueAmount": 37743.56,
+    "paidAmount": 0.0,
+    "truckNo": "RJ52GB1578",
+    "ownerName": "Buttha Gurjar Shiv Mandir",
+    "ownerMobile": "9829926836",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Kanpur (U.P.)",
+    "transport": "TTC",
+    "material": "Marble Powder",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Mahaveer Tholiya",
+    "referenceMobile": "9235620033",
+    "driver": "Suresh Gurjar Tonk",
+    "driverMobile": "9414667788",
+    "consignor": {
+      "gstin": "08AAUFD1174E1ZC",
+      "name": "Durga Enterprises",
+      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6533B1ZN",
+      "name": "Mahaveer Tholiya",
+      "mobile": "9235620033"
+    },
+    "freight": 36476.8,
+    "totalFreight": 36476.8,
+    "payments": [],
+    "debts": [],
+    "date": "27/08/2025",
+    "ownerDue": 37743.56
+  },
+  {
+    "id": "due-35",
+    "grNo": "2134_SMTC",
+    "tripDate": "19/08/2025",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Truck Owner Payment Pending",
+    "color": "cyan",
+    "colorHex": "#01cebc",
+    "dueAmount": 37743.56,
+    "paidAmount": 36476.8,
+    "truckNo": "RJ52GA2391",
+    "ownerName": "Buttha Gurjar Shiv Mandir",
+    "ownerMobile": "9829926836",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Neemrana (Raj.)",
+    "transport": "SMTC",
+    "material": "Plaster of Paris",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Sudhir Mishra Sakarni Kareda",
+    "referenceMobile": "9235620034",
+    "driver": "Dharmi Meena",
+    "driverMobile": "9414717113",
+    "consignor": {
+      "gstin": "08AGRPJ1613P1ZX",
+      "name": "Saatvik Minerals",
+      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6534B1ZN",
+      "name": "Sudhir Mishra Sakarni Kareda",
+      "mobile": "9235620034"
+    },
+    "freight": 36476.8,
+    "totalFreight": 36476.8,
+    "payments": [
+      {
+        "paymentDate": "07/11/2025",
+        "amountPaid": 36476.8,
+        "mode": "NEFT/RTGS",
+        "beneficiary": "Truck Owner",
+        "bank": "SMTC",
+        "toBank": "Other Bank",
+        "description": "Transporter Payment for GR 2134_SMTC",
+        "paidTo": "Transporter"
+      }
+    ],
+    "debts": [
+      {
+        "debtType": "Commission",
+        "debtAmount": 2000.0,
+        "debtMode": "Cash",
+        "borrowerName": "Buttha Gurjar Shiv Mandir",
+        "receiverName": "Ramchandra Jat 8824993002",
+        "description": "2025-2026 Advance Commission",
+        "grNo": "2134_SMTC",
+        "truckNo": "RJ52GA2391",
+        "dueAmount": 36476.8
+      }
+    ],
+    "date": "19/08/2025",
+    "ownerDue": 37743.56
+  },
+  {
+    "id": "due-36",
+    "grNo": "2135",
+    "tripDate": "11/08/2025",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Truck Owner Payment Pending",
+    "color": "cyan",
+    "colorHex": "#01cebc",
+    "dueAmount": 37743.56,
+    "paidAmount": 36476.8,
+    "truckNo": "RJ37GB0103",
+    "ownerName": "Dara Motors",
+    "ownerMobile": "9818232724",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Kanpur (U.P.)",
+    "transport": "TTC",
+    "material": "Chemical Powder",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Rishi Kapur Kapsons India",
+    "referenceMobile": "9235620035",
+    "driver": "Bhim Raj 8616",
+    "driverMobile": "9828230022",
+    "consignor": {
+      "gstin": "08CRGPG0812F1ZB",
+      "name": "Shree Shyam Mineral Traders",
+      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6535B1ZN",
+      "name": "Rishi Kapur Kapsons India",
+      "mobile": "9235620035"
+    },
+    "freight": 36476.8,
+    "totalFreight": 36476.8,
+    "payments": [
+      {
+        "paymentDate": "08/12/2025",
+        "amountPaid": 36476.8,
+        "mode": "NEFT/RTGS",
+        "beneficiary": "Truck Owner",
+        "bank": "TTC",
+        "toBank": "Other Bank",
+        "description": "Transporter Payment for GR 2135_TTC",
+        "paidTo": "Transporter"
+      }
+    ],
+    "debts": [
+      {
+        "debtType": "Commission",
+        "debtAmount": 2000.0,
+        "debtMode": "Cash",
+        "borrowerName": "Dara Motors",
+        "receiverName": "Ramchandra Jat 8824993002",
+        "description": "2025-2026 Advance Commission",
+        "grNo": "2135_TTC",
+        "truckNo": "RJ37GB0103",
+        "dueAmount": 36476.8
+      }
+    ],
+    "date": "11/08/2025",
+    "ownerDue": 37743.56
+  },
+  {
+    "id": "due-37",
+    "grNo": "2136",
+    "tripDate": "04/08/2025",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Party Payment Pending",
+    "color": "blue",
+    "colorHex": "#037be4",
+    "dueAmount": 37743.56,
+    "paidAmount": 0.0,
+    "truckNo": "RJ52GB0986",
+    "ownerName": "Deepak Dhabas",
+    "ownerMobile": "9024959171",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Bahadurgarh (Haryana)",
+    "transport": "TTC",
+    "material": "Quartz Powder",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Jawahar Minerals Alwar",
+    "referenceMobile": "9235620036",
+    "driver": "Krishan Singh",
+    "driverMobile": "9414659401",
+    "consignor": {
+      "gstin": "08FPWPR3462B2ZD",
+      "name": "SHIV UMA STONEX",
+      "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6536B1ZN",
+      "name": "Jawahar Minerals Alwar",
+      "mobile": "9235620036"
+    },
+    "freight": 1125.0,
+    "totalFreight": 37601.8,
+    "payments": [],
+    "debts": [
+      {
+        "debtType": "Commission",
+        "debtAmount": 2500.0,
+        "debtMode": "Cash",
+        "borrowerName": "Deepak Dhabas",
+        "receiverName": "Bajrang Meena 7297032726",
+        "description": "2025-2026 Advance Commission",
+        "grNo": "2136_TTC",
+        "truckNo": "RJ52GB0986",
+        "dueAmount": 36476.8
+      },
+      {
+        "debtType": "Other",
+        "debtAmount": 1400.0,
+        "debtMode": "Cash",
+        "borrowerName": "Deepak Dhabas",
+        "receiverName": "Bajrang Meena 7297032726",
+        "description": "Other Advance on Loading",
+        "grNo": "2136_TTC",
+        "truckNo": "RJ52GB0986",
+        "dueAmount": 36476.8
+      }
+    ],
+    "date": "04/08/2025",
+    "ownerDue": 37743.56
+  },
+  {
+    "id": "due-38",
+    "grNo": "2137",
+    "tripDate": "26/07/2025",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Truck Owner Payment Pending",
+    "color": "cyan",
+    "colorHex": "#01cebc",
+    "dueAmount": 37743.56,
+    "paidAmount": 0.0,
+    "truckNo": "RJ52GA7719",
+    "ownerName": "Deepak Dhabas",
+    "ownerMobile": "9024959171",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Sandila (U.P.)",
+    "transport": "TTC",
+    "material": "Marble Powder",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Tanuj Kothari Udaipur",
+    "referenceMobile": "9235620037",
+    "driver": "Vikram Gurjar 4507",
+    "driverMobile": "8824993002",
+    "consignor": {
+      "gstin": "08AAUFD1174E1ZC",
+      "name": "Durga Enterprises",
+      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6537B1ZN",
+      "name": "Tanuj Kothari Udaipur",
+      "mobile": "9235620037"
+    },
+    "freight": 36476.8,
+    "totalFreight": 36476.8,
+    "payments": [],
+    "debts": [
+      {
+        "debtType": "Commission",
+        "debtAmount": 2000.0,
+        "debtMode": "Cash",
+        "borrowerName": "Deepak Dhabas",
+        "receiverName": "Ramchandra Jat 8824993002",
+        "description": "2025-2026 Advance Commission",
+        "grNo": "2137_TTC",
+        "truckNo": "RJ52GA7719",
+        "dueAmount": 36476.8
+      }
+    ],
+    "date": "26/07/2025",
+    "ownerDue": 37743.56
+  },
+  {
+    "id": "due-39",
+    "grNo": "2138",
+    "tripDate": "18/07/2025",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Truck Owner Payment Pending",
+    "color": "cyan",
+    "colorHex": "#01cebc",
+    "dueAmount": 37743.56,
+    "paidAmount": 36476.8,
+    "truckNo": "RJ52GA9432",
+    "ownerName": "Deepak Dhabas",
+    "ownerMobile": "9024959171",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Jhajjar (Haryana)",
+    "transport": "TTC",
+    "material": "Chemicals & Dyes",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Balwant Yadav R.B. Dyes",
+    "referenceMobile": "9235620038",
+    "driver": "Ranjeet 8796",
+    "driverMobile": "9602418796",
+    "consignor": {
+      "gstin": "08AGRPJ1613P1ZX",
+      "name": "Saatvik Minerals",
+      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6538B1ZN",
+      "name": "Balwant Yadav R.B. Dyes",
+      "mobile": "9235620038"
+    },
+    "freight": 36476.8,
+    "totalFreight": 36476.8,
+    "payments": [
+      {
+        "paymentDate": "11/03/2025",
+        "amountPaid": 36476.8,
+        "mode": "NEFT/RTGS",
+        "beneficiary": "Truck Owner",
+        "bank": "TTC",
+        "toBank": "Other Bank",
+        "description": "Transporter Payment for GR 2138_TTC",
+        "paidTo": "Transporter"
+      }
+    ],
+    "debts": [
+      {
+        "debtType": "Commission",
+        "debtAmount": 1500.0,
+        "debtMode": "Cash",
+        "borrowerName": "Deepak Dhabas",
+        "receiverName": "Ramchandra Jat 8824993002",
+        "description": "2025-2026 Advance Commission",
+        "grNo": "2138_TTC",
+        "truckNo": "RJ52GA9432",
+        "dueAmount": 36476.8
+      }
+    ],
+    "date": "18/07/2025",
+    "ownerDue": 37743.56
+  },
+  {
+    "id": "due-40",
+    "grNo": "2139",
+    "tripDate": "10/07/2025",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Truck Owner Payment Pending",
+    "color": "cyan",
+    "colorHex": "#01cebc",
+    "dueAmount": 37743.56,
+    "paidAmount": 0.0,
+    "truckNo": "RJ52GA7295",
+    "ownerName": "Deepak Dhabas",
+    "ownerMobile": "9024959171",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Azamgarh (U.P.)",
+    "transport": "TTC",
+    "material": "Marble Lumps",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Pappu Raad",
+    "referenceMobile": "9235620039",
+    "driver": "Mahesh Gurjar Govindpura",
+    "driverMobile": "9783112233",
+    "consignor": {
+      "gstin": "08CRGPG0812F1ZB",
+      "name": "Shree Shyam Mineral Traders",
+      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6539B1ZN",
+      "name": "Pappu Raad",
+      "mobile": "9235620039"
+    },
+    "freight": 36476.8,
+    "totalFreight": 36476.8,
+    "payments": [],
+    "debts": [],
+    "date": "10/07/2025",
+    "ownerDue": 37743.56
+  },
+  {
+    "id": "due-41",
+    "grNo": "2140",
+    "tripDate": "02/07/2025",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Truck Owner Payment Pending",
+    "color": "cyan",
+    "colorHex": "#01cebc",
+    "dueAmount": 37743.56,
+    "paidAmount": 36476.8,
+    "truckNo": "RJ52GB3572",
+    "ownerName": "Deepak Dhabas",
+    "ownerMobile": "9024959171",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Meerut (U.P.)",
+    "transport": "TTC",
+    "material": "Granite Slabs",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Irfan Bhai Khatauli",
+    "referenceMobile": "9235620040",
+    "driver": "Ramkaran Gurjar 6337",
+    "driverMobile": "9414886337",
+    "consignor": {
+      "gstin": "08FPWPR3462B2ZD",
+      "name": "SHIV UMA STONEX",
+      "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6540B1ZN",
+      "name": "Irfan Bhai Khatauli",
+      "mobile": "9235620040"
+    },
+    "freight": 36476.8,
+    "totalFreight": 36476.8,
+    "payments": [
+      {
+        "paymentDate": "13/05/2025",
+        "amountPaid": 36476.8,
+        "mode": "NEFT/RTGS",
+        "beneficiary": "Truck Owner",
+        "bank": "TTC",
+        "toBank": "Other Bank",
+        "description": "Transporter Payment for GR 2140_TTC",
+        "paidTo": "Transporter"
+      }
+    ],
+    "debts": [
+      {
+        "debtType": "Commission",
+        "debtAmount": 2000.0,
+        "debtMode": "Cash",
+        "borrowerName": "Deepak Dhabas",
+        "receiverName": "Ramchandra Jat 8824993002",
+        "description": "2025-2026 Advance Commission",
+        "grNo": "2140_TTC",
+        "truckNo": "RJ52GB3572",
+        "dueAmount": 36476.8
+      }
+    ],
+    "date": "02/07/2025",
+    "ownerDue": 37743.56
+  },
+  {
+    "id": "due-42",
+    "grNo": "2141_SMTC",
+    "tripDate": "24/06/2025",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Party Payment Pending",
+    "color": "blue",
+    "colorHex": "#037be4",
+    "dueAmount": 37743.56,
+    "paidAmount": 36476.8,
+    "truckNo": "RJ52GA7382",
+    "ownerName": "Deepak Dhabas",
+    "ownerMobile": "9024959171",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Sandila (U.P.)",
+    "transport": "SMTC",
+    "material": "Dolomite Powder",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Rajesh Rao Udaipur",
+    "referenceMobile": "9235620041",
+    "driver": "Bhanwarchoudhary 7333",
+    "driverMobile": "9079757333",
+    "consignor": {
+      "gstin": "08AAUFD1174E1ZC",
+      "name": "Durga Enterprises",
+      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6541B1ZN",
+      "name": "Rajesh Rao Udaipur",
+      "mobile": "9235620041"
+    },
+    "freight": 36476.8,
+    "totalFreight": 36476.8,
+    "payments": [
+      {
+        "paymentDate": "14/06/2025",
+        "amountPaid": 36476.8,
+        "mode": "NEFT/RTGS",
+        "beneficiary": "Truck Owner",
+        "bank": "SMTC",
+        "toBank": "Other Bank",
+        "description": "Transporter Payment for GR 2141_SMTC",
+        "paidTo": "Transporter"
+      }
+    ],
+    "debts": [
+      {
+        "debtType": "Commission",
+        "debtAmount": 2000.0,
+        "debtMode": "Cash",
+        "borrowerName": "Deepak Dhabas",
+        "receiverName": "Ramchandra Jat 8824993002",
+        "description": "2025-2026 Advance Commission",
+        "grNo": "2141_SMTC",
+        "truckNo": "RJ52GA7382",
+        "dueAmount": 36476.8
+      }
+    ],
+    "date": "24/06/2025",
+    "ownerDue": 37743.56
+  },
+  {
+    "id": "due-43",
+    "grNo": "2142",
+    "tripDate": "16/06/2025",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Truck Owner Payment Pending",
+    "color": "cyan",
+    "colorHex": "#01cebc",
+    "dueAmount": 37743.56,
+    "paidAmount": 0.0,
+    "truckNo": "RJ52GB5336",
+    "ownerName": "Deepak Dhabas",
+    "ownerMobile": "9024959171",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Haldwani (U.K.)",
+    "transport": "TTC",
+    "material": "Marble Blocks",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Shruti Marble Sukher",
+    "referenceMobile": "9235620042",
+    "driver": "Hansraj 1235",
+    "driverMobile": "9829123500",
+    "consignor": {
+      "gstin": "08AGRPJ1613P1ZX",
+      "name": "Saatvik Minerals",
+      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6542B1ZN",
+      "name": "Shruti Marble Sukher",
+      "mobile": "9235620042"
+    },
+    "freight": 1125.0,
+    "totalFreight": 37601.8,
+    "payments": [],
+    "debts": [
+      {
+        "debtType": "Commission",
+        "debtAmount": 2500.0,
+        "debtMode": "Cash",
+        "borrowerName": "Deepak Dhabas",
+        "receiverName": "Bajrang Meena 7297032726",
+        "description": "2025-2026 Advance Commission",
+        "grNo": "2142_TTC",
+        "truckNo": "RJ52GB5336",
+        "dueAmount": 36476.8
+      },
+      {
+        "debtType": "Other",
+        "debtAmount": 1400.0,
+        "debtMode": "Cash",
+        "borrowerName": "Deepak Dhabas",
+        "receiverName": "Bajrang Meena 7297032726",
+        "description": "Other Advance on Loading",
+        "grNo": "2142_TTC",
+        "truckNo": "RJ52GB5336",
+        "dueAmount": 36476.8
+      }
+    ],
+    "date": "16/06/2025",
+    "ownerDue": 37743.56
+  },
+  {
+    "id": "due-44",
+    "grNo": "2143",
+    "tripDate": "08/06/2025",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Truck Owner Payment Pending",
+    "color": "cyan",
+    "colorHex": "#01cebc",
+    "dueAmount": 37743.56,
+    "paidAmount": 0.0,
+    "truckNo": "RJ52GA7536",
+    "ownerName": "Deepak Dhabas",
+    "ownerMobile": "9024959171",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Karnal (Haryana)",
+    "transport": "TTC",
+    "material": "Marble Powder",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Gopal Sharda",
+    "referenceMobile": "9235620043",
+    "driver": "Madan Gurjar",
+    "driverMobile": "9414223344",
+    "consignor": {
+      "gstin": "08CRGPG0812F1ZB",
+      "name": "Shree Shyam Mineral Traders",
+      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6543B1ZN",
+      "name": "Gopal Sharda",
+      "mobile": "9235620043"
+    },
+    "freight": 36476.8,
+    "totalFreight": 36476.8,
+    "payments": [],
+    "debts": [
+      {
+        "debtType": "Commission",
+        "debtAmount": 2000.0,
+        "debtMode": "Cash",
+        "borrowerName": "Deepak Dhabas",
+        "receiverName": "Ramchandra Jat 8824993002",
+        "description": "2025-2026 Advance Commission",
+        "grNo": "2143_TTC",
+        "truckNo": "RJ52GA7536",
+        "dueAmount": 36476.8
+      }
+    ],
+    "date": "08/06/2025",
+    "ownerDue": 37743.56
+  },
+  {
+    "id": "due-45",
+    "grNo": "2144",
+    "tripDate": "31/05/2025",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Truck Owner Payment Pending",
+    "color": "cyan",
+    "colorHex": "#01cebc",
+    "dueAmount": 37743.56,
+    "paidAmount": 36476.8,
+    "truckNo": "RJ52GB3486",
+    "ownerName": "Deepak Dhabas",
+    "ownerMobile": "9024959171",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Delhi",
+    "transport": "TTC",
+    "material": "Ceramic Minerals",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Anil Sharda",
+    "referenceMobile": "9235620044",
+    "driver": "Manraj Meena 9433",
+    "driverMobile": "9079943300",
+    "consignor": {
+      "gstin": "08FPWPR3462B2ZD",
+      "name": "SHIV UMA STONEX",
+      "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6544B1ZN",
+      "name": "Anil Sharda",
+      "mobile": "9235620044"
+    },
+    "freight": 36476.8,
+    "totalFreight": 36476.8,
+    "payments": [
+      {
+        "paymentDate": "17/09/2025",
+        "amountPaid": 36476.8,
+        "mode": "NEFT/RTGS",
+        "beneficiary": "Truck Owner",
+        "bank": "TTC",
+        "toBank": "Other Bank",
+        "description": "Transporter Payment for GR 2144_TTC",
+        "paidTo": "Transporter"
+      }
+    ],
+    "debts": [
+      {
+        "debtType": "Commission",
+        "debtAmount": 1500.0,
+        "debtMode": "Cash",
+        "borrowerName": "Deepak Dhabas",
+        "receiverName": "Ramchandra Jat 8824993002",
+        "description": "2025-2026 Advance Commission",
+        "grNo": "2144_TTC",
+        "truckNo": "RJ52GB3486",
+        "dueAmount": 36476.8
+      }
+    ],
+    "date": "31/05/2025",
+    "ownerDue": 37743.56
+  },
+  {
+    "id": "due-46",
+    "grNo": "2145",
+    "tripDate": "23/05/2025",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Truck Owner Payment Pending",
+    "color": "cyan",
+    "colorHex": "#01cebc",
+    "dueAmount": 37743.56,
+    "paidAmount": 0.0,
+    "truckNo": "RJ52GB3484",
+    "ownerName": "Deepak Dhabas",
+    "ownerMobile": "9024959171",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Saharanpur (U.P.)",
+    "transport": "TTC",
+    "material": "Calcite Powder",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Oswal Mineral Amet",
+    "referenceMobile": "9235620045",
+    "driver": "Chand Gurjar",
+    "driverMobile": "8824112233",
+    "consignor": {
+      "gstin": "08AAUFD1174E1ZC",
+      "name": "Durga Enterprises",
+      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6545B1ZN",
+      "name": "Oswal Mineral Amet",
+      "mobile": "9235620045"
+    },
+    "freight": 36476.8,
+    "totalFreight": 36476.8,
+    "payments": [],
+    "debts": [],
+    "date": "23/05/2025",
+    "ownerDue": 37743.56
+  },
+  {
+    "id": "due-47",
+    "grNo": "2146",
+    "tripDate": "15/05/2025",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Party Payment Pending",
+    "color": "blue",
+    "colorHex": "#037be4",
+    "dueAmount": 37743.56,
+    "paidAmount": 36476.8,
+    "truckNo": "RJ52GB3485",
+    "ownerName": "Deepak Dhabas",
+    "ownerMobile": "9024959171",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Meerut (U.P.)",
+    "transport": "TTC",
+    "material": "Marble Tiles",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Meerut Tiranga Marble Sonu Bhai",
+    "referenceMobile": "9235620046",
+    "driver": "Rajesh Gurjar Kotputli",
+    "driverMobile": "9602554433",
+    "consignor": {
+      "gstin": "08AGRPJ1613P1ZX",
+      "name": "Saatvik Minerals",
+      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6546B1ZN",
+      "name": "Meerut Tiranga Marble Sonu Bhai",
+      "mobile": "9235620046"
+    },
+    "freight": 36476.8,
+    "totalFreight": 36476.8,
+    "payments": [
+      {
+        "paymentDate": "19/11/2025",
+        "amountPaid": 36476.8,
+        "mode": "NEFT/RTGS",
+        "beneficiary": "Truck Owner",
+        "bank": "TTC",
+        "toBank": "Other Bank",
+        "description": "Transporter Payment for GR 2146_TTC",
+        "paidTo": "Transporter"
+      }
+    ],
+    "debts": [
+      {
+        "debtType": "Commission",
+        "debtAmount": 2000.0,
+        "debtMode": "Cash",
+        "borrowerName": "Deepak Dhabas",
+        "receiverName": "Ramchandra Jat 8824993002",
+        "description": "2025-2026 Advance Commission",
+        "grNo": "2146_TTC",
+        "truckNo": "RJ52GB3485",
+        "dueAmount": 36476.8
+      }
+    ],
+    "date": "15/05/2025",
+    "ownerDue": 37743.56
+  },
+  {
+    "id": "due-48",
+    "grNo": "2147",
+    "tripDate": "07/05/2025",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Truck Owner Payment Pending",
+    "color": "cyan",
+    "colorHex": "#01cebc",
+    "dueAmount": 37743.56,
+    "paidAmount": 36476.8,
+    "truckNo": "RJ52GA7908",
+    "ownerName": "Deepak Dhabas",
+    "ownerMobile": "9024959171",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Kanpur (U.P.)",
+    "transport": "TTC",
+    "material": "Industrial Raw Material",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Ankush Bansal Jaipur",
+    "referenceMobile": "9235620047",
+    "driver": "Dhanraj Meena 0986",
+    "driverMobile": "9414000986",
+    "consignor": {
+      "gstin": "08CRGPG0812F1ZB",
+      "name": "Shree Shyam Mineral Traders",
+      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6547B1ZN",
+      "name": "Ankush Bansal Jaipur",
+      "mobile": "9235620047"
+    },
+    "freight": 36476.8,
+    "totalFreight": 36476.8,
+    "payments": [
+      {
+        "paymentDate": "20/12/2025",
+        "amountPaid": 36476.8,
+        "mode": "NEFT/RTGS",
+        "beneficiary": "Truck Owner",
+        "bank": "TTC",
+        "toBank": "Other Bank",
+        "description": "Transporter Payment for GR 2147_TTC",
+        "paidTo": "Transporter"
+      }
+    ],
+    "debts": [
+      {
+        "debtType": "Commission",
+        "debtAmount": 2000.0,
+        "debtMode": "Cash",
+        "borrowerName": "Deepak Dhabas",
+        "receiverName": "Ramchandra Jat 8824993002",
+        "description": "2025-2026 Advance Commission",
+        "grNo": "2147_TTC",
+        "truckNo": "RJ52GA7908",
+        "dueAmount": 36476.8
+      }
+    ],
+    "date": "07/05/2025",
+    "ownerDue": 37743.56
+  },
+  {
+    "id": "due-49",
+    "grNo": "2148",
+    "tripDate": "29/04/2025",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Truck Owner Payment Pending",
+    "color": "cyan",
+    "colorHex": "#01cebc",
+    "dueAmount": 37743.56,
+    "paidAmount": 0.0,
+    "truckNo": "RJ52GB3483",
+    "ownerName": "Deepak Dhabas",
+    "ownerMobile": "9024959171",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Agra (U.P.)",
+    "transport": "TTC",
+    "material": "Silica Powder",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Pushpendra Sharma",
+    "referenceMobile": "9235620048",
+    "driver": "Krishna Saini",
+    "driverMobile": "9828334455",
+    "consignor": {
+      "gstin": "08FPWPR3462B2ZD",
+      "name": "SHIV UMA STONEX",
+      "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6548B1ZN",
+      "name": "Pushpendra Sharma",
+      "mobile": "9235620048"
+    },
+    "freight": 1125.0,
+    "totalFreight": 37601.8,
+    "payments": [],
+    "debts": [
+      {
+        "debtType": "Commission",
+        "debtAmount": 2500.0,
+        "debtMode": "Cash",
+        "borrowerName": "Deepak Dhabas",
+        "receiverName": "Bajrang Meena 7297032726",
+        "description": "2025-2026 Advance Commission",
+        "grNo": "2148_TTC",
+        "truckNo": "RJ52GB3483",
+        "dueAmount": 36476.8
+      },
+      {
+        "debtType": "Other",
+        "debtAmount": 1400.0,
+        "debtMode": "Cash",
+        "borrowerName": "Deepak Dhabas",
+        "receiverName": "Bajrang Meena 7297032726",
+        "description": "Other Advance on Loading",
+        "grNo": "2148_TTC",
+        "truckNo": "RJ52GB3483",
+        "dueAmount": 36476.8
+      }
+    ],
+    "date": "29/04/2025",
+    "ownerDue": 37743.56
+  },
+  {
+    "id": "due-50",
+    "grNo": "2149",
+    "tripDate": "21/04/2025",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Truck Owner Payment Pending",
+    "color": "cyan",
+    "colorHex": "#01cebc",
+    "dueAmount": 37743.48,
+    "paidAmount": 0.0,
+    "truckNo": "RJ14GL9911",
+    "ownerName": "Deepak Sharma Agra",
+    "ownerMobile": "9837365048",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Ghaziabad (U.P.)",
+    "transport": "TTC",
+    "material": "Foundry Powder",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "Pankaj Jain Sahibabad",
+    "referenceMobile": "9235620049",
+    "driver": "Banti Meena Tonk",
+    "driverMobile": "9414556677",
+    "consignor": {
+      "gstin": "08AAUFD1174E1ZC",
+      "name": "Durga Enterprises",
+      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6549B1ZN",
+      "name": "Pankaj Jain Sahibabad",
+      "mobile": "9235620049"
+    },
+    "freight": 36476.8,
+    "totalFreight": 36476.8,
+    "payments": [],
+    "debts": [
+      {
+        "debtType": "Commission",
+        "debtAmount": 2000.0,
+        "debtMode": "Cash",
+        "borrowerName": "Deepak Sharma Agra",
+        "receiverName": "Ramchandra Jat 8824993002",
+        "description": "2025-2026 Advance Commission",
+        "grNo": "2149_TTC",
+        "truckNo": "RJ14GL9911",
+        "dueAmount": 36476.8
+      }
+    ],
+    "date": "21/04/2025",
+    "ownerDue": 37743.48
+  },
+  {
+    "id": "due-51",
+    "grNo": "55",
+    "tripDate": "13/04/2025",
+    "tripEndDate": "05/11/2025",
+    "year": "2025-2026",
+    "status": "Truck Owner Payment Pending",
+    "color": "cyan",
+    "colorHex": "#01cebc",
+    "dueAmount": 8845.0,
+    "paidAmount": 36476.8,
+    "truckNo": "RJ52GB2589",
+    "ownerName": "Rameshwar Prasad",
+    "ownerMobile": "9829901495",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Mawana (U.P.)",
+    "transport": "TTC",
+    "material": "Polished Granite",
+    "weight": 55.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 36476.8,
+    "reference": "BN Marble Piparda",
+    "referenceMobile": "9235620050",
+    "driver": "Bhagwan Singh Banna",
+    "driverMobile": "9602778899",
+    "consignor": {
+      "gstin": "08AGRPJ1613P1ZX",
+      "name": "Saatvik Minerals",
+      "address": "Industrial Area, Karera, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "09AICPG6550B1ZN",
+      "name": "Madan Nilkanth Granite Jetpura",
+      "mobile": "9235620050"
+    },
+    "freight": 36476.8,
+    "totalFreight": 36476.8,
+    "payments": [
+      {
+        "paymentDate": "23/03/2025",
+        "amountPaid": 36476.8,
+        "mode": "NEFT/RTGS",
+        "beneficiary": "Truck Owner",
+        "bank": "TTC",
+        "toBank": "Other Bank",
+        "description": "Transporter Payment for GR 2150_TTC",
+        "paidTo": "Transporter"
+      }
+    ],
+    "debts": [
+      {
+        "debtType": "Commission",
+        "debtAmount": 1500.0,
+        "debtMode": "Cash",
+        "borrowerName": "Dhanraj Yadav",
+        "receiverName": "Ramchandra Jat 8824993002",
+        "description": "2025-2026 Advance Commission",
+        "grNo": "2150_TTC",
+        "truckNo": "RJ42GB5679",
+        "dueAmount": 36476.8
+      }
+    ],
+    "date": "13/04/2025",
+    "ownerDue": 8845.0
+  },
+  {
+    "id": "due-2024-1502",
+    "grNo": "1502",
+    "tripDate": "11/03/2025",
+    "tripEndDate": "18/03/2025",
+    "date": "11/03/2025",
+    "year": "2024-2025",
+    "status": "Off Loading",
+    "color": "pink",
+    "colorHex": "#fb0a82",
+    "dueAmount": 12221.0,
+    "ownerDue": 12221.0,
+    "paidAmount": 0.0,
+    "truckNo": "RJ01GC0961",
+    "ownerName": "Kalim Khan",
+    "ownerMobile": "9414000961",
+    "origin": "Rajsamand (Raj.)",
+    "destination": "Alwar (Raj.)",
+    "transport": "MTC",
+    "material": "Marble Powder",
+    "weight": 38.0,
+    "rate": 1650.0,
+    "billingType": "Per Tonne",
+    "biltyAmount": 12221.0,
+    "freight": 12221.0,
+    "totalFreight": 12221.0,
+    "reference": "Vishal Parikh",
+    "referenceMobile": "9828001122",
+    "driver": "Gopal Rawat",
+    "consignor": {
+      "gstin": "08FPWPR3462B2ZD",
+      "name": "SHIV UMA STONEX",
+      "address": "DUNGELA, Bhakroda, Rajsamand (Raj.)"
+    },
+    "consignee": {
+      "gstin": "08AABCB1234F1Z1",
+      "name": "VISHAL PARIKH ENTERPRISES",
+      "mobile": "9828001122"
+    },
+    "payments": [],
+    "debts": []
   }
 ];
 
