@@ -787,9 +787,16 @@ class DBService {
         if (d.year === '2024-2025' && cgr !== '1502') continue;
         // Only overlay on existing authentic master trips
         if (dueMap.has(cgr)) {
-          d.grNo = cgr;
           const existing = dueMap.get(cgr) || {};
-          dueMap.set(cgr, { ...existing, ...d, grNo: cgr });
+          const dueAmt = d.userEdited ? Number(d.dueAmount ?? d.ownerDue ?? existing.dueAmount) : existing.dueAmount;
+          dueMap.set(cgr, {
+            ...existing,
+            ...d,
+            dueAmount: dueAmt,
+            ownerDue: dueAmt,
+            year: existing.year,
+            grNo: cgr
+          });
         }
       }
     }

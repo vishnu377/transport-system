@@ -161,7 +161,15 @@ const OwnersModule = {
             // Only overlay on existing authentic master trips
             if (cleanDuesMap.has(cgr)) {
               const existing = cleanDuesMap.get(cgr);
-              cleanDuesMap.set(cgr, { ...existing, ...d, grNo: cgr });
+              const dueAmt = d.userEdited ? Number(d.dueAmount ?? d.ownerDue ?? existing.dueAmount) : existing.dueAmount;
+              cleanDuesMap.set(cgr, {
+                ...existing,
+                ...d,
+                dueAmount: dueAmt,
+                ownerDue: dueAmt,
+                year: existing.year,
+                grNo: cgr
+              });
             }
           });
         }
@@ -233,7 +241,15 @@ const OwnersModule = {
             // Keep authentic trips
           } else {
             const existing = duesMap.get(cgr) || {};
-            duesMap.set(cgr, { ...existing, ...docData, grNo: cgr });
+            const dueAmt = docData.userEdited ? Number(docData.dueAmount ?? docData.ownerDue ?? existing.dueAmount) : existing.dueAmount;
+            duesMap.set(cgr, {
+              ...existing,
+              ...docData,
+              dueAmount: dueAmt,
+              ownerDue: dueAmt,
+              year: existing.year,
+              grNo: cgr
+            });
           }
         });
         this.allOwnerDues = Array.from(duesMap.values());
@@ -1875,6 +1891,7 @@ const OwnersModule = {
 
     const getVal = id => document.getElementById(id)?.value || '';
 
+    d.userEdited = true;
     d.status = getVal('drawer-trip-status') || d.status;
     d.weight = parseFloat(getVal('drawer-trip-weight')) || d.weight;
     d.rate = parseFloat(getVal('drawer-trip-rate')) || d.rate;
