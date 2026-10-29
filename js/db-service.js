@@ -760,31 +760,44 @@ class DBService {
         ? window.INITIAL_OWNER_DUES
         : []);
 
+    const cleanGr = gr => {
+      if (!gr && gr !== 0) return '';
+      return String(gr).replace(/^\d{4}-\d{4}-/, '').replace(/_(TTC|SMTC|MTC)$/i, '').replace(/,/g, '').trim();
+    };
+
     const dueMap = new Map();
     const deletedSet = this.deletedIds.ownerDues || new Set();
 
     // 1. Base Dues
     for (const d of baseDues) {
-      if (d && d.id && !deletedSet.has(String(d.id))) {
-        dueMap.set(String(d.id), d);
+      const cgr = cleanGr(d.grNo || d.id);
+      if (cgr && !deletedSet.has(String(d.id)) && !deletedSet.has(cgr)) {
+        d.grNo = cgr;
+        dueMap.set(cgr, d);
       }
     }
 
     // 2. Cloud items from Firebase Cloud Firestore
     if (Array.isArray(cloudItems)) {
       for (const d of cloudItems) {
-        if (!d || !d.id || deletedSet.has(String(d.id))) continue;
-        const existing = dueMap.get(String(d.id)) || {};
-        dueMap.set(String(d.id), { ...existing, ...d });
+        if (!d || d.isRateDiff || d.status === 'Rate Difference') continue;
+        const cgr = cleanGr(d.grNo || d.shortGrNo || d.id);
+        if (!cgr || deletedSet.has(String(d.id)) || deletedSet.has(cgr)) continue;
+        d.grNo = cgr;
+        const existing = dueMap.get(cgr) || {};
+        dueMap.set(cgr, { ...existing, ...d, grNo: cgr });
       }
     }
 
     // 3. In-memory session dues
     if (this.sessionStore.ownerDues) {
       this.sessionStore.ownerDues.forEach((d, id) => {
-        if (!d || deletedSet.has(String(id))) return;
-        const existing = dueMap.get(String(id)) || {};
-        dueMap.set(String(id), { ...existing, ...d });
+        if (!d) return;
+        const cgr = cleanGr(d.grNo || id);
+        if (!cgr || deletedSet.has(String(id)) || deletedSet.has(cgr)) return;
+        d.grNo = cgr;
+        const existing = dueMap.get(cgr) || {};
+        dueMap.set(cgr, { ...existing, ...d, grNo: cgr });
       });
     }
 

@@ -150,6 +150,19 @@ const OwnersModule = {
       }
     }
 
+    // Strict deduplication by clean canonical GR number (never duplicate or show _TTC)
+    const cleanDuesMap = new Map();
+    (this.allOwnerDues || []).forEach(d => {
+      if (!d || d.isRateDiff || d.status === 'Rate Difference') return;
+      const cgr = this.canonicalGr(d.grNo || d.id);
+      if (!cgr) return;
+      d.grNo = cgr;
+      if (!cleanDuesMap.has(cgr)) {
+        cleanDuesMap.set(cgr, d);
+      }
+    });
+    this.allOwnerDues = Array.from(cleanDuesMap.values());
+
     this.populateNameDatalist();
     this.updateStats();
     this.updateDueSummaryStats();
@@ -191,15 +204,22 @@ const OwnersModule = {
       // 2. Real-time dynamic Firestore sync for ownerDues
       db.collection('ownerDues').onSnapshot(snapshot => {
         if (!snapshot || snapshot.empty) return;
-        const duesMap = new Map((this.allOwnerDues || []).map(d => [String(d.id || d.grNo), d]));
+        const duesMap = new Map();
+        (this.allOwnerDues || []).forEach(d => {
+          const cgr = this.canonicalGr(d.grNo || d.id);
+          if (cgr) duesMap.set(cgr, d);
+        });
         snapshot.docChanges().forEach(change => {
           const docData = { id: change.doc.id, ...change.doc.data() };
-          const key = String(docData.id || docData.grNo);
+          if (docData.isRateDiff || docData.status === 'Rate Difference') return; // Ignore rate differences
+          const cgr = this.canonicalGr(docData.grNo || docData.shortGrNo || docData.id);
+          if (!cgr) return;
+          docData.grNo = cgr;
           if (change.type === 'removed') {
-            duesMap.delete(key);
+            duesMap.delete(cgr);
           } else {
-            const existing = duesMap.get(key) || {};
-            duesMap.set(key, { ...existing, ...docData });
+            const existing = duesMap.get(cgr) || {};
+            duesMap.set(cgr, { ...existing, ...docData, grNo: cgr });
           }
         });
         this.allOwnerDues = Array.from(duesMap.values());
@@ -229,9 +249,48 @@ const OwnersModule = {
   },
 
   updateDueSummaryStats() {
-    const dues = this.allOwnerDues || [];
-    const countAll = dues.length;
+    let dues = this.allOwnerDues || [];
 
+    // When a search query is active, calculate sidebar year totals dynamically from search results (matching Google AppSheet Screen 2!)
+    if (this.dueSearchQuery) {
+      const rawQ = String(this.dueSearchQuery).trim().toLowerCase();
+      const cleanQ = rawQ.replace(/,/g, '').replace(/\s+/g, '');
+      const self = this;
+      dues = dues.filter(d => {
+        const dt = d.tripDate || d.tripStartDate || d.date || '';
+        const grRaw = String(d.grNo || '');
+        const grFormatted = self.formatGrNo(grRaw);
+        const truck = String(d.truckNo || '');
+        const owner = String(d.ownerName || d.owner || '');
+        const ownerMob = String(d.ownerMobile || '');
+        const dest = String(d.destination || '');
+        const trans = String(d.transport || '');
+        const ref = String(d.reference || d.partyName || (d.consignee && d.consignee.name) || '');
+        const refMob = String(d.referenceMobile || (d.consignee && d.consignee.mobile) || '');
+        const driver = String(d.driver || '');
+        const driverMob = String(d.driverMobile || '');
+        const st = String(d.status || '');
+        const due = String(d.dueAmount || d.ownerDue || '');
+        const dueFormatted = self.formatCurrency(due);
+
+        const fields = [
+          grRaw, grFormatted, dt, truck, owner, ownerMob,
+          dest, trans, ref, refMob, driver, driverMob,
+          st, due, dueFormatted
+        ];
+        for (const f of fields) {
+          if (!f) continue;
+          const fl = f.toLowerCase();
+          if (fl.includes(rawQ)) return true;
+          const cleanF = fl.replace(/,/g, '').replace(/\s+/g, '');
+          if (cleanF.includes(cleanQ)) return true;
+        }
+        if (dt.replace(/\//g, '-').includes(rawQ) || dt.replace(/-/g, '/').includes(rawQ)) return true;
+        return false;
+      });
+    }
+
+    const countAll = dues.length;
     const cntAllEl = document.getElementById('due-year-count-ALL');
     if (cntAllEl) cntAllEl.innerText = countAll;
 
@@ -255,12 +314,13 @@ const OwnersModule = {
     if (amt2025El) amt2025El.innerText = '₹ ' + this.formatCurrency(sum2025);
     if (amt2024El) amt2024El.innerText = '₹ ' + this.formatCurrency(sum2024);
 
+    // Dashboard 3-card card 2 amounts (always reflect unfiltered full sums unless explicitly searched on dashboard)
     const dashAmt2026 = document.getElementById('dash-due-amount-2026-2027');
     const dashAmt2025 = document.getElementById('dash-due-amount-2025-2026');
     const dashAmt2024 = document.getElementById('dash-due-amount-2024-2025');
-    if (dashAmt2026) dashAmt2026.innerText = '₹ ' + this.formatCurrency(sum2026);
-    if (dashAmt2025) dashAmt2025.innerText = '₹ ' + this.formatCurrency(sum2025);
-    if (dashAmt2024) dashAmt2024.innerText = '₹ ' + this.formatCurrency(sum2024);
+    if (dashAmt2026 && !this.dueSearchQuery) dashAmt2026.innerText = '₹ ' + this.formatCurrency(sum2026);
+    if (dashAmt2025 && !this.dueSearchQuery) dashAmt2025.innerText = '₹ ' + this.formatCurrency(sum2025);
+    if (dashAmt2024 && !this.dueSearchQuery) dashAmt2024.innerText = '₹ ' + this.formatCurrency(sum2024);
   },
 
   // Helper date parser for strict descending chronological sort
@@ -282,6 +342,11 @@ const OwnersModule = {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
     });
+  },
+
+  canonicalGr(gr) {
+    if (!gr && gr !== 0) return '';
+    return String(gr).replace(/^\d{4}-\d{4}-/, '').replace(/_(TTC|SMTC|MTC)$/i, '').replace(/,/g, '').trim();
   },
 
   formatGrNo(val) {
@@ -703,8 +768,17 @@ const OwnersModule = {
         const due = String(d.dueAmount || d.ownerDue || '');
         const dueFormatted = self.formatCurrency(due);
 
-        const fields = [grRaw, grFormatted, dt, truck, owner, dest, trans, ref, driver, st, due, dueFormatted];
+        const ownerMob = String(d.ownerMobile || '');
+        const refMob = String(d.referenceMobile || (d.consignee && d.consignee.mobile) || '');
+        const driverMob = String(d.driverMobile || '');
+
+        const fields = [
+          grRaw, grFormatted, dt, truck, owner, ownerMob,
+          dest, trans, ref, refMob, driver, driverMob,
+          st, due, dueFormatted
+        ];
         for (const f of fields) {
+          if (!f) continue;
           const fl = f.toLowerCase();
           if (fl.includes(rawQ)) return true;
           const cleanF = fl.replace(/,/g, '').replace(/\s+/g, '');
