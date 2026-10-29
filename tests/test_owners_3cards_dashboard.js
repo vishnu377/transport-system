@@ -31,7 +31,7 @@ assert(html.includes('Mobile No. 1'), "Card 1 must have Mobile No. 1 column");
 
 // Assert Card 2 Due Figures
 assert(html.includes('Owner Due'), "Card 2 title must be Owner Due");
-assert(html.includes('₹ 30,732,197.22'), "Card 2 must have 2026-2027 amount ₹ 30,732,197.22");
+assert(html.includes('₹ 30,415,995.22'), "Card 2 must have 2026-2027 amount ₹ 30,415,995.22");
 assert(html.includes('₹ 1,641,456.00'), "Card 2 must have 2025-2026 amount ₹ 1,641,456.00");
 assert(html.includes('₹ 12,221.00'), "Card 2 must have 2024-2025 amount ₹ 12,221.00");
 assert(html.includes('dot-cyan'), "Card 2 must have dot-cyan");

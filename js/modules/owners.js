@@ -284,6 +284,19 @@ const OwnersModule = {
     });
   },
 
+  formatGrNo(val) {
+    if (!val && val !== 0) return '-';
+    const s = String(val).trim();
+    if (/^\d+$/.test(s)) {
+      return Number(s).toLocaleString('en-US');
+    }
+    const m = s.match(/^(\d+)(.*)$/);
+    if (m && Number(m[1]) >= 1000) {
+      return Number(m[1]).toLocaleString('en-US') + m[2];
+    }
+    return s;
+  },
+
   // ========================================================
   // VIEW 1: 3-CARD DASHBOARD VIEW
   // ========================================================
@@ -673,14 +686,39 @@ const OwnersModule = {
       });
     }
     if (this.dueSearchQuery) {
-      const q = this.dueSearchQuery.toLowerCase();
+      const rawQ = String(this.dueSearchQuery).trim().toLowerCase();
+      const cleanQ = rawQ.replace(/,/g, '').replace(/\s+/g, '');
+      const self = this;
       dues = dues.filter(d => {
-        const text = `${d.grNo || ''} ${d.truckNo || ''} ${d.ownerName || d.owner || ''} ${d.destination || ''} ${d.transport || ''} ${d.reference || d.partyName || ''} ${d.driver || ''} ${d.status || ''} ${d.dueAmount || d.ownerDue || ''}`.toLowerCase();
-        return text.includes(q);
+        const dt = d.tripDate || d.tripStartDate || d.date || '';
+        const grRaw = String(d.grNo || '');
+        const grFormatted = self.formatGrNo(grRaw);
+        const truck = String(d.truckNo || '');
+        const owner = String(d.ownerName || d.owner || '');
+        const dest = String(d.destination || '');
+        const trans = String(d.transport || '');
+        const ref = String(d.reference || d.partyName || (d.consignee && d.consignee.name) || '');
+        const driver = String(d.driver || '');
+        const st = String(d.status || '');
+        const due = String(d.dueAmount || d.ownerDue || '');
+        const dueFormatted = self.formatCurrency(due);
+
+        const fields = [grRaw, grFormatted, dt, truck, owner, dest, trans, ref, driver, st, due, dueFormatted];
+        for (const f of fields) {
+          const fl = f.toLowerCase();
+          if (fl.includes(rawQ)) return true;
+          const cleanF = fl.replace(/,/g, '').replace(/\s+/g, '');
+          if (cleanF.includes(cleanQ)) return true;
+        }
+
+        // Alternate date format matching (e.g. 29-10-2026 vs 29/10/2026)
+        if (dt.replace(/\//g, '-').includes(rawQ) || dt.replace(/-/g, '/').includes(rawQ)) return true;
+
+        return false;
       });
     }
 
-    // STRICT DATE SORTING DESCENDING: Newest trips (27/10/2026) at the very top!
+    // STRICT DATE SORTING DESCENDING: Newest trips (29/10/2026) at the very top!
     const self = this;
     dues.sort((a, b) => {
       const tA = self.parseDateTimestamp(a.tripDate || a.tripStartDate || a.date);
@@ -797,7 +835,7 @@ const OwnersModule = {
       html += `
         <tr class="appsheet-row row-status-${col}" onclick="OwnersModule.showOpenTripDetails('${safeTripId}')" style="cursor: pointer;" title="Status: ${d.status}">
           <!-- 1. G.R.No. -->
-          <td class="font-monospace">${c(d.grNo, true)}</td>
+          <td class="font-monospace">${c(this.formatGrNo(d.grNo), true)}</td>
 
           <!-- 2. Trip Start Date -->
           <td>${c(dt)}</td>
@@ -1053,7 +1091,7 @@ const OwnersModule = {
       leftCard.innerHTML = `
         <div class="drilldown-field">
           <div class="drilldown-field-label">G.R.No.</div>
-          <div class="drilldown-field-val">${dotHtml} <span class="theme-text font-monospace">${d.grNo || '-'}</span></div>
+          <div class="drilldown-field-val">${dotHtml} <span class="theme-text font-monospace">${this.formatGrNo(d.grNo)}</span></div>
         </div>
         <div class="drilldown-field">
           <div class="drilldown-field-label">Truck No.</div>
