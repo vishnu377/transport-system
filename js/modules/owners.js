@@ -101,10 +101,12 @@ const OwnersModule = {
       `;
     }
 
-    // 1. Load Truck Owners (596 records)
+    // 1. Load Truck Owners (Dynamic Direct Firebase Cloud Firestore with master asset fallback)
     try {
-      if (typeof FirebaseDB !== 'undefined' && FirebaseDB.getAllTruckOwners) {
-        const owners = await FirebaseDB.getAllTruckOwners();
+      if (typeof FirebaseDB !== 'undefined') {
+        let owners = null;
+        if (typeof FirebaseDB.getAll === 'function') owners = await FirebaseDB.getAll('truckOwners');
+        else if (typeof FirebaseDB.getAllTruckOwners === 'function') owners = await FirebaseDB.getAllTruckOwners();
         if (owners && owners.length > 0) {
           this.allOwners = owners;
         }
@@ -123,10 +125,12 @@ const OwnersModule = {
       }
     }
 
-    // 2. Load Owner Dues (489 records)
+    // 2. Load Owner Dues (Dynamic Direct Firebase Cloud Firestore with master asset fallback)
     try {
-      if (typeof FirebaseDB !== 'undefined' && FirebaseDB.getAllOwnerDues) {
-        const dues = await FirebaseDB.getAllOwnerDues();
+      if (typeof FirebaseDB !== 'undefined') {
+        let dues = null;
+        if (typeof FirebaseDB.getAll === 'function') dues = await FirebaseDB.getAll('ownerDues');
+        else if (typeof FirebaseDB.getAllOwnerDues === 'function') dues = await FirebaseDB.getAllOwnerDues();
         if (dues && dues.length > 0) {
           this.allOwnerDues = dues;
         }
@@ -701,8 +705,11 @@ const OwnersModule = {
           <tr class="appsheet-date-group-header">
             <td colspan="9">
               <div class="d-flex align-items-center justify-content-between">
-                <span><i class="bi bi-caret-down-fill me-1 text-secondary"></i> ${dt}</span>
-                <span class="font-monospace fw-bold">${this.formatCurrency(groupTotal)}</span>
+                <div class="d-flex align-items-center gap-3">
+                  <span><i class="bi bi-caret-down-fill me-2" style="font-size: 0.75rem; color: #5f6368;"></i> <strong style="color: #202124;">${dt}</strong></span>
+                  <span class="font-monospace fw-bold" style="color: #202124;">${this.formatCurrency(groupTotal)}</span>
+                </div>
+                <i class="bi bi-chevron-down text-muted small me-2"></i>
               </div>
             </td>
           </tr>
@@ -715,49 +722,49 @@ const OwnersModule = {
       html += `
         <tr class="appsheet-row row-status-${col}" onclick="OwnersModule.showOpenTripDetails('${safeTripId}')" style="cursor: pointer;" title="Status: ${d.status}">
           <!-- 1. G.R.No. with status dot -->
-          <td class="font-monospace fw-bold text-dark">
+          <td class="font-monospace fw-bold">
             <span class="appsheet-dot dot-${col} me-2"></span>
             ${d.grNo || '-'}
           </td>
 
           <!-- 2. Trip Start Date -->
           <td>
-            <span class="text-secondary" style="font-size: 0.82rem;">${dt}</span>
+            <span style="font-size: 0.82rem;">${dt}</span>
           </td>
 
-          <!-- 3. Owner Due Amount (Bold Red in Google AppSheet if > 0) -->
+          <!-- 3. Owner Due Amount (Strictly Bold Red in Google AppSheet) -->
           <td>
-            <span class="fw-bold font-monospace" style="${isRedDue ? 'color: #c5221f !important;' : 'color: #5f6368 !important;'}">${this.formatCurrency(dueNum)}</span>
+            <span class="font-monospace ${isRedDue ? 'due-amount-red' : 'due-amount-zero'}">${this.formatCurrency(dueNum)}</span>
           </td>
 
           <!-- 4. Truck No. -->
           <td>
-            <span class="fw-bold font-monospace text-dark">${d.truckNo || '-'}</span>
+            <span class="fw-bold font-monospace">${d.truckNo || '-'}</span>
           </td>
 
           <!-- 5. Owner -->
           <td>
-            <div class="fw-medium text-dark text-truncate" style="max-width: 170px;" title="${ownerVal}">${ownerVal}</div>
+            <div class="fw-medium text-truncate" style="max-width: 170px;" title="${ownerVal}">${ownerVal}</div>
           </td>
 
           <!-- 6. Destination -->
           <td>
-            <div class="text-muted text-truncate" style="max-width: 130px;" title="${d.destination || ''}">${d.destination || '-'}</div>
+            <div class="text-truncate" style="max-width: 130px;" title="${d.destination || ''}">${d.destination || '-'}</div>
           </td>
 
           <!-- 7. Transport -->
           <td>
-            <span class="badge border font-monospace text-dark" style="background: #f1f3f4; font-size: 0.74rem;">${d.transport || 'TTC'}</span>
+            <span class="badge border font-monospace" style="background: rgba(255,255,255,0.7); color: inherit; font-size: 0.74rem;">${d.transport || 'TTC'}</span>
           </td>
 
           <!-- 8. Reference -->
           <td>
-            <div class="text-dark text-truncate" style="max-width: 180px;" title="${refName}">${refName}</div>
+            <div class="text-truncate" style="max-width: 180px;" title="${refName}">${refName}</div>
           </td>
 
           <!-- 9. Driver -->
           <td>
-            <div class="text-muted text-truncate" style="max-width: 130px;" title="${d.driver || ''}">${d.driver || '-'}</div>
+            <div class="text-truncate" style="max-width: 130px;" title="${d.driver || ''}">${d.driver || '-'}</div>
           </td>
         </tr>
       `;

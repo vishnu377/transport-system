@@ -675,7 +675,10 @@ class DBService {
   }
 
   // --- Authentic Truck Owners Engine ---
-  getAllTruckOwners(cloudItems = []) {
+  async getAllTruckOwners(cloudItems) {
+    if (cloudItems === undefined) {
+      return await this.getAll('truckOwners');
+    }
     const baseOwners = (typeof window !== 'undefined' && Array.isArray(window.INITIAL_TRUCK_OWNERS))
       ? window.INITIAL_TRUCK_OWNERS
       : [];
@@ -745,7 +748,10 @@ class DBService {
   }
 
   // --- Authentic Owner Due Engine ---
-  getAllOwnerDues(cloudItems = []) {
+  async getAllOwnerDues(cloudItems) {
+    if (cloudItems === undefined) {
+      return await this.getAll('ownerDues');
+    }
     const baseDues = (typeof window !== 'undefined' && Array.isArray(window.INITIAL_OWNER_DUES))
       ? window.INITIAL_OWNER_DUES
       : [];
@@ -863,6 +869,24 @@ class DBService {
     const all = Array.from(driverMap.values());
     all.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
     return all;
+  }
+
+  // --- Direct Cloud Firestore Mutations for Truck Owners & Dues ---
+  async saveTruckOwner(ownerData) {
+    if (!ownerData) return null;
+    const id = String(ownerData.id || ownerData.truckNo || `owner_${Date.now()}`);
+    return await this.put('truckOwners', id, ownerData);
+  }
+
+  async updateTruckOwner(id, ownerData) {
+    if (!id || !ownerData) return null;
+    return await this.update('truckOwners', String(id), ownerData);
+  }
+
+  async saveOwnerDue(dueData) {
+    if (!dueData) return null;
+    const id = String(dueData.id || dueData.grNo || `due_${Date.now()}`);
+    return await this.put('ownerDues', id, dueData);
   }
 
   async recordOwnerPayment(ownerId, paymentData) {
@@ -1045,5 +1069,8 @@ class DBService {
 
 // Global Singleton Instance
 const dbService = new DBService();
-if (typeof window !== 'undefined') window.dbService = dbService;
+if (typeof window !== 'undefined') {
+  window.dbService = dbService;
+  window.FirebaseDB = dbService;
+}
 if (typeof module !== 'undefined' && module.exports) module.exports = dbService;
