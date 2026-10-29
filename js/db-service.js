@@ -777,15 +777,20 @@ class DBService {
       }
     }
 
-    // 2. Cloud items from Firebase Cloud Firestore
+    // 2. Cloud items from Firebase Cloud Firestore (Overlay ONLY authentic user edits, drop rogue/stale trips)
     if (Array.isArray(cloudItems)) {
       for (const d of cloudItems) {
         if (!d || d.isRateDiff || d.status === 'Rate Difference') continue;
         const cgr = cleanGr(d.grNo || d.shortGrNo || d.id);
         if (!cgr || deletedSet.has(String(d.id)) || deletedSet.has(cgr)) continue;
-        d.grNo = cgr;
-        const existing = dueMap.get(cgr) || {};
-        dueMap.set(cgr, { ...existing, ...d, grNo: cgr });
+        // Strict guard: 2024-2025 has ONLY GR 1502. Discard obsolete mock trips (1900-1905)
+        if (d.year === '2024-2025' && cgr !== '1502') continue;
+        // Only overlay on existing authentic master trips
+        if (dueMap.has(cgr)) {
+          d.grNo = cgr;
+          const existing = dueMap.get(cgr) || {};
+          dueMap.set(cgr, { ...existing, ...d, grNo: cgr });
+        }
       }
     }
 

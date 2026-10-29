@@ -126,41 +126,50 @@ const OwnersModule = {
       }
     }
 
-    // 2. Load Owner Dues (Dynamic Direct Firebase Cloud Firestore with master asset fallback)
-    try {
-      if (typeof FirebaseDB !== 'undefined') {
-        let dues = null;
-        if (typeof FirebaseDB.getAll === 'function') dues = await FirebaseDB.getAll('ownerDues');
-        else if (typeof FirebaseDB.getAllOwnerDues === 'function') dues = await FirebaseDB.getAllOwnerDues();
-        if (dues && dues.length > 0) {
-          this.allOwnerDues = dues;
-        }
-      }
-    } catch (e) {
-      console.warn('FirebaseDB getAllOwnerDues fallback:', e);
+    // 2. Load Owner Dues from Authentic Master Dataset (Single Source of Truth)
+    let masterDues = [];
+    if (typeof window.SAMPLE_OWNER_DUES !== 'undefined' && Array.isArray(window.SAMPLE_OWNER_DUES)) {
+      masterDues = JSON.parse(JSON.stringify(window.SAMPLE_OWNER_DUES));
+    } else if (typeof window.INITIAL_OWNER_DUES !== 'undefined' && Array.isArray(window.INITIAL_OWNER_DUES)) {
+      masterDues = JSON.parse(JSON.stringify(window.INITIAL_OWNER_DUES));
     }
 
-    if (!this.allOwnerDues || this.allOwnerDues.length === 0) {
-      if (typeof window.SAMPLE_OWNER_DUES !== 'undefined') {
-        this.allOwnerDues = JSON.parse(JSON.stringify(window.SAMPLE_OWNER_DUES));
-      } else if (typeof window.INITIAL_OWNER_DUES !== 'undefined') {
-        this.allOwnerDues = JSON.parse(JSON.stringify(window.INITIAL_OWNER_DUES));
-      } else {
-        this.allOwnerDues = [];
-      }
-    }
-
-    // Strict deduplication by clean canonical GR number (never duplicate or show _TTC)
     const cleanDuesMap = new Map();
-    (this.allOwnerDues || []).forEach(d => {
+    masterDues.forEach(d => {
       if (!d || d.isRateDiff || d.status === 'Rate Difference') return;
       const cgr = this.canonicalGr(d.grNo || d.id);
       if (!cgr) return;
+      // Guard: 2024-2025 has strictly ONLY GR 1502
+      if (d.year === '2024-2025' && cgr !== '1502') return;
       d.grNo = cgr;
-      if (!cleanDuesMap.has(cgr)) {
-        cleanDuesMap.set(cgr, d);
-      }
+      cleanDuesMap.set(cgr, d);
     });
+
+    // Overlay user edits from Firebase Cloud Firestore / Local DB without corrupting totals
+    try {
+      if (typeof FirebaseDB !== 'undefined') {
+        let cloudDues = null;
+        if (typeof FirebaseDB.getAllOwnerDues === 'function') cloudDues = await FirebaseDB.getAllOwnerDues();
+        else if (typeof FirebaseDB.getAll === 'function') cloudDues = await FirebaseDB.getAll('ownerDues');
+        if (Array.isArray(cloudDues)) {
+          cloudDues.forEach(d => {
+            if (!d || d.isRateDiff || d.status === 'Rate Difference') return;
+            const cgr = this.canonicalGr(d.grNo || d.shortGrNo || d.id);
+            if (!cgr) return;
+            // Reject any rogue 2024-2025 trips other than 1502
+            if (d.year === '2024-2025' && cgr !== '1502') return;
+            // Only overlay on existing authentic master trips
+            if (cleanDuesMap.has(cgr)) {
+              const existing = cleanDuesMap.get(cgr);
+              cleanDuesMap.set(cgr, { ...existing, ...d, grNo: cgr });
+            }
+          });
+        }
+      }
+    } catch (e) {
+      console.warn('FirebaseDB getAllOwnerDues overlay fallback:', e);
+    }
+
     this.allOwnerDues = Array.from(cleanDuesMap.values());
 
     this.populateNameDatalist();
@@ -214,9 +223,14 @@ const OwnersModule = {
           if (docData.isRateDiff || docData.status === 'Rate Difference') return; // Ignore rate differences
           const cgr = this.canonicalGr(docData.grNo || docData.shortGrNo || docData.id);
           if (!cgr) return;
+          // Guard: 2024-2025 has strictly ONLY GR 1502
+          if (docData.year === '2024-2025' && cgr !== '1502') return;
+          // Only update existing authentic master trips
+          if (!duesMap.has(cgr)) return;
+
           docData.grNo = cgr;
           if (change.type === 'removed') {
-            duesMap.delete(cgr);
+            // Keep authentic trips
           } else {
             const existing = duesMap.get(cgr) || {};
             duesMap.set(cgr, { ...existing, ...docData, grNo: cgr });
