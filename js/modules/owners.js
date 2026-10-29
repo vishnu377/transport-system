@@ -29,6 +29,7 @@ const OwnersModule = {
   // Owner Due Master State (Card 2)
   allOwnerDues: [],
   selectedDueYear: 'ALL',
+  selectedDueStatus: 'ALL',
   dueSearchQuery: '',
   duePageSize: 50,
   dueCurrentPage: 1,
@@ -250,16 +251,16 @@ const OwnersModule = {
       else if (yr === '2024-2025') sum2024 += amt;
     });
 
-    if (amt2026El) amt2026El.innerText = this.formatCurrency(sum2026);
-    if (amt2025El) amt2025El.innerText = this.formatCurrency(sum2025);
-    if (amt2024El) amt2024El.innerText = this.formatCurrency(sum2024);
+    if (amt2026El) amt2026El.innerText = '₹ ' + this.formatCurrency(sum2026);
+    if (amt2025El) amt2025El.innerText = '₹ ' + this.formatCurrency(sum2025);
+    if (amt2024El) amt2024El.innerText = '₹ ' + this.formatCurrency(sum2024);
 
     const dashAmt2026 = document.getElementById('dash-due-amount-2026-2027');
     const dashAmt2025 = document.getElementById('dash-due-amount-2025-2026');
     const dashAmt2024 = document.getElementById('dash-due-amount-2024-2025');
-    if (dashAmt2026) dashAmt2026.innerText = this.formatCurrency(sum2026);
-    if (dashAmt2025) dashAmt2025.innerText = this.formatCurrency(sum2025);
-    if (dashAmt2024) dashAmt2024.innerText = this.formatCurrency(sum2024);
+    if (dashAmt2026) dashAmt2026.innerText = '₹ ' + this.formatCurrency(sum2026);
+    if (dashAmt2025) dashAmt2025.innerText = '₹ ' + this.formatCurrency(sum2025);
+    if (dashAmt2024) dashAmt2024.innerText = '₹ ' + this.formatCurrency(sum2024);
   },
 
   // Helper date parser for strict descending chronological sort
@@ -277,7 +278,7 @@ const OwnersModule = {
 
   formatCurrency(val) {
     const num = Number(val) || 0;
-    return '₹ ' + num.toLocaleString('en-IN', {
+    return num.toLocaleString('en-IN', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
     });
@@ -657,6 +658,20 @@ const OwnersModule = {
     if (this.selectedDueYear && this.selectedDueYear !== 'ALL') {
       dues = dues.filter(d => String(d.year) === String(this.selectedDueYear));
     }
+    if (this.selectedDueStatus && this.selectedDueStatus !== 'ALL') {
+      const targetSt = String(this.selectedDueStatus).toLowerCase();
+      dues = dues.filter(d => {
+        const st = String(d.status || '').toLowerCase();
+        const col = String(d.color || '').toLowerCase();
+        if (targetSt === 'transit') return st.includes('transit') || col === 'yellow';
+        if (targetSt === 'pod sent') return st.includes('pod') || col === 'purple';
+        if (targetSt === 'party payment pending') return st.includes('party') || col === 'blue';
+        if (targetSt === 'off loading') return st.includes('off') || col === 'pink';
+        if (targetSt === 'truck owner payment pending') return st.includes('owner') || col === 'cyan';
+        if (targetSt === 'cheque due') return st.includes('cheque') || col === 'slate';
+        return st.includes(targetSt) || col.includes(targetSt);
+      });
+    }
     if (this.dueSearchQuery) {
       const q = this.dueSearchQuery.toLowerCase();
       dues = dues.filter(d => {
@@ -851,6 +866,26 @@ const OwnersModule = {
 
   handleDueSearch(val) {
     this.dueSearchQuery = (val || '').trim();
+    const clearBtn = document.getElementById('btn-clear-due-search');
+    if (clearBtn) {
+      clearBtn.style.display = this.dueSearchQuery ? 'inline-block' : 'none';
+    }
+    this.dueCurrentPage = 1;
+    this.renderOwnerDueTable();
+  },
+
+  clearDueSearch() {
+    const input = document.getElementById('search-owner-dues');
+    if (input) input.value = '';
+    const clearBtn = document.getElementById('btn-clear-due-search');
+    if (clearBtn) clearBtn.style.display = 'none';
+    this.handleDueSearch('');
+  },
+
+  filterByDueStatus(st) {
+    this.selectedDueStatus = st || 'ALL';
+    const sel = document.getElementById('due-status-filter');
+    if (sel && sel.value !== this.selectedDueStatus) sel.value = this.selectedDueStatus;
     this.dueCurrentPage = 1;
     this.renderOwnerDueTable();
   },

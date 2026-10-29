@@ -1576,7 +1576,7 @@
                   <span class="fw-semibold text-dark">2026-2027</span>
                 </div>
                 <div class="d-flex align-items-center gap-2">
-                  <span class="summary-amount" id="dash-due-amount-2026-2027">₹ 29,469,381.22</span>
+                  <span class="summary-amount" id="dash-due-amount-2026-2027">₹ 30,787,697.22</span>
                   <i class="bi bi-chevron-right text-muted small"></i>
                 </div>
               </div>
@@ -1746,7 +1746,7 @@
               <div class="appsheet-summary-item active" id="due-year-tab-ALL" onclick="OwnersModule.selectDueYear('ALL')">
                 <span class="fw-semibold text-dark">All</span>
                 <div class="d-flex align-items-center gap-2">
-                  <span class="badge bg-light text-dark border small" id="due-year-count-ALL">489</span>
+                  <span class="badge bg-light text-dark border small" id="due-year-count-ALL">602</span>
                   <i class="bi bi-chevron-right text-muted small"></i>
                 </div>
               </div>
@@ -1757,7 +1757,7 @@
                   <span class="fw-semibold text-dark">2026-2027</span>
                 </div>
                 <div class="d-flex align-items-center gap-2">
-                  <span class="summary-amount" id="due-year-amount-2026-2027">₹ 30,021,934.22</span>
+                  <span class="summary-amount" id="due-year-amount-2026-2027">₹ 30,787,697.22</span>
                   <i class="bi bi-chevron-right text-muted small"></i>
                 </div>
               </div>
@@ -1796,12 +1796,26 @@
                 <h6 class="appsheet-panel-title">Owner Due</h6>
                 <span class="badge bg-secondary-subtle text-secondary fw-medium" id="due-active-year-badge">All</span>
               </div>
-              <div class="appsheet-panel-tools">
-                <div class="appsheet-search-box-sm d-none d-sm-flex align-items-center border rounded px-2 py-1 bg-white">
+              <div class="appsheet-panel-tools d-flex align-items-center gap-2 flex-wrap">
+                <!-- Status Filter Dropdown -->
+                <select id="due-status-filter" class="form-select form-select-sm py-0 px-2 text-muted" style="height: 28px; width: auto; font-size: 0.78rem;" onchange="OwnersModule.filterByDueStatus(this.value)" title="Filter by Status">
+                  <option value="ALL">All Statuses</option>
+                  <option value="Transit">🟡 Transit</option>
+                  <option value="POD Sent">🟣 POD Sent</option>
+                  <option value="Party Payment Pending">🔵 Party Payment Pending</option>
+                  <option value="Off Loading">🔴 Off Loading</option>
+                  <option value="Truck Owner Payment Pending">🟢 Truck Owner Payment Pending</option>
+                  <option value="Cheque Due">⚪ Cheque Due</option>
+                </select>
+
+                <!-- Search Input Box (Responsive on mobile and desktop) -->
+                <div class="appsheet-search-box-sm d-flex align-items-center border rounded px-2 py-1 bg-white" style="max-width: 170px;">
                   <i class="bi bi-search text-muted small me-1"></i>
-                  <input type="text" id="search-owner-dues" class="border-0 outline-none small" placeholder="Search dues..." onkeyup="OwnersModule.handleDueSearch(this.value)" style="outline: none; width: 140px; font-size: 0.82rem;">
+                  <input type="text" id="search-owner-dues" class="border-0 outline-none small" placeholder="Search dues..." onkeyup="OwnersModule.handleDueSearch(this.value)" style="outline: none; width: 100%; min-width: 70px; font-size: 0.82rem;">
+                  <i class="bi bi-x-circle text-muted ms-1" id="btn-clear-due-search" style="cursor: pointer; display: none; font-size: 0.75rem;" onclick="OwnersModule.clearDueSearch()" title="Clear search"></i>
                 </div>
-                <i class="bi bi-funnel" title="Filter" onclick="OwnersModule.focusDueSearch()"></i>
+
+                <i class="bi bi-funnel text-muted" title="Filter" style="cursor: pointer;" onclick="OwnersModule.focusDueSearch()"></i>
                 <button class="btn btn-sm btn-outline-secondary py-0 px-2" style="font-size: 0.78rem;" onclick="OwnersModule.exportOwnerDuesCSV()">
                   <i class="bi bi-download me-1"></i> CSV
                 </button>
@@ -1812,9 +1826,9 @@
             <div class="appsheet-panel-subheader">
               <div>
                 <span class="fw-semibold">Date</span>
-                <span class="appsheet-chip-number" id="owner-dues-header-count">Number 489</span>
+                <span class="appsheet-chip-number" id="owner-dues-header-count">Number 602</span>
               </div>
-              <span class="text-muted small" id="owner-dues-showing-text">489 records</span>
+              <span class="text-muted small" id="owner-dues-showing-text">602 records</span>
             </div>
 
             <!-- Owner Due Table Wrap -->
@@ -1848,7 +1862,7 @@
             <div class="appsheet-panel-footer border-top px-3 py-2">
               <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 text-muted" style="font-size: 0.82rem;">
                 <div class="d-flex align-items-center gap-2">
-                  <span id="due-pagination-info" class="fw-medium text-dark">1 - 50 of 489</span>
+                  <span id="due-pagination-info" class="fw-medium text-dark">1 - 50 of 602</span>
                 </div>
                 <div class="d-flex align-items-center gap-2">
                   <span class="small">Rows:</span>
