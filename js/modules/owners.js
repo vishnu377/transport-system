@@ -702,14 +702,12 @@ const OwnersModule = {
         lastRenderedDate = dt;
         const groupTotal = dateTotals[dt] || Number(d.dueAmount || d.ownerDue || 0);
         html += `
-          <tr class="appsheet-date-group-header">
-            <td colspan="9">
-              <div class="d-flex align-items-center justify-content-between">
-                <div class="d-flex align-items-center gap-3">
-                  <span><i class="bi bi-caret-down-fill me-2" style="font-size: 0.75rem; color: #5f6368;"></i> <strong style="color: #202124;">${dt}</strong></span>
-                  <span class="font-monospace fw-bold" style="color: #202124;">${this.formatCurrency(groupTotal)}</span>
-                </div>
-                <i class="bi bi-chevron-down text-muted small me-2"></i>
+          <tr class="party-due-group-tr appsheet-date-group-header">
+            <td colspan="10" class="party-due-group-cell">
+              <div class="party-due-group-inner d-flex align-items-center gap-2" style="padding: 4px 6px;">
+                <span class="appsheet-bullet bullet-golden" style="font-size: 11px;">●</span>
+                <span style="font-weight: 600; font-size: 12px; color: #202124;">${dt}</span>
+                <span class="badge bg-light text-dark border ms-2" style="font-size: 11px; font-weight: 600;">₹ ${this.formatCurrency(groupTotal)}</span>
               </div>
             </td>
           </tr>
@@ -717,55 +715,50 @@ const OwnersModule = {
       }
 
       const dueNum = Number(d.dueAmount || d.ownerDue || 0);
-      const isRedDue = dueNum > 0;
-      
+
+      const c = (val, isBold = false) => `
+        <div class="appsheet-cell-inner ${isBold ? 'fw-semibold' : ''}">
+          <span class="appsheet-bullet bullet-${col}">●</span>
+          <span class="cell-text">${val || '-'}</span>
+        </div>
+      `;
+
       html += `
         <tr class="appsheet-row row-status-${col}" onclick="OwnersModule.showOpenTripDetails('${safeTripId}')" style="cursor: pointer;" title="Status: ${d.status}">
-          <!-- 1. G.R.No. with status dot -->
-          <td class="font-monospace fw-bold">
-            <span class="appsheet-dot dot-${col} me-2"></span>
-            ${d.grNo || '-'}
-          </td>
+          <!-- 1. G.R.No. -->
+          <td class="font-monospace">${c(d.grNo, true)}</td>
 
           <!-- 2. Trip Start Date -->
-          <td>
-            <span style="font-size: 0.82rem;">${dt}</span>
-          </td>
+          <td>${c(dt)}</td>
 
           <!-- 3. Owner Due Amount (Strictly Bold Red in Google AppSheet) -->
-          <td>
-            <span class="font-monospace ${isRedDue ? 'due-amount-red' : 'due-amount-zero'}">${this.formatCurrency(dueNum)}</span>
+          <td class="due-amount-red">
+            <div class="appsheet-cell-inner">
+              <span class="appsheet-bullet bullet-red">●</span>
+              <span class="cell-text">₹ ${this.formatCurrency(dueNum)}</span>
+            </div>
           </td>
 
           <!-- 4. Truck No. -->
-          <td>
-            <span class="fw-bold font-monospace">${d.truckNo || '-'}</span>
-          </td>
+          <td class="font-monospace">${c(d.truckNo, true)}</td>
 
           <!-- 5. Owner -->
-          <td>
-            <div class="fw-medium text-truncate" style="max-width: 170px;" title="${ownerVal}">${ownerVal}</div>
-          </td>
+          <td>${c(ownerVal)}</td>
 
           <!-- 6. Destination -->
-          <td>
-            <div class="text-truncate" style="max-width: 130px;" title="${d.destination || ''}">${d.destination || '-'}</div>
-          </td>
+          <td>${c(d.destination)}</td>
 
           <!-- 7. Transport -->
-          <td>
-            <span class="badge border font-monospace" style="background: rgba(255,255,255,0.7); color: inherit; font-size: 0.74rem;">${d.transport || 'TTC'}</span>
-          </td>
+          <td>${c(d.transport || 'TTC')}</td>
 
           <!-- 8. Reference -->
-          <td>
-            <div class="text-truncate" style="max-width: 180px;" title="${refName}">${refName}</div>
-          </td>
+          <td>${c(refName)}</td>
 
           <!-- 9. Driver -->
-          <td>
-            <div class="text-truncate" style="max-width: 130px;" title="${d.driver || ''}">${d.driver || '-'}</div>
-          </td>
+          <td>${c(d.driver)}</td>
+
+          <!-- 10. Chevron Right -->
+          <td style="text-align: right; color: #5f6368;"><i class="bi bi-chevron-right" style="font-size: 11px;"></i></td>
         </tr>
       `;
     });
@@ -870,16 +863,13 @@ const OwnersModule = {
   },
 
   // ========================================================
-  // VIEW 4: OPEN TRIP DETAILS - EXACT 3-COLUMN APPSHEET LAYOUT
-  // TAILORED SPECIFICALLY TO EACH OF THE 6 COLOR CATEGORIES
+  // VIEW 4: OPEN TRIP DETAILS - EXACT 3-CARD DRILLDOWN MATCHING PARTIES MODULE
   // ========================================================
   showOpenTripDetails(tripId) {
     const d = (this.allOwnerDues || []).find(item => String(item.id) === String(tripId) || String(item.grNo) === String(tripId));
     if (!d) return;
 
-    const col = d.color || 'yellow';
     const safeTripId = String(d.id || d.grNo);
-    const dt = d.tripDate || d.tripStartDate || d.date || '-';
 
     this.currentView = 'openTripDetails';
     this.currentTripId = safeTripId;
@@ -899,7 +889,7 @@ const OwnersModule = {
     if (viewParty) viewParty.style.display = 'none';
     if (viewPayment) viewPayment.style.display = 'none';
 
-    // Authentic AppSheet Breadcrumb: Home > Owners > Owner Due > Open Trip Details
+    // Authentic AppSheet Breadcrumb: Owners > Owner Due > Open Trip Details
     const bc = document.getElementById('appsheetBreadcrumb');
     if (bc) {
       bc.innerHTML = `
@@ -918,7 +908,7 @@ const OwnersModule = {
           <button class="btn btn-sm btn-light border py-1 px-2 text-secondary" title="Truck Details"><i class="bi bi-truck"></i></button>
           <button class="btn btn-sm btn-light border py-1 px-2 text-secondary" title="Bilty / GR Document"><i class="bi bi-file-earmark-text"></i></button>
           <button class="btn btn-sm btn-light border py-1 px-2 text-secondary" onclick="window.print()" title="Download / Print"><i class="bi bi-download"></i></button>
-          <button class="btn-appsheet-edit shadow-sm" onclick="OwnersModule.openEditTripDrawer('${safeTripId}')" title="Edit Trip Details">
+          <button class="btn-appsheet-edit shadow-sm py-1 px-3" onclick="OwnersModule.openEditTripDrawer('${safeTripId}')" title="Edit Trip Details">
             <i class="bi bi-pencil me-1"></i> Edit
           </button>
           <button class="btn btn-sm btn-light border py-1 px-2 ms-1 text-secondary" onclick="OwnersModule.backToDueList()" title="Back to Owner Due">
@@ -928,526 +918,279 @@ const OwnersModule = {
       `;
     }
 
-    const container = document.getElementById('open-trip-cards-container');
-    if (!container) return;
+    this.renderDrilldownView(d);
+  },
 
-    container.className = 'appsheet-3col-layout';
+  renderDrilldownView(d) {
+    if (!d) return;
+    const col = d.color || 'yellow';
+    const safeTripId = String(d.id || d.grNo);
+    const dt = d.tripDate || d.tripStartDate || d.date || '-';
+    const refName = d.reference || d.partyName || d.consignee?.name || '-';
+    const ownerVal = d.ownerName || d.owner || '-';
+    const ownerMob = d.ownerMobile || '-';
+    const driverVal = d.driver || '-';
+    const driverMob = d.driverMobile || '-';
 
-    // Common Trip Details Card (Column 1 Card 1)
-    const tripDetailsCardHtml = `
-      <div class="appsheet-panel" id="panelTripDetails">
-        <div class="appsheet-panel-header">
-          <h6 class="appsheet-panel-title">Trip Details</h6>
-          <div class="d-flex align-items-center gap-1">
-            <button class="btn-appsheet-edit btn-sm py-1 px-2 shadow-sm" onclick="OwnersModule.openEditTripDrawer('${safeTripId}')" title="Edit Trip Details">
-              <i class="bi bi-pencil me-1"></i> Edit
-            </button>
-            <i class="bi bi-arrows-angle-expand expand-toggle-icon ms-2" onclick="OwnersModule.togglePanelExpand('panelTripDetails')" title="Expand / Collapse"></i>
-          </div>
-        </div>
-        <div class="appsheet-panel-body p-3">
-          <div class="appsheet-detail-item">
-            <div class="appsheet-detail-label">G.R.No.</div>
-            <div class="appsheet-detail-value font-monospace text-dark fw-bold">
-              <span class="appsheet-dot dot-${col} me-2"></span>${d.year ? `${d.year}-${d.grNo}_${d.transport || 'TTC'}` : d.grNo}
-            </div>
-          </div>
-          <div class="appsheet-detail-divider"></div>
-
-          <div class="appsheet-detail-item">
-            <div class="appsheet-detail-label">Truck No.</div>
-            <div class="appsheet-detail-value font-monospace fw-bold text-dark">
-              <span class="appsheet-dot dot-${col} me-2"></span>${d.truckNo || '-'}
-            </div>
-          </div>
-          <div class="appsheet-detail-divider"></div>
-
-          <div class="appsheet-detail-item">
-            <div class="appsheet-detail-label">Trip Start Date</div>
-            <div class="appsheet-detail-value">
-              <span class="appsheet-dot dot-${col} me-2"></span>${dt}
-            </div>
-          </div>
-          <div class="appsheet-detail-divider"></div>
-
-          <div class="appsheet-detail-item">
-            <div class="appsheet-detail-label">Trip End Date</div>
-            <div class="appsheet-detail-value">
-              <span class="appsheet-dot dot-${col} me-2"></span>${d.tripEndDate || dt}
-            </div>
-          </div>
-          <div class="appsheet-detail-divider"></div>
-
-          <div class="appsheet-detail-item">
-            <div class="appsheet-detail-label">Origin</div>
-            <div class="appsheet-detail-value">
-              <span class="appsheet-dot dot-${col} me-2"></span>${d.origin || 'Rajsamand (Raj.)'}
-            </div>
-          </div>
-          <div class="appsheet-detail-divider"></div>
-
-          <div class="appsheet-detail-item">
-            <div class="appsheet-detail-label">Destination</div>
-            <div class="appsheet-detail-value fw-semibold text-dark">
-              <span class="appsheet-dot dot-${col} me-2"></span>${d.destination || '-'}
-            </div>
-          </div>
-          <div class="appsheet-detail-divider"></div>
-
-          <div class="appsheet-detail-item">
-            <div class="appsheet-detail-label">Consignee Billing Type</div>
-            <div class="appsheet-detail-value">
-              <span class="appsheet-dot dot-${col} me-2"></span>${d.billingType || 'Per Tonne'}
-            </div>
-          </div>
-          <div class="appsheet-detail-divider"></div>
-
-          <div class="appsheet-detail-item">
-            <div class="appsheet-detail-label">Bilty Amount</div>
-            <div class="appsheet-detail-value font-monospace fw-bold text-dark">
-              <span class="appsheet-dot dot-${col} me-2"></span>${this.formatCurrency(d.biltyAmount || d.dueAmount || d.ownerDue)}
-            </div>
-          </div>
-          <div class="appsheet-detail-divider"></div>
-
-          <div class="appsheet-detail-item">
-            <div class="appsheet-detail-label">Weight</div>
-            <div class="appsheet-detail-value font-monospace">
-              <span class="appsheet-dot dot-${col} me-2"></span>${Number(d.weight || 0).toFixed(3)}
-            </div>
-          </div>
-          <div class="appsheet-detail-divider"></div>
-
-          <div class="appsheet-detail-item">
-            <div class="appsheet-detail-label">Rate</div>
-            <div class="appsheet-detail-value font-monospace">
-              <span class="appsheet-dot dot-${col} me-2"></span>${this.formatCurrency(d.rate || 0)}
-            </div>
-          </div>
-          <div class="appsheet-detail-divider"></div>
-
-          <div class="appsheet-detail-item">
-            <div class="appsheet-detail-label">Material</div>
-            <div class="appsheet-detail-value">
-              <span class="appsheet-dot dot-${col} me-2"></span>${d.material || 'Marble Powder'}
-            </div>
-          </div>
-          <div class="appsheet-detail-divider"></div>
-
-          <div class="appsheet-detail-item">
-            <div class="appsheet-detail-label">Reference</div>
-            <div class="appsheet-detail-value text-dark fw-medium">
-              <span class="appsheet-dot dot-${col} me-2"></span>${d.reference || d.partyName || '-'}
-            </div>
-          </div>
-          <div class="appsheet-detail-divider"></div>
-
-          <div class="appsheet-detail-item">
-            <div class="appsheet-detail-label">Reference Mobile No.</div>
-            <div class="appsheet-detail-value font-monospace">
-              <span class="appsheet-dot dot-${col} me-2"></span>${d.referenceMobile || d.referenceMobileNo || '-'}${d.referenceMobile ? ' <i class="bi bi-telephone-fill ms-2 text-success small"></i>' : ''}
-            </div>
-          </div>
-          <div class="appsheet-detail-divider"></div>
-
-          <div class="appsheet-detail-item">
-            <div class="appsheet-detail-label">Driver</div>
-            <div class="appsheet-detail-value">
-              <span class="appsheet-dot dot-${col} me-2"></span>${d.driver || '-'}
-            </div>
-          </div>
-          <div class="appsheet-detail-divider"></div>
-
-          <div class="appsheet-detail-item">
-            <div class="appsheet-detail-label">Driver Mobile No.</div>
-            <div class="appsheet-detail-value font-monospace">
-              <span class="appsheet-dot dot-${col} me-2"></span>${d.driverMobile || d.driverMobileNo || '-'}${d.driverMobile ? ' <i class="bi bi-telephone-fill ms-2 text-success small"></i>' : ''}
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-
-    // Common Consignor/s Card (Column 2 Card 1)
     const consignorGst = d.consignor?.gstin || '08FPWPR3462B2ZD';
     const consignorName = d.consignor?.name || 'SHIV UMA STONEX';
     const consignorAddr = d.consignor?.address || 'DUNGELA, Bhakroda, Rajsamand (Raj.)-313330';
 
-    const consignorCardHtml = `
-      <div class="appsheet-panel" id="panelConsignorDetails">
-        <div class="appsheet-panel-header">
-          <h6 class="appsheet-panel-title">
-            <span class="appsheet-dot dot-${col} me-2"></span>Consignor/s 1
-          </h6>
-          <i class="bi bi-arrows-angle-expand expand-toggle-icon" onclick="OwnersModule.togglePanelExpand('panelConsignorDetails')" title="Expand / Collapse"></i>
+    const consigneeGst = d.consignee?.gstin || '09AICPG6550B1ZN';
+    const consigneeName = d.consignee?.name || 'CHEM TECH INDIA';
+    const consigneeMob = d.consignee?.mobile || '9235623313';
+
+    const freightVal = d.freight || d.dueAmount || d.ownerDue || 171125;
+    const totalFreightVal = d.totalFreight || d.biltyAmount || freightVal;
+    const biltyAmt = d.biltyAmount || d.dueAmount || d.ownerDue || 171125;
+    const dueAmt = d.dueAmount || d.ownerDue || 0;
+
+    const dotHtml = `<span class="theme-dot">●</span>`;
+
+    // 1. Set Container Class
+    const container = document.getElementById('open-trip-cards-container');
+    if (container) {
+      container.className = `drilldown-wrap theme-${col}`;
+    }
+
+    const leftCard = document.getElementById('drilldown-card-left');
+    const midCard = document.getElementById('drilldown-card-mid');
+    const rightCard = document.getElementById('drilldown-card-right');
+
+    // 2. CARD 1 (LEFT - TRIP INFO)
+    if (leftCard) {
+      leftCard.innerHTML = `
+        <div class="drilldown-field">
+          <div class="drilldown-field-label">G.R.No.</div>
+          <div class="drilldown-field-val">${dotHtml} <span class="theme-text font-monospace">${d.grNo || '-'}</span></div>
         </div>
-        <div class="appsheet-panel-body p-3">
-          <!-- Mini Table matching Image 2 -->
-          <div class="table-responsive border rounded mb-3">
-            <table class="table table-sm table-striped mb-0" style="font-size: 0.78rem;">
-              <thead class="table-light">
+        <div class="drilldown-field">
+          <div class="drilldown-field-label">Truck No.</div>
+          <div class="drilldown-field-val">${dotHtml} <span class="theme-text font-monospace">${d.truckNo || '-'}</span></div>
+        </div>
+        <div class="drilldown-field">
+          <div class="drilldown-field-label">Trip Start Date</div>
+          <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${dt}</span></div>
+        </div>
+        <div class="drilldown-field">
+          <div class="drilldown-field-label">Trip End Date</div>
+          <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${d.tripEndDate || dt}</span></div>
+        </div>
+        <div class="drilldown-field">
+          <div class="drilldown-field-label">Origin</div>
+          <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${d.origin || 'Rajsamand (Raj.)'}</span></div>
+        </div>
+        <div class="drilldown-field">
+          <div class="drilldown-field-label">Destination</div>
+          <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${d.destination || '-'}</span></div>
+        </div>
+        <div class="drilldown-field">
+          <div class="drilldown-field-label">Consignee Billing Type</div>
+          <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${d.billingType || 'Per Tonne'}</span></div>
+        </div>
+        <div class="drilldown-field">
+          <div class="drilldown-field-label">Bilty Amount</div>
+          <div class="drilldown-field-val font-monospace">${dotHtml} <span class="theme-text">₹ ${this.formatCurrency(biltyAmt)}</span></div>
+        </div>
+        <div class="drilldown-field">
+          <div class="drilldown-field-label">Weight</div>
+          <div class="drilldown-field-val font-monospace">${dotHtml} <span class="theme-text">${Number(d.weight || 0).toFixed(3)}</span></div>
+        </div>
+        <div class="drilldown-field">
+          <div class="drilldown-field-label">Rate</div>
+          <div class="drilldown-field-val font-monospace">${dotHtml} <span class="theme-text">₹ ${this.formatCurrency(d.rate || 0)}</span></div>
+        </div>
+        <div class="drilldown-field">
+          <div class="drilldown-field-label">Material</div>
+          <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${d.material || 'Marble Powder'}</span></div>
+        </div>
+        <div class="drilldown-field">
+          <div class="drilldown-field-label">Reference</div>
+          <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${refName}</span></div>
+        </div>
+        <div class="drilldown-field">
+          <div class="drilldown-field-label">Reference Mobile No.</div>
+          <div class="drilldown-field-val">
+            ${dotHtml} <span class="theme-text font-monospace">${d.referenceMobile || '-'}</span>
+            ${d.referenceMobile ? `<a href="tel:${d.referenceMobile}" class="tel-link"><i class="bi bi-telephone-fill theme-icon"></i></a>` : ''}
+          </div>
+        </div>
+        <div class="drilldown-field">
+          <div class="drilldown-field-label">Driver</div>
+          <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${driverVal}</span></div>
+        </div>
+        <div class="drilldown-field">
+          <div class="drilldown-field-label">Driver Mobile No.</div>
+          <div class="drilldown-field-val">
+            ${dotHtml} <span class="theme-text font-monospace">${driverMob}</span>
+            ${driverMob !== '-' ? `<a href="tel:${driverMob}" class="tel-link"><i class="bi bi-telephone-fill theme-icon"></i></a>` : ''}
+          </div>
+        </div>
+        <div class="drilldown-field">
+          <div class="drilldown-field-label">Owner</div>
+          <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${ownerVal}</span></div>
+        </div>
+        <div class="drilldown-field">
+          <div class="drilldown-field-label">Owner Mobile No.</div>
+          <div class="drilldown-field-val">
+            ${dotHtml} <span class="theme-text font-monospace">${ownerMob}</span>
+            ${ownerMob !== '-' ? `<a href="tel:${ownerMob}" class="tel-link"><i class="bi bi-telephone-fill theme-icon"></i></a>` : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    // 3. CARD 2 (MIDDLE - CONSIGNOR SUBTABLE & EXPAND)
+    if (midCard) {
+      let subtableHtml = `
+        <div class="d-flex align-items-center gap-2 mb-2">
+          <span class="theme-dot" style="font-size: 15px;">●</span>
+          <span class="theme-text" style="font-size: 15px; font-weight: 700;">Consignor/s</span>
+          <span class="badge bg-light text-dark border" style="font-size: 11px;">1</span>
+        </div>
+        <div class="drilldown-subtable-wrap">
+          <div style="overflow-x: auto;">
+            <table class="drilldown-subtable">
+              <thead>
                 <tr>
-                  <th class="py-1 px-2 text-uppercase text-secondary" style="font-size: 0.72rem;">GSTIN</th>
-                  <th class="py-1 px-2 text-uppercase text-secondary" style="font-size: 0.72rem;">Consignor</th>
-                  <th class="py-1 px-2 text-uppercase text-secondary" style="font-size: 0.72rem;">Consignor Address</th>
+                  <th style="width: 140px; white-space: nowrap;">GSTIN</th>
+                  <th style="min-width: 170px; white-space: nowrap;">Consignor</th>
+                  <th style="min-width: 250px; white-space: nowrap;">Consignor Address</th>
+                  <th style="width: 25px;"></th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td class="py-2 px-2 font-monospace">${consignorGst}</td>
-                  <td class="py-2 px-2 fw-semibold text-dark">${consignorName}</td>
-                  <td class="py-2 px-2 text-muted" style="max-width: 180px;">${consignorAddr}</td>
+                <tr onclick="OwnersModule.openEditTripDrawer('${safeTripId}')">
+                  <td class="font-monospace text-nowrap">${consignorGst}</td>
+                  <td class="fw-semibold text-nowrap">${consignorName}</td>
+                  <td class="text-nowrap"><span class="cell-truncate text-nowrap">${consignorAddr}</span></td>
+                  <td style="text-align: right; color: #5f6368;"><i class="bi bi-chevron-right" style="font-size: 10px;"></i></td>
                 </tr>
               </tbody>
             </table>
           </div>
-
-          <div class="appsheet-detail-item">
-            <div class="appsheet-detail-label">GSTIN</div>
-            <div class="appsheet-detail-value font-monospace">${consignorGst}</div>
+          <div class="subtable-footer-actions">
+            <a class="subtable-action-link" onclick="OwnersModule.openEditTripDrawer('${safeTripId}')">Expand</a>
           </div>
-          <div class="appsheet-detail-divider"></div>
+        </div>
+      `;
 
-          <div class="appsheet-detail-item">
-            <div class="appsheet-detail-label">Consignor</div>
-            <div class="appsheet-detail-value fw-bold text-dark">${consignorName}</div>
+      if (col === 'blue' && d.paidAmount) {
+        subtableHtml += `
+          <div class="d-flex align-items-center gap-2 mb-2 mt-3">
+            <span class="theme-dot" style="font-size: 15px;">●</span>
+            <span class="theme-text" style="font-size: 15px; font-weight: 700;">Owner Payment 1</span>
           </div>
-          <div class="appsheet-detail-divider"></div>
-
-          <div class="appsheet-detail-item">
-            <div class="appsheet-detail-label">Consignor Address</div>
-            <div class="appsheet-detail-value text-muted">${consignorAddr}</div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Payment Date</div>
+            <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${d.paymentDate || '27/10/2026'}</span></div>
           </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Amount Paid</div>
+            <div class="drilldown-field-val font-monospace fw-bold text-success">₹ ${this.formatCurrency(d.paidAmount || 184706)}</div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Mode</div>
+            <div class="drilldown-field-val">${dotHtml} <span class="theme-text">NEFT/RTGS</span></div>
+          </div>
+        `;
+      } else if (col === 'cyan' && d.paidAmount) {
+        subtableHtml += `
+          <div class="d-flex align-items-center gap-2 mb-2 mt-3">
+            <span class="theme-dot" style="font-size: 15px;">●</span>
+            <span class="theme-text" style="font-size: 15px; font-weight: 700;">Payment 1</span>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Payment Date</div>
+            <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${d.paymentDate || '24/10/2026'}</span></div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Amount Paid</div>
+            <div class="drilldown-field-val font-monospace fw-bold text-success">₹ ${this.formatCurrency(d.paidAmount || 192030)}</div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Beneficiary</div>
+            <div class="drilldown-field-val">${dotHtml} <span class="theme-text">TTC</span></div>
+          </div>
+        `;
+      }
 
-          <div class="mt-3 pt-2 border-top d-flex justify-content-end">
-            <button class="btn btn-sm btn-outline-secondary py-1 px-3 d-flex align-items-center gap-1 shadow-sm" onclick="OwnersModule.showOpenTripPartyDetails()" title="Expand Full Sheet">
-              <i class="bi bi-arrows-fullscreen"></i> Expand
+      midCard.innerHTML = subtableHtml;
+    }
+
+    // 4. CARD 3 (RIGHT - FINANCIAL & STATUS & DUE)
+    if (rightCard) {
+      rightCard.innerHTML = `
+        <div class="drilldown-field">
+          <div class="drilldown-field-label">GSTIN Consignee</div>
+          <div class="drilldown-field-val">${dotHtml} <span class="theme-text font-monospace">${consigneeGst}</span></div>
+        </div>
+        <div class="drilldown-field">
+          <div class="drilldown-field-label">Consignee</div>
+          <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${consigneeName}</span></div>
+        </div>
+        <div class="drilldown-field">
+          <div class="drilldown-field-label">Consignee Mobile No.</div>
+          <div class="drilldown-field-val">
+            ${dotHtml} <span class="theme-text font-monospace">${consigneeMob}</span>
+            ${consigneeMob !== '-' ? `<a href="tel:${consigneeMob}" class="tel-link"><i class="bi bi-telephone-fill theme-icon"></i></a>` : ''}
+          </div>
+        </div>
+        <div class="drilldown-field">
+          <div class="drilldown-field-label">Owner</div>
+          <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${ownerVal}</span></div>
+        </div>
+        <div class="drilldown-field">
+          <div class="drilldown-field-label">Owner Mobile No.</div>
+          <div class="drilldown-field-val">
+            ${dotHtml} <span class="theme-text font-monospace">${ownerMob}</span>
+            ${ownerMob !== '-' ? `<a href="tel:${ownerMob}" class="tel-link"><i class="bi bi-telephone-fill theme-icon"></i></a>` : ''}
+          </div>
+        </div>
+        <div class="drilldown-field">
+          <div class="drilldown-field-label">Freight</div>
+          <div class="drilldown-field-val font-monospace">${dotHtml} <span class="theme-text">₹ ${this.formatCurrency(freightVal)}</span></div>
+        </div>
+        <div class="drilldown-field">
+          <div class="drilldown-field-label">Add Records for</div>
+          <div class="drilldown-field-val">
+            <button type="button" class="btn btn-sm btn-light border py-1 px-3 d-flex align-items-center gap-1 shadow-sm w-100 justify-content-between" onclick="OwnersModule.openEditTripDrawer('${safeTripId}')">
+              <span class="text-secondary small">Add Records for...</span>
+              <i class="bi bi-caret-down-fill text-muted small"></i>
             </button>
           </div>
         </div>
-      </div>
-    `;
-
-    // Consignee Card (Column 3)
-    const consigneeGst = d.consignee?.gstin || '09AICPG6550B1ZN';
-    const consigneeName = d.consignee?.name || 'CHEM TECH INDIA';
-    const consigneeMob = d.consignee?.mobile || '9235623313';
-    const ownerNameVal = d.ownerName || d.owner || 'Kallu Meena';
-    const ownerMobVal = d.ownerMobile || '9079757926';
-    const freightVal = this.formatCurrency(d.freight || d.dueAmount || d.ownerDue || 171125);
-    const totalFreightVal = this.formatCurrency(d.totalFreight || d.biltyAmount || d.dueAmount || 171125);
-
-    let consigneeExtraHtml = '';
-    let addRecordsLabel = 'Add Records for ...';
-
-    if (col === 'pink') {
-      consigneeExtraHtml = `
-        <div class="appsheet-detail-item">
-          <div class="appsheet-detail-label">Loading Charges</div>
-          <div class="appsheet-detail-value font-monospace">₹ 7,000.00</div>
+        <div class="drilldown-field">
+          <div class="drilldown-field-label">Total Freight</div>
+          <div class="drilldown-field-val font-monospace">${dotHtml} <span class="theme-text">₹ ${this.formatCurrency(totalFreightVal)}</span></div>
         </div>
-        <div class="appsheet-detail-divider"></div>
-      `;
-    } else if (col === 'blue') {
-      addRecordsLabel = 'Add Records for Truck Owner Payment';
-    } else if (col === 'slate' || col === 'cyan') {
-      addRecordsLabel = 'Add Records for Party Payment';
-    }
-
-    const consigneeCardHtml = `
-      <div class="appsheet-panel" id="panelConsigneeDetails">
-        <div class="appsheet-panel-header">
-          <h6 class="appsheet-panel-title">Consignee</h6>
-          <i class="bi bi-arrows-angle-expand expand-toggle-icon" onclick="OwnersModule.togglePanelExpand('panelConsigneeDetails')" title="Expand / Collapse"></i>
-        </div>
-        <div class="appsheet-panel-body p-3">
-          <div class="appsheet-detail-item">
-            <div class="appsheet-detail-label">GSTIN Consignee</div>
-            <div class="appsheet-detail-value font-monospace">${consigneeGst}</div>
-          </div>
-          <div class="appsheet-detail-divider"></div>
-
-          <div class="appsheet-detail-item">
-            <div class="appsheet-detail-label">Consignee</div>
-            <div class="appsheet-detail-value fw-bold text-dark">${consigneeName}</div>
-          </div>
-          <div class="appsheet-detail-divider"></div>
-
-          <div class="appsheet-detail-item">
-            <div class="appsheet-detail-label">Consignee Mobile No.</div>
-            <div class="appsheet-detail-value font-monospace">${consigneeMob}</div>
-          </div>
-          <div class="appsheet-detail-divider"></div>
-
-          <div class="appsheet-detail-item">
-            <div class="appsheet-detail-label">Owner</div>
-            <div class="appsheet-detail-value">${ownerNameVal}</div>
-          </div>
-          <div class="appsheet-detail-divider"></div>
-
-          <div class="appsheet-detail-item">
-            <div class="appsheet-detail-label">Owner Mobile No.</div>
-            <div class="appsheet-detail-value font-monospace">${ownerMobVal}</div>
-          </div>
-          <div class="appsheet-detail-divider"></div>
-
-          ${consigneeExtraHtml}
-
-          <div class="appsheet-detail-item">
-            <div class="appsheet-detail-label">Freight</div>
-            <div class="appsheet-detail-value font-monospace">${freightVal}</div>
-          </div>
-          <div class="appsheet-detail-divider"></div>
-
-          <div class="appsheet-detail-item">
-            <div class="appsheet-detail-label">Total Freight</div>
-            <div class="appsheet-detail-value font-monospace fw-bold">${totalFreightVal}</div>
-          </div>
-          <div class="appsheet-detail-divider"></div>
-
-          <div class="appsheet-detail-item">
-            <div class="appsheet-detail-label">Status</div>
-            <div class="appsheet-detail-value">
-              <span class="badge-status badge-status-${col}">
-                <span class="appsheet-dot dot-${col}"></span> ${d.status || 'Transit'}
-              </span>
-            </div>
-          </div>
-
-          <div class="mt-3 pt-2 border-top">
-            <button class="btn-appsheet-add shadow-sm" onclick="OwnersModule.openEditTripDrawer('${safeTripId}')" title="${addRecordsLabel}">
-              <i class="bi bi-plus-lg me-1"></i> ${addRecordsLabel}
-            </button>
-          </div>
-        </div>
-      </div>
-    `;
-
-    // Now assemble the 3 columns according to the 6 color categories!
-    let col1Cards = tripDetailsCardHtml;
-    let col2Cards = consignorCardHtml;
-    let col3Cards = consigneeCardHtml;
-
-    if (col === 'blue') {
-      // BLUE (Party Payment Pending):
-      // Col 1 Card 2: Owner Payment 1
-      col1Cards += `
-        <div class="appsheet-panel mt-3" id="panelOwnerPayment">
-          <div class="appsheet-panel-header">
-            <h6 class="appsheet-panel-title">Owner Payment 1</h6>
-            <i class="bi bi-arrows-angle-expand expand-toggle-icon" onclick="OwnersModule.togglePanelExpand('panelOwnerPayment')" title="Expand / Collapse"></i>
-          </div>
-          <div class="appsheet-panel-body p-3">
-            <div class="small fw-semibold text-muted mb-2">Truck Owner Payment</div>
-            <div class="appsheet-detail-item">
-              <div class="appsheet-detail-label">Payment Date</div>
-              <div class="appsheet-detail-value font-monospace">${d.paymentDate || '27/10/2026'}</div>
-            </div>
-            <div class="appsheet-detail-divider"></div>
-
-            <div class="appsheet-detail-item">
-              <div class="appsheet-detail-label">Amount Paid</div>
-              <div class="appsheet-detail-value font-monospace text-success fw-bold">${this.formatCurrency(d.paidAmount || 184706)}</div>
-            </div>
-            <div class="appsheet-detail-divider"></div>
-
-            <div class="appsheet-detail-item">
-              <div class="appsheet-detail-label">Mode</div>
-              <div class="appsheet-detail-value">NEFT/RTGS</div>
-            </div>
-
-            <div class="mt-3 pt-2 border-top d-flex align-items-center gap-2">
-              <button class="btn-appsheet-panel-action" onclick="OwnersModule.showTripPaymentDetails()" title="Expand Full Sheet">
-                <i class="bi bi-arrows-fullscreen me-1"></i> Expand
-              </button>
-              <button class="btn-appsheet-add shadow-sm" onclick="OwnersModule.openAddPaymentDrawer('${safeTripId}')" title="Add Payment">
-                <i class="bi bi-plus-lg me-1"></i> Add
-              </button>
-            </div>
-          </div>
-        </div>
-      `;
-
-      // Col 2 Card 2: Owner Total Payment & Owner Due Summary
-      col2Cards += `
-        <div class="appsheet-panel mt-3" id="panelPaymentSummary">
-          <div class="appsheet-panel-header">
-            <h6 class="appsheet-panel-title">Payment Summary</h6>
-          </div>
-          <div class="appsheet-panel-body p-3">
-            <div class="appsheet-detail-item">
-              <div class="appsheet-detail-label">Owner Total Payment</div>
-              <div class="appsheet-detail-value font-monospace fw-bold">${this.formatCurrency(d.paidAmount || 184706)}</div>
-            </div>
-            <div class="appsheet-detail-divider"></div>
-
-            <div class="appsheet-detail-item">
-              <div class="appsheet-detail-label">Owner Due</div>
-              <div class="appsheet-detail-value font-monospace text-danger fw-bold">${this.formatCurrency(d.dueAmount || 6909)}</div>
-            </div>
-            <div class="appsheet-detail-divider"></div>
-
-            <div class="appsheet-detail-item">
-              <div class="appsheet-detail-label">Status</div>
-              <div class="appsheet-detail-value">
-                <span class="badge-status badge-status-blue">
-                  <span class="appsheet-dot dot-blue"></span> Party Payment Pending
+        <div class="drilldown-field">
+          <div class="drilldown-field-label">Status*</div>
+          <div class="drilldown-field-val">
+            <div class="appsheet-status-dropdown-wrap position-relative w-100">
+              <button type="button" class="btn btn-sm btn-light border py-1 px-2 d-flex align-items-center justify-content-between w-100" onclick="OwnersModule.openEditTripDrawer('${safeTripId}')">
+                <span class="d-flex align-items-center gap-1">
+                  <span class="appsheet-bullet bullet-${col}">●</span>
+                  <span class="fw-semibold text-dark">${d.status || 'Transit'}</span>
                 </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
-
-    } else if (col === 'slate') {
-      // SLATE (Cheque Due):
-      // Col 1 Card 2: Payment (No items, + Add)
-      col1Cards += `
-        <div class="appsheet-panel mt-3" id="panelSlatePayment">
-          <div class="appsheet-panel-header">
-            <h6 class="appsheet-panel-title">Payment</h6>
-            <i class="bi bi-arrows-angle-expand expand-toggle-icon" onclick="OwnersModule.togglePanelExpand('panelSlatePayment')" title="Expand / Collapse"></i>
-          </div>
-          <div class="appsheet-panel-body p-3">
-            <div class="text-muted py-2">No items</div>
-            <div class="mt-2 pt-2 border-top">
-              <button class="btn-appsheet-add shadow-sm" onclick="OwnersModule.openAddPaymentDrawer('${safeTripId}', 'consignee')" title="Add Consignee Payment">
-                <i class="bi bi-plus-lg me-1"></i> Add
+                <i class="bi bi-caret-down-fill text-muted small"></i>
               </button>
             </div>
           </div>
         </div>
-      `;
-
-      // Col 2 Card 2: Total Freight, Paid Amount, Due Amount (Cheque Due)
-      col2Cards += `
-        <div class="appsheet-panel mt-3" id="panelFreightSummary">
-          <div class="appsheet-panel-header">
-            <h6 class="appsheet-panel-title">Freight Summary</h6>
-          </div>
-          <div class="appsheet-panel-body p-3">
-            <div class="appsheet-detail-item">
-              <div class="appsheet-detail-label">Total Freight</div>
-              <div class="appsheet-detail-value font-monospace fw-bold">${this.formatCurrency(d.totalFreight || 80000)}</div>
-            </div>
-            <div class="appsheet-detail-divider"></div>
-
-            <div class="appsheet-detail-item">
-              <div class="appsheet-detail-label">Paid Amount</div>
-              <div class="appsheet-detail-value font-monospace text-success fw-bold">${this.formatCurrency(d.paidAmount || 80000)}</div>
-            </div>
-            <div class="appsheet-detail-divider"></div>
-
-            <div class="appsheet-detail-item">
-              <div class="appsheet-detail-label">Due Amount</div>
-              <div class="appsheet-detail-value font-monospace fw-bold">${this.formatCurrency(d.dueAmount || 0)}</div>
-            </div>
-            <div class="appsheet-detail-divider"></div>
-
-            <div class="appsheet-detail-item">
-              <div class="appsheet-detail-label">Status</div>
-              <div class="appsheet-detail-value">
-                <span class="badge-status badge-status-slate">
-                  <span class="appsheet-dot dot-slate"></span> Cheque Due
-                </span>
-              </div>
-            </div>
+        <div class="drilldown-field">
+          <div class="drilldown-field-label">Owner Due</div>
+          <div class="drilldown-field-val font-monospace fw-bold" style="color: #d93025 !important; font-size: 13.5px;">
+            <span class="appsheet-bullet bullet-red">●</span> ₹ ${this.formatCurrency(dueAmt)}
           </div>
         </div>
-      `;
-
-    } else if (col === 'cyan') {
-      // CYAN (Truck Owner Payment Pending):
-      // Col 1 Card 2: Payment 1
-      col1Cards += `
-        <div class="appsheet-panel mt-3" id="panelCyanPayment">
-          <div class="appsheet-panel-header">
-            <h6 class="appsheet-panel-title">Payment 1</h6>
-            <i class="bi bi-arrows-angle-expand expand-toggle-icon" onclick="OwnersModule.togglePanelExpand('panelCyanPayment')" title="Expand / Collapse"></i>
-          </div>
-          <div class="appsheet-panel-body p-3">
-            <div class="appsheet-detail-item">
-              <div class="appsheet-detail-label">Payment Date</div>
-              <div class="appsheet-detail-value font-monospace">${d.paymentDate || '24/10/2026'}</div>
-            </div>
-            <div class="appsheet-detail-divider"></div>
-
-            <div class="appsheet-detail-item">
-              <div class="appsheet-detail-label">Amount Paid</div>
-              <div class="appsheet-detail-value font-monospace text-success fw-bold">${this.formatCurrency(d.paidAmount || 192030)}</div>
-            </div>
-            <div class="appsheet-detail-divider"></div>
-
-            <div class="appsheet-detail-item">
-              <div class="appsheet-detail-label">Mode</div>
-              <div class="appsheet-detail-value">NEFT/RTGS</div>
-            </div>
-            <div class="appsheet-detail-divider"></div>
-
-            <div class="appsheet-detail-item">
-              <div class="appsheet-detail-label">Beneficiary</div>
-              <div class="appsheet-detail-value font-monospace">TTC</div>
-            </div>
-
-            <div class="mt-3 pt-2 border-top">
-              <button class="btn-appsheet-panel-action" onclick="OwnersModule.showTripPaymentDetails()" title="Expand Full Sheet">
-                <i class="bi bi-arrows-fullscreen me-1"></i> Expand
-              </button>
-            </div>
-          </div>
-        </div>
-      `;
-
-      // Col 2 Card 2: Total Freight, Paid Amount, Due Amount, Paid To Transporter
-      col2Cards += `
-        <div class="appsheet-panel mt-3" id="panelCyanSummary">
-          <div class="appsheet-panel-header">
-            <h6 class="appsheet-panel-title">Payment Summary</h6>
-          </div>
-          <div class="appsheet-panel-body p-3">
-            <div class="appsheet-detail-item">
-              <div class="appsheet-detail-label">Total Freight</div>
-              <div class="appsheet-detail-value font-monospace fw-bold">${this.formatCurrency(d.totalFreight || 192030)}</div>
-            </div>
-            <div class="appsheet-detail-divider"></div>
-
-            <div class="appsheet-detail-item">
-              <div class="appsheet-detail-label">Paid Amount</div>
-              <div class="appsheet-detail-value font-monospace text-success fw-bold">${this.formatCurrency(d.paidAmount || 192030)}</div>
-            </div>
-            <div class="appsheet-detail-divider"></div>
-
-            <div class="appsheet-detail-item">
-              <div class="appsheet-detail-label">Due Amount</div>
-              <div class="appsheet-detail-value font-monospace fw-bold">${this.formatCurrency(d.dueAmount || 0)}</div>
-            </div>
-            <div class="appsheet-detail-divider"></div>
-
-            <div class="appsheet-detail-item">
-              <div class="appsheet-detail-label">Paid To</div>
-              <div class="appsheet-detail-value">Transporter</div>
-            </div>
-            <div class="appsheet-detail-divider"></div>
-
-            <div class="appsheet-detail-item">
-              <div class="appsheet-detail-label">Status</div>
-              <div class="appsheet-detail-value">
-                <span class="badge-status badge-status-cyan">
-                  <span class="appsheet-dot dot-cyan"></span> Truck Owner Payment Pending
-                </span>
-              </div>
-            </div>
-          </div>
+        <div class="mt-3 pt-2 d-flex justify-content-end">
+          <button class="btn-appsheet-edit py-1 px-4 shadow-sm" onclick="OwnersModule.openEditTripDrawer('${safeTripId}')" title="Edit Trip">
+            <i class="bi bi-pencil me-1"></i> Edit
+          </button>
         </div>
       `;
     }
-
-    // Assemble the complete 3-column layout
-    container.innerHTML = `
-      <div class="appsheet-col d-flex flex-column gap-3">${col1Cards}</div>
-      <div class="appsheet-col d-flex flex-column gap-3">${col2Cards}</div>
-      <div class="appsheet-col d-flex flex-column gap-3">${col3Cards}</div>
-    `;
   },
 
   // Card Expand / Collapse Toggle
