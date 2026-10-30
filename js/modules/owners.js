@@ -1114,6 +1114,7 @@ const OwnersModule = {
     const viewOpenTrip = document.getElementById('viewOpenTripDetails');
     const viewParty = document.getElementById('viewOpenTripPartyDetails');
     const viewPayment = document.getElementById('viewTripPaymentDetails');
+    const viewDebts = document.getElementById('viewOpenDebtsDetails');
 
     if (viewDash) viewDash.style.display = 'none';
     if (viewOwnerDetails) viewOwnerDetails.style.display = 'none';
@@ -1121,6 +1122,7 @@ const OwnersModule = {
     if (viewOpenTrip) viewOpenTrip.style.display = 'block';
     if (viewParty) viewParty.style.display = 'none';
     if (viewPayment) viewPayment.style.display = 'none';
+    if (viewDebts) viewDebts.style.display = 'none';
 
     // Authentic AppSheet Single Top Header Bar matching 19_52_55.png
     const bc = document.getElementById('appsheetBreadcrumb');
@@ -1308,7 +1310,7 @@ const OwnersModule = {
       `;
     }
 
-    // 4. CARD 3 (RIGHT - CONSIGNEE / OWNER / FREIGHT / STATUS / DUE) matching 19_52_27.png & WhatsApp
+    // 4. CARD 3 (RIGHT - CONSIGNEE / OWNER / FREIGHT / DROPDOWNS / DUE) matching 19_52_55.png
     if (rightCard) {
       rightCard.innerHTML = `
         <div class="drilldown-field">
@@ -1367,6 +1369,10 @@ const OwnersModule = {
                 <li><a class="dropdown-item" href="javascript:void(0)" onclick="OwnersModule.handleAddRecordSelect('${safeTripId}', 'Party Payment')"><i class="bi bi-bank me-2 text-info"></i>Party Payment</a></li>
                 <li><a class="dropdown-item" href="javascript:void(0)" onclick="OwnersModule.handleAddRecordSelect('${safeTripId}', 'Truck Owner Payment')"><i class="bi bi-credit-card me-2 text-primary"></i>Truck Owner Payment</a></li>
                 <li><a class="dropdown-item" href="javascript:void(0)" onclick="OwnersModule.handleAddRecordSelect('${safeTripId}', 'Other')"><i class="bi bi-three-dots me-2 text-secondary"></i>Other</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="javascript:void(0)" onclick="OwnersModule.openAddPaymentDrawer('${safeTripId}', 'party')"><i class="bi bi-cash-stack me-2 text-success"></i>party payment</a></li>
+                <li><a class="dropdown-item" href="javascript:void(0)" onclick="OwnersModule.openAddPaymentDrawer('${safeTripId}', 'owner')"><i class="bi bi-person-check me-2 text-primary"></i>owner' Payment</a></li>
+                <li><a class="dropdown-item" href="javascript:void(0)" onclick="OwnersModule.openDebtDrawer('${safeTripId}')"><i class="bi bi-graph-up-arrow me-2 text-info"></i>Earnings upcoming</a></li>
               </ul>
             </div>
           </div>
@@ -1386,10 +1392,11 @@ const OwnersModule = {
                 </span>
               </button>
               <ul class="dropdown-menu shadow font-size-12 w-100">
-                <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="OwnersModule.handleStatusSelectChange('${safeTripId}', 'POD Sent/ Bill Generated')"><span class="bullet-purple">●</span> POD Sent/ Bill Generated</a></li>
+                <li><a class="dropdown-item d-flex align-items-center gap-2 chip-active-purple" href="javascript:void(0)" onclick="OwnersModule.handleStatusSelectChange('${safeTripId}', 'POD Sent/ Bill Generated')"><span class="bullet-purple">●</span> POD Sent/ Bill Generated</a></li>
                 <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="OwnersModule.handleStatusSelectChange('${safeTripId}', 'Transit')"><span class="bullet-yellow">●</span> Transit</a></li>
                 <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="OwnersModule.handleStatusSelectChange('${safeTripId}', 'Off Loading')"><span class="bullet-pink">●</span> Off Loading</a></li>
                 <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="OwnersModule.handleStatusSelectChange('${safeTripId}', 'Cheque Due')"><span class="bullet-slate">●</span> Cheque Due</a></li>
+                <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="OwnersModule.handleStatusSelectChange('${safeTripId}', 'POD Sent')"><span class="bullet-cyan">●</span> POD Sent</a></li>
                 <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="OwnersModule.handleStatusSelectChange('${safeTripId}', 'Party Payment Pending')"><span class="bullet-blue">●</span> Party Payment Pending</a></li>
                 <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="OwnersModule.handleStatusSelectChange('${safeTripId}', 'Truck Owner Payment Pending')"><span class="bullet-cyan">●</span> Truck Owner Payment Pending</a></li>
               </ul>
@@ -1397,34 +1404,7 @@ const OwnersModule = {
           </div>
         </div>
 
-        <!-- AppSheet Action Chips (WhatsApp screenshots) -->
-        <div class="appsheet-action-chips-container mt-2 pt-2 border-top">
-          <div class="d-flex flex-wrap gap-1 align-items-center">
-            <button type="button" class="action-chip ${col === 'purple' ? 'chip-active-purple' : ''}" onclick="OwnersModule.handleStatusSelectChange('${safeTripId}', 'POD Sent/ Bill Generated')">
-              <span class="chip-dot">●</span> POD Sent/ Bill Generated
-            </button>
-            <button type="button" class="action-chip ${col === 'pink' ? 'chip-active-pink' : ''}" onclick="OwnersModule.handleStatusSelectChange('${safeTripId}', 'Off Loading')">
-              <span class="chip-dot">●</span> Off Loading
-            </button>
-            <button type="button" class="action-chip ${col === 'slate' ? 'chip-active-slate' : ''}" onclick="OwnersModule.handleStatusSelectChange('${safeTripId}', 'Cheque Due')">
-              <span class="chip-dot">●</span> Cheque Due
-            </button>
-            <button type="button" class="action-chip ${col === 'cyan' ? 'chip-active-cyan' : ''}" onclick="OwnersModule.updateTripStatusDirect('${safeTripId}', 'POD Sent', 'cyan')">
-              <span class="chip-dot">●</span> POD Sent
-            </button>
-            <button type="button" class="action-chip" onclick="OwnersModule.openAddPaymentDrawer('${safeTripId}', 'party')">
-              <span class="chip-dot">●</span> party payment
-            </button>
-            <button type="button" class="action-chip" onclick="OwnersModule.openAddPaymentDrawer('${safeTripId}', 'owner')">
-              <span class="chip-dot">●</span> owner' Payment
-            </button>
-            <button type="button" class="action-chip" onclick="OwnersModule.openDebtDrawer('${safeTripId}')">
-              <span class="chip-dot">●</span> Earnings upcoming
-            </button>
-          </div>
-        </div>
-
-        <div class="drilldown-field mt-2 pt-2 border-top">
+        <div class="drilldown-field mt-3 pt-2 border-top">
           <div class="drilldown-field-label">Owner Due</div>
           <div class="drilldown-field-val font-monospace fw-bold" style="color: #cc0b0b !important; font-size: 14px;">
             <span class="appsheet-bullet bullet-red">●</span> ₹ ${this.formatCurrency(dueAmt)}
@@ -2178,15 +2158,63 @@ const OwnersModule = {
     this.showOpenTripDetails(tripId);
   },
 
-  scrollToDebts() {
-    const el = document.getElementById('drilldown-debts-container');
-    if (el) {
-      el.style.display = 'block';
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      el.style.transition = 'box-shadow 0.3s ease';
-      el.style.boxShadow = '0 0 0 3px rgba(124, 0, 255, 0.4)';
-      setTimeout(() => { el.style.boxShadow = ''; }, 1500);
+  // ========================================================
+  // VIEW 7: OPEN DEBTS DETAILS FULL VIEW (19_54_51.png)
+  // ========================================================
+  showOpenDebtsDetails(tripId) {
+    const targetId = tripId || this.currentTripId;
+    const d = (this.allOwnerDues || []).find(item => String(item.id) === String(targetId) || String(item.grNo) === String(targetId));
+    if (!d) return;
+
+    this.currentView = 'debtsDetails';
+    this.currentTripId = String(d.id || d.grNo);
+
+    const viewDash = document.getElementById('viewDashboard');
+    const viewOwnerDetails = document.getElementById('viewOwnerDetails');
+    const viewDueList = document.getElementById('viewOwnerDueList');
+    const viewOpenTrip = document.getElementById('viewOpenTripDetails');
+    const viewParty = document.getElementById('viewOpenTripPartyDetails');
+    const viewPayment = document.getElementById('viewTripPaymentDetails');
+    const viewDebts = document.getElementById('viewOpenDebtsDetails');
+
+    if (viewDash) viewDash.style.display = 'none';
+    if (viewOwnerDetails) viewOwnerDetails.style.display = 'none';
+    if (viewDueList) viewDueList.style.display = 'none';
+    if (viewOpenTrip) viewOpenTrip.style.display = 'none';
+    if (viewParty) viewParty.style.display = 'none';
+    if (viewPayment) viewPayment.style.display = 'none';
+    if (viewDebts) viewDebts.style.display = 'block';
+
+    // Breadcrumb: Home > Owners > Owner Due > Open Trip Details > Open Debts
+    const bc = document.getElementById('appsheetBreadcrumb');
+    if (bc) {
+      bc.innerHTML = `
+        <a href="javascript:void(0)" onclick="OwnersModule.showDashboard()">Home</a>
+        <i class="bi bi-chevron-right text-muted small"></i>
+        <a href="javascript:void(0)" onclick="OwnersModule.showDashboard()">Owners</a>
+        <i class="bi bi-chevron-right text-muted small"></i>
+        <a href="javascript:void(0)" onclick="OwnersModule.backToDueList()">Owner Due</a>
+        <i class="bi bi-chevron-right text-muted small"></i>
+        <a href="javascript:void(0)" onclick="OwnersModule.backToTripDetails()">Open Trip Details</a>
+        <i class="bi bi-chevron-right text-muted small"></i>
+        <span class="active">Open Debts</span>
+      `;
     }
+
+    const bcActions = document.getElementById('breadcrumbActions');
+    if (bcActions) {
+      bcActions.innerHTML = `
+        <button class="btn btn-sm btn-light border py-1 px-3 d-flex align-items-center gap-1 text-secondary fw-semibold shadow-sm" onclick="OwnersModule.backToTripDetails()">
+          <i class="bi bi-arrow-left me-1"></i> <span>Back to Open Trip Details</span>
+        </button>
+      `;
+    }
+
+    this.renderDrilldownView(d);
+  },
+
+  scrollToDebts(tripId) {
+    return this.showOpenDebtsDetails(tripId || this.currentTripId);
   },
 
   downloadBilty(tripId) {
