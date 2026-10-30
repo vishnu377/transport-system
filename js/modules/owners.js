@@ -1130,6 +1130,17 @@ const OwnersModule = {
     this.renderOwnerPaidTable();
   },
 
+
+  handleDrilldownBack() {
+    if (this.currentTripObj && this.currentTripObj.fromView === 'paid') {
+      this.backToPaidList();
+    } else if (this.currentView === 'ownerPaidList') {
+      this.backToPaidList();
+    } else {
+      this.backToDueList();
+    }
+  },
+
   backToPaidList() {
     this.showOwnerPaidList(this.selectedPaidYear || 'ALL');
   },
@@ -1295,26 +1306,26 @@ const OwnersModule = {
     tbody.innerHTML = pageItems.map(p => {
       const safeId = String(p.id);
       const isSettled = (p.status === 'Settled' || Number(p.dueAmount || 0) === 0);
-      const badgeClass = isSettled ? 'bg-success-subtle text-success' : (p.status === 'Truck Owner Payment Pending' ? 'bg-info-subtle text-info' : 'bg-primary-subtle text-primary');
+      const modeText = p.mode || 'Settled';
 
       return `
         <tr onclick="OwnersModule.showOwnerPaidTripDetails('${safeId}')" style="cursor: pointer;">
-          <td class="fw-semibold text-success font-monospace">${p.grNo || '-'}</td>
-          <td>${p.startDate || '-'}</td>
-          <td class="font-monospace fw-medium">${p.truckNo || '-'}</td>
-          <td class="fw-medium">${p.ownerName || '-'}</td>
-          <td>${p.destination || '-'}</td>
-          <td class="text-end font-monospace">${p.weight ? Number(p.weight).toFixed(3) : '-'}</td>
-          <td class="text-end font-monospace">₹ ${p.rate ? this.formatCurrency(p.rate) : '-'}</td>
-          <td class="text-end font-monospace">₹ ${this.formatCurrency(p.freight)}</td>
-          <td class="text-end font-monospace text-muted">₹ ${this.formatCurrency(p.dueAmount || 0)}</td>
-          <td>${p.paymentDate || '-'}</td>
-          <td class="text-end font-monospace fw-bold text-success">₹ ${this.formatCurrency(p.amountPaid)}</td>
-          <td><span class="badge ${badgeClass} small">${p.mode || 'Settled'}</span></td>
-          <td>${p.beneficiary || '-'}</td>
-          <td>${p.fromBank || '-'}</td>
-          <td>${p.toBank || '-'}</td>
-          <td class="small text-muted" style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${p.description || '-'}</td>
+          <td class="fw-bold font-monospace" style="color: #00b11f !important;">${p.grNo || '-'}</td>
+          <td class="font-monospace" style="color: #00b11f !important;">${p.startDate || '-'}</td>
+          <td class="font-monospace fw-semibold" style="color: #00b11f !important;">${p.truckNo || '-'}</td>
+          <td class="fw-semibold" style="color: #00b11f !important;">${p.ownerName || '-'}</td>
+          <td style="color: #00b11f !important;">${p.destination || '-'}</td>
+          <td class="text-end font-monospace" style="color: #00b11f !important;">${p.weight ? Number(p.weight).toFixed(3) : '-'}</td>
+          <td class="text-end font-monospace" style="color: #00b11f !important;">₹&nbsp;${p.rate ? this.formatCurrency(p.rate) : '0.00'}</td>
+          <td class="text-end font-monospace fw-semibold" style="color: #00b11f !important;">₹&nbsp;${this.formatCurrency(p.freight)}</td>
+          <td class="text-end font-monospace" style="color: #00b11f !important;">₹&nbsp;${this.formatCurrency(p.dueAmount || 0)}</td>
+          <td class="font-monospace" style="color: #00b11f !important;">${p.paymentDate || '-'}</td>
+          <td class="text-end font-monospace fw-bold" style="color: #00b11f !important;">₹&nbsp;${this.formatCurrency(p.amountPaid)}</td>
+          <td><span class="badge-paid-mode">${modeText}</span></td>
+          <td style="color: #00b11f !important;">${p.beneficiary || '-'}</td>
+          <td style="color: #00b11f !important;">${p.fromBank || '-'}</td>
+          <td style="color: #00b11f !important;">${p.toBank || '-'}</td>
+          <td class="small" style="color: #00b11f !important; max-width: 260px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${(p.description || '').replace(/"/g, '&quot;')}">${p.description || '-'}</td>
         </tr>
       `;
     }).join('');
@@ -1352,6 +1363,43 @@ const OwnersModule = {
     if (viewDash) viewDash.style.display = 'none';
     if (viewPaidList) viewPaidList.style.display = 'none';
     if (viewOpenTrip) viewOpenTrip.style.display = 'block';
+
+    // Store current trip object
+    this.currentTripObj = p;
+
+    // Update in-card back button text & badge
+    const backText = document.getElementById('btn-drilldown-back-text');
+    if (backText) backText.textContent = 'Back to Owner Paid';
+    const viewBadge = document.getElementById('drilldown-view-badge');
+    if (viewBadge) viewBadge.textContent = p.status === 'Settled' ? 'Settled Trip Details' : 'Open Trip Details';
+
+    // Update AppSheet top breadcrumb
+    const bc = document.getElementById('appsheetBreadcrumb');
+    if (bc) {
+      bc.innerHTML = `
+        <a href="javascript:void(0)" onclick="OwnersModule.showDashboard()">Home</a>
+        <i class="bi bi-chevron-right text-muted small"></i>
+        <a href="javascript:void(0)" onclick="OwnersModule.showDashboard()">Owners</a>
+        <i class="bi bi-chevron-right text-muted small"></i>
+        <a href="javascript:void(0)" onclick="OwnersModule.backToPaidList()">Owner Paid</a>
+        <i class="bi bi-chevron-right text-muted small"></i>
+        <span class="active">${p.status === 'Settled' ? 'Settled Trip Details' : 'Open Trip Details'}</span>
+      `;
+    }
+
+    const bcActions = document.getElementById('breadcrumbActions');
+    if (bcActions) {
+      bcActions.innerHTML = `
+        <div class="d-flex align-items-center gap-2">
+          <button class="btn btn-sm btn-light border py-1 px-3 d-flex align-items-center gap-1 text-secondary fw-semibold shadow-sm" onclick="OwnersModule.downloadBilty('${p.id}')" title="Download / Print Receipt">
+            <i class="bi bi-printer me-1"></i> <span>Print</span>
+          </button>
+          <button class="btn btn-sm btn-light border py-1 px-2 text-secondary" onclick="OwnersModule.backToPaidList()" title="Back to Owner Paid">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+      `;
+    }
 
     this.renderDrilldownView(p);
   },
@@ -1622,8 +1670,8 @@ const OwnersModule = {
     const safeTripId = String(d.id || d.grNo);
 
     // If 2645 or slate, reflect exact authentic values matching user screenshot media_1793355082953_07f2614f.png
-    const dt = is2645 ? '25/10/2026' : (d.tripStartDate || d.tripDate || d.date || '-');
-    const endDate = is2645 ? '04/11/2026' : (d.tripDueDate || d.tripEndDate || dt);
+    const dt = is2645 ? '25/10/2026' : (d.startDate || d.tripStartDate || d.tripDate || d.date || '-');
+    const endDate = is2645 ? '04/11/2026' : (d.endDate || d.tripDueDate || d.tripEndDate || d.paymentDate || dt);
     const truckNoVal = is2645 ? 'RJ52GB5640' : (d.truckNo || '-');
     const originVal = is2645 ? 'Kishangarh (Raj.)' : (d.origin || 'Rajsamand (Raj.)');
     const destVal = is2645 ? 'Delhi' : (d.destination || '-');
@@ -2150,8 +2198,8 @@ const OwnersModule = {
                   ${paymentsList.map(p => `
                     <tr style="cursor: pointer;" onclick="OwnersModule.showTripPaymentDetails('${safeTripId}')" title="Click to view full payment details">
                       <td class="text-center text-secondary py-2" style="width: 36px;"><i class="bi bi-pencil-fill small text-muted"></i></td>
-                      <td class="ps-2 py-2 font-monospace" style="color: #0ab226 !important; font-weight: 600;">${p.date || '-'}</td>
-                      <td class="py-2 font-monospace fw-bold" style="color: #0ab226 !important;">₹ ${this.formatCurrency(p.amount || 0)}</td>
+                      <td class="ps-2 py-2 font-monospace" style="color: #0ab226 !important; font-weight: 600;">${p.paymentDate || p.date || '-'}</td>
+                      <td class="py-2 font-monospace fw-bold" style="color: #0ab226 !important;">₹ ${this.formatCurrency(p.amountPaid !== undefined ? p.amountPaid : (p.amount || 0))}</td>
                       <td class="py-2" style="color: #0ab226 !important; font-weight: 600;"><span style="color: #0ab226 !important;">●</span> ${p.mode || 'NEFT/RTGS'}</td>
                       <td class="py-2" style="color: #0ab226 !important; font-weight: 600;"><span style="color: #0ab226 !important;">●</span> ${p.beneficiary || d.ownerName || 'MTC'}</td>
                     </tr>
@@ -2383,7 +2431,13 @@ const OwnersModule = {
   // ========================================================
   showOpenTripPartyDetails(tripId) {
     const targetId = tripId || this.currentTripId;
-    const d = (this.allOwnerDues || []).find(item => String(item.id) === String(targetId) || String(item.grNo) === String(targetId));
+    let d = (this.allOwnerDues || []).find(item => String(item.id) === String(targetId) || String(item.grNo) === String(targetId));
+    if (!d) {
+      d = (this.allOwnerPaid || []).find(item => String(item.id) === String(targetId) || String(item.grNo) === String(targetId));
+    }
+    if (!d && typeof dbService !== 'undefined') {
+      d = dbService.getAllOwnerPaid().find(item => String(item.id) === String(targetId) || String(item.grNo) === String(targetId));
+    }
     if (!d) return;
 
     this.currentView = 'partyDetails';
@@ -2460,7 +2514,11 @@ const OwnersModule = {
   },
 
   backToTripDetails() {
-    this.showOpenTripDetails(this.currentTripId);
+    if (this.currentTripObj && this.currentTripObj.fromView === 'paid') {
+      this.showOwnerPaidTripDetails(this.currentTripId);
+    } else {
+      this.showOpenTripDetails(this.currentTripId);
+    }
   },
 
   // ========================================================
@@ -2468,7 +2526,16 @@ const OwnersModule = {
   // ========================================================
   showTripPaymentDetails(tripId) {
     const targetId = tripId || this.currentTripId;
-    const d = (this.allOwnerDues || []).find(item => String(item.id) === String(targetId) || String(item.grNo) === String(targetId));
+    let d = (this.allOwnerDues || []).find(item => String(item.id) === String(targetId) || String(item.grNo) === String(targetId));
+    if (!d) {
+      d = (this.allOwnerPaid || []).find(item => String(item.id) === String(targetId) || String(item.grNo) === String(targetId));
+    }
+    if (!d && typeof dbService !== 'undefined' && dbService.getAllOwnerPaid) {
+      d = dbService.getAllOwnerPaid().find(item => String(item.id) === String(targetId) || String(item.grNo) === String(targetId));
+    }
+    if (!d && this.currentTripObj) {
+      d = this.currentTripObj;
+    }
     if (!d) return;
 
     this.currentView = 'paymentDetails';
@@ -2493,18 +2560,30 @@ const OwnersModule = {
     const isParty = (Array.isArray(d.payments) && d.payments.length > 0) || (d.addRecord === 'Party Payment');
     const isCheque = (d.status === 'Cheque Due' || d.color === 'slate' || d.addRecord === 'Cheque' || d.chequeNo);
 
-    // Breadcrumb: Home > Owners > Owner Due > Open Trip Details > Details
+    // Breadcrumb: Home > Owners > (Owner Due / Owner Paid) > Details
     const bc = document.getElementById('appsheetBreadcrumb');
     if (bc) {
-      bc.innerHTML = `
-        <a href="javascript:void(0)" onclick="OwnersModule.showDashboard()">Owners</a>
-        <i class="bi bi-chevron-right text-muted small"></i>
-        <a href="javascript:void(0)" onclick="OwnersModule.showOwnerDueList('${this.selectedDueYear}')">Owner Due</a>
-        <i class="bi bi-chevron-right text-muted small"></i>
-        <a href="javascript:void(0)" onclick="OwnersModule.showOpenTripDetails('${this.currentTripId}')">Open Trip Details</a>
-        <i class="bi bi-chevron-right text-muted small"></i>
-        <span class="active">${isCheque ? 'Cheque Payment Details' : (isParty ? 'Party Payment Details' : 'Trip Truck Owner Payment Details')}</span>
-      `;
+      if (d.fromView === 'paid') {
+        bc.innerHTML = `
+          <a href="javascript:void(0)" onclick="OwnersModule.showDashboard()">Owners</a>
+          <i class="bi bi-chevron-right text-muted small"></i>
+          <a href="javascript:void(0)" onclick="OwnersModule.backToPaidList()">Owner Paid</a>
+          <i class="bi bi-chevron-right text-muted small"></i>
+          <a href="javascript:void(0)" onclick="OwnersModule.showOwnerPaidTripDetails('${this.currentTripId}')">${d.status === 'Settled' ? 'Settled Trip Details' : 'Open Trip Details'}</a>
+          <i class="bi bi-chevron-right text-muted small"></i>
+          <span class="active">Payment Details</span>
+        `;
+      } else {
+        bc.innerHTML = `
+          <a href="javascript:void(0)" onclick="OwnersModule.showDashboard()">Owners</a>
+          <i class="bi bi-chevron-right text-muted small"></i>
+          <a href="javascript:void(0)" onclick="OwnersModule.showOwnerDueList('${this.selectedDueYear}')">Owner Due</a>
+          <i class="bi bi-chevron-right text-muted small"></i>
+          <a href="javascript:void(0)" onclick="OwnersModule.showOpenTripDetails('${this.currentTripId}')">Open Trip Details</a>
+          <i class="bi bi-chevron-right text-muted small"></i>
+          <span class="active">${isCheque ? 'Cheque Payment Details' : (isParty ? 'Party Payment Details' : 'Trip Truck Owner Payment Details')}</span>
+        `;
+      }
     }
 
     const grBadge = document.getElementById('payment-sheet-gr-no');
@@ -2539,8 +2618,8 @@ const OwnersModule = {
                 <tbody>
                   ${d.payments.map(p => `
                     <tr>
-                      <td class="ps-3 py-2 font-monospace" style="color: #0ab226 !important; font-weight: 600;">${p.date || '-'}</td>
-                      <td class="py-2 font-monospace fw-bold" style="color: #0ab226 !important;">₹ ${this.formatCurrency(p.amount || 0)}</td>
+                      <td class="ps-3 py-2 font-monospace" style="color: #0ab226 !important; font-weight: 600;">${p.paymentDate || p.date || '-'}</td>
+                      <td class="py-2 font-monospace fw-bold" style="color: #0ab226 !important;">₹ ${this.formatCurrency(p.amountPaid !== undefined ? p.amountPaid : (p.amount || 0))}</td>
                       <td class="py-2" style="color: #0ab226 !important; font-weight: 600;"><span style="color: #0ab226 !important;">●</span> ${p.mode || 'NEFT/RTGS'}</td>
                       <td class="pe-3 py-2" style="color: #0ab226 !important; font-weight: 600;"><span style="color: #0ab226 !important;">●</span> ${p.beneficiary || d.ownerName || 'MTC'}</td>
                     </tr>
