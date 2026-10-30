@@ -1413,6 +1413,14 @@
     .theme-pink .theme-text { color: #fb0a9d !important; font-weight: 600; }
     .theme-pink .theme-icon { color: #fb0a9d !important; }
 
+    .theme-green .theme-dot { color: #00b11f !important; }
+    .theme-green .theme-text { color: #00b11f !important; font-weight: 600; }
+    .theme-green .theme-icon { color: #00b11f !important; }
+    .theme-green .theme-link { color: #00b11f !important; text-decoration: none; }
+    .theme-green .theme-link:hover { text-decoration: underline; }
+    .theme-green .drilldown-subtable td.theme-text { color: #00b11f !important; }
+
+
     .theme-slate .theme-dot { color: #5f6368 !important; }
     .theme-slate .theme-text { color: #5f6368 !important; font-weight: 600; }
     .theme-slate .theme-icon { color: #5f6368 !important; }
@@ -2130,6 +2138,174 @@
         </div>
       </div>
 
+      
+      <!-- VIEW 3B: Owner Paid Split Table View (Matching authentic AppSheet screencapture 00_04_15.png and 00_00_20.png) -->
+      <div id="viewOwnerPaidList" style="display: none;">
+        <div class="owners-due-split" id="ownersPaidSplitLayout">
+          <!-- Left Column: Year Filter Card -->
+          <div class="appsheet-panel" id="paidYearSidebarPanel" style="height: 100%; border-radius: 6px;">
+            <div class="appsheet-panel-header">
+              <h6 class="appsheet-panel-title">Owner Paid</h6>
+            </div>
+            <div class="appsheet-panel-subheader">
+              <span class="fw-semibold">Year</span>
+            </div>
+            <div class="appsheet-summary-list">
+              <!-- All -->
+              <div class="appsheet-summary-item active" id="paid-year-tab-ALL" onclick="OwnersModule.selectPaidYear('ALL')">
+                <span class="fw-semibold text-dark">All</span>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="badge bg-light text-dark border small" id="paid-year-count-ALL">397</span>
+                  <i class="bi bi-chevron-right text-muted small"></i>
+                </div>
+              </div>
+              <!-- 2026-2027 -->
+              <div class="appsheet-summary-item" id="paid-year-tab-2026-2027" onclick="OwnersModule.selectPaidYear('2026-2027')">
+                <div>
+                  <span class="appsheet-dot dot-green"></span>
+                  <span class="fw-semibold text-dark">2026-2027</span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="summary-amount" id="paid-year-amount-2026-2027">₹ 387,326,250.58</span>
+                  <i class="bi bi-chevron-right text-muted small"></i>
+                </div>
+              </div>
+              <!-- 2025-2026 -->
+              <div class="appsheet-summary-item" id="paid-year-tab-2025-2026" onclick="OwnersModule.selectPaidYear('2025-2026')">
+                <div>
+                  <span class="appsheet-dot dot-green"></span>
+                  <span class="fw-semibold text-dark">2025-2026</span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="summary-amount" id="paid-year-amount-2025-2026">₹ 613,429,055.23</span>
+                  <i class="bi bi-chevron-right text-muted small"></i>
+                </div>
+              </div>
+              <!-- 2024-2025 -->
+              <div class="appsheet-summary-item" id="paid-year-tab-2024-2025" onclick="OwnersModule.selectPaidYear('2024-2025')">
+                <div>
+                  <span class="appsheet-dot dot-green"></span>
+                  <span class="fw-semibold text-dark">2024-2025</span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="summary-amount" id="paid-year-amount-2024-2025">₹ 254,765,978.79</span>
+                  <i class="bi bi-chevron-right text-muted small"></i>
+                </div>
+              </div>
+              <!-- 24-25 -->
+              <div class="appsheet-summary-item" id="paid-year-tab-24-25" onclick="OwnersModule.selectPaidYear('24-25')">
+                <div>
+                  <span class="appsheet-dot dot-green"></span>
+                  <span class="fw-semibold text-dark">24-25</span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="summary-amount" id="paid-year-amount-24-25">₹ 19,901.60</span>
+                  <i class="bi bi-chevron-right text-muted small"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Owner Paid Table Panel -->
+          <div class="appsheet-panel" style="height: 100%; border-radius: 6px;">
+            <div class="appsheet-panel-header">
+              <div class="d-flex align-items-center gap-2">
+                <button class="btn btn-sm btn-light border py-1 px-2" onclick="OwnersModule.showDashboard()" title="Back to Dashboard">
+                  <i class="bi bi-arrow-left"></i> <span class="d-none d-md-inline ms-1">Home</span>
+                </button>
+                <button class="btn btn-sm btn-light border py-1 px-2" id="btn-toggle-paid-sidebar" onclick="OwnersModule.togglePaidSidebar()" title="Toggle Sidebar">
+                  <i class="bi bi-layout-sidebar-inset"></i> <span class="d-none d-md-inline ms-1">Sidebar</span>
+                </button>
+                <h6 class="appsheet-panel-title">Owner Paid</h6>
+                <span class="badge bg-success-subtle text-success fw-medium" id="paid-active-year-badge">All</span>
+              </div>
+              <div class="appsheet-panel-tools d-flex align-items-center gap-2 flex-wrap">
+                <!-- Mode Filter Dropdown -->
+                <select id="paid-mode-filter" class="form-select form-select-sm py-0 px-2 text-muted" style="height: 28px; width: auto; font-size: 0.78rem;" onchange="OwnersModule.filterByPaidMode(this.value)" title="Filter by Mode">
+                  <option value="ALL">All Modes</option>
+                  <option value="NEFT/RTGS">NEFT/RTGS</option>
+                  <option value="Cash">Cash</option>
+                  <option value="PhonePe/GPay">PhonePe/GPay/UPI</option>
+                  <option value="Cheque">Cheque</option>
+                  <option value="Adjustment">Adjustment</option>
+                  <option value="GST">GST</option>
+                  <option value="TDS">TDS</option>
+                </select>
+
+                <!-- Search Input Box -->
+                <div class="appsheet-search-box-sm d-flex align-items-center border rounded px-2 py-1 bg-white" style="max-width: 190px;">
+                  <i class="bi bi-search text-muted small me-1"></i>
+                  <input type="text" id="search-owner-paid" class="border-0 outline-none small" placeholder="Search Owner Paid..." onkeyup="OwnersModule.handlePaidSearch(this.value)" style="outline: none; width: 100%; min-width: 80px; font-size: 0.82rem;">
+                  <i class="bi bi-x-circle text-muted ms-1" id="btn-clear-paid-search" style="cursor: pointer; display: none; font-size: 0.75rem;" onclick="OwnersModule.clearPaidSearch()" title="Clear search"></i>
+                </div>
+
+                <button class="btn btn-sm btn-outline-secondary py-0 px-2" style="font-size: 0.78rem;" onclick="OwnersModule.exportOwnerPaidCSV()">
+                  <i class="bi bi-download me-1"></i> CSV
+                </button>
+              </div>
+            </div>
+
+            <!-- Table Header Subline -->
+            <div class="appsheet-panel-subheader">
+              <div>
+                <span class="fw-semibold">Payment Date</span>
+                <span class="appsheet-chip-number" id="owner-paid-header-count">Number 397</span>
+              </div>
+              <span class="text-muted small" id="owner-paid-showing-text">397 records</span>
+            </div>
+
+            <!-- Table Wrap -->
+            <div class="appsheet-table-wrap">
+              <table class="table table-hover align-middle appsheet-data-table mb-0" id="table-owner-paid">
+                <thead>
+                  <tr>
+                    <th>G.R. No.</th>
+                    <th>Start Date</th>
+                    <th>Truck No.</th>
+                    <th>Truck Owner</th>
+                    <th>Destination</th>
+                    <th>Weight</th>
+                    <th>Rate</th>
+                    <th>Freight</th>
+                    <th>Due</th>
+                    <th>Payment Date</th>
+                    <th>Amount Paid</th>
+                    <th>Mode</th>
+                    <th>Beneficiary</th>
+                    <th>From Bank</th>
+                    <th>To Bank</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-owner-paid">
+                  <!-- Populated dynamically by OwnersModule.renderOwnerPaidTable -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Pagination Bar -->
+            <div class="appsheet-pagination-bar d-flex justify-content-between align-items-center p-2 border-top bg-light" id="owner-paid-pagination-bar">
+              <span class="small text-muted" id="paid-pagination-info">Showing 1 - 20 of 397</span>
+              <div class="btn-group btn-group-sm">
+                <button type="button" class="btn btn-sm btn-light border py-0 px-2" id="btn-paid-page-first" title="First Page" onclick="OwnersModule.goToPaidFirstPage()">
+                  <i class="bi bi-chevron-double-left small"></i>
+                </button>
+                <button type="button" class="btn btn-sm btn-light border py-0 px-2" id="btn-paid-page-prev" title="Previous Page" onclick="OwnersModule.prevPaidPage()">
+                  <i class="bi bi-chevron-left small"></i>
+                </button>
+                <span class="px-2 py-1 small fw-semibold" id="paid-page-indicator">1 / 20</span>
+                <button type="button" class="btn btn-sm btn-light border py-0 px-2" id="btn-paid-page-next" title="Next Page" onclick="OwnersModule.nextPaidPage()">
+                  <i class="bi bi-chevron-right small"></i>
+                </button>
+                <button type="button" class="btn btn-sm btn-light border py-0 px-2" id="btn-paid-page-last" title="Last Page" onclick="OwnersModule.goToPaidLastPage()">
+                  <i class="bi bi-chevron-double-right small"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- VIEW 4: Open Trip Details (Clean 3-Card Layout matching 19_52_55.png) -->
       <div id="viewOpenTripDetails" style="display: none;">
         <span id="trip-details-gr-title" style="display: none;"></span>
@@ -2838,6 +3014,7 @@
   <script src="../js/sample-parties-data.js"></script>
   <script src="../js/sample-truck-owners-data.js"></script>
   <script src="../js/sample-owner-dues-data.js?v=20261029_lock"></script>
+  <script src="../js/sample-owner-paid-data.js"></script>
   <script src="../js/sample-trips-data.js"></script>
   <script src="../js/db-service.js?v=20261029_lock"></script>
   <script src="../js/app.js"></script>

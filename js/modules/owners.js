@@ -29,6 +29,12 @@ const OwnersModule = {
   // Owner Due Master State (Card 2)
   allOwnerDues: [],
   selectedDueYear: 'ALL',
+  selectedPaidYear: 'ALL',
+  paidSearchQuery: '',
+  paidModeFilter: 'ALL',
+  paidCurrentPage: 1,
+  paidPageSize: 20,
+  allOwnerPaid: [],
   selectedDueStatus: 'ALL',
   dueSearchQuery: '',
   duePageSize: 50,
@@ -402,6 +408,7 @@ const OwnersModule = {
     const viewDash = document.getElementById('viewDashboard');
     const viewOwnerDetails = document.getElementById('viewOwnerDetails');
     const viewDueList = document.getElementById('viewOwnerDueList');
+    const viewPaidList = document.getElementById('viewOwnerPaidList');
     const viewOpenTrip = document.getElementById('viewOpenTripDetails');
     const viewParty = document.getElementById('viewOpenTripPartyDetails');
     const viewPayment = document.getElementById('viewTripPaymentDetails');
@@ -409,6 +416,7 @@ const OwnersModule = {
     if (viewDash) viewDash.style.display = 'block';
     if (viewOwnerDetails) viewOwnerDetails.style.display = 'none';
     if (viewDueList) viewDueList.style.display = 'none';
+    if (viewPaidList) viewPaidList.style.display = 'none';
     if (viewOpenTrip) viewOpenTrip.style.display = 'none';
     if (viewParty) viewParty.style.display = 'none';
     if (viewPayment) viewPayment.style.display = 'none';
@@ -462,6 +470,7 @@ const OwnersModule = {
     const viewDash = document.getElementById('viewDashboard');
     const viewOwnerDetails = document.getElementById('viewOwnerDetails');
     const viewDueList = document.getElementById('viewOwnerDueList');
+    const viewPaidList = document.getElementById('viewOwnerPaidList');
     const viewOpenTrip = document.getElementById('viewOpenTripDetails');
     const viewParty = document.getElementById('viewOpenTripPartyDetails');
     const viewPayment = document.getElementById('viewTripPaymentDetails');
@@ -469,6 +478,7 @@ const OwnersModule = {
     if (viewDash) viewDash.style.display = 'block';
     if (viewOwnerDetails) viewOwnerDetails.style.display = 'none';
     if (viewDueList) viewDueList.style.display = 'none';
+    if (viewPaidList) viewPaidList.style.display = 'none';
     if (viewOpenTrip) viewOpenTrip.style.display = 'none';
     if (viewParty) viewParty.style.display = 'none';
     if (viewPayment) viewPayment.style.display = 'none';
@@ -678,6 +688,7 @@ const OwnersModule = {
     const viewDash = document.getElementById('viewDashboard');
     const viewOwnerDetails = document.getElementById('viewOwnerDetails');
     const viewDueList = document.getElementById('viewOwnerDueList');
+    const viewPaidList = document.getElementById('viewOwnerPaidList');
     const viewOpenTrip = document.getElementById('viewOpenTripDetails');
     const viewParty = document.getElementById('viewOpenTripPartyDetails');
     const viewPayment = document.getElementById('viewTripPaymentDetails');
@@ -1068,6 +1079,320 @@ const OwnersModule = {
     this.renderOwnerDueTable();
   },
 
+
+  // ========================================================
+  // VIEW 3B: OWNER PAID CONTROLLER & SPLIT VIEW
+  // ========================================================
+  filterByPaidYear(year = 'ALL') {
+    this.selectedPaidYear = year;
+    this.showOwnerPaidList(year);
+  },
+
+  selectPaidYear(year) {
+    this.selectedPaidYear = year;
+    this.paidCurrentPage = 1;
+    this.updatePaidYearTabsUI();
+    this.renderOwnerPaidTable();
+  },
+
+  showOwnerPaidList(year = 'ALL') {
+    this.currentView = 'ownerPaidList';
+    this.selectedPaidYear = year || 'ALL';
+    this.paidCurrentPage = 1;
+
+    const viewDash = document.getElementById('viewDashboard');
+    const viewOwnerDetails = document.getElementById('viewOwnerDetails');
+    const viewDueList = document.getElementById('viewOwnerDueList');
+    const viewPaidList = document.getElementById('viewOwnerPaidList');
+    const viewOpenTrip = document.getElementById('viewOpenTripDetails');
+    const viewParty = document.getElementById('viewOpenTripPartyDetails');
+    const viewPayment = document.getElementById('viewTripPaymentDetails');
+
+    if (viewDash) viewDash.style.display = 'none';
+    if (viewOwnerDetails) viewOwnerDetails.style.display = 'none';
+    if (viewDueList) viewDueList.style.display = 'none';
+    if (viewPaidList) viewPaidList.style.display = 'block';
+    if (viewOpenTrip) viewOpenTrip.style.display = 'none';
+    if (viewParty) viewParty.style.display = 'none';
+    if (viewPayment) viewPayment.style.display = 'none';
+
+    // Update Breadcrumbs
+    const headerTitle = document.querySelector('#viewOwnerPaidList .appsheet-panel-title');
+    if (headerTitle) {
+      headerTitle.innerHTML = `
+        <a href="javascript:void(0)" onclick="OwnersModule.showDashboard()" style="text-decoration:none; color:inherit;">Owners</a>
+        <i class="bi bi-chevron-right text-muted small mx-1"></i>
+        <span class="active">Owner Paid</span>
+      `;
+    }
+
+    this.updatePaidYearTabsUI();
+    this.renderOwnerPaidTable();
+  },
+
+  backToPaidList() {
+    this.showOwnerPaidList(this.selectedPaidYear || 'ALL');
+  },
+
+  togglePaidSidebar() {
+    const split = document.getElementById('ownersPaidSplitLayout');
+    if (!split) return;
+    split.classList.toggle('sidebar-collapsed');
+    const btn = document.getElementById('btn-toggle-paid-sidebar');
+    if (btn) {
+      const isCollapsed = split.classList.contains('sidebar-collapsed');
+      btn.classList.toggle('btn-primary', isCollapsed);
+      btn.classList.toggle('btn-light', !isCollapsed);
+    }
+  },
+
+  updatePaidYearTabsUI() {
+    const tabs = ['ALL', '2026-2027', '2025-2026', '2024-2025', '24-25'];
+    tabs.forEach(t => {
+      const el = document.getElementById(`paid-year-tab-${t}`);
+      if (el) {
+        if (t === this.selectedPaidYear) {
+          el.classList.add('active');
+        } else {
+          el.classList.remove('active');
+        }
+      }
+    });
+
+    const badge = document.getElementById('paid-active-year-badge');
+    if (badge) {
+      badge.textContent = this.selectedPaidYear === 'ALL' ? 'All' : this.selectedPaidYear;
+    }
+  },
+
+  filterByPaidMode(mode) {
+    this.paidModeFilter = mode;
+    this.paidCurrentPage = 1;
+    this.renderOwnerPaidTable();
+  },
+
+  handlePaidSearch(query) {
+    this.paidSearchQuery = (query || '').trim().toLowerCase();
+    this.paidCurrentPage = 1;
+    const clearBtn = document.getElementById('btn-clear-paid-search');
+    if (clearBtn) {
+      clearBtn.style.display = this.paidSearchQuery ? 'inline' : 'none';
+    }
+    this.renderOwnerPaidTable();
+  },
+
+  clearPaidSearch() {
+    const input = document.getElementById('search-owner-paid');
+    if (input) input.value = '';
+    this.handlePaidSearch('');
+  },
+
+  goToPaidFirstPage() {
+    this.paidCurrentPage = 1;
+    this.renderOwnerPaidTable();
+  },
+
+  prevPaidPage() {
+    if (this.paidCurrentPage > 1) {
+      this.paidCurrentPage--;
+      this.renderOwnerPaidTable();
+    }
+  },
+
+  nextPaidPage() {
+    const totalPages = Math.ceil(this.getFilteredPaidRecords().length / this.paidPageSize) || 1;
+    if (this.paidCurrentPage < totalPages) {
+      this.paidCurrentPage++;
+      this.renderOwnerPaidTable();
+    }
+  },
+
+  goToPaidLastPage() {
+    const totalPages = Math.ceil(this.getFilteredPaidRecords().length / this.paidPageSize) || 1;
+    this.paidCurrentPage = totalPages;
+    this.renderOwnerPaidTable();
+  },
+
+  getFilteredPaidRecords() {
+    let list = [];
+    if (typeof dbService !== 'undefined' && dbService.getAllOwnerPaid) {
+      list = dbService.getAllOwnerPaid();
+    } else if (typeof window !== 'undefined' && Array.isArray(window.INITIAL_OWNER_PAID)) {
+      list = window.INITIAL_OWNER_PAID;
+    }
+    this.allOwnerPaid = list;
+
+    // 1. Year Filter
+    if (this.selectedPaidYear && this.selectedPaidYear !== 'ALL') {
+      list = list.filter(p => p.year === this.selectedPaidYear);
+    }
+
+    // 2. Mode Filter
+    if (this.paidModeFilter && this.paidModeFilter !== 'ALL') {
+      list = list.filter(p => (p.mode || '').toLowerCase().includes(this.paidModeFilter.toLowerCase()));
+    }
+
+    // 3. Search Query
+    if (this.paidSearchQuery) {
+      const q = this.paidSearchQuery;
+      list = list.filter(p => {
+        return (
+          (p.grNo && String(p.grNo).toLowerCase().includes(q)) ||
+          (p.truckNo && String(p.truckNo).toLowerCase().includes(q)) ||
+          (p.ownerName && String(p.ownerName).toLowerCase().includes(q)) ||
+          (p.destination && String(p.destination).toLowerCase().includes(q)) ||
+          (p.mode && String(p.mode).toLowerCase().includes(q)) ||
+          (p.beneficiary && String(p.beneficiary).toLowerCase().includes(q)) ||
+          (p.description && String(p.description).toLowerCase().includes(q))
+        );
+      });
+    }
+
+    return list;
+  },
+
+  renderOwnerPaidTable() {
+    const filtered = this.getFilteredPaidRecords();
+    const totalCount = filtered.length;
+    const totalPages = Math.ceil(totalCount / this.paidPageSize) || 1;
+    if (this.paidCurrentPage > totalPages) this.paidCurrentPage = totalPages;
+
+    const startIdx = (this.paidCurrentPage - 1) * this.paidPageSize;
+    const pageItems = filtered.slice(startIdx, startIdx + this.paidPageSize);
+
+    // Update Counts & Pagination Info
+    const countEl = document.getElementById('owner-paid-header-count');
+    if (countEl) countEl.textContent = `Number ${totalCount}`;
+
+    const showingEl = document.getElementById('owner-paid-showing-text');
+    if (showingEl) showingEl.textContent = `${totalCount} records`;
+
+    const infoEl = document.getElementById('paid-pagination-info');
+    if (infoEl) {
+      infoEl.textContent = totalCount === 0 
+        ? 'No records found'
+        : `Showing ${startIdx + 1} - ${Math.min(startIdx + this.paidPageSize, totalCount)} of ${totalCount}`;
+    }
+
+    const indicatorEl = document.getElementById('paid-page-indicator');
+    if (indicatorEl) indicatorEl.textContent = `${this.paidCurrentPage} / ${totalPages}`;
+
+    const tbody = document.getElementById('tbody-owner-paid');
+    if (!tbody) return;
+
+    if (pageItems.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="16" class="text-center py-4 text-muted">
+            <i class="bi bi-inbox fs-4 d-block mb-1"></i>
+            No Owner Paid records match the selected filters.
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    tbody.innerHTML = pageItems.map(p => {
+      const safeId = String(p.id);
+      const isSettled = (p.status === 'Settled' || Number(p.dueAmount || 0) === 0);
+      const badgeClass = isSettled ? 'bg-success-subtle text-success' : (p.status === 'Truck Owner Payment Pending' ? 'bg-info-subtle text-info' : 'bg-primary-subtle text-primary');
+
+      return `
+        <tr onclick="OwnersModule.showOwnerPaidTripDetails('${safeId}')" style="cursor: pointer;">
+          <td class="fw-semibold text-success font-monospace">${p.grNo || '-'}</td>
+          <td>${p.startDate || '-'}</td>
+          <td class="font-monospace fw-medium">${p.truckNo || '-'}</td>
+          <td class="fw-medium">${p.ownerName || '-'}</td>
+          <td>${p.destination || '-'}</td>
+          <td class="text-end font-monospace">${p.weight ? Number(p.weight).toFixed(3) : '-'}</td>
+          <td class="text-end font-monospace">₹ ${p.rate ? this.formatCurrency(p.rate) : '-'}</td>
+          <td class="text-end font-monospace">₹ ${this.formatCurrency(p.freight)}</td>
+          <td class="text-end font-monospace text-muted">₹ ${this.formatCurrency(p.dueAmount || 0)}</td>
+          <td>${p.paymentDate || '-'}</td>
+          <td class="text-end font-monospace fw-bold text-success">₹ ${this.formatCurrency(p.amountPaid)}</td>
+          <td><span class="badge ${badgeClass} small">${p.mode || 'Settled'}</span></td>
+          <td>${p.beneficiary || '-'}</td>
+          <td>${p.fromBank || '-'}</td>
+          <td>${p.toBank || '-'}</td>
+          <td class="small text-muted" style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${p.description || '-'}</td>
+        </tr>
+      `;
+    }).join('');
+  },
+
+  showOwnerPaidTripDetails(paidId) {
+    const list = this.allOwnerPaid.length ? this.allOwnerPaid : (typeof dbService !== 'undefined' ? dbService.getAllOwnerPaid() : window.INITIAL_OWNER_PAID || []);
+    const p = list.find(item => String(item.id) === String(paidId) || String(item.grNo) === String(paidId));
+    if (!p) {
+      if (typeof AppUI !== 'undefined') AppUI.showToast('Payment record not found', 'warning');
+      return;
+    }
+
+    this.currentView = 'openTripDetails';
+    this.currentTripId = String(p.id);
+    p.fromView = 'paid';
+
+    // Map status and authentic AppSheet color theme
+    if (p.status === 'Truck Owner Payment Pending') {
+      p.color = 'cyan';
+      p.colorHex = '#01cebc';
+    } else if (p.status === 'Party Payment Pending') {
+      p.color = 'blue';
+      p.colorHex = '#037be4';
+    } else {
+      p.color = 'green';
+      p.colorHex = '#00b11f';
+      p.status = 'Settled';
+    }
+
+    const viewDash = document.getElementById('viewDashboard');
+    const viewPaidList = document.getElementById('viewOwnerPaidList');
+    const viewOpenTrip = document.getElementById('viewOpenTripDetails');
+
+    if (viewDash) viewDash.style.display = 'none';
+    if (viewPaidList) viewPaidList.style.display = 'none';
+    if (viewOpenTrip) viewOpenTrip.style.display = 'block';
+
+    this.renderDrilldownView(p);
+  },
+
+  exportOwnerPaidCSV() {
+    const records = this.getFilteredPaidRecords();
+    if (!records.length) {
+      if (typeof AppUI !== 'undefined') AppUI.showToast('No records to export', 'warning');
+      return;
+    }
+
+    const headers = ['G.R. No.', 'Start Date', 'Truck No.', 'Truck Owner', 'Destination', 'Weight', 'Rate', 'Freight', 'Due', 'Payment Date', 'Amount Paid', 'Mode', 'Beneficiary', 'From Bank', 'To Bank', 'Description'];
+    const rows = records.map(p => [
+      `"${p.grNo || ''}"`,
+      `"${p.startDate || ''}"`,
+      `"${p.truckNo || ''}"`,
+      `"${p.ownerName || ''}"`,
+      `"${p.destination || ''}"`,
+      `"${p.weight || ''}"`,
+      `"${p.rate || ''}"`,
+      `"${p.freight || ''}"`,
+      `"${p.dueAmount || 0}"`,
+      `"${p.paymentDate || ''}"`,
+      `"${p.amountPaid || ''}"`,
+      `"${p.mode || ''}"`,
+      `"${p.beneficiary || ''}"`,
+      `"${p.fromBank || ''}"`,
+      `"${p.toBank || ''}"`,
+      `"${(p.description || '').replace(/"/g, '""')}"`
+    ]);
+
+    const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Owner_Paid_${this.selectedPaidYear}_${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  },
+
   exportOwnerDuesCSV() {
     const dues = this.getFilteredOwnerDues();
     let csv = "G.R.No.,Trip Start Date,Owner Due,Truck No.,Owner,Destination,Transport,Reference,Driver,Status\n";
@@ -1111,6 +1436,7 @@ const OwnersModule = {
     const viewDash = document.getElementById('viewDashboard');
     const viewOwnerDetails = document.getElementById('viewOwnerDetails');
     const viewDueList = document.getElementById('viewOwnerDueList');
+    const viewPaidList = document.getElementById('viewOwnerPaidList');
     const viewOpenTrip = document.getElementById('viewOpenTripDetails');
     const viewParty = document.getElementById('viewOpenTripPartyDetails');
     const viewPayment = document.getElementById('viewTripPaymentDetails');
@@ -1119,6 +1445,7 @@ const OwnersModule = {
     if (viewDash) viewDash.style.display = 'none';
     if (viewOwnerDetails) viewOwnerDetails.style.display = 'none';
     if (viewDueList) viewDueList.style.display = 'none';
+    if (viewPaidList) viewPaidList.style.display = 'none';
     if (viewOpenTrip) viewOpenTrip.style.display = 'block';
     if (viewParty) viewParty.style.display = 'none';
     if (viewPayment) viewPayment.style.display = 'none';
@@ -1132,9 +1459,15 @@ const OwnersModule = {
         <i class="bi bi-chevron-right text-muted small"></i>
         <a href="javascript:void(0)" onclick="OwnersModule.showDashboard()">Owners</a>
         <i class="bi bi-chevron-right text-muted small"></i>
-        <a href="javascript:void(0)" onclick="OwnersModule.backToDueList()">Owner Due</a>
-        <i class="bi bi-chevron-right text-muted small"></i>
-        <span class="active">Open Trip Details</span>
+        ${d.fromView === 'paid' ? `
+          <a href="javascript:void(0)" onclick="OwnersModule.backToPaidList()">Owner Paid</a>
+          <i class="bi bi-chevron-right text-muted small"></i>
+          <span class="active">${d.status === 'Settled' ? 'Settled Trip Details' : 'Open Trip Details'}</span>
+        ` : `
+          <a href="javascript:void(0)" onclick="OwnersModule.backToDueList()">Owner Due</a>
+          <i class="bi bi-chevron-right text-muted small"></i>
+          <span class="active">Open Trip Details</span>
+        `}
       `;
     }
 
@@ -1827,10 +2160,17 @@ const OwnersModule = {
               </table>
             </div>
             <div class="subtable-footer-actions p-2 d-flex align-items-center justify-content-end gap-2 border-top bg-light mt-2">
-              <a href="javascript:void(0)" class="subtable-action-link theme-link fw-semibold" style="font-size: 12px;" onclick="OwnersModule.showTripPaymentDetails('${safeTripId}')">Expand</a>
-              <button class="btn btn-sm btn-light border py-0 px-2 fw-semibold text-secondary" style="font-size: 12px; height: 24px;" onclick="OwnersModule.openAddPaymentDrawer('${safeTripId}', 'party')">
-                <i class="bi bi-plus-lg me-1 small"></i>Add
-              </button>
+              ${d.status === 'Settled' ? `
+                <button class="btn btn-sm btn-light border py-0 px-2 fw-semibold text-secondary" style="font-size: 12px; height: 24px;" onclick="OwnersModule.showTripPaymentDetails('${safeTripId}')">
+                  <i class="bi bi-download me-1 small"></i>Download
+                </button>
+                <a href="javascript:void(0)" class="subtable-action-link theme-link fw-semibold" style="font-size: 12px;" onclick="OwnersModule.showTripPaymentDetails('${safeTripId}')">Expand</a>
+              ` : `
+                <a href="javascript:void(0)" class="subtable-action-link theme-link fw-semibold" style="font-size: 12px;" onclick="OwnersModule.showTripPaymentDetails('${safeTripId}')">Expand</a>
+                <button class="btn btn-sm btn-light border py-0 px-2 fw-semibold text-secondary" style="font-size: 12px; height: 24px;" onclick="OwnersModule.openAddPaymentDrawer('${safeTripId}', 'party')">
+                  <i class="bi bi-plus-lg me-1 small"></i>Add
+                </button>
+              `}
             </div>
           </div>
         `;
@@ -2052,6 +2392,7 @@ const OwnersModule = {
     const viewDash = document.getElementById('viewDashboard');
     const viewOwnerDetails = document.getElementById('viewOwnerDetails');
     const viewDueList = document.getElementById('viewOwnerDueList');
+    const viewPaidList = document.getElementById('viewOwnerPaidList');
     const viewOpenTrip = document.getElementById('viewOpenTripDetails');
     const viewParty = document.getElementById('viewOpenTripPartyDetails');
     const viewPayment = document.getElementById('viewTripPaymentDetails');
@@ -2059,6 +2400,7 @@ const OwnersModule = {
     if (viewDash) viewDash.style.display = 'none';
     if (viewOwnerDetails) viewOwnerDetails.style.display = 'none';
     if (viewDueList) viewDueList.style.display = 'none';
+    if (viewPaidList) viewPaidList.style.display = 'none';
     if (viewOpenTrip) viewOpenTrip.style.display = 'none';
     if (viewParty) viewParty.style.display = 'block';
     if (viewPayment) viewPayment.style.display = 'none';
@@ -2135,6 +2477,7 @@ const OwnersModule = {
     const viewDash = document.getElementById('viewDashboard');
     const viewOwnerDetails = document.getElementById('viewOwnerDetails');
     const viewDueList = document.getElementById('viewOwnerDueList');
+    const viewPaidList = document.getElementById('viewOwnerPaidList');
     const viewOpenTrip = document.getElementById('viewOpenTripDetails');
     const viewParty = document.getElementById('viewOpenTripPartyDetails');
     const viewPayment = document.getElementById('viewTripPaymentDetails');
@@ -2142,6 +2485,7 @@ const OwnersModule = {
     if (viewDash) viewDash.style.display = 'none';
     if (viewOwnerDetails) viewOwnerDetails.style.display = 'none';
     if (viewDueList) viewDueList.style.display = 'none';
+    if (viewPaidList) viewPaidList.style.display = 'none';
     if (viewOpenTrip) viewOpenTrip.style.display = 'none';
     if (viewParty) viewParty.style.display = 'none';
     if (viewPayment) viewPayment.style.display = 'block';
@@ -2320,6 +2664,7 @@ const OwnersModule = {
     const viewDash = document.getElementById('viewDashboard');
     const viewOwnerDetails = document.getElementById('viewOwnerDetails');
     const viewDueList = document.getElementById('viewOwnerDueList');
+    const viewPaidList = document.getElementById('viewOwnerPaidList');
     const viewOpenTrip = document.getElementById('viewOpenTripDetails');
     const viewParty = document.getElementById('viewOpenTripPartyDetails');
     const viewPayment = document.getElementById('viewTripPaymentDetails');
@@ -2327,6 +2672,7 @@ const OwnersModule = {
     if (viewDash) viewDash.style.display = 'none';
     if (viewOwnerDetails) viewOwnerDetails.style.display = 'block';
     if (viewDueList) viewDueList.style.display = 'none';
+    if (viewPaidList) viewPaidList.style.display = 'none';
     if (viewOpenTrip) viewOpenTrip.style.display = 'none';
     if (viewParty) viewParty.style.display = 'none';
     if (viewPayment) viewPayment.style.display = 'none';
@@ -2725,6 +3071,7 @@ const OwnersModule = {
     const viewDash = document.getElementById('viewDashboard');
     const viewOwnerDetails = document.getElementById('viewOwnerDetails');
     const viewDueList = document.getElementById('viewOwnerDueList');
+    const viewPaidList = document.getElementById('viewOwnerPaidList');
     const viewOpenTrip = document.getElementById('viewOpenTripDetails');
     const viewParty = document.getElementById('viewOpenTripPartyDetails');
     const viewPayment = document.getElementById('viewTripPaymentDetails');
@@ -2733,6 +3080,7 @@ const OwnersModule = {
     if (viewDash) viewDash.style.display = 'none';
     if (viewOwnerDetails) viewOwnerDetails.style.display = 'none';
     if (viewDueList) viewDueList.style.display = 'none';
+    if (viewPaidList) viewPaidList.style.display = 'none';
     if (viewOpenTrip) viewOpenTrip.style.display = 'none';
     if (viewParty) viewParty.style.display = 'none';
     if (viewPayment) viewPayment.style.display = 'none';

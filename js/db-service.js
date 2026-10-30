@@ -51,6 +51,7 @@ class DBService {
       parties: new Map(),
       truckOwners: new Map(),
       ownerDues: new Map(),
+      ownerPaid: new Map(),
       cheques: new Map(),
       drivers: new Map(),
       brokers: new Map(),
@@ -816,6 +817,74 @@ class DBService {
     const all = Array.from(dueMap.values());
     all.sort((a, b) => (Number(b.dueAmount) || 0) - (Number(a.dueAmount) || 0));
     return all;
+  }
+
+
+  // --- Authentic Owner Paid Engine ---
+  async getAllOwnerPaidAsync() {
+    if (this.isFirebaseReady && this.db) {
+      try {
+        const snapshot = await this.db.collection('owner_paid').get();
+        const cloudItems = [];
+        snapshot.forEach(doc => cloudItems.push({ id: doc.id, ...doc.data() }));
+        return this.getAllOwnerPaid(cloudItems);
+      } catch (err) {
+        console.warn('[DBService] Firebase getAllOwnerPaidAsync error, falling back to local seed:', err);
+      }
+    }
+    return this.getAllOwnerPaid([]);
+  }
+
+  getAllOwnerPaid(cloudItems = []) {
+    const basePaid = (typeof window !== 'undefined' && Array.isArray(window.INITIAL_OWNER_PAID))
+      ? window.INITIAL_OWNER_PAID
+      : [];
+
+    const paidMap = new Map();
+    const deletedSet = (this.deletedIds && this.deletedIds.ownerPaid) ? this.deletedIds.ownerPaid : new Set();
+
+    // 1. Base Master Records
+    for (const p of basePaid) {
+      if (p && !deletedSet.has(String(p.id))) {
+        paidMap.set(String(p.id), { ...p });
+      }
+    }
+
+    // 2. Cloud items from Firebase Cloud Firestore
+    if (Array.isArray(cloudItems)) {
+      for (const p of cloudItems) {
+        if (!p || deletedSet.has(String(p.id))) continue;
+        const existing = paidMap.get(String(p.id)) || {};
+        paidMap.set(String(p.id), { ...existing, ...p });
+      }
+    }
+
+    // 3. In-memory session store (RAM only - never browser localStorage)
+    if (this.sessionStore && this.sessionStore.ownerPaid) {
+      this.sessionStore.ownerPaid.forEach((p, id) => {
+        if (!p || deletedSet.has(String(id))) return;
+        const existing = paidMap.get(String(id)) || {};
+        paidMap.set(String(id), { ...existing, ...p });
+      });
+    }
+
+    const all = Array.from(paidMap.values());
+    all.sort((a, b) => (Number(b.amountPaid) || 0) - (Number(a.amountPaid) || 0));
+    return all;
+  }
+
+  async saveOwnerPaid(item) {
+    if (!item.id) item.id = 'paid_' + Date.now();
+    if (!this.sessionStore.ownerPaid) this.sessionStore.ownerPaid = new Map();
+    this.sessionStore.ownerPaid.set(String(item.id), item);
+    if (this.isFirebaseReady && this.db) {
+      try {
+        await this.db.collection('owner_paid').doc(String(item.id)).set(item, { merge: true });
+      } catch (err) {
+        console.warn('[DBService] Firebase saveOwnerPaid error:', err);
+      }
+    }
+    return item;
   }
 
   // --- Authentic Cheques Engine ---
