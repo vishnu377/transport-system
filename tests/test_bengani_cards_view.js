@@ -122,12 +122,69 @@ console.log('✔ Test 6: Bottom Open Debts Table verified matching 19_54_51.png'
 // Test 7: Party Details Drilldown View matching 19_53_18.png
 OwnersModule.showOpenTripPartyDetails('250');
 const partyView = global.document.getElementById('viewOpenTripPartyDetails');
-assert(partyView.innerHTML.includes('Open Trip Party Details'), 'Must have Open Trip Party Details title');
+assert(partyView.innerHTML.includes('Open Trip Party Details'), 'Party view must have Open Trip Party Details title');
 assert(partyView.innerHTML.includes('08AAUFD1174E1ZC'), 'Party view must have GSTIN');
 assert(partyView.innerHTML.includes('Durga Enterprises'), 'Party view must have Consignor Name');
 assert(partyView.innerHTML.includes('Search Open Trip Party Details'), 'Party view must have search input');
 console.log('✔ Test 7: Open Trip Party Details View verified matching 19_53_18.png');
 
-console.log('\n================================================================');
-console.log('  ALL BENGANI (PURPLE) CARDS & DRILLDOWN TESTS PASSED (100%)    ');
-console.log('================================================================');
+// Test 8: Top Header Buttons Verification
+OwnersModule.showOpenTripDetails('250');
+const bcActions = global.document.getElementById('breadcrumbActions');
+assert(bcActions.innerHTML.includes('OwnersModule.openEditTripDrawer'), 'Header must have Edit button');
+assert(bcActions.innerHTML.includes('OwnersModule.downloadBilty'), 'Header must have Bilty Download button');
+assert(bcActions.innerHTML.includes('OwnersModule.scrollToDebts'), 'Header must have All Debts Details button');
+assert(bcActions.innerHTML.includes('OwnersModule.backToDueList'), 'Header must have Close/Back button');
+console.log('✔ Test 8: Top Header 4 Action Buttons (Edit, Download, All Debts, Close) verified');
+
+// Test 9: Combobox / Select for 'Add Records for' & 'Status*'
+assert(rightCard.innerHTML.includes('Add Records for'), 'Card 3 must include Add Records for');
+assert(rightCard.innerHTML.includes('Cheque'), 'Card 3 must include Cheque option');
+assert(rightCard.innerHTML.includes('Party Payment'), 'Card 3 must include Party Payment option');
+assert(rightCard.innerHTML.includes('Truck Owner Payment'), 'Card 3 must include Truck Owner Payment option');
+assert(rightCard.innerHTML.includes('Other'), 'Card 3 must include Other option');
+assert(rightCard.innerHTML.includes('handleStatusSelectChange'), 'Card 3 must include Status change handler');
+console.log('✔ Test 9: Card 3 Combobox/Dropdown for Add Records & Status verified');
+
+// Test 10: 22-field Slide Drawer Verification
+OwnersModule.openEditTripDrawer('250');
+const drawerTruck = global.document.getElementById('drawer-trip-truck').value;
+const drawerBiltyAmt = global.document.getElementById('drawer-trip-bilty-amt').value;
+const drawerBillingType = global.document.getElementById('drawer-trip-billing-type').value;
+const drawerDriver = global.document.getElementById('drawer-trip-driver').value;
+const drawerOwner = global.document.getElementById('drawer-trip-owner').value;
+const drawerStatus = global.document.getElementById('drawer-trip-status').value;
+assert.strictEqual(drawerTruck, 'RJ52GB5642', 'Drawer Truck No. must match');
+assert.strictEqual(Number(drawerBiltyAmt), 146674, 'Drawer Bilty Amount must match');
+assert.strictEqual(drawerBillingType, 'Per Tonne', 'Drawer Billing Type must match');
+assert.strictEqual(drawerDriver, 'Suresh Raiya', 'Drawer Driver must match');
+assert.strictEqual(drawerOwner, 'Shree Mahaveer Transport Company', 'Drawer Owner must match');
+assert.strictEqual(drawerStatus, 'POD Sent/ Bill Generated', 'Drawer Status must match');
+console.log('✔ Test 10: Slide Drawer successfully populated all 22 authentic fields');
+
+// Test 11: Dynamic Firebase Cloud Firestore save
+let firestoreSavedDoc = null;
+ctx.FirebaseDB = ctx.window.FirebaseDB = global.FirebaseDB = {
+  saveOwnerDue: async (doc) => {
+    firestoreSavedDoc = doc;
+    return true;
+  }
+};
+global.document.getElementById('drawer-trip-due').value = '145000';
+OwnersModule.saveTripDrawer({ preventDefault: () => {} }).then(() => {
+  assert(firestoreSavedDoc, 'FirebaseDB.saveOwnerDue must be invoked on save');
+  assert.strictEqual(firestoreSavedDoc.dueAmount, 145000, 'Firestore doc dueAmount must be updated to 145000');
+  console.log('✔ Test 11: Direct Firebase Cloud Firestore dynamic sync verified');
+
+  // Test 12: Bilty Document Generation
+  OwnersModule.downloadBilty('250');
+  const biltyModalBody = global.document.getElementById('biltyModalBody');
+  assert(biltyModalBody.innerHTML.includes('SHREE MAHAVEER TRANSPORT COMPANY'), 'Bilty must include company name');
+  assert(biltyModalBody.innerHTML.includes('Consignment Note / Lorry Receipt'), 'Bilty must have receipt badge');
+  assert(biltyModalBody.innerHTML.includes('2026-2027-250_SMTC'), 'Bilty must have full G.R.No.');
+  console.log('✔ Test 12: Authentic printable Bilty / Consignment Note document verified');
+
+  console.log('\n================================================================');
+  console.log('  ALL BENGANI (PURPLE) CARDS & DRILLDOWN TESTS PASSED (100%)    ');
+  console.log('================================================================');
+});

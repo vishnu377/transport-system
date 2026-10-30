@@ -1134,21 +1134,37 @@ const OwnersModule = {
       `;
     }
 
+    // Top Header Action Buttons: 1. Edit | 2. Download Bilty | 3. All Debts Details | 4. Close
     const bcActions = document.getElementById('breadcrumbActions');
     if (bcActions) {
       bcActions.innerHTML = `
         <div class="d-flex align-items-center gap-1">
-          <button class="btn btn-sm btn-light border py-1 px-2 text-secondary" title="Truck Details"><i class="bi bi-truck"></i></button>
-          <button class="btn btn-sm btn-light border py-1 px-2 text-secondary" title="Bilty / GR Document"><i class="bi bi-file-earmark-text"></i></button>
-          <button class="btn btn-sm btn-light border py-1 px-2 text-secondary" onclick="window.print()" title="Download / Print"><i class="bi bi-download"></i></button>
-          <button class="btn-appsheet-edit shadow-sm py-1 px-3" onclick="OwnersModule.openEditTripDrawer('${safeTripId}')" title="Edit Trip Details">
+          <button class="btn-appsheet-edit shadow-sm py-1 px-3" onclick="OwnersModule.openEditTripDrawer('${safeTripId}')" title="Update Trip Details">
             <i class="bi bi-pencil me-1"></i> Edit
+          </button>
+          <button class="btn btn-sm btn-light border py-1 px-2 text-secondary" onclick="OwnersModule.downloadBilty('${safeTripId}')" title="Download / Print Bilty">
+            <i class="bi bi-download"></i>
+          </button>
+          <button class="btn btn-sm btn-light border py-1 px-3 d-flex align-items-center gap-1 text-secondary fw-semibold shadow-sm" onclick="OwnersModule.scrollToDebts()" title="All Debts Details">
+            <i class="bi bi-journal-text me-1"></i> <span>All Debts Details</span>
           </button>
           <button class="btn btn-sm btn-light border py-1 px-2 ms-1 text-secondary" onclick="OwnersModule.backToDueList()" title="Back to Owner Due">
             <i class="bi bi-x-lg"></i>
           </button>
         </div>
       `;
+    }
+
+    // Update in-page header buttons if present
+    const topEditBtn = document.getElementById('btn-top-edit-trip');
+    if (topEditBtn) {
+      if (typeof topEditBtn.setAttribute === 'function') topEditBtn.setAttribute('onclick', `OwnersModule.openEditTripDrawer('${safeTripId}')`);
+      topEditBtn.onclick = () => OwnersModule.openEditTripDrawer(safeTripId);
+    }
+    const topDownloadBtn = document.getElementById('btn-top-download-bilty');
+    if (topDownloadBtn) {
+      if (typeof topDownloadBtn.setAttribute === 'function') topDownloadBtn.setAttribute('onclick', `OwnersModule.downloadBilty('${safeTripId}')`);
+      topDownloadBtn.onclick = () => OwnersModule.downloadBilty(safeTripId);
     }
 
     this.renderDrilldownView(d);
@@ -1159,7 +1175,7 @@ const OwnersModule = {
     const col = d.color || 'yellow';
     const safeTripId = String(d.id || d.grNo);
     const dt = d.tripDate || d.tripStartDate || d.date || '-';
-    const endDate = d.tripEndDate || dt;
+    const endDate = d.tripDueDate || d.tripEndDate || dt;
     const refName = d.reference || d.partyName || d.consignee?.name || '-';
     const refMob = d.referenceMobile || d.consignee?.mobile || '';
     const ownerVal = d.ownerName || d.owner || 'Shree Mahaveer Transport Company';
@@ -1213,7 +1229,7 @@ const OwnersModule = {
           <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${dt}</span></div>
         </div>
         <div class="drilldown-field">
-          <div class="drilldown-field-label">Trip End Date</div>
+          <div class="drilldown-field-label">Trip Due Date</div>
           <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${endDate}</span></div>
         </div>
         <div class="drilldown-field">
@@ -1355,16 +1371,20 @@ const OwnersModule = {
         <div class="drilldown-field">
           <div class="drilldown-field-label">Add Records for</div>
           <div class="drilldown-field-val">
-            <div class="dropdown w-100">
-              <button class="btn btn-sm btn-light border py-1 px-3 d-flex align-items-center justify-content-between w-100 shadow-sm dropdown-toggle font-size-12" type="button" data-bs-toggle="dropdown">
-                <span class="text-secondary">Add Records for...</span>
-              </button>
-              <ul class="dropdown-menu shadow font-size-12 w-100">
-                <li><a class="dropdown-item" href="javascript:void(0)" onclick="OwnersModule.openEditTripDrawer('${safeTripId}')"><i class="bi bi-cash-stack me-2 text-success"></i>Total Freight</a></li>
-                <li><a class="dropdown-item" href="javascript:void(0)" onclick="OwnersModule.openAddPaymentDrawer('${safeTripId}', 'owner')"><i class="bi bi-credit-card me-2 text-primary"></i>owner' Payment</a></li>
-                <li><a class="dropdown-item" href="javascript:void(0)" onclick="OwnersModule.openAddPaymentDrawer('${safeTripId}', 'party')"><i class="bi bi-bank me-2 text-info"></i>party payment</a></li>
-                <li><a class="dropdown-item" href="javascript:void(0)" onclick="OwnersModule.openDebtDrawer('${safeTripId}')"><i class="bi bi-journal-text me-2 text-warning"></i>Cheque Due</a></li>
-                <li><a class="dropdown-item" href="javascript:void(0)" onclick="OwnersModule.openDebtDrawer('${safeTripId}')"><i class="bi bi-wallet2 me-2 text-danger"></i>Open Debts</a></li>
+            <div class="input-group input-group-sm w-100">
+              <input type="text" class="form-control form-control-sm" list="addRecordsOptions" placeholder="Type or select..." onchange="OwnersModule.handleAddRecordSelect('${safeTripId}', this.value)" style="font-size: 12px; height: 28px;">
+              <datalist id="addRecordsOptions">
+                <option value="Cheque">
+                <option value="Party Payment">
+                <option value="Truck Owner Payment">
+                <option value="Other">
+              </datalist>
+              <button class="btn btn-sm btn-outline-secondary dropdown-toggle dropdown-toggle-split" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="height: 28px;"></button>
+              <ul class="dropdown-menu dropdown-menu-end shadow font-size-12">
+                <li><a class="dropdown-item" href="javascript:void(0)" onclick="OwnersModule.handleAddRecordSelect('${safeTripId}', 'Cheque')"><i class="bi bi-journal-text me-2 text-warning"></i>Cheque</a></li>
+                <li><a class="dropdown-item" href="javascript:void(0)" onclick="OwnersModule.handleAddRecordSelect('${safeTripId}', 'Party Payment')"><i class="bi bi-bank me-2 text-info"></i>Party Payment</a></li>
+                <li><a class="dropdown-item" href="javascript:void(0)" onclick="OwnersModule.handleAddRecordSelect('${safeTripId}', 'Truck Owner Payment')"><i class="bi bi-credit-card me-2 text-primary"></i>Truck Owner Payment</a></li>
+                <li><a class="dropdown-item" href="javascript:void(0)" onclick="OwnersModule.handleAddRecordSelect('${safeTripId}', 'Other')"><i class="bi bi-three-dots me-2 text-secondary"></i>Other</a></li>
               </ul>
             </div>
           </div>
@@ -1376,19 +1396,26 @@ const OwnersModule = {
         <div class="drilldown-field">
           <div class="drilldown-field-label">Status*</div>
           <div class="drilldown-field-val">
-            <div class="dropdown w-100">
-              <button type="button" class="btn btn-sm btn-light border py-1 px-2 d-flex align-items-center justify-content-between w-100 shadow-sm font-size-12 dropdown-toggle" data-bs-toggle="dropdown">
-                <span class="d-flex align-items-center gap-1">
-                  <span class="theme-dot">●</span>
-                  <span class="fw-semibold text-dark">${d.status || 'Transit'}</span>
-                </span>
-              </button>
-              <ul class="dropdown-menu shadow font-size-12 w-100">
-                <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="OwnersModule.updateTripStatusDirect('${safeTripId}', 'Transit', 'yellow')"><span class="bullet-yellow">●</span> Transit</a></li>
+            <div class="input-group input-group-sm w-100">
+              <span class="input-group-text bg-white border-end-0 py-0 px-2">
+                <span class="theme-dot">●</span>
+              </span>
+              <input type="text" class="form-control form-control-sm border-start-0 ps-1 font-size-12 fw-semibold" list="statusOptionsList" value="${d.status || 'POD Sent/ Bill Generated'}" onchange="OwnersModule.handleStatusSelectChange('${safeTripId}', this.value)" style="height: 28px;">
+              <datalist id="statusOptionsList">
+                <option value="POD Sent/ Bill Generated">
+                <option value="Transit">
+                <option value="Off Loading">
+                <option value="Cheque Due">
+                <option value="Party Payment Pending">
+                <option value="Truck Owner Payment Pending">
+              </datalist>
+              <button class="btn btn-sm btn-outline-secondary dropdown-toggle dropdown-toggle-split" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="height: 28px;"></button>
+              <ul class="dropdown-menu dropdown-menu-end shadow font-size-12">
                 <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="OwnersModule.updateTripStatusDirect('${safeTripId}', 'POD Sent/ Bill Generated', 'purple')"><span class="bullet-purple">●</span> POD Sent/ Bill Generated</a></li>
-                <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="OwnersModule.updateTripStatusDirect('${safeTripId}', 'Party Payment Pending', 'blue')"><span class="bullet-blue">●</span> Party Payment Pending</a></li>
+                <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="OwnersModule.updateTripStatusDirect('${safeTripId}', 'Transit', 'yellow')"><span class="bullet-yellow">●</span> Transit</a></li>
                 <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="OwnersModule.updateTripStatusDirect('${safeTripId}', 'Off Loading', 'pink')"><span class="bullet-pink">●</span> Off Loading</a></li>
                 <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="OwnersModule.updateTripStatusDirect('${safeTripId}', 'Cheque Due', 'slate')"><span class="bullet-slate">●</span> Cheque Due</a></li>
+                <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="OwnersModule.updateTripStatusDirect('${safeTripId}', 'Party Payment Pending', 'blue')"><span class="bullet-blue">●</span> Party Payment Pending</a></li>
                 <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="OwnersModule.updateTripStatusDirect('${safeTripId}', 'Truck Owner Payment Pending', 'cyan')"><span class="bullet-cyan">●</span> Truck Owner Payment Pending</a></li>
               </ul>
             </div>
@@ -2025,7 +2052,7 @@ const OwnersModule = {
     }
   },
 
-  // SLIDE DRAWERS: UPDATE TRIP DETAILS
+  // SLIDE DRAWERS: UPDATE TRIP DETAILS (22 Fields matching 19_54_27.png)
   openEditTripDrawer(tripId) {
     const d = (this.allOwnerDues || []).find(item => String(item.id) === String(tripId) || String(item.grNo) === String(tripId));
     if (!d) return;
@@ -2038,23 +2065,37 @@ const OwnersModule = {
 
     const setVal = (id, val) => {
       const el = document.getElementById(id);
-      if (el) el.value = val || '';
+      if (el) el.value = (val !== undefined && val !== null) ? val : '';
     };
 
     setVal('drawer-trip-id', d.id || d.grNo);
-    setVal('drawer-trip-gr', d.grNo);
-    setVal('drawer-trip-truck', d.truckNo);
-    setVal('drawer-trip-owner', d.ownerName || d.owner);
-    setVal('drawer-trip-status', d.status);
-    setVal('drawer-trip-origin', d.origin);
-    setVal('drawer-trip-dest', d.destination);
-    setVal('drawer-trip-mat', d.material);
-    setVal('drawer-trip-weight', d.weight);
-    setVal('drawer-trip-rate', d.rate);
-    setVal('drawer-trip-freight', d.freight || d.dueAmount || d.ownerDue);
-    setVal('drawer-trip-due', d.dueAmount || d.ownerDue);
-    setVal('drawer-trip-driver', d.driver);
-    setVal('drawer-trip-driver-mob', d.driverMobile);
+    setVal('drawer-trip-gr', d.grNo || '');
+    setVal('drawer-trip-bilty-amt', d.biltyAmount !== undefined ? d.biltyAmount : (d.totalFreight || ''));
+    setVal('drawer-trip-billing-type', d.billingType || 'Per Tonne');
+    setVal('drawer-trip-hault', d.hault !== undefined ? d.hault : 0);
+    setVal('drawer-trip-loading', d.loading !== undefined ? d.loading : 0);
+    setVal('drawer-trip-pod-target', d.podTargetDate || '');
+    setVal('drawer-trip-pod-date', d.podReceivedDate || '');
+    setVal('drawer-trip-truck', d.truckNo || '');
+    setVal('drawer-trip-start-date', d.tripStartDate || d.tripDate || d.date || '');
+    setVal('drawer-trip-end-date', d.tripDueDate || d.tripEndDate || '');
+    setVal('drawer-trip-origin', d.origin || '');
+    setVal('drawer-trip-dest', d.destination || '');
+    setVal('drawer-trip-weight', d.weight !== undefined ? d.weight : '');
+    setVal('drawer-trip-rate', d.rate !== undefined ? d.rate : '');
+    setVal('drawer-trip-mat', d.material || '');
+    setVal('drawer-trip-ref', d.reference || d.partyName || '');
+    setVal('drawer-trip-ref-mob', d.referenceMobile || '');
+    setVal('drawer-trip-driver', d.driver || '');
+    setVal('drawer-trip-driver-mob', d.driverMobile || '');
+    setVal('drawer-trip-owner', d.ownerName || d.owner || '');
+    setVal('drawer-trip-owner-mob1', d.ownerMobile || '');
+    setVal('drawer-trip-owner-mob2', d.ownerMobile2 || '');
+    setVal('drawer-trip-bill-no', d.billNo || '');
+    setVal('drawer-trip-status', d.status || 'POD Sent/ Bill Generated');
+    setVal('drawer-trip-due', d.dueAmount !== undefined ? d.dueAmount : (d.ownerDue || 0));
+
+    this.handleTripStatusChange(d.status || 'POD Sent/ Bill Generated');
 
     if (backdrop) backdrop.classList.add('show');
     if (drawer) drawer.classList.add('open');
@@ -2083,6 +2124,10 @@ const OwnersModule = {
     if (drawer) drawer.classList.remove('open');
   },
 
+  saveTripDrawer(event) {
+    return this.handleTripSave(event);
+  },
+
   async handleTripSave(event) {
     if (event) event.preventDefault();
     const tripId = document.getElementById('drawer-trip-id')?.value;
@@ -2091,16 +2136,65 @@ const OwnersModule = {
     const d = (this.allOwnerDues || []).find(item => String(item.id) === String(tripId) || String(item.grNo) === String(tripId));
     if (!d) return;
 
-    const getVal = id => document.getElementById(id)?.value || '';
+    const getVal = id => {
+      const el = document.getElementById(id);
+      return el ? el.value : '';
+    };
 
     d.userEdited = true;
-    d.status = getVal('drawer-trip-status') || d.status;
-    d.weight = parseFloat(getVal('drawer-trip-weight')) || d.weight;
-    d.rate = parseFloat(getVal('drawer-trip-rate')) || d.rate;
-    d.dueAmount = parseFloat(getVal('drawer-trip-due')) || d.dueAmount;
-    d.ownerDue = d.dueAmount;
-    d.driver = getVal('drawer-trip-driver') || d.driver;
-    d.driverMobile = getVal('drawer-trip-driver-mob') || d.driverMobile;
+    if (getVal('drawer-trip-bilty-amt') !== '') {
+      d.biltyAmount = parseFloat(getVal('drawer-trip-bilty-amt')) || 0;
+    }
+    if (getVal('drawer-trip-billing-type')) d.billingType = getVal('drawer-trip-billing-type');
+    if (getVal('drawer-trip-hault') !== '') d.hault = parseFloat(getVal('drawer-trip-hault')) || 0;
+    if (getVal('drawer-trip-loading') !== '') d.loading = parseFloat(getVal('drawer-trip-loading')) || 0;
+    if (getVal('drawer-trip-pod-target')) d.podTargetDate = getVal('drawer-trip-pod-target');
+    if (getVal('drawer-trip-pod-date')) d.podReceivedDate = getVal('drawer-trip-pod-date');
+    if (getVal('drawer-trip-truck')) d.truckNo = getVal('drawer-trip-truck').trim().toUpperCase();
+    if (getVal('drawer-trip-start-date')) {
+      d.tripStartDate = getVal('drawer-trip-start-date');
+      d.tripDate = d.tripStartDate;
+    }
+    if (getVal('drawer-trip-end-date')) {
+      d.tripEndDate = getVal('drawer-trip-end-date');
+      d.tripDueDate = d.tripEndDate;
+    }
+    if (getVal('drawer-trip-origin')) d.origin = getVal('drawer-trip-origin');
+    if (getVal('drawer-trip-dest')) d.destination = getVal('drawer-trip-dest');
+    if (getVal('drawer-trip-weight') !== '') d.weight = parseFloat(getVal('drawer-trip-weight')) || 0;
+    if (getVal('drawer-trip-rate') !== '') d.rate = parseFloat(getVal('drawer-trip-rate')) || 0;
+    if (getVal('drawer-trip-mat')) d.material = getVal('drawer-trip-mat');
+    if (getVal('drawer-trip-ref')) d.reference = getVal('drawer-trip-ref');
+    if (getVal('drawer-trip-ref-mob')) d.referenceMobile = getVal('drawer-trip-ref-mob');
+    if (getVal('drawer-trip-driver')) d.driver = getVal('drawer-trip-driver');
+    if (getVal('drawer-trip-driver-mob')) d.driverMobile = getVal('drawer-trip-driver-mob');
+    if (getVal('drawer-trip-owner')) d.ownerName = getVal('drawer-trip-owner');
+    if (getVal('drawer-trip-owner-mob1')) d.ownerMobile = getVal('drawer-trip-owner-mob1');
+    if (getVal('drawer-trip-owner-mob2')) d.ownerMobile2 = getVal('drawer-trip-owner-mob2');
+    if (getVal('drawer-trip-bill-no')) d.billNo = getVal('drawer-trip-bill-no');
+
+    const newStatus = getVal('drawer-trip-status') || d.status;
+    d.status = newStatus;
+    const colMap = {
+      'Transit': 'yellow',
+      'POD Sent/ Bill Generated': 'purple',
+      'Party Payment Pending': 'blue',
+      'Off Loading': 'pink',
+      'Cheque Due': 'slate',
+      'Truck Owner Payment Pending': 'cyan'
+    };
+    d.color = colMap[newStatus] || d.color || 'yellow';
+    if (d.color === 'purple') d.colorHex = '#7c00ff';
+    else if (d.color === 'yellow') d.colorHex = '#c3ad00';
+    else if (d.color === 'cyan') d.colorHex = '#0088cc';
+    else if (d.color === 'blue') d.colorHex = '#1a73e8';
+    else if (d.color === 'pink') d.colorHex = '#e91e63';
+    else if (d.color === 'slate') d.colorHex = '#5f6368';
+
+    if (getVal('drawer-trip-due') !== '') {
+      d.dueAmount = parseFloat(getVal('drawer-trip-due')) || 0;
+      d.ownerDue = d.dueAmount;
+    }
 
     try {
       if (typeof FirebaseDB !== 'undefined' && FirebaseDB.saveOwnerDue) {
@@ -2113,6 +2207,159 @@ const OwnersModule = {
     this.closeTripDrawer();
     this.renderOwnerDueTable();
     this.showOpenTripDetails(tripId);
+  },
+
+  scrollToDebts() {
+    const el = document.getElementById('drilldown-debts-container');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      el.style.transition = 'box-shadow 0.3s ease';
+      el.style.boxShadow = '0 0 0 3px rgba(124, 0, 255, 0.4)';
+      setTimeout(() => { el.style.boxShadow = ''; }, 1500);
+    }
+  },
+
+  downloadBilty(tripId) {
+    const targetId = tripId || this.currentTripId;
+    const d = (this.allOwnerDues || []).find(item => String(item.id) === String(targetId) || String(item.grNo) === String(targetId));
+    if (!d) return;
+
+    const fullGr = d.fullGrNo || (d.year ? `${d.year}-${d.grNo}${d.transport ? '_' + d.transport : ''}` : `2026-2027-${d.grNo}_SMTC`);
+    const consignorName = d.consignor?.name || 'Durga Enterprises';
+    const consignorGst = d.consignor?.gstin || '08AAUFD1174E1ZC';
+    const consignorAddr = d.consignor?.address || '1206/1159, AARAJI NO. 1205/1160, KARERA, RAJSAMAND (RAJ.)';
+    const consigneeName = d.consignee?.name || 'SAKARNI PLASTER (INDIA) PVT. LTD.';
+    const consigneeGst = d.consignee?.gstin || '08AASCS3036P1ZL';
+    const consigneeDest = d.destination || 'Neemrana (Raj.)';
+    const modalBody = document.getElementById('biltyModalBody');
+
+    if (modalBody) {
+      modalBody.innerHTML = `
+        <div class="bilty-print-doc p-4 bg-white border shadow-sm" style="max-width: 800px; margin: 0 auto; color: #222; font-family: sans-serif;">
+          <div class="text-center border-bottom pb-3 mb-3">
+            <div class="badge bg-secondary text-uppercase px-2 py-1 mb-1 font-monospace" style="letter-spacing: 1px;">Consignment Note / Lorry Receipt</div>
+            <h4 class="fw-bold m-0 text-dark" style="letter-spacing: 0.5px;">SHREE MAHAVEER TRANSPORT COMPANY</h4>
+            <p class="small text-muted mb-0">FLEET OWNERS & TRANSPORT CONTRACTORS | HEAD OFFICE: RAJSAMAND (RAJASTHAN)</p>
+          </div>
+          
+          <div class="row g-2 mb-3 pb-2 border-bottom font-size-13">
+            <div class="col-6">
+              <div><strong>G.R. No:</strong> <span class="font-monospace text-primary fw-bold">${fullGr}</span></div>
+              <div><strong>Date:</strong> <span>${d.tripDate || d.tripStartDate || d.date || '25/10/2026'}</span></div>
+              <div><strong>Truck No:</strong> <span class="font-monospace fw-bold">${d.truckNo || '-'}</span></div>
+            </div>
+            <div class="col-6 text-end">
+              <div><strong>From:</strong> <span>${d.origin || 'Rajsamand (Raj.)'}</span></div>
+              <div><strong>To:</strong> <span>${consigneeDest}</span></div>
+              <div><strong>Status:</strong> <span class="badge bg-light text-dark border">${d.status || 'POD Sent/ Bill Generated'}</span></div>
+            </div>
+          </div>
+
+          <div class="row g-3 mb-3 font-size-12">
+            <div class="col-6">
+              <div class="p-2 border rounded bg-light h-100">
+                <div class="fw-bold text-secondary mb-1">CONSIGNOR (Shipper)</div>
+                <div class="fw-bold text-dark">${consignorName}</div>
+                <div class="text-muted small">${consignorAddr}</div>
+                <div class="mt-1"><strong>GSTIN:</strong> <span class="font-monospace">${consignorGst}</span></div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="p-2 border rounded bg-light h-100">
+                <div class="fw-bold text-secondary mb-1">CONSIGNEE (Receiver)</div>
+                <div class="fw-bold text-dark">${consigneeName}</div>
+                <div class="text-muted small">${consigneeDest}</div>
+                <div class="mt-1"><strong>GSTIN:</strong> <span class="font-monospace">${consigneeGst}</span></div>
+              </div>
+            </div>
+          </div>
+
+          <table class="table table-bordered table-sm font-size-12 mb-3">
+            <thead class="table-light">
+              <tr>
+                <th>Description of Goods</th>
+                <th class="text-end">Weight (MT)</th>
+                <th class="text-end">Rate (₹)</th>
+                <th class="text-end">Freight (₹)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>${d.material || 'Marble Powder (Dolomite)'}</td>
+                <td class="text-end font-monospace">${Number(d.weight || 0).toFixed(3)}</td>
+                <td class="text-end font-monospace">₹ ${this.formatCurrency(d.rate || 0)}</td>
+                <td class="text-end font-monospace fw-bold">₹ ${this.formatCurrency(d.freight || d.biltyAmount || 124300)}</td>
+              </tr>
+              <tr class="table-light">
+                <td colspan="3" class="text-end fw-bold">Total Bilty Amount:</td>
+                <td class="text-end font-monospace fw-bold text-success">₹ ${this.formatCurrency(d.biltyAmount || 146674)}</td>
+              </tr>
+              <tr>
+                <td colspan="3" class="text-end fw-bold text-danger">Owner Due Balance:</td>
+                <td class="text-end font-monospace fw-bold text-danger">₹ ${this.formatCurrency(d.dueAmount !== undefined ? d.dueAmount : (d.ownerDue || 0))}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="row pt-3 font-size-11 text-muted border-top">
+            <div class="col-6">
+              <p class="mb-0">Driver: <strong>${d.driver || 'Suresh Raiya'}</strong> (${d.driverMobile || '9636017337'})</p>
+              <p class="mb-0">Owner: <strong>${d.ownerName || d.owner || 'Shree Mahaveer Transport Co.'}</strong></p>
+            </div>
+            <div class="col-6 text-end">
+              <div style="height: 40px;"></div>
+              <div class="border-top d-inline-block pt-1 px-4">Authorized Signatory</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    const modalEl = document.getElementById('biltyModal');
+    if (modalEl) {
+      if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+        const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+        modal.show();
+      } else {
+        modalEl.classList.add('show');
+        modalEl.style.display = 'block';
+      }
+    }
+  },
+
+  openDebtDrawer(tripId) {
+    return this.openAddDebtDrawer(tripId);
+  },
+
+  handleAddRecordSelect(tripId, val) {
+    if (!val) return;
+    const v = String(val).toLowerCase();
+    if (v.includes('cheque')) {
+      this.openDebtDrawer(tripId);
+    } else if (v.includes('party')) {
+      this.openAddPaymentDrawer(tripId, 'party');
+    } else if (v.includes('truck') || v.includes('owner')) {
+      this.openAddPaymentDrawer(tripId, 'owner');
+    } else {
+      this.openDebtDrawer(tripId);
+    }
+  },
+
+  handleStatusSelectChange(tripId, newStatus) {
+    if (!newStatus) return;
+    const colMap = {
+      'transit': 'yellow',
+      'pod sent/ bill generated': 'purple',
+      'pod sent': 'purple',
+      'bill generated': 'purple',
+      'party payment pending': 'blue',
+      'off loading': 'pink',
+      'cheque due': 'slate',
+      'truck owner payment pending': 'cyan'
+    };
+    const clean = newStatus.trim();
+    const col = colMap[clean.toLowerCase()] || 'yellow';
+    this.updateTripStatusDirect(tripId, clean, col);
   },
 
   // SLIDE DRAWERS: PAYMENT DETAILS

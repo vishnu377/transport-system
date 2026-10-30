@@ -2019,15 +2019,28 @@
 
       <!-- VIEW 4: Open Trip Details (Matching Parties Module & Google AppSheet Drilldown Grid) -->
       <div id="viewOpenTripDetails" style="display: none;">
-        <div class="d-flex align-items-center justify-content-between mb-2 flex-wrap gap-2 px-3 pt-2">
-          <button class="btn btn-sm btn-light border py-1 px-3 d-flex align-items-center gap-1 text-secondary" onclick="OwnersModule.backToDueList()">
-            <i class="bi bi-arrow-left"></i> <span>Back to Owner Due</span>
-          </button>
+        <div class="d-flex align-items-center justify-content-between mb-2 flex-wrap gap-2 px-3 pt-2 bg-white border-bottom pb-2">
           <div class="d-flex align-items-center gap-2">
-            <button class="btn btn-sm btn-light border py-1 px-2 text-secondary" title="Bilty / GR Document"><i class="bi bi-file-earmark-text"></i></button>
-            <button class="btn btn-sm btn-light border py-1 px-2 text-secondary" onclick="window.print()" title="Download / Print"><i class="bi bi-download"></i></button>
-            <button class="btn-appsheet-edit shadow-sm py-1 px-3" id="btn-top-edit-trip" onclick="OwnersModule.openEditTripDrawer(OwnersModule.currentTripId)">
+            <button class="btn btn-sm btn-light border py-1 px-3 d-flex align-items-center gap-1 text-secondary fw-semibold" onclick="OwnersModule.backToDueList()">
+              <i class="bi bi-arrow-left"></i> <span>Back to Owner Due</span>
+            </button>
+          </div>
+          <div class="d-flex align-items-center gap-2" id="openTripDetailsHeaderActions">
+            <!-- 1. Edit Button (Opens Update Trip Details) -->
+            <button class="btn-appsheet-edit shadow-sm py-1 px-3" id="btn-top-edit-trip" onclick="OwnersModule.openEditTripDrawer(OwnersModule.currentTripId)" title="Update Trip Details">
               <i class="bi bi-pencil me-1"></i> Edit
+            </button>
+            <!-- 2. Bilty Download Icon Button -->
+            <button class="btn btn-sm btn-light border py-1 px-2 text-secondary" id="btn-top-download-bilty" onclick="OwnersModule.downloadBilty(OwnersModule.currentTripId)" title="Download / Print Bilty">
+              <i class="bi bi-download"></i>
+            </button>
+            <!-- 3. All Debts Details Button -->
+            <button class="btn btn-sm btn-light border py-1 px-3 d-flex align-items-center gap-1 text-secondary fw-semibold shadow-sm" id="btn-top-all-debts" onclick="OwnersModule.scrollToDebts()" title="View All Debts Details">
+              <i class="bi bi-journal-text"></i> <span>All Debts Details</span>
+            </button>
+            <!-- 4. Close Button -->
+            <button class="btn btn-sm btn-light border py-1 px-2 text-secondary ms-1" onclick="OwnersModule.backToDueList()" title="Close">
+              <i class="bi bi-x-lg"></i>
             </button>
           </div>
         </div>
@@ -2177,89 +2190,180 @@
     <form id="tripDrawerForm" onsubmit="OwnersModule.saveTripDrawer(event)">
       <div class="drawer-body">
         <input type="hidden" id="drawer-trip-id">
+        <!-- 1. G.R.No. -->
         <div class="appsheet-form-row">
-          <label class="appsheet-form-label">G.R. No.</label>
+          <label class="appsheet-form-label">G.R.No.</label>
           <div class="appsheet-form-input-wrap">
-            <input type="text" id="drawer-trip-gr" class="appsheet-form-control font-monospace" readonly>
+            <input type="text" id="drawer-trip-gr" class="appsheet-form-control font-monospace fw-bold" readonly>
           </div>
         </div>
+        <!-- 2. Bilty Amount -->
         <div class="appsheet-form-row">
-          <label class="appsheet-form-label">Truck No. *</label>
+          <label class="appsheet-form-label">Bilty Amount</label>
           <div class="appsheet-form-input-wrap">
-            <input type="text" id="drawer-trip-truck" class="appsheet-form-control font-monospace fw-bold text-uppercase" required>
+            <input type="number" step="0.01" id="drawer-trip-bilty-amt" class="appsheet-form-control font-monospace">
           </div>
         </div>
+        <!-- 3. Consignee Billing Type -->
         <div class="appsheet-form-row">
-          <label class="appsheet-form-label">Owner Name</label>
+          <label class="appsheet-form-label">Consignee Billing Type</label>
           <div class="appsheet-form-input-wrap">
-            <input type="text" id="drawer-trip-owner" class="appsheet-form-control">
-          </div>
-        </div>
-        <div class="appsheet-form-row">
-          <label class="appsheet-form-label">Status *</label>
-          <div class="appsheet-form-input-wrap">
-            <select id="drawer-trip-status" class="appsheet-form-control" required onchange="OwnersModule.handleTripStatusChange(this.value)">
-              <option value="Transit">Transit (Yellow)</option>
-              <option value="POD Sent/ Bill Generated">POD Sent/ Bill Generated (Purple)</option>
-              <option value="Party Payment Pending">Party Payment Pending (Blue)</option>
-              <option value="Off Loading">Off Loading (Pink)</option>
-              <option value="Cheque Due">Cheque Due (Slate)</option>
-              <option value="Truck Owner Payment Pending">Truck Owner Payment Pending (Cyan)</option>
+            <select id="drawer-trip-billing-type" class="appsheet-form-control">
+              <option value="Per Tonne">Per Tonne</option>
+              <option value="Fixed">Fixed</option>
+              <option value="Per Trip">Per Trip</option>
             </select>
           </div>
         </div>
+        <!-- 4. Weight -->
         <div class="appsheet-form-row">
-          <label class="appsheet-form-label">Origin</label>
-          <div class="appsheet-form-input-wrap">
-            <input type="text" id="drawer-trip-origin" class="appsheet-form-control">
-          </div>
-        </div>
-        <div class="appsheet-form-row">
-          <label class="appsheet-form-label">Destination</label>
-          <div class="appsheet-form-input-wrap">
-            <input type="text" id="drawer-trip-dest" class="appsheet-form-control">
-          </div>
-        </div>
-        <div class="appsheet-form-row">
-          <label class="appsheet-form-label">Material</label>
-          <div class="appsheet-form-input-wrap">
-            <input type="text" id="drawer-trip-mat" class="appsheet-form-control">
-          </div>
-        </div>
-        <div class="appsheet-form-row">
-          <label class="appsheet-form-label">Weight (MT)</label>
+          <label class="appsheet-form-label">Weight</label>
           <div class="appsheet-form-input-wrap">
             <input type="number" step="0.001" id="drawer-trip-weight" class="appsheet-form-control font-monospace">
           </div>
         </div>
+        <!-- 5. Rate -->
         <div class="appsheet-form-row">
-          <label class="appsheet-form-label">Rate (₹)</label>
+          <label class="appsheet-form-label">Rate</label>
           <div class="appsheet-form-input-wrap">
             <input type="number" step="0.01" id="drawer-trip-rate" class="appsheet-form-control font-monospace">
           </div>
         </div>
+        <!-- 6. Freight -->
         <div class="appsheet-form-row">
-          <label class="appsheet-form-label">Total Freight (₹)</label>
+          <label class="appsheet-form-label">Freight</label>
           <div class="appsheet-form-input-wrap">
             <input type="number" step="0.01" id="drawer-trip-freight" class="appsheet-form-control font-monospace">
           </div>
         </div>
+        <!-- 7. Hault Charges -->
         <div class="appsheet-form-row">
-          <label class="appsheet-form-label">Owner Due (₹) *</label>
+          <label class="appsheet-form-label">Hault Charges</label>
           <div class="appsheet-form-input-wrap">
-            <input type="number" step="0.01" id="drawer-trip-due" class="appsheet-form-control font-monospace fw-bold text-danger" required>
+            <input type="number" step="0.01" id="drawer-trip-hault" class="appsheet-form-control font-monospace" placeholder="0.00">
           </div>
         </div>
+        <!-- 8. Loading Charges -->
         <div class="appsheet-form-row">
-          <label class="appsheet-form-label">Driver Name</label>
+          <label class="appsheet-form-label">Loading Charges</label>
+          <div class="appsheet-form-input-wrap">
+            <input type="number" step="0.01" id="drawer-trip-loading" class="appsheet-form-control font-monospace" placeholder="0.00">
+          </div>
+        </div>
+        <!-- 9. Consignee -->
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label">Consignee</label>
+          <div class="appsheet-form-input-wrap">
+            <input type="text" id="drawer-trip-consignee" class="appsheet-form-control">
+          </div>
+        </div>
+        <!-- 10. POD to Shipper/Buyer -->
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label">POD to Shipper/Buyer</label>
+          <div class="appsheet-form-input-wrap">
+            <select id="drawer-trip-pod-target" class="appsheet-form-control">
+              <option value="Shipper">Shipper</option>
+              <option value="Buyer">Buyer</option>
+              <option value="Both">Both</option>
+            </select>
+          </div>
+        </div>
+        <!-- 11. POD Date -->
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label">POD Date</label>
+          <div class="appsheet-form-input-wrap">
+            <input type="text" id="drawer-trip-pod-date" class="appsheet-form-control" placeholder="dd - mm - yyyy">
+          </div>
+        </div>
+        <!-- 12. POD Weight -->
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label">POD Weight</label>
+          <div class="appsheet-form-input-wrap">
+            <input type="number" step="0.001" id="drawer-trip-pod-weight" class="appsheet-form-control font-monospace" placeholder="0.000">
+          </div>
+        </div>
+        <!-- 13. POD Handed over To -->
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label">POD Handed over To</label>
+          <div class="appsheet-form-input-wrap">
+            <input type="text" id="drawer-trip-pod-handed" class="appsheet-form-control" placeholder="Buyer / Receiver">
+          </div>
+        </div>
+        <!-- 14. Reference -->
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label">Reference</label>
+          <div class="appsheet-form-input-wrap">
+            <input type="text" id="drawer-trip-ref" class="appsheet-form-control">
+          </div>
+        </div>
+        <!-- 15. Reference Mobile No. -->
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label">Reference Mobile No.</label>
+          <div class="appsheet-form-input-wrap">
+            <input type="tel" id="drawer-trip-ref-mob" class="appsheet-form-control font-monospace">
+          </div>
+        </div>
+        <!-- 16. Driver -->
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label">Driver</label>
           <div class="appsheet-form-input-wrap">
             <input type="text" id="drawer-trip-driver" class="appsheet-form-control">
           </div>
         </div>
+        <!-- 17. Driver Mobile No. -->
         <div class="appsheet-form-row">
-          <label class="appsheet-form-label">Driver Mobile</label>
+          <label class="appsheet-form-label">Driver Mobile No.</label>
           <div class="appsheet-form-input-wrap">
             <input type="tel" id="drawer-trip-driver-mob" class="appsheet-form-control font-monospace">
+          </div>
+        </div>
+        <!-- 18. Owner -->
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label">Owner</label>
+          <div class="appsheet-form-input-wrap">
+            <input type="text" id="drawer-trip-owner" class="appsheet-form-control">
+          </div>
+        </div>
+        <!-- 19. Owner Mobile No. 1 -->
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label">Owner Mobile No.</label>
+          <div class="appsheet-form-input-wrap">
+            <input type="tel" id="drawer-trip-owner-mob1" class="appsheet-form-control font-monospace">
+          </div>
+        </div>
+        <!-- 20. Owner Mobile No. 2 -->
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label">Owner Mobile No.</label>
+          <div class="appsheet-form-input-wrap">
+            <input type="tel" id="drawer-trip-owner-mob2" class="appsheet-form-control font-monospace">
+          </div>
+        </div>
+        <!-- 21. Bill No. -->
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label">Bill No.</label>
+          <div class="appsheet-form-input-wrap">
+            <input type="text" id="drawer-trip-bill-no" class="appsheet-form-control font-monospace">
+          </div>
+        </div>
+        <!-- 22. Status * -->
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label">Status *</label>
+          <div class="appsheet-form-input-wrap">
+            <select id="drawer-trip-status" class="appsheet-form-control" required onchange="OwnersModule.handleTripStatusChange(this.value)">
+              <option value="POD Sent/ Bill Generated">POD Sent/ Bill Generated (Purple)</option>
+              <option value="Transit">Transit (Yellow)</option>
+              <option value="Off Loading">Off Loading (Pink)</option>
+              <option value="Cheque Due">Cheque Due (Slate)</option>
+              <option value="Party Payment Pending">Party Payment Pending (Blue)</option>
+              <option value="Truck Owner Payment Pending">Truck Owner Payment Pending (Cyan)</option>
+            </select>
+          </div>
+        </div>
+        <!-- 23. Owner Due (₹) * -->
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label">Owner Due (₹) *</label>
+          <div class="appsheet-form-input-wrap">
+            <input type="number" step="0.01" id="drawer-trip-due" class="appsheet-form-control font-monospace fw-bold text-danger" required>
           </div>
         </div>
       </div>
@@ -2418,5 +2522,29 @@
   <script src="../js/db-service.js?v=20261029_lock"></script>
   <script src="../js/app.js"></script>
   <script src="../js/modules/owners.js?v=20261029_lock"></script>
+
+  <!-- Bilty Printable Document Modal -->
+  <div class="modal fade" id="biltyModal" tabindex="-1" aria-labelledby="biltyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header bg-dark text-white py-2 px-3">
+          <h6 class="modal-title m-0 fw-bold d-flex align-items-center gap-2" id="biltyModalLabel">
+            <i class="bi bi-file-earmark-text text-warning"></i>
+            <span>Bilty / Consignment Note Document</span>
+          </h6>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4" id="biltyModalBody" style="background: #fafafa;">
+          <!-- Populated dynamically by OwnersModule.downloadBilty -->
+        </div>
+        <div class="modal-footer py-2 px-3 bg-light">
+          <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-sm btn-primary d-flex align-items-center gap-1" onclick="window.print()">
+            <i class="bi bi-printer me-1"></i> Print / Download PDF
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
