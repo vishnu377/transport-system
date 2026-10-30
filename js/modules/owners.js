@@ -1368,11 +1368,7 @@ const OwnersModule = {
                 <li><a class="dropdown-item" href="javascript:void(0)" onclick="OwnersModule.handleAddRecordSelect('${safeTripId}', 'Cheque')"><i class="bi bi-wallet2 me-2 text-warning"></i>Cheque</a></li>
                 <li><a class="dropdown-item" href="javascript:void(0)" onclick="OwnersModule.handleAddRecordSelect('${safeTripId}', 'Party Payment')"><i class="bi bi-bank me-2 text-info"></i>Party Payment</a></li>
                 <li><a class="dropdown-item" href="javascript:void(0)" onclick="OwnersModule.handleAddRecordSelect('${safeTripId}', 'Truck Owner Payment')"><i class="bi bi-credit-card me-2 text-primary"></i>Truck Owner Payment</a></li>
-                <li><a class="dropdown-item" href="javascript:void(0)" onclick="OwnersModule.handleAddRecordSelect('${safeTripId}', 'Other')"><i class="bi bi-three-dots me-2 text-secondary"></i>Other</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="javascript:void(0)" onclick="OwnersModule.openAddPaymentDrawer('${safeTripId}', 'party')"><i class="bi bi-cash-stack me-2 text-success"></i>party payment</a></li>
-                <li><a class="dropdown-item" href="javascript:void(0)" onclick="OwnersModule.openAddPaymentDrawer('${safeTripId}', 'owner')"><i class="bi bi-person-check me-2 text-primary"></i>owner' Payment</a></li>
-                <li><a class="dropdown-item" href="javascript:void(0)" onclick="OwnersModule.openDebtDrawer('${safeTripId}')"><i class="bi bi-graph-up-arrow me-2 text-info"></i>Earnings upcoming</a></li>
+                <li><a class="dropdown-item" href="javascript:void(0)" onclick="OwnersModule.handleAddRecordSelect('${safeTripId}', 'Other B')"><i class="bi bi-three-dots me-2 text-secondary"></i>Other B</a></li>
               </ul>
             </div>
           </div>
@@ -1392,18 +1388,14 @@ const OwnersModule = {
                 </span>
               </button>
               <ul class="dropdown-menu shadow font-size-12 w-100">
-                <li><a class="dropdown-item d-flex align-items-center gap-2 chip-active-purple" href="javascript:void(0)" onclick="OwnersModule.handleStatusSelectChange('${safeTripId}', 'POD Sent/ Bill Generated')"><span class="bullet-purple">●</span> POD Sent/ Bill Generated</a></li>
                 <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="OwnersModule.handleStatusSelectChange('${safeTripId}', 'Transit')"><span class="bullet-yellow">●</span> Transit</a></li>
                 <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="OwnersModule.handleStatusSelectChange('${safeTripId}', 'Off Loading')"><span class="bullet-pink">●</span> Off Loading</a></li>
                 <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="OwnersModule.handleStatusSelectChange('${safeTripId}', 'Cheque Due')"><span class="bullet-slate">●</span> Cheque Due</a></li>
-                <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="OwnersModule.handleStatusSelectChange('${safeTripId}', 'POD Sent')"><span class="bullet-cyan">●</span> POD Sent</a></li>
-                <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="OwnersModule.handleStatusSelectChange('${safeTripId}', 'Party Payment Pending')"><span class="bullet-blue">●</span> Party Payment Pending</a></li>
-                <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="OwnersModule.handleStatusSelectChange('${safeTripId}', 'Truck Owner Payment Pending')"><span class="bullet-cyan">●</span> Truck Owner Payment Pending</a></li>
+                <li><a class="dropdown-item d-flex align-items-center gap-2 chip-active-purple" href="javascript:void(0)" onclick="OwnersModule.handleStatusSelectChange('${safeTripId}', 'POD Sent/ Bill Generated')"><span class="bullet-purple">●</span> POD Sent/ Bill Generated</a></li>
               </ul>
             </div>
           </div>
         </div>
-
         <div class="drilldown-field mt-3 pt-2 border-top">
           <div class="drilldown-field-label">Owner Due</div>
           <div class="drilldown-field-val font-monospace fw-bold" style="color: #cc0b0b !important; font-size: 14px;">
@@ -2220,15 +2212,16 @@ const OwnersModule = {
   downloadBilty(tripId) {
     const targetId = tripId || this.currentTripId;
     const d = (this.allOwnerDues || []).find(item => String(item.id) === String(targetId) || String(item.grNo) === String(targetId));
-    if (!d) return;
+    const finalId = d ? (d.grNo || d.id) : targetId;
+    if (!finalId) return;
 
-    const fullGr = d.fullGrNo || (d.year ? `${d.year}-${d.grNo}${d.transport ? '_' + d.transport : ''}` : `2026-2027-${d.grNo}_SMTC`);
-    const consignorName = d.consignor?.name || 'Durga Enterprises';
-    const consignorGst = d.consignor?.gstin || '08AAUFD1174E1ZC';
-    const consignorAddr = d.consignor?.address || '1206/1159, AARAJI NO. 1205/1160, KARERA, RAJSAMAND (RAJ.)';
-    const consigneeName = d.consignee?.name || 'SAKARNI PLASTER (INDIA) PVT. LTD.';
-    const consigneeGst = d.consignee?.gstin || '08AASCS3036P1ZL';
-    const consigneeDest = d.destination || 'Neemrana (Raj.)';
+    const fullGr = d ? (d.fullGrNo || (d.year ? `${d.year}-${d.grNo}${d.transport ? '_' + d.transport : ''}` : `2026-2027-${d.grNo}_SMTC`)) : `2026-2027-${finalId}_SMTC`;
+    const consignorName = d?.consignor?.name || 'Durga Enterprises';
+    const consignorGst = d?.consignor?.gstin || '08AAUFD1174E1ZC';
+    const consignorAddr = d?.consignor?.address || '1206/1159, AARAJI NO. 1205/1160, KARERA, RAJSAMAND (RAJ.)';
+    const consigneeName = d?.consignee?.name || 'SAKARNI PLASTER (INDIA) PVT. LTD.';
+    const consigneeGst = d?.consignee?.gstin || '08AASCS3036P1ZL';
+    const consigneeDest = d?.destination || 'Neemrana (Raj.)';
     const modalBody = document.getElementById('biltyModalBody');
 
     if (modalBody) {
@@ -2243,13 +2236,13 @@ const OwnersModule = {
           <div class="row g-2 mb-3 pb-2 border-bottom font-size-13">
             <div class="col-6">
               <div><strong>G.R. No:</strong> <span class="font-monospace text-primary fw-bold">${fullGr}</span></div>
-              <div><strong>Date:</strong> <span>${d.tripDate || d.tripStartDate || d.date || '25/10/2026'}</span></div>
-              <div><strong>Truck No:</strong> <span class="font-monospace fw-bold">${d.truckNo || '-'}</span></div>
+              <div><strong>Date:</strong> <span>${d?.tripDate || d?.tripStartDate || d?.date || '25/10/2026'}</span></div>
+              <div><strong>Truck No:</strong> <span class="font-monospace fw-bold">${d?.truckNo || '-'}</span></div>
             </div>
             <div class="col-6 text-end">
-              <div><strong>From:</strong> <span>${d.origin || 'Rajsamand (Raj.)'}</span></div>
+              <div><strong>From:</strong> <span>${d?.origin || 'Rajsamand (Raj.)'}</span></div>
               <div><strong>To:</strong> <span>${consigneeDest}</span></div>
-              <div><strong>Status:</strong> <span class="badge bg-light text-dark border">${d.status || 'POD Sent/ Bill Generated'}</span></div>
+              <div><strong>Status:</strong> <span class="badge bg-light text-dark border">${d?.status || 'POD Sent/ Bill Generated'}</span></div>
             </div>
           </div>
 
@@ -2264,7 +2257,7 @@ const OwnersModule = {
             </div>
             <div class="col-6">
               <div class="p-2 border rounded bg-light h-100">
-                <div class="fw-bold text-secondary mb-1">CONSIGNEE (Receiver)</div>
+                <div class="fw-bold text-secondary mb-1">CONSIGNEE (Buyer)</div>
                 <div class="fw-bold text-dark">${consigneeName}</div>
                 <div class="text-muted small">${consigneeDest}</div>
                 <div class="mt-1"><strong>GSTIN:</strong> <span class="font-monospace">${consigneeGst}</span></div>
@@ -2277,51 +2270,43 @@ const OwnersModule = {
               <tr>
                 <th>Description of Goods</th>
                 <th class="text-end">Weight (MT)</th>
-                <th class="text-end">Rate (₹)</th>
+                <th class="text-end">Rate</th>
                 <th class="text-end">Freight (₹)</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>${d.material || 'Marble Powder (Dolomite)'}</td>
-                <td class="text-end font-monospace">${Number(d.weight || 0).toFixed(3)}</td>
-                <td class="text-end font-monospace">₹ ${this.formatCurrency(d.rate || 0)}</td>
-                <td class="text-end font-monospace fw-bold">₹ ${this.formatCurrency(d.freight || d.biltyAmount || 124300)}</td>
-              </tr>
-              <tr class="table-light">
-                <td colspan="3" class="text-end fw-bold">Total Bilty Amount:</td>
-                <td class="text-end font-monospace fw-bold text-success">₹ ${this.formatCurrency(d.biltyAmount || 146674)}</td>
-              </tr>
-              <tr>
-                <td colspan="3" class="text-end fw-bold text-danger">Owner Due Balance:</td>
-                <td class="text-end font-monospace fw-bold text-danger">₹ ${this.formatCurrency(d.dueAmount !== undefined ? d.dueAmount : (d.ownerDue || 0))}</td>
+                <td>${d?.material || 'Marble Powder'}</td>
+                <td class="text-end">${d?.weight || '80'}</td>
+                <td class="text-end">₹ ${d?.rate || '0'}</td>
+                <td class="text-end fw-bold">₹ ${this.formatCurrency(d?.freight || 0)}</td>
               </tr>
             </tbody>
+            <tfoot>
+              <tr>
+                <th colspan="3" class="text-end">Owner Due Amount:</th>
+                <th class="text-end font-monospace text-danger fw-bold">₹ ${this.formatCurrency(d?.due || d?.ownerDue || 0)}</th>
+              </tr>
+            </tfoot>
           </table>
 
-          <div class="row pt-3 font-size-11 text-muted border-top">
-            <div class="col-6">
-              <p class="mb-0">Driver: <strong>${d.driver || 'Suresh Raiya'}</strong> (${d.driverMobile || '9636017337'})</p>
-              <p class="mb-0">Owner: <strong>${d.ownerName || d.owner || 'Shree Mahaveer Transport Co.'}</strong></p>
-            </div>
-            <div class="col-6 text-end">
-              <div style="height: 40px;"></div>
-              <div class="border-top d-inline-block pt-1 px-4">Authorized Signatory</div>
-            </div>
+          <div class="d-flex justify-content-between align-items-center pt-3 border-top font-size-12 text-muted">
+            <div>Driver: <strong>${d?.driver || 'N/A'}</strong></div>
+            <div class="text-end">For <strong>SHREE MAHAVEER TRANSPORT COMPANY</strong><br><br><span class="text-secondary small">Authorized Signatory</span></div>
           </div>
         </div>
       `;
     }
 
     const modalEl = document.getElementById('biltyModal');
-    if (modalEl) {
-      if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
-        const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
-        modal.show();
-      } else {
-        modalEl.classList.add('show');
-        modalEl.style.display = 'block';
-      }
+    if (modalEl && typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+      const m = bootstrap.Modal.getOrCreateInstance(modalEl);
+      m.show();
+    }
+
+    // Direct authentic print / PDF download in original bilty-booking format
+    if (typeof window !== 'undefined' && typeof window.open === 'function') {
+      window.open(`./bilty-booking.html?id=${encodeURIComponent(finalId)}&print=1`, '_blank');
     }
   },
 

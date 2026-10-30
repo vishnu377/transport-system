@@ -108,6 +108,25 @@ const BiltyBookingModule = {
     this.renderAppSheet3Panels();
     this.updateLivePreview();
 
+    // Check URL parameters for auto print consignment note (print=1)
+    const printParam = urlParams.get('print');
+    if (printParam === '1' && (editId || urlParams.get('gr') || urlParams.get('search'))) {
+      const targetGr = editId || urlParams.get('gr') || urlParams.get('search');
+      const tripToPrint = (this.allTrips || []).find(t => 
+        String(t.id) === String(targetGr) || 
+        String(t.grNo) === String(targetGr) || 
+        String(t.shortGrNo) === String(targetGr)
+      );
+      if (tripToPrint) {
+        setTimeout(() => {
+          this.openPrintModal(tripToPrint);
+          setTimeout(() => {
+            window.print();
+          }, 500);
+        }, 300);
+      }
+    }
+
     // Check URL parameters for direct search or specific GR targeting
     const targetQuery = urlParams.get('gr') || urlParams.get('search') || urlParams.get('q');
     if (targetQuery) {
