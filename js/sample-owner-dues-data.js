@@ -253,9 +253,9 @@ const SAMPLE_OWNER_DUES = [
     "driver": "Bhanwar Jat",
     "date": "28/10/2026",
     "year": "2026-2027",
-    "status": "Transit",
-    "color": "yellow",
-    "colorHex": "#c3ad00",
+    "status": "Off Loading",
+    "color": "pink",
+    "colorHex": "#fb0a9d",
     "ownerDue": 152950.0,
     "paidAmount": 0.0
   },

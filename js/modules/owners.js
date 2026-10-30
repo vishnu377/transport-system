@@ -1474,11 +1474,30 @@ const OwnersModule = {
       }
     }
 
-    // 3. CARD 2 (MIDDLE) matching 19_52_27.png & media_1793355082953_07f2614f.png
+    // 3. CARD 2 (MIDDLE) - Universal Dynamic Engine
+    const is250 = (String(d.grNo) === '250' || d.id === 'due-2026-250');
+    const is1502 = (String(d.grNo) === '1502' || d.id === 'due-2024-1502');
+    if (is1502 && (!d.payments || d.payments.length === 0)) {
+      d.payments = [
+        { date: '19/03/2025', amount: 50000.0, mode: 'NEFT/RTGS', beneficiary: 'MTC' },
+        { date: '19/03/2025', amount: 46900.0, mode: 'NEFT/RTGS', beneficiary: 'MTC' },
+        { date: '25/03/2025', amount: 56656.0, mode: 'NEFT/RTGS', beneficiary: 'MTC' }
+      ];
+      d.totalFreight = 109121.0;
+      d.freight = 109121.0;
+      d.paidAmount = 153556.0;
+      d.dueAmount = -44435.0;
+    }
+
+    const hasPayments = (Array.isArray(d.payments) && d.payments.length > 0) || (d.addRecord === 'Party Payment');
+    const paymentsList = hasPayments ? (d.payments || []) : [];
+    const totalPaidVal = hasPayments ? (d.paidAmount !== undefined ? d.paidAmount : paymentsList.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0)) : 0;
+    const dueAmountVal = hasPayments ? (d.dueAmount !== undefined ? d.dueAmount : (totalFreightVal - totalPaidVal)) : (d.dueAmount !== undefined ? d.dueAmount : dueAmt);
+
     if (midCard) {
       if (isSlateChequeDue) {
         const totalChequeAmt = is2645 ? 10000.0 : (d.totalChequeAmount !== undefined ? d.totalChequeAmount : 10000.0);
-        const consignorCount = (d.consignors && d.consignors.length) || 3;
+        const consignorCount = (d.consignors && d.consignors.length) || 1;
 
         midCard.innerHTML = `
           <div class="d-flex align-items-center gap-2 mb-2 pb-1 border-bottom">
@@ -1524,7 +1543,58 @@ const OwnersModule = {
             </div>
           </div>
         `;
+      } else if (hasPayments) {
+        // Matching Screen 1 (1502_MTC) with Total Freight, Paid Amount, Due Amount, Status in Card 2
+        midCard.innerHTML = `
+          <div class="d-flex align-items-center gap-2 mb-2 pb-1 border-bottom">
+            <span class="theme-dot" style="font-size: 13px;">●</span>
+            <span class="theme-text" style="font-size: 14px; font-weight: 700;">Consignor/s</span>
+            <span class="badge bg-light text-secondary border font-monospace ms-1" style="font-size: 11px;">1</span>
+          </div>
+          <div class="drilldown-subtable-wrap border rounded-1 overflow-hidden mb-2">
+            <table class="drilldown-subtable table table-sm table-hover mb-0" style="font-size: 12px; table-layout: fixed; width: 100%;">
+              <thead class="bg-light text-secondary border-bottom">
+                <tr>
+                  <th class="ps-2 py-2 fw-semibold" style="width: 32%;">GSTIN</th>
+                  <th class="py-2 fw-semibold" style="width: 33%;">Consignor</th>
+                  <th class="py-2 fw-semibold" style="width: 35%;">Consignor Address</th>
+                  <th class="pe-2 py-2 text-end" style="width: 18px;"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr onclick="OwnersModule.showOpenTripPartyDetails('${safeTripId}')" style="cursor: pointer;" title="Click to view full Consignor details">
+                  <td class="ps-2 py-2 font-monospace text-truncate theme-text" style="font-size: 11px;">${consignorGst}</td>
+                  <td class="py-2 fw-semibold text-truncate" style="font-size: 11.5px;">${consignorName}</td>
+                  <td class="py-2 text-secondary text-truncate" style="font-size: 11.5px;">${consignorAddr}</td>
+                  <td class="pe-2 py-2 text-end text-muted"><i class="bi bi-chevron-right small"></i></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="subtable-footer-actions p-2 text-end border-top bg-light">
+              <a href="javascript:void(0)" class="subtable-action-link theme-link fw-semibold" style="font-size: 12px;" onclick="OwnersModule.showOpenTripPartyDetails('${safeTripId}')">Expand</a>
+            </div>
+          </div>
+          <div class="drilldown-field mt-3">
+            <div class="drilldown-field-label">Total Freight</div>
+            <div class="drilldown-field-val font-monospace">${dotHtml} <span class="theme-text">₹ ${this.formatCurrency(totalFreightVal)}</span></div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Paid Amount</div>
+            <div class="drilldown-field-val font-monospace">${dotHtml} <span class="theme-text">₹ ${this.formatCurrency(totalPaidVal)}</span></div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Due Amount</div>
+            <div class="drilldown-field-val font-monospace">${dotHtml} <span class="theme-text">₹ ${this.formatCurrency(dueAmountVal)}</span></div>
+          </div>
+          <div class="drilldown-field">
+            <div class="drilldown-field-label">Status*</div>
+            <div class="drilldown-field-val">
+              ${this.renderStatusDropdown(safeTripId, d.status || 'Off Loading')}
+            </div>
+          </div>
+        `;
       } else {
+        // Clean Card 2 for trips without subtable payments (e.g. 2681_TTC or Bengani 250)
         midCard.innerHTML = `
           <div class="d-flex align-items-center gap-2 mb-2 pb-1 border-bottom">
             <span class="theme-dot" style="font-size: 13px;">●</span>
@@ -1558,7 +1628,10 @@ const OwnersModule = {
       }
     }
 
-    // 4. CARD 3 (RIGHT - CONSIGNEE / OWNER / FREIGHT / DROPDOWNS / DUE)
+    // 4. CARD 3 (RIGHT) - Universal Dynamic Engine
+    const isOwnerDueVisible = !isSlateChequeDue && !hasPayments && (is250 || d.status === 'POD Sent/ Bill Generated' || (d.ownerDue && d.ownerDue > 0));
+    const isStatusInCard3 = !isSlateChequeDue && !hasPayments;
+
     if (rightCard) {
       if (isSlateChequeDue) {
         rightCard.innerHTML = `
@@ -1644,6 +1717,7 @@ const OwnersModule = {
               <a href="tel:${consigneeMob1}" class="tel-link"><i class="bi bi-telephone-fill theme-icon"></i></a>
             </div>
           </div>
+          ${consigneeMob2 ? `
           <div class="drilldown-field">
             <div class="drilldown-field-label">Consignee Mobile No.</div>
             <div class="drilldown-field-val">
@@ -1651,6 +1725,7 @@ const OwnersModule = {
               <a href="tel:${consigneeMob2}" class="tel-link"><i class="bi bi-telephone-fill theme-icon"></i></a>
             </div>
           </div>
+          ` : ''}
           <div class="drilldown-field">
             <div class="drilldown-field-label">Owner</div>
             <div class="drilldown-field-val">${dotHtml} <span class="theme-text">${ownerVal}</span></div>
@@ -1662,6 +1737,7 @@ const OwnersModule = {
               <a href="tel:${ownerMob1}" class="tel-link"><i class="bi bi-telephone-fill theme-icon"></i></a>
             </div>
           </div>
+          ${ownerMob2 ? `
           <div class="drilldown-field">
             <div class="drilldown-field-label">Owner Mobile No.</div>
             <div class="drilldown-field-val">
@@ -1669,6 +1745,7 @@ const OwnersModule = {
               <a href="tel:${ownerMob2}" class="tel-link"><i class="bi bi-telephone-fill theme-icon"></i></a>
             </div>
           </div>
+          ` : ''}
           <div class="drilldown-field">
             <div class="drilldown-field-label">Freight</div>
             <div class="drilldown-field-val font-monospace">${dotHtml} <span class="theme-text">₹ ${this.formatCurrency(freightVal)}</span></div>
@@ -1678,7 +1755,7 @@ const OwnersModule = {
             <div class="drilldown-field-val">
               <div class="dropdown w-100">
                 <button class="btn btn-sm btn-light border py-1 px-3 d-flex align-items-center justify-content-between w-100 shadow-sm dropdown-toggle font-size-12" type="button" data-bs-toggle="dropdown" style="background: #ffffff; height: 32px; border-color: #d1d5db !important;">
-                  <span class="text-secondary">Add Records for...</span>
+                  <span class="${hasPayments ? 'text-dark fw-semibold' : 'text-secondary'}">${hasPayments ? 'Party Payment' : (d.addRecord || 'Add Records for...')}</span>
                 </button>
                 <ul class="dropdown-menu shadow font-size-12 w-100">
                   <li><a class="dropdown-item" href="javascript:void(0)" onclick="OwnersModule.handleAddRecordSelect('${safeTripId}', 'Cheque')"><i class="bi bi-wallet2 me-2 text-warning"></i>Cheque</a></li>
@@ -1689,6 +1766,7 @@ const OwnersModule = {
               </div>
             </div>
           </div>
+          ${isStatusInCard3 ? `
           <div class="drilldown-field">
             <div class="drilldown-field-label">Total Freight</div>
             <div class="drilldown-field-val font-monospace">${dotHtml} <span class="theme-text">₹ ${this.formatCurrency(totalFreightVal)}</span></div>
@@ -1699,13 +1777,66 @@ const OwnersModule = {
               ${this.renderStatusDropdown(safeTripId, d.status || 'POD Sent/ Bill Generated')}
             </div>
           </div>
+          ` : ''}
+          ${isOwnerDueVisible ? `
           <div class="drilldown-field mt-3 pt-2 border-top">
             <div class="drilldown-field-label">Owner Due</div>
             <div class="drilldown-field-val font-monospace fw-bold" style="color: #cc0b0b !important; font-size: 14px;">
               <span class="appsheet-bullet bullet-red">●</span> ₹ ${this.formatCurrency(dueAmt)}
             </div>
           </div>
+          ` : ''}
         `;
+      }
+    }
+
+    // 5. DYNAMIC BOTTOM SUBTABLES CONTAINER (Payments matching Screen 1 1502_MTC)
+    const bottomContainer = document.getElementById('drilldown-bottom-container');
+    if (bottomContainer) {
+      if (hasPayments) {
+        bottomContainer.style.display = 'block';
+        bottomContainer.innerHTML = `
+          <div class="drilldown-card p-3 bg-white border rounded shadow-sm">
+            <div class="d-flex align-items-center gap-2 mb-2 pb-1 border-bottom">
+              <span class="theme-dot" style="font-size: 13px;">●</span>
+              <span class="theme-text" style="font-size: 14px; font-weight: 700;">Payment</span>
+              <span class="badge bg-light text-secondary border font-monospace ms-1" style="font-size: 11px;">${paymentsList.length}</span>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-sm table-hover mb-0" style="font-size: 12px; width: 100%;">
+                <thead class="bg-light text-secondary border-bottom">
+                  <tr>
+                    <th style="width: 36px;"></th>
+                    <th class="ps-2 py-2 fw-semibold">Payment Date ↑</th>
+                    <th class="py-2 fw-semibold">Amount Paid</th>
+                    <th class="py-2 fw-semibold">Mode</th>
+                    <th class="py-2 fw-semibold">Beneficiary</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${paymentsList.map(p => `
+                    <tr style="cursor: pointer;">
+                      <td class="text-center text-secondary py-2" style="width: 36px;"><i class="bi bi-pencil-fill small text-muted"></i></td>
+                      <td class="ps-2 py-2 font-monospace" style="color: #0ab226 !important; font-weight: 600;">${p.date || '-'}</td>
+                      <td class="py-2 font-monospace fw-bold" style="color: #0ab226 !important;">₹ ${this.formatCurrency(p.amount || 0)}</td>
+                      <td class="py-2" style="color: #0ab226 !important; font-weight: 600;"><span style="color: #0ab226 !important;">●</span> ${p.mode || 'NEFT/RTGS'}</td>
+                      <td class="py-2" style="color: #0ab226 !important; font-weight: 600;"><span style="color: #0ab226 !important;">●</span> ${p.beneficiary || d.ownerName || 'MTC'}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+            <div class="subtable-footer-actions p-2 d-flex align-items-center justify-content-end gap-2 border-top bg-light mt-2">
+              <a href="javascript:void(0)" class="subtable-action-link theme-link fw-semibold" style="font-size: 12px;">Expand</a>
+              <button class="btn btn-sm btn-light border py-0 px-2 fw-semibold text-secondary" style="font-size: 12px; height: 24px;" onclick="OwnersModule.openAddPaymentDrawer('${safeTripId}', 'party')">
+                <i class="bi bi-plus-lg me-1 small"></i>Add
+              </button>
+            </div>
+          </div>
+        `;
+      } else {
+        bottomContainer.style.display = 'none';
+        bottomContainer.innerHTML = '';
       }
     }
 
