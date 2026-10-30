@@ -1346,7 +1346,7 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 20px;
-      align-items: stretch;
+      align-items: start;
     }
 
     @media (max-width: 1100px) {
@@ -1416,6 +1416,9 @@
     .theme-slate .theme-dot { color: #5f6368 !important; }
     .theme-slate .theme-text { color: #5f6368 !important; font-weight: 600; }
     .theme-slate .theme-icon { color: #5f6368 !important; }
+    .theme-slate .theme-link { color: #5f6368 !important; text-decoration: none; }
+    .theme-slate .theme-link:hover { text-decoration: underline; }
+    .theme-slate .drilldown-subtable td.theme-text { color: #5f6368 !important; }
 
     .tel-link {
       color: inherit;
@@ -2091,8 +2094,11 @@
         <span id="trip-details-status-badge" style="display: none;"></span>
         <div class="drilldown-wrap" id="open-trip-cards-container">
           <div class="drilldown-grid">
-            <!-- Card 1 (Left - Trip Info) -->
-            <div class="drilldown-card" id="drilldown-card-left"></div>
+            <!-- Column 1 (Left - Trip Info & Cheque Subtable for Cheque Due) -->
+            <div class="d-flex flex-column gap-3" id="drilldown-col-left">
+              <div class="drilldown-card" id="drilldown-card-left"></div>
+              <div class="drilldown-card" id="drilldown-card-cheque" style="display: none;"></div>
+            </div>
             <!-- Card 2 (Middle - Consignor/s Subtable with Expand) -->
             <div class="drilldown-card" id="drilldown-card-mid"></div>
             <!-- Card 3 (Right - Consignee & Owner Details & Dropdowns) -->
