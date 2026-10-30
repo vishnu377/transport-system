@@ -134,6 +134,60 @@ assert(midCard.innerHTML.includes('Consignor/s'), 'Card 2 must still display Con
 assert(rightCard.innerHTML.includes('Owner Due'), 'Card 3 must retain Owner Due for Bengani trip 250');
 console.log('✔ Test 6: Non-slate trip (250 Bengani) isolation verified (Cheque card hidden, Owner Due preserved)');
 
+
+// Test 7: Verify Cheque Details Drawer Opening matching Screen 1 (media_1793365397801_8636243b.jpg)
+OwnersModule.openChequeDrawer('2645');
+const chequeDrawer = global.document.getElementById('chequeDrawer');
+const chequeBackdrop = global.document.getElementById('chequeDrawerBackdrop');
+assert(chequeDrawer.classList.contains('open'), 'Cheque drawer must have class open');
+assert(chequeBackdrop.classList.contains('show'), 'Cheque drawer backdrop must have class show');
+
+const dueDateInput = global.document.getElementById('drawer-cheque-due-date');
+const partyDueInput = global.document.getElementById('drawer-cheque-party-due');
+const amountInput = global.document.getElementById('drawer-cheque-amount');
+const bankInput = global.document.getElementById('drawer-cheque-bank');
+const chequeNoInput = global.document.getElementById('drawer-cheque-no');
+const payToInput = global.document.getElementById('drawer-cheque-payto');
+
+assert.strictEqual(dueDateInput.value, '30-10-2026', 'Due date must initialize to 30-10-2026');
+assert(partyDueInput.value.includes('10,000.00'), 'Party due must show ₹ 10,000.00');
+assert.strictEqual(amountInput.value, '10000', 'Amount must default to 10000');
+assert.strictEqual(bankInput.value, 'HDFC', 'Bank must default to HDFC');
+assert.strictEqual(chequeNoInput.value, '000504', 'Cheque No must initialize to 000504');
+assert.strictEqual(payToInput.value, 'TTC', 'Pay to must initialize to TTC');
+console.log('✔ Test 7: Cheque Details Drawer opens with exact Screen 1 pre-filled fields (Due Date, Party Due, Amount, Bank, Cheque No, Pay to)');
+
+// Test 8: Verify Pay to dropdown selection & filter
+OwnersModule.showChequePayToDropdown(true);
+assert.strictEqual(global.document.getElementById('chequePayToDropdownMenu').style.display, 'block', 'Pay to menu must be visible');
+OwnersModule.selectChequePayTo('MTC');
+assert.strictEqual(payToInput.value, 'MTC', 'Pay to must update to MTC upon selection');
+assert.strictEqual(global.document.getElementById('chequePayToDropdownMenu').style.display, 'none', 'Pay to menu should close after selection');
+console.log('✔ Test 8: Pay to dropdown interaction and selection verified');
+
+// Test 9: Verify Cheque Drawer Save & Firestore sync logic
+const trip2645 = OwnersModule.allOwnerDues.find(i => String(i.id) === 'due-2645' || String(i.grNo) === '2645');
+const initialChequeCount = (trip2645.cheques || []).length;
+amountInput.value = '15000';
+chequeNoInput.value = '000505';
+payToInput.value = 'Laxmi Prakash Jat';
+
+OwnersModule.saveChequeDrawer();
+assert.strictEqual(chequeDrawer.classList.contains('open'), false, 'Drawer must close after save');
+assert.strictEqual(chequeBackdrop.classList.contains('show'), false, 'Backdrop must close after save');
+assert.strictEqual(trip2645.cheques.length, initialChequeCount + 1, 'New cheque must be appended to trip cheques array');
+assert.strictEqual(trip2645.chequeNo, '000505', 'Cheque no must update');
+assert.strictEqual(trip2645.chequeAmount, 15000, 'Cheque amount must update');
+assert.strictEqual(trip2645.chequePayTo, 'Laxmi Prakash Jat', 'Cheque pay to must update');
+console.log('✔ Test 9: saveChequeDrawer appends cheque to trip, updates totals, and closes drawer');
+
+// Test 10: Verify handleAddRecordSelect('2645', 'Cheque') routes directly to openChequeDrawer
+OwnersModule.handleAddRecordSelect('2645', 'Cheque');
+assert(chequeDrawer.classList.contains('open'), 'Selecting Cheque from Add Records must open Cheque Details drawer');
+OwnersModule.closeChequeDrawer();
+assert.strictEqual(chequeDrawer.classList.contains('open'), false, 'Drawer must close on closeChequeDrawer');
+console.log('✔ Test 10: handleAddRecordSelect routes Cheque directly to openChequeDrawer instead of Open Debt drawer');
+
 console.log('\n================================================================');
 console.log('  ALL SLATTEY (SLATE / CHEQUE DUE) CARDS & DRILLDOWN TESTS PASSED (100%)');
 console.log('================================================================');

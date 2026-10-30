@@ -2578,6 +2578,123 @@
     </form>
   </aside>
 
+  <!-- AppSheet Slide Drawer: Cheque Details (Screen 1 - Exact match to media_1793365397801_8636243b.jpg) -->
+  <div class="appsheet-drawer-backdrop" id="chequeDrawerBackdrop" onclick="OwnersModule.closeChequeDrawer()"></div>
+  <aside class="appsheet-drawer" id="chequeDrawer">
+    <div class="drawer-header">
+      <div class="drawer-header-left">
+        <button type="button" class="drawer-close-btn" onclick="OwnersModule.closeChequeDrawer()" title="Close">
+          <i class="bi bi-x fs-4"></i>
+        </button>
+        <h5 class="drawer-title" id="chequeDrawerTitle">Cheque Details</h5>
+      </div>
+      <div class="drawer-header-right">
+        <button type="button" class="btn-drawer-cancel" onclick="OwnersModule.closeChequeDrawer()">Cancel</button>
+        <button type="submit" form="chequeDrawerForm" class="btn-drawer-save" style="background: #93732e !important; border-color: #93732e !important;">
+          Save
+        </button>
+      </div>
+    </div>
+    <form id="chequeDrawerForm" onsubmit="OwnersModule.saveChequeDrawer(event)">
+      <div class="drawer-body">
+        <input type="hidden" id="drawer-cheque-trip-id">
+
+        <!-- 1. Cheque Due Date * -->
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label" for="drawer-cheque-due-date">Cheque Due Date <span class="text-danger">*</span></label>
+          <div class="appsheet-form-input-wrap position-relative">
+            <input type="text" id="drawer-cheque-due-date" class="appsheet-form-control font-monospace" placeholder="30-10-2026" required>
+            <i class="bi bi-calendar3 position-absolute text-secondary" style="right: 12px; top: 10px; pointer-events: none;"></i>
+          </div>
+        </div>
+
+        <!-- 2. Party Due Payment -->
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label" for="drawer-cheque-party-due">Party Due Payment</label>
+          <div class="appsheet-form-input-wrap">
+            <input type="text" id="drawer-cheque-party-due" class="appsheet-form-control font-monospace" readonly style="background: #fdfdfd;">
+          </div>
+        </div>
+
+        <!-- 3. Amount * -->
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label" for="drawer-cheque-amount">Amount <span class="text-danger">*</span></label>
+          <div class="appsheet-form-input-wrap">
+            <input type="number" step="0.01" id="drawer-cheque-amount" class="appsheet-form-control font-monospace fw-semibold" placeholder="₹ 0.00" required>
+          </div>
+        </div>
+
+        <!-- 4. Bank * -->
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label" for="drawer-cheque-bank">Bank <span class="text-danger">*</span></label>
+          <div class="appsheet-form-input-wrap">
+            <select id="drawer-cheque-bank" class="appsheet-form-control" required>
+              <option value="HDFC">HDFC</option>
+              <option value="SBI">SBI</option>
+              <option value="ICICI">ICICI</option>
+              <option value="Axis Bank">Axis Bank</option>
+              <option value="Bank of Baroda">Bank of Baroda</option>
+              <option value="PNB">PNB</option>
+              <option value="Kotak Mahindra">Kotak Mahindra</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 5. Cheque No. * -->
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label" for="drawer-cheque-no">Cheque No. <span class="text-danger">*</span></label>
+          <div class="appsheet-form-input-wrap">
+            <input type="text" id="drawer-cheque-no" class="appsheet-form-control font-monospace" placeholder="000504" required>
+          </div>
+        </div>
+
+        <!-- 6. Pay to * (Searchable Dropdown with golden bullets matching media_1793365397801_8636243b.jpg) -->
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label" for="drawer-cheque-payto">Pay to <span class="text-danger">*</span></label>
+          <div class="appsheet-form-input-wrap position-relative">
+            <input type="text" id="drawer-cheque-payto" class="appsheet-form-control" placeholder="Search" autocomplete="off" required onclick="OwnersModule.showChequePayToDropdown(true)">
+            <i class="bi bi-caret-down-fill position-absolute text-muted small" style="right: 12px; top: 12px; pointer-events: none;"></i>
+
+            <!-- Dropdown popup matching Screen 1 -->
+            <div id="chequePayToDropdownMenu" class="shadow-sm border rounded bg-white position-absolute w-100" style="display: none; top: 100%; left: 0; z-index: 1050; max-height: 240px; overflow-y: auto;">
+              <div class="p-2 border-bottom bg-light">
+                <input type="text" class="form-control form-control-sm" id="chequePayToSearch" placeholder="Search" oninput="OwnersModule.filterChequePayTo(this.value)">
+              </div>
+              <ul class="list-unstyled m-0 py-1" id="chequePayToList">
+                <li class="px-3 py-2 d-flex align-items-center gap-2" style="cursor: pointer;" onclick="OwnersModule.selectChequePayTo('MTC')">
+                  <span style="color: #d9b900 !important;">●</span> <span>MTC</span>
+                </li>
+                <li class="px-3 py-2 d-flex align-items-center gap-2" style="cursor: pointer;" onclick="OwnersModule.selectChequePayTo('TTC')">
+                  <span style="color: #d9b900 !important;">●</span> <span>TTC</span>
+                </li>
+                <li class="px-3 py-2 d-flex align-items-center gap-2" style="cursor: pointer;" onclick="OwnersModule.selectChequePayTo('SMTC')">
+                  <span style="color: #d9b900 !important;">●</span> <span>SMTC</span>
+                </li>
+                <li class="px-3 py-2 d-flex align-items-center gap-2" style="cursor: pointer;" onclick="OwnersModule.selectChequePayTo('Laxmi Prakash Jat')">
+                  <span style="color: #d9b900 !important;">●</span> <span>Laxmi Prakash Jat</span>
+                </li>
+                <li class="px-3 py-2 d-flex align-items-center gap-2" style="cursor: pointer;" onclick="OwnersModule.selectChequePayTo('Rameshwar Prasad')">
+                  <span style="color: #d9b900 !important;">●</span> <span>Rameshwar Prasad</span>
+                </li>
+                <li class="px-3 py-2 d-flex align-items-center gap-2" style="cursor: pointer;" onclick="OwnersModule.selectChequePayTo('Truck Owner')">
+                  <span style="color: #d9b900 !important;">●</span> <span>Truck Owner</span>
+                </li>
+                <li class="px-3 py-2 d-flex align-items-center gap-2" style="cursor: pointer;" onclick="OwnersModule.selectChequePayTo('Other')">
+                  <span style="color: #d9b900 !important;">●</span> <span>Other</span>
+                </li>
+              </ul>
+              <div class="p-2 border-top bg-light text-end">
+                <button type="button" class="btn btn-sm btn-secondary py-0 px-2 font-size-11" onclick="OwnersModule.showChequePayToDropdown(false)">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </form>
+  </aside>
+
   <!-- Bootstrap 5 Bundle JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   
