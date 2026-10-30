@@ -401,6 +401,23 @@ const OwnersModule = {
   // ========================================================
   // VIEW 1: 3-CARD DASHBOARD VIEW
   // ========================================================
+    hideAllViews() {
+    const viewIds = [
+      'viewDashboard',
+      'viewOwnerDetails',
+      'viewOwnerDueList',
+      'viewOwnerPaidList',
+      'viewOpenTripDetails',
+      'viewOpenTripPartyDetails',
+      'viewTripPaymentDetails',
+      'viewOpenDebtsDetails'
+    ];
+    viewIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+  },
+
   showDashboard() {
     this.currentView = 'dashboard';
     window.location.hash = '';
@@ -413,13 +430,8 @@ const OwnersModule = {
     const viewParty = document.getElementById('viewOpenTripPartyDetails');
     const viewPayment = document.getElementById('viewTripPaymentDetails');
 
+    this.hideAllViews();
     if (viewDash) viewDash.style.display = 'block';
-    if (viewOwnerDetails) viewOwnerDetails.style.display = 'none';
-    if (viewDueList) viewDueList.style.display = 'none';
-    if (viewPaidList) viewPaidList.style.display = 'none';
-    if (viewOpenTrip) viewOpenTrip.style.display = 'none';
-    if (viewParty) viewParty.style.display = 'none';
-    if (viewPayment) viewPayment.style.display = 'none';
 
     // Reset grid layout expansion
     const grid = document.getElementById('ownersDashboardGrid');
@@ -693,12 +705,8 @@ const OwnersModule = {
     const viewParty = document.getElementById('viewOpenTripPartyDetails');
     const viewPayment = document.getElementById('viewTripPaymentDetails');
 
-    if (viewDash) viewDash.style.display = 'none';
-    if (viewOwnerDetails) viewOwnerDetails.style.display = 'none';
+    this.hideAllViews();
     if (viewDueList) viewDueList.style.display = 'block';
-    if (viewOpenTrip) viewOpenTrip.style.display = 'none';
-    if (viewParty) viewParty.style.display = 'none';
-    if (viewPayment) viewPayment.style.display = 'none';
 
     // Breadcrumb: Home > Owners > Owner Due
     const bc = document.getElementById('appsheetBreadcrumb');
@@ -1108,13 +1116,8 @@ const OwnersModule = {
     const viewParty = document.getElementById('viewOpenTripPartyDetails');
     const viewPayment = document.getElementById('viewTripPaymentDetails');
 
-    if (viewDash) viewDash.style.display = 'none';
-    if (viewOwnerDetails) viewOwnerDetails.style.display = 'none';
-    if (viewDueList) viewDueList.style.display = 'none';
+    this.hideAllViews();
     if (viewPaidList) viewPaidList.style.display = 'block';
-    if (viewOpenTrip) viewOpenTrip.style.display = 'none';
-    if (viewParty) viewParty.style.display = 'none';
-    if (viewPayment) viewPayment.style.display = 'none';
 
     // Update Breadcrumbs
     const headerTitle = document.querySelector('#viewOwnerPaidList .appsheet-panel-title');
@@ -1356,12 +1359,8 @@ const OwnersModule = {
       p.status = 'Settled';
     }
 
-    const viewDash = document.getElementById('viewDashboard');
-    const viewPaidList = document.getElementById('viewOwnerPaidList');
+    this.hideAllViews();
     const viewOpenTrip = document.getElementById('viewOpenTripDetails');
-
-    if (viewDash) viewDash.style.display = 'none';
-    if (viewPaidList) viewPaidList.style.display = 'none';
     if (viewOpenTrip) viewOpenTrip.style.display = 'block';
 
     // Store current trip object
@@ -1393,6 +1392,9 @@ const OwnersModule = {
         <div class="d-flex align-items-center gap-2">
           <button class="btn btn-sm btn-light border py-1 px-3 d-flex align-items-center gap-1 text-secondary fw-semibold shadow-sm" onclick="OwnersModule.downloadBilty('${p.id}')" title="Download / Print Receipt">
             <i class="bi bi-printer me-1"></i> <span>Print</span>
+          </button>
+          <button class="btn-appsheet-edit shadow-sm py-1 px-3" onclick="OwnersModule.openEditTripDrawer('${p.id}')" title="Edit Trip Details">
+            <i class="bi bi-pencil me-1"></i> Edit
           </button>
           <button class="btn btn-sm btn-light border py-1 px-2 text-secondary" onclick="OwnersModule.backToPaidList()" title="Back to Owner Paid">
             <i class="bi bi-x-lg"></i>
@@ -1490,14 +1492,8 @@ const OwnersModule = {
     const viewPayment = document.getElementById('viewTripPaymentDetails');
     const viewDebts = document.getElementById('viewOpenDebtsDetails');
 
-    if (viewDash) viewDash.style.display = 'none';
-    if (viewOwnerDetails) viewOwnerDetails.style.display = 'none';
-    if (viewDueList) viewDueList.style.display = 'none';
-    if (viewPaidList) viewPaidList.style.display = 'none';
+    this.hideAllViews();
     if (viewOpenTrip) viewOpenTrip.style.display = 'block';
-    if (viewParty) viewParty.style.display = 'none';
-    if (viewPayment) viewPayment.style.display = 'none';
-    if (viewDebts) viewDebts.style.display = 'none';
 
     // Authentic AppSheet Single Top Header Bar matching 19_52_55.png
     const bc = document.getElementById('appsheetBreadcrumb');
@@ -1523,11 +1519,11 @@ const OwnersModule = {
     if (bcActions) {
       bcActions.innerHTML = `
         <div class="d-flex align-items-center gap-2">
+          <button class="btn btn-sm btn-light border py-1 px-3 d-flex align-items-center gap-1 text-secondary fw-semibold shadow-sm" onclick="OwnersModule.downloadBilty('${safeTripId}')" title="Print / Download Bilty">
+            <i class="bi bi-printer me-1"></i> <span>Print</span>
+          </button>
           <button class="btn-appsheet-edit shadow-sm py-1 px-3" onclick="OwnersModule.openEditTripDrawer('${safeTripId}')" title="Update Trip Details">
             <i class="bi bi-pencil me-1"></i> Edit
-          </button>
-          <button class="btn btn-sm btn-light border py-1 px-2 text-secondary" onclick="OwnersModule.downloadBilty('${safeTripId}')" title="Download / Print Bilty">
-            <i class="bi bi-download"></i>
           </button>
           <button class="btn btn-sm btn-light border py-1 px-3 d-flex align-items-center gap-1 text-secondary fw-semibold shadow-sm" onclick="OwnersModule.scrollToDebts()" title="All Debts Details">
             <i class="bi bi-journal-text me-1"></i> <span>All Debts Details</span>
@@ -1546,6 +1542,20 @@ const OwnersModule = {
   // Green (#2e7d32): Cleared
   // Red (#cc0b0b): Overdue / Bounced
   // Golden Yellow (#d9b900): Cheque Due / Upcoming
+    getTripColor(d) {
+    if (!d) return 'purple';
+    if (d.color) return d.color;
+    const status = d.status || '';
+    if (status === 'Transit') return 'yellow';
+    if (status === 'POD Sent/ Bill Generated') return 'purple';
+    if (status === 'Party Payment Pending') return 'blue';
+    if (status === 'Off Loading') return 'pink';
+    if (status === 'Cheque Due') return 'slate';
+    if (status === 'Truck Owner Payment Pending') return 'cyan';
+    if (status === 'Settled') return 'green';
+    return 'purple';
+  },
+
   getChequeStatusColor(d, cheque) {
     if (!d) return { color: '#d9b900', name: 'yellow', statusText: 'Cheque Due', icon: 'bi-circle', isClear: false };
 
@@ -2451,13 +2461,8 @@ const OwnersModule = {
     const viewParty = document.getElementById('viewOpenTripPartyDetails');
     const viewPayment = document.getElementById('viewTripPaymentDetails');
 
-    if (viewDash) viewDash.style.display = 'none';
-    if (viewOwnerDetails) viewOwnerDetails.style.display = 'none';
-    if (viewDueList) viewDueList.style.display = 'none';
-    if (viewPaidList) viewPaidList.style.display = 'none';
-    if (viewOpenTrip) viewOpenTrip.style.display = 'none';
+    this.hideAllViews();
     if (viewParty) viewParty.style.display = 'block';
-    if (viewPayment) viewPayment.style.display = 'none';
 
     // Breadcrumb matching 19_53_18.png: Home > Owners > Owner Due > Open Trip Details > Open Trip Party Details
     const bc = document.getElementById('appsheetBreadcrumb');
@@ -2549,12 +2554,7 @@ const OwnersModule = {
     const viewParty = document.getElementById('viewOpenTripPartyDetails');
     const viewPayment = document.getElementById('viewTripPaymentDetails');
 
-    if (viewDash) viewDash.style.display = 'none';
-    if (viewOwnerDetails) viewOwnerDetails.style.display = 'none';
-    if (viewDueList) viewDueList.style.display = 'none';
-    if (viewPaidList) viewPaidList.style.display = 'none';
-    if (viewOpenTrip) viewOpenTrip.style.display = 'none';
-    if (viewParty) viewParty.style.display = 'none';
+    this.hideAllViews();
     if (viewPayment) viewPayment.style.display = 'block';
 
     const isParty = (Array.isArray(d.payments) && d.payments.length > 0) || (d.addRecord === 'Party Payment');
@@ -2748,13 +2748,8 @@ const OwnersModule = {
     const viewParty = document.getElementById('viewOpenTripPartyDetails');
     const viewPayment = document.getElementById('viewTripPaymentDetails');
 
-    if (viewDash) viewDash.style.display = 'none';
+    this.hideAllViews();
     if (viewOwnerDetails) viewOwnerDetails.style.display = 'block';
-    if (viewDueList) viewDueList.style.display = 'none';
-    if (viewPaidList) viewPaidList.style.display = 'none';
-    if (viewOpenTrip) viewOpenTrip.style.display = 'none';
-    if (viewParty) viewParty.style.display = 'none';
-    if (viewPayment) viewPayment.style.display = 'none';
 
     // Breadcrumb: Owners > Truck Owners > Details
     const bc = document.getElementById('appsheetBreadcrumb');
@@ -2963,7 +2958,20 @@ const OwnersModule = {
   },
 
   openEditTripDrawer(tripId) {
-    const d = (this.allOwnerDues || []).find(item => String(item.id) === String(tripId) || String(item.grNo) === String(tripId));
+    const targetId = tripId || this.currentTripId;
+    let d = (this.allOwnerDues || []).find(item => String(item.id) === String(targetId) || String(item.grNo) === String(targetId));
+    if (!d) {
+      d = (this.allOwnerPaid || []).find(item => String(item.id) === String(targetId) || String(item.grNo) === String(targetId));
+    }
+    if (!d && typeof dbService !== 'undefined' && dbService.getAllOwnerPaid) {
+      d = dbService.getAllOwnerPaid().find(item => String(item.id) === String(targetId) || String(item.grNo) === String(targetId));
+    }
+    if (!d && typeof dbService !== 'undefined' && dbService.getAllOwnerDues) {
+      d = dbService.getAllOwnerDues().find(item => String(item.id) === String(targetId) || String(item.grNo) === String(targetId));
+    }
+    if (!d && this.currentTripObj) {
+      d = this.currentTripObj;
+    }
     if (!d) return;
 
     const backdrop = document.getElementById('tripDrawerBackdrop');
@@ -2981,12 +2989,16 @@ const OwnersModule = {
     setVal('drawer-trip-gr', d.grNo || '');
     setVal('drawer-trip-bilty-amt', d.biltyAmount !== undefined ? d.biltyAmount : (d.totalFreight || ''));
     setVal('drawer-trip-billing-type', d.billingType || 'Per Tonne');
+    setVal('drawer-trip-weight', d.weight !== undefined ? d.weight : '');
+    setVal('drawer-trip-rate', d.rate !== undefined ? d.rate : '');
+    setVal('drawer-trip-freight', d.freight !== undefined ? d.freight : (d.totalFreight || d.biltyAmount || ''));
     setVal('drawer-trip-hault', d.hault !== undefined ? d.hault : 0);
     setVal('drawer-trip-loading', d.loading !== undefined ? d.loading : 0);
+    setVal('drawer-trip-consignee', (d.consignee && d.consignee.name) ? d.consignee.name : (d.consignee || d.consigneeName || ''));
     setVal('drawer-trip-pod-target', d.podTarget || d.podTargetDate || 'Shipper');
 
     // Dynamically colorize the POD Shipper/Buyer dots according to the trip's row color
-    const col = d.color || this.getTripColor(d) || 'purple';
+    const col = d.color || (typeof this.getTripColor === 'function' ? this.getTripColor(d) : 'purple');
     let dotColorHex = '#8c00ff'; // default Begani (purple)
     if (col === 'yellow') dotColorHex = '#d9b900';
     else if (col === 'pink') dotColorHex = '#fb0a9d';
@@ -2994,6 +3006,7 @@ const OwnersModule = {
     else if (col === 'cyan') dotColorHex = '#01d5db';
     else if (col === 'blue') dotColorHex = '#039ced';
     else if (col === 'purple') dotColorHex = '#8c00ff';
+    else if (col === 'green') dotColorHex = '#00b11f';
 
     const dotShipper = document.getElementById('drawer-pod-dot-shipper');
     const dotBuyer = document.getElementById('drawer-pod-dot-buyer');
@@ -3060,7 +3073,20 @@ const OwnersModule = {
     const tripId = document.getElementById('drawer-trip-id')?.value;
     if (!tripId) return;
 
-    const d = (this.allOwnerDues || []).find(item => String(item.id) === String(tripId) || String(item.grNo) === String(tripId));
+    let d = (this.allOwnerDues || []).find(item => String(item.id) === String(tripId) || String(item.grNo) === String(tripId));
+    let isPaid = false;
+    if (!d) {
+      d = (this.allOwnerPaid || []).find(item => String(item.id) === String(tripId) || String(item.grNo) === String(tripId));
+      isPaid = true;
+    }
+    if (!d && typeof dbService !== 'undefined' && dbService.getAllOwnerPaid) {
+      d = dbService.getAllOwnerPaid().find(item => String(item.id) === String(tripId) || String(item.grNo) === String(tripId));
+      isPaid = true;
+    }
+    if (!d && this.currentTripObj) {
+      d = this.currentTripObj;
+      if (d.fromView === 'paid' || d.isPaid) isPaid = true;
+    }
     if (!d) return;
 
     const getVal = id => {
@@ -3073,10 +3099,25 @@ const OwnersModule = {
       d.biltyAmount = parseFloat(getVal('drawer-trip-bilty-amt')) || 0;
     }
     if (getVal('drawer-trip-billing-type')) d.billingType = getVal('drawer-trip-billing-type');
+    if (getVal('drawer-trip-weight') !== '') d.weight = parseFloat(getVal('drawer-trip-weight')) || 0;
+    if (getVal('drawer-trip-rate') !== '') d.rate = parseFloat(getVal('drawer-trip-rate')) || 0;
+    if (getVal('drawer-trip-freight') !== '') {
+      d.freight = parseFloat(getVal('drawer-trip-freight')) || 0;
+      d.totalFreight = d.freight;
+    }
     if (getVal('drawer-trip-hault') !== '') d.hault = parseFloat(getVal('drawer-trip-hault')) || 0;
     if (getVal('drawer-trip-loading') !== '') d.loading = parseFloat(getVal('drawer-trip-loading')) || 0;
+    if (getVal('drawer-trip-consignee')) {
+      if (typeof d.consignee === 'object' && d.consignee !== null) {
+        d.consignee.name = getVal('drawer-trip-consignee');
+      } else {
+        d.consignee = getVal('drawer-trip-consignee');
+      }
+    }
     if (getVal('drawer-trip-pod-target')) d.podTargetDate = getVal('drawer-trip-pod-target');
     if (getVal('drawer-trip-pod-date')) d.podReceivedDate = getVal('drawer-trip-pod-date');
+    if (getVal('drawer-trip-pod-weight') !== '') d.podWeight = parseFloat(getVal('drawer-trip-pod-weight')) || 0;
+    if (getVal('drawer-trip-pod-handed')) d.podHandedTo = getVal('drawer-trip-pod-handed');
     if (getVal('drawer-trip-truck')) d.truckNo = getVal('drawer-trip-truck').trim().toUpperCase();
     if (getVal('drawer-trip-start-date')) {
       d.tripStartDate = getVal('drawer-trip-start-date');
@@ -3088,8 +3129,6 @@ const OwnersModule = {
     }
     if (getVal('drawer-trip-origin')) d.origin = getVal('drawer-trip-origin');
     if (getVal('drawer-trip-dest')) d.destination = getVal('drawer-trip-dest');
-    if (getVal('drawer-trip-weight') !== '') d.weight = parseFloat(getVal('drawer-trip-weight')) || 0;
-    if (getVal('drawer-trip-rate') !== '') d.rate = parseFloat(getVal('drawer-trip-rate')) || 0;
     if (getVal('drawer-trip-mat')) d.material = getVal('drawer-trip-mat');
     if (getVal('drawer-trip-ref')) d.reference = getVal('drawer-trip-ref');
     if (getVal('drawer-trip-ref-mob')) d.referenceMobile = getVal('drawer-trip-ref-mob');
@@ -3101,39 +3140,60 @@ const OwnersModule = {
     if (getVal('drawer-trip-bill-no')) d.billNo = getVal('drawer-trip-bill-no');
 
     const newStatus = getVal('drawer-trip-status') || d.status;
-    d.status = newStatus;
-    const colMap = {
-      'Transit': 'yellow',
-      'POD Sent/ Bill Generated': 'purple',
-      'Party Payment Pending': 'blue',
-      'Off Loading': 'pink',
-      'Cheque Due': 'slate',
-      'Truck Owner Payment Pending': 'cyan'
-    };
-    d.color = colMap[newStatus] || d.color || 'yellow';
-    if (d.color === 'purple') d.colorHex = '#7c00ff';
-    else if (d.color === 'yellow') d.colorHex = '#c3ad00';
-    else if (d.color === 'cyan') d.colorHex = '#0088cc';
-    else if (d.color === 'blue') d.colorHex = '#1a73e8';
-    else if (d.color === 'pink') d.colorHex = '#e91e63';
-    else if (d.color === 'slate') d.colorHex = '#5f6368';
+    if (newStatus) {
+      d.status = newStatus;
+      const colMap = {
+        'Transit': 'yellow',
+        'POD Sent/ Bill Generated': 'purple',
+        'Party Payment Pending': 'blue',
+        'Off Loading': 'pink',
+        'Cheque Due': 'slate',
+        'Truck Owner Payment Pending': 'cyan',
+        'Settled': 'green'
+      };
+      d.color = colMap[newStatus] || d.color || 'yellow';
+      if (d.color === 'purple') d.colorHex = '#7c00ff';
+      else if (d.color === 'yellow') d.colorHex = '#c3ad00';
+      else if (d.color === 'cyan') d.colorHex = '#0088cc';
+      else if (d.color === 'blue') d.colorHex = '#1a73e8';
+      else if (d.color === 'pink') d.colorHex = '#e91e63';
+      else if (d.color === 'slate') d.colorHex = '#5f6368';
+      else if (d.color === 'green') d.colorHex = '#00b11f';
+    }
 
     if (getVal('drawer-trip-due') !== '') {
       d.dueAmount = parseFloat(getVal('drawer-trip-due')) || 0;
       d.ownerDue = d.dueAmount;
     }
 
-    try {
-      if (typeof FirebaseDB !== 'undefined' && FirebaseDB.saveOwnerDue) {
-        await FirebaseDB.saveOwnerDue(d);
+    if (isPaid) {
+      try {
+        if (typeof dbService !== 'undefined' && dbService.saveOwnerPaid) {
+          await dbService.saveOwnerPaid(d);
+        }
+      } catch (e) {
+        console.warn('dbService.saveOwnerPaid error:', e);
       }
-    } catch (e) {
-      console.warn('FirebaseDB saveOwnerDue error:', e);
+      this.closeTripDrawer();
+      this.renderOwnerPaidTable();
+      this.showOwnerPaidTripDetails(tripId);
+      if (typeof AppUI !== 'undefined') AppUI.showToast('Owner Paid trip updated successfully!', 'success');
+    } else {
+      try {
+        if (typeof FirebaseDB !== 'undefined' && FirebaseDB.saveOwnerDue) {
+          await FirebaseDB.saveOwnerDue(d);
+        }
+        if (typeof dbService !== 'undefined' && dbService.saveOwnerDue) {
+          await dbService.saveOwnerDue(d);
+        }
+      } catch (e) {
+        console.warn('FirebaseDB saveOwnerDue error:', e);
+      }
+      this.closeTripDrawer();
+      this.renderOwnerDueTable();
+      this.showOpenTripDetails(tripId);
+      if (typeof AppUI !== 'undefined') AppUI.showToast('Trip updated successfully!', 'success');
     }
-
-    this.closeTripDrawer();
-    this.renderOwnerDueTable();
-    this.showOpenTripDetails(tripId);
   },
 
   // ========================================================
@@ -3156,13 +3216,7 @@ const OwnersModule = {
     const viewPayment = document.getElementById('viewTripPaymentDetails');
     const viewDebts = document.getElementById('viewOpenDebtsDetails');
 
-    if (viewDash) viewDash.style.display = 'none';
-    if (viewOwnerDetails) viewOwnerDetails.style.display = 'none';
-    if (viewDueList) viewDueList.style.display = 'none';
-    if (viewPaidList) viewPaidList.style.display = 'none';
-    if (viewOpenTrip) viewOpenTrip.style.display = 'none';
-    if (viewParty) viewParty.style.display = 'none';
-    if (viewPayment) viewPayment.style.display = 'none';
+    this.hideAllViews();
     if (viewDebts) viewDebts.style.display = 'block';
 
     // Breadcrumb: Home > Owners > Owner Due > Open Trip Details > Open Debts
@@ -3319,16 +3373,25 @@ const OwnersModule = {
 
   downloadBilty(tripId) {
     const targetId = tripId || this.currentTripId;
-    const d = (this.allOwnerDues || []).find(item => String(item.id) === String(targetId) || String(item.grNo) === String(targetId));
+    let d = (this.allOwnerDues || []).find(item => String(item.id) === String(targetId) || String(item.grNo) === String(targetId));
+    if (!d) {
+      d = (this.allOwnerPaid || []).find(item => String(item.id) === String(targetId) || String(item.grNo) === String(targetId));
+    }
+    if (!d && typeof dbService !== 'undefined' && dbService.getAllOwnerPaid) {
+      d = dbService.getAllOwnerPaid().find(item => String(item.id) === String(targetId) || String(item.grNo) === String(targetId));
+    }
+    if (!d && this.currentTripObj) {
+      d = this.currentTripObj;
+    }
     const finalId = d ? (d.grNo || d.id) : targetId;
     if (!finalId) return;
 
     const fullGr = d ? (d.fullGrNo || (d.year ? `${d.year}-${d.grNo}${d.transport ? '_' + d.transport : ''}` : `2026-2027-${d.grNo}_SMTC`)) : `2026-2027-${finalId}_SMTC`;
-    const consignorName = d?.consignor?.name || 'Durga Enterprises';
-    const consignorGst = d?.consignor?.gstin || '08AAUFD1174E1ZC';
-    const consignorAddr = d?.consignor?.address || '1206/1159, AARAJI NO. 1205/1160, KARERA, RAJSAMAND (RAJ.)';
-    const consigneeName = d?.consignee?.name || 'SAKARNI PLASTER (INDIA) PVT. LTD.';
-    const consigneeGst = d?.consignee?.gstin || '08AASCS3036P1ZL';
+    const consignorName = (typeof d?.consignor === 'object' && d?.consignor?.name) ? d.consignor.name : (d?.consignor || 'Durga Enterprises');
+    const consignorGst = (typeof d?.consignor === 'object' && d?.consignor?.gstin) ? d.consignor.gstin : (d?.consignorGst || '08AAUFD1174E1ZC');
+    const consignorAddr = (typeof d?.consignor === 'object' && d?.consignor?.address) ? d.consignor.address : (d?.consignorAddress || '1206/1159, AARAJI NO. 1205/1160, KARERA, RAJSAMAND (RAJ.)');
+    const consigneeName = (typeof d?.consignee === 'object' && d?.consignee?.name) ? d.consignee.name : (d?.consignee || 'SAKARNI PLASTER (INDIA) PVT. LTD.');
+    const consigneeGst = (typeof d?.consignee === 'object' && d?.consignee?.gstin) ? d.consignee.gstin : (d?.consigneeGst || '08AASCS3036P1ZL');
     const consigneeDest = d?.destination || 'Neemrana (Raj.)';
     const modalBody = document.getElementById('biltyModalBody');
 

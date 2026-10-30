@@ -2357,14 +2357,8 @@
             </button>
             <span class="badge bg-light text-secondary border px-2 py-1 small" id="drilldown-view-badge">Trip Details</span>
           </div>
-          <div class="d-flex align-items-center gap-2" id="drilldown-top-actions">
-            <button class="btn btn-sm btn-light border py-1 px-3 d-flex align-items-center gap-1 text-secondary fw-semibold shadow-sm" onclick="OwnersModule.downloadBilty(OwnersModule.currentTripId)" title="Print / Download Receipt">
-              <i class="bi bi-printer me-1"></i> <span>Print</span>
-            </button>
-            <button class="btn-appsheet-edit shadow-sm py-1 px-3" onclick="OwnersModule.openEditTripDrawer(OwnersModule.currentTripId)">
-              <i class="bi bi-pencil me-1"></i> Edit
-            </button>
-          </div>
+          <!-- Clean unified single action bar in breadcrumbActions; empty container for backward compatibility -->
+          <div class="d-none" id="drilldown-top-actions"></div>
         </div>
         <span id="trip-details-gr-title" style="display: none;"></span>
         <span id="trip-details-status-badge" style="display: none;"></span>
