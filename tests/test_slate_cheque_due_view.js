@@ -219,6 +219,42 @@ const updated2645 = OwnersModule.allOwnerDues.find(i => String(i.id) === 'due-26
 assert.strictEqual(updated2645.chequeBank, 'Punjab And Sind Bank', 'Saved trip must reflect selected bank');
 console.log('✔ Test 11: Bank Searchable Combobox with all 33+ banks verified (open, select, filter & save)');
 
+
+// Test 12: Verify Dynamic Cheque Status Color System (Green: Cleared, Red: Overdue/Bounced, Yellow: Due)
+// 12a. Yellow when Cheque Due
+const yellowColor = OwnersModule.getChequeStatusColor({ grNo: '2645', status: 'Cheque Due' });
+assert.strictEqual(yellowColor.color, '#d9b900', 'Cheque Due status must produce golden yellow #d9b900');
+assert.strictEqual(yellowColor.name, 'yellow', 'Color name must be yellow');
+
+// 12b. Green when Cleared
+const greenColor = OwnersModule.getChequeStatusColor({ grNo: '2645', status: 'Cheque Due', chequeClear: true });
+assert.strictEqual(greenColor.color, '#2e7d32', 'Cleared cheque must produce green #2e7d32');
+assert.strictEqual(greenColor.name, 'green', 'Color name must be green');
+
+// 12c. Red when Bounced or Overdue
+const redColorBounced = OwnersModule.getChequeStatusColor({ grNo: '2645', status: 'Cheque Bounced' });
+assert.strictEqual(redColorBounced.color, '#cc0b0b', 'Bounced cheque must produce red #cc0b0b');
+assert.strictEqual(redColorBounced.name, 'red', 'Color name must be red');
+
+const redColorOverdue = OwnersModule.getChequeStatusColor({ grNo: '2645', status: 'Cheque Overdue' });
+assert.strictEqual(redColorOverdue.color, '#cc0b0b', 'Overdue cheque must produce red #cc0b0b');
+
+// 12d. Verify toggleChequeClear dynamically switches color to green and re-renders
+const testTrip = OwnersModule.allOwnerDues.find(i => String(i.id) === 'due-2645' || String(i.grNo) === '2645');
+testTrip.chequeClear = false;
+OwnersModule.renderDrilldownView(testTrip);
+assert(chequeCard.innerHTML.includes('#d9b900'), 'Initial trip 2645 card must be yellow');
+
+OwnersModule.toggleChequeClear(testTrip.id);
+assert.strictEqual(testTrip.chequeClear, true, 'toggleChequeClear must toggle clear to true');
+assert(chequeCard.innerHTML.includes('#2e7d32'), 'Toggled trip 2645 card must turn green #2e7d32');
+
+// Toggle back to yellow
+OwnersModule.toggleChequeClear(testTrip.id);
+assert.strictEqual(testTrip.chequeClear, false, 'toggleChequeClear must toggle clear back to false');
+assert(chequeCard.innerHTML.includes('#d9b900'), 'Trip 2645 card must return to yellow #d9b900');
+console.log('✔ Test 12: Dynamic Cheque Status Color System verified (Yellow: Due, Green: Cleared, Red: Bounced/Overdue + interactive toggle)');
+
 console.log('\n================================================================');
 console.log('  ALL SLATTEY (SLATE / CHEQUE DUE) CARDS & DRILLDOWN TESTS PASSED (100%)');
 console.log('================================================================');

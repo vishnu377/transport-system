@@ -1420,24 +1420,41 @@
     .theme-slate .theme-link:hover { text-decoration: underline; }
     .theme-slate .drilldown-subtable td.theme-text { color: #5f6368 !important; }
 
-    /* Cheque Subtable & Total Cheque Amount Authentic Yellow/Golden Color (#d9b900) */
+    /* Cheque Subtable & Total Cheque Amount Dynamic Color System (Green: Cleared, Red: Overdue/Bounced, Yellow: Due) */
+    .bullet-cheque-yellow { color: #d9b900 !important; }
+    .bullet-cheque-green { color: #2e7d32 !important; }
+    .bullet-cheque-red { color: #cc0b0b !important; }
+
     #drilldown-card-cheque .theme-dot,
-    #drilldown-card-cheque .cheque-dot,
-    .bullet-cheque-yellow {
+    #drilldown-card-cheque .cheque-dot {
+      color: inherit;
+    }
+
+    #drilldown-card-cheque.cheque-theme-yellow,
+    #drilldown-card-cheque.cheque-theme-yellow .theme-dot,
+    #drilldown-card-cheque.cheque-theme-yellow .cheque-text,
+    #drilldown-card-cheque.cheque-theme-yellow .drilldown-subtable tbody td,
+    #drilldown-card-cheque.cheque-theme-yellow .drilldown-subtable tbody td *,
+    #drilldown-card-cheque.cheque-theme-yellow .subtable-action-link {
       color: #d9b900 !important;
     }
-    #drilldown-card-cheque .theme-text,
-    #drilldown-card-cheque .cheque-text,
-    #drilldown-card-cheque .drilldown-subtable tbody td,
-    #drilldown-card-cheque .drilldown-subtable tbody td * {
-      color: #d9b900 !important;
-      font-weight: 600;
+
+    #drilldown-card-cheque.cheque-theme-green,
+    #drilldown-card-cheque.cheque-theme-green .theme-dot,
+    #drilldown-card-cheque.cheque-theme-green .cheque-text,
+    #drilldown-card-cheque.cheque-theme-green .drilldown-subtable tbody td,
+    #drilldown-card-cheque.cheque-theme-green .drilldown-subtable tbody td *,
+    #drilldown-card-cheque.cheque-theme-green .subtable-action-link {
+      color: #2e7d32 !important;
     }
-    #drilldown-card-cheque .theme-link,
-    #drilldown-card-cheque .subtable-action-link,
-    #drilldown-card-cheque .cheque-link {
-      color: #d9b900 !important;
-      text-decoration: none;
+
+    #drilldown-card-cheque.cheque-theme-red,
+    #drilldown-card-cheque.cheque-theme-red .theme-dot,
+    #drilldown-card-cheque.cheque-theme-red .cheque-text,
+    #drilldown-card-cheque.cheque-theme-red .drilldown-subtable tbody td,
+    #drilldown-card-cheque.cheque-theme-red .drilldown-subtable tbody td *,
+    #drilldown-card-cheque.cheque-theme-red .subtable-action-link {
+      color: #cc0b0b !important;
     }
     #drilldown-card-cheque .theme-link:hover,
     #drilldown-card-cheque .subtable-action-link:hover {
@@ -2789,6 +2806,15 @@
                 <button type="button" class="btn btn-sm btn-secondary py-0 px-2 font-size-11" onclick="OwnersModule.showChequePayToDropdown(false)">Close</button>
               </div>
             </div>
+          </div>
+        </div>
+
+        <!-- 7. Clear -->
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label" for="drawer-cheque-clear">Clear</label>
+          <div class="appsheet-form-input-wrap d-flex align-items-center" style="height: 38px;">
+            <input type="checkbox" id="drawer-cheque-clear" class="form-check-input mt-0" style="width: 20px; height: 20px; cursor: pointer;">
+            <label class="form-check-label ms-2 text-secondary small" for="drawer-cheque-clear" style="cursor: pointer;">Tick if cheque is cleared in bank</label>
           </div>
         </div>
 

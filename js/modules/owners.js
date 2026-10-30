@@ -1161,6 +1161,126 @@ const OwnersModule = {
     this.renderDrilldownView(d);
   },
 
+  // DYNAMIC CHEQUE STATUS COLOR ENGINE:
+  // Green (#2e7d32): Cleared
+  // Red (#cc0b0b): Overdue / Bounced
+  // Golden Yellow (#d9b900): Cheque Due / Upcoming
+  getChequeStatusColor(d, cheque) {
+    if (!d) return { color: '#d9b900', name: 'yellow', statusText: 'Cheque Due', icon: 'bi-circle', isClear: false };
+
+    // 1. Explicit clear
+    const isClear = !!(
+      d.chequeClear === true || 
+      (cheque && cheque.clear === true) || 
+      (Array.isArray(d.cheques) && d.cheques.some(c => c.clear === true)) ||
+      (d.status && String(d.status).toLowerCase().includes('cleared'))
+    );
+    if (isClear) {
+      return {
+        color: '#2e7d32',
+        name: 'green',
+        statusText: 'Cheque Cleared',
+        icon: 'bi-check-circle-fill',
+        isClear: true,
+        isOverdue: false
+      };
+    }
+
+    // 2. Bounced or Overdue check: explicit flag or status has bounce / overdue
+    const statusLower = String(d.status || '').toLowerCase();
+    const isBouncedOrOverdue = (
+      d.chequeBounce === true || 
+      d.chequeOverdue === true || 
+      statusLower.includes('bounce') || 
+      statusLower.includes('overdue') || 
+      statusLower.includes('dishonour')
+    );
+    if (isBouncedOrOverdue) {
+      return {
+        color: '#cc0b0b',
+        name: 'red',
+        statusText: 'Cheque Overdue / Bounced',
+        icon: 'bi-exclamation-circle-fill',
+        isClear: false,
+        isOverdue: true
+      };
+    }
+
+    // 3. Due Date check: if past reference date (30-10-2026) and status is not specifically 'Cheque Due'
+    const rawDate = (cheque && (cheque.dueDate || cheque.date)) || d.chequeDueDate || d.chequeDate || '';
+    if (rawDate && statusLower !== 'cheque due') {
+      const parts = String(rawDate).trim().split(/[\/\-\.]/);
+      let day, month, year;
+      if (parts.length === 3) {
+        if (parts[0].length === 4) {
+          year = parseInt(parts[0], 10);
+          month = parseInt(parts[1], 10) - 1;
+          day = parseInt(parts[2], 10);
+        } else {
+          day = parseInt(parts[0], 10);
+          month = parseInt(parts[1], 10) - 1;
+          year = parseInt(parts[2], 10);
+        }
+      }
+      if (year && !isNaN(month) && !isNaN(day)) {
+        const dueDateObj = new Date(year, month, day);
+        const refDate = new Date(2026, 9, 30); // 30 Oct 2026
+        if (dueDateObj < refDate) {
+          return {
+            color: '#cc0b0b',
+            name: 'red',
+            statusText: 'Cheque Overdue',
+            icon: 'bi-exclamation-circle-fill',
+            isClear: false,
+            isOverdue: true
+          };
+        }
+      }
+    }
+
+    // 4. Default: Cheque Due / Upcoming -> Golden Yellow
+    return {
+      color: '#d9b900',
+      name: 'yellow',
+      statusText: 'Cheque Due',
+      icon: 'bi-circle',
+      isClear: false,
+      isOverdue: false
+    };
+  },
+
+  toggleChequeClear(tripId, index = 0) {
+    const d = (this.allOwnerDues || []).find(item => String(item.id) === String(tripId) || String(item.grNo) === String(tripId));
+    if (!d) return;
+
+    if (Array.isArray(d.cheques) && d.cheques[index]) {
+      d.cheques[index].clear = !d.cheques[index].clear;
+      d.chequeClear = d.cheques[index].clear;
+    } else {
+      d.chequeClear = !d.chequeClear;
+      if (!Array.isArray(d.cheques)) d.cheques = [];
+      if (d.cheques.length === 0) {
+        d.cheques.push({
+          dueDate: d.chequeDueDate || '30-10-2026',
+          chequeNo: d.chequeNo || '000504',
+          amount: d.chequeAmount || 10000,
+          bank: d.chequeBank || 'HDFC',
+          payTo: d.chequePayTo || 'TTC',
+          clear: d.chequeClear
+        });
+      } else {
+        d.cheques[0].clear = d.chequeClear;
+      }
+    }
+
+    if (window.FirebaseDB && typeof window.FirebaseDB.saveOwnerDue === 'function') {
+      window.FirebaseDB.saveOwnerDue(d).catch(console.warn);
+    }
+
+    this.renderDrilldownView(d);
+  },
+
+
   renderDrilldownView(d) {
     if (!d) return;
     const is2645 = (String(d.grNo) === '2645' || d.id === 'due-2645');
@@ -1289,7 +1409,7 @@ const OwnersModule = {
       `;
     }
 
-    // 2b. CHEQUE SUBTABLE CARD DIRECTLY BENEATH CARD 1 FOR SLATE / CHEQUE DUE (matching media_1793355082953_07f2614f.png)
+    // 2b. CHEQUE SUBTABLE CARD DIRECTLY BENEATH CARD 1 FOR SLATE / CHEQUE DUE (Dynamic Color: Green=Clear, Red=Overdue/Bounced, Yellow=Due)
     if (chequeCard) {
       if (isSlateChequeDue) {
         chequeCard.style.display = 'block';
@@ -1298,14 +1418,17 @@ const OwnersModule = {
         const chequeAmt = d.chequeAmount !== undefined ? d.chequeAmount : (d.cheques && d.cheques[0]?.amount !== undefined ? d.cheques[0].amount : 10000.0);
         const chequeBank = d.chequeBank || (d.cheques && d.cheques[0]?.bank) || 'HDFC';
         const chequePayTo = d.chequePayTo || (d.cheques && d.cheques[0]?.payTo) || 'TTC';
-        const isClear = !!(d.chequeClear || (d.cheques && d.cheques[0]?.clear));
+        const chequeMeta = this.getChequeStatusColor(d);
+        const isClear = chequeMeta.isClear;
         const chequeCount = (d.cheques && d.cheques.length) || 1;
+
+        chequeCard.className = `drilldown-card cheque-theme-${chequeMeta.name}`;
 
         chequeCard.innerHTML = `
           <div class="d-flex align-items-center justify-content-between mb-2 pb-1 border-bottom">
             <div class="d-flex align-items-center gap-2">
-              <span class="bullet-cheque-yellow" style="font-size: 13px; color: #d9b900 !important;">●</span>
-              <span class="cheque-text" style="font-size: 14px; font-weight: 700; color: #d9b900 !important;">Cheque</span>
+              <span class="bullet-cheque-${chequeMeta.name}" style="font-size: 13px; color: ${chequeMeta.color} !important;">●</span>
+              <span class="cheque-text" style="font-size: 14px; font-weight: 700; color: ${chequeMeta.color} !important;">Cheque</span>
               <span class="badge bg-light text-secondary border font-monospace ms-1" style="font-size: 11px;">${chequeCount}</span>
             </div>
           </div>
@@ -1324,20 +1447,20 @@ const OwnersModule = {
                 </thead>
                 <tbody>
                   <tr onclick="OwnersModule.showTripPaymentDetails('${safeTripId}')" style="cursor: pointer;" title="Click to view full Cheque details">
-                    <td class="ps-2 py-2 font-monospace" style="color: #d9b900 !important; font-weight: 600;">${chequeDueDate}</td>
-                    <td class="py-2 font-monospace" style="color: #d9b900 !important; font-weight: 600;">${chequeNo}</td>
-                    <td class="py-2 font-monospace fw-bold" style="color: #d9b900 !important;">₹ ${this.formatCurrency(chequeAmt)}</td>
-                    <td class="py-2" style="color: #d9b900 !important; font-weight: 600;">${chequeBank}</td>
-                    <td class="py-2" style="color: #d9b900 !important; font-weight: 600;">${chequePayTo}</td>
+                    <td class="ps-2 py-2 font-monospace" style="color: ${chequeMeta.color} !important; font-weight: 600;">${chequeDueDate}</td>
+                    <td class="py-2 font-monospace" style="color: ${chequeMeta.color} !important; font-weight: 600;">${chequeNo}</td>
+                    <td class="py-2 font-monospace fw-bold" style="color: ${chequeMeta.color} !important;">₹ ${this.formatCurrency(chequeAmt)}</td>
+                    <td class="py-2" style="color: ${chequeMeta.color} !important; font-weight: 600;">${chequeBank}</td>
+                    <td class="py-2" style="color: ${chequeMeta.color} !important; font-weight: 600;">${chequePayTo}</td>
                     <td class="pe-2 py-2 text-center text-secondary">
-                      <i class="bi ${isClear ? 'bi-check-circle-fill text-success' : 'bi-circle'}" style="font-size: 13px; color: #d9b900 !important;"></i>
+                      <i class="bi ${chequeMeta.icon}" style="font-size: 14px; color: ${chequeMeta.color} !important; cursor: pointer;" title="${chequeMeta.statusText} (Click to toggle)" onclick="event.stopPropagation(); OwnersModule.toggleChequeClear('${safeTripId}', 0)"></i>
                     </td>
                   </tr>
                 </tbody>
               </table>
             </div>
             <div class="subtable-footer-actions p-2 d-flex align-items-center justify-content-end gap-2 border-top bg-light">
-              <a href="javascript:void(0)" class="subtable-action-link fw-semibold" style="font-size: 12px; color: #d9b900 !important;" onclick="OwnersModule.showTripPaymentDetails('${safeTripId}')">Expand</a>
+              <a href="javascript:void(0)" class="subtable-action-link fw-semibold" style="font-size: 12px; color: ${chequeMeta.color} !important;" onclick="OwnersModule.showTripPaymentDetails('${safeTripId}')">Expand</a>
               <button class="btn btn-sm btn-light border py-0 px-2 fw-semibold text-secondary" style="font-size: 12px; height: 24px;" onclick="OwnersModule.openChequeDrawer('${safeTripId}')">
                 <i class="bi bi-plus-lg me-1 small"></i>Add
               </button>
@@ -1347,6 +1470,7 @@ const OwnersModule = {
       } else {
         chequeCard.style.display = 'none';
         chequeCard.innerHTML = '';
+        chequeCard.className = 'drilldown-card';
       }
     }
 
@@ -1387,7 +1511,7 @@ const OwnersModule = {
           </div>
           <div class="drilldown-field mt-3">
             <div class="drilldown-field-label">Total Cheque Amount</div>
-            <div class="drilldown-field-val font-monospace"><span class="bullet-cheque-yellow" style="color: #d9b900 !important; font-size: 11px; margin-right: 4px;">●</span> <span style="color: #d9b900 !important; font-weight: 600;">₹ ${this.formatCurrency(totalChequeAmt)}</span></div>
+            <div class="drilldown-field-val font-monospace"><span class="bullet-cheque-${this.getChequeStatusColor(d).name}" style="color: ${this.getChequeStatusColor(d).color} !important; font-size: 11px; margin-right: 4px;">●</span> <span style="color: ${this.getChequeStatusColor(d).color} !important; font-weight: 600;">₹ ${this.formatCurrency(totalChequeAmt)}</span></div>
           </div>
           <div class="drilldown-field">
             <div class="drilldown-field-label">Total Freight</div>
@@ -2445,6 +2569,126 @@ const OwnersModule = {
     this.renderDrilldownView(d);
   },
 
+  // DYNAMIC CHEQUE STATUS COLOR ENGINE:
+  // Green (#2e7d32): Cleared
+  // Red (#cc0b0b): Overdue / Bounced
+  // Golden Yellow (#d9b900): Cheque Due / Upcoming
+  getChequeStatusColor(d, cheque) {
+    if (!d) return { color: '#d9b900', name: 'yellow', statusText: 'Cheque Due', icon: 'bi-circle', isClear: false };
+
+    // 1. Explicit clear
+    const isClear = !!(
+      d.chequeClear === true || 
+      (cheque && cheque.clear === true) || 
+      (Array.isArray(d.cheques) && d.cheques.some(c => c.clear === true)) ||
+      (d.status && String(d.status).toLowerCase().includes('cleared'))
+    );
+    if (isClear) {
+      return {
+        color: '#2e7d32',
+        name: 'green',
+        statusText: 'Cheque Cleared',
+        icon: 'bi-check-circle-fill',
+        isClear: true,
+        isOverdue: false
+      };
+    }
+
+    // 2. Bounced or Overdue check: explicit flag or status has bounce / overdue
+    const statusLower = String(d.status || '').toLowerCase();
+    const isBouncedOrOverdue = (
+      d.chequeBounce === true || 
+      d.chequeOverdue === true || 
+      statusLower.includes('bounce') || 
+      statusLower.includes('overdue') || 
+      statusLower.includes('dishonour')
+    );
+    if (isBouncedOrOverdue) {
+      return {
+        color: '#cc0b0b',
+        name: 'red',
+        statusText: 'Cheque Overdue / Bounced',
+        icon: 'bi-exclamation-circle-fill',
+        isClear: false,
+        isOverdue: true
+      };
+    }
+
+    // 3. Due Date check: if past reference date (30-10-2026) and status is not specifically 'Cheque Due'
+    const rawDate = (cheque && (cheque.dueDate || cheque.date)) || d.chequeDueDate || d.chequeDate || '';
+    if (rawDate && statusLower !== 'cheque due') {
+      const parts = String(rawDate).trim().split(/[\/\-\.]/);
+      let day, month, year;
+      if (parts.length === 3) {
+        if (parts[0].length === 4) {
+          year = parseInt(parts[0], 10);
+          month = parseInt(parts[1], 10) - 1;
+          day = parseInt(parts[2], 10);
+        } else {
+          day = parseInt(parts[0], 10);
+          month = parseInt(parts[1], 10) - 1;
+          year = parseInt(parts[2], 10);
+        }
+      }
+      if (year && !isNaN(month) && !isNaN(day)) {
+        const dueDateObj = new Date(year, month, day);
+        const refDate = new Date(2026, 9, 30); // 30 Oct 2026
+        if (dueDateObj < refDate) {
+          return {
+            color: '#cc0b0b',
+            name: 'red',
+            statusText: 'Cheque Overdue',
+            icon: 'bi-exclamation-circle-fill',
+            isClear: false,
+            isOverdue: true
+          };
+        }
+      }
+    }
+
+    // 4. Default: Cheque Due / Upcoming -> Golden Yellow
+    return {
+      color: '#d9b900',
+      name: 'yellow',
+      statusText: 'Cheque Due',
+      icon: 'bi-circle',
+      isClear: false,
+      isOverdue: false
+    };
+  },
+
+  toggleChequeClear(tripId, index = 0) {
+    const d = (this.allOwnerDues || []).find(item => String(item.id) === String(tripId) || String(item.grNo) === String(tripId));
+    if (!d) return;
+
+    if (Array.isArray(d.cheques) && d.cheques[index]) {
+      d.cheques[index].clear = !d.cheques[index].clear;
+      d.chequeClear = d.cheques[index].clear;
+    } else {
+      d.chequeClear = !d.chequeClear;
+      if (!Array.isArray(d.cheques)) d.cheques = [];
+      if (d.cheques.length === 0) {
+        d.cheques.push({
+          dueDate: d.chequeDueDate || '30-10-2026',
+          chequeNo: d.chequeNo || '000504',
+          amount: d.chequeAmount || 10000,
+          bank: d.chequeBank || 'HDFC',
+          payTo: d.chequePayTo || 'TTC',
+          clear: d.chequeClear
+        });
+      } else {
+        d.cheques[0].clear = d.chequeClear;
+      }
+    }
+
+    if (window.FirebaseDB && typeof window.FirebaseDB.saveOwnerDue === 'function') {
+      window.FirebaseDB.saveOwnerDue(d).catch(console.warn);
+    }
+
+    this.renderDrilldownView(d);
+  },
+
+
   scrollToDebts(tripId) {
     return this.showOpenDebtsDetails(tripId || this.currentTripId);
   },
@@ -2749,6 +2993,11 @@ const OwnersModule = {
     setVal('drawer-cheque-no', is2645 ? '000504' : (d.chequeNo || ''));
     setVal('drawer-cheque-payto', is2645 ? 'TTC' : (d.chequePayTo || 'TTC'));
 
+    const clearBox = document.getElementById('drawer-cheque-clear');
+    if (clearBox) {
+      clearBox.checked = !!(d.chequeClear || (d.cheques && d.cheques[0]?.clear));
+    }
+
     if (backdrop) backdrop.classList.add('show');
     if (drawer) drawer.classList.add('open');
   },
@@ -2819,6 +3068,7 @@ const OwnersModule = {
     const bank = getVal('drawer-cheque-bank') || 'HDFC';
     const chequeNo = getVal('drawer-cheque-no') || '000504';
     const payTo = getVal('drawer-cheque-payto') || 'TTC';
+    const isClear = !!document.getElementById('drawer-cheque-clear')?.checked;
 
     const newCheque = {
       dueDate,
@@ -2826,7 +3076,7 @@ const OwnersModule = {
       amount,
       bank,
       payTo,
-      clear: false
+      clear: isClear
     };
 
     if (!Array.isArray(d.cheques)) {
@@ -2840,6 +3090,7 @@ const OwnersModule = {
     d.chequeAmount = amount;
     d.chequeBank = bank;
     d.chequePayTo = payTo;
+    d.chequeClear = isClear;
     d.totalChequeAmount = (d.totalChequeAmount || 0) + amount;
 
     // Direct Firestore sync
@@ -2854,6 +3105,126 @@ const OwnersModule = {
     this.closeChequeDrawer();
     this.renderDrilldownView(d);
   },
+
+  // DYNAMIC CHEQUE STATUS COLOR ENGINE:
+  // Green (#2e7d32): Cleared
+  // Red (#cc0b0b): Overdue / Bounced
+  // Golden Yellow (#d9b900): Cheque Due / Upcoming
+  getChequeStatusColor(d, cheque) {
+    if (!d) return { color: '#d9b900', name: 'yellow', statusText: 'Cheque Due', icon: 'bi-circle', isClear: false };
+
+    // 1. Explicit clear
+    const isClear = !!(
+      d.chequeClear === true || 
+      (cheque && cheque.clear === true) || 
+      (Array.isArray(d.cheques) && d.cheques.some(c => c.clear === true)) ||
+      (d.status && String(d.status).toLowerCase().includes('cleared'))
+    );
+    if (isClear) {
+      return {
+        color: '#2e7d32',
+        name: 'green',
+        statusText: 'Cheque Cleared',
+        icon: 'bi-check-circle-fill',
+        isClear: true,
+        isOverdue: false
+      };
+    }
+
+    // 2. Bounced or Overdue check: explicit flag or status has bounce / overdue
+    const statusLower = String(d.status || '').toLowerCase();
+    const isBouncedOrOverdue = (
+      d.chequeBounce === true || 
+      d.chequeOverdue === true || 
+      statusLower.includes('bounce') || 
+      statusLower.includes('overdue') || 
+      statusLower.includes('dishonour')
+    );
+    if (isBouncedOrOverdue) {
+      return {
+        color: '#cc0b0b',
+        name: 'red',
+        statusText: 'Cheque Overdue / Bounced',
+        icon: 'bi-exclamation-circle-fill',
+        isClear: false,
+        isOverdue: true
+      };
+    }
+
+    // 3. Due Date check: if past reference date (30-10-2026) and status is not specifically 'Cheque Due'
+    const rawDate = (cheque && (cheque.dueDate || cheque.date)) || d.chequeDueDate || d.chequeDate || '';
+    if (rawDate && statusLower !== 'cheque due') {
+      const parts = String(rawDate).trim().split(/[\/\-\.]/);
+      let day, month, year;
+      if (parts.length === 3) {
+        if (parts[0].length === 4) {
+          year = parseInt(parts[0], 10);
+          month = parseInt(parts[1], 10) - 1;
+          day = parseInt(parts[2], 10);
+        } else {
+          day = parseInt(parts[0], 10);
+          month = parseInt(parts[1], 10) - 1;
+          year = parseInt(parts[2], 10);
+        }
+      }
+      if (year && !isNaN(month) && !isNaN(day)) {
+        const dueDateObj = new Date(year, month, day);
+        const refDate = new Date(2026, 9, 30); // 30 Oct 2026
+        if (dueDateObj < refDate) {
+          return {
+            color: '#cc0b0b',
+            name: 'red',
+            statusText: 'Cheque Overdue',
+            icon: 'bi-exclamation-circle-fill',
+            isClear: false,
+            isOverdue: true
+          };
+        }
+      }
+    }
+
+    // 4. Default: Cheque Due / Upcoming -> Golden Yellow
+    return {
+      color: '#d9b900',
+      name: 'yellow',
+      statusText: 'Cheque Due',
+      icon: 'bi-circle',
+      isClear: false,
+      isOverdue: false
+    };
+  },
+
+  toggleChequeClear(tripId, index = 0) {
+    const d = (this.allOwnerDues || []).find(item => String(item.id) === String(tripId) || String(item.grNo) === String(tripId));
+    if (!d) return;
+
+    if (Array.isArray(d.cheques) && d.cheques[index]) {
+      d.cheques[index].clear = !d.cheques[index].clear;
+      d.chequeClear = d.cheques[index].clear;
+    } else {
+      d.chequeClear = !d.chequeClear;
+      if (!Array.isArray(d.cheques)) d.cheques = [];
+      if (d.cheques.length === 0) {
+        d.cheques.push({
+          dueDate: d.chequeDueDate || '30-10-2026',
+          chequeNo: d.chequeNo || '000504',
+          amount: d.chequeAmount || 10000,
+          bank: d.chequeBank || 'HDFC',
+          payTo: d.chequePayTo || 'TTC',
+          clear: d.chequeClear
+        });
+      } else {
+        d.cheques[0].clear = d.chequeClear;
+      }
+    }
+
+    if (window.FirebaseDB && typeof window.FirebaseDB.saveOwnerDue === 'function') {
+      window.FirebaseDB.saveOwnerDue(d).catch(console.warn);
+    }
+
+    this.renderDrilldownView(d);
+  },
+
 
   exportCSV() {
     const owners = this.getFilteredOwners();
