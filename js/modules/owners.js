@@ -2759,6 +2759,30 @@ const OwnersModule = {
     if (backdrop) backdrop.classList.remove('show');
     if (drawer) drawer.classList.remove('open');
     this.showChequePayToDropdown(false);
+    this.showChequeBankDropdown(false);
+  },
+
+  showChequeBankDropdown(show) {
+    const menu = document.getElementById('chequeBankDropdownMenu');
+    if (menu) menu.style.display = show ? 'block' : 'none';
+  },
+
+  selectChequeBank(val) {
+    const el = document.getElementById('drawer-cheque-bank');
+    if (el) el.value = val;
+    this.showChequeBankDropdown(false);
+  },
+
+  filterChequeBank(query) {
+    const q = String(query || '').toLowerCase().trim();
+    this.showChequeBankDropdown(true);
+    const list = document.getElementById('chequeBankList');
+    if (!list) return;
+    const items = list.querySelectorAll('li');
+    items.forEach(li => {
+      const text = li.textContent.toLowerCase();
+      li.style.display = text.includes(q) ? 'flex' : 'none';
+    });
   },
 
   showChequePayToDropdown(show) {

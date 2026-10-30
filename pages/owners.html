@@ -2624,20 +2624,121 @@
           </div>
         </div>
 
-        <!-- 4. Bank * -->
+        <!-- 4. Bank * (Searchable Combobox matching AppSheet media_1793366849682_2796b9cc.jpg to f7827b17.jpg) -->
         <div class="appsheet-form-row">
           <label class="appsheet-form-label" for="drawer-cheque-bank">Bank <span class="text-danger">*</span></label>
-          <div class="appsheet-form-input-wrap">
-            <select id="drawer-cheque-bank" class="appsheet-form-control" required>
-              <option value="HDFC">HDFC</option>
-              <option value="SBI">SBI</option>
-              <option value="ICICI">ICICI</option>
-              <option value="Axis Bank">Axis Bank</option>
-              <option value="Bank of Baroda">Bank of Baroda</option>
-              <option value="PNB">PNB</option>
-              <option value="Kotak Mahindra">Kotak Mahindra</option>
-              <option value="Other">Other</option>
-            </select>
+          <div class="appsheet-form-input-wrap position-relative">
+            <input type="text" id="drawer-cheque-bank" class="appsheet-form-control" placeholder="Add or search" autocomplete="off" required onclick="OwnersModule.showChequeBankDropdown(true)" oninput="OwnersModule.filterChequeBank(this.value)">
+            <i class="bi bi-caret-down-fill position-absolute text-muted small" style="right: 12px; top: 12px; pointer-events: none;"></i>
+
+            <!-- Dropdown popup matching AppSheet -->
+            <div id="chequeBankDropdownMenu" class="shadow-sm border rounded bg-white position-absolute w-100" style="display: none; top: 100%; left: 0; z-index: 1050; max-height: 250px; overflow-y: auto;">
+              <div class="p-1 px-2 border-bottom bg-light d-flex justify-content-between align-items-center position-sticky top-0" style="z-index: 2;">
+                <span class="text-muted small" style="font-size: 11px;">Select or search bank</span>
+                <button type="button" class="btn btn-sm btn-secondary py-0 px-2 font-size-11" onclick="OwnersModule.showChequeBankDropdown(false)">Close</button>
+              </div>
+              <ul class="list-unstyled m-0 py-1" id="chequeBankList">
+                <li class="px-3 py-2 d-flex align-items-center gap-2 bank-item" style="cursor: pointer;" onclick="OwnersModule.selectChequeBank('ICICI')">
+                  <span style="color: #d9b900 !important;">●</span> <span>ICICI</span>
+                </li>
+                <li class="px-3 py-2 d-flex align-items-center gap-2 bank-item" style="cursor: pointer;" onclick="OwnersModule.selectChequeBank('HDFC')">
+                  <span style="color: #d9b900 !important;">●</span> <span>HDFC</span>
+                </li>
+                <li class="px-3 py-2 d-flex align-items-center gap-2 bank-item" style="cursor: pointer;" onclick="OwnersModule.selectChequeBank('SBI')">
+                  <span style="color: #d9b900 !important;">●</span> <span>SBI</span>
+                </li>
+                <li class="px-3 py-2 d-flex align-items-center gap-2 bank-item" style="cursor: pointer;" onclick="OwnersModule.selectChequeBank('Axis')">
+                  <span style="color: #d9b900 !important;">●</span> <span>Axis</span>
+                </li>
+                <li class="px-3 py-2 d-flex align-items-center gap-2 bank-item" style="cursor: pointer;" onclick="OwnersModule.selectChequeBank('IDBI')">
+                  <span style="color: #d9b900 !important;">●</span> <span>IDBI</span>
+                </li>
+                <li class="px-3 py-2 d-flex align-items-center gap-2 bank-item" style="cursor: pointer;" onclick="OwnersModule.selectChequeBank('UOB')">
+                  <span style="color: #d9b900 !important;">●</span> <span>UOB</span>
+                </li>
+                <li class="px-3 py-2 d-flex align-items-center gap-2 bank-item" style="cursor: pointer;" onclick="OwnersModule.selectChequeBank('UOD')">
+                  <span style="color: #d9b900 !important;">●</span> <span>UOD</span>
+                </li>
+                <li class="px-3 py-2 d-flex align-items-center gap-2 bank-item" style="cursor: pointer;" onclick="OwnersModule.selectChequeBank('PNB')">
+                  <span style="color: #d9b900 !important;">●</span> <span>PNB</span>
+                </li>
+                <li class="px-3 py-2 d-flex align-items-center gap-2 bank-item" style="cursor: pointer;" onclick="OwnersModule.selectChequeBank('AU')">
+                  <span style="color: #d9b900 !important;">●</span> <span>AU</span>
+                </li>
+                <li class="px-3 py-2 d-flex align-items-center gap-2 bank-item" style="cursor: pointer;" onclick="OwnersModule.selectChequeBank('BOB')">
+                  <span style="color: #d9b900 !important;">●</span> <span>BOB</span>
+                </li>
+                <li class="px-3 py-2 d-flex align-items-center gap-2 bank-item" style="cursor: pointer;" onclick="OwnersModule.selectChequeBank('Punjab And Sind Bank')">
+                  <span style="color: #d9b900 !important;">●</span> <span>Punjab And Sind Bank</span>
+                </li>
+                <li class="px-3 py-2 d-flex align-items-center gap-2 bank-item" style="cursor: pointer;" onclick="OwnersModule.selectChequeBank('Canara Bank')">
+                  <span style="color: #d9b900 !important;">●</span> <span>Canara Bank</span>
+                </li>
+                <li class="px-3 py-2 d-flex align-items-center gap-2 bank-item" style="cursor: pointer;" onclick="OwnersModule.selectChequeBank('Bandhan Bank')">
+                  <span style="color: #d9b900 !important;">●</span> <span>Bandhan Bank</span>
+                </li>
+                <li class="px-3 py-2 d-flex align-items-center gap-2 bank-item" style="cursor: pointer;" onclick="OwnersModule.selectChequeBank('BOI')">
+                  <span style="color: #d9b900 !important;">●</span> <span>BOI</span>
+                </li>
+                <li class="px-3 py-2 d-flex align-items-center gap-2 bank-item" style="cursor: pointer;" onclick="OwnersModule.selectChequeBank('The Nainital Bank Ltd.')">
+                  <span style="color: #d9b900 !important;">●</span> <span>The Nainital Bank Ltd.</span>
+                </li>
+                <li class="px-3 py-2 d-flex align-items-center gap-2 bank-item" style="cursor: pointer;" onclick="OwnersModule.selectChequeBank('CBOI')">
+                  <span style="color: #d9b900 !important;">●</span> <span>CBOI</span>
+                </li>
+                <li class="px-3 py-2 d-flex align-items-center gap-2 bank-item" style="cursor: pointer;" onclick="OwnersModule.selectChequeBank('IOB')">
+                  <span style="color: #d9b900 !important;">●</span> <span>IOB</span>
+                </li>
+                <li class="px-3 py-2 d-flex align-items-center gap-2 bank-item" style="cursor: pointer;" onclick="OwnersModule.selectChequeBank('Indian Bank')">
+                  <span style="color: #d9b900 !important;">●</span> <span>Indian Bank</span>
+                </li>
+                <li class="px-3 py-2 d-flex align-items-center gap-2 bank-item" style="cursor: pointer;" onclick="OwnersModule.selectChequeBank('Kotak Mahindra Bank')">
+                  <span style="color: #d9b900 !important;">●</span> <span>Kotak Mahindra Bank</span>
+                </li>
+                <li class="px-3 py-2 d-flex align-items-center gap-2 bank-item" style="cursor: pointer;" onclick="OwnersModule.selectChequeBank('IDFC First Bank')">
+                  <span style="color: #d9b900 !important;">●</span> <span>IDFC First Bank</span>
+                </li>
+                <li class="px-3 py-2 d-flex align-items-center gap-2 bank-item" style="cursor: pointer;" onclick="OwnersModule.selectChequeBank('Karur Vysya Bank')">
+                  <span style="color: #d9b900 !important;">●</span> <span>Karur Vysya Bank</span>
+                </li>
+                <li class="px-3 py-2 d-flex align-items-center gap-2 bank-item" style="cursor: pointer;" onclick="OwnersModule.selectChequeBank('Ujjivan Small Finance Bank')">
+                  <span style="color: #d9b900 !important;">●</span> <span>Ujjivan Small Finance Bank</span>
+                </li>
+                <li class="px-3 py-2 d-flex align-items-center gap-2 bank-item" style="cursor: pointer;" onclick="OwnersModule.selectChequeBank('Bank of Maharashtra')">
+                  <span style="color: #d9b900 !important;">●</span> <span>Bank of Maharashtra</span>
+                </li>
+                <li class="px-3 py-2 d-flex align-items-center gap-2 bank-item" style="cursor: pointer;" onclick="OwnersModule.selectChequeBank('Baroda U.P. Bank')">
+                  <span style="color: #d9b900 !important;">●</span> <span>Baroda U.P. Bank</span>
+                </li>
+                <li class="px-3 py-2 d-flex align-items-center gap-2 bank-item" style="cursor: pointer;" onclick="OwnersModule.selectChequeBank('Federal Bank')">
+                  <span style="color: #d9b900 !important;">●</span> <span>Federal Bank</span>
+                </li>
+                <li class="px-3 py-2 d-flex align-items-center gap-2 bank-item" style="cursor: pointer;" onclick="OwnersModule.selectChequeBank('UCO Bank')">
+                  <span style="color: #d9b900 !important;">●</span> <span>UCO Bank</span>
+                </li>
+                <li class="px-3 py-2 d-flex align-items-center gap-2 bank-item" style="cursor: pointer;" onclick="OwnersModule.selectChequeBank('Yes Bank')">
+                  <span style="color: #d9b900 !important;">●</span> <span>Yes Bank</span>
+                </li>
+                <li class="px-3 py-2 d-flex align-items-center gap-2 bank-item" style="cursor: pointer;" onclick="OwnersModule.selectChequeBank('IndusInd Bank')">
+                  <span style="color: #d9b900 !important;">●</span> <span>IndusInd Bank</span>
+                </li>
+                <li class="px-3 py-2 d-flex align-items-center gap-2 bank-item" style="cursor: pointer;" onclick="OwnersModule.selectChequeBank('Utkarsh Small Finance Bank')">
+                  <span style="color: #d9b900 !important;">●</span> <span>Utkarsh Small Finance Bank</span>
+                </li>
+                <li class="px-3 py-2 d-flex align-items-center gap-2 bank-item" style="cursor: pointer;" onclick="OwnersModule.selectChequeBank('Indian Overseas Bank')">
+                  <span style="color: #d9b900 !important;">●</span> <span>Indian Overseas Bank</span>
+                </li>
+                <li class="px-3 py-2 d-flex align-items-center gap-2 bank-item" style="cursor: pointer;" onclick="OwnersModule.selectChequeBank('Prathama UP Gramin Bank')">
+                  <span style="color: #d9b900 !important;">●</span> <span>Prathama UP Gramin Bank</span>
+                </li>
+                <li class="px-3 py-2 d-flex align-items-center gap-2 bank-item" style="cursor: pointer;" onclick="OwnersModule.selectChequeBank('Union Bank')">
+                  <span style="color: #d9b900 !important;">●</span> <span>Union Bank</span>
+                </li>
+                <li class="px-3 py-2 d-flex align-items-center gap-2 bank-item" style="cursor: pointer;" onclick="OwnersModule.selectChequeBank('Other')">
+                  <span style="color: #d9b900 !important;">●</span> <span>Other</span>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
 

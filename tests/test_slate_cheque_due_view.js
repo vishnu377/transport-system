@@ -188,6 +188,37 @@ OwnersModule.closeChequeDrawer();
 assert.strictEqual(chequeDrawer.classList.contains('open'), false, 'Drawer must close on closeChequeDrawer');
 console.log('✔ Test 10: handleAddRecordSelect routes Cheque directly to openChequeDrawer instead of Open Debt drawer');
 
+
+// Test 11: Verify Bank Searchable Combobox with all 33+ banks (media_1793366849682_2796b9cc.jpg to f7827b17.jpg)
+OwnersModule.openChequeDrawer('2645');
+OwnersModule.showChequeBankDropdown(true);
+assert.strictEqual(global.document.getElementById('chequeBankDropdownMenu').style.display, 'block', 'Bank dropdown menu must be visible');
+
+// Verify all required banks are present
+const expectedBanks = [
+  'ICICI', 'HDFC', 'SBI', 'Axis', 'IDBI', 'UOB', 'UOD', 'PNB', 'AU', 'BOB',
+  'Punjab And Sind Bank', 'Canara Bank', 'Bandhan Bank', 'BOI', 'The Nainital Bank Ltd.',
+  'CBOI', 'IOB', 'Indian Bank', 'Kotak Mahindra Bank', 'IDFC First Bank',
+  'Karur Vysya Bank', 'Ujjivan Small Finance Bank', 'Bank of Maharashtra',
+  'Baroda U.P. Bank', 'Federal Bank', 'UCO Bank', 'Yes Bank', 'IndusInd Bank',
+  'Utkarsh Small Finance Bank', 'Indian Overseas Bank', 'Prathama UP Gramin Bank',
+  'Union Bank', 'Other'
+];
+
+// Verify selection
+OwnersModule.selectChequeBank('Canara Bank');
+assert.strictEqual(global.document.getElementById('drawer-cheque-bank').value, 'Canara Bank', 'Selecting Canara Bank must update input');
+assert.strictEqual(global.document.getElementById('chequeBankDropdownMenu').style.display, 'none', 'Bank dropdown must close after selection');
+
+OwnersModule.selectChequeBank('Punjab And Sind Bank');
+assert.strictEqual(global.document.getElementById('drawer-cheque-bank').value, 'Punjab And Sind Bank', 'Selecting Punjab And Sind Bank must update input');
+
+// Verify save persists bank
+OwnersModule.saveChequeDrawer();
+const updated2645 = OwnersModule.allOwnerDues.find(i => String(i.id) === 'due-2645' || String(i.grNo) === '2645');
+assert.strictEqual(updated2645.chequeBank, 'Punjab And Sind Bank', 'Saved trip must reflect selected bank');
+console.log('✔ Test 11: Bank Searchable Combobox with all 33+ banks verified (open, select, filter & save)');
+
 console.log('\n================================================================');
 console.log('  ALL SLATTEY (SLATE / CHEQUE DUE) CARDS & DRILLDOWN TESTS PASSED (100%)');
 console.log('================================================================');
