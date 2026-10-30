@@ -96,7 +96,8 @@ assert(chequeHtml.includes('HDFC'), 'Cheque row must show bank HDFC');
 assert(chequeHtml.includes('TTC'), 'Cheque row must show pay to TTC');
 assert(chequeHtml.includes('Expand'), 'Cheque card must have Expand action');
 assert(chequeHtml.includes('Add'), 'Cheque card must have Add button');
-console.log('✔ Test 3: Cheque Subtable Card (directly beneath Card 1) verified with all authentic columns and actions');
+assert(chequeHtml.includes('#d9b900'), 'Cheque card must use authentic yellow/golden color #d9b900');
+console.log('✔ Test 3: Cheque Subtable Card verified with authentic yellow/golden #d9b900 color and actions');
 
 // Test 4: Card 2 (Middle - Consignor Subtable, Total Cheque Amount, Total Freight, Status dropdown)
 const c2Html = midCard.innerHTML;
@@ -108,7 +109,8 @@ assert(c2Html.includes('Total Freight'), 'Card 2 must contain Total Freight fiel
 assert(c2Html.includes('84,604.00'), 'Card 2 must show Total Freight ₹ 84,604.00');
 assert(c2Html.includes('Status*'), 'Card 2 must contain Status* dropdown');
 assert(c2Html.includes('Cheque Due'), 'Card 2 must display Cheque Due status');
-console.log('✔ Test 4: Card 2 (Middle - Consignor/s subtable, Total Cheque Amount, Total Freight & Status) verified');
+assert(c2Html.includes('bullet-cheque-yellow') || c2Html.includes('#d9b900'), 'Card 2 Total Cheque Amount must use yellow color #d9b900');
+console.log('✔ Test 4: Card 2 verified with yellow #d9b900 Total Cheque Amount & slate status');
 
 // Test 5: Card 3 (Right - Consignee, Owner, Freight, Add Records dropdown, omitting red Owner Due)
 const c3Html = rightCard.innerHTML;

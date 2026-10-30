@@ -1304,8 +1304,8 @@ const OwnersModule = {
         chequeCard.innerHTML = `
           <div class="d-flex align-items-center justify-content-between mb-2 pb-1 border-bottom">
             <div class="d-flex align-items-center gap-2">
-              <span class="theme-dot" style="font-size: 13px;">●</span>
-              <span class="theme-text" style="font-size: 14px; font-weight: 700;">Cheque</span>
+              <span class="bullet-cheque-yellow" style="font-size: 13px; color: #d9b900 !important;">●</span>
+              <span class="cheque-text" style="font-size: 14px; font-weight: 700; color: #d9b900 !important;">Cheque</span>
               <span class="badge bg-light text-secondary border font-monospace ms-1" style="font-size: 11px;">${chequeCount}</span>
             </div>
           </div>
@@ -1324,20 +1324,20 @@ const OwnersModule = {
                 </thead>
                 <tbody>
                   <tr onclick="OwnersModule.showTripPaymentDetails('${safeTripId}')" style="cursor: pointer;" title="Click to view full Cheque details">
-                    <td class="ps-2 py-2 font-monospace theme-text">${chequeDueDate}</td>
-                    <td class="py-2 font-monospace">${chequeNo}</td>
-                    <td class="py-2 font-monospace fw-bold theme-text">₹ ${this.formatCurrency(chequeAmt)}</td>
-                    <td class="py-2 text-dark">${chequeBank}</td>
-                    <td class="py-2 text-dark">${chequePayTo}</td>
+                    <td class="ps-2 py-2 font-monospace" style="color: #d9b900 !important; font-weight: 600;">${chequeDueDate}</td>
+                    <td class="py-2 font-monospace" style="color: #d9b900 !important; font-weight: 600;">${chequeNo}</td>
+                    <td class="py-2 font-monospace fw-bold" style="color: #d9b900 !important;">₹ ${this.formatCurrency(chequeAmt)}</td>
+                    <td class="py-2" style="color: #d9b900 !important; font-weight: 600;">${chequeBank}</td>
+                    <td class="py-2" style="color: #d9b900 !important; font-weight: 600;">${chequePayTo}</td>
                     <td class="pe-2 py-2 text-center text-secondary">
-                      <i class="bi ${isClear ? 'bi-check-circle-fill text-success' : 'bi-circle text-muted'}" style="font-size: 13px;"></i>
+                      <i class="bi ${isClear ? 'bi-check-circle-fill text-success' : 'bi-circle'}" style="font-size: 13px; color: #d9b900 !important;"></i>
                     </td>
                   </tr>
                 </tbody>
               </table>
             </div>
             <div class="subtable-footer-actions p-2 d-flex align-items-center justify-content-end gap-2 border-top bg-light">
-              <a href="javascript:void(0)" class="subtable-action-link theme-link fw-semibold" style="font-size: 12px;" onclick="OwnersModule.showTripPaymentDetails('${safeTripId}')">Expand</a>
+              <a href="javascript:void(0)" class="subtable-action-link fw-semibold" style="font-size: 12px; color: #d9b900 !important;" onclick="OwnersModule.showTripPaymentDetails('${safeTripId}')">Expand</a>
               <button class="btn btn-sm btn-light border py-0 px-2 fw-semibold text-secondary" style="font-size: 12px; height: 24px;" onclick="OwnersModule.handleAddRecordSelect('${safeTripId}', 'Cheque')">
                 <i class="bi bi-plus-lg me-1 small"></i>Add
               </button>
@@ -1387,7 +1387,7 @@ const OwnersModule = {
           </div>
           <div class="drilldown-field mt-3">
             <div class="drilldown-field-label">Total Cheque Amount</div>
-            <div class="drilldown-field-val font-monospace">${dotHtml} <span class="theme-text">₹ ${this.formatCurrency(totalChequeAmt)}</span></div>
+            <div class="drilldown-field-val font-monospace"><span class="bullet-cheque-yellow" style="color: #d9b900 !important; font-size: 11px; margin-right: 4px;">●</span> <span style="color: #d9b900 !important; font-weight: 600;">₹ ${this.formatCurrency(totalChequeAmt)}</span></div>
           </div>
           <div class="drilldown-field">
             <div class="drilldown-field-label">Total Freight</div>
