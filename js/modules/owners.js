@@ -1520,20 +1520,7 @@ const OwnersModule = {
           <div class="drilldown-field">
             <div class="drilldown-field-label">Status*</div>
             <div class="drilldown-field-val">
-              <div class="dropdown w-100">
-                <button class="btn btn-sm btn-light border py-1 px-3 d-flex align-items-center justify-content-between w-100 shadow-sm dropdown-toggle font-size-12" type="button" data-bs-toggle="dropdown" style="background: #ffffff; height: 32px; border-color: #d1d5db !important;">
-                  <span class="d-flex align-items-center gap-2">
-                    <span class="theme-dot">●</span>
-                    <span class="fw-semibold text-dark">${is2645 ? 'Cheque Due' : (d.status || 'Cheque Due')}</span>
-                  </span>
-                </button>
-                <ul class="dropdown-menu shadow font-size-12 w-100">
-                  <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="OwnersModule.handleStatusSelectChange('${safeTripId}', 'Transit')"><span class="bullet-yellow">●</span> Transit</a></li>
-                  <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="OwnersModule.handleStatusSelectChange('${safeTripId}', 'Off Loading')"><span class="bullet-pink">●</span> Off Loading</a></li>
-                  <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="OwnersModule.handleStatusSelectChange('${safeTripId}', 'Cheque Due')"><span class="bullet-slate">●</span> Cheque Due</a></li>
-                  <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="OwnersModule.handleStatusSelectChange('${safeTripId}', 'POD Sent/ Bill Generated')"><span class="bullet-purple">●</span> POD Sent/ Bill Generated</a></li>
-                </ul>
-              </div>
+              ${this.renderStatusDropdown(safeTripId, is2645 ? 'Cheque Due' : (d.status || 'Cheque Due'))}
             </div>
           </div>
         `;
@@ -1709,20 +1696,7 @@ const OwnersModule = {
           <div class="drilldown-field">
             <div class="drilldown-field-label">Status*</div>
             <div class="drilldown-field-val">
-              <div class="dropdown w-100">
-                <button class="btn btn-sm btn-light border py-1 px-3 d-flex align-items-center justify-content-between w-100 shadow-sm dropdown-toggle font-size-12" type="button" data-bs-toggle="dropdown" style="background: #ffffff; height: 32px; border-color: #d1d5db !important;">
-                  <span class="d-flex align-items-center gap-2">
-                    <span class="theme-dot">●</span>
-                    <span class="fw-semibold text-dark">${d.status || 'POD Sent/ Bill Generated'}</span>
-                  </span>
-                </button>
-                <ul class="dropdown-menu shadow font-size-12 w-100">
-                  <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="OwnersModule.handleStatusSelectChange('${safeTripId}', 'Transit')"><span class="bullet-yellow">●</span> Transit</a></li>
-                  <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="OwnersModule.handleStatusSelectChange('${safeTripId}', 'Off Loading')"><span class="bullet-pink">●</span> Off Loading</a></li>
-                  <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="OwnersModule.handleStatusSelectChange('${safeTripId}', 'Cheque Due')"><span class="bullet-slate">●</span> Cheque Due</a></li>
-                  <li><a class="dropdown-item d-flex align-items-center gap-2 chip-active-purple" href="javascript:void(0)" onclick="OwnersModule.handleStatusSelectChange('${safeTripId}', 'POD Sent/ Bill Generated')"><span class="bullet-purple">●</span> POD Sent/ Bill Generated</a></li>
-                </ul>
-              </div>
+              ${this.renderStatusDropdown(safeTripId, d.status || 'POD Sent/ Bill Generated')}
             </div>
           </div>
           <div class="drilldown-field mt-3 pt-2 border-top">
@@ -2810,6 +2784,41 @@ const OwnersModule = {
     } else {
       this.openDebtDrawer(tripId);
     }
+  },
+
+  renderStatusDropdown(safeTripId, currentStatus) {
+    const statuses = [
+      { name: 'Transit', color: '#d9b900' },
+      { name: 'Off Loading', color: '#fb0a9d' },
+      { name: 'Cheque Due', color: '#5f6368' },
+      { name: 'POD Sent/ Bill Generated', color: '#8c00ff' },
+      { name: 'Party Payment Pending', color: '#039ced' },
+      { name: 'Truck Owner Payment Pending', color: '#01d5db' }
+    ];
+
+    const cur = statuses.find(s => s.name.toLowerCase() === String(currentStatus || '').toLowerCase()) || { name: currentStatus || 'Transit', color: '#d9b900' };
+
+    const itemsHtml = statuses.map(s => `
+      <li>
+        <a class="dropdown-item d-flex align-items-center gap-2 py-2 ${s.name.toLowerCase() === cur.name.toLowerCase() && s.color === '#8c00ff' ? 'chip-active-purple' : ''}" href="javascript:void(0)" onclick="OwnersModule.handleStatusSelectChange('${safeTripId}', '${s.name}')" style="color: ${s.color} !important; font-weight: 600;">
+          <span style="color: ${s.color} !important;">●</span> <span style="color: ${s.color} !important;">${s.name}</span>
+        </a>
+      </li>
+    `).join('');
+
+    return `
+      <div class="dropdown w-100">
+        <button class="btn btn-sm btn-light border py-1 px-3 d-flex align-items-center justify-content-between w-100 shadow-sm dropdown-toggle font-size-12" type="button" data-bs-toggle="dropdown" style="background: #ffffff; height: 32px; border-color: #d1d5db !important;">
+          <span class="d-flex align-items-center gap-2" style="color: ${cur.color} !important; font-weight: 600;">
+            <span style="color: ${cur.color} !important;">●</span>
+            <span style="color: ${cur.color} !important;">${cur.name}</span>
+          </span>
+        </button>
+        <ul class="dropdown-menu shadow font-size-12 w-100 py-1">
+          ${itemsHtml}
+        </ul>
+      </div>
+    `;
   },
 
   handleStatusSelectChange(tripId, newStatus) {
