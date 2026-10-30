@@ -1411,7 +1411,7 @@ const OwnersModule = {
 
     // 2b. CHEQUE SUBTABLE CARD DIRECTLY BENEATH CARD 1 FOR SLATE / CHEQUE DUE (Dynamic Color: Green=Clear, Red=Overdue/Bounced, Yellow=Due)
     if (chequeCard) {
-      if (isSlateChequeDue) {
+      if (isSlateChequeDue || d.addRecord === 'Cheque') {
         chequeCard.style.display = 'block';
         const chequeDueDate = d.chequeDueDate || d.chequeDate || (d.cheques && d.cheques[0]?.dueDate) || '27/10/2026';
         const chequeNo = d.chequeNo || (d.cheques && d.cheques[0]?.chequeNo) || '000504';
@@ -2908,21 +2908,7 @@ const OwnersModule = {
     const d = (this.allOwnerDues || []).find(item => String(item.id) === String(tripId) || String(item.grNo) === String(tripId));
     if (d) {
       d.addRecord = val;
-    }
-    const lbl = document.getElementById(`add-records-label-${tripId}`);
-    if (lbl) {
-      lbl.innerText = val;
-      lbl.className = 'text-dark fw-semibold';
-    }
-    const v = String(val).toLowerCase();
-    if (v.includes('cheque')) {
-      this.openChequeDrawer(tripId);
-    } else if (v.includes('party')) {
-      this.openAddPaymentDrawer(tripId, 'party');
-    } else if (v.includes('truck') || v.includes('owner')) {
-      this.openAddPaymentDrawer(tripId, 'owner');
-    } else {
-      this.openDebtDrawer(tripId);
+      this.renderDrilldownView(d);
     }
   },
 
@@ -2932,8 +2918,7 @@ const OwnersModule = {
       { name: 'Off Loading', color: '#fb0a9d' },
       { name: 'Cheque Due', color: '#5f6368' },
       { name: 'POD Sent/ Bill Generated', color: '#8c00ff' },
-      { name: 'Party Payment Pending', color: '#039ced' },
-      { name: 'Truck Owner Payment Pending', color: '#01d5db' }
+      { name: 'Party Payment Pending', color: '#039ced' }
     ];
 
     const cur = statuses.find(s => s.name.toLowerCase() === String(currentStatus || '').toLowerCase()) || { name: currentStatus || 'Transit', color: '#d9b900' };

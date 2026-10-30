@@ -181,12 +181,16 @@ assert.strictEqual(trip2645.chequeAmount, 15000, 'Cheque amount must update');
 assert.strictEqual(trip2645.chequePayTo, 'Laxmi Prakash Jat', 'Cheque pay to must update');
 console.log('✔ Test 9: saveChequeDrawer appends cheque to trip, updates totals, and closes drawer');
 
-// Test 10: Verify handleAddRecordSelect('2645', 'Cheque') routes directly to openChequeDrawer
+// Test 10: Verify handleAddRecordSelect sets Cheque and + Add button on card opens drawer
 OwnersModule.handleAddRecordSelect('2645', 'Cheque');
-assert(chequeDrawer.classList.contains('open'), 'Selecting Cheque from Add Records must open Cheque Details drawer');
+const chequeSubtable = global.document.getElementById('drilldown-card-cheque');
+assert(chequeSubtable.innerHTML.includes('openChequeDrawer'), 'Cheque card must have Add button calling openChequeDrawer');
+assert.strictEqual(chequeDrawer.classList.contains('open'), false, 'Selecting dropdown item must not auto-open drawer');
+OwnersModule.openChequeDrawer('2645');
+assert(chequeDrawer.classList.contains('open'), 'Clicking Add button on Cheque card must open Cheque Details drawer');
 OwnersModule.closeChequeDrawer();
 assert.strictEqual(chequeDrawer.classList.contains('open'), false, 'Drawer must close on closeChequeDrawer');
-console.log('✔ Test 10: handleAddRecordSelect routes Cheque directly to openChequeDrawer instead of Open Debt drawer');
+console.log('✔ Test 10: Cheque card Expand and + Add buttons verified, and + Add button opens Cheque drawer on click');
 
 
 // Test 11: Verify Bank Searchable Combobox with all 33+ banks (media_1793366849682_2796b9cc.jpg to f7827b17.jpg)
