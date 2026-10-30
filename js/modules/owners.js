@@ -1688,7 +1688,7 @@ const OwnersModule = {
             <div class="drilldown-field-val">
               <div class="dropdown w-100">
                 <button class="btn btn-sm btn-light border py-1 px-3 d-flex align-items-center justify-content-between w-100 shadow-sm dropdown-toggle font-size-12" type="button" data-bs-toggle="dropdown" style="background: #ffffff; height: 32px; border-color: #d1d5db !important;">
-                  <span class="text-dark fw-semibold">Cheque</span>
+                  <span class="text-dark fw-semibold" id="add-records-label-${safeTripId}">Cheque</span>
                 </button>
                 <ul class="dropdown-menu shadow font-size-12 w-100">
                   <li><a class="dropdown-item" href="javascript:void(0)" onclick="OwnersModule.handleAddRecordSelect('${safeTripId}', 'Cheque')"><i class="bi bi-wallet2 me-2 text-warning"></i>Cheque</a></li>
@@ -1755,7 +1755,7 @@ const OwnersModule = {
             <div class="drilldown-field-val">
               <div class="dropdown w-100">
                 <button class="btn btn-sm btn-light border py-1 px-3 d-flex align-items-center justify-content-between w-100 shadow-sm dropdown-toggle font-size-12" type="button" data-bs-toggle="dropdown" style="background: #ffffff; height: 32px; border-color: #d1d5db !important;">
-                  <span class="${hasPayments ? 'text-dark fw-semibold' : 'text-secondary'}">${hasPayments ? 'Party Payment' : (d.addRecord || 'Add Records for...')}</span>
+                  <span class="${hasPayments || d.addRecord ? 'text-dark fw-semibold' : 'text-secondary'}" id="add-records-label-${safeTripId}">${hasPayments ? 'Party Payment' : (d.addRecord || 'Add Records for...')}</span>
                 </button>
                 <ul class="dropdown-menu shadow font-size-12 w-100">
                   <li><a class="dropdown-item" href="javascript:void(0)" onclick="OwnersModule.handleAddRecordSelect('${safeTripId}', 'Cheque')"><i class="bi bi-wallet2 me-2 text-warning"></i>Cheque</a></li>
@@ -2905,6 +2905,15 @@ const OwnersModule = {
 
   handleAddRecordSelect(tripId, val) {
     if (!val) return;
+    const d = (this.allOwnerDues || []).find(item => String(item.id) === String(tripId) || String(item.grNo) === String(tripId));
+    if (d) {
+      d.addRecord = val;
+    }
+    const lbl = document.getElementById(`add-records-label-${tripId}`);
+    if (lbl) {
+      lbl.innerText = val;
+      lbl.className = 'text-dark fw-semibold';
+    }
     const v = String(val).toLowerCase();
     if (v.includes('cheque')) {
       this.openChequeDrawer(tripId);
