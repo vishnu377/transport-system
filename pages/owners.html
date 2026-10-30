@@ -659,6 +659,37 @@
       overscroll-behavior: contain;
     }
 
+    .appsheet-pod-btn {
+      background: #ffffff;
+      border: 1px solid #d1d5db;
+      color: #374151;
+      font-size: 0.88rem;
+      font-weight: 500;
+      padding: 6px 22px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+    .appsheet-pod-btn:hover {
+      background: #f9fafb;
+      border-color: #9ca3af;
+    }
+    .appsheet-pod-btn.active {
+      background: #eef2ff;
+      border-color: #6366f1;
+      color: #1e1b4b;
+      font-weight: 600;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+    .appsheet-pod-dot {
+      font-size: 14px;
+      line-height: 1;
+    }
+
     .appsheet-form-row {
       display: grid;
       grid-template-columns: 170px 1fr;
@@ -2281,11 +2312,15 @@
         <div class="appsheet-form-row">
           <label class="appsheet-form-label">POD to Shipper/Buyer</label>
           <div class="appsheet-form-input-wrap">
-            <select id="drawer-trip-pod-target" class="appsheet-form-control">
-              <option value="Shipper">Shipper</option>
-              <option value="Buyer">Buyer</option>
-              <option value="Both">Both</option>
-            </select>
+            <input type="hidden" id="drawer-trip-pod-target" name="podTarget" value="Shipper">
+            <div class="d-flex align-items-center gap-2">
+              <button type="button" class="appsheet-pod-btn active" id="drawer-pod-btn-shipper" onclick="OwnersModule.selectPodTarget('Shipper')">
+                <span class="appsheet-pod-dot" id="drawer-pod-dot-shipper">●</span> Shipper
+              </button>
+              <button type="button" class="appsheet-pod-btn" id="drawer-pod-btn-buyer" onclick="OwnersModule.selectPodTarget('Buyer')">
+                <span class="appsheet-pod-dot" id="drawer-pod-dot-buyer">●</span> Buyer
+              </button>
+            </div>
           </div>
         </div>
         <!-- 11. POD Date -->
@@ -2365,20 +2400,8 @@
             <input type="text" id="drawer-trip-bill-no" class="appsheet-form-control font-monospace">
           </div>
         </div>
-        <!-- 22. Status * -->
-        <div class="appsheet-form-row">
-          <label class="appsheet-form-label">Status *</label>
-          <div class="appsheet-form-input-wrap">
-            <select id="drawer-trip-status" class="appsheet-form-control" required onchange="OwnersModule.handleTripStatusChange(this.value)">
-              <option value="POD Sent/ Bill Generated">POD Sent/ Bill Generated (Purple)</option>
-              <option value="Transit">Transit (Yellow)</option>
-              <option value="Off Loading">Off Loading (Pink)</option>
-              <option value="Cheque Due">Cheque Due (Slate)</option>
-              <option value="Party Payment Pending">Party Payment Pending (Blue)</option>
-              <option value="Truck Owner Payment Pending">Truck Owner Payment Pending (Cyan)</option>
-            </select>
-          </div>
-        </div>
+        <!-- Status (Hidden from Edit Drawer matching AppSheet Image 1 & 2) -->
+        <input type="hidden" id="drawer-trip-status" name="status" value="POD Sent/ Bill Generated">
         <!-- 23. Owner Due (₹) * -->
         <div class="appsheet-form-row">
           <label class="appsheet-form-label">Owner Due (₹) *</label>

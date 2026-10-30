@@ -1994,6 +1994,22 @@ const OwnersModule = {
   },
 
   // SLIDE DRAWERS: UPDATE TRIP DETAILS (22 Fields matching 19_54_27.png)
+  selectPodTarget(target) {
+    const hidden = document.getElementById('drawer-trip-pod-target');
+    if (hidden) hidden.value = target;
+
+    const btnShipper = document.getElementById('drawer-pod-btn-shipper');
+    const btnBuyer = document.getElementById('drawer-pod-btn-buyer');
+
+    if (target === 'Buyer') {
+      if (btnBuyer) btnBuyer.classList.add('active');
+      if (btnShipper) btnShipper.classList.remove('active');
+    } else {
+      if (btnShipper) btnShipper.classList.add('active');
+      if (btnBuyer) btnBuyer.classList.remove('active');
+    }
+  },
+
   openEditTripDrawer(tripId) {
     const d = (this.allOwnerDues || []).find(item => String(item.id) === String(tripId) || String(item.grNo) === String(tripId));
     if (!d) return;
@@ -2015,7 +2031,25 @@ const OwnersModule = {
     setVal('drawer-trip-billing-type', d.billingType || 'Per Tonne');
     setVal('drawer-trip-hault', d.hault !== undefined ? d.hault : 0);
     setVal('drawer-trip-loading', d.loading !== undefined ? d.loading : 0);
-    setVal('drawer-trip-pod-target', d.podTargetDate || '');
+    setVal('drawer-trip-pod-target', d.podTarget || d.podTargetDate || 'Shipper');
+
+    // Dynamically colorize the POD Shipper/Buyer dots according to the trip's row color
+    const col = d.color || this.getTripColor(d) || 'purple';
+    let dotColorHex = '#7c00ff'; // default Begani (purple)
+    if (col === 'yellow') dotColorHex = '#d97706';
+    else if (col === 'pink') dotColorHex = '#ec4899';
+    else if (col === 'slate') dotColorHex = '#64748b';
+    else if (col === 'cyan') dotColorHex = '#00acc1';
+    else if (col === 'blue') dotColorHex = '#2563eb';
+    else if (col === 'purple') dotColorHex = '#7c00ff';
+
+    const dotShipper = document.getElementById('drawer-pod-dot-shipper');
+    const dotBuyer = document.getElementById('drawer-pod-dot-buyer');
+    if (dotShipper) dotShipper.style.color = dotColorHex;
+    if (dotBuyer) dotBuyer.style.color = dotColorHex;
+
+    const currentTarget = String(d.podTarget || d.podTargetDate || 'Shipper').toLowerCase().includes('buyer') ? 'Buyer' : 'Shipper';
+    this.selectPodTarget(currentTarget);
     setVal('drawer-trip-pod-date', d.podReceivedDate || '');
     setVal('drawer-trip-truck', d.truckNo || '');
     setVal('drawer-trip-start-date', d.tripStartDate || d.tripDate || d.date || '');
