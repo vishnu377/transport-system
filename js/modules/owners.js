@@ -1815,7 +1815,7 @@ const OwnersModule = {
                 </thead>
                 <tbody>
                   ${paymentsList.map(p => `
-                    <tr style="cursor: pointer;">
+                    <tr style="cursor: pointer;" onclick="OwnersModule.showTripPaymentDetails('${safeTripId}')" title="Click to view full payment details">
                       <td class="text-center text-secondary py-2" style="width: 36px;"><i class="bi bi-pencil-fill small text-muted"></i></td>
                       <td class="ps-2 py-2 font-monospace" style="color: #0ab226 !important; font-weight: 600;">${p.date || '-'}</td>
                       <td class="py-2 font-monospace fw-bold" style="color: #0ab226 !important;">₹ ${this.formatCurrency(p.amount || 0)}</td>
@@ -1827,7 +1827,7 @@ const OwnersModule = {
               </table>
             </div>
             <div class="subtable-footer-actions p-2 d-flex align-items-center justify-content-end gap-2 border-top bg-light mt-2">
-              <a href="javascript:void(0)" class="subtable-action-link theme-link fw-semibold" style="font-size: 12px;">Expand</a>
+              <a href="javascript:void(0)" class="subtable-action-link theme-link fw-semibold" style="font-size: 12px;" onclick="OwnersModule.showTripPaymentDetails('${safeTripId}')">Expand</a>
               <button class="btn btn-sm btn-light border py-0 px-2 fw-semibold text-secondary" style="font-size: 12px; height: 24px;" onclick="OwnersModule.openAddPaymentDrawer('${safeTripId}', 'party')">
                 <i class="bi bi-plus-lg me-1 small"></i>Add
               </button>
@@ -2124,11 +2124,13 @@ const OwnersModule = {
   // ========================================================
   // VIEW 6: FULL TRIP PAYMENT DETAILS (20_12_36.png / 20_12_49.png)
   // ========================================================
-  showTripPaymentDetails() {
-    const d = (this.allOwnerDues || []).find(item => String(item.id) === String(this.currentTripId) || String(item.grNo) === String(this.currentTripId));
+  showTripPaymentDetails(tripId) {
+    const targetId = tripId || this.currentTripId;
+    const d = (this.allOwnerDues || []).find(item => String(item.id) === String(targetId) || String(item.grNo) === String(targetId));
     if (!d) return;
 
     this.currentView = 'paymentDetails';
+    this.currentTripId = String(d.id || d.grNo);
 
     const viewDash = document.getElementById('viewDashboard');
     const viewOwnerDetails = document.getElementById('viewOwnerDetails');
@@ -2144,7 +2146,10 @@ const OwnersModule = {
     if (viewParty) viewParty.style.display = 'none';
     if (viewPayment) viewPayment.style.display = 'block';
 
-    // Breadcrumb: Home > Owners > Owner Due > Open Trip Details > Trip Truck Owner Payment Details > Details
+    const isParty = (Array.isArray(d.payments) && d.payments.length > 0) || (d.addRecord === 'Party Payment');
+    const isCheque = (d.status === 'Cheque Due' || d.color === 'slate' || d.addRecord === 'Cheque' || d.chequeNo);
+
+    // Breadcrumb: Home > Owners > Owner Due > Open Trip Details > Details
     const bc = document.getElementById('appsheetBreadcrumb');
     if (bc) {
       bc.innerHTML = `
@@ -2154,7 +2159,7 @@ const OwnersModule = {
         <i class="bi bi-chevron-right text-muted small"></i>
         <a href="javascript:void(0)" onclick="OwnersModule.showOpenTripDetails('${this.currentTripId}')">Open Trip Details</a>
         <i class="bi bi-chevron-right text-muted small"></i>
-        <span class="active">Trip Truck Owner Payment Details</span>
+        <span class="active">${isCheque ? 'Cheque Payment Details' : (isParty ? 'Party Payment Details' : 'Trip Truck Owner Payment Details')}</span>
       `;
     }
 
@@ -2163,50 +2168,137 @@ const OwnersModule = {
 
     const content = document.getElementById('payment-details-card-content');
     if (content) {
-      content.innerHTML = `
-        <div class="mb-4">
-          <div class="appsheet-detail-item">
-            <div class="appsheet-detail-label">Payment Date</div>
-            <div class="appsheet-detail-value font-monospace">${d.paymentDate || '27/10/2026'}</div>
+      if (isParty && Array.isArray(d.payments) && d.payments.length > 0) {
+        const totalPaid = d.paidAmount !== undefined ? d.paidAmount : d.payments.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
+        content.innerHTML = `
+          <div class="mb-4">
+            <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+              <div>
+                <span class="text-secondary font-size-12">Total Freight:</span>
+                <span class="font-monospace fw-bold ms-1">₹ ${this.formatCurrency(d.totalFreight || d.freight || 0)}</span>
+              </div>
+              <div>
+                <span class="text-secondary font-size-12">Total Paid:</span>
+                <span class="font-monospace fw-bold text-success ms-1">₹ ${this.formatCurrency(totalPaid)}</span>
+              </div>
+            </div>
+            <div class="table-responsive border rounded-1 overflow-hidden">
+              <table class="table table-sm table-hover mb-0" style="font-size: 12.5px; width: 100%;">
+                <thead class="bg-light text-secondary border-bottom">
+                  <tr>
+                    <th class="ps-3 py-2 fw-semibold">Payment Date</th>
+                    <th class="py-2 fw-semibold">Amount Paid</th>
+                    <th class="py-2 fw-semibold">Mode</th>
+                    <th class="pe-3 py-2 fw-semibold">Beneficiary</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${d.payments.map(p => `
+                    <tr>
+                      <td class="ps-3 py-2 font-monospace" style="color: #0ab226 !important; font-weight: 600;">${p.date || '-'}</td>
+                      <td class="py-2 font-monospace fw-bold" style="color: #0ab226 !important;">₹ ${this.formatCurrency(p.amount || 0)}</td>
+                      <td class="py-2" style="color: #0ab226 !important; font-weight: 600;"><span style="color: #0ab226 !important;">●</span> ${p.mode || 'NEFT/RTGS'}</td>
+                      <td class="pe-3 py-2" style="color: #0ab226 !important; font-weight: 600;"><span style="color: #0ab226 !important;">●</span> ${p.beneficiary || d.ownerName || 'MTC'}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
           </div>
-          <div class="appsheet-detail-divider"></div>
+        `;
+      } else if (isCheque) {
+        const chequeMeta = this.getChequeStatusColor(d);
+        const chequeDueDate = d.chequeDueDate || d.chequeDate || (d.cheques && d.cheques[0]?.dueDate) || '27/10/2026';
+        const chequeNo = d.chequeNo || (d.cheques && d.cheques[0]?.chequeNo) || '000504';
+        const chequeAmt = d.chequeAmount !== undefined ? d.chequeAmount : (d.cheques && d.cheques[0]?.amount !== undefined ? d.cheques[0].amount : 10000.0);
+        const chequeBank = d.chequeBank || (d.cheques && d.cheques[0]?.bank) || 'HDFC';
+        const chequePayTo = d.chequePayTo || (d.cheques && d.cheques[0]?.payTo) || 'TTC';
+        content.innerHTML = `
+          <div class="mb-4">
+            <div class="appsheet-detail-item">
+              <div class="appsheet-detail-label">Cheque Due Date</div>
+              <div class="appsheet-detail-value font-monospace" style="color: ${chequeMeta.color} !important; font-weight: 600;">${chequeDueDate}</div>
+            </div>
+            <div class="appsheet-detail-divider"></div>
 
-          <div class="appsheet-detail-item">
-            <div class="appsheet-detail-label">Mode</div>
-            <div class="appsheet-detail-value font-monospace">NEFT/RTGS</div>
-          </div>
-          <div class="appsheet-detail-divider"></div>
+            <div class="appsheet-detail-item">
+              <div class="appsheet-detail-label">Cheque No.</div>
+              <div class="appsheet-detail-value font-monospace" style="color: ${chequeMeta.color} !important; font-weight: 600;">${chequeNo}</div>
+            </div>
+            <div class="appsheet-detail-divider"></div>
 
-          <div class="appsheet-detail-item">
-            <div class="appsheet-detail-label">Amount Paid</div>
-            <div class="appsheet-detail-value font-monospace text-success fw-bold">${this.formatCurrency(d.paidAmount || 184706)}</div>
-          </div>
-          <div class="appsheet-detail-divider"></div>
+            <div class="appsheet-detail-item">
+              <div class="appsheet-detail-label">Amount</div>
+              <div class="appsheet-detail-value font-monospace fw-bold" style="color: ${chequeMeta.color} !important;">₹ ${this.formatCurrency(chequeAmt)}</div>
+            </div>
+            <div class="appsheet-detail-divider"></div>
 
-          <div class="appsheet-detail-item">
-            <div class="appsheet-detail-label">Beneficiary</div>
-            <div class="appsheet-detail-value">${d.transport || 'TTC'}</div>
-          </div>
-          <div class="appsheet-detail-divider"></div>
+            <div class="appsheet-detail-item">
+              <div class="appsheet-detail-label">Bank</div>
+              <div class="appsheet-detail-value font-semibold">${chequeBank}</div>
+            </div>
+            <div class="appsheet-detail-divider"></div>
 
-          <div class="appsheet-detail-item">
-            <div class="appsheet-detail-label">From Bank</div>
-            <div class="appsheet-detail-value">HDFC Bank</div>
-          </div>
-          <div class="appsheet-detail-divider"></div>
+            <div class="appsheet-detail-item">
+              <div class="appsheet-detail-label">Pay to</div>
+              <div class="appsheet-detail-value font-semibold">${chequePayTo}</div>
+            </div>
+            <div class="appsheet-detail-divider"></div>
 
-          <div class="appsheet-detail-item">
-            <div class="appsheet-detail-label">To Bank</div>
-            <div class="appsheet-detail-value">SBI</div>
+            <div class="appsheet-detail-item">
+              <div class="appsheet-detail-label">Clear Status</div>
+              <div class="appsheet-detail-value font-semibold" style="color: ${chequeMeta.color} !important;">
+                <i class="bi ${chequeMeta.icon} me-1"></i> ${chequeMeta.statusText}
+              </div>
+            </div>
           </div>
-          <div class="appsheet-detail-divider"></div>
+        `;
+      } else {
+        content.innerHTML = `
+          <div class="mb-4">
+            <div class="appsheet-detail-item">
+              <div class="appsheet-detail-label">Payment Date</div>
+              <div class="appsheet-detail-value font-monospace">${d.paymentDate || '27/10/2026'}</div>
+            </div>
+            <div class="appsheet-detail-divider"></div>
 
-          <div class="appsheet-detail-item">
-            <div class="appsheet-detail-label">Description</div>
-            <div class="appsheet-detail-value text-muted">Owner Payment for trip ${d.grNo || '-'}</div>
+            <div class="appsheet-detail-item">
+              <div class="appsheet-detail-label">Mode</div>
+              <div class="appsheet-detail-value font-monospace">NEFT/RTGS</div>
+            </div>
+            <div class="appsheet-detail-divider"></div>
+
+            <div class="appsheet-detail-item">
+              <div class="appsheet-detail-label">Amount Paid</div>
+              <div class="appsheet-detail-value font-monospace text-success fw-bold">${this.formatCurrency(d.paidAmount || 184706)}</div>
+            </div>
+            <div class="appsheet-detail-divider"></div>
+
+            <div class="appsheet-detail-item">
+              <div class="appsheet-detail-label">Beneficiary</div>
+              <div class="appsheet-detail-value">${d.transport || 'TTC'}</div>
+            </div>
+            <div class="appsheet-detail-divider"></div>
+
+            <div class="appsheet-detail-item">
+              <div class="appsheet-detail-label">From Bank</div>
+              <div class="appsheet-detail-value">HDFC Bank</div>
+            </div>
+            <div class="appsheet-detail-divider"></div>
+
+            <div class="appsheet-detail-item">
+              <div class="appsheet-detail-label">To Bank</div>
+              <div class="appsheet-detail-value">SBI</div>
+            </div>
+            <div class="appsheet-detail-divider"></div>
+
+            <div class="appsheet-detail-item">
+              <div class="appsheet-detail-label">Description</div>
+              <div class="appsheet-detail-value text-muted">Owner Payment for trip ${d.grNo || '-'}</div>
+            </div>
           </div>
-        </div>
-      `;
+        `;
+      }
     }
   },
 
