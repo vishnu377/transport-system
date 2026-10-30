@@ -1122,23 +1122,24 @@ const OwnersModule = {
     if (viewParty) viewParty.style.display = 'none';
     if (viewPayment) viewPayment.style.display = 'none';
 
-    // Authentic AppSheet Breadcrumb: Owners > Owner Due > Open Trip Details
+    // Authentic AppSheet Single Top Header Bar matching 19_52_55.png
     const bc = document.getElementById('appsheetBreadcrumb');
     if (bc) {
       bc.innerHTML = `
+        <a href="javascript:void(0)" onclick="OwnersModule.showDashboard()">Home</a>
+        <i class="bi bi-chevron-right text-muted small"></i>
         <a href="javascript:void(0)" onclick="OwnersModule.showDashboard()">Owners</a>
         <i class="bi bi-chevron-right text-muted small"></i>
-        <a href="javascript:void(0)" onclick="OwnersModule.showOwnerDueList('${this.selectedDueYear}')">Owner Due</a>
+        <a href="javascript:void(0)" onclick="OwnersModule.backToDueList()">Owner Due</a>
         <i class="bi bi-chevron-right text-muted small"></i>
         <span class="active">Open Trip Details</span>
       `;
     }
 
-    // Top Header Action Buttons: 1. Edit | 2. Download Bilty | 3. All Debts Details | 4. Close
     const bcActions = document.getElementById('breadcrumbActions');
     if (bcActions) {
       bcActions.innerHTML = `
-        <div class="d-flex align-items-center gap-1">
+        <div class="d-flex align-items-center gap-2">
           <button class="btn-appsheet-edit shadow-sm py-1 px-3" onclick="OwnersModule.openEditTripDrawer('${safeTripId}')" title="Update Trip Details">
             <i class="bi bi-pencil me-1"></i> Edit
           </button>
@@ -1148,23 +1149,11 @@ const OwnersModule = {
           <button class="btn btn-sm btn-light border py-1 px-3 d-flex align-items-center gap-1 text-secondary fw-semibold shadow-sm" onclick="OwnersModule.scrollToDebts()" title="All Debts Details">
             <i class="bi bi-journal-text me-1"></i> <span>All Debts Details</span>
           </button>
-          <button class="btn btn-sm btn-light border py-1 px-2 ms-1 text-secondary" onclick="OwnersModule.backToDueList()" title="Back to Owner Due">
+          <button class="btn btn-sm btn-light border py-1 px-2 text-secondary" onclick="OwnersModule.backToDueList()" title="Back to Owner Due">
             <i class="bi bi-x-lg"></i>
           </button>
         </div>
       `;
-    }
-
-    // Update in-page header buttons if present
-    const topEditBtn = document.getElementById('btn-top-edit-trip');
-    if (topEditBtn) {
-      if (typeof topEditBtn.setAttribute === 'function') topEditBtn.setAttribute('onclick', `OwnersModule.openEditTripDrawer('${safeTripId}')`);
-      topEditBtn.onclick = () => OwnersModule.openEditTripDrawer(safeTripId);
-    }
-    const topDownloadBtn = document.getElementById('btn-top-download-bilty');
-    if (topDownloadBtn) {
-      if (typeof topDownloadBtn.setAttribute === 'function') topDownloadBtn.setAttribute('onclick', `OwnersModule.downloadBilty('${safeTripId}')`);
-      topDownloadBtn.onclick = () => OwnersModule.downloadBilty(safeTripId);
     }
 
     this.renderDrilldownView(d);
@@ -1200,7 +1189,7 @@ const OwnersModule = {
     const dueAmt = d.dueAmount !== undefined ? d.dueAmount : (d.ownerDue || 0);
 
     const fullGrDisplay = d.fullGrNo || (d.year ? `${d.year}-${d.grNo}${d.transport ? '_' + d.transport : ''}` : this.formatGrNo(d.grNo));
-    const dotHtml = `<span class="theme-dot">●</span>`;
+    const dotHtml = `<span class="theme-dot" style="font-size: 11px; margin-right: 4px;">●</span>`;
 
     // 1. Container theme
     const container = document.getElementById('open-trip-cards-container');
@@ -1289,31 +1278,29 @@ const OwnersModule = {
     if (midCard) {
       midCard.innerHTML = `
         <div class="d-flex align-items-center gap-2 mb-2 pb-1 border-bottom">
-          <span class="theme-dot" style="font-size: 14px;">●</span>
+          <span class="theme-dot" style="font-size: 13px;">●</span>
           <span class="theme-text" style="font-size: 14px; font-weight: 700;">Consignor/s</span>
-          <span class="badge bg-light text-secondary border font-monospace" style="font-size: 11px;">1</span>
+          <span class="badge bg-light text-secondary border font-monospace ms-1" style="font-size: 11px;">1</span>
         </div>
         <div class="drilldown-subtable-wrap border rounded-1 overflow-hidden mb-2">
-          <div style="overflow-x: auto;">
-            <table class="drilldown-subtable table table-sm table-hover mb-0" style="font-size: 12px;">
-              <thead class="bg-light text-secondary border-bottom">
-                <tr>
-                  <th class="ps-2 py-1 fw-semibold text-nowrap" style="width: 140px;">GSTIN</th>
-                  <th class="py-1 fw-semibold text-nowrap" style="min-width: 160px;">Consignor</th>
-                  <th class="py-1 fw-semibold text-nowrap" style="min-width: 240px;">Consignor Address</th>
-                  <th class="pe-2 py-1 text-end" style="width: 24px;"></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr onclick="OwnersModule.showOpenTripPartyDetails('${safeTripId}')" style="cursor: pointer;" title="Click to view full Consignor details">
-                  <td class="ps-2 py-2 font-monospace text-nowrap theme-text">${consignorGst}</td>
-                  <td class="py-2 fw-semibold text-nowrap">${consignorName}</td>
-                  <td class="py-2 text-nowrap text-secondary"><span class="cell-truncate text-truncate d-inline-block" style="max-width: 240px;">${consignorAddr}</span></td>
-                  <td class="pe-2 py-2 text-end text-muted"><i class="bi bi-chevron-right small"></i></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          <table class="drilldown-subtable table table-sm table-hover mb-0" style="font-size: 12px; table-layout: fixed; width: 100%;">
+            <thead class="bg-light text-secondary border-bottom">
+              <tr>
+                <th class="ps-2 py-2 fw-semibold" style="width: 32%;">GSTIN</th>
+                <th class="py-2 fw-semibold" style="width: 33%;">Consignor</th>
+                <th class="py-2 fw-semibold" style="width: 35%;">Consignor Address</th>
+                <th class="pe-2 py-2 text-end" style="width: 18px;"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr onclick="OwnersModule.showOpenTripPartyDetails('${safeTripId}')" style="cursor: pointer;" title="Click to view full Consignor details">
+                <td class="ps-2 py-2 font-monospace text-truncate theme-text" style="font-size: 11px;">${consignorGst}</td>
+                <td class="py-2 fw-semibold text-truncate" style="font-size: 11.5px;">${consignorName}</td>
+                <td class="py-2 text-secondary text-truncate" style="font-size: 11.5px;">${consignorAddr}</td>
+                <td class="pe-2 py-2 text-end text-muted"><i class="bi bi-chevron-right small"></i></td>
+              </tr>
+            </tbody>
+          </table>
           <div class="subtable-footer-actions p-2 text-end border-top bg-light">
             <a href="javascript:void(0)" class="subtable-action-link theme-link fw-semibold" style="font-size: 12px;" onclick="OwnersModule.showOpenTripPartyDetails('${safeTripId}')">Expand</a>
           </div>
@@ -1371,17 +1358,12 @@ const OwnersModule = {
         <div class="drilldown-field">
           <div class="drilldown-field-label">Add Records for</div>
           <div class="drilldown-field-val">
-            <div class="input-group input-group-sm w-100">
-              <input type="text" class="form-control form-control-sm" list="addRecordsOptions" placeholder="Type or select..." onchange="OwnersModule.handleAddRecordSelect('${safeTripId}', this.value)" style="font-size: 12px; height: 28px;">
-              <datalist id="addRecordsOptions">
-                <option value="Cheque">
-                <option value="Party Payment">
-                <option value="Truck Owner Payment">
-                <option value="Other">
-              </datalist>
-              <button class="btn btn-sm btn-outline-secondary dropdown-toggle dropdown-toggle-split" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="height: 28px;"></button>
-              <ul class="dropdown-menu dropdown-menu-end shadow font-size-12">
-                <li><a class="dropdown-item" href="javascript:void(0)" onclick="OwnersModule.handleAddRecordSelect('${safeTripId}', 'Cheque')"><i class="bi bi-journal-text me-2 text-warning"></i>Cheque</a></li>
+            <div class="dropdown w-100">
+              <button class="btn btn-sm btn-light border py-1 px-3 d-flex align-items-center justify-content-between w-100 shadow-sm dropdown-toggle font-size-12" type="button" data-bs-toggle="dropdown" style="background: #ffffff; height: 32px; border-color: #d1d5db !important;">
+                <span class="text-secondary">Add Records for...</span>
+              </button>
+              <ul class="dropdown-menu shadow font-size-12 w-100">
+                <li><a class="dropdown-item" href="javascript:void(0)" onclick="OwnersModule.handleAddRecordSelect('${safeTripId}', 'Cheque')"><i class="bi bi-wallet2 me-2 text-warning"></i>Cheque</a></li>
                 <li><a class="dropdown-item" href="javascript:void(0)" onclick="OwnersModule.handleAddRecordSelect('${safeTripId}', 'Party Payment')"><i class="bi bi-bank me-2 text-info"></i>Party Payment</a></li>
                 <li><a class="dropdown-item" href="javascript:void(0)" onclick="OwnersModule.handleAddRecordSelect('${safeTripId}', 'Truck Owner Payment')"><i class="bi bi-credit-card me-2 text-primary"></i>Truck Owner Payment</a></li>
                 <li><a class="dropdown-item" href="javascript:void(0)" onclick="OwnersModule.handleAddRecordSelect('${safeTripId}', 'Other')"><i class="bi bi-three-dots me-2 text-secondary"></i>Other</a></li>
@@ -1396,42 +1378,35 @@ const OwnersModule = {
         <div class="drilldown-field">
           <div class="drilldown-field-label">Status*</div>
           <div class="drilldown-field-val">
-            <div class="input-group input-group-sm w-100">
-              <span class="input-group-text bg-white border-end-0 py-0 px-2">
-                <span class="theme-dot">●</span>
-              </span>
-              <input type="text" class="form-control form-control-sm border-start-0 ps-1 font-size-12 fw-semibold" list="statusOptionsList" value="${d.status || 'POD Sent/ Bill Generated'}" onchange="OwnersModule.handleStatusSelectChange('${safeTripId}', this.value)" style="height: 28px;">
-              <datalist id="statusOptionsList">
-                <option value="POD Sent/ Bill Generated">
-                <option value="Transit">
-                <option value="Off Loading">
-                <option value="Cheque Due">
-                <option value="Party Payment Pending">
-                <option value="Truck Owner Payment Pending">
-              </datalist>
-              <button class="btn btn-sm btn-outline-secondary dropdown-toggle dropdown-toggle-split" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="height: 28px;"></button>
-              <ul class="dropdown-menu dropdown-menu-end shadow font-size-12">
-                <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="OwnersModule.updateTripStatusDirect('${safeTripId}', 'POD Sent/ Bill Generated', 'purple')"><span class="bullet-purple">●</span> POD Sent/ Bill Generated</a></li>
-                <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="OwnersModule.updateTripStatusDirect('${safeTripId}', 'Transit', 'yellow')"><span class="bullet-yellow">●</span> Transit</a></li>
-                <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="OwnersModule.updateTripStatusDirect('${safeTripId}', 'Off Loading', 'pink')"><span class="bullet-pink">●</span> Off Loading</a></li>
-                <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="OwnersModule.updateTripStatusDirect('${safeTripId}', 'Cheque Due', 'slate')"><span class="bullet-slate">●</span> Cheque Due</a></li>
-                <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="OwnersModule.updateTripStatusDirect('${safeTripId}', 'Party Payment Pending', 'blue')"><span class="bullet-blue">●</span> Party Payment Pending</a></li>
-                <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="OwnersModule.updateTripStatusDirect('${safeTripId}', 'Truck Owner Payment Pending', 'cyan')"><span class="bullet-cyan">●</span> Truck Owner Payment Pending</a></li>
+            <div class="dropdown w-100">
+              <button class="btn btn-sm btn-light border py-1 px-3 d-flex align-items-center justify-content-between w-100 shadow-sm dropdown-toggle font-size-12" type="button" data-bs-toggle="dropdown" style="background: #ffffff; height: 32px; border-color: #d1d5db !important;">
+                <span class="d-flex align-items-center gap-2">
+                  <span class="theme-dot">●</span>
+                  <span class="fw-semibold text-dark">${d.status || 'POD Sent/ Bill Generated'}</span>
+                </span>
+              </button>
+              <ul class="dropdown-menu shadow font-size-12 w-100">
+                <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="OwnersModule.handleStatusSelectChange('${safeTripId}', 'POD Sent/ Bill Generated')"><span class="bullet-purple">●</span> POD Sent/ Bill Generated</a></li>
+                <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="OwnersModule.handleStatusSelectChange('${safeTripId}', 'Transit')"><span class="bullet-yellow">●</span> Transit</a></li>
+                <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="OwnersModule.handleStatusSelectChange('${safeTripId}', 'Off Loading')"><span class="bullet-pink">●</span> Off Loading</a></li>
+                <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="OwnersModule.handleStatusSelectChange('${safeTripId}', 'Cheque Due')"><span class="bullet-slate">●</span> Cheque Due</a></li>
+                <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="OwnersModule.handleStatusSelectChange('${safeTripId}', 'Party Payment Pending')"><span class="bullet-blue">●</span> Party Payment Pending</a></li>
+                <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="OwnersModule.handleStatusSelectChange('${safeTripId}', 'Truck Owner Payment Pending')"><span class="bullet-cyan">●</span> Truck Owner Payment Pending</a></li>
               </ul>
             </div>
           </div>
         </div>
 
         <!-- AppSheet Action Chips (WhatsApp screenshots) -->
-        <div class="appsheet-action-chips-container">
+        <div class="appsheet-action-chips-container mt-2 pt-2 border-top">
           <div class="d-flex flex-wrap gap-1 align-items-center">
-            <button type="button" class="action-chip ${col === 'purple' ? 'chip-active-purple' : ''}" onclick="OwnersModule.updateTripStatusDirect('${safeTripId}', 'POD Sent/ Bill Generated', 'purple')">
+            <button type="button" class="action-chip ${col === 'purple' ? 'chip-active-purple' : ''}" onclick="OwnersModule.handleStatusSelectChange('${safeTripId}', 'POD Sent/ Bill Generated')">
               <span class="chip-dot">●</span> POD Sent/ Bill Generated
             </button>
-            <button type="button" class="action-chip ${col === 'pink' ? 'chip-active-pink' : ''}" onclick="OwnersModule.updateTripStatusDirect('${safeTripId}', 'Off Loading', 'pink')">
+            <button type="button" class="action-chip ${col === 'pink' ? 'chip-active-pink' : ''}" onclick="OwnersModule.handleStatusSelectChange('${safeTripId}', 'Off Loading')">
               <span class="chip-dot">●</span> Off Loading
             </button>
-            <button type="button" class="action-chip ${col === 'slate' ? 'chip-active-slate' : ''}" onclick="OwnersModule.updateTripStatusDirect('${safeTripId}', 'Cheque Due', 'slate')">
+            <button type="button" class="action-chip ${col === 'slate' ? 'chip-active-slate' : ''}" onclick="OwnersModule.handleStatusSelectChange('${safeTripId}', 'Cheque Due')">
               <span class="chip-dot">●</span> Cheque Due
             </button>
             <button type="button" class="action-chip ${col === 'cyan' ? 'chip-active-cyan' : ''}" onclick="OwnersModule.updateTripStatusDirect('${safeTripId}', 'POD Sent', 'cyan')">
@@ -1451,15 +1426,9 @@ const OwnersModule = {
 
         <div class="drilldown-field mt-2 pt-2 border-top">
           <div class="drilldown-field-label">Owner Due</div>
-          <div class="drilldown-field-val font-monospace fw-bold" style="color: #cc0b0b !important; font-size: 13.5px;">
+          <div class="drilldown-field-val font-monospace fw-bold" style="color: #cc0b0b !important; font-size: 14px;">
             <span class="appsheet-bullet bullet-red">●</span> ₹ ${this.formatCurrency(dueAmt)}
           </div>
-        </div>
-
-        <div class="mt-3 pt-2 d-flex justify-content-end">
-          <button class="btn-appsheet-edit py-1 px-4 shadow-sm" onclick="OwnersModule.openEditTripDrawer('${safeTripId}')" title="Edit Trip">
-            <i class="bi bi-pencil me-1"></i> Edit
-          </button>
         </div>
       `;
     }
@@ -2212,6 +2181,7 @@ const OwnersModule = {
   scrollToDebts() {
     const el = document.getElementById('drilldown-debts-container');
     if (el) {
+      el.style.display = 'block';
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
       el.style.transition = 'box-shadow 0.3s ease';
       el.style.boxShadow = '0 0 0 3px rgba(124, 0, 255, 0.4)';

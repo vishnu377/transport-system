@@ -1267,18 +1267,20 @@
 
     /* Drilldown View (3-Card Layout matching Parties Module) */
     .drilldown-wrap {
-      padding: 14px 16px;
+      padding: 16px 20px;
       flex: 1;
       display: flex;
       flex-direction: column;
+      background: #f8f6ee;
+      min-height: calc(100vh - 120px);
       font-family: Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
     }
 
     .drilldown-grid {
       display: grid;
-      grid-template-columns: minmax(300px, 1.1fr) minmax(380px, 1.4fr) minmax(300px, 1.1fr);
-      gap: 16px;
-      align-items: start;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      align-items: stretch;
     }
 
     @media (max-width: 1100px) {
@@ -2019,31 +2021,6 @@
 
       <!-- VIEW 4: Open Trip Details (Matching Parties Module & Google AppSheet Drilldown Grid) -->
       <div id="viewOpenTripDetails" style="display: none;">
-        <div class="d-flex align-items-center justify-content-between mb-2 flex-wrap gap-2 px-3 pt-2 bg-white border-bottom pb-2">
-          <div class="d-flex align-items-center gap-2">
-            <button class="btn btn-sm btn-light border py-1 px-3 d-flex align-items-center gap-1 text-secondary fw-semibold" onclick="OwnersModule.backToDueList()">
-              <i class="bi bi-arrow-left"></i> <span>Back to Owner Due</span>
-            </button>
-          </div>
-          <div class="d-flex align-items-center gap-2" id="openTripDetailsHeaderActions">
-            <!-- 1. Edit Button (Opens Update Trip Details) -->
-            <button class="btn-appsheet-edit shadow-sm py-1 px-3" id="btn-top-edit-trip" onclick="OwnersModule.openEditTripDrawer(OwnersModule.currentTripId)" title="Update Trip Details">
-              <i class="bi bi-pencil me-1"></i> Edit
-            </button>
-            <!-- 2. Bilty Download Icon Button -->
-            <button class="btn btn-sm btn-light border py-1 px-2 text-secondary" id="btn-top-download-bilty" onclick="OwnersModule.downloadBilty(OwnersModule.currentTripId)" title="Download / Print Bilty">
-              <i class="bi bi-download"></i>
-            </button>
-            <!-- 3. All Debts Details Button -->
-            <button class="btn btn-sm btn-light border py-1 px-3 d-flex align-items-center gap-1 text-secondary fw-semibold shadow-sm" id="btn-top-all-debts" onclick="OwnersModule.scrollToDebts()" title="View All Debts Details">
-              <i class="bi bi-journal-text"></i> <span>All Debts Details</span>
-            </button>
-            <!-- 4. Close Button -->
-            <button class="btn btn-sm btn-light border py-1 px-2 text-secondary ms-1" onclick="OwnersModule.backToDueList()" title="Close">
-              <i class="bi bi-x-lg"></i>
-            </button>
-          </div>
-        </div>
         <span id="trip-details-gr-title" style="display: none;"></span>
         <span id="trip-details-status-badge" style="display: none;"></span>
         <div class="drilldown-wrap" id="open-trip-cards-container">
@@ -2055,8 +2032,8 @@
             <!-- Card 3 (Right - Consignee & Owner Details & Actions) -->
             <div class="drilldown-card" id="drilldown-card-right"></div>
           </div>
-          <!-- Below: Open Debts Table (matching 19_54_51.png) -->
-          <div id="drilldown-debts-container"></div>
+          <!-- Below: Open Debts Section (matching 19_54_51.png, revealed via All Debts Details) -->
+          <div id="drilldown-debts-container" class="mt-4 pt-3 border-top" style="display: none;"></div>
         </div>
       </div>
 
