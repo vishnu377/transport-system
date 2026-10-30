@@ -2035,13 +2035,13 @@ const OwnersModule = {
 
     // Dynamically colorize the POD Shipper/Buyer dots according to the trip's row color
     const col = d.color || this.getTripColor(d) || 'purple';
-    let dotColorHex = '#7c00ff'; // default Begani (purple)
-    if (col === 'yellow') dotColorHex = '#d97706';
-    else if (col === 'pink') dotColorHex = '#ec4899';
-    else if (col === 'slate') dotColorHex = '#64748b';
-    else if (col === 'cyan') dotColorHex = '#00acc1';
-    else if (col === 'blue') dotColorHex = '#2563eb';
-    else if (col === 'purple') dotColorHex = '#7c00ff';
+    let dotColorHex = '#8c00ff'; // default Begani (purple)
+    if (col === 'yellow') dotColorHex = '#d9b900';
+    else if (col === 'pink') dotColorHex = '#fb0a9d';
+    else if (col === 'slate') dotColorHex = '#5f6368';
+    else if (col === 'cyan') dotColorHex = '#01d5db';
+    else if (col === 'blue') dotColorHex = '#039ced';
+    else if (col === 'purple') dotColorHex = '#8c00ff';
 
     const dotShipper = document.getElementById('drawer-pod-dot-shipper');
     const dotBuyer = document.getElementById('drawer-pod-dot-buyer');
