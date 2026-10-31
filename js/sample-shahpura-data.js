@@ -332,6 +332,10 @@ const SAMPLE_SHAHPURA_DATA = {
   ]
 };
 
+if (typeof window !== 'undefined') {
+  window.SAMPLE_SHAHPURA_DATA = SAMPLE_SHAHPURA_DATA;
+}
+
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = SAMPLE_SHAHPURA_DATA;
 }

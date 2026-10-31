@@ -1001,6 +1001,10 @@ const ShahpuraModule = {
   }
 };
 
+if (typeof window !== 'undefined') {
+  window.ShahpuraModule = ShahpuraModule;
+}
+
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = ShahpuraModule;
 }
