@@ -170,12 +170,28 @@ async function runTests() {
   const consumedDrawer = document.getElementById('defConsumedDrawer');
   assert(consumedDrawer.classList.contains('open'), 'defConsumedDrawer opened');
 
-  // Test Driver dropdown auto-selection
-  const driverSelect = document.getElementById('consumed-input-driver-name');
-  assert(driverSelect.innerHTML.includes('Kaluram Jat') || driverSelect.innerHTML.includes('Suresh Raiya'), 'Driver dropdown populated with authentic drivers');
-  DefUreaModule.handleDriverSelect('Kaluram Jat Shrinagar');
+  // Test Searchable & Typable Combobox for Driver and Truck
+  assert(DefUreaModule.driverMasterList.length >= 100, 'Driver master list has 100+ drivers');
+  assert(DefUreaModule.truckMasterList.length >= 25, 'Truck master list populated');
+
+  // Test Typing into Driver combobox filters options
+  DefUreaModule.onDriverType('Kaluram');
+  const driverMenu = document.getElementById('driver-dropdown-menu');
+  assert(driverMenu.innerHTML.includes('Kaluram Jat'), 'Driver menu filtered matching Kaluram');
+
+  // Test Selecting Driver from dropdown auto-fills Mobile & Truck
+  DefUreaModule.selectDriverOption('Kaluram Jat Shrinagar', '9784175913', 'RJ52GA7310');
+  assert.strictEqual(document.getElementById('consumed-input-driver-name').value, 'Kaluram Jat Shrinagar', 'Driver name set');
   assert.strictEqual(document.getElementById('consumed-input-driver-mob').value, '9784175913', 'Driver selection auto-fills mobile');
   assert.strictEqual(document.getElementById('consumed-input-truck').value, 'RJ52GA7310', 'Driver selection auto-fills truck');
+
+  // Test Typing into Truck combobox
+  DefUreaModule.onTruckType('5642');
+  const truckMenu = document.getElementById('truck-dropdown-menu');
+  assert(truckMenu.innerHTML.includes('RJ52GB5642'), 'Truck menu filtered matching 5642');
+  DefUreaModule.selectTruckOption('RJ52GB5642');
+  assert.strictEqual(document.getElementById('consumed-input-truck').value, 'RJ52GB5642', 'Truck option selected');
+  assert.strictEqual(document.getElementById('consumed-input-driver-name').value, 'Suresh Raiya', 'Truck selection auto-fills driver');
 
   // Test Stepper
   DefUreaModule.adjustBucketCount(2);

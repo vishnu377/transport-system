@@ -2,7 +2,7 @@
  * Module 8: DEF Urea Module Controller (1:1 Google AppSheet Visual Fidelity)
  * Features:
  * - 2-Card Split Layout (DEF Urea Stock 38% & Consumed Details 62%)
- * - Fixed Expand [↗] & Collapse [↙] Engine (No blank/0px width glitch)
+ * - Fixed Expand [↗] & Collapse [↙] Engine (Single-click 100% full view)
  * - Card 1:
  *     1. Vertical Bar Chart with scale 0-210, Green (Buckets: 194), Red (Litres: 11), Slanted Date
  *     2. Table View toggle [⊞] -> "Inventory Slice" (DateTime, Buckets, Litres, Available)
@@ -12,13 +12,13 @@
  *     1. Date-Grouped Consumed Table with exact Pill Badges (140, 120, 100, 235, 40, 245, etc.)
  *     2. Call Icon button on each row linking to driver phone
  *     3. Consumed Record Detail View (Home > DEF Urea > Consumed Details > [Date], Prev/Next, Edit)
- *     4. Consumed Urea Details Slide Drawer (1:1 AppSheet 2-Column Desktop Form):
+ *     4. Consumed Urea Details Slide Drawer (1:1 AppSheet 2-Column Form with Searchable & Editable Comboboxes):
  *        - Date (DD-MM-YYYY)
  *        - Available Stock (Litres: 3,891 read-only)
  *        - Qty (Litre)
- *        - Truck No. (Dropdown with all fleet trucks)
- *        - Driver (Dropdown with all 106+ authentic drivers!)
- *        - Mobile No. (Auto-filled)
+ *        - Truck No. (Searchable & Typable Combobox + Dropdown list with ▼ arrow)
+ *        - Driver (Searchable & Typable Combobox + Dropdown list with all 106+ drivers!)
+ *        - Mobile No. (Auto-filled & Typable)
  *        - Is Empty Bucket Returned? ([Yes] / [No] Segmented toggle)
  *        - Amount Paid (₹ 0)
  *        - No. of Buckets Retuned (Integrated [−] and [+] Stepper)
@@ -36,12 +36,16 @@ const DefUreaModule = {
   currentStockRecord: null,
   searchQuery: '',
 
+  // Master lists for Searchable Comboboxes
+  truckMasterList: [],
+  driverMasterList: [],
+
   async init() {
     console.log('[DefUreaModule] Initializing with 1:1 AppSheet fidelity...');
     await this.loadData();
+    this.buildMasterLists();
     this.renderStockCard();
     this.renderConsumedTable();
-    this.populateFleetDropdowns();
     this.setupListeners();
     console.log('[DefUreaModule] Initialized successfully.');
   },
@@ -81,6 +85,49 @@ const DefUreaModule = {
     this.filteredConsumed = [...this.allConsumed];
   },
 
+  buildMasterLists() {
+    // 1. Trucks Master Set
+    const truckSet = new Set();
+    this.allConsumed.forEach(c => { if (c.truckNo) truckSet.add(c.truckNo.trim().toUpperCase()); });
+
+    if (typeof window !== 'undefined' && Array.isArray(window.INITIAL_DRIVERS)) {
+      window.INITIAL_DRIVERS.forEach(d => { if (d.truckNo) truckSet.add(d.truckNo.trim().toUpperCase()); });
+    }
+    if (typeof window !== 'undefined' && Array.isArray(window.SAMPLE_OWNER_DUES)) {
+      window.SAMPLE_OWNER_DUES.forEach(d => { if (d.truckNo) truckSet.add(d.truckNo.trim().toUpperCase()); });
+    }
+    this.truckMasterList = Array.from(truckSet).sort();
+
+    // 2. Drivers Master Map (name -> { mobile, truckNo })
+    const driverMap = new Map();
+
+    if (typeof window !== 'undefined' && Array.isArray(window.INITIAL_DRIVERS)) {
+      window.INITIAL_DRIVERS.forEach(d => {
+        if (d.name) {
+          const nm = d.name.trim();
+          driverMap.set(nm, {
+            name: nm,
+            mobile: d.mobile || '',
+            truckNo: (d.truckNo || '').trim().toUpperCase()
+          });
+        }
+      });
+    }
+
+    this.allConsumed.forEach(c => {
+      const nm = (c.driverName || c.driver || '').trim();
+      if (nm && !driverMap.has(nm)) {
+        driverMap.set(nm, {
+          name: nm,
+          mobile: c.driverMobile || '',
+          truckNo: (c.truckNo || '').trim().toUpperCase()
+        });
+      }
+    });
+
+    this.driverMasterList = Array.from(driverMap.values()).sort((a, b) => a.name.localeCompare(b.name));
+  },
+
   formatNumber(val) {
     const num = parseFloat(val) || 0;
     return num.toLocaleString('en-IN', { maximumFractionDigits: 2 });
@@ -103,7 +150,6 @@ const DefUreaModule = {
 
   // ========================================================
   // EXPAND / CONTRACT ENGINE matching AppSheet [↗] / [↙]
-  // (Fix: Always use 1fr so the single visible card gets 100% width)
   // ========================================================
   toggleExpand(cardName) {
     const grid = document.getElementById('defUreaGrid');
@@ -226,7 +272,6 @@ const DefUreaModule = {
     this.renderStockCard();
   },
 
-  // 1A. Authentic Bar Chart View (0-210 Scale)
   renderStockChart(container, metrics) {
     const maxScale = 210;
     const greenHeightPct = Math.min(100, Math.max(0, (metrics.buckets / maxScale) * 100));
@@ -285,8 +330,6 @@ const DefUreaModule = {
 
           <!-- Bars Container -->
           <div class="w-100 h-100 d-flex align-items-end position-relative" style="z-index: 2;">
-            
-            <!-- Green Bar: Available Stock (Buckets) -->
             <div class="d-flex flex-column align-items-center justify-content-end" style="width: 50%; height: 100%;">
               <div class="appsheet-bar-green transition-all" 
                    style="width: 78%; max-width: 260px; height: ${greenHeightPct}%; background: #00b11f; border-radius: 1px 1px 0 0;"
@@ -294,14 +337,12 @@ const DefUreaModule = {
               </div>
             </div>
 
-            <!-- Red Bar: Available Stock (Litres) -->
             <div class="d-flex flex-column align-items-center justify-content-end" style="width: 50%; height: 100%;">
               <div class="appsheet-bar-red transition-all" 
                    style="width: 78%; max-width: 260px; height: ${redHeightPct}%; background: #d32f2f; border-radius: 1px 1px 0 0;"
                    title="Available Stock (Litres): ${metrics.litres}">
               </div>
             </div>
-
           </div>
 
           <!-- Slanted X-Axis Date Timestamp -->
@@ -328,7 +369,6 @@ const DefUreaModule = {
     container.innerHTML = html;
   },
 
-  // 1B. Authentic Table View ("Inventory Slice")
   renderStockTable(container, metrics) {
     let rowsHtml = '';
     this.allStock.forEach((st, idx) => {
@@ -373,7 +413,6 @@ const DefUreaModule = {
     container.innerHTML = html;
   },
 
-  // 1C. Inventory Detail View matching screenshot screencapture-appsheet-start-...-13_16_42.png
   openInventoryDetail(id) {
     const item = this.allStock.find(s => s.id === id) || this.allStock[0];
     this.currentStockRecord = item;
@@ -728,121 +767,174 @@ const DefUreaModule = {
   },
 
   // ========================================================
-  // POPULATE FLEET TRUCKS & DRIVERS DROPDOWNS
+  // SEARCHABLE & TYPABLE COMBOBOXES (TRUCK & DRIVER)
+  // User can TYPE freely OR SELECT from dropdown list
   // ========================================================
-  populateFleetDropdowns() {
-    // 1. Truck Select
-    const truckSelect = document.getElementById('consumed-input-truck');
-    if (truckSelect) {
-      const truckSet = new Set();
-      this.allConsumed.forEach(c => { if (c.truckNo) truckSet.add(c.truckNo.trim().toUpperCase()); });
+  renderTruckCombobox(filterText = '') {
+    const menu = document.getElementById('truck-dropdown-menu');
+    if (!menu) return;
 
-      if (typeof window !== 'undefined' && Array.isArray(window.INITIAL_DRIVERS)) {
-        window.INITIAL_DRIVERS.forEach(d => { if (d.truckNo) truckSet.add(d.truckNo.trim().toUpperCase()); });
-      }
-      if (typeof window !== 'undefined' && Array.isArray(window.SAMPLE_OWNER_DUES)) {
-        window.SAMPLE_OWNER_DUES.forEach(d => { if (d.truckNo) truckSet.add(d.truckNo.trim().toUpperCase()); });
-      }
+    const q = (filterText || '').trim().toUpperCase();
+    const matches = q ? this.truckMasterList.filter(t => t.includes(q)) : this.truckMasterList;
 
-      let truckHtml = '<option value="">-- Select Truck No. --</option>';
-      Array.from(truckSet).sort().forEach(t => {
-        truckHtml += `<option value="${t}">${t}</option>`;
-      });
-      truckSelect.innerHTML = truckHtml;
+    if (matches.length === 0) {
+      menu.innerHTML = `<div class="combobox-item text-muted" style="cursor: default;">No matches (Type to use "${filterText}")</div>`;
+      return;
     }
 
-    // 2. Driver Select (Populate with all 106+ authentic drivers!)
-    const driverSelect = document.getElementById('consumed-input-driver-name');
-    if (driverSelect) {
-      const driverMap = new Map(); // name -> mobile
-
-      // From INITIAL_DRIVERS
-      if (typeof window !== 'undefined' && Array.isArray(window.INITIAL_DRIVERS)) {
-        window.INITIAL_DRIVERS.forEach(d => {
-          if (d.name) {
-            driverMap.set(d.name.trim(), d.mobile || '');
-          }
-        });
-      }
-
-      // From allConsumed
-      this.allConsumed.forEach(c => {
-        const name = (c.driverName || c.driver || '').trim();
-        if (name && !driverMap.has(name)) {
-          driverMap.set(name, c.driverMobile || '');
-        }
-      });
-
-      let driverHtml = '<option value="">-- Select Driver --</option>';
-      Array.from(driverMap.keys()).sort().forEach(name => {
-        const mob = driverMap.get(name);
-        const label = mob ? `${name} (${mob})` : name;
-        driverHtml += `<option value="${name}">${label}</option>`;
-      });
-      driverSelect.innerHTML = driverHtml;
-    }
+    let html = '';
+    matches.forEach(t => {
+      html += `
+        <div class="combobox-item" onclick="DefUreaModule.selectTruckOption('${t}')">
+          <span class="font-monospace fw-semibold text-primary">${t}</span>
+        </div>
+      `;
+    });
+    menu.innerHTML = html;
   },
 
-  handleDriverSelect(driverName) {
-    const dName = (driverName || '').trim();
-    if (!dName) return;
+  renderDriverCombobox(filterText = '') {
+    const menu = document.getElementById('driver-dropdown-menu');
+    if (!menu) return;
 
-    let foundMob = '';
-    let foundTruck = '';
+    const q = (filterText || '').trim().toLowerCase();
+    const matches = q 
+      ? this.driverMasterList.filter(d => d.name.toLowerCase().includes(q) || (d.mobile && d.mobile.includes(q)))
+      : this.driverMasterList;
 
-    if (typeof window !== 'undefined' && Array.isArray(window.INITIAL_DRIVERS)) {
-      const match = window.INITIAL_DRIVERS.find(d => (d.name || '').trim().toLowerCase() === dName.toLowerCase());
+    if (matches.length === 0) {
+      menu.innerHTML = `<div class="combobox-item text-muted" style="cursor: default;">No matches (Type to use "${filterText}")</div>`;
+      return;
+    }
+
+    let html = '';
+    matches.forEach(d => {
+      const mobDisplay = d.mobile ? `<span class="text-secondary font-monospace small ms-2">${d.mobile}</span>` : '';
+      html += `
+        <div class="combobox-item" onclick="DefUreaModule.selectDriverOption('${d.name.replace(/'/g, "\\'")}', '${d.mobile || ''}', '${d.truckNo || ''}')">
+          <div>
+            <span class="fw-semibold text-dark">${d.name}</span>
+            ${mobDisplay}
+          </div>
+          ${d.truckNo ? `<span class="badge bg-light text-secondary font-monospace border">${d.truckNo}</span>` : ''}
+        </div>
+      `;
+    });
+    menu.innerHTML = html;
+  },
+
+  onTruckType(val) {
+    this.showTruckDropdown();
+    this.renderTruckCombobox(val);
+
+    const truck = (val || '').trim().toUpperCase();
+    if (truck.length >= 4) {
+      // Find driver associated with this truck
+      const match = this.driverMasterList.find(d => d.truckNo === truck) ||
+                    this.allConsumed.find(c => (c.truckNo || '').toUpperCase() === truck);
       if (match) {
-        foundMob = match.mobile || '';
-        foundTruck = match.truckNo || '';
+        const dInput = document.getElementById('consumed-input-driver-name');
+        const mInput = document.getElementById('consumed-input-driver-mob');
+        if (dInput && !dInput.value) dInput.value = match.name || match.driverName || match.driver || '';
+        if (mInput && !mInput.value) mInput.value = match.mobile || match.driverMobile || '';
       }
-    }
-
-    if (!foundMob) {
-      const matchC = this.allConsumed.find(c => (c.driverName || c.driver || '').trim().toLowerCase() === dName.toLowerCase());
-      if (matchC) {
-        foundMob = matchC.driverMobile || '';
-        foundTruck = matchC.truckNo || '';
-      }
-    }
-
-    const mobInput = document.getElementById('consumed-input-driver-mob');
-    if (mobInput && foundMob) mobInput.value = foundMob;
-
-    const truckSelect = document.getElementById('consumed-input-truck');
-    if (truckSelect && foundTruck && !truckSelect.value) {
-      truckSelect.value = foundTruck;
     }
   },
 
-  handleTruckSelect(truckVal) {
-    const truck = (truckVal || '').trim().toUpperCase();
-    if (!truck) return;
+  onDriverType(val) {
+    this.showDriverDropdown();
+    this.renderDriverCombobox(val);
 
-    let foundDriver = '';
-    let foundMob = '';
-
-    const matchC = this.allConsumed.find(c => (c.truckNo || '').toUpperCase() === truck);
-    if (matchC) {
-      foundDriver = matchC.driverName || matchC.driver || '';
-      foundMob = matchC.driverMobile || '';
-    }
-
-    if (!foundDriver && typeof window !== 'undefined' && Array.isArray(window.INITIAL_DRIVERS)) {
-      const matchD = window.INITIAL_DRIVERS.find(d => (d.truckNo || '').toUpperCase() === truck);
-      if (matchD) {
-        foundDriver = matchD.name || '';
-        foundMob = matchD.mobile || '';
+    const dName = (val || '').trim().toLowerCase();
+    if (dName.length >= 3) {
+      const match = this.driverMasterList.find(d => d.name.toLowerCase().includes(dName));
+      if (match) {
+        const mInput = document.getElementById('consumed-input-driver-mob');
+        const tInput = document.getElementById('consumed-input-truck');
+        if (mInput && !mInput.value && match.mobile) mInput.value = match.mobile;
+        if (tInput && !tInput.value && match.truckNo) tInput.value = match.truckNo;
       }
     }
+  },
 
-    const driverSelect = document.getElementById('consumed-input-driver-name');
-    if (driverSelect && foundDriver) {
-      driverSelect.value = foundDriver;
+  showTruckDropdown() {
+    const menu = document.getElementById('truck-dropdown-menu');
+    const driverMenu = document.getElementById('driver-dropdown-menu');
+    if (driverMenu) driverMenu.style.display = 'none';
+    if (menu) {
+      const input = document.getElementById('consumed-input-truck');
+      this.renderTruckCombobox(input ? input.value : '');
+      menu.style.display = 'block';
     }
+  },
 
-    const mobInput = document.getElementById('consumed-input-driver-mob');
-    if (mobInput && foundMob) mobInput.value = foundMob;
+  hideTruckDropdown() {
+    const menu = document.getElementById('truck-dropdown-menu');
+    if (menu) menu.style.display = 'none';
+  },
+
+  toggleTruckDropdown(e) {
+    if (e) e.stopPropagation();
+    const menu = document.getElementById('truck-dropdown-menu');
+    if (menu && menu.style.display === 'block') {
+      this.hideTruckDropdown();
+    } else {
+      this.showTruckDropdown();
+    }
+  },
+
+  selectTruckOption(truckNo) {
+    const input = document.getElementById('consumed-input-truck');
+    if (input) input.value = truckNo;
+    this.hideTruckDropdown();
+
+    // Auto-fill driver and mobile
+    const match = this.driverMasterList.find(d => d.truckNo === truckNo) ||
+                  this.allConsumed.find(c => (c.truckNo || '').toUpperCase() === truckNo);
+    if (match) {
+      const dInput = document.getElementById('consumed-input-driver-name');
+      const mInput = document.getElementById('consumed-input-driver-mob');
+      if (dInput) dInput.value = match.name || match.driverName || match.driver || '';
+      if (mInput) mInput.value = match.mobile || match.driverMobile || '';
+    }
+  },
+
+  showDriverDropdown() {
+    const menu = document.getElementById('driver-dropdown-menu');
+    const truckMenu = document.getElementById('truck-dropdown-menu');
+    if (truckMenu) truckMenu.style.display = 'none';
+    if (menu) {
+      const input = document.getElementById('consumed-input-driver-name');
+      this.renderDriverCombobox(input ? input.value : '');
+      menu.style.display = 'block';
+    }
+  },
+
+  hideDriverDropdown() {
+    const menu = document.getElementById('driver-dropdown-menu');
+    if (menu) menu.style.display = 'none';
+  },
+
+  toggleDriverDropdown(e) {
+    if (e) e.stopPropagation();
+    const menu = document.getElementById('driver-dropdown-menu');
+    if (menu && menu.style.display === 'block') {
+      this.hideDriverDropdown();
+    } else {
+      this.showDriverDropdown();
+    }
+  },
+
+  selectDriverOption(driverName, mobile, truckNo) {
+    const input = document.getElementById('consumed-input-driver-name');
+    if (input) input.value = driverName;
+    this.hideDriverDropdown();
+
+    const mInput = document.getElementById('consumed-input-driver-mob');
+    if (mInput && mobile) mInput.value = mobile;
+
+    const tInput = document.getElementById('consumed-input-truck');
+    if (tInput && truckNo && !tInput.value) tInput.value = truckNo;
   },
 
   // 2C. Slide Drawer: Consumed Urea Details matching WhatsApp Image 2026-10-31 at 1.26.32 PM.jpeg
@@ -855,8 +947,6 @@ const DefUreaModule = {
 
     if (title) title.innerText = 'Consumed Urea Details';
     if (delBtn) delBtn.style.display = 'none';
-
-    this.populateFleetDropdowns();
 
     // Default Date: DD-MM-YYYY
     const now = new Date();
@@ -873,9 +963,10 @@ const DefUreaModule = {
     document.getElementById('consumed-input-driver-mob').value = '';
     document.getElementById('consumed-input-amount').value = '0';
     
-    // Reset Stepper
     this.setBucketStepper(0);
     this.setBucketReturnedToggle('Yes');
+    this.hideTruckDropdown();
+    this.hideDriverDropdown();
 
     if (backdrop) backdrop.classList.add('show');
     if (drawer) drawer.classList.add('open');
@@ -894,8 +985,6 @@ const DefUreaModule = {
     if (title) title.innerText = `Consumed Urea Details - ${item.truckNo || ''}`;
     if (delBtn) delBtn.style.display = 'inline-block';
 
-    this.populateFleetDropdowns();
-
     document.getElementById('consumed-input-id').value = item.id;
     document.getElementById('consumed-input-date').value = item.date || '';
     document.getElementById('consumed-input-avail-stock').value = item.availableStock ? this.formatNumber(item.availableStock) : '3,891';
@@ -907,6 +996,8 @@ const DefUreaModule = {
     
     this.setBucketStepper(item.bucketsReturned || 0);
     this.setBucketReturnedToggle(item.isEmptyBucketReturned || 'Yes');
+    this.hideTruckDropdown();
+    this.hideDriverDropdown();
 
     if (backdrop) backdrop.classList.add('show');
     if (drawer) drawer.classList.add('open');
@@ -915,6 +1006,8 @@ const DefUreaModule = {
   closeConsumedDrawer() {
     const drawer = document.getElementById('defConsumedDrawer');
     const backdrop = document.getElementById('defDrawerBackdrop');
+    this.hideTruckDropdown();
+    this.hideDriverDropdown();
     if (drawer) drawer.classList.remove('open');
     if (backdrop) backdrop.classList.remove('show');
   },
@@ -971,7 +1064,7 @@ const DefUreaModule = {
     const qty = parseFloat(qtyInput?.value) || 0;
 
     if (!truckNo) {
-      this.showToast('Please select or enter a Truck Number', 'warning');
+      this.showToast('Please enter a Truck Number', 'warning');
       return;
     }
     if (qty <= 0) {
@@ -1006,6 +1099,9 @@ const DefUreaModule = {
     } else {
       this.allConsumed.unshift(record);
     }
+
+    // Update master lists with any newly typed truck/driver
+    this.buildMasterLists();
 
     this.handleSearch(this.searchQuery);
     this.closeConsumedDrawer();
@@ -1077,9 +1173,23 @@ const DefUreaModule = {
       searchInput.addEventListener('input', e => this.handleSearch(e.target.value));
     }
 
-    // Keyboard navigation: Escape closes drawers/detail
+    // Close combobox dropdowns when clicking outside
+    document.addEventListener('click', e => {
+      const truckWrap = document.getElementById('wrap-truck-combobox');
+      if (truckWrap && !truckWrap.contains(e.target)) {
+        this.hideTruckDropdown();
+      }
+      const driverWrap = document.getElementById('wrap-driver-combobox');
+      if (driverWrap && !driverWrap.contains(e.target)) {
+        this.hideDriverDropdown();
+      }
+    });
+
+    // Keyboard navigation: Escape closes dropdowns/drawers
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') {
+        this.hideTruckDropdown();
+        this.hideDriverDropdown();
         this.closeDrawers();
       }
     });
