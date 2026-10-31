@@ -1532,7 +1532,7 @@ const ShahpuraModule = {
     }
 
     // Default to Trip (or Other for deposit if user wants)
-    this.setFormRelatedTo(type === 'Deposit' ? 'Other' : 'Trip');
+    this.setFormRelatedTo('Trip');
 
     const state = this.calculateCashState();
     const avCashEl = document.getElementById('txAvailableCash');

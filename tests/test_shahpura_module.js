@@ -350,6 +350,12 @@ console.log('=== TEST SUITE: MODULE 9 - SHAHPURA & CARD 1 DRILLDOWN (1:1 APPSHEE
     const btnTrip = getOrCreateMockElement('btnRelTrip');
     const btnOther = getOrCreateMockElement('btnRelOther');
 
+    // Test Deposit Add Drawer defaults to Trip
+    ShahpuraModule.openAddDrawer('Deposit');
+    assert.strictEqual(ShahpuraModule.currentFormRelatedTo, 'Trip', 'Deposit add drawer must default to Trip');
+    assert(btnTrip.classList.contains('active'), 'Trip toggle button must be active for Deposit');
+    assert.strictEqual(truckRow.style.display, 'flex', 'Truck row must be visible when Deposit drawer opens');
+
     // Test Trip toggle
     ShahpuraModule.setFormRelatedTo('Trip');
     assert.strictEqual(ShahpuraModule.currentFormRelatedTo, 'Trip');
@@ -361,6 +367,7 @@ console.log('=== TEST SUITE: MODULE 9 - SHAHPURA & CARD 1 DRILLDOWN (1:1 APPSHEE
     assert.strictEqual(truckRow.style.display, 'none', 'Truck row must be hidden in Other mode');
 
     // Test saving new transaction
+    ShahpuraModule.openAddDrawer('Given');
     ShahpuraModule.setFormRelatedTo('Trip');
     getOrCreateMockElement('txAmount').value = '5000';
     getOrCreateMockElement('txTruckInput').value = 'RJ52GB5642';
