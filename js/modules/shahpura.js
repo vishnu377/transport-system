@@ -8,10 +8,11 @@
  *        - White dashed centerline down the bar
  *        - High-fidelity Tooltip Card: "30/10/2026, 09:32:24 pm" | "● Avaiable Cash -212,329"
  *        - Slanted date "30/10/2026, 09:32..." & "DateTime" vertical axis
- *     2. Shahpura Slice Table View (Home > Shahpura > Available Cash > Shahpura Slice)
- *        - "Search Shahpura Slice" search input
+ *     2. Shahpura Slice Table View (Home > Shahpura > Shahpura Slice)
+ *        - EXACTLY 1 Active Cash Snapshot Row matching original Google AppSheet!
+ *        - Subheader Actions: [+ Add] (#c3b15a) | [Funnel]
  *        - Columns: DateTime | Amount In Hand | Avaiable Cash (● ₹ -212,329) | Amount (₹ -15,000) | ›
- *     3. Shahpura Slice Record Detail View (Home > ... > Shahpura Slice > 10/30/2026 21:32:24)
+ *     3. Shahpura Slice Record Detail View (Home > Shahpura > Shahpura Slice > 10/30/2026 21:32:24)
  *        - Clean centered card with DateTime and Avaiable Cash
  *     4. Shahpura Slice Slide Drawer (+ Add)
  *        - Header: ✕ | Shahpura Slice | Cancel | Save (#c3b15a)
@@ -50,6 +51,7 @@ const ShahpuraModule = {
     console.log('[ShahpuraModule] Initializing 1:1 AppSheet Shahpura module...');
     await this.loadData();
     this.buildMasterLists();
+    this.renderBreadcrumb();
     this.renderCurrentView();
     this.setupListeners();
     console.log('[ShahpuraModule] Initialized successfully.');
@@ -150,7 +152,6 @@ const ShahpuraModule = {
       this.currentSliceRecord = record;
     }
 
-    // Reset expand state if returning to main
     if (viewName === 'main') {
       this.expandedCard = null;
     }
@@ -187,39 +188,47 @@ const ShahpuraModule = {
           <span class="text-dark fw-medium">Available Cash</span>
         </div>
         <div class="d-flex align-items-center gap-2">
-          <button class="btn-icon-subtle" title="Return to Dashboard" onclick="ShahpuraModule.setView('main')">
-            <i class="bi bi-arrows-angle-contract"></i>
+          <button class="btn-icon-bordered" title="Shahpura Slice Table View" onclick="ShahpuraModule.setView('shahpura_slice')">
+            <i class="bi bi-grid-fill"></i>
+          </button>
+          <button class="btn-appsheet-add" onclick="ShahpuraModule.openSliceAddDrawer()">
+            <i class="bi bi-plus-lg"></i> Add
+          </button>
+          <div class="v-divider"></div>
+          <button class="btn-icon-subtle" title="Sort / Filter">
+            <i class="bi bi-funnel"></i>
           </button>
         </div>
       `;
       if (searchInput) searchInput.placeholder = 'Search Available Cash';
     } else if (this.activeView === 'shahpura_slice') {
+      // 1:1 AppSheet matching original screenshot: Home > Shahpura > Shahpura Slice
       bcContainer.innerHTML = `
         <div class="d-flex align-items-center gap-1">
           <a href="../index.html" class="breadcrumb-item-home">Home</a>
           <span class="mx-1">&gt;</span>
           <a href="javascript:void(0)" class="breadcrumb-item-home" onclick="ShahpuraModule.setView('main')">Shahpura</a>
           <span class="mx-1">&gt;</span>
-          <a href="javascript:void(0)" class="breadcrumb-item-home" onclick="ShahpuraModule.setView('available_cash')">Available Cash</a>
-          <span class="mx-1">&gt;</span>
           <span class="text-dark fw-medium">Shahpura Slice</span>
         </div>
         <div class="d-flex align-items-center gap-2">
-          <button class="btn-icon-subtle" title="Return to Dashboard" onclick="ShahpuraModule.setView('main')">
-            <i class="bi bi-grid-3x3-gap"></i>
+          <button class="btn-appsheet-add" onclick="ShahpuraModule.openSliceAddDrawer()">
+            <i class="bi bi-plus-lg"></i> Add
+          </button>
+          <div class="v-divider"></div>
+          <button class="btn-icon-subtle" title="Sort / Filter">
+            <i class="bi bi-funnel"></i>
           </button>
         </div>
       `;
       if (searchInput) searchInput.placeholder = 'Search Shahpura Slice';
     } else if (this.activeView === 'slice_detail') {
-      const slug = this.currentSliceRecord ? (this.currentSliceRecord.dateTimeSlug || '10/30/2026 21:32:24') : 'Record Detail';
+      const slug = this.currentSliceRecord ? (this.currentSliceRecord.dateTimeSlug || '10/30/2026 21:32:24') : '10/30/2026 21:32:24';
       bcContainer.innerHTML = `
         <div class="d-flex align-items-center gap-1">
           <a href="../index.html" class="breadcrumb-item-home">Home</a>
           <span class="mx-1">&gt;</span>
           <a href="javascript:void(0)" class="breadcrumb-item-home" onclick="ShahpuraModule.setView('main')">Shahpura</a>
-          <span class="mx-1">&gt;</span>
-          <a href="javascript:void(0)" class="breadcrumb-item-home" onclick="ShahpuraModule.setView('available_cash')">Available Cash</a>
           <span class="mx-1">&gt;</span>
           <a href="javascript:void(0)" class="breadcrumb-item-home" onclick="ShahpuraModule.setView('shahpura_slice')">Shahpura Slice</a>
           <span class="mx-1">&gt;</span>
@@ -271,7 +280,6 @@ const ShahpuraModule = {
 
     const state = this.calculateCashState();
 
-    // Scale 0 to -250,000
     const chartHeight = 540;
     const chartWidth = 440;
     const topY = 40;
@@ -362,7 +370,7 @@ const ShahpuraModule = {
     const chartWidth = 1400;
     const topY = 40;
     const bottomY = 560;
-    const totalSpanY = bottomY - topY; // 520px
+    const totalSpanY = bottomY - topY;
     const maxVal = 250000;
 
     const ratio = Math.min(1, Math.max(0, Math.abs(state.availableCash) / maxVal));
@@ -392,66 +400,41 @@ const ShahpuraModule = {
     }
 
     container.innerHTML = `
-      <div class="h-100 d-flex flex-column bg-white">
-        <!-- Top Action Bar inside Expanded View -->
-        <div class="d-flex justify-content-between align-items-center px-4 py-2 border-bottom">
-          <div class="d-flex align-items-center gap-2">
-            <button class="btn btn-sm btn-outline-secondary" onclick="ShahpuraModule.setView('main')">
-              <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
-            </button>
-            <span class="fs-6 fw-bold text-dark">Available Cash Chart</span>
-          </div>
-          <div class="d-flex align-items-center gap-2">
-            <button class="btn-icon-bordered" title="Shahpura Slice Table View" onclick="ShahpuraModule.setView('shahpura_slice')">
-              <i class="bi bi-grid-fill"></i>
-            </button>
-            <button class="btn-appsheet-add" onclick="ShahpuraModule.openSliceAddDrawer()">
-              <i class="bi bi-plus-lg"></i> Add
-            </button>
-            <div class="v-divider"></div>
-            <button class="btn-icon-subtle" title="Filter / Sort">
-              <i class="bi bi-funnel"></i>
-            </button>
-          </div>
-        </div>
+      <div class="h-100 d-flex flex-column bg-white position-relative" style="overflow: hidden;">
+        <svg viewBox="0 0 ${chartWidth} 680" class="w-100 h-100" preserveAspectRatio="none">
+          <!-- Grid Lines -->
+          ${gridLinesHTML}
 
-        <!-- Full-Width Responsive SVG Chart -->
-        <div class="flex-grow-1 position-relative p-3" style="overflow: hidden;">
-          <svg viewBox="0 0 ${chartWidth} 680" class="w-100 h-100" preserveAspectRatio="none">
-            <!-- Grid Lines -->
-            ${gridLinesHTML}
+          <!-- Massive Red Bar -->
+          <rect x="${barX}" y="${barY}" width="${barWidth}" height="${barHeight}" fill="#cc0b0b" />
 
-            <!-- Massive Red Bar -->
-            <rect x="${barX}" y="${barY}" width="${barWidth}" height="${barHeight}" fill="#cc0b0b" />
+          <!-- White Vertical Dashed Center Line -->
+          <line x1="${barX + barWidth / 2}" y1="${barY}" x2="${barX + barWidth / 2}" y2="${bottomY + 15}" stroke="#ffffff" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.85" />
 
-            <!-- White Vertical Dashed Center Line -->
-            <line x1="${barX + barWidth / 2}" y1="${barY}" x2="${barX + barWidth / 2}" y2="${bottomY + 15}" stroke="#ffffff" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.85" />
+          <!-- X-Axis Timestamp Label slanted at 45 deg -->
+          <g transform="translate(${barX + barWidth / 2 - 20}, ${bottomY + 60}) rotate(-45)">
+            <text x="0" y="0" font-family="Roboto, sans-serif" font-size="11" fill="#5f6368" text-anchor="end">
+              ${state.displayDate}
+            </text>
+          </g>
 
-            <!-- X-Axis Timestamp Label slanted at 45 deg -->
-            <g transform="translate(${barX + barWidth / 2 - 20}, ${bottomY + 60}) rotate(-45)">
-              <text x="0" y="0" font-family="Roboto, sans-serif" font-size="11" fill="#5f6368" text-anchor="end">
-                ${state.displayDate}
-              </text>
-            </g>
+          <!-- Right Axis: DateTime rotated -->
+          <g transform="translate(${chartWidth - 15}, 65) rotate(90)">
+            <text x="0" y="0" font-family="Roboto, sans-serif" font-size="11" fill="#70757a" text-anchor="start">
+              DateTime
+            </text>
+          </g>
+        </svg>
 
-            <!-- Right Axis: DateTime rotated -->
-            <g transform="translate(${chartWidth - 15}, 65) rotate(90)">
-              <text x="0" y="0" font-family="Roboto, sans-serif" font-size="11" fill="#70757a" text-anchor="start">
-                DateTime
-              </text>
-            </g>
-          </svg>
-
-          <!-- Authentic Floating Tooltip Card matching Screenshot 1 -->
-          <div class="card1-appsheet-floating-card shadow" style="position: absolute; right: 180px; top: 45px; background: #ffffff; border: 1px solid #dadce0; border-radius: 6px; padding: 10px 16px; min-width: 180px; z-index: 10;">
-            <div style="font-size: 11px; color: #5f6368;">${state.asOf}</div>
-            <div class="d-flex align-items-center justify-content-between gap-4 mt-1">
-              <div class="d-flex align-items-center gap-1">
-                <span class="appsheet-circle-dot red-dot">●</span>
-                <span style="font-size: 13px; color: #3c4043; font-weight: 500;">Avaiable Cash</span>
-              </div>
-              <span class="fw-bold text-dark fs-6">${state.availableCash.toLocaleString('en-IN')}</span>
+        <!-- Authentic Floating Tooltip Card matching Screenshot 1 -->
+        <div class="card1-appsheet-floating-card shadow" style="position: absolute; right: 180px; top: 45px; background: #ffffff; border: 1px solid #dadce0; border-radius: 6px; padding: 10px 16px; min-width: 180px; z-index: 10;">
+          <div style="font-size: 11px; color: #5f6368;">${state.asOf}</div>
+          <div class="d-flex align-items-center justify-content-between gap-4 mt-1">
+            <div class="d-flex align-items-center gap-1">
+              <span class="appsheet-circle-dot red-dot">●</span>
+              <span style="font-size: 13px; color: #3c4043; font-weight: 500;">Avaiable Cash</span>
             </div>
+            <span class="fw-bold text-dark fs-6">${state.availableCash.toLocaleString('en-IN')}</span>
           </div>
         </div>
       </div>
@@ -460,6 +443,7 @@ const ShahpuraModule = {
 
   // ========================================================
   // SCREEN 2: SHAHPURA SLICE TABLE VIEW (1:1 Screenshot 2)
+  // EXACTLY 1 Active Row matching original Google AppSheet!
   // ========================================================
   renderShahpuraSliceTableView(container) {
     let rowsHTML = '';
@@ -481,7 +465,7 @@ const ShahpuraModule = {
         const balColor = item.availableCash < 0 ? 'color: #cc0b0b; font-weight: 700;' : 'color: #00b11f; font-weight: 700;';
 
         rowsHTML += `
-          <tr class="appsheet-data-row" onclick="ShahpuraModule.openSliceDetail('${item.id}')" style="cursor: pointer;">
+          <tr class="appsheet-data-row" onclick="ShahpuraModule.openSliceDetail('${item.id}')" style="cursor: pointer; border-bottom: 1px solid #f1f3f4;">
             <td style="padding: 10px 16px; width: 220px; font-size: 13px; color: #202124;">
               ${item.dateTime}
             </td>
@@ -504,43 +488,21 @@ const ShahpuraModule = {
     }
 
     container.innerHTML = `
-      <div class="h-100 d-flex flex-column bg-white">
-        <!-- Top Action Bar matching Screenshot 2 -->
-        <div class="d-flex justify-content-between align-items-center px-4 py-2 border-bottom">
-          <div class="d-flex align-items-center gap-2">
-            <button class="btn btn-sm btn-outline-secondary" onclick="ShahpuraModule.setView('available_cash')">
-              <i class="bi bi-arrow-left me-1"></i> Back to Chart
-            </button>
-            <span class="fs-6 fw-bold text-dark">Shahpura Slice</span>
-          </div>
-          <div class="d-flex align-items-center gap-2">
-            <button class="btn-appsheet-add" onclick="ShahpuraModule.openSliceAddDrawer()">
-              <i class="bi bi-plus-lg"></i> Add
-            </button>
-            <div class="v-divider"></div>
-            <button class="btn-icon-subtle" title="Sort / Filter">
-              <i class="bi bi-funnel"></i>
-            </button>
-          </div>
-        </div>
-
-        <!-- Table Container -->
-        <div class="flex-grow-1" style="overflow-y: auto;">
-          <table class="w-100" style="border-collapse: collapse;">
-            <thead>
-              <tr style="border-bottom: 1px solid #dadce0; background: #ffffff;">
-                <th style="padding: 10px 16px; text-align: left; font-size: 12px; font-weight: 600; color: #202124;">DateTime</th>
-                <th style="padding: 10px 16px; text-align: left; font-size: 12px; font-weight: 600; color: #202124;">Amount In Hand</th>
-                <th style="padding: 10px 16px; text-align: left; font-size: 12px; font-weight: 600; color: #202124;">Avaiable Cash</th>
-                <th style="padding: 10px 16px; text-align: left; font-size: 12px; font-weight: 600; color: #202124;">Amount</th>
-                <th style="padding: 10px 16px; width: 40px;"></th>
-              </tr>
-            </thead>
-            <tbody>
-              ${rowsHTML}
-            </tbody>
-          </table>
-        </div>
+      <div class="h-100 bg-white" style="overflow-y: auto;">
+        <table class="w-100" style="border-collapse: collapse;">
+          <thead>
+            <tr style="border-bottom: 1px solid #dadce0; background: #ffffff;">
+              <th style="padding: 9px 16px; text-align: left; font-size: 12px; font-weight: 600; color: #202124; width: 220px;">DateTime</th>
+              <th style="padding: 9px 16px; text-align: left; font-size: 12px; font-weight: 600; color: #202124; width: 180px; border-left: 1px solid #e8eaed;">Amount In Hand</th>
+              <th style="padding: 9px 16px; text-align: left; font-size: 12px; font-weight: 600; color: #202124; width: 180px; border-left: 1px solid #e8eaed;">Avaiable Cash</th>
+              <th style="padding: 9px 16px; text-align: left; font-size: 12px; font-weight: 600; color: #202124; width: 180px; border-left: 1px solid #e8eaed;">Amount</th>
+              <th style="padding: 9px 16px; width: 40px;"></th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rowsHTML}
+          </tbody>
+        </table>
       </div>
     `;
   },
@@ -563,23 +525,11 @@ const ShahpuraModule = {
 
     container.innerHTML = `
       <div class="h-100 d-flex flex-column bg-white">
-        <!-- Top Action Bar -->
-        <div class="d-flex justify-content-between align-items-center px-4 py-2 border-bottom">
-          <button class="btn btn-sm btn-outline-secondary" onclick="ShahpuraModule.setView('shahpura_slice')">
-            <i class="bi bi-arrow-left me-1"></i> Back to Shahpura Slice
-          </button>
-          <div class="d-flex align-items-center gap-2">
-            <button class="btn-icon-subtle" title="Expand View" onclick="ShahpuraModule.setView('shahpura_slice')">
-              <i class="bi bi-arrows-angle-expand"></i>
-            </button>
-          </div>
-        </div>
-
         <!-- Centered Record Detail Card matching Screenshot 3 -->
         <div class="flex-grow-1 d-flex justify-content-start align-items-start p-4" style="background: #ffffff;">
           <div style="width: 100%; max-width: 600px; border: 1px solid #dadce0; border-radius: 4px; padding: 18px 24px; background: #ffffff;">
             <!-- Row 1: DateTime -->
-            <div class="d-flex align-items-center py-2" style="border-bottom: 1px solid transparent;">
+            <div class="d-flex align-items-center py-2">
               <span style="width: 160px; font-size: 13px; color: #3c4043; font-weight: 500;">DateTime</span>
               <span style="font-size: 14px; color: #202124; font-weight: 500;">${r.dateTime}</span>
             </div>
@@ -850,7 +800,6 @@ const ShahpuraModule = {
   // ========================================================
   toggleExpand(cardKey) {
     if (cardKey === 'card1') {
-      // For Card 1, open full-screen Available Cash Chart view matching Image 1!
       this.setView('available_cash');
       return;
     }

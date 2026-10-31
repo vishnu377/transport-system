@@ -19,7 +19,7 @@ const SAMPLE_SHAHPURA_DATA = {
     availableCash: -212329
   },
 
-  // Shahpura Slice Historical Snapshots (Card 1 Drilldown)
+  // Shahpura Slice Historical Snapshot (Card 1 Drilldown - EXACTLY 1 Active Record matching Google AppSheet)
   sliceRecords: [
     {
       id: "SLICE-101",
@@ -29,42 +29,6 @@ const SAMPLE_SHAHPURA_DATA = {
       availableCash: -212329,
       amount: -15000,
       description: "Advance Given to Suresh Raiya RJ52GB5642"
-    },
-    {
-      id: "SLICE-102",
-      dateTime: "30/10/2026, 09:15:10 pm",
-      dateTimeSlug: "10/30/2026 21:15:10",
-      amountInHand: "",
-      availableCash: -197329,
-      amount: -10000,
-      description: "Advance Given to Dhana Ram Saini RJ52GA8733"
-    },
-    {
-      id: "SLICE-103",
-      dateTime: "30/10/2026, 08:45:00 pm",
-      dateTimeSlug: "10/30/2026 20:45:00",
-      amountInHand: "",
-      availableCash: -187329,
-      amount: -20000,
-      description: "Advance Given to Bhagchand RJ52GB5061"
-    },
-    {
-      id: "SLICE-104",
-      dateTime: "30/10/2026, 08:10:00 pm",
-      dateTimeSlug: "10/30/2026 20:10:00",
-      amountInHand: "",
-      availableCash: -167329,
-      amount: -20000,
-      description: "Advance Given to Sintu Prajapat RJ52GB5528"
-    },
-    {
-      id: "SLICE-105",
-      dateTime: "29/10/2026, 04:20:00 pm",
-      dateTimeSlug: "10/29/2026 16:20:00",
-      amountInHand: "",
-      availableCash: -147329,
-      amount: -4000,
-      description: "Advance Given to Sitaram RJ52GB5529"
     }
   ],
 

@@ -143,7 +143,7 @@ console.log('=== TEST SUITE: MODULE 9 - SHAHPURA & CARD 1 DRILLDOWN (1:1 APPSHEE
     // ----------------------------------------------------
     console.log('--- TEST 3: DBService Shahpura Slice CRUD ---');
     const slices = await dbService.getAllShahpuraSliceAsync();
-    assert(slices.length >= 5, 'Must load slice records from sample');
+    assert(slices.length === 1, 'Must have exactly 1 active slice record matching Google AppSheet');
     assert.strictEqual(slices[0].availableCash, -212329, 'First slice record must match -212,329');
 
     const newSlice = {
@@ -156,11 +156,11 @@ console.log('=== TEST SUITE: MODULE 9 - SHAHPURA & CARD 1 DRILLDOWN (1:1 APPSHEE
     assert(savedSlice.id.startsWith('SLICE-'), 'Slice record ID must start with SLICE-');
 
     const afterSave = await dbService.getAllShahpuraSliceAsync();
-    assert(afterSave.length === slices.length + 1, 'Slice count must increment');
+    assert(afterSave.length === 2, 'Slice count must increment');
 
     await dbService.deleteShahpuraSliceRecord(savedSlice.id);
     const afterDelete = await dbService.getAllShahpuraSliceAsync();
-    assert(afterDelete.length === slices.length, 'Slice count must restore after deletion');
+    assert(afterDelete.length === 1, 'Slice count must restore to 1 after deletion');
 
     console.log('✓ TEST 3 PASSED: DBService handles slice records in memory / Firestore without localStorage!\n');
 
@@ -187,9 +187,9 @@ console.log('=== TEST SUITE: MODULE 9 - SHAHPURA & CARD 1 DRILLDOWN (1:1 APPSHEE
     assert.strictEqual(ShahpuraModule.activeView, 'available_cash');
 
     const fullContainer = getOrCreateMockElement('shahpuraFullViewContainer');
-    assert(fullContainer.innerHTML.includes('Available Cash Chart'), 'Must render Expanded Chart view');
     assert(fullContainer.innerHTML.includes('<svg'), 'Must render full-width SVG');
-    assert(fullContainer.innerHTML.includes('-2,12,329') || fullContainer.innerHTML.includes('-212,329'), 'Must show -212,329 in tooltip');
+    assert(fullContainer.innerHTML.includes('card1-appsheet-floating-card'), 'Must render floating tooltip card');
+    assert(fullContainer.innerHTML.includes('2,12,329') || fullContainer.innerHTML.includes('212,329'), 'Must show -212,329 in tooltip');
     assert(fullContainer.innerHTML.includes('stroke-dasharray="4,4"'), 'Must render prominent white dashed centerline');
 
     const bc = getOrCreateMockElement('shahpuraBreadcrumb');
@@ -204,17 +204,18 @@ console.log('=== TEST SUITE: MODULE 9 - SHAHPURA & CARD 1 DRILLDOWN (1:1 APPSHEE
     ShahpuraModule.setView('shahpura_slice');
     assert.strictEqual(ShahpuraModule.activeView, 'shahpura_slice');
 
-    assert(fullContainer.innerHTML.includes('Shahpura Slice'), 'Must render Shahpura Slice table view');
+    assert.strictEqual(ShahpuraModule.allSlice.length, 1, 'Must have EXACTLY 1 active cash record matching AppSheet');
     assert(fullContainer.innerHTML.includes('DateTime'), 'Table must have DateTime header');
     assert(fullContainer.innerHTML.includes('Amount In Hand'), 'Table must have Amount In Hand header');
     assert(fullContainer.innerHTML.includes('Avaiable Cash'), 'Table must have Avaiable Cash header');
     assert(fullContainer.innerHTML.includes('Amount'), 'Table must have Amount header');
     assert(fullContainer.innerHTML.includes('2,12,329') || fullContainer.innerHTML.includes('212,329'), 'Table row 1 must show -212,329 in red');
     assert(fullContainer.innerHTML.includes('15,000'), 'Table row 1 must show ₹ -15,000 amount');
+    assert(!fullContainer.innerHTML.includes('Back to Chart'), 'Must NOT have custom Back to Chart button');
 
-    assert(bc.innerHTML.includes('Available Cash') && bc.innerHTML.includes('Shahpura Slice'), 'Breadcrumb must be Home > Shahpura > Available Cash > Shahpura Slice');
+    assert(bc.innerHTML.includes('Shahpura') && bc.innerHTML.includes('Shahpura Slice'), 'Breadcrumb must be Home > Shahpura > Shahpura Slice');
 
-    console.log('✓ TEST 6 PASSED: Screen 2 Shahpura Slice table renders matching screenshot 2!\n');
+    console.log('✓ TEST 6 PASSED: Screen 2 Shahpura Slice table has EXACTLY 1 row matching original AppSheet 1:1!\n');
 
     // ----------------------------------------------------
     // TEST 7: Screen 3 - Shahpura Slice Record Detail View
@@ -249,7 +250,7 @@ console.log('=== TEST SUITE: MODULE 9 - SHAHPURA & CARD 1 DRILLDOWN (1:1 APPSHEE
 
     // Save entry through drawer
     await ShahpuraModule.saveSliceRecord();
-    assert(ShahpuraModule.allSlice.length >= 6, 'New slice record must be added to list');
+    assert(ShahpuraModule.allSlice.length >= 2, 'New slice record must be added to list');
 
     console.log('✓ TEST 8 PASSED: Screen 4 slide drawer fields and save action match screenshot 4!\n');
 
