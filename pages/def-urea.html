@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DEF Urea - MTC And TTC Head Office</title>
+
+  <!-- Google Fonts: Roboto & Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3 & Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- Core AppSheet CSS Stylesheet -->
+  <link rel="stylesheet" href="../css/appsheet-core.css">
+
+  <style>
+    :root {
+      --appsheet-primary: #1a73e8;
+      --appsheet-bg: #f8f9fa;
+      --appsheet-panel-bg: #ffffff;
+      --appsheet-border: #dadce0;
+      --appsheet-text: #202124;
+      --appsheet-muted: #5f6368;
+      --appsheet-yellow: #d9b900;
+      --appsheet-green: #00b11f;
+      --appsheet-red: #cc0b0b;
+    }
+
+    body {
+      background-color: var(--appsheet-bg);
+      font-family: 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 0;
+      color: var(--appsheet-text);
+      overflow-x: hidden;
+    }
+
+    /* Top AppSheet Header Navbar */
+    .appsheet-top-bar {
+      height: 48px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--appsheet-border);
+      padding: 0 16px;
+      position: sticky;
+      top: 0;
+      z-index: 1020;
+    }
+
+    .appsheet-search-box {
+      position: relative;
+      width: 100%;
+      max-width: 440px;
+    }
+
+    .appsheet-search-box input {
+      width: 100%;
+      height: 32px;
+      padding: 4px 12px 4px 34px;
+      font-size: 0.85rem;
+      border: 1px solid #d0d7de;
+      border-radius: 4px;
+      background: #f6f8fa;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .appsheet-search-box input:focus {
+      background: #ffffff;
+      border-color: var(--appsheet-primary);
+      box-shadow: 0 0 0 2px rgba(26,115,232,0.2);
+    }
+
+    .appsheet-search-box i {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.85rem;
+      color: var(--appsheet-muted);
+    }
+
+    /* Breadcrumbs */
+    .appsheet-breadcrumb-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 16px 4px 16px;
+      font-size: 0.82rem;
+    }
+
+    .appsheet-breadcrumb a {
+      color: var(--appsheet-muted);
+      text-decoration: none;
+    }
+
+    .appsheet-breadcrumb a:hover {
+      color: var(--appsheet-primary);
+    }
+
+    .appsheet-breadcrumb span.active {
+      color: var(--appsheet-text);
+      font-weight: 600;
+    }
+
+    /* 2-Card Main Dashboard Grid matching AppSheet 1:1 */
+    .def-urea-container {
+      padding: 6px 16px 24px 16px;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    .def-urea-grid {
+      display: grid;
+      grid-template-columns: 38% calc(62% - 16px);
+      gap: 16px;
+      align-items: start;
+    }
+
+    @media (max-width: 1050px) {
+      .def-urea-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* AppSheet Panel Cards */
+    .appsheet-panel {
+      background: var(--appsheet-panel-bg);
+      border: 1px solid var(--appsheet-border);
+      border-radius: 4px;
+      box-shadow: 0 1px 2px rgba(60,64,67,0.08);
+      overflow: hidden;
+      min-height: 520px;
+    }
+
+    .appsheet-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--appsheet-border);
+      background: #ffffff;
+    }
+
+    .appsheet-panel-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #24292f;
+      margin: 0;
+    }
+
+    /* AppSheet Gold +Add Buttons */
+    .btn-appsheet-add {
+      background: #dfb33b;
+      color: #202124;
+      border: none;
+      font-size: 0.76rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 3px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      transition: background 0.15s;
+    }
+
+    .btn-appsheet-add:hover {
+      background: #cf9f27;
+      color: #000;
+    }
+
+    /* DEF Chart Styling */
+    .chart-grid-line {
+      position: absolute;
+      left: 0;
+      right: 0;
+      border-top: 1px solid #eaeef2;
+    }
+
+    .chart-y-label {
+      position: absolute;
+      left: -32px;
+      top: -8px;
+      font-size: 0.7rem;
+      color: #57606a;
+      font-family: monospace;
+      width: 26px;
+      text-align: right;
+    }
+
+    /* Group Header and Rows in Consumed Table */
+    .appsheet-group-header-row td {
+      background-color: #f6f8fa !important;
+      color: #24292f;
+      letter-spacing: 0.3px;
+    }
+
+    .appsheet-data-row {
+      transition: background-color 0.1s;
+    }
+
+    .appsheet-data-row:hover {
+      background-color: #f1f8ff !important;
+    }
+
+    .phone-link:hover i {
+      color: var(--appsheet-primary) !important;
+    }
+
+    /* Side Slide Drawers */
+    .appsheet-drawer-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.45);
+      z-index: 1060;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.25s ease;
+    }
+
+    .appsheet-drawer-backdrop.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .appsheet-drawer {
+      position: fixed;
+      top: 0;
+      right: -520px;
+      width: 500px;
+      max-width: 95vw;
+      height: 100vh;
+      background: #ffffff;
+      box-shadow: -4px 0 16px rgba(0,0,0,0.15);
+      z-index: 1070;
+      display: flex;
+      flex-direction: column;
+      transition: right 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .appsheet-drawer.open {
+      right: 0;
+    }
+
+    .drawer-header {
+      height: 52px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--appsheet-border);
+      background: #fafbfc;
+    }
+
+    .drawer-body {
+      padding: 20px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .drawer-footer {
+      padding: 12px 16px;
+      border-top: 1px solid var(--appsheet-border);
+      background: #fafbfc;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .appsheet-form-row {
+      margin-bottom: 16px;
+    }
+
+    .appsheet-form-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #57606a;
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    .appsheet-form-control {
+      width: 100%;
+      height: 34px;
+      padding: 4px 10px;
+      font-size: 0.85rem;
+      border: 1px solid #d0d7de;
+      border-radius: 4px;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .appsheet-form-control:focus {
+      border-color: var(--appsheet-primary);
+      box-shadow: 0 0 0 2px rgba(26,115,232,0.2);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Slim Icon Rail Navigation -->
+  <nav id="sidebar"></nav>
+
+  <!-- Main Content Wrapper -->
+  <div id="main-content">
+    
+    <!-- Top AppSheet Header Navbar matching Screenshot -->
+    <header class="appsheet-top-bar d-flex align-items-center justify-content-between flex-wrap gap-2">
+      <div class="d-flex align-items-center gap-3">
+        <button id="sidebar-toggle" class="btn btn-light border-0 p-1 me-1" title="Toggle Sidebar" onclick="AppUI.toggleNavDrawer()">
+          <i class="bi bi-list fs-4 text-dark"></i>
+        </button>
+        <div class="d-flex align-items-center gap-2">
+          <span class="fs-5">💧</span>
+          <span class="fw-bold fs-6 text-dark">MTC And TTC - Head Office</span>
+        </div>
+      </div>
+
+      <!-- Centered Search: "Search DEF Urea" matching Screenshot -->
+      <div class="appsheet-search-box">
+        <i class="bi bi-search"></i>
+        <input type="text" id="search-def-urea" placeholder="Search DEF Urea">
+      </div>
+
+      <!-- Top Right Action Controls -->
+      <div class="d-flex align-items-center gap-2">
+        <button class="btn btn-sm btn-light border py-1 px-2" title="Refresh Data" onclick="DefUreaModule.loadData().then(() => { DefUreaModule.renderStockCard(); DefUreaModule.renderConsumedTable(); })">
+          <i class="bi bi-arrow-clockwise"></i>
+        </button>
+        <button class="btn btn-sm btn-light border py-1 px-2" title="Export CSV" onclick="DefUreaModule.exportCSV()">
+          <i class="bi bi-download"></i> CSV
+        </button>
+        <button class="btn btn-sm btn-light border py-1 px-2 text-secondary" title="AppSheet Layout Mode">
+          <i class="bi bi-window-dock"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Page Content Container -->
+    <main class="def-urea-container">
+
+      <!-- Breadcrumbs: Home > DEF Urea matching Screenshot -->
+      <div class="appsheet-breadcrumb-row">
+        <div class="appsheet-breadcrumb">
+          <a href="../index.html">Home</a>
+          <i class="bi bi-chevron-right text-muted small mx-1"></i>
+          <span class="active">DEF Urea</span>
+        </div>
+        <div class="text-secondary small">
+          <i class="bi bi-grid-fill me-1"></i> Split View (Stock & Consumption)
+        </div>
+      </div>
+
+      <!-- 2-Card Main Dashboard Grid matching Screenshot 1:1 -->
+      <div class="def-urea-grid mt-2">
+        
+        <!-- CARD 1: DEF Urea Stock (Width ~38%) -->
+        <div class="appsheet-panel" id="cardDefStock">
+          <div class="appsheet-panel-header">
+            <h6 class="appsheet-panel-title">DEF Urea Stock</h6>
+            <div class="d-flex align-items-center gap-2">
+              <button class="btn btn-sm btn-light border p-1" id="btn-toggle-stock-mode" title="Toggle Table/Chart View" onclick="DefUreaModule.toggleStockViewMode()">
+                <i class="bi bi-table"></i>
+              </button>
+              <button class="btn-appsheet-add" onclick="DefUreaModule.openAddStockDrawer()" title="Add Inward Stock">
+                <i class="bi bi-plus-lg"></i> Add Stock
+              </button>
+              <button class="btn btn-sm btn-light border-0 p-1 text-secondary" title="Collapse / Expand">
+                <i class="bi bi-chevron-down"></i>
+              </button>
+            </div>
+          </div>
+          <div class="appsheet-panel-body" id="def-stock-content">
+            <!-- Dynamic Chart or Inward Table rendered here -->
+          </div>
+        </div>
+
+        <!-- CARD 2: Consumed Details (Width ~62%) -->
+        <div class="appsheet-panel" id="cardConsumedDetails">
+          <div class="appsheet-panel-header">
+            <h6 class="appsheet-panel-title">Consumed Details</h6>
+            <div class="d-flex align-items-center gap-2">
+              <button class="btn-appsheet-add" onclick="DefUreaModule.openAddConsumedDrawer()" title="Add Consumed Entry">
+                <i class="bi bi-plus-lg"></i> Add
+              </button>
+              <button class="btn btn-sm btn-light border-0 p-1 text-secondary" title="Collapse / Expand">
+                <i class="bi bi-chevron-down"></i>
+              </button>
+            </div>
+          </div>
+          <div class="appsheet-panel-body" id="def-consumed-container">
+            <!-- Date Grouped Table rendered here -->
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- SLIDE DRAWER 1: Add Inward Stock -->
+  <div class="appsheet-drawer-backdrop" id="defStockDrawerBackdrop" onclick="DefUreaModule.closeStockDrawer()"></div>
+  <aside class="appsheet-drawer" id="defStockDrawer">
+    <div class="drawer-header">
+      <h6 class="m-0 fw-bold text-dark"><i class="bi bi-box-seam me-2 text-success"></i>Add Inward DEF Stock</h6>
+      <button type="button" class="btn btn-sm btn-light border-0" onclick="DefUreaModule.closeStockDrawer()"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <form onsubmit="DefUreaModule.saveStockDrawer(event)">
+      <div class="drawer-body">
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label">Date *</label>
+          <input type="date" id="stock-input-date" class="appsheet-form-control" required>
+        </div>
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label">Quantity (Litres) *</label>
+          <input type="number" step="1" id="stock-input-qty" class="appsheet-form-control font-monospace fw-bold" placeholder="e.g. 190" oninput="DefUreaModule.calculateStockTotal()" required>
+        </div>
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label">Rate per Litre (₹)</label>
+          <input type="number" step="0.5" id="stock-input-rate" class="appsheet-form-control font-monospace" value="45" oninput="DefUreaModule.calculateStockTotal()">
+        </div>
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label">Total Inward Amount (₹)</label>
+          <input type="number" step="1" id="stock-input-amount" class="appsheet-form-control font-monospace" placeholder="e.g. 8550">
+        </div>
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label">Supplier / Petrol Pump</label>
+          <input type="text" id="stock-input-supplier" class="appsheet-form-control" value="Indian Oil Corporation Ltd (IOCL)">
+        </div>
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label">Bill / Invoice No.</label>
+          <input type="text" id="stock-input-bill" class="appsheet-form-control font-monospace" placeholder="e.g. IOCL-DEF-9821">
+        </div>
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label">Remarks</label>
+          <textarea id="stock-input-remarks" class="appsheet-form-control" rows="2" style="height:auto;" placeholder="Stock location / garage notes"></textarea>
+        </div>
+      </div>
+      <div class="drawer-footer">
+        <button type="button" class="btn btn-sm btn-light border px-3" onclick="DefUreaModule.closeStockDrawer()">Cancel</button>
+        <button type="submit" class="btn btn-sm btn-success px-3 fw-semibold"><i class="bi bi-check2 me-1"></i> Save Inward Stock</button>
+      </div>
+    </form>
+  </aside>
+
+  <!-- SLIDE DRAWER 2: Add / Edit Consumed Entry -->
+  <div class="appsheet-drawer-backdrop" id="defConsumedDrawerBackdrop" onclick="DefUreaModule.closeConsumedDrawer()"></div>
+  <aside class="appsheet-drawer" id="defConsumedDrawer">
+    <div class="drawer-header">
+      <h6 class="m-0 fw-bold text-dark" id="consumedDrawerTitle"><i class="bi bi-droplet-half me-2 text-primary"></i>Add Consumed DEF Entry</h6>
+      <button type="button" class="btn btn-sm btn-light border-0" onclick="DefUreaModule.closeConsumedDrawer()"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <form onsubmit="DefUreaModule.saveConsumedDrawer(event)">
+      <div class="drawer-body">
+        <input type="hidden" id="consumed-input-id">
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label">Date *</label>
+          <input type="date" id="consumed-input-date" class="appsheet-form-control font-monospace" required>
+        </div>
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label">Truck No. *</label>
+          <input type="text" id="consumed-input-truck" class="appsheet-form-control font-monospace fw-bold text-uppercase" placeholder="e.g. RJ52GB5642" oninput="DefUreaModule.handleTruckLookup(this.value)" required>
+        </div>
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label">Driver Name</label>
+          <input type="text" id="consumed-input-driver-name" class="appsheet-form-control" placeholder="e.g. Suresh Raiya">
+        </div>
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label">Driver Mobile No.</label>
+          <input type="tel" id="consumed-input-driver-mob" class="appsheet-form-control font-monospace" placeholder="e.g. 9636017337">
+        </div>
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label">Filled Qty (Litre) *</label>
+          <input type="number" step="1" id="consumed-input-qty" class="appsheet-form-control font-monospace fw-bold" placeholder="40" oninput="DefUreaModule.handleQtyChange()" required>
+        </div>
+        <div class="row g-2">
+          <div class="col-6">
+            <div class="appsheet-form-row">
+              <label class="appsheet-form-label">Buckets Returned</label>
+              <input type="number" id="consumed-input-buckets-ret" class="appsheet-form-control font-monospace" value="2">
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="appsheet-form-row">
+              <label class="appsheet-form-label">Buckets Not Returned</label>
+              <input type="number" id="consumed-input-buckets-not-ret" class="appsheet-form-control font-monospace" value="0">
+            </div>
+          </div>
+        </div>
+        <div class="row g-2">
+          <div class="col-6">
+            <div class="appsheet-form-row">
+              <label class="appsheet-form-label">Empty Bucket Returned?</label>
+              <select id="consumed-input-is-returned" class="appsheet-form-control">
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="appsheet-form-row">
+              <label class="appsheet-form-label">Amount Paid (₹)</label>
+              <input type="number" step="1" id="consumed-input-paid" class="appsheet-form-control font-monospace" value="0">
+            </div>
+          </div>
+        </div>
+        <div class="appsheet-form-row">
+          <label class="appsheet-form-label">Remarks / Trip</label>
+          <input type="text" id="consumed-input-remarks" class="appsheet-form-control" placeholder="Trip destination / notes">
+        </div>
+      </div>
+      <div class="drawer-footer justify-content-between">
+        <button type="button" class="btn btn-sm btn-outline-danger" id="btn-delete-consumed" onclick="DefUreaModule.deleteCurrentConsumed()">
+          <i class="bi bi-trash"></i> Delete
+        </button>
+        <div class="d-flex align-items-center gap-2">
+          <button type="button" class="btn btn-sm btn-light border px-3" onclick="DefUreaModule.closeConsumedDrawer()">Cancel</button>
+          <button type="submit" class="btn btn-sm btn-primary px-3 fw-semibold"><i class="bi bi-check2 me-1"></i> Save Entry</button>
+        </div>
+      </div>
+    </form>
+  </aside>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- App Core & Sample Data -->
+  <script src="../js/config.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/sample-def-urea-data.js"></script>
+  <script src="../js/sample-owner-dues-data.js"></script>
+  <script src="../js/db-service.js"></script>
+
+  <!-- DEF Urea Module Controller -->
+  <script src="../js/modules/def-urea.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Render AppSheet Slim Navigation Rail & Offcanvas Drawer with activePage = 'def_urea'
+      if (typeof AppUI !== 'undefined') {
+        AppUI.renderSidebar('def_urea');
+      }
+
+      // 2. Initialize DEF Urea Module
+      if (typeof DefUreaModule !== 'undefined') {
+        DefUreaModule.init();
+      }
+    });
+  </script>
+</body>
+</html>

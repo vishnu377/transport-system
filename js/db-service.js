@@ -1159,6 +1159,141 @@ class DBService {
     }
   }
 
+
+  // ========================================================
+  // MODULE 8: DEF UREA ENGINE (AUTHENTIC APPSHEET SYNC)
+  // ========================================================
+  async getAllDefStockAsync() {
+    if (this.isFirebaseReady && this.db) {
+      try {
+        const snapshot = await this.db.collection('def_stock').get();
+        const cloudItems = [];
+        snapshot.forEach(doc => cloudItems.push({ id: doc.id, ...doc.data() }));
+        return this.getAllDefStock(cloudItems);
+      } catch (err) {
+        console.warn('[DBService] Firebase getAllDefStockAsync fallback:', err);
+      }
+    }
+    return this.getAllDefStock([]);
+  }
+
+  getAllDefStock(cloudItems = []) {
+    const baseStock = (typeof window !== 'undefined' && Array.isArray(window.INITIAL_DEF_STOCK_INWARD))
+      ? window.INITIAL_DEF_STOCK_INWARD
+      : [];
+    const stockMap = new Map();
+    const deletedSet = (this.deletedIds && this.deletedIds.defStock) ? this.deletedIds.defStock : new Set();
+
+    for (const item of baseStock) {
+      if (item && !deletedSet.has(String(item.id))) {
+        stockMap.set(String(item.id), { ...item });
+      }
+    }
+    if (Array.isArray(cloudItems)) {
+      for (const item of cloudItems) {
+        if (item && !deletedSet.has(String(item.id))) {
+          stockMap.set(String(item.id), { ...item });
+        }
+      }
+    }
+    if (this.sessionStore && this.sessionStore.defStock) {
+      for (const [id, item] of this.sessionStore.defStock.entries()) {
+        if (!deletedSet.has(String(id))) {
+          stockMap.set(String(id), { ...item });
+        }
+      }
+    }
+    return Array.from(stockMap.values());
+  }
+
+  async saveDefStock(item) {
+    if (!item.id) item.id = 'def-in-' + Date.now();
+    if (!this.sessionStore.defStock) this.sessionStore.defStock = new Map();
+    this.sessionStore.defStock.set(String(item.id), item);
+    if (this.isFirebaseReady && this.db) {
+      try {
+        await this.db.collection('def_stock').doc(String(item.id)).set(item, { merge: true });
+      } catch (err) {
+        console.warn('[DBService] Firebase saveDefStock error:', err);
+      }
+    }
+    return item;
+  }
+
+  async getAllDefConsumedAsync() {
+    if (this.isFirebaseReady && this.db) {
+      try {
+        const snapshot = await this.db.collection('def_consumed').get();
+        const cloudItems = [];
+        snapshot.forEach(doc => cloudItems.push({ id: doc.id, ...doc.data() }));
+        return this.getAllDefConsumed(cloudItems);
+      } catch (err) {
+        console.warn('[DBService] Firebase getAllDefConsumedAsync fallback:', err);
+      }
+    }
+    return this.getAllDefConsumed([]);
+  }
+
+  getAllDefConsumed(cloudItems = []) {
+    const baseConsumed = (typeof window !== 'undefined' && Array.isArray(window.INITIAL_DEF_CONSUMED))
+      ? window.INITIAL_DEF_CONSUMED
+      : [];
+    const consumedMap = new Map();
+    const deletedSet = (this.deletedIds && this.deletedIds.defConsumed) ? this.deletedIds.defConsumed : new Set();
+
+    for (const item of baseConsumed) {
+      if (item && !deletedSet.has(String(item.id))) {
+        consumedMap.set(String(item.id), { ...item });
+      }
+    }
+    if (Array.isArray(cloudItems)) {
+      for (const item of cloudItems) {
+        if (item && !deletedSet.has(String(item.id))) {
+          consumedMap.set(String(item.id), { ...item });
+        }
+      }
+    }
+    if (this.sessionStore && this.sessionStore.defConsumed) {
+      for (const [id, item] of this.sessionStore.defConsumed.entries()) {
+        if (!deletedSet.has(String(id))) {
+          consumedMap.set(String(id), { ...item });
+        }
+      }
+    }
+    return Array.from(consumedMap.values());
+  }
+
+  async saveDefConsumed(item) {
+    if (!item.id) item.id = 'def-c-' + Date.now();
+    if (!this.sessionStore.defConsumed) this.sessionStore.defConsumed = new Map();
+    this.sessionStore.defConsumed.set(String(item.id), item);
+    if (this.isFirebaseReady && this.db) {
+      try {
+        await this.db.collection('def_consumed').doc(String(item.id)).set(item, { merge: true });
+      } catch (err) {
+        console.warn('[DBService] Firebase saveDefConsumed error:', err);
+      }
+    }
+    return item;
+  }
+
+  async deleteDefConsumed(id) {
+    if (!this.deletedIds) this.deletedIds = {};
+    if (!this.deletedIds.defConsumed) this.deletedIds.defConsumed = new Set();
+    this.deletedIds.defConsumed.add(String(id));
+    if (this.sessionStore && this.sessionStore.defConsumed) {
+      this.sessionStore.defConsumed.delete(String(id));
+    }
+    if (this.isFirebaseReady && this.db) {
+      try {
+        await this.db.collection('def_consumed').doc(String(id)).delete();
+      } catch (err) {
+        console.warn('[DBService] Firebase deleteDefConsumed error:', err);
+      }
+    }
+    return true;
+  }
+
   // Intentionally disabled: No data is saved to browser localStorage
   seedLocalStorage() {
     // Disabled: Direct Firebase Cloud Firestore active. Zero localStorage persistence.
