@@ -171,21 +171,20 @@
       height: 100%;
       overflow: hidden;
       background: #eef2f5;
-      gap: 1px; /* Subtle line between panels */
+      gap: 1px;
     }
 
-    .def-urea-grid.grid-expanded-stock {
-      grid-template-columns: 100% 0%;
-    }
-
+    /* When expanded, single visible card takes full 100% width! */
+    .def-urea-grid.grid-expanded-stock,
     .def-urea-grid.grid-expanded-consumed {
-      grid-template-columns: 0% 100%;
+      grid-template-columns: 1fr !important;
     }
 
     /* Panel Card Structure */
     .appsheet-panel-card {
       background: #ffffff;
       height: 100%;
+      width: 100%;
       display: flex;
       flex-direction: column;
       overflow: hidden;
@@ -292,8 +291,8 @@
     .appsheet-drawer {
       position: fixed;
       top: 0;
-      right: -520px;
-      width: 480px;
+      right: -580px;
+      width: 540px;
       max-width: 95vw;
       height: 100vh;
       background: #ffffff;
@@ -325,7 +324,8 @@
 
     .drawer-header {
       height: 52px;
-      padding: 0 16px;
+      min-height: 52px;
+      padding: 0 20px;
       border-bottom: 1px solid var(--appsheet-border);
       display: flex;
       align-items: center;
@@ -336,28 +336,39 @@
     .drawer-body {
       flex: 1;
       overflow-y: auto;
-      padding: 20px;
+      padding: 24px 20px;
     }
 
-    .drawer-footer {
-      padding: 12px 20px;
-      border-top: 1px solid var(--appsheet-border);
-      background: #f8f9fa;
+    /* AppSheet 2-Column Desktop Form Layout matching WhatsApp Image */
+    .appsheet-form-2col {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 100%;
+    }
+
+    .form-row-2col {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      width: 100%;
     }
 
-    /* Form Controls */
-    .appsheet-form-label {
-      font-size: 0.82rem;
-      font-weight: 500;
+    .form-label-left {
+      width: 34%;
+      min-width: 130px;
+      font-size: 0.84rem;
       color: #3c4043;
-      margin-bottom: 4px;
-      display: block;
+      font-weight: 400;
+      margin: 0;
+      padding-right: 12px;
     }
 
-    .appsheet-form-control {
+    .form-field-right {
+      width: 66%;
+      flex: 1;
+    }
+
+    .appsheet-input {
       width: 100%;
       height: 38px;
       padding: 6px 12px;
@@ -365,32 +376,160 @@
       border: 1px solid #dadce0;
       border-radius: 4px;
       outline: none;
-      transition: border 0.15s;
+      transition: border-color 0.15s;
       background: #ffffff;
+      color: #202124;
     }
 
-    .appsheet-form-control:focus {
+    .appsheet-input:focus {
       border-color: #1a73e8;
       box-shadow: 0 0 0 1px #1a73e8;
     }
 
-    .appsheet-form-control[readonly] {
-      background: #f1f3f4;
+    .appsheet-input[readonly] {
+      background: #f8f9fa;
+      color: #3c4043;
+      border-color: #e1e4e8;
+    }
+
+    /* AppSheet Dropdown Select with subtle chevron */
+    .appsheet-select {
+      width: 100%;
+      height: 38px;
+      padding: 6px 32px 6px 12px;
+      font-size: 0.85rem;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      outline: none;
+      transition: border-color 0.15s;
+      background-color: #ffffff;
+      color: #202124;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='%235f6368' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      cursor: pointer;
+    }
+
+    .appsheet-select:focus {
+      border-color: #1a73e8;
+      box-shadow: 0 0 0 1px #1a73e8;
+    }
+
+    /* Segmented Toggle Buttons (Yes / No) */
+    .segmented-toggle-wrap {
+      display: flex;
+      width: 100%;
+      gap: 8px;
+    }
+
+    .segmented-btn {
+      flex: 1;
+      height: 38px;
+      border: 1px solid #dadce0;
+      background: #ffffff;
       color: #5f6368;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    /* Segmented Button Group (Yes / No) */
-    .active-segmented-btn {
+    .segmented-btn.active {
       background: #e8f0fe !important;
-      color: #1a73e8 !important;
-      border: 1.5px solid #1a73e8 !important;
-      font-weight: 600;
+      color: #1967d2 !important;
+      border: 1.5px solid #1967d2 !important;
+      font-weight: 600 !important;
     }
 
-    .inactive-segmented-btn {
-      background: #ffffff !important;
-      color: #5f6368 !important;
-      border: 1px solid #dadce0 !important;
+    /* Currency Input with integrated ₹ symbol */
+    .currency-input-wrap {
+      position: relative;
+      width: 100%;
+    }
+
+    .currency-prefix {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.88rem;
+      color: #3c4043;
+      pointer-events: none;
+    }
+
+    .appsheet-input-currency {
+      width: 100%;
+      height: 38px;
+      padding: 6px 12px 6px 28px;
+      font-size: 0.85rem;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      outline: none;
+      transition: border-color 0.15s;
+      background: #ffffff;
+      color: #202124;
+    }
+
+    .appsheet-input-currency:focus {
+      border-color: #1a73e8;
+      box-shadow: 0 0 0 1px #1a73e8;
+    }
+
+    /* Stepper Input matching WhatsApp Image (No. of Buckets Retuned) */
+    .stepper-input-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      height: 38px;
+      padding: 0 6px 0 14px;
+      background: #ffffff;
+      transition: border-color 0.15s;
+    }
+
+    .stepper-input-box:focus-within {
+      border-color: #1a73e8;
+      box-shadow: 0 0 0 1px #1a73e8;
+    }
+
+    .stepper-value {
+      font-family: monospace;
+      font-size: 0.88rem;
+      color: #202124;
+      font-weight: 500;
+    }
+
+    .stepper-btn-group {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .stepper-btn {
+      width: 28px;
+      height: 28px;
+      border: none;
+      background: transparent;
+      color: #5f6368;
+      font-size: 1.15rem;
+      font-weight: 500;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .stepper-btn:hover {
+      background: #f1f3f4;
+      color: #202124;
     }
 
     /* Responsive adjustments */
@@ -519,14 +658,14 @@
         </div>
 
         <!-- Card 2 Dynamic Body: Table View -->
-        <div class="flex-grow-1 position-relative overflow-hidden" id="consumedTableView">
-          <div id="consumed-table-container" class="h-100">
+        <div class="flex-grow-1 position-relative overflow-hidden w-100 h-100" id="consumedTableView">
+          <div id="consumed-table-container" class="h-100 w-100">
             <!-- Populated by DefUreaModule.renderConsumedTable() -->
           </div>
         </div>
 
         <!-- Card 2 Single Record Detail View (Initially Hidden) -->
-        <div class="flex-grow-1 position-relative overflow-hidden flex-column" id="consumedRecordDetailView" style="display: none;">
+        <div class="flex-grow-1 position-relative overflow-hidden flex-column w-100 h-100" id="consumedRecordDetailView" style="display: none;">
           <!-- Populated by DefUreaModule.renderConsumedRecordDetail() -->
         </div>
       </section>
@@ -554,23 +693,27 @@
       </div>
     </div>
     <div class="drawer-body">
-      <div class="mb-3">
-        <label class="appsheet-form-label">DateTime</label>
-        <div class="position-relative">
-          <input type="text" id="stock-input-datetime" class="appsheet-form-control font-monospace" placeholder="31-10-2026 13:17:08">
-          <i class="bi bi-calendar3 position-absolute text-secondary" style="right: 12px; top: 10px; pointer-events: none;"></i>
+      <div class="appsheet-form-2col">
+        <div class="form-row-2col">
+          <label class="form-label-left">DateTime</label>
+          <div class="form-field-right position-relative">
+            <input type="text" id="stock-input-datetime" class="appsheet-input font-monospace" placeholder="31-10-2026 13:17:08">
+            <i class="bi bi-calendar3 position-absolute text-muted" style="right: 12px; top: 10px; pointer-events: none;"></i>
+          </div>
         </div>
-      </div>
-      <div class="mb-3">
-        <label class="appsheet-form-label">Qty in Bucket</label>
-        <input type="number" id="stock-input-qty-bucket" class="appsheet-form-control font-monospace" value="0" min="0" step="1">
-        <div class="form-text text-muted" style="font-size: 0.75rem;">1 Bucket = 20 Litres DEF Urea</div>
+        <div class="form-row-2col">
+          <label class="form-label-left">Qty in Bucket</label>
+          <div class="form-field-right">
+            <input type="number" id="stock-input-qty-bucket" class="appsheet-input font-monospace" value="0" min="0" step="1">
+            <div class="form-text text-muted" style="font-size: 0.75rem; margin-top: 4px;">1 Bucket = 20 Litres DEF Urea</div>
+          </div>
+        </div>
       </div>
     </div>
   </aside>
 
   <!-- ==================================================== -->
-  <!-- DRAWER 2: CONSUMED UREA DETAILS (matching WhatsApp) -->
+  <!-- DRAWER 2: CONSUMED UREA DETAILS (1:1 WhatsApp Image) -->
   <!-- ==================================================== -->
   <aside class="appsheet-drawer" id="defConsumedDrawer">
     <div class="drawer-header">
@@ -581,95 +724,118 @@
         <span class="fw-semibold text-dark fs-6" id="consumedDrawerTitle">Consumed Urea Details</span>
       </div>
       <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn btn-sm btn-outline-danger me-2" id="btn-delete-consumed" style="display: none;" onclick="DefUreaModule.deleteCurrentConsumed()" title="Delete this entry">
+          <i class="bi bi-trash"></i>
+        </button>
         <button type="button" class="btn btn-sm btn-light border px-3" onclick="DefUreaModule.closeConsumedDrawer()">Cancel</button>
         <button type="button" class="btn-appsheet-gold px-3" onclick="DefUreaModule.saveConsumedDrawer()">Save</button>
       </div>
     </div>
+    
     <div class="drawer-body">
       <input type="hidden" id="consumed-input-id">
       <input type="hidden" id="consumed-input-is-returned" value="Yes">
 
-      <!-- Field 1: Date -->
-      <div class="mb-3">
-        <label class="appsheet-form-label">Date</label>
-        <div class="position-relative">
-          <input type="text" id="consumed-input-date" class="appsheet-form-control font-monospace" placeholder="31-10-2026">
-          <i class="bi bi-calendar3 position-absolute text-secondary" style="right: 12px; top: 10px; pointer-events: none;"></i>
+      <div class="appsheet-form-2col">
+        
+        <!-- Field 1: Date -->
+        <div class="form-row-2col">
+          <label class="form-label-left">Date</label>
+          <div class="form-field-right position-relative">
+            <input type="text" id="consumed-input-date" class="appsheet-input font-monospace" placeholder="31-10-2026">
+            <i class="bi bi-calendar3 position-absolute text-muted" style="right: 12px; top: 10px; pointer-events: none;"></i>
+          </div>
         </div>
-      </div>
 
-      <!-- Field 2: Available Stock (Litres) - Read Only -->
-      <div class="mb-3">
-        <label class="appsheet-form-label">Available Stock (Litres)</label>
-        <input type="text" id="consumed-input-avail-stock" class="appsheet-form-control font-monospace fw-semibold" readonly>
-      </div>
-
-      <!-- Field 3: Qty (Litre) -->
-      <div class="mb-3">
-        <label class="appsheet-form-label">Qty (Litre)</label>
-        <input type="number" id="consumed-input-qty" class="appsheet-form-control font-monospace" value="0" min="0" step="5">
-      </div>
-
-      <!-- Field 4: Truck No. (Searchable combobox with fleet) -->
-      <div class="mb-3">
-        <label class="appsheet-form-label">Truck No.</label>
-        <input type="text" id="consumed-input-truck" list="fleet-trucks-datalist" class="appsheet-form-control font-monospace text-uppercase" placeholder="Select or type Truck No.">
-        <datalist id="fleet-trucks-datalist"></datalist>
-      </div>
-
-      <!-- Field 5: Driver -->
-      <div class="mb-3">
-        <label class="appsheet-form-label">Driver</label>
-        <input type="text" id="consumed-input-driver-name" class="appsheet-form-control" placeholder="Driver Full Name">
-      </div>
-
-      <!-- Field 6: Mobile No. -->
-      <div class="mb-3">
-        <label class="appsheet-form-label">Mobile No.</label>
-        <input type="text" id="consumed-input-driver-mob" class="appsheet-form-control font-monospace" placeholder="10-digit mobile number">
-      </div>
-
-      <!-- Field 7: Is Empty Bucket Returned? (Segmented Toggle Yes / No) -->
-      <div class="mb-3">
-        <label class="appsheet-form-label">Is Empty Bucket Returned?</label>
-        <div class="d-flex gap-2">
-          <button type="button" class="btn flex-fill active-segmented-btn fw-semibold" id="btn-toggle-bucket-yes" onclick="DefUreaModule.setBucketReturnedToggle('Yes')">Yes</button>
-          <button type="button" class="btn flex-fill inactive-segmented-btn" id="btn-toggle-bucket-no" onclick="DefUreaModule.setBucketReturnedToggle('No')">No</button>
+        <!-- Field 2: Available Stock (Litres) - Read Only -->
+        <div class="form-row-2col">
+          <label class="form-label-left">Available Stock (Litres)</label>
+          <div class="form-field-right">
+            <input type="text" id="consumed-input-avail-stock" class="appsheet-input font-monospace fw-semibold" readonly>
+          </div>
         </div>
-      </div>
 
-      <!-- Optional Field when Bucket Not Returned -->
-      <div class="mb-3" id="wrap-buckets-not-returned" style="display: none;">
-        <label class="appsheet-form-label text-danger">No. of Buckets not Returned</label>
-        <input type="number" id="consumed-input-buckets-not-ret" class="appsheet-form-control font-monospace text-danger" placeholder="Number of pending buckets" value="1" min="1">
-      </div>
-
-      <!-- Field 8: Amount Paid (₹ Prefix) -->
-      <div class="mb-3">
-        <label class="appsheet-form-label">Amount Paid</label>
-        <div class="input-group">
-          <span class="input-group-text bg-light border-end-0 text-secondary">₹</span>
-          <input type="number" id="consumed-input-amount" class="appsheet-form-control border-start-0 font-monospace" value="0" min="0">
+        <!-- Field 3: Qty (Litre) -->
+        <div class="form-row-2col">
+          <label class="form-label-left">Qty (Litre)</label>
+          <div class="form-field-right">
+            <input type="number" id="consumed-input-qty" class="appsheet-input font-monospace" value="0" min="0" step="5">
+          </div>
         </div>
-      </div>
 
-      <!-- Field 9: No. of Buckets Retuned (with [-] and [+] Stepper) -->
-      <div class="mb-3">
-        <label class="appsheet-form-label">No. of Buckets Retuned</label>
-        <div class="input-group">
-          <input type="number" id="consumed-input-buckets-ret" class="appsheet-form-control font-monospace" value="0" min="0">
-          <button class="btn btn-outline-secondary px-3" type="button" id="btn-bucket-minus" onclick="DefUreaModule.adjustBucketCount(-1)">−</button>
-          <button class="btn btn-outline-secondary px-3" type="button" id="btn-bucket-plus" onclick="DefUreaModule.adjustBucketCount(1)">+</button>
+        <!-- Field 4: Truck No. (Dropdown with ▼ arrow) -->
+        <div class="form-row-2col">
+          <label class="form-label-left">Truck No.</label>
+          <div class="form-field-right">
+            <select id="consumed-input-truck" class="appsheet-select font-monospace text-uppercase" onchange="DefUreaModule.handleTruckSelect(this.value)">
+              <option value="">-- Select Truck No. --</option>
+            </select>
+          </div>
         </div>
-      </div>
-    </div>
-    <div class="drawer-footer">
-      <button type="button" class="btn btn-sm btn-outline-danger" id="btn-delete-consumed" style="display: none;" onclick="DefUreaModule.deleteCurrentConsumed()">
-        <i class="bi bi-trash me-1"></i> Delete
-      </button>
-      <div class="d-flex align-items-center gap-2 ms-auto">
-        <button type="button" class="btn btn-sm btn-light border px-3" onclick="DefUreaModule.closeConsumedDrawer()">Cancel</button>
-        <button type="button" class="btn-appsheet-gold px-3" onclick="DefUreaModule.saveConsumedDrawer()">Save</button>
+
+        <!-- Field 5: Driver (Dropdown with 106+ authentic drivers!) -->
+        <div class="form-row-2col">
+          <label class="form-label-left">Driver</label>
+          <div class="form-field-right">
+            <select id="consumed-input-driver-name" class="appsheet-select" onchange="DefUreaModule.handleDriverSelect(this.value)">
+              <option value="">-- Select Driver --</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Field 6: Mobile No. -->
+        <div class="form-row-2col">
+          <label class="form-label-left">Mobile No.</label>
+          <div class="form-field-right">
+            <input type="text" id="consumed-input-driver-mob" class="appsheet-input font-monospace" placeholder="10-digit mobile number">
+          </div>
+        </div>
+
+        <!-- Field 7: Is Empty Bucket Returned? (Segmented Toggle Yes / No) -->
+        <div class="form-row-2col">
+          <label class="form-label-left">Is Empty Bucket Returned?</label>
+          <div class="form-field-right">
+            <div class="segmented-toggle-wrap">
+              <button type="button" class="segmented-btn active" id="btn-toggle-bucket-yes" onclick="DefUreaModule.setBucketReturnedToggle('Yes')">Yes</button>
+              <button type="button" class="segmented-btn" id="btn-toggle-bucket-no" onclick="DefUreaModule.setBucketReturnedToggle('No')">No</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Optional Field when Bucket Not Returned -->
+        <div class="form-row-2col" id="wrap-buckets-not-returned" style="display: none;">
+          <label class="form-label-left text-danger">No. of Buckets not Returned</label>
+          <div class="form-field-right">
+            <input type="number" id="consumed-input-buckets-not-ret" class="appsheet-input font-monospace text-danger" placeholder="Number of pending buckets" value="1" min="1">
+          </div>
+        </div>
+
+        <!-- Field 8: Amount Paid (₹ inside input) -->
+        <div class="form-row-2col">
+          <label class="form-label-left">Amount Paid</label>
+          <div class="form-field-right">
+            <div class="currency-input-wrap">
+              <span class="currency-prefix">₹</span>
+              <input type="number" id="consumed-input-amount" class="appsheet-input-currency font-monospace" value="0" min="0">
+            </div>
+          </div>
+        </div>
+
+        <!-- Field 9: No. of Buckets Retuned (Integrated Stepper [-] and [+]) -->
+        <div class="form-row-2col">
+          <label class="form-label-left">No. of Buckets Retuned</label>
+          <div class="form-field-right">
+            <div class="stepper-input-box">
+              <span class="stepper-value" id="display-buckets-ret">0</span>
+              <input type="hidden" id="consumed-input-buckets-ret" value="0">
+              <div class="stepper-btn-group">
+                <button type="button" class="stepper-btn" onclick="DefUreaModule.adjustBucketCount(-1)">−</button>
+                <button type="button" class="stepper-btn" onclick="DefUreaModule.adjustBucketCount(1)">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </aside>
@@ -680,6 +846,7 @@
   <!-- App Core & Sample Data -->
   <script src="../js/config.js"></script>
   <script src="../js/app.js"></script>
+  <script src="../js/sample-drivers-data.js"></script>
   <script src="../js/sample-def-urea-data.js"></script>
   <script src="../js/sample-owner-dues-data.js"></script>
   <script src="../js/db-service.js"></script>

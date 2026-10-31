@@ -62,6 +62,9 @@ global.AppUI = {
 };
 
 // Load dependencies
+const sampleDriversCode = fs.readFileSync('C:/Users/HP/Desktop/transport-system/js/sample-drivers-data.js', 'utf8');
+vm.runInThisContext(sampleDriversCode);
+
 const sampleDefCode = fs.readFileSync('C:/Users/HP/Desktop/transport-system/js/sample-def-urea-data.js', 'utf8');
 vm.runInThisContext(sampleDefCode);
 
@@ -166,6 +169,17 @@ async function runTests() {
   DefUreaModule.openAddConsumedDrawer();
   const consumedDrawer = document.getElementById('defConsumedDrawer');
   assert(consumedDrawer.classList.contains('open'), 'defConsumedDrawer opened');
+
+  // Test Driver dropdown auto-selection
+  const driverSelect = document.getElementById('consumed-input-driver-name');
+  assert(driverSelect.innerHTML.includes('Kaluram Jat') || driverSelect.innerHTML.includes('Suresh Raiya'), 'Driver dropdown populated with authentic drivers');
+  DefUreaModule.handleDriverSelect('Kaluram Jat Shrinagar');
+  assert.strictEqual(document.getElementById('consumed-input-driver-mob').value, '9784175913', 'Driver selection auto-fills mobile');
+  assert.strictEqual(document.getElementById('consumed-input-truck').value, 'RJ52GA7310', 'Driver selection auto-fills truck');
+
+  // Test Stepper
+  DefUreaModule.adjustBucketCount(2);
+  assert.strictEqual(document.getElementById('consumed-input-buckets-ret').value, 2, 'Stepper increases buckets to 2');
 
   // Fill drawer inputs matching WhatsApp screenshot
   document.getElementById('consumed-input-date').value = '31-10-2026';

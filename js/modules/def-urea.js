@@ -2,6 +2,7 @@
  * Module 8: DEF Urea Module Controller (1:1 Google AppSheet Visual Fidelity)
  * Features:
  * - 2-Card Split Layout (DEF Urea Stock 38% & Consumed Details 62%)
+ * - Fixed Expand [↗] & Collapse [↙] Engine (No blank/0px width glitch)
  * - Card 1:
  *     1. Vertical Bar Chart with scale 0-210, Green (Buckets: 194), Red (Litres: 11), Slanted Date
  *     2. Table View toggle [⊞] -> "Inventory Slice" (DateTime, Buckets, Litres, Available)
@@ -11,8 +12,16 @@
  *     1. Date-Grouped Consumed Table with exact Pill Badges (140, 120, 100, 235, 40, 245, etc.)
  *     2. Call Icon button on each row linking to driver phone
  *     3. Consumed Record Detail View (Home > DEF Urea > Consumed Details > [Date], Prev/Next, Edit)
- *     4. Consumed Urea Details Slide Drawer ("✕ Consumed Urea Details", Date, Available Stock, Qty, Truck, Driver, Mobile, Is Empty Returned Yes/No, Amount Paid, Stepper [-][+])
- * - Expand [↗] & Collapse [↙] Single-Click Engine
+ *     4. Consumed Urea Details Slide Drawer (1:1 AppSheet 2-Column Desktop Form):
+ *        - Date (DD-MM-YYYY)
+ *        - Available Stock (Litres: 3,891 read-only)
+ *        - Qty (Litre)
+ *        - Truck No. (Dropdown with all fleet trucks)
+ *        - Driver (Dropdown with all 106+ authentic drivers!)
+ *        - Mobile No. (Auto-filled)
+ *        - Is Empty Bucket Returned? ([Yes] / [No] Segmented toggle)
+ *        - Amount Paid (₹ 0)
+ *        - No. of Buckets Retuned (Integrated [−] and [+] Stepper)
  * - Zero Browser LocalStorage (Firebase Cloud Firestore / Memory only)
  */
 
@@ -32,6 +41,7 @@ const DefUreaModule = {
     await this.loadData();
     this.renderStockCard();
     this.renderConsumedTable();
+    this.populateFleetDropdowns();
     this.setupListeners();
     console.log('[DefUreaModule] Initialized successfully.');
   },
@@ -76,7 +86,6 @@ const DefUreaModule = {
     return num.toLocaleString('en-IN', { maximumFractionDigits: 2 });
   },
 
-  // Calculate current available stock metrics
   getStockMetrics() {
     const latestStock = this.allStock[0] || { availableBuckets: 194, availableLitres: 11 };
     const buckets = parseInt(latestStock.availableBuckets) || 194;
@@ -94,6 +103,7 @@ const DefUreaModule = {
 
   // ========================================================
   // EXPAND / CONTRACT ENGINE matching AppSheet [↗] / [↙]
+  // (Fix: Always use 1fr so the single visible card gets 100% width)
   // ========================================================
   toggleExpand(cardName) {
     const grid = document.getElementById('defUreaGrid');
@@ -105,13 +115,18 @@ const DefUreaModule = {
     if (this.expandedCard === cardName) {
       // Contract back to 2-Card Split Layout (38% / 62%)
       this.expandedCard = null;
-      if (grid) grid.classList.remove('grid-expanded-stock', 'grid-expanded-consumed');
+      if (grid) {
+        grid.classList.remove('grid-expanded-stock', 'grid-expanded-consumed');
+        grid.style.gridTemplateColumns = '38% 62%';
+      }
       if (cardStock) {
         cardStock.style.display = 'flex';
+        cardStock.style.width = '100%';
         cardStock.classList.remove('panel-expanded');
       }
       if (cardConsumed) {
         cardConsumed.style.display = 'flex';
+        cardConsumed.style.width = '100%';
         cardConsumed.classList.remove('panel-expanded');
       }
       if (btnExpandStock) {
@@ -129,9 +144,11 @@ const DefUreaModule = {
         if (grid) {
           grid.classList.add('grid-expanded-stock');
           grid.classList.remove('grid-expanded-consumed');
+          grid.style.gridTemplateColumns = '1fr';
         }
         if (cardStock) {
           cardStock.style.display = 'flex';
+          cardStock.style.width = '100%';
           cardStock.classList.add('panel-expanded');
         }
         if (cardConsumed) {
@@ -143,12 +160,15 @@ const DefUreaModule = {
           btnExpandStock.title = 'Collapse to Split View';
         }
       } else {
+        // Expand Card 2 (Consumed Details)
         if (grid) {
           grid.classList.add('grid-expanded-consumed');
           grid.classList.remove('grid-expanded-stock');
+          grid.style.gridTemplateColumns = '1fr';
         }
         if (cardConsumed) {
           cardConsumed.style.display = 'flex';
+          cardConsumed.style.width = '100%';
           cardConsumed.classList.add('panel-expanded');
         }
         if (cardStock) {
@@ -416,7 +436,6 @@ const DefUreaModule = {
     const backdrop = document.getElementById('defDrawerBackdrop');
     if (!drawer) return;
 
-    // Reset inputs matching screencapture-appsheet-start-...-13_17_13.png
     const now = new Date();
     const pad = n => String(n).padStart(2, '0');
     const formattedDateTime = `${pad(now.getDate())}-${pad(now.getMonth() + 1)}-${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
@@ -492,8 +511,8 @@ const DefUreaModule = {
     });
 
     let html = `
-      <div class="table-responsive h-100" id="consumed-scroll-wrap" style="overflow-y: auto;">
-        <table class="table table-hover align-middle mb-0 appsheet-table" style="font-size: 0.82rem;">
+      <div class="table-responsive h-100 w-100" id="consumed-scroll-wrap" style="overflow-y: auto;">
+        <table class="table table-hover align-middle mb-0 appsheet-table w-100" style="font-size: 0.82rem;">
           <thead class="sticky-top bg-white border-bottom shadow-xs">
             <tr class="text-secondary" style="font-size: 0.78rem;">
               <th class="ps-3 py-2" style="width: 105px;">Date</th>
@@ -536,7 +555,7 @@ const DefUreaModule = {
             <td class="text-end font-monospace fw-semibold">${item.filledQty || 0}</td>
             <td class="font-monospace fw-bold text-primary">${item.truckNo || '-'}</td>
             <td>
-              <span class="text-truncate d-inline-block" style="max-width: 180px;">${driverText}</span>
+              <span class="text-truncate d-inline-block" style="max-width: 220px;">${driverText}</span>
             </td>
             <td class="text-center">
               ${item.driverMobile ? `
@@ -708,6 +727,124 @@ const DefUreaModule = {
     container.innerHTML = html;
   },
 
+  // ========================================================
+  // POPULATE FLEET TRUCKS & DRIVERS DROPDOWNS
+  // ========================================================
+  populateFleetDropdowns() {
+    // 1. Truck Select
+    const truckSelect = document.getElementById('consumed-input-truck');
+    if (truckSelect) {
+      const truckSet = new Set();
+      this.allConsumed.forEach(c => { if (c.truckNo) truckSet.add(c.truckNo.trim().toUpperCase()); });
+
+      if (typeof window !== 'undefined' && Array.isArray(window.INITIAL_DRIVERS)) {
+        window.INITIAL_DRIVERS.forEach(d => { if (d.truckNo) truckSet.add(d.truckNo.trim().toUpperCase()); });
+      }
+      if (typeof window !== 'undefined' && Array.isArray(window.SAMPLE_OWNER_DUES)) {
+        window.SAMPLE_OWNER_DUES.forEach(d => { if (d.truckNo) truckSet.add(d.truckNo.trim().toUpperCase()); });
+      }
+
+      let truckHtml = '<option value="">-- Select Truck No. --</option>';
+      Array.from(truckSet).sort().forEach(t => {
+        truckHtml += `<option value="${t}">${t}</option>`;
+      });
+      truckSelect.innerHTML = truckHtml;
+    }
+
+    // 2. Driver Select (Populate with all 106+ authentic drivers!)
+    const driverSelect = document.getElementById('consumed-input-driver-name');
+    if (driverSelect) {
+      const driverMap = new Map(); // name -> mobile
+
+      // From INITIAL_DRIVERS
+      if (typeof window !== 'undefined' && Array.isArray(window.INITIAL_DRIVERS)) {
+        window.INITIAL_DRIVERS.forEach(d => {
+          if (d.name) {
+            driverMap.set(d.name.trim(), d.mobile || '');
+          }
+        });
+      }
+
+      // From allConsumed
+      this.allConsumed.forEach(c => {
+        const name = (c.driverName || c.driver || '').trim();
+        if (name && !driverMap.has(name)) {
+          driverMap.set(name, c.driverMobile || '');
+        }
+      });
+
+      let driverHtml = '<option value="">-- Select Driver --</option>';
+      Array.from(driverMap.keys()).sort().forEach(name => {
+        const mob = driverMap.get(name);
+        const label = mob ? `${name} (${mob})` : name;
+        driverHtml += `<option value="${name}">${label}</option>`;
+      });
+      driverSelect.innerHTML = driverHtml;
+    }
+  },
+
+  handleDriverSelect(driverName) {
+    const dName = (driverName || '').trim();
+    if (!dName) return;
+
+    let foundMob = '';
+    let foundTruck = '';
+
+    if (typeof window !== 'undefined' && Array.isArray(window.INITIAL_DRIVERS)) {
+      const match = window.INITIAL_DRIVERS.find(d => (d.name || '').trim().toLowerCase() === dName.toLowerCase());
+      if (match) {
+        foundMob = match.mobile || '';
+        foundTruck = match.truckNo || '';
+      }
+    }
+
+    if (!foundMob) {
+      const matchC = this.allConsumed.find(c => (c.driverName || c.driver || '').trim().toLowerCase() === dName.toLowerCase());
+      if (matchC) {
+        foundMob = matchC.driverMobile || '';
+        foundTruck = matchC.truckNo || '';
+      }
+    }
+
+    const mobInput = document.getElementById('consumed-input-driver-mob');
+    if (mobInput && foundMob) mobInput.value = foundMob;
+
+    const truckSelect = document.getElementById('consumed-input-truck');
+    if (truckSelect && foundTruck && !truckSelect.value) {
+      truckSelect.value = foundTruck;
+    }
+  },
+
+  handleTruckSelect(truckVal) {
+    const truck = (truckVal || '').trim().toUpperCase();
+    if (!truck) return;
+
+    let foundDriver = '';
+    let foundMob = '';
+
+    const matchC = this.allConsumed.find(c => (c.truckNo || '').toUpperCase() === truck);
+    if (matchC) {
+      foundDriver = matchC.driverName || matchC.driver || '';
+      foundMob = matchC.driverMobile || '';
+    }
+
+    if (!foundDriver && typeof window !== 'undefined' && Array.isArray(window.INITIAL_DRIVERS)) {
+      const matchD = window.INITIAL_DRIVERS.find(d => (d.truckNo || '').toUpperCase() === truck);
+      if (matchD) {
+        foundDriver = matchD.name || '';
+        foundMob = matchD.mobile || '';
+      }
+    }
+
+    const driverSelect = document.getElementById('consumed-input-driver-name');
+    if (driverSelect && foundDriver) {
+      driverSelect.value = foundDriver;
+    }
+
+    const mobInput = document.getElementById('consumed-input-driver-mob');
+    if (mobInput && foundMob) mobInput.value = foundMob;
+  },
+
   // 2C. Slide Drawer: Consumed Urea Details matching WhatsApp Image 2026-10-31 at 1.26.32 PM.jpeg
   openAddConsumedDrawer() {
     this.currentConsumedRecord = null;
@@ -719,8 +856,7 @@ const DefUreaModule = {
     if (title) title.innerText = 'Consumed Urea Details';
     if (delBtn) delBtn.style.display = 'none';
 
-    // Populate fleet trucks
-    this.populateFleetTrucksDropdown();
+    this.populateFleetDropdowns();
 
     // Default Date: DD-MM-YYYY
     const now = new Date();
@@ -736,7 +872,9 @@ const DefUreaModule = {
     document.getElementById('consumed-input-driver-name').value = '';
     document.getElementById('consumed-input-driver-mob').value = '';
     document.getElementById('consumed-input-amount').value = '0';
-    document.getElementById('consumed-input-buckets-ret').value = '0';
+    
+    // Reset Stepper
+    this.setBucketStepper(0);
     this.setBucketReturnedToggle('Yes');
 
     if (backdrop) backdrop.classList.add('show');
@@ -756,7 +894,7 @@ const DefUreaModule = {
     if (title) title.innerText = `Consumed Urea Details - ${item.truckNo || ''}`;
     if (delBtn) delBtn.style.display = 'inline-block';
 
-    this.populateFleetTrucksDropdown();
+    this.populateFleetDropdowns();
 
     document.getElementById('consumed-input-id').value = item.id;
     document.getElementById('consumed-input-date').value = item.date || '';
@@ -766,7 +904,8 @@ const DefUreaModule = {
     document.getElementById('consumed-input-driver-name').value = item.driverName || item.driver || '';
     document.getElementById('consumed-input-driver-mob').value = item.driverMobile || '';
     document.getElementById('consumed-input-amount').value = item.amountPaid || 0;
-    document.getElementById('consumed-input-buckets-ret').value = item.bucketsReturned || 0;
+    
+    this.setBucketStepper(item.bucketsReturned || 0);
     this.setBucketReturnedToggle(item.isEmptyBucketReturned || 'Yes');
 
     if (backdrop) backdrop.classList.add('show');
@@ -789,64 +928,31 @@ const DefUreaModule = {
     if (hiddenInput) hiddenInput.value = val;
 
     if (val === 'Yes') {
-      if (btnYes) {
-        btnYes.className = 'btn flex-fill active-segmented-btn fw-semibold';
-      }
-      if (btnNo) {
-        btnNo.className = 'btn flex-fill inactive-segmented-btn';
-      }
+      if (btnYes) btnYes.className = 'segmented-btn active';
+      if (btnNo) btnNo.className = 'segmented-btn';
       if (notRetWrap) notRetWrap.style.display = 'none';
     } else {
-      if (btnYes) {
-        btnYes.className = 'btn flex-fill inactive-segmented-btn';
-      }
-      if (btnNo) {
-        btnNo.className = 'btn flex-fill active-segmented-btn fw-semibold text-danger';
-      }
-      if (notRetWrap) notRetWrap.style.display = 'block';
+      if (btnYes) btnYes.className = 'segmented-btn';
+      if (btnNo) btnNo.className = 'segmented-btn active text-danger';
+      if (notRetWrap) notRetWrap.style.display = 'flex';
     }
+  },
+
+  setBucketStepper(val) {
+    const hiddenInput = document.getElementById('consumed-input-buckets-ret');
+    const displayEl = document.getElementById('display-buckets-ret');
+    if (hiddenInput) hiddenInput.value = val;
+    if (displayEl) displayEl.innerText = val;
   },
 
   adjustBucketCount(delta) {
-    const input = document.getElementById('consumed-input-buckets-ret');
-    if (!input) return;
-    let val = parseInt(input.value) || 0;
+    const hiddenInput = document.getElementById('consumed-input-buckets-ret');
+    const displayEl = document.getElementById('display-buckets-ret');
+    let val = parseInt(hiddenInput ? hiddenInput.value : 0) || 0;
     val += delta;
     if (val < 0) val = 0;
-    input.value = val;
-  },
-
-  populateFleetTrucksDropdown() {
-    const datalist = document.getElementById('fleet-trucks-datalist');
-    if (!datalist) return;
-
-    // Collect all truck numbers from consumed, dues, or trips
-    const truckSet = new Set();
-    this.allConsumed.forEach(c => { if (c.truckNo) truckSet.add(c.truckNo); });
-
-    if (typeof window !== 'undefined' && Array.isArray(window.SAMPLE_OWNER_DUES)) {
-      window.SAMPLE_OWNER_DUES.forEach(d => { if (d.truckNo) truckSet.add(d.truckNo); });
-    }
-
-    let opts = '';
-    Array.from(truckSet).sort().forEach(t => {
-      opts += `<option value="${t}">`;
-    });
-    datalist.innerHTML = opts;
-  },
-
-  handleTruckLookup(val) {
-    const truck = (val || '').trim().toUpperCase();
-    if (truck.length < 4) return;
-
-    // Search existing records for this truck's driver and mobile
-    const match = this.allConsumed.find(c => (c.truckNo || '').toUpperCase() === truck);
-    if (match) {
-      const nameInput = document.getElementById('consumed-input-driver-name');
-      const mobInput = document.getElementById('consumed-input-driver-mob');
-      if (nameInput && !nameInput.value) nameInput.value = match.driverName || '';
-      if (mobInput && !mobInput.value) mobInput.value = match.driverMobile || '';
-    }
+    if (hiddenInput) hiddenInput.value = val;
+    if (displayEl) displayEl.innerText = val;
   },
 
   async saveConsumedDrawer() {
@@ -865,7 +971,7 @@ const DefUreaModule = {
     const qty = parseFloat(qtyInput?.value) || 0;
 
     if (!truckNo) {
-      this.showToast('Please enter a Truck Number', 'warning');
+      this.showToast('Please select or enter a Truck Number', 'warning');
       return;
     }
     if (qty <= 0) {
@@ -969,11 +1075,6 @@ const DefUreaModule = {
     const searchInput = document.getElementById('search-def-urea');
     if (searchInput) {
       searchInput.addEventListener('input', e => this.handleSearch(e.target.value));
-    }
-
-    const truckInput = document.getElementById('consumed-input-truck');
-    if (truckInput) {
-      truckInput.addEventListener('input', e => this.handleTruckLookup(e.target.value));
     }
 
     // Keyboard navigation: Escape closes drawers/detail
