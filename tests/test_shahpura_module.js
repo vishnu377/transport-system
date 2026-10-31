@@ -374,12 +374,37 @@ console.log('=== TEST SUITE: MODULE 9 - SHAHPURA & CARD 1 DRILLDOWN (1:1 APPSHEE
 
     console.log('✓ TEST 14 PASSED: Transaction Slide Drawer fields, Trip/Other toggle & save verified!\n');
 
+    // ----------------------------------------------------
+    // TEST 15: Exact Date Span & 1:1 AppSheet Drawer Specifications
+    // ----------------------------------------------------
+    console.log('--- TEST 15: Exact Date Span & 1:1 AppSheet Drawer Specifications ---');
+    const allG = SAMPLE_SHAHPURA_DATA.givenTransactions;
+    const allD = SAMPLE_SHAHPURA_DATA.depositTransactions;
+
+    assert(allG.length >= 1000, `Given records must have full authentic dataset (found ${allG.length})`);
+    assert.strictEqual(allG[0].date, '30/10/2026', 'Given records must start at 30/10/2026');
+    assert.strictEqual(allG[allG.length - 1].date, '01/10/2025', 'Given records must end at 01/10/2025');
+
+    assert(allD.length >= 400, `Deposit records must have full authentic dataset (found ${allD.length})`);
+    assert.strictEqual(allD[0].date, '30/10/2026', 'Deposit records must start at 30/10/2026');
+    assert.strictEqual(allD[allD.length - 1].date, '05/10/2025', 'Deposit records must end at 05/10/2025');
+
+    // Verify HTML form drawer has no Mobile No input and no G.R. No input
+    assert(!html.includes('id="txPhone"'), 'Add drawer must not have Mobile No input field');
+    assert(!html.includes('id="txGrNo"'), 'Add drawer must not have G.R. No input field');
+
+    console.log(`  Given records verified: ${allG.length} rows (${allG[0].date} to ${allG[allG.length - 1].date})`);
+    console.log(`  Deposit records verified: ${allD.length} rows (${allD[0].date} to ${allD[allD.length - 1].date})`);
+    console.log(`  Master Truck List size: ${ShahpuraModule.truckMasterList.length}`);
+    console.log(`  Master Driver List size: ${ShahpuraModule.driverMasterList.length}`);
+    console.log('✓ TEST 15 PASSED: Full date spans and 1:1 AppSheet drawer specifications verified!\n');
+
     // Return to main dashboard
     ShahpuraModule.setView('main');
     assert.strictEqual(ShahpuraModule.activeView, 'main');
 
     console.log('======================================================');
-    console.log('🏆 ALL 14 SHAHPURA MODULE TEST SUITES PASSED 100%!');
+    console.log('🏆 ALL 15 SHAHPURA MODULE TEST SUITES PASSED 100%!');
     console.log('======================================================\n');
   } catch (err) {
     console.error('❌ TEST FAILED:', err);

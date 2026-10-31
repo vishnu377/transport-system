@@ -1542,15 +1542,24 @@ const ShahpuraModule = {
 
     const today = new Date();
     const dStr = `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`;
-    document.getElementById('txDate').value = dStr;
-    document.getElementById('txAmount').value = '0.00';
-    document.getElementById('txTruckInput').value = '';
-    document.getElementById('txDriverInput').value = '';
-    document.getElementById('txPhone').value = '';
-    document.getElementById('txGrNo').value = '';
-    document.getElementById('txOrigin').value = 'Rajsamand (Raj.)';
-    document.getElementById('txDestination').value = '';
-    document.getElementById('txDescription').value = '';
+    const dateEl = document.getElementById('txDate');
+    if (dateEl) dateEl.value = dStr;
+    const amtEl = document.getElementById('txAmount');
+    if (amtEl) amtEl.value = '0.00';
+    const truckEl = document.getElementById('txTruckInput');
+    if (truckEl) truckEl.value = '';
+    const driverEl = document.getElementById('txDriverInput');
+    if (driverEl) driverEl.value = '';
+    const phoneEl = document.getElementById('txPhone');
+    if (phoneEl) phoneEl.value = '';
+    const grEl = document.getElementById('txGrNo');
+    if (grEl) grEl.value = '';
+    const originEl = document.getElementById('txOrigin');
+    if (originEl) originEl.value = 'Rajsamand (Raj.)';
+    const destEl = document.getElementById('txDestination');
+    if (destEl) destEl.value = '';
+    const descEl = document.getElementById('txDescription');
+    if (descEl) descEl.value = '';
 
     const grContainer = document.getElementById('txGrContainer');
     if (grContainer) {
@@ -1592,17 +1601,17 @@ const ShahpuraModule = {
   },
 
   async saveTransaction() {
-    const editId = document.getElementById('txFormEditId').value.trim();
-    const type = document.getElementById('txFormType').value || 'Given';
-    const dateInput = document.getElementById('txDate').value.trim();
-    const amount = Number(document.getElementById('txAmount').value) || 0;
-    const truckNo = document.getElementById('txTruckInput').value.trim().toUpperCase();
-    const name = document.getElementById('txDriverInput').value.trim();
-    const phone = document.getElementById('txPhone').value.trim();
-    const grNo = document.getElementById('txGrNo').value.trim();
-    const origin = document.getElementById('txOrigin').value.trim();
-    const destination = document.getElementById('txDestination').value.trim();
-    const description = document.getElementById('txDescription').value.trim();
+    const editId = document.getElementById('txFormEditId')?.value?.trim() || '';
+    const type = document.getElementById('txFormType')?.value || 'Given';
+    const dateInput = document.getElementById('txDate')?.value?.trim() || '';
+    const amount = Number(document.getElementById('txAmount')?.value) || 0;
+    const truckNo = document.getElementById('txTruckInput')?.value?.trim()?.toUpperCase() || '';
+    const name = document.getElementById('txDriverInput')?.value?.trim() || '';
+    const phone = document.getElementById('txPhone')?.value?.trim() || '';
+    const grNo = document.getElementById('txGrNo')?.value?.trim() || '';
+    const origin = document.getElementById('txOrigin')?.value?.trim() || '';
+    const destination = document.getElementById('txDestination')?.value?.trim() || '';
+    const description = document.getElementById('txDescription')?.value?.trim() || '';
     const relatedTo = this.currentFormRelatedTo || 'Trip';
 
     if (!amount || amount <= 0) {
@@ -1722,7 +1731,8 @@ const ShahpuraModule = {
 
   selectDriverCombobox(name, phone, truckNo) {
     document.getElementById('txDriverInput').value = name;
-    if (phone) document.getElementById('txPhone').value = phone;
+    const phoneEl = document.getElementById('txPhone');
+    if (phone && phoneEl) phoneEl.value = phone;
     if (truckNo) {
       const truckIn = document.getElementById('txTruckInput');
       if (truckIn && !truckIn.value) truckIn.value = truckNo;
