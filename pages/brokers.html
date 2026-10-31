@@ -110,6 +110,20 @@
       z-index: 1030;
     }
 
+    .avatar-circle {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background-color: #c3b15a;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+    }
+
     .app-brand {
       display: flex;
       align-items: center;
@@ -329,22 +343,23 @@
       height: 38px;
     }
 
+    /* Clean Name without Profile Icon */
     .broker-name-cell {
       font-weight: 500;
       color: #202124;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+    }
+
+    .broker-phone-cell {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      color: #202124;
     }
 
     .broker-phone-link {
       color: #1a73e8;
       text-decoration: none;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
+      font-size: 12.5px;
     }
 
     .broker-phone-link:hover {
@@ -370,7 +385,7 @@
     .detail-header-card {
       background-color: #fafafa;
       border-bottom: 1px solid var(--appsheet-border);
-      padding: 20px 24px;
+      padding: 18px 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -394,7 +409,7 @@
     }
 
     .detail-label {
-      width: 140px;
+      width: 170px;
       font-size: 12.5px;
       color: var(--appsheet-text-muted);
       font-weight: 500;
@@ -410,7 +425,7 @@
 
     /* AppSheet Slide Drawer */
     .offcanvas-appsheet {
-      width: 440px !important;
+      width: 460px !important;
       border-left: 1px solid var(--appsheet-border);
       box-shadow: -4px 0 16px rgba(0, 0, 0, 0.08);
     }
@@ -428,11 +443,12 @@
     .form-row-2col {
       display: flex;
       align-items: center;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
+      position: relative;
     }
 
     .form-label-left {
-      width: 120px;
+      width: 150px;
       font-size: 12px;
       font-weight: 500;
       color: var(--appsheet-text-muted);
@@ -441,11 +457,12 @@
 
     .form-field-right {
       flex: 1;
+      position: relative;
     }
 
     .appsheet-input {
       width: 100%;
-      height: 32px;
+      height: 34px;
       border: 1px solid var(--appsheet-border);
       border-radius: 4px;
       padding: 0 10px;
@@ -459,6 +476,59 @@
     .appsheet-input:focus {
       border-color: #1a73e8;
       box-shadow: 0 0 0 2px rgba(26,115,232,0.15);
+    }
+
+    /* Combobox Styles (Type + Dropdown Select) */
+    .combobox-toggle-btn {
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 32px;
+      border: none;
+      background: transparent;
+      color: var(--appsheet-text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .combobox-dropdown-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background-color: #ffffff;
+      border: 1px solid var(--appsheet-border);
+      border-radius: 4px;
+      max-height: 220px;
+      overflow-y: auto;
+      z-index: 1055;
+      margin-top: 2px;
+      padding: 4px 0;
+      list-style: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+      display: none;
+    }
+
+    .combobox-dropdown-menu.show {
+      display: block;
+    }
+
+    .combobox-dropdown-menu li {
+      padding: 6px 12px;
+      font-size: 12.5px;
+      cursor: pointer;
+      color: #202124;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .combobox-dropdown-menu li:hover {
+      background-color: #f1f3f4;
+      color: #1a73e8;
     }
 
     .btn-appsheet-save {
@@ -537,7 +607,6 @@
     <header class="brokers-topbar">
       <div class="app-brand">
         <a href="../index.html" class="text-dark me-1"><i class="bi bi-arrow-left"></i></a>
-        <i class="bi bi-people text-secondary fs-6"></i>
         <span>MTC And TTC - Resources</span>
       </div>
 
@@ -552,16 +621,7 @@
         <button class="btn-icon-subtle" title="Help & Guides">
           <i class="bi bi-question-circle"></i>
         </button>
-        <div class="dropdown">
-          <button class="btn-icon-subtle rounded-circle bg-light" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Account">
-            <i class="bi bi-person-circle fs-6"></i>
-          </button>
-          <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-            <li><span class="dropdown-item-text fw-bold">Admin User</span></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="../index.html"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
-          </ul>
-        </div>
+        <div class="avatar-circle" title="User Profile">M</div>
       </div>
     </header>
 
@@ -595,15 +655,39 @@
     <div class="offcanvas-body p-4">
       <input type="hidden" id="formBrokerId" value="">
 
-      <!-- Row 1: Name -->
-      <div class="form-row-2col">
-        <label class="form-label-left" for="brokerInputName">Name</label>
-        <div class="form-field-right">
-          <input type="text" id="brokerInputName" class="appsheet-input" placeholder="Broker / Dallal Name" required>
+      <!-- Row 1: Drivers / Owners Name (Combobox with Type & Dropdown Selection) -->
+      <div class="form-row-2col" id="brokerOwnerDriverRow">
+        <label class="form-label-left" for="brokerOwnerDriverInput">Drivers / Owners Name</label>
+        <div class="form-field-right position-relative">
+          <input type="text" id="brokerOwnerDriverInput" class="appsheet-input"
+            placeholder="Type or select Owner / Driver"
+            autocomplete="off"
+            oninput="BrokersModule.filterOwnerDriverCombobox(this.value)"
+            onfocus="BrokersModule.filterOwnerDriverCombobox(this.value)">
+          <button type="button" class="combobox-toggle-btn" onclick="BrokersModule.toggleOwnerDriverCombobox()">
+            <i class="bi bi-chevron-down small"></i>
+          </button>
+          <ul class="combobox-dropdown-menu" id="brokerOwnerDriverDropdown"></ul>
         </div>
       </div>
 
-      <!-- Row 2: Mobile No.* -->
+      <!-- Row 2: Name * (Combobox with Type & Dropdown Selection) -->
+      <div class="form-row-2col" id="brokerNameRow">
+        <label class="form-label-left" for="brokerInputName">Name *</label>
+        <div class="form-field-right position-relative">
+          <input type="text" id="brokerInputName" class="appsheet-input"
+            placeholder="Type or select Broker Name"
+            autocomplete="off"
+            oninput="BrokersModule.filterNameCombobox(this.value)"
+            onfocus="BrokersModule.filterNameCombobox(this.value)" required>
+          <button type="button" class="combobox-toggle-btn" onclick="BrokersModule.toggleNameCombobox()">
+            <i class="bi bi-chevron-down small"></i>
+          </button>
+          <ul class="combobox-dropdown-menu" id="brokerNameDropdown"></ul>
+        </div>
+      </div>
+
+      <!-- Row 3: Mobile No. * -->
       <div class="form-row-2col">
         <label class="form-label-left" for="brokerInputMobile">Mobile No. *</label>
         <div class="form-field-right">
@@ -611,7 +695,7 @@
         </div>
       </div>
 
-      <!-- Row 3: Mobile No. 1 -->
+      <!-- Row 4: Mobile No. 1 -->
       <div class="form-row-2col">
         <label class="form-label-left" for="brokerInputMobile1">Mobile No. 1</label>
         <div class="form-field-right">
@@ -624,9 +708,11 @@
   <!-- Bootstrap JS Bundle -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-  <!-- App Core & Sample Brokers Dataset -->
+  <!-- App Core & Datasets -->
   <script src="../js/config.js"></script>
   <script src="../js/app.js"></script>
+  <script src="../js/sample-truck-owners-data.js"></script>
+  <script src="../js/sample-drivers-data.js"></script>
   <script src="../js/sample-brokers-data.js"></script>
   <script src="../js/db-service.js"></script>
 

@@ -1,7 +1,8 @@
 /**
  * Master Controller for Module: Brokers (1:1 Google AppSheet Directory)
  * Supports Table View (1,047 Brokers), Record Detail View, Navigation (< Prev, Next >),
- * Add / Edit Slide Drawer, Real-Time Typeahead Search, and Zero LocalStorage Policy.
+ * Add / Edit Slide Drawer with Combobox for Drivers/Owners & Broker Name,
+ * Real-Time Typeahead Search, and Zero LocalStorage Policy.
  */
 
 const BrokersModule = {
@@ -9,13 +10,17 @@ const BrokersModule = {
   currentBrokerId: null,
   allBrokers: [],
   filteredBrokers: [],
+  ownerDriverList: [],
+  brokerNameList: [],
   searchQuery: '',
 
   async init() {
     console.log('[BrokersModule] Initializing 1:1 AppSheet Brokers module...');
     await this.loadBrokers();
+    this.buildMasterLists();
     this.renderBreadcrumb();
     this.renderCurrentView();
+    this.setupListeners();
     console.log('[BrokersModule] Initialized successfully. Total brokers:', this.allBrokers.length);
   },
 
@@ -39,6 +44,88 @@ const BrokersModule = {
     }
 
     this.filteredBrokers = [...this.allBrokers];
+  },
+
+  buildMasterLists() {
+    // 1. Owners & Drivers Master List (Typeahead Combobox)
+    const ownerDrivers = [];
+    const seenOD = new Set();
+
+    // From Truck Owners Directory
+    const rawOwners = (typeof _INITIAL_TRUCK_OWNERS !== 'undefined') ? _INITIAL_TRUCK_OWNERS :
+      (typeof SAMPLE_TRUCK_OWNERS_DATA !== 'undefined' ? SAMPLE_TRUCK_OWNERS_DATA : []);
+
+    for (const o of rawOwners) {
+      if (o.name && o.name.trim()) {
+        const k = o.name.trim().toLowerCase();
+        if (!seenOD.has(k)) {
+          seenOD.add(k);
+          ownerDrivers.push({
+            name: o.name.trim(),
+            mobile: o.mobile || '',
+            mobile1: o.mobile1 || '',
+            truckNo: o.truckNo || '',
+            role: 'Owner'
+          });
+        }
+      }
+    }
+
+    // From Drivers Directory
+    const rawDrivers = (typeof INITIAL_DRIVERS !== 'undefined') ? INITIAL_DRIVERS :
+      (typeof SAMPLE_DRIVERS_DATA !== 'undefined' ? SAMPLE_DRIVERS_DATA : []);
+
+    for (const d of rawDrivers) {
+      if (d.name && d.name.trim()) {
+        const k = d.name.trim().toLowerCase();
+        if (!seenOD.has(k)) {
+          seenOD.add(k);
+          ownerDrivers.push({
+            name: d.name.trim(),
+            mobile: d.mobile || '',
+            mobile1: '',
+            truckNo: d.truckNo || '',
+            role: 'Driver'
+          });
+        }
+      }
+    }
+
+    this.ownerDriverList = ownerDrivers.sort((a, b) => a.name.localeCompare(b.name));
+
+    // 2. Broker Names Master List (Typeahead Combobox)
+    const bNames = [];
+    const seenB = new Set();
+    for (const b of this.allBrokers) {
+      if (b.name && b.name.trim()) {
+        const k = b.name.trim().toLowerCase();
+        if (!seenB.has(k)) {
+          seenB.add(k);
+          bNames.push({
+            name: b.name.trim(),
+            mobile: b.mobile || '',
+            mobile1: b.mobile1 || ''
+          });
+        }
+      }
+    }
+    this.brokerNameList = bNames.sort((a, b) => a.name.localeCompare(b.name));
+  },
+
+  setupListeners() {
+    // Close comboboxes when clicking outside
+    if (typeof document !== 'undefined') {
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('#brokerOwnerDriverRow')) {
+          const dd1 = document.getElementById('brokerOwnerDriverDropdown');
+          if (dd1) dd1.classList.remove('show');
+        }
+        if (!e.target.closest('#brokerNameRow')) {
+          const dd2 = document.getElementById('brokerNameDropdown');
+          if (dd2) dd2.classList.remove('show');
+        }
+      });
+    }
   },
 
   // ========================================================
@@ -115,7 +202,7 @@ const BrokersModule = {
   },
 
   // ========================================================
-  // MAIN TABLE VIEW (1:1 APPSHEET DIRECTORY)
+  // MAIN TABLE VIEW (1:1 APPSHEET DIRECTORY - NO ICONS BEFORE NAME)
   // ========================================================
   renderTableView(container) {
     const list = this.filteredBrokers;
@@ -142,30 +229,22 @@ const BrokersModule = {
             ${list.length === 0 ? `
               <tr>
                 <td colspan="4" class="text-center py-5 text-muted">
-                  <i class="bi bi-people fs-2 d-block mb-2 text-secondary"></i>
                   No brokers matching "<strong>${this.searchQuery}</strong>".
                 </td>
               </tr>
             ` : list.map(b => `
               <tr onclick="BrokersModule.openDetail('${b.id}')">
                 <td>
-                  <div class="broker-name-cell">
-                    <i class="bi bi-person-circle text-secondary fs-6"></i>
-                    <span>${b.name || '-'}</span>
-                  </div>
+                  <span class="broker-name-cell">${b.name || '-'}</span>
                 </td>
-                <td>
+                <td class="broker-phone-cell">
                   ${b.mobile ? `
-                    <a href="tel:${b.mobile}" class="broker-phone-link" onclick="event.stopPropagation()">
-                      <i class="bi bi-telephone text-success"></i> ${b.mobile}
-                    </a>
+                    <a href="tel:${b.mobile}" class="broker-phone-link" onclick="event.stopPropagation()">${b.mobile}</a>
                   ` : `<span class="text-muted">-</span>`}
                 </td>
-                <td>
+                <td class="broker-phone-cell">
                   ${b.mobile1 ? `
-                    <a href="tel:${b.mobile1}" class="broker-phone-link" onclick="event.stopPropagation()">
-                      <i class="bi bi-telephone text-primary"></i> ${b.mobile1}
-                    </a>
+                    <a href="tel:${b.mobile1}" class="broker-phone-link text-muted" onclick="event.stopPropagation()">${b.mobile1}</a>
                   ` : `<span class="text-muted">-</span>`}
                 </td>
                 <td style="text-align: right;">
@@ -180,7 +259,7 @@ const BrokersModule = {
   },
 
   // ========================================================
-  // RECORD DETAIL VIEW (1:1 APPSHEET DETAILS)
+  // RECORD DETAIL VIEW (1:1 APPSHEET DETAILS - CLEAN LAYOUT)
   // ========================================================
   renderDetailView(container) {
     const broker = this.allBrokers.find(b => b.id === this.currentBrokerId) || this.allBrokers[0];
@@ -192,14 +271,9 @@ const BrokersModule = {
     container.innerHTML = `
       <div class="detail-container">
         <div class="detail-header-card">
-          <div class="d-flex align-items-center gap-3">
-            <div class="rounded-circle bg-primary-subtle text-primary p-3 fs-3 d-flex align-items-center justify-content-center" style="width: 54px; height: 54px;">
-              <i class="bi bi-person-fill"></i>
-            </div>
-            <div>
-              <h5 class="mb-0 fw-bold text-dark">${broker.name || 'Unnamed Broker'}</h5>
-              <small class="text-muted font-monospace">${broker.id || ''}</small>
-            </div>
+          <div>
+            <h5 class="mb-1 fw-bold text-dark">${broker.name || 'Unnamed Broker'}</h5>
+            <span class="badge bg-light text-secondary border font-monospace">${broker.id || ''}</span>
           </div>
           <button class="btn btn-outline-primary btn-sm d-inline-flex align-items-center gap-1" onclick="BrokersModule.openEditDrawer('${broker.id}')">
             <i class="bi bi-pencil"></i> Edit
@@ -210,7 +284,7 @@ const BrokersModule = {
           <!-- Row 1: Name -->
           <div class="detail-row">
             <div class="detail-label">Name</div>
-            <div class="detail-value">${broker.name || '-'}</div>
+            <div class="detail-value fw-bold text-dark">${broker.name || '-'}</div>
           </div>
 
           <!-- Row 2: Mobile No. -->
@@ -239,6 +313,14 @@ const BrokersModule = {
                   <i class="bi bi-telephone small"></i> Call
                 </a>
               </div>
+            </div>
+          ` : ''}
+
+          <!-- Row 4: Linked Driver / Owner Name (if present) -->
+          ${broker.ownerDriverName ? `
+            <div class="detail-row">
+              <div class="detail-label">Drivers / Owners Name</div>
+              <div class="detail-value text-secondary">${broker.ownerDriverName}</div>
             </div>
           ` : ''}
         </div>
@@ -291,7 +373,8 @@ const BrokersModule = {
           (b.name && b.name.toLowerCase().includes(q)) ||
           (b.mobile && b.mobile.toLowerCase().includes(q)) ||
           (b.mobile1 && b.mobile1.toLowerCase().includes(q)) ||
-          (b.location && b.location.toLowerCase().includes(q))
+          (b.location && b.location.toLowerCase().includes(q)) ||
+          (b.ownerDriverName && b.ownerDriverName.toLowerCase().includes(q))
         );
       });
     }
@@ -303,11 +386,129 @@ const BrokersModule = {
   },
 
   // ========================================================
+  // COMBOBOX: DRIVERS / OWNERS NAME (TYPE + SELECT)
+  // ========================================================
+  filterOwnerDriverCombobox(val) {
+    const listEl = document.getElementById('brokerOwnerDriverDropdown');
+    if (!listEl) return;
+
+    const q = (val || '').toLowerCase().trim();
+    const matched = this.ownerDriverList.filter(item => {
+      return (
+        item.name.toLowerCase().includes(q) ||
+        (item.mobile && item.mobile.includes(q)) ||
+        (item.truckNo && item.truckNo.toLowerCase().includes(q))
+      );
+    });
+
+    if (matched.length === 0) {
+      listEl.innerHTML = `<li class="text-muted small py-2 px-3">No owner/driver found matching "${val}"</li>`;
+    } else {
+      listEl.innerHTML = matched.slice(0, 35).map(item => `
+        <li onclick="BrokersModule.selectOwnerDriverCombobox('${item.name.replace(/'/g, "\\'")}', '${item.mobile || ''}', '${item.mobile1 || ''}')">
+          <div>
+            <strong>${item.name}</strong>
+            ${item.truckNo ? `<span class="badge bg-light text-dark border ms-1 font-monospace">${item.truckNo}</span>` : ''}
+          </div>
+          <small class="text-muted font-monospace">${item.mobile || ''} <span class="badge bg-secondary-subtle text-secondary ms-1">${item.role}</span></small>
+        </li>
+      `).join('');
+    }
+
+    listEl.classList.add('show');
+  },
+
+  toggleOwnerDriverCombobox() {
+    const listEl = document.getElementById('brokerOwnerDriverDropdown');
+    if (!listEl) return;
+    if (listEl.classList.contains('show')) {
+      listEl.classList.remove('show');
+    } else {
+      const curVal = document.getElementById('brokerOwnerDriverInput')?.value || '';
+      this.filterOwnerDriverCombobox(curVal);
+    }
+  },
+
+  selectOwnerDriverCombobox(name, mobile, mobile1) {
+    const inOD = document.getElementById('brokerOwnerDriverInput');
+    if (inOD) inOD.value = name;
+
+    const inName = document.getElementById('brokerInputName');
+    if (inName) inName.value = name;
+
+    const inMobile = document.getElementById('brokerInputMobile');
+    if (inMobile && mobile) inMobile.value = mobile;
+
+    const inMobile1 = document.getElementById('brokerInputMobile1');
+    if (inMobile1 && mobile1) inMobile1.value = mobile1;
+
+    const listEl = document.getElementById('brokerOwnerDriverDropdown');
+    if (listEl) listEl.classList.remove('show');
+  },
+
+  // ========================================================
+  // COMBOBOX: NAME (TYPE + SELECT ALL BROKERS)
+  // ========================================================
+  filterNameCombobox(val) {
+    const listEl = document.getElementById('brokerNameDropdown');
+    if (!listEl) return;
+
+    const q = (val || '').toLowerCase().trim();
+    const matched = this.brokerNameList.filter(item => {
+      return (
+        item.name.toLowerCase().includes(q) ||
+        (item.mobile && item.mobile.includes(q))
+      );
+    });
+
+    if (matched.length === 0) {
+      listEl.innerHTML = `<li class="text-muted small py-2 px-3">Type any new broker name</li>`;
+    } else {
+      listEl.innerHTML = matched.slice(0, 35).map(item => `
+        <li onclick="BrokersModule.selectNameCombobox('${item.name.replace(/'/g, "\\'")}', '${item.mobile || ''}', '${item.mobile1 || ''}')">
+          <div>
+            <strong>${item.name}</strong>
+          </div>
+          <small class="text-muted font-monospace">${item.mobile || ''}</small>
+        </li>
+      `).join('');
+    }
+
+    listEl.classList.add('show');
+  },
+
+  toggleNameCombobox() {
+    const listEl = document.getElementById('brokerNameDropdown');
+    if (!listEl) return;
+    if (listEl.classList.contains('show')) {
+      listEl.classList.remove('show');
+    } else {
+      const curVal = document.getElementById('brokerInputName')?.value || '';
+      this.filterNameCombobox(curVal);
+    }
+  },
+
+  selectNameCombobox(name, mobile, mobile1) {
+    const inName = document.getElementById('brokerInputName');
+    if (inName) inName.value = name;
+
+    const inMobile = document.getElementById('brokerInputMobile');
+    if (inMobile && mobile) inMobile.value = mobile;
+
+    const inMobile1 = document.getElementById('brokerInputMobile1');
+    if (inMobile1 && mobile1) inMobile1.value = mobile1;
+
+    const listEl = document.getElementById('brokerNameDropdown');
+    if (listEl) listEl.classList.remove('show');
+  },
+
+  // ========================================================
   // + ADD / EDIT SLIDE DRAWER (1:1 APPSHEET)
   // ========================================================
   openAddDrawer() {
     document.getElementById('formBrokerId').value = '';
     document.getElementById('brokerDrawerTitle').innerText = 'Details';
+    document.getElementById('brokerOwnerDriverInput').value = '';
     document.getElementById('brokerInputName').value = '';
     document.getElementById('brokerInputMobile').value = '';
     document.getElementById('brokerInputMobile1').value = '';
@@ -324,6 +525,7 @@ const BrokersModule = {
 
     document.getElementById('formBrokerId').value = broker.id;
     document.getElementById('brokerDrawerTitle').innerText = 'Details';
+    document.getElementById('brokerOwnerDriverInput').value = broker.ownerDriverName || '';
     document.getElementById('brokerInputName').value = broker.name || '';
     document.getElementById('brokerInputMobile').value = broker.mobile || '';
     document.getElementById('brokerInputMobile1').value = broker.mobile1 || '';
@@ -336,6 +538,7 @@ const BrokersModule = {
 
   async saveBroker() {
     const id = document.getElementById('formBrokerId').value.trim();
+    const ownerDriverName = document.getElementById('brokerOwnerDriverInput')?.value?.trim() || '';
     const name = document.getElementById('brokerInputName').value.trim();
     const mobile = document.getElementById('brokerInputMobile').value.trim();
     const mobile1 = document.getElementById('brokerInputMobile1').value.trim();
@@ -363,6 +566,7 @@ const BrokersModule = {
       name,
       mobile,
       mobile1,
+      ownerDriverName,
       updatedAt: new Date().toISOString()
     };
 
@@ -379,6 +583,7 @@ const BrokersModule = {
       this.allBrokers.unshift(record);
     }
 
+    this.buildMasterLists();
     this.handleSearch(this.searchQuery);
 
     const drawer = document.getElementById('brokerDrawer');
@@ -406,6 +611,7 @@ const BrokersModule = {
     }
 
     this.allBrokers = this.allBrokers.filter(b => b.id !== brokerId);
+    this.buildMasterLists();
     this.handleSearch(this.searchQuery);
 
     if (typeof AppUI !== 'undefined' && AppUI.showToast) {

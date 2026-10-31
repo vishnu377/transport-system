@@ -1,7 +1,7 @@
 /**
- * Test Suite: Module 11 - Brokers (1:1 Google AppSheet Fidelity)
+ * Test Suite: Module 11 - Brokers (1:1 Google AppSheet Directory)
  * Tests Table View (1,047 Brokers), Detail View, Navigation (< Prev, Next >),
- * Search Filter, Add / Edit Slide Drawer, and Zero LocalStorage Policy.
+ * Search Filter, Drivers/Owners & Broker Name Comboboxes, and Zero LocalStorage Policy.
  */
 
 const assert = require('assert');
@@ -73,9 +73,17 @@ global.AppUI = {
 
 global.confirm = () => true;
 
-// Load dbService & Sample Data
+// Load Datasets
 const dbService = require('../js/db-service.js');
 global.dbService = dbService;
+
+let codeOwners = fs.readFileSync(path.join(__dirname, '../js/sample-truck-owners-data.js'), 'utf-8');
+eval(codeOwners);
+global._INITIAL_TRUCK_OWNERS = _INITIAL_TRUCK_OWNERS;
+
+let codeDrivers = fs.readFileSync(path.join(__dirname, '../js/sample-drivers-data.js'), 'utf-8');
+codeDrivers = codeDrivers.replace('window.INITIAL_DRIVERS =', 'global.INITIAL_DRIVERS =');
+eval(codeDrivers);
 
 const SAMPLE_BROKERS_DATA = require('../js/sample-brokers-data.js');
 global.SAMPLE_BROKERS_DATA = SAMPLE_BROKERS_DATA;
@@ -97,13 +105,19 @@ global.BrokersModule = BrokersModule;
     assert(html.includes('id="brokerSubbar"'), 'Must have subbar container');
     assert(html.includes('id="brokerMainContent"'), 'Must have main scrollable content');
     assert(html.includes('id="brokerDrawer"'), 'Must have offcanvas slide drawer');
+    assert(html.includes('id="brokerOwnerDriverInput"'), 'Must have Drivers / Owners Name combobox input');
+    assert(html.includes('id="brokerOwnerDriverDropdown"'), 'Must have Drivers / Owners Name dropdown');
     assert(html.includes('id="brokerInputName"'), 'Must have Broker Name input');
+    assert(html.includes('id="brokerNameDropdown"'), 'Must have Broker Name dropdown');
     assert(html.includes('id="brokerInputMobile"'), 'Must have Mobile No.* input');
     assert(html.includes('id="brokerInputMobile1"'), 'Must have Mobile No. 1 input');
 
+    // Verify profile avatar icon is REMOVED
+    assert(!html.includes('bi-person-circle'), 'Must not have profile icon before name');
+
     // Strict Zero LocalStorage
     assert(!html.includes('localStorage.setItem'), 'Zero localStorage policy');
-    console.log('✓ TEST 1 PASSED: pages/brokers.html contains all 1:1 AppSheet containers and drawer fields!\n');
+    console.log('✓ TEST 1 PASSED: pages/brokers.html contains all 1:1 AppSheet containers, comboboxes, and no profile icon!\n');
 
     // ----------------------------------------------------
     // TEST 2: Data Calibration (Exact 1,047 Brokers matching Screenshot)
@@ -125,13 +139,15 @@ global.BrokersModule = BrokersModule;
     console.log('✓ TEST 2 PASSED: 1,047 Authentic brokers dataset verified 1:1!\n');
 
     // ----------------------------------------------------
-    // TEST 3: Module Initialization & Table View
+    // TEST 3: Module Initialization, Master Lists & Table View
     // ----------------------------------------------------
-    console.log('--- TEST 3: Module Initialization & Table View ---');
+    console.log('--- TEST 3: Module Initialization, Master Lists & Table View ---');
     await BrokersModule.init();
 
     assert.strictEqual(BrokersModule.activeView, 'table');
     assert.strictEqual(BrokersModule.allBrokers.length, 1047);
+    assert(BrokersModule.ownerDriverList.length >= 200, 'Owner & driver master list must be populated');
+    assert(BrokersModule.brokerNameList.length >= 800, 'Broker name master list must be populated');
 
     const subbarEl = getOrCreateMockElement('brokerSubbar');
     assert(subbarEl.innerHTML.includes('Home'), 'Breadcrumb has Home');
@@ -142,8 +158,12 @@ global.BrokersModule = BrokersModule;
     assert(contentEl.innerHTML.includes('Number <span id="brokerCount">1047</span>'), 'Badge shows Number 1047');
     assert(contentEl.innerHTML.includes('AR Stone Udaipur'), 'Table renders broker row');
     assert(contentEl.innerHTML.includes('9983662266'), 'Table renders phone number');
+    // Ensure table rows do NOT contain profile person-circle icon
+    assert(!contentEl.innerHTML.includes('bi-person-circle'), 'Table must not render person-circle icon');
 
-    console.log('✓ TEST 3 PASSED: Table View renders matching AppSheet with 1,047 records badge!\n');
+    console.log(`  Owner/Driver typeahead choices: ${BrokersModule.ownerDriverList.length}`);
+    console.log(`  Broker Name typeahead choices: ${BrokersModule.brokerNameList.length}`);
+    console.log('✓ TEST 3 PASSED: Table View renders matching AppSheet without profile icons!\n');
 
     // ----------------------------------------------------
     // TEST 4: Real-Time Typeahead Search
@@ -191,22 +211,40 @@ global.BrokersModule = BrokersModule;
     console.log('✓ TEST 5 PASSED: Record Detail view and < Prev / Next > navigation verified 1:1!\n');
 
     // ----------------------------------------------------
-    // TEST 6: Add / Edit Slide Drawer & Zero LocalStorage CRUD
+    // TEST 6: Drivers/Owners & Broker Name Comboboxes & Drawer CRUD
     // ----------------------------------------------------
-    console.log('--- TEST 6: Add / Edit Slide Drawer & Zero LocalStorage CRUD ---');
-    // Test Open Add Drawer
+    console.log('--- TEST 6: Drivers/Owners & Broker Name Comboboxes & Drawer CRUD ---');
     BrokersModule.openAddDrawer();
     assert.strictEqual(getOrCreateMockElement('formBrokerId').value, '');
+    assert.strictEqual(getOrCreateMockElement('brokerOwnerDriverInput').value, '');
     assert.strictEqual(getOrCreateMockElement('brokerInputName').value, '');
 
-    // Test Save New Broker
-    getOrCreateMockElement('brokerInputName').value = 'Test New Broker Jaipur';
-    getOrCreateMockElement('brokerInputMobile').value = '9829999888';
-    getOrCreateMockElement('brokerInputMobile1').value = '9414000111';
+    // 1. Test Owner/Driver Combobox
+    BrokersModule.filterOwnerDriverCombobox('Laxmi');
+    const odDropdown = getOrCreateMockElement('brokerOwnerDriverDropdown');
+    assert(odDropdown.innerHTML.includes('Laxmi') || odDropdown.innerHTML.includes('Owner'), 'Dropdown suggests owners/drivers');
+
+    // Select an Owner from dropdown
+    BrokersModule.selectOwnerDriverCombobox('Laxmi Prakash Jat', '9784175913', '9829000111');
+    assert.strictEqual(getOrCreateMockElement('brokerOwnerDriverInput').value, 'Laxmi Prakash Jat');
+    assert.strictEqual(getOrCreateMockElement('brokerInputName').value, 'Laxmi Prakash Jat');
+    assert.strictEqual(getOrCreateMockElement('brokerInputMobile').value, '9784175913');
+    assert.strictEqual(getOrCreateMockElement('brokerInputMobile1').value, '9829000111');
+
+    // 2. Test Name Combobox
+    BrokersModule.filterNameCombobox('Udaipur');
+    const nameDropdown = getOrCreateMockElement('brokerNameDropdown');
+    assert(nameDropdown.innerHTML.includes('AR Stone Udaipur'), 'Broker name dropdown suggests existing brokers');
+
+    // Test Free Typing in Name and Mobile fields
+    getOrCreateMockElement('brokerInputName').value = 'Custom New Broker Jodhpur';
+    getOrCreateMockElement('brokerInputMobile').value = '9829123456';
+    getOrCreateMockElement('brokerInputMobile1').value = '9414654321';
 
     await BrokersModule.saveBroker();
     assert.strictEqual(BrokersModule.allBrokers.length, 1048, 'Broker count must increment');
-    assert.strictEqual(BrokersModule.allBrokers[0].name, 'Test New Broker Jaipur');
+    assert.strictEqual(BrokersModule.allBrokers[0].name, 'Custom New Broker Jodhpur');
+    assert.strictEqual(BrokersModule.allBrokers[0].mobile, '9829123456');
 
     // Test Edit Existing Broker
     BrokersModule.openEditDrawer('BRK-0002');
@@ -224,7 +262,7 @@ global.BrokersModule = BrokersModule;
     await BrokersModule.deleteBroker(BrokersModule.allBrokers[0].id); // Delete the test broker
     assert.strictEqual(BrokersModule.allBrokers.length, countBeforeDel - 1, 'Broker count decrements after deletion');
 
-    console.log('✓ TEST 6 PASSED: Add and Edit slide drawer CRUD operations verified!\n');
+    console.log('✓ TEST 6 PASSED: Drivers/Owners and Name comboboxes with typeahead and selection verified!\n');
 
     // ----------------------------------------------------
     // TEST 7: Return Navigation to Table View
