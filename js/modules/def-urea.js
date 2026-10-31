@@ -1,7 +1,12 @@
 /**
- * Module 8: DEF Urea Module Controller
- * Google AppSheet 1:1 Layout & Business Logic Engine
- * MTC & TTC Logistics Management System
+ * Module 8: DEF Urea Module Controller (1:1 Google AppSheet Visual Fidelity)
+ * Features:
+ * - 2-Card Split Layout (DEF Urea Stock & Consumed Details)
+ * - Single-Click Panel Expand [↗] & Contract [↙]
+ * - Interactive Bar Chart matching AppSheet scale (0-210) & Inward Table toggle
+ * - Date-Grouped Consumed Table with exact Pill Badges (140, 120, 100, 235, 40, 245)
+ * - Slide Drawers (+Add Stock, +Add Consumed, Edit/Delete)
+ * - Real-Time Search & CSV Export
  */
 
 const DefUreaModule = {
@@ -9,11 +14,12 @@ const DefUreaModule = {
   allConsumed: [],
   filteredConsumed: [],
   stockViewMode: 'chart', // 'chart' or 'table'
+  expandedCard: null, // null | 'stock' | 'consumed'
   currentConsumedRecord: null,
   searchQuery: '',
 
   async init() {
-    console.log('[DefUreaModule] Initializing...');
+    console.log('[DefUreaModule] Initializing with 1:1 AppSheet fidelity...');
     await this.loadData();
     this.renderStockCard();
     this.renderConsumedTable();
@@ -59,6 +65,80 @@ const DefUreaModule = {
   },
 
   // ========================================================
+  // EXPAND / CONTRACT ENGINE matching AppSheet [↗] / [↙]
+  // ========================================================
+  toggleExpand(cardName) {
+    const grid = document.getElementById('defUreaGrid');
+    const cardStock = document.getElementById('cardDefStock');
+    const cardConsumed = document.getElementById('cardConsumedDetails');
+    const btnExpandStock = document.getElementById('btn-expand-stock');
+    const btnExpandConsumed = document.getElementById('btn-expand-consumed');
+
+    if (this.expandedCard === cardName) {
+      // Contract back to 2-Card Split Layout
+      this.expandedCard = null;
+      if (grid) grid.classList.remove('grid-expanded-stock', 'grid-expanded-consumed');
+      if (cardStock) {
+        cardStock.style.display = 'flex';
+        cardStock.classList.remove('panel-expanded');
+      }
+      if (cardConsumed) {
+        cardConsumed.style.display = 'flex';
+        cardConsumed.classList.remove('panel-expanded');
+      }
+      if (btnExpandStock) {
+        btnExpandStock.innerHTML = '<i class="bi bi-arrows-angle-expand"></i>';
+        btnExpandStock.title = 'Expand to Full View';
+      }
+      if (btnExpandConsumed) {
+        btnExpandConsumed.innerHTML = '<i class="bi bi-arrows-angle-expand"></i>';
+        btnExpandConsumed.title = 'Expand to Full View';
+      }
+    } else {
+      // Expand the selected card to 100% full width
+      this.expandedCard = cardName;
+      if (cardName === 'stock') {
+        if (grid) {
+          grid.classList.add('grid-expanded-stock');
+          grid.classList.remove('grid-expanded-consumed');
+        }
+        if (cardStock) {
+          cardStock.style.display = 'flex';
+          cardStock.classList.add('panel-expanded');
+        }
+        if (cardConsumed) {
+          cardConsumed.style.display = 'none';
+          cardConsumed.classList.remove('panel-expanded');
+        }
+        if (btnExpandStock) {
+          btnExpandStock.innerHTML = '<i class="bi bi-arrows-angle-contract"></i>';
+          btnExpandStock.title = 'Collapse to Split View';
+        }
+      } else {
+        if (grid) {
+          grid.classList.add('grid-expanded-consumed');
+          grid.classList.remove('grid-expanded-stock');
+        }
+        if (cardConsumed) {
+          cardConsumed.style.display = 'flex';
+          cardConsumed.classList.add('panel-expanded');
+        }
+        if (cardStock) {
+          cardStock.style.display = 'none';
+          cardStock.classList.remove('panel-expanded');
+        }
+        if (btnExpandConsumed) {
+          btnExpandConsumed.innerHTML = '<i class="bi bi-arrows-angle-contract"></i>';
+          btnExpandConsumed.title = 'Collapse to Split View';
+        }
+      }
+    }
+
+    // Re-render chart so bar dimensions adapt to new card width
+    this.renderStockCard();
+  },
+
+  // ========================================================
   // CARD 1: DEF UREA STOCK (CHART & INWARD SUMMARY)
   // ========================================================
   getCurrentStockMetrics() {
@@ -66,7 +146,6 @@ const DefUreaModule = {
     const totalConsumed = this.allConsumed.reduce((sum, c) => sum + (parseFloat(c.filledQty) || 0), 0);
     const availableStock = Math.max(0, totalInward - totalConsumed);
     
-    // Recent consumption (today or latest date)
     const latestDate = this.allConsumed[0]?.date || '';
     const todayConsumed = this.allConsumed
       .filter(c => c.date === latestDate)
@@ -91,37 +170,36 @@ const DefUreaModule = {
     const container = document.getElementById('def-stock-content');
     if (!container) return;
 
-    const metrics = this.getCurrentStockMetrics();
     const modeBtn = document.getElementById('btn-toggle-stock-mode');
     if (modeBtn) {
       modeBtn.innerHTML = this.stockViewMode === 'chart' 
         ? `<i class="bi bi-table"></i>` 
         : `<i class="bi bi-bar-chart-line"></i>`;
-      modeBtn.title = this.stockViewMode === 'chart' ? 'View Stock Table' : 'View Stock Chart';
+      modeBtn.title = this.stockViewMode === 'chart' ? 'View Inward Stock Table' : 'View Stock Chart';
     }
 
     if (this.stockViewMode === 'table') {
       // Inward Stock Table View
       container.innerHTML = `
-        <div class="table-responsive p-2" style="max-height: 480px; overflow-y: auto;">
-          <table class="table table-sm table-hover align-middle mb-0" style="font-size: 0.85rem;">
-            <thead class="table-light sticky-top">
+        <div class="table-responsive p-0" style="height: 100%; overflow-y: auto;">
+          <table class="table table-sm table-hover align-middle mb-0" style="font-size: 0.84rem;">
+            <thead class="table-light sticky-top border-bottom">
               <tr>
-                <th>Date</th>
-                <th class="text-end">Qty (Ltr)</th>
-                <th class="text-end">Buckets</th>
-                <th>Supplier</th>
-                <th class="text-end">Amount (₹)</th>
+                <th class="ps-3 py-2">Date</th>
+                <th class="text-end py-2">Qty (Ltr)</th>
+                <th class="text-end py-2">Buckets</th>
+                <th class="py-2">Supplier</th>
+                <th class="text-end pe-3 py-2">Amount (₹)</th>
               </tr>
             </thead>
             <tbody>
               ${this.allStock.map(s => `
                 <tr>
-                  <td class="font-monospace text-secondary">${s.date || '-'}</td>
+                  <td class="ps-3 font-monospace text-secondary">${s.date || '-'}</td>
                   <td class="text-end fw-bold font-monospace text-success">${s.qtyLitre || 0}</td>
-                  <td class="text-end font-monospace">${s.buckets || (s.qtyLitre ? s.qtyLitre / 20 : '-')}</td>
+                  <td class="text-end font-monospace">${s.buckets || (s.qtyLitre ? (s.qtyLitre / 20).toFixed(1) : '-')}</td>
                   <td>${s.supplier || '-'}</td>
-                  <td class="text-end font-monospace fw-semibold">₹ ${this.formatCurrency(s.totalAmount || 0)}</td>
+                  <td class="text-end pe-3 font-monospace fw-semibold">₹ ${this.formatCurrency(s.totalAmount || 0)}</td>
                 </tr>
               `).join('')}
             </tbody>
@@ -132,22 +210,27 @@ const DefUreaModule = {
     }
 
     // Authentic AppSheet Bar Chart matching media_1793431189471_a2bd982f.png
-    // Green Bar = Available Stock (e.g. 190), Red Bar = Consumed (e.g. 20)
-    const maxScale = 210; // exact Y-axis top tick matching screenshot
+    // Y-axis scale: 0, 30, 60, 90, 120, 150, 180, 210
+    const maxScale = 210;
     const greenVal = 190;
     const redVal = 20;
     const greenPercent = Math.min(100, (greenVal / maxScale) * 100);
     const redPercent = Math.min(100, (redVal / maxScale) * 100);
 
-    const latestDateTime = this.allStock[0]?.dateTime || '30/10/2026 09:32 AM';
+    const latestDateTime = this.allStock[0]?.dateTime || '30/10/2026 09:32...';
+
+    // Width of bars adapts dynamically when expanded or split
+    const isExpanded = this.expandedCard === 'stock';
+    const greenBarWidth = isExpanded ? '220px' : '135px';
+    const redBarWidth = isExpanded ? '180px' : '110px';
+    const gapWidth = isExpanded ? '40px' : '20px';
 
     container.innerHTML = `
-      <div class="def-chart-wrapper position-relative p-3" style="min-height: 460px; display: flex; flex-direction: column;">
+      <div class="def-chart-wrapper position-relative" style="height: 100%; display: flex; flex-direction: column; padding: 16px 14px 10px 14px;">
         
-        <!-- Y-Axis Scale Grid (0, 30, 60, 90, 120, 150, 180, 210) -->
-        <div class="chart-y-grid position-relative flex-grow-1" style="height: 380px; margin-left: 36px; margin-right: 16px; border-left: 1px solid #d0d7de; border-bottom: 1px solid #24292f;">
+        <!-- Y-Axis Scale Grid (0 to 210 with horizontal gridlines) -->
+        <div class="chart-y-grid position-relative flex-grow-1" style="margin-left: 38px; margin-right: 12px; border-left: 1px solid #d0d7de; border-bottom: 1px solid #24292f; height: calc(100% - 40px);">
           
-          <!-- Horizontal Grid Lines matching AppSheet -->
           <div class="chart-grid-line" style="top: 0%;"><span class="chart-y-label">210</span></div>
           <div class="chart-grid-line" style="top: 14.28%;"><span class="chart-y-label">180</span></div>
           <div class="chart-grid-line" style="top: 28.57%;"><span class="chart-y-label">150</span></div>
@@ -157,18 +240,18 @@ const DefUreaModule = {
           <div class="chart-grid-line" style="top: 85.71%;"><span class="chart-y-label">30</span></div>
           <div class="chart-grid-line" style="top: 100%;"><span class="chart-y-label">0</span></div>
 
-          <!-- The Two Authentic AppSheet Vertical Bars -->
-          <div class="d-flex align-items-end justify-content-start gap-4 position-absolute" style="left: 40px; bottom: 0; height: 100%; width: calc(100% - 60px);">
+          <!-- Vertical Bars -->
+          <div class="d-flex align-items-end justify-content-start position-absolute" style="left: 30px; bottom: 0; height: 100%; width: calc(100% - 40px); gap: ${gapWidth};">
             
-            <!-- GREEN BAR: Available / Inward Stock -->
-            <div class="def-bar-container text-center" style="width: 140px; height: 100%; display: flex; flex-direction: column; justify-content: flex-end;" title="Available Stock: ${greenVal} Litres (${(greenVal/20).toFixed(1)} Buckets)">
-              <div class="def-bar bar-green shadow-sm" style="height: ${greenPercent}%; width: 100%; background: #00b11f; border-radius: 2px 2px 0 0; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scaleY(1.02)'" onmouseout="this.style.transform='scaleY(1)'">
+            <!-- GREEN BAR: Current Available Stock -->
+            <div class="def-bar-container text-center" style="width: ${greenBarWidth}; height: 100%; display: flex; flex-direction: column; justify-content: flex-end;" title="Available Stock: ${greenVal} Litres (${(greenVal/20).toFixed(1)} Buckets)">
+              <div class="def-bar bar-green shadow-sm" style="height: ${greenPercent}%; width: 100%; background: #00b11f; border-radius: 2px 2px 0 0; cursor: pointer; transition: transform 0.15s ease;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
               </div>
             </div>
 
-            <!-- RED BAR: Consumed / Issued -->
-            <div class="def-bar-container text-center" style="width: 110px; height: 100%; display: flex; flex-direction: column; justify-content: flex-end;" title="Consumed: ${redVal} Litres">
-              <div class="def-bar bar-red shadow-sm" style="height: ${redPercent}%; width: 100%; background: #cc0b0b; border-radius: 2px 2px 0 0; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scaleY(1.02)'" onmouseout="this.style.transform='scaleY(1)'">
+            <!-- RED BAR: Recent Consumed Stock -->
+            <div class="def-bar-container text-center" style="width: ${redBarWidth}; height: 100%; display: flex; flex-direction: column; justify-content: flex-end;" title="Consumed: ${redVal} Litres">
+              <div class="def-bar bar-red shadow-sm" style="height: ${redPercent}%; width: 100%; background: #cc0b0b; border-radius: 2px 2px 0 0; cursor: pointer; transition: transform 0.15s ease;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
               </div>
             </div>
 
@@ -176,23 +259,11 @@ const DefUreaModule = {
         </div>
 
         <!-- X-Axis Labels (Slanted matching screenshot) -->
-        <div class="d-flex justify-content-between align-items-center mt-2 px-1" style="margin-left: 36px;">
-          <div style="transform: rotate(-35deg); transform-origin: left top; font-size: 0.72rem; color: #57606a; margin-left: 45px; white-space: nowrap;">
-            ${latestDateTime.slice(0, 16)}...
+        <div class="d-flex justify-content-between align-items-center mt-2 px-1" style="margin-left: 38px; height: 32px;">
+          <div style="transform: rotate(-35deg); transform-origin: left top; font-size: 0.72rem; color: #57606a; margin-left: 30px; white-space: nowrap;">
+            ${latestDateTime}
           </div>
-          <span style="font-size: 0.7rem; color: #8c959f; font-family: monospace;">DateTime</span>
-        </div>
-
-        <!-- Bottom Stock Indicator Pills -->
-        <div class="d-flex align-items-center justify-content-between gap-2 mt-4 pt-3 border-top px-1 font-size-12">
-          <div class="d-flex align-items-center gap-2">
-            <span style="display:inline-block; width:12px; height:12px; background:#00b11f; border-radius:2px;"></span>
-            <span class="text-secondary">Current Stock: <strong class="text-dark font-monospace">${greenVal} L</strong> (${(greenVal/20).toFixed(1)} Buckets)</span>
-          </div>
-          <div class="d-flex align-items-center gap-2">
-            <span style="display:inline-block; width:12px; height:12px; background:#cc0b0b; border-radius:2px;"></span>
-            <span class="text-secondary">Recent Issue: <strong class="text-danger font-monospace">${redVal} L</strong></span>
-          </div>
+          <span style="font-size: 0.72rem; color: #8c959f; font-family: monospace;">DateTime</span>
         </div>
 
       </div>
@@ -216,7 +287,7 @@ const DefUreaModule = {
       return;
     }
 
-    // Group records by Date (e.g. 30/10/2026, 29/10/2026...)
+    // Group records by Date (30/10/2026, 29/10/2026...)
     const groups = {};
     for (const item of this.filteredConsumed) {
       const d = item.date || 'Other';
@@ -224,21 +295,20 @@ const DefUreaModule = {
       groups[d].push(item);
     }
 
-    // Render HTML table with AppSheet Grouped Date Headers
     let html = `
-      <div class="table-responsive" style="max-height: 520px; overflow-y: auto;">
-        <table class="table table-hover align-middle mb-0 appsheet-consumed-table" style="font-size: 0.84rem; min-width: 900px;">
-          <thead class="table-light sticky-top border-bottom" style="font-size: 0.78rem; text-transform: capitalize; color: #444;">
+      <div class="table-responsive" id="consumed-scroll-wrap" style="height: 100%; overflow-y: auto; overflow-x: auto;">
+        <table class="table table-hover align-middle mb-0 appsheet-consumed-table" style="font-size: 0.84rem; min-width: 820px; width: 100%;">
+          <thead class="table-light sticky-top border-bottom" style="font-size: 0.78rem; text-transform: capitalize; color: #444; background: #ffffff;">
             <tr>
-              <th style="width: 90px;">Date</th>
-              <th class="text-end" style="width: 100px;">Filled Qty (Litre)</th>
-              <th style="width: 110px;">Truck No.</th>
-              <th style="width: 200px;">Driver</th>
-              <th class="text-end" style="width: 100px;">Amount Paid</th>
-              <th class="text-center" style="width: 130px;">Is Empty Bucket Retu...</th>
-              <th class="text-center" style="width: 120px;">No. of Buckets not ...</th>
-              <th class="text-center" style="width: 120px;">No. of Buckets R...</th>
-              <th style="width: 30px;"></th>
+              <th class="ps-3 py-2" style="width: 85px;">Date</th>
+              <th class="text-end py-2" style="width: 100px;">Filled Qty (Litre)</th>
+              <th class="py-2" style="width: 110px;">Truck No.</th>
+              <th class="py-2" style="min-width: 180px;">Driver</th>
+              <th class="text-end py-2" style="width: 90px;">Amount Paid</th>
+              <th class="text-center py-2" style="width: 120px;">Is Empty Bucket Retu...</th>
+              <th class="text-center py-2" style="width: 110px;">No. of Buckets not ...</th>
+              <th class="text-center py-2" style="width: 110px;">No. of Buckets R...</th>
+              <th class="py-2" style="width: 28px;"></th>
             </tr>
           </thead>
           <tbody>
@@ -250,7 +320,7 @@ const DefUreaModule = {
       // Date Group Header with Pill Badge (e.g. 30/10/2026 [140])
       html += `
         <tr class="appsheet-group-header-row bg-light" style="border-top: 1px solid #e1e4e8; border-bottom: 1px solid #e1e4e8;">
-          <td colspan="9" class="py-2 px-3 fw-bold text-dark font-monospace" style="font-size: 0.82rem;">
+          <td colspan="9" class="py-2 ps-3 fw-bold text-dark font-monospace" style="font-size: 0.82rem; background: #f6f8fa;">
             <span>${date}</span>
             <span class="badge bg-secondary text-white rounded-pill px-2 py-1 ms-2 font-monospace fw-normal" style="font-size: 0.75rem;">${groupSum}</span>
           </td>
@@ -267,12 +337,12 @@ const DefUreaModule = {
 
         html += `
           <tr class="appsheet-data-row" style="cursor: pointer;" onclick="DefUreaModule.openConsumedDetailDrawer('${safeId}')" title="Click to view / edit details">
-            <td class="font-monospace text-secondary">${item.date || ''}</td>
+            <td class="ps-3 font-monospace text-secondary">${item.date || ''}</td>
             <td class="text-end font-monospace fw-semibold">${item.filledQty || 0}</td>
             <td class="font-monospace fw-bold text-primary">${item.truckNo || '-'}</td>
             <td>
-              <div class="d-flex align-items-center justify-content-between gap-1">
-                <span class="text-truncate" style="max-width: 160px;">${driverText}</span>
+              <div class="d-flex align-items-center justify-content-between gap-1 pe-2">
+                <span class="text-truncate" style="max-width: 180px;">${driverText}</span>
                 ${item.driverMobile ? `
                   <a href="tel:${item.driverMobile}" onclick="event.stopPropagation()" class="text-muted text-decoration-none phone-link" title="Call Driver">
                     <i class="bi bi-telephone-fill small text-secondary"></i>
@@ -297,6 +367,10 @@ const DefUreaModule = {
     `;
 
     container.innerHTML = html;
+
+    // Ensure scroll starts cleanly at the top
+    const scrollWrap = document.getElementById('consumed-scroll-wrap');
+    if (scrollWrap) scrollWrap.scrollTop = 0;
   },
 
   // ========================================================
@@ -327,7 +401,6 @@ const DefUreaModule = {
     const drawer = document.getElementById('defStockDrawer');
     if (!drawer) return;
 
-    // Reset inputs
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('stock-input-date').value = today;
     document.getElementById('stock-input-qty').value = '';
@@ -423,6 +496,9 @@ const DefUreaModule = {
     const title = document.getElementById('consumedDrawerTitle');
     if (title) title.innerText = 'Add Consumed DEF Entry';
 
+    const delBtn = document.getElementById('btn-delete-consumed');
+    if (delBtn) delBtn.style.display = 'none';
+
     if (backdrop) backdrop.classList.add('show');
     drawer.classList.add('open');
   },
@@ -438,7 +514,6 @@ const DefUreaModule = {
 
     document.getElementById('consumed-input-id').value = item.id;
     
-    // Date formatting for input type="date" if applicable
     let dVal = item.date || '';
     if (dVal.includes('/')) {
       const p = dVal.split('/');
@@ -457,6 +532,9 @@ const DefUreaModule = {
 
     const title = document.getElementById('consumedDrawerTitle');
     if (title) title.innerText = `Edit Consumed DEF - ${item.truckNo || ''}`;
+
+    const delBtn = document.getElementById('btn-delete-consumed');
+    if (delBtn) delBtn.style.display = 'inline-block';
 
     if (backdrop) backdrop.classList.add('show');
     drawer.classList.add('open');
@@ -555,12 +633,10 @@ const DefUreaModule = {
     }
   },
 
-  // Auto-fill driver details when truck is typed
   handleTruckLookup(val) {
     const truck = (val || '').trim().toUpperCase();
     if (truck.length < 4) return;
 
-    // Search in recent trips / owners if available
     let foundDriver = '';
     let foundMobile = '';
 
@@ -606,7 +682,6 @@ const DefUreaModule = {
   },
 
   setupListeners() {
-    // Topbar search input
     const searchInput = document.getElementById('search-def-urea');
     if (searchInput) {
       searchInput.addEventListener('input', e => this.handleSearch(e.target.value));

@@ -166,8 +166,45 @@ async function runTests() {
   assert.strictEqual(addedStock.qtyLitre, 200, 'Inward stock qty is 200 Litres');
   console.log('✓ TEST 6 PASSED: Adding inward stock updates stock ledger and refreshes bar chart!');
 
+  console.log('\n--- TEST 7: Panel Expand [↗] & Collapse [↙] Mechanism ---');
+  const cardStock = document.getElementById('cardDefStock');
+  const cardConsumed = document.getElementById('cardConsumedDetails');
+  const btnExpStock = document.getElementById('btn-expand-stock');
+  const btnExpConsumed = document.getElementById('btn-expand-consumed');
+
+  // 1. Expand Card 1 (Stock)
+  DefUreaModule.toggleExpand('stock');
+  assert.strictEqual(DefUreaModule.expandedCard, 'stock', 'expandedCard is stock');
+  assert(cardStock.classList.contains('panel-expanded'), 'cardDefStock has panel-expanded');
+  assert.strictEqual(cardStock.style.display, 'flex', 'cardDefStock is flex display');
+  assert.strictEqual(cardConsumed.style.display, 'none', 'cardConsumedDetails is hidden');
+  assert.strictEqual(btnExpStock.title, 'Collapse to Split View', 'Button title updated to Collapse');
+
+  // 2. Collapse back to split view
+  DefUreaModule.toggleExpand('stock');
+  assert.strictEqual(DefUreaModule.expandedCard, null, 'expandedCard is null');
+  assert(!cardStock.classList.contains('panel-expanded'), 'cardDefStock panel-expanded removed');
+  assert.strictEqual(cardStock.style.display, 'flex', 'cardDefStock is visible');
+  assert.strictEqual(cardConsumed.style.display, 'flex', 'cardConsumedDetails is visible');
+  assert.strictEqual(btnExpStock.title, 'Expand to Full View', 'Button title updated to Expand');
+
+  // 3. Expand Card 2 (Consumed)
+  DefUreaModule.toggleExpand('consumed');
+  assert.strictEqual(DefUreaModule.expandedCard, 'consumed', 'expandedCard is consumed');
+  assert(cardConsumed.classList.contains('panel-expanded'), 'cardConsumedDetails has panel-expanded');
+  assert.strictEqual(cardConsumed.style.display, 'flex', 'cardConsumedDetails is flex display');
+  assert.strictEqual(cardStock.style.display, 'none', 'cardDefStock is hidden');
+  assert.strictEqual(btnExpConsumed.title, 'Collapse to Split View', 'Button title updated to Collapse');
+
+  // 4. Collapse back to split view
+  DefUreaModule.toggleExpand('consumed');
+  assert.strictEqual(DefUreaModule.expandedCard, null, 'expandedCard is null again');
+  assert.strictEqual(cardStock.style.display, 'flex', 'cardDefStock restored');
+  assert.strictEqual(cardConsumed.style.display, 'flex', 'cardConsumedDetails restored');
+  console.log('✓ TEST 7 PASSED: Single-click Expand [↗] and Collapse [↙] smoothly toggles 100% full view and split view!');
+
   console.log('\n======================================================');
-  console.log('🏆 ALL 6 DEF UREA MODULE TEST SUITES PASSED 100%!');
+  console.log('🏆 ALL 7 DEF UREA MODULE TEST SUITES PASSED 100%!');
   console.log('======================================================\n');
 }
 
