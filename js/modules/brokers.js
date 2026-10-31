@@ -275,7 +275,7 @@ const BrokersModule = {
             <h5 class="mb-1 fw-bold text-dark">${broker.name || 'Unnamed Broker'}</h5>
             <span class="badge bg-light text-secondary border font-monospace">${broker.id || ''}</span>
           </div>
-          <button class="btn btn-outline-primary btn-sm d-inline-flex align-items-center gap-1" onclick="BrokersModule.openEditDrawer('${broker.id}')">
+          <button class="btn btn-sm text-white d-inline-flex align-items-center gap-1" style="background-color: #c3b15a; border-radius: 3px;" onclick="BrokersModule.openEditDrawer('${broker.id}')">
             <i class="bi bi-pencil"></i> Edit
           </button>
         </div>
@@ -309,7 +309,7 @@ const BrokersModule = {
               <div class="detail-label">Mobile No. 1</div>
               <div class="detail-value d-flex align-items-center gap-3">
                 <span class="font-monospace text-dark">${broker.mobile1}</span>
-                <a href="tel:${broker.mobile1}" class="btn btn-outline-primary btn-sm py-0 px-2">
+                <a href="tel:${broker.mobile1}" class="btn btn-outline-secondary btn-sm py-0 px-2">
                   <i class="bi bi-telephone small"></i> Call
                 </a>
               </div>
