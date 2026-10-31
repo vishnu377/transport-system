@@ -138,7 +138,7 @@ const AppUI = {
         <a href="${pagesPath}drivers.html" class="drawer-link ${activePage === 'drivers' ? 'active' : ''}">
           <i class="bi bi-person-vcard text-info"></i> Drivers (888 ड्राइवर)
         </a>
-        <a href="${pagesPath}settlement.html#partnership" class="drawer-link ${activePage === 'partnership' ? 'active' : ''}">
+        <a href="${pagesPath}partnership.html" class="drawer-link ${activePage === 'partnership' ? 'active' : ''}">
           <i class="bi bi-diagram-3 text-warning"></i> Partnership
         </a>
 
