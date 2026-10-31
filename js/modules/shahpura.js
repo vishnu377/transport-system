@@ -17,15 +17,29 @@
  *     4. Shahpura Slice Slide Drawer (+ Add)
  *        - Header: ✕ | Shahpura Slice | Cancel | Save (#c3b15a)
  *        - Fields: DateTime (calendar icon), Amount In Hand (₹), Avaiable Cash (₹), Amount (₹)
- * - Card 2: Given Transactions (Date-grouped, red dots ●, red bold text, sum pills)
- * - Card 3: Deposit Transactions (Date-grouped, green dots ●, green bold text, sum pills, G.R. No)
- * - Searchable & Typable Comboboxes for Trucks & Drivers
+ * - Card 2 (Given Transactions) Full Drilldown Architecture:
+ *     1. Table View (Home > Shahpura > Given Transactions)
+ *        - Date-grouped, red dots ●, red bold text, sum badges, + Add (#c3b15a), Funnel
+ *     2. Record Detail View (Home > Shahpura > Given Transactions > Shahpura Cash records Given)
+ *        - Clean centered card with red dots ●, Date, Amount, Truck No, Name, Mobile (with phone icon), Origin, Destination, Related To, Year, Month, Month
+ *        - Top-right navigation (< > ⤢)
+ *     3. Slide Drawer for Transaction (+ Add / Edit)
+ *        - Header: ✕ | Transaction | Cancel | Save (#c3b15a)
+ *        - Toggle chips: [ ● Trip ] [ ● Other ]
+ *        - Fields: Date (calendar icon), Avaiable Cash is (read-only ₹ -212,329), Amount, Truck No, Driver Name, Origin, Destination, Description
+ * - Card 3 (Deposit Transactions) Full Drilldown Architecture:
+ *     1. Table View (Home > Shahpura > Deposit Transactions)
+ *        - Date-grouped, green dots ●, green bold text, sum badges, G.R. No. column, + Add (#c3b15a), Funnel
+ *     2. Record Detail View (Home > Shahpura > Deposit Transactions > Shahpura Cash records Deposit)
+ *        - Clean centered card with green dots ●, Date, Related To, Name, Mobile (with phone icon), Amount, Description, Year, Month, Month
+ *        - Top-right navigation (< > ⤢)
+ * - Searchable & Typable Comboboxes for Trucks, Drivers, Origins, Destinations
  * - Zero Browser LocalStorage: Cloud Firestore & In-Memory RAM only.
  */
 
 const ShahpuraModule = {
   // Navigation & View State
-  activeView: 'main', // 'main' | 'available_cash' | 'shahpura_slice' | 'slice_detail'
+  activeView: 'main', // 'main' | 'available_cash' | 'shahpura_slice' | 'slice_detail' | 'given_transactions' | 'given_detail' | 'deposit_transactions' | 'deposit_detail'
   expandedCard: null, // null | 'card1' | 'card2' | 'card3'
   searchQuery: '',
 
@@ -43,9 +57,36 @@ const ShahpuraModule = {
   currentDetailType: null, // 'Given' | 'Deposit'
   currentDetailIndex: -1,
 
+  // Slide Drawer State
+  currentFormRelatedTo: 'Trip',
+  currentFormType: 'Given',
+
   // Master lists for Comboboxes
   truckMasterList: [],
   driverMasterList: [],
+  originMasterList: [
+    'Rajsamand (Raj.)',
+    'Udaipur (Raj.)',
+    'Jalore (Raj.)',
+    'Chittorgarh (Raj.)'
+  ],
+  destMasterList: [
+    'Kanpur (U.P.)',
+    'Lucknow (U.P.)',
+    'Morbi (Gujrat)',
+    'Rewari (Haryana)',
+    'Jhajjar (Haryana)',
+    'Sikandrabad (U.P.)',
+    'Firozabad (U.P.)',
+    'Delhi',
+    'Sandila (U.P.)',
+    'Neemrana (Raj.)',
+    'Sonipat (Haryana)',
+    'Sahibabad (U.P.)',
+    'Gorakhpur (U.P.)',
+    'Roorkee (U.K.)',
+    'Bahadurgarh (Haryana)'
+  ],
 
   async init() {
     console.log('[ShahpuraModule] Initializing 1:1 AppSheet Shahpura module...');
@@ -113,7 +154,12 @@ const ShahpuraModule = {
     const defaultTrucks = [
       'RJ52GB5642', 'RJ52GA8733', 'RJ52GB5061', 'RJ52GB5528',
       'RJ52GB5529', 'RJ52GB5641', 'RJ52GA6366', 'RJ52GB0721',
-      'RJ52GB5964', 'RJ14GH9821', 'RJ14GG5412', 'RJ52GB1122'
+      'RJ52GB5964', 'RJ14GH9821', 'RJ14GG5412', 'RJ52GB1122',
+      'RJ52GA8732', 'RJ52GA7391', 'RJ14GH0366', 'RJ52GB2590',
+      'RJ52GB2585', 'RJ52GA7335', 'RJ52GA7338', 'RJ52GA7309',
+      'RJ52GA9546', 'RJ52GB4538', 'RJ52GA7310', 'RJ52GB5963',
+      'RJ52GB5967', 'RJ52GB2507', 'RJ52GB4573', 'RJ52GA7333',
+      'RJ52GB2589', 'RJ52GB4586', 'RJ52GB2509', 'RJ52GA8734'
     ];
     defaultTrucks.forEach(t => trucks.add(t));
 
@@ -149,7 +195,11 @@ const ShahpuraModule = {
   setView(viewName, record = null) {
     this.activeView = viewName;
     if (record) {
-      this.currentSliceRecord = record;
+      if (viewName === 'slice_detail') {
+        this.currentSliceRecord = record;
+      } else {
+        this.currentDetailRecord = record;
+      }
     }
 
     if (viewName === 'main') {
@@ -202,7 +252,6 @@ const ShahpuraModule = {
       `;
       if (searchInput) searchInput.placeholder = 'Search Available Cash';
     } else if (this.activeView === 'shahpura_slice') {
-      // 1:1 AppSheet matching original screenshot: Home > Shahpura > Shahpura Slice
       bcContainer.innerHTML = `
         <div class="d-flex align-items-center gap-1">
           <a href="../index.html" class="breadcrumb-item-home">Home</a>
@@ -241,6 +290,94 @@ const ShahpuraModule = {
         </div>
       `;
       if (searchInput) searchInput.placeholder = 'Search Record';
+    } else if (this.activeView === 'given_transactions') {
+      bcContainer.innerHTML = `
+        <div class="d-flex align-items-center gap-1">
+          <a href="../index.html" class="breadcrumb-item-home">Home</a>
+          <span class="mx-1">&gt;</span>
+          <a href="javascript:void(0)" class="breadcrumb-item-home" onclick="ShahpuraModule.setView('main')">Shahpura</a>
+          <span class="mx-1">&gt;</span>
+          <span class="text-dark fw-medium">Given Transactions</span>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <button class="btn-appsheet-add" onclick="ShahpuraModule.openAddDrawer('Given')">
+            <i class="bi bi-plus-lg"></i> Add
+          </button>
+          <div class="v-divider"></div>
+          <button class="btn-icon-subtle" title="Sort / Filter">
+            <i class="bi bi-funnel"></i>
+          </button>
+        </div>
+      `;
+      if (searchInput) searchInput.placeholder = 'Search Given Transactions';
+    } else if (this.activeView === 'given_detail') {
+      bcContainer.innerHTML = `
+        <div class="d-flex align-items-center gap-1">
+          <a href="../index.html" class="breadcrumb-item-home">Home</a>
+          <span class="mx-1">&gt;</span>
+          <a href="javascript:void(0)" class="breadcrumb-item-home" onclick="ShahpuraModule.setView('main')">Shahpura</a>
+          <span class="mx-1">&gt;</span>
+          <a href="javascript:void(0)" class="breadcrumb-item-home" onclick="ShahpuraModule.setView('given_transactions')">Given Transactions</a>
+          <span class="mx-1">&gt;</span>
+          <span class="text-dark fw-medium">Shahpura Cash records Given</span>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <button class="appsheet-nav-btn" title="Previous Record" onclick="ShahpuraModule.navigateGivenDetail(-1)">
+            <i class="bi bi-chevron-left"></i>
+          </button>
+          <button class="appsheet-nav-btn" title="Next Record" onclick="ShahpuraModule.navigateGivenDetail(1)">
+            <i class="bi bi-chevron-right"></i>
+          </button>
+          <button class="appsheet-nav-btn" title="View Full Table" onclick="ShahpuraModule.setView('given_transactions')">
+            <i class="bi bi-arrows-angle-expand"></i>
+          </button>
+        </div>
+      `;
+      if (searchInput) searchInput.placeholder = 'Search Given Transactions';
+    } else if (this.activeView === 'deposit_transactions') {
+      bcContainer.innerHTML = `
+        <div class="d-flex align-items-center gap-1">
+          <a href="../index.html" class="breadcrumb-item-home">Home</a>
+          <span class="mx-1">&gt;</span>
+          <a href="javascript:void(0)" class="breadcrumb-item-home" onclick="ShahpuraModule.setView('main')">Shahpura</a>
+          <span class="mx-1">&gt;</span>
+          <span class="text-dark fw-medium">Deposit Transactions</span>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <button class="btn-appsheet-add" onclick="ShahpuraModule.openAddDrawer('Deposit')">
+            <i class="bi bi-plus-lg"></i> Add
+          </button>
+          <div class="v-divider"></div>
+          <button class="btn-icon-subtle" title="Sort / Filter">
+            <i class="bi bi-funnel"></i>
+          </button>
+        </div>
+      `;
+      if (searchInput) searchInput.placeholder = 'Search Deposit Transactions';
+    } else if (this.activeView === 'deposit_detail') {
+      bcContainer.innerHTML = `
+        <div class="d-flex align-items-center gap-1">
+          <a href="../index.html" class="breadcrumb-item-home">Home</a>
+          <span class="mx-1">&gt;</span>
+          <a href="javascript:void(0)" class="breadcrumb-item-home" onclick="ShahpuraModule.setView('main')">Shahpura</a>
+          <span class="mx-1">&gt;</span>
+          <a href="javascript:void(0)" class="breadcrumb-item-home" onclick="ShahpuraModule.setView('deposit_transactions')">Deposit Transactions</a>
+          <span class="mx-1">&gt;</span>
+          <span class="text-dark fw-medium">Shahpura Cash records Deposit</span>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <button class="appsheet-nav-btn" title="Previous Record" onclick="ShahpuraModule.navigateDepositDetail(-1)">
+            <i class="bi bi-chevron-left"></i>
+          </button>
+          <button class="appsheet-nav-btn" title="Next Record" onclick="ShahpuraModule.navigateDepositDetail(1)">
+            <i class="bi bi-chevron-right"></i>
+          </button>
+          <button class="appsheet-nav-btn" title="View Full Table" onclick="ShahpuraModule.setView('deposit_transactions')">
+            <i class="bi bi-arrows-angle-expand"></i>
+          </button>
+        </div>
+      `;
+      if (searchInput) searchInput.placeholder = 'Search Deposit Transactions';
     }
   },
 
@@ -268,6 +405,22 @@ const ShahpuraModule = {
       mainGrid.style.display = 'none';
       fullContainer.style.display = 'block';
       this.renderShahpuraSliceDetailView(fullContainer);
+    } else if (this.activeView === 'given_transactions') {
+      mainGrid.style.display = 'none';
+      fullContainer.style.display = 'block';
+      this.renderGivenTransactionsTableView(fullContainer);
+    } else if (this.activeView === 'given_detail') {
+      mainGrid.style.display = 'none';
+      fullContainer.style.display = 'block';
+      this.renderGivenRecordDetailView(fullContainer);
+    } else if (this.activeView === 'deposit_transactions') {
+      mainGrid.style.display = 'none';
+      fullContainer.style.display = 'block';
+      this.renderDepositTransactionsTableView(fullContainer);
+    } else if (this.activeView === 'deposit_detail') {
+      mainGrid.style.display = 'none';
+      fullContainer.style.display = 'block';
+      this.renderDepositRecordDetailView(fullContainer);
     }
   },
 
@@ -525,16 +678,12 @@ const ShahpuraModule = {
 
     container.innerHTML = `
       <div class="h-100 d-flex flex-column bg-white">
-        <!-- Centered Record Detail Card matching Screenshot 3 -->
         <div class="flex-grow-1 d-flex justify-content-start align-items-start p-4" style="background: #ffffff;">
           <div style="width: 100%; max-width: 600px; border: 1px solid #dadce0; border-radius: 4px; padding: 18px 24px; background: #ffffff;">
-            <!-- Row 1: DateTime -->
             <div class="d-flex align-items-center py-2">
               <span style="width: 160px; font-size: 13px; color: #3c4043; font-weight: 500;">DateTime</span>
               <span style="font-size: 14px; color: #202124; font-weight: 500;">${r.dateTime}</span>
             </div>
-
-            <!-- Row 2: Avaiable Cash -->
             <div class="d-flex align-items-center py-2">
               <span style="width: 160px; font-size: 13px; color: #3c4043; font-weight: 500;">Avaiable Cash</span>
               <div class="d-flex align-items-center gap-2">
@@ -598,13 +747,11 @@ const ShahpuraModule = {
     this.allSlice.unshift(newRecord);
     this.filteredSlice = [...this.allSlice];
 
-    // Close Drawer
     const drawerEl = document.getElementById('shahpuraSliceAddDrawer');
     if (drawerEl) {
       bootstrap.Offcanvas.getInstance(drawerEl)?.hide();
     }
 
-    // Refresh view
     this.renderCurrentView();
 
     if (typeof AppUI !== 'undefined' && AppUI.showToast) {
@@ -613,7 +760,7 @@ const ShahpuraModule = {
   },
 
   // ========================================================
-  // CARD 2: GIVEN TRANSACTIONS (Date-Grouped, Red Format Rules)
+  // CARD 2: GIVEN TRANSACTIONS (DASHBOARD WIDGET)
   // ========================================================
   renderCard2GivenTransactions() {
     const container = document.getElementById('card2TableBody');
@@ -664,7 +811,7 @@ const ShahpuraModule = {
       for (const row of items) {
         const formattedAmt = '₹ ' + (Number(row.amount) || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         html += `
-          <tr class="appsheet-data-row" onclick="ShahpuraModule.openDetailDrawer('${row.id}', 'Given')">
+          <tr class="appsheet-data-row" onclick="ShahpuraModule.openGivenDetail('${row.id}')">
             <td class="col-date">
               <span class="appsheet-circle-dot red-dot">●</span>
               <span class="red-text fw-bold">${row.date}</span>
@@ -705,7 +852,256 @@ const ShahpuraModule = {
   },
 
   // ========================================================
-  // CARD 3: DEPOSIT TRANSACTIONS (Date-Grouped, Green Dots & GR)
+  // CARD 2 FULL VIEW: GIVEN TRANSACTIONS TABLE VIEW (1:1 Screencapture)
+  // ========================================================
+  renderGivenTransactionsTableView(container) {
+    if (this.filteredGiven.length === 0) {
+      container.innerHTML = `
+        <div class="text-center py-5 text-muted">
+          <i class="bi bi-inbox fs-2 text-secondary"></i>
+          <p class="mt-2 mb-0 small">No given transactions found matching your criteria.</p>
+        </div>
+      `;
+      return;
+    }
+
+    const grouped = new Map();
+    for (const item of this.filteredGiven) {
+      if (!grouped.has(item.date)) {
+        grouped.set(item.date, []);
+      }
+      grouped.get(item.date).push(item);
+    }
+
+    const sortedDates = Array.from(grouped.keys()).sort((a, b) => {
+      const pa = a.split('/').reverse().join('-');
+      const pb = b.split('/').reverse().join('-');
+      return pb.localeCompare(pa);
+    });
+
+    let rowsHTML = '';
+    for (const date of sortedDates) {
+      const items = grouped.get(date);
+      const totalAmount = items.reduce((acc, curr) => acc + (Number(curr.amount) || 0), 0);
+      const formattedTotal = '₹' + totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+      rowsHTML += `
+        <tr class="appsheet-group-header-row bg-white">
+          <td colspan="8" class="p-2 border-bottom">
+            <div class="d-flex align-items-center gap-2">
+              <span class="appsheet-circle-dot red-dot">●</span>
+              <span class="fw-bold red-text">${date}</span>
+              <span class="appsheet-sum-badge">${formattedTotal}</span>
+            </div>
+          </td>
+        </tr>
+      `;
+
+      for (const row of items) {
+        const formattedAmt = '₹ ' + (Number(row.amount) || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        rowsHTML += `
+          <tr class="appsheet-data-row" onclick="ShahpuraModule.openGivenDetail('${row.id}')" style="cursor: pointer; border-bottom: 1px solid #f1f3f4;">
+            <td style="padding: 8px 12px; width: 120px;">
+              <span class="appsheet-circle-dot red-dot">●</span>
+              <span class="red-text fw-bold">${row.date}</span>
+            </td>
+            <td style="padding: 8px 12px; width: 120px;">
+              <span class="appsheet-circle-dot red-dot">●</span>
+              <span class="red-text fw-bold">${formattedAmt}</span>
+            </td>
+            <td style="padding: 8px 12px; width: 130px;">
+              ${row.truckNo ? `<span class="appsheet-circle-dot red-dot">●</span><span class="red-text fw-bold">${row.truckNo}</span>` : ''}
+            </td>
+            <td style="padding: 8px 12px; width: 220px;" class="text-truncate" title="${row.name}">
+              <span class="appsheet-circle-dot red-dot">●</span>
+              <span class="red-text fw-bold">${row.name || ''}</span>
+            </td>
+            <td style="padding: 8px 12px; width: 150px;" class="text-truncate" title="${row.origin}">
+              ${row.origin ? `<span class="appsheet-circle-dot red-dot">●</span><span class="red-text fw-bold">${row.origin}</span>` : ''}
+            </td>
+            <td style="padding: 8px 12px; width: 150px;" class="text-truncate" title="${row.destination}">
+              ${row.destination ? `<span class="appsheet-circle-dot red-dot">●</span><span class="red-text fw-bold">${row.destination}</span>` : ''}
+            </td>
+            <td style="padding: 8px 12px; width: 160px;" class="text-truncate" title="${row.description}">
+              <span class="appsheet-circle-dot red-dot">●</span>
+              <span class="red-text fw-bold">${row.description || ''}</span>
+            </td>
+            <td style="padding: 8px 12px; text-align: right; width: 40px;">
+              <i class="bi bi-chevron-right text-secondary fs-6"></i>
+            </td>
+          </tr>
+        `;
+      }
+    }
+
+    container.innerHTML = `
+      <div class="h-100 bg-white" style="overflow-y: auto;">
+        <table class="appsheet-table w-100">
+          <thead>
+            <tr>
+              <th style="width: 120px;">Date</th>
+              <th style="width: 120px;">Amount</th>
+              <th style="width: 130px;">Truck No.</th>
+              <th style="width: 220px;">Name</th>
+              <th style="width: 150px;">Origin</th>
+              <th style="width: 150px;">Destination</th>
+              <th style="width: 160px;">Description</th>
+              <th style="width: 40px;"></th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rowsHTML}
+          </tbody>
+        </table>
+      </div>
+    `;
+  },
+
+  // ========================================================
+  // CARD 2 RECORD DETAIL VIEW: SHAHPURA CASH RECORDS GIVEN (1:1 Screenshot)
+  // ========================================================
+  openGivenDetail(id) {
+    const list = this.filteredGiven;
+    const idx = list.findIndex(item => String(item.id) === String(id));
+    if (idx !== -1) {
+      this.currentDetailIndex = idx;
+      this.currentDetailRecord = list[idx];
+      this.setView('given_detail', list[idx]);
+    }
+  },
+
+  navigateGivenDetail(delta) {
+    const list = this.filteredGiven;
+    if (!list.length) return;
+    let newIdx = this.currentDetailIndex + delta;
+    if (newIdx < 0) newIdx = 0;
+    if (newIdx >= list.length) newIdx = list.length - 1;
+    this.currentDetailIndex = newIdx;
+    this.currentDetailRecord = list[newIdx];
+    this.renderCurrentView();
+  },
+
+  renderGivenRecordDetailView(container) {
+    const r = this.currentDetailRecord || (this.filteredGiven.length > 0 ? this.filteredGiven[0] : null);
+    if (!r) return;
+
+    const formattedAmt = '₹' + (Number(r.amount) || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    container.innerHTML = `
+      <div class="h-100 d-flex flex-column bg-white p-4" style="overflow-y: auto;">
+        <div class="record-detail-card mx-auto">
+          <!-- Date -->
+          <div class="record-detail-row">
+            <div class="record-detail-label">Date</div>
+            <div class="record-detail-val red-text">
+              <span class="appsheet-circle-dot red-dot">●</span>
+              <span>${r.date}</span>
+            </div>
+          </div>
+
+          <!-- Amount -->
+          <div class="record-detail-row">
+            <div class="record-detail-label">Amount</div>
+            <div class="record-detail-val red-text">
+              <span class="appsheet-circle-dot red-dot">●</span>
+              <span>${formattedAmt}</span>
+            </div>
+          </div>
+
+          <!-- Truck No. -->
+          <div class="record-detail-row">
+            <div class="record-detail-label">Truck No.</div>
+            <div class="record-detail-val red-text">
+              <span class="appsheet-circle-dot red-dot">●</span>
+              <span>${r.truckNo || ''}</span>
+            </div>
+          </div>
+
+          <!-- Name -->
+          <div class="record-detail-row">
+            <div class="record-detail-label">Name</div>
+            <div class="record-detail-val red-text">
+              <span class="appsheet-circle-dot red-dot">●</span>
+              <span>${r.name || ''}</span>
+            </div>
+          </div>
+
+          <!-- Mobile No. -->
+          <div class="record-detail-row">
+            <div class="record-detail-label">Mobile No.</div>
+            <div class="record-detail-val red-text d-flex justify-content-between align-items-center w-100">
+              <div>
+                <span class="appsheet-circle-dot red-dot">●</span>
+                <span>${r.phone || ''}</span>
+              </div>
+              ${r.phone ? `
+                <a href="tel:${r.phone}" class="text-danger" title="Call ${r.phone}">
+                  <i class="bi bi-telephone text-danger fs-6"></i>
+                </a>
+              ` : ''}
+            </div>
+          </div>
+
+          <!-- Origin -->
+          <div class="record-detail-row">
+            <div class="record-detail-label">Origin</div>
+            <div class="record-detail-val red-text">
+              <span class="appsheet-circle-dot red-dot">●</span>
+              <span>${r.origin || ''}</span>
+            </div>
+          </div>
+
+          <!-- Destination -->
+          <div class="record-detail-row">
+            <div class="record-detail-label">Destination</div>
+            <div class="record-detail-val red-text">
+              <span class="appsheet-circle-dot red-dot">●</span>
+              <span>${r.destination || ''}</span>
+            </div>
+          </div>
+
+          <!-- Related To -->
+          <div class="record-detail-row">
+            <div class="record-detail-label">Related To</div>
+            <div class="record-detail-val red-text">
+              <span class="appsheet-circle-dot red-dot">●</span>
+              <span>${r.relatedTo || 'Trip'}</span>
+            </div>
+          </div>
+
+          <!-- Year -->
+          <div class="record-detail-row">
+            <div class="record-detail-label">Year</div>
+            <div class="record-detail-val red-text">
+              <span class="appsheet-circle-dot red-dot">●</span>
+              <span>${r.year || '2026-2027'}</span>
+            </div>
+          </div>
+
+          <!-- Month -->
+          <div class="record-detail-row">
+            <div class="record-detail-label">Month</div>
+            <div class="record-detail-val red-text">
+              <span class="appsheet-circle-dot red-dot">●</span>
+              <span>${r.month || 'Oct'}</span>
+            </div>
+          </div>
+
+          <!-- Month (Day Month) -->
+          <div class="record-detail-row">
+            <div class="record-detail-label">Month</div>
+            <div class="record-detail-val red-text">
+              <span class="appsheet-circle-dot red-dot">●</span>
+              <span>${r.monthDay || '7 Oct'}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  },
+
+  // ========================================================
+  // CARD 3: DEPOSIT TRANSACTIONS (DASHBOARD WIDGET)
   // ========================================================
   renderCard3DepositTransactions() {
     const container = document.getElementById('card3TableBody');
@@ -756,7 +1152,7 @@ const ShahpuraModule = {
       for (const row of items) {
         const formattedAmt = '₹ ' + (Number(row.amount) || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         html += `
-          <tr class="appsheet-data-row" onclick="ShahpuraModule.openDetailDrawer('${row.id}', 'Deposit')">
+          <tr class="appsheet-data-row" onclick="ShahpuraModule.openDepositDetail('${row.id}')">
             <td class="col-date">
               <span class="appsheet-circle-dot green-dot">●</span>
               <span class="green-text fw-bold">${row.date}</span>
@@ -796,6 +1192,240 @@ const ShahpuraModule = {
   },
 
   // ========================================================
+  // CARD 3 FULL VIEW: DEPOSIT TRANSACTIONS TABLE VIEW (1:1 Screencapture)
+  // ========================================================
+  renderDepositTransactionsTableView(container) {
+    if (this.filteredDeposit.length === 0) {
+      container.innerHTML = `
+        <div class="text-center py-5 text-muted">
+          <i class="bi bi-inbox fs-2 text-secondary"></i>
+          <p class="mt-2 mb-0 small">No deposit transactions found matching your criteria.</p>
+        </div>
+      `;
+      return;
+    }
+
+    const grouped = new Map();
+    for (const item of this.filteredDeposit) {
+      if (!grouped.has(item.date)) {
+        grouped.set(item.date, []);
+      }
+      grouped.get(item.date).push(item);
+    }
+
+    const sortedDates = Array.from(grouped.keys()).sort((a, b) => {
+      const pa = a.split('/').reverse().join('-');
+      const pb = b.split('/').reverse().join('-');
+      return pb.localeCompare(pa);
+    });
+
+    let rowsHTML = '';
+    for (const date of sortedDates) {
+      const items = grouped.get(date);
+      const totalAmount = items.reduce((acc, curr) => acc + (Number(curr.amount) || 0), 0);
+      const formattedTotal = '₹' + totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+      rowsHTML += `
+        <tr class="appsheet-group-header-row bg-white">
+          <td colspan="9" class="p-2 border-bottom">
+            <div class="d-flex align-items-center gap-2">
+              <span class="appsheet-circle-dot green-dot">●</span>
+              <span class="fw-bold green-text">${date}</span>
+              <span class="appsheet-sum-badge">${formattedTotal}</span>
+            </div>
+          </td>
+        </tr>
+      `;
+
+      for (const row of items) {
+        const formattedAmt = '₹ ' + (Number(row.amount) || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        rowsHTML += `
+          <tr class="appsheet-data-row" onclick="ShahpuraModule.openDepositDetail('${row.id}')" style="cursor: pointer; border-bottom: 1px solid #f1f3f4;">
+            <td style="padding: 8px 12px; width: 120px;">
+              <span class="appsheet-circle-dot green-dot">●</span>
+              <span class="green-text fw-bold">${row.date}</span>
+            </td>
+            <td style="padding: 8px 12px; width: 120px;">
+              <span class="appsheet-circle-dot green-dot">●</span>
+              <span class="green-text fw-bold">${formattedAmt}</span>
+            </td>
+            <td style="padding: 8px 12px; width: 130px;">
+              ${row.truckNo ? `<span class="appsheet-circle-dot green-dot">●</span><span class="green-text fw-bold">${row.truckNo}</span>` : ''}
+            </td>
+            <td style="padding: 8px 12px; width: 200px;" class="text-truncate" title="${row.name}">
+              <span class="appsheet-circle-dot green-dot">●</span>
+              <span class="green-text fw-bold">${row.name || ''}</span>
+            </td>
+            <td style="padding: 8px 12px; width: 90px;">
+              ${row.grNo ? `<span class="appsheet-circle-dot green-dot">●</span><span class="green-text fw-bold">${row.grNo}</span>` : (row.origin || row.destination ? `<span class="appsheet-circle-dot green-dot">●</span>` : '')}
+            </td>
+            <td style="padding: 8px 12px; width: 140px;" class="text-truncate" title="${row.origin}">
+              ${row.origin ? `<span class="appsheet-circle-dot green-dot">●</span><span class="green-text fw-bold">${row.origin}</span>` : ''}
+            </td>
+            <td style="padding: 8px 12px; width: 140px;" class="text-truncate" title="${row.destination}">
+              ${row.destination ? `<span class="appsheet-circle-dot green-dot">●</span><span class="green-text fw-bold">${row.destination}</span>` : ''}
+            </td>
+            <td style="padding: 8px 12px; width: 150px;" class="text-truncate" title="${row.description}">
+              ${row.description ? `<span class="appsheet-circle-dot green-dot">●</span><span class="green-text fw-bold">${row.description}</span>` : `<span class="appsheet-circle-dot green-dot">●</span>`}
+            </td>
+            <td style="padding: 8px 12px; text-align: right; width: 40px;">
+              <i class="bi bi-chevron-right text-secondary fs-6"></i>
+            </td>
+          </tr>
+        `;
+      }
+    }
+
+    container.innerHTML = `
+      <div class="h-100 bg-white" style="overflow-y: auto;">
+        <table class="appsheet-table w-100">
+          <thead>
+            <tr>
+              <th style="width: 120px;">Date</th>
+              <th style="width: 120px;">Amount</th>
+              <th style="width: 130px;">Truck No.</th>
+              <th style="width: 200px;">Name</th>
+              <th style="width: 90px;">G.R. No.</th>
+              <th style="width: 140px;">Origin</th>
+              <th style="width: 140px;">Destination</th>
+              <th style="width: 150px;">Description</th>
+              <th style="width: 40px;"></th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rowsHTML}
+          </tbody>
+        </table>
+      </div>
+    `;
+  },
+
+  // ========================================================
+  // CARD 3 RECORD DETAIL VIEW: SHAHPURA CASH RECORDS DEPOSIT (1:1 Screenshot)
+  // ========================================================
+  openDepositDetail(id) {
+    const list = this.filteredDeposit;
+    const idx = list.findIndex(item => String(item.id) === String(id));
+    if (idx !== -1) {
+      this.currentDetailIndex = idx;
+      this.currentDetailRecord = list[idx];
+      this.setView('deposit_detail', list[idx]);
+    }
+  },
+
+  navigateDepositDetail(delta) {
+    const list = this.filteredDeposit;
+    if (!list.length) return;
+    let newIdx = this.currentDetailIndex + delta;
+    if (newIdx < 0) newIdx = 0;
+    if (newIdx >= list.length) newIdx = list.length - 1;
+    this.currentDetailIndex = newIdx;
+    this.currentDetailRecord = list[newIdx];
+    this.renderCurrentView();
+  },
+
+  renderDepositRecordDetailView(container) {
+    const r = this.currentDetailRecord || (this.filteredDeposit.length > 0 ? this.filteredDeposit[0] : null);
+    if (!r) return;
+
+    const formattedAmt = '₹' + (Number(r.amount) || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    container.innerHTML = `
+      <div class="h-100 d-flex flex-column bg-white p-4" style="overflow-y: auto;">
+        <div class="record-detail-card mx-auto">
+          <!-- Date -->
+          <div class="record-detail-row">
+            <div class="record-detail-label">Date</div>
+            <div class="record-detail-val green-text">
+              <span class="appsheet-circle-dot green-dot">●</span>
+              <span>${r.date}</span>
+            </div>
+          </div>
+
+          <!-- Related To -->
+          <div class="record-detail-row">
+            <div class="record-detail-label">Related To</div>
+            <div class="record-detail-val green-text">
+              <span class="appsheet-circle-dot green-dot">●</span>
+              <span>${r.relatedTo || 'Other'}</span>
+            </div>
+          </div>
+
+          <!-- Name -->
+          <div class="record-detail-row">
+            <div class="record-detail-label">Name</div>
+            <div class="record-detail-val green-text">
+              <span class="appsheet-circle-dot green-dot">●</span>
+              <span>${r.name || ''}</span>
+            </div>
+          </div>
+
+          <!-- Mobile No. -->
+          <div class="record-detail-row">
+            <div class="record-detail-label">Mobile No.</div>
+            <div class="record-detail-val green-text d-flex justify-content-between align-items-center w-100">
+              <div>
+                <span class="appsheet-circle-dot green-dot">●</span>
+                <span>${r.phone || ''}</span>
+              </div>
+              ${r.phone ? `
+                <a href="tel:${r.phone}" class="text-success" title="Call ${r.phone}">
+                  <i class="bi bi-telephone text-success fs-6"></i>
+                </a>
+              ` : ''}
+            </div>
+          </div>
+
+          <!-- Amount -->
+          <div class="record-detail-row">
+            <div class="record-detail-label">Amount</div>
+            <div class="record-detail-val green-text">
+              <span class="appsheet-circle-dot green-dot">●</span>
+              <span>${formattedAmt}</span>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="record-detail-row">
+            <div class="record-detail-label">Description</div>
+            <div class="record-detail-val green-text">
+              <span class="appsheet-circle-dot green-dot">●</span>
+              <span>${r.description || ''}</span>
+            </div>
+          </div>
+
+          <!-- Year -->
+          <div class="record-detail-row">
+            <div class="record-detail-label">Year</div>
+            <div class="record-detail-val green-text">
+              <span class="appsheet-circle-dot green-dot">●</span>
+              <span>${r.year || '2026-2027'}</span>
+            </div>
+          </div>
+
+          <!-- Month -->
+          <div class="record-detail-row">
+            <div class="record-detail-label">Month</div>
+            <div class="record-detail-val green-text">
+              <span class="appsheet-circle-dot green-dot">●</span>
+              <span>${r.month || 'Oct'}</span>
+            </div>
+          </div>
+
+          <!-- Month (Day Month) -->
+          <div class="record-detail-row">
+            <div class="record-detail-label">Month</div>
+            <div class="record-detail-val green-text">
+              <span class="appsheet-circle-dot green-dot">●</span>
+              <span>${r.monthDay || '7 Oct'}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  },
+
+  // ========================================================
   // EXPAND [↗] & COLLAPSE [↙] ENGINE
   // ========================================================
   toggleExpand(cardKey) {
@@ -803,60 +1433,13 @@ const ShahpuraModule = {
       this.setView('available_cash');
       return;
     }
-
-    const grid = document.getElementById('shahpuraGrid');
-    if (!grid) return;
-
-    const card1El = document.getElementById('shahpuraCard1');
-    const rightStackEl = document.getElementById('shahpuraRightStack');
-    const card2El = document.getElementById('shahpuraCard2');
-    const card3El = document.getElementById('shahpuraCard3');
-
-    const btn2 = document.getElementById('expandBtnCard2');
-    const btn3 = document.getElementById('expandBtnCard3');
-
-    if (this.expandedCard === cardKey) {
-      this.expandedCard = null;
-      grid.className = 'shahpura-grid';
-      if (card1El) card1El.style.display = 'flex';
-      if (rightStackEl) rightStackEl.style.display = 'grid';
-      if (card2El) card2El.style.display = 'flex';
-      if (card3El) card3El.style.display = 'flex';
-
-      if (btn2) btn2.innerHTML = '<i class="bi bi-arrows-angle-expand"></i>';
-      if (btn3) btn3.innerHTML = '<i class="bi bi-arrows-angle-expand"></i>';
-    } else {
-      this.expandedCard = cardKey;
-
-      if (cardKey === 'card2') {
-        grid.className = 'shahpura-grid grid-expanded-card2';
-        if (card1El) card1El.style.display = 'none';
-        if (rightStackEl) {
-          rightStackEl.style.display = 'flex';
-          rightStackEl.style.height = '100%';
-        }
-        if (card2El) {
-          card2El.style.display = 'flex';
-          card2El.style.flex = '1 1 100%';
-        }
-        if (card3El) card3El.style.display = 'none';
-        if (btn2) btn2.innerHTML = '<i class="bi bi-arrows-angle-contract text-primary"></i>';
-        if (btn3) btn3.innerHTML = '<i class="bi bi-arrows-angle-expand"></i>';
-      } else if (cardKey === 'card3') {
-        grid.className = 'shahpura-grid grid-expanded-card3';
-        if (card1El) card1El.style.display = 'none';
-        if (rightStackEl) {
-          rightStackEl.style.display = 'flex';
-          rightStackEl.style.height = '100%';
-        }
-        if (card2El) card2El.style.display = 'none';
-        if (card3El) {
-          card3El.style.display = 'flex';
-          card3El.style.flex = '1 1 100%';
-        }
-        if (btn2) btn2.innerHTML = '<i class="bi bi-arrows-angle-expand"></i>';
-        if (btn3) btn3.innerHTML = '<i class="bi bi-arrows-angle-contract text-primary"></i>';
-      }
+    if (cardKey === 'card2') {
+      this.setView('given_transactions');
+      return;
+    }
+    if (cardKey === 'card3') {
+      this.setView('deposit_transactions');
+      return;
     }
   },
 
@@ -916,154 +1499,51 @@ const ShahpuraModule = {
     } else if (this.activeView === 'shahpura_slice') {
       const container = document.getElementById('shahpuraFullViewContainer');
       if (container) this.renderShahpuraSliceTableView(container);
+    } else if (this.activeView === 'given_transactions') {
+      const container = document.getElementById('shahpuraFullViewContainer');
+      if (container) this.renderGivenTransactionsTableView(container);
+    } else if (this.activeView === 'deposit_transactions') {
+      const container = document.getElementById('shahpuraFullViewContainer');
+      if (container) this.renderDepositTransactionsTableView(container);
     }
-  },
-
-  // ========================================================
-  // RECORD DETAIL DRAWER FOR GIVEN & DEPOSIT TRANSACTIONS
-  // ========================================================
-  openDetailDrawer(id, type) {
-    const list = type === 'Given' ? this.filteredGiven : this.filteredDeposit;
-    const idx = list.findIndex(item => String(item.id) === String(id));
-    if (idx === -1) return;
-
-    this.currentDetailRecord = list[idx];
-    this.currentDetailType = type;
-    this.currentDetailIndex = idx;
-
-    this.renderDetailDrawer();
-
-    const drawer = document.getElementById('shahpuraDetailDrawer');
-    if (drawer) {
-      const bsDrawer = bootstrap.Offcanvas.getOrCreateInstance(drawer);
-      bsDrawer.show();
-    }
-  },
-
-  navigateDetail(delta) {
-    const list = this.currentDetailType === 'Given' ? this.filteredGiven : this.filteredDeposit;
-    const newIdx = this.currentDetailIndex + delta;
-    if (newIdx < 0 || newIdx >= list.length) return;
-
-    this.currentDetailIndex = newIdx;
-    this.currentDetailRecord = list[newIdx];
-    this.renderDetailDrawer();
-  },
-
-  renderDetailDrawer() {
-    const r = this.currentDetailRecord;
-    const type = this.currentDetailType;
-    if (!r) return;
-
-    const list = type === 'Given' ? this.filteredGiven : this.filteredDeposit;
-    const hasPrev = this.currentDetailIndex > 0;
-    const hasNext = this.currentDetailIndex < list.length - 1;
-
-    const isGiven = type === 'Given';
-    const colorClass = isGiven ? 'text-danger' : 'text-success';
-    const dotColor = isGiven ? 'red-dot' : 'green-dot';
-
-    const formattedAmt = '₹ ' + (Number(r.amount) || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-    const contentEl = document.getElementById('shahpuraDetailDrawerBody');
-    if (!contentEl) return;
-
-    contentEl.innerHTML = `
-      <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
-        <div class="d-flex align-items-center gap-2">
-          <button class="btn btn-outline-secondary btn-sm" onclick="ShahpuraModule.navigateDetail(-1)" ${hasPrev ? '' : 'disabled'}>
-            <i class="bi bi-chevron-left"></i>
-          </button>
-          <button class="btn btn-outline-secondary btn-sm" onclick="ShahpuraModule.navigateDetail(1)" ${hasNext ? '' : 'disabled'}>
-            <i class="bi bi-chevron-right"></i>
-          </button>
-          <span class="text-muted small">${this.currentDetailIndex + 1} of ${list.length}</span>
-        </div>
-        <div class="d-flex align-items-center gap-2">
-          <button class="btn btn-outline-primary btn-sm" onclick="ShahpuraModule.openEditDrawer('${r.id}', '${type}')">
-            <i class="bi bi-pencil me-1"></i> Edit
-          </button>
-          <button class="btn btn-outline-danger btn-sm" onclick="ShahpuraModule.deleteTransactionPrompt('${r.id}')">
-            <i class="bi bi-trash"></i>
-          </button>
-        </div>
-      </div>
-
-      <div class="card mb-3 border-0 bg-light">
-        <div class="card-body p-3">
-          <div class="text-muted small text-uppercase fw-bold">${type} Transaction</div>
-          <div class="d-flex align-items-center gap-2 mt-1">
-            <span class="appsheet-circle-dot ${dotColor}">●</span>
-            <span class="fs-4 fw-bold ${colorClass}">${formattedAmt}</span>
-          </div>
-          <div class="text-muted small mt-1">ID: ${r.id} | Date: ${r.date}</div>
-        </div>
-      </div>
-
-      <div class="appsheet-detail-grid">
-        <div class="detail-row">
-          <span class="detail-label">Date</span>
-          <span class="detail-value fw-bold">${r.date}</span>
-        </div>
-        <div class="detail-row">
-          <span class="detail-label">Amount</span>
-          <span class="detail-value fw-bold ${colorClass}">${formattedAmt}</span>
-        </div>
-        <div class="detail-row">
-          <span class="detail-label">Truck No.</span>
-          <span class="detail-value fw-bold">${r.truckNo || '-'}</span>
-        </div>
-        <div class="detail-row">
-          <span class="detail-label">${isGiven ? 'Driver / Recipient' : 'Payer / Contact'}</span>
-          <span class="detail-value fw-bold">${r.name || '-'}</span>
-        </div>
-        ${r.phone ? `
-          <div class="detail-row">
-            <span class="detail-label">Mobile</span>
-            <span class="detail-value">
-              <a href="tel:${r.phone}" class="text-primary text-decoration-none">
-                <i class="bi bi-telephone-fill me-1"></i> ${r.phone}
-              </a>
-            </span>
-          </div>
-        ` : ''}
-        ${!isGiven ? `
-          <div class="detail-row">
-            <span class="detail-label">G.R. No.</span>
-            <span class="detail-value fw-bold">${r.grNo || '-'}</span>
-          </div>
-        ` : ''}
-        <div class="detail-row">
-          <span class="detail-label">Origin</span>
-          <span class="detail-value">${r.origin || '-'}</span>
-        </div>
-        <div class="detail-row">
-          <span class="detail-label">Destination</span>
-          <span class="detail-value">${r.destination || '-'}</span>
-        </div>
-        <div class="detail-row">
-          <span class="detail-label">Description / Remarks</span>
-          <span class="detail-value">${r.description || '-'}</span>
-        </div>
-      </div>
-    `;
   },
 
   // ========================================================
   // + ADD / EDIT TRANSACTION SLIDE DRAWERS
   // ========================================================
   openAddDrawer(type = 'Given') {
-    const titleEl = document.getElementById('transactionFormTitle');
+    this.currentFormType = type;
     const formTypeEl = document.getElementById('txFormType');
     const editIdEl = document.getElementById('txFormEditId');
 
-    if (titleEl) titleEl.innerText = `New ${type} Transaction`;
     if (formTypeEl) formTypeEl.value = type;
     if (editIdEl) editIdEl.value = '';
 
-    const today = new Date().toLocaleDateString('en-GB');
-    document.getElementById('txDate').value = today;
-    document.getElementById('txAmount').value = '';
+    const dotRelTrip = document.getElementById('dotRelTrip');
+    const dotRelOther = document.getElementById('dotRelOther');
+    if (dotRelTrip && dotRelOther) {
+      if (type === 'Given') {
+        dotRelTrip.className = 'appsheet-circle-dot red-dot';
+        dotRelOther.className = 'appsheet-circle-dot red-dot';
+      } else {
+        dotRelTrip.className = 'appsheet-circle-dot green-dot';
+        dotRelOther.className = 'appsheet-circle-dot green-dot';
+      }
+    }
+
+    // Default to Trip (or Other for deposit if user wants)
+    this.setFormRelatedTo(type === 'Deposit' ? 'Other' : 'Trip');
+
+    const state = this.calculateCashState();
+    const avCashEl = document.getElementById('txAvailableCash');
+    if (avCashEl) {
+      avCashEl.value = '₹ ' + state.availableCash.toLocaleString('en-IN');
+    }
+
+    const today = new Date();
+    const dStr = `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`;
+    document.getElementById('txDate').value = dStr;
+    document.getElementById('txAmount').value = '0.00';
     document.getElementById('txTruckInput').value = '';
     document.getElementById('txDriverInput').value = '';
     document.getElementById('txPhone').value = '';
@@ -1074,7 +1554,7 @@ const ShahpuraModule = {
 
     const grContainer = document.getElementById('txGrContainer');
     if (grContainer) {
-      grContainer.style.display = type === 'Deposit' ? 'block' : 'none';
+      grContainer.style.display = type === 'Deposit' ? 'flex' : 'none';
     }
 
     const drawer = document.getElementById('shahpuraFormDrawer');
@@ -1084,50 +1564,37 @@ const ShahpuraModule = {
     }
   },
 
-  openEditDrawer(id, type) {
-    const list = type === 'Given' ? this.allGiven : this.allDeposit;
-    const r = list.find(item => String(item.id) === String(id));
-    if (!r) return;
+  setFormRelatedTo(rel) {
+    this.currentFormRelatedTo = rel;
 
-    const detailDrawer = document.getElementById('shahpuraDetailDrawer');
-    if (detailDrawer) {
-      bootstrap.Offcanvas.getInstance(detailDrawer)?.hide();
-    }
+    const btnTrip = document.getElementById('btnRelTrip');
+    const btnOther = document.getElementById('btnRelOther');
+    const truckRow = document.getElementById('txTruckRow');
+    const originRow = document.getElementById('txOriginRow');
+    const destRow = document.getElementById('txDestinationRow');
+    const nameLabel = document.getElementById('txNameLabel');
 
-    const titleEl = document.getElementById('transactionFormTitle');
-    const formTypeEl = document.getElementById('txFormType');
-    const editIdEl = document.getElementById('txFormEditId');
-
-    if (titleEl) titleEl.innerText = `Edit ${type} Transaction (${r.id})`;
-    if (formTypeEl) formTypeEl.value = type;
-    if (editIdEl) editIdEl.value = r.id;
-
-    document.getElementById('txDate').value = r.date || '';
-    document.getElementById('txAmount').value = r.amount || '';
-    document.getElementById('txTruckInput').value = r.truckNo || '';
-    document.getElementById('txDriverInput').value = r.name || '';
-    document.getElementById('txPhone').value = r.phone || '';
-    document.getElementById('txGrNo').value = r.grNo || '';
-    document.getElementById('txOrigin').value = r.origin || '';
-    document.getElementById('txDestination').value = r.destination || '';
-    document.getElementById('txDescription').value = r.description || '';
-
-    const grContainer = document.getElementById('txGrContainer');
-    if (grContainer) {
-      grContainer.style.display = type === 'Deposit' ? 'block' : 'none';
-    }
-
-    const drawer = document.getElementById('shahpuraFormDrawer');
-    if (drawer) {
-      const bs = bootstrap.Offcanvas.getOrCreateInstance(drawer);
-      bs.show();
+    if (rel === 'Trip') {
+      if (btnTrip) btnTrip.classList.add('active');
+      if (btnOther) btnOther.classList.remove('active');
+      if (truckRow) truckRow.style.display = 'flex';
+      if (originRow) originRow.style.display = 'flex';
+      if (destRow) destRow.style.display = 'flex';
+      if (nameLabel) nameLabel.innerText = 'Name*';
+    } else {
+      if (btnTrip) btnTrip.classList.remove('active');
+      if (btnOther) btnOther.classList.add('active');
+      if (truckRow) truckRow.style.display = 'none';
+      if (originRow) originRow.style.display = 'none';
+      if (destRow) destRow.style.display = 'none';
+      if (nameLabel) nameLabel.innerText = 'Name';
     }
   },
 
   async saveTransaction() {
     const editId = document.getElementById('txFormEditId').value.trim();
     const type = document.getElementById('txFormType').value || 'Given';
-    const date = document.getElementById('txDate').value.trim();
+    const dateInput = document.getElementById('txDate').value.trim();
     const amount = Number(document.getElementById('txAmount').value) || 0;
     const truckNo = document.getElementById('txTruckInput').value.trim().toUpperCase();
     const name = document.getElementById('txDriverInput').value.trim();
@@ -1136,6 +1603,7 @@ const ShahpuraModule = {
     const origin = document.getElementById('txOrigin').value.trim();
     const destination = document.getElementById('txDestination').value.trim();
     const description = document.getElementById('txDescription').value.trim();
+    const relatedTo = this.currentFormRelatedTo || 'Trip';
 
     if (!amount || amount <= 0) {
       if (typeof AppUI !== 'undefined' && AppUI.showToast) {
@@ -1146,17 +1614,25 @@ const ShahpuraModule = {
       return;
     }
 
+    // Convert date format if needed
+    const parts = dateInput.split(/[-/]/);
+    const formattedDate = parts.length === 3 ? `${parts[0].padStart(2, '0')}/${parts[1].padStart(2, '0')}/${parts[2]}` : new Date().toLocaleDateString('en-GB');
+
     const record = {
       id: editId || `${type === 'Deposit' ? 'DEP-' : 'GIV-'}${Date.now().toString().slice(-6)}`,
-      date: date || new Date().toLocaleDateString('en-GB'),
+      date: formattedDate,
       amount,
-      truckNo,
+      truckNo: relatedTo === 'Trip' ? truckNo : '',
       name,
       phone,
       grNo,
-      origin,
-      destination,
+      origin: relatedTo === 'Trip' ? origin : '',
+      destination: relatedTo === 'Trip' ? destination : '',
       description,
+      relatedTo,
+      year: '2026-2027',
+      month: 'Oct',
+      monthDay: '7 Oct',
       type,
       updatedAt: new Date().toISOString()
     };
@@ -1165,7 +1641,24 @@ const ShahpuraModule = {
       await dbService.saveShahpuraTransaction(record);
     }
 
-    await this.loadData();
+    if (type === 'Given') {
+      const idx = this.allGiven.findIndex(item => item.id === record.id);
+      if (idx !== -1) {
+        this.allGiven[idx] = record;
+      } else {
+        this.allGiven.unshift(record);
+      }
+      this.filteredGiven = [...this.allGiven];
+    } else {
+      const idx = this.allDeposit.findIndex(item => item.id === record.id);
+      if (idx !== -1) {
+        this.allDeposit[idx] = record;
+      } else {
+        this.allDeposit.unshift(record);
+      }
+      this.filteredDeposit = [...this.allDeposit];
+    }
+
     this.buildMasterLists();
     this.renderCurrentView();
 
@@ -1176,26 +1669,6 @@ const ShahpuraModule = {
 
     if (typeof AppUI !== 'undefined' && AppUI.showToast) {
       AppUI.showToast(`${type} Transaction saved successfully!`, 'success');
-    }
-  },
-
-  async deleteTransactionPrompt(id) {
-    if (!confirm('Are you sure you want to delete this transaction?')) return;
-
-    if (typeof dbService !== 'undefined' && dbService.deleteShahpuraTransaction) {
-      await dbService.deleteShahpuraTransaction(id);
-    }
-
-    const detailDrawer = document.getElementById('shahpuraDetailDrawer');
-    if (detailDrawer) {
-      bootstrap.Offcanvas.getInstance(detailDrawer)?.hide();
-    }
-
-    await this.loadData();
-    this.renderCurrentView();
-
-    if (typeof AppUI !== 'undefined' && AppUI.showToast) {
-      AppUI.showToast('Transaction deleted successfully.', 'info');
     }
   },
 
@@ -1257,6 +1730,60 @@ const ShahpuraModule = {
     document.getElementById('txDriverDropdownList').classList.remove('show');
   },
 
+  showOriginDropdown() {
+    const listEl = document.getElementById('txOriginDropdownList');
+    if (!listEl) return;
+    this.filterOriginDropdown(document.getElementById('txOrigin').value);
+  },
+
+  filterOriginDropdown(val) {
+    const listEl = document.getElementById('txOriginDropdownList');
+    if (!listEl) return;
+    const q = (val || '').toLowerCase().trim();
+    const matched = this.originMasterList.filter(o => o.toLowerCase().includes(q));
+
+    listEl.innerHTML = matched.map(o => `
+      <li>
+        <a class="dropdown-item py-1 d-flex align-items-center gap-2" href="javascript:void(0)" onclick="ShahpuraModule.selectOrigin('${o}')">
+          <span class="appsheet-circle-dot red-dot">●</span> ${o}
+        </a>
+      </li>
+    `).join('');
+    listEl.classList.add('show');
+  },
+
+  selectOrigin(origin) {
+    document.getElementById('txOrigin').value = origin;
+    document.getElementById('txOriginDropdownList').classList.remove('show');
+  },
+
+  showDestDropdown() {
+    const listEl = document.getElementById('txDestDropdownList');
+    if (!listEl) return;
+    this.filterDestDropdown(document.getElementById('txDestination').value);
+  },
+
+  filterDestDropdown(val) {
+    const listEl = document.getElementById('txDestDropdownList');
+    if (!listEl) return;
+    const q = (val || '').toLowerCase().trim();
+    const matched = this.destMasterList.filter(d => d.toLowerCase().includes(q));
+
+    listEl.innerHTML = matched.map(d => `
+      <li>
+        <a class="dropdown-item py-1 d-flex align-items-center gap-2" href="javascript:void(0)" onclick="ShahpuraModule.selectDest('${d}')">
+          <span class="appsheet-circle-dot red-dot">●</span> ${d}
+        </a>
+      </li>
+    `).join('');
+    listEl.classList.add('show');
+  },
+
+  selectDest(dest) {
+    document.getElementById('txDestination').value = dest;
+    document.getElementById('txDestDropdownList').classList.remove('show');
+  },
+
   setupListeners() {
     document.addEventListener('click', (e) => {
       const truckDrop = document.getElementById('txTruckDropdownList');
@@ -1266,6 +1793,14 @@ const ShahpuraModule = {
       const driverDrop = document.getElementById('txDriverDropdownList');
       if (driverDrop && !e.target.closest('#txDriverComboboxWrapper')) {
         driverDrop.classList.remove('show');
+      }
+      const originDrop = document.getElementById('txOriginDropdownList');
+      if (originDrop && !e.target.closest('#txOriginWrapper')) {
+        originDrop.classList.remove('show');
+      }
+      const destDrop = document.getElementById('txDestDropdownList');
+      if (destDrop && !e.target.closest('#txDestWrapper')) {
+        destDrop.classList.remove('show');
       }
     });
   }

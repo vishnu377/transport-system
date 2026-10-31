@@ -564,6 +564,55 @@
       text-align: right;
     }
 
+    /* AppSheet Navigation Buttons (< > ⤢) */
+    .appsheet-nav-btn {
+      background: transparent;
+      border: none;
+      color: #5f6368;
+      width: 28px;
+      height: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 14px;
+      border-radius: 4px;
+      transition: background-color 0.15s;
+    }
+    .appsheet-nav-btn:hover {
+      background-color: #f1f3f4;
+      color: #202124;
+    }
+    .appsheet-nav-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    /* AppSheet Related To Toggle Buttons */
+    .btn-related-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 20px;
+      border-radius: 4px;
+      border: 1px solid #dadce0;
+      background-color: #ffffff;
+      font-size: 13px;
+      font-weight: 500;
+      color: #202124;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .btn-related-toggle.active {
+      background-color: #7a5e24; /* Authentic AppSheet Bronze/Gold Button */
+      border-color: #7a5e24;
+      color: #ffffff;
+      font-weight: 600;
+    }
+    .btn-related-toggle.active .appsheet-circle-dot {
+      filter: brightness(1.2);
+    }
+
     /* Responsive adjustments */
     @media (max-width: 992px) {
       .shahpura-grid {
@@ -679,7 +728,7 @@
         <!-- ============================================== -->
         <section class="appsheet-card" id="shahpuraCard2">
           <div class="card-header-appsheet">
-            <h2 class="card-title-appsheet">Given Transactions</h2>
+            <h2 class="card-title-appsheet" style="cursor: pointer;" onclick="ShahpuraModule.setView('given_transactions')">Given Transactions</h2>
             <div class="card-header-actions">
               <button class="btn-appsheet-add" onclick="ShahpuraModule.openAddDrawer('Given')">
                 <i class="bi bi-plus-lg"></i> Add
@@ -688,7 +737,7 @@
               <button class="btn-icon-subtle" title="Sort / Filter">
                 <i class="bi bi-funnel"></i>
               </button>
-              <button class="btn-icon-subtle" id="expandBtnCard2" title="Expand / Contract" onclick="ShahpuraModule.toggleExpand('card2')">
+              <button class="btn-icon-subtle" id="expandBtnCard2" title="Expand Full Given View" onclick="ShahpuraModule.setView('given_transactions')">
                 <i class="bi bi-arrows-angle-expand"></i>
               </button>
             </div>
@@ -720,7 +769,7 @@
         <!-- ============================================== -->
         <section class="appsheet-card" id="shahpuraCard3">
           <div class="card-header-appsheet">
-            <h2 class="card-title-appsheet">Deposit Transactions</h2>
+            <h2 class="card-title-appsheet" style="cursor: pointer;" onclick="ShahpuraModule.setView('deposit_transactions')">Deposit Transactions</h2>
             <div class="card-header-actions">
               <button class="btn-appsheet-add" onclick="ShahpuraModule.openAddDrawer('Deposit')">
                 <i class="bi bi-plus-lg"></i> Add
@@ -729,7 +778,7 @@
               <button class="btn-icon-subtle" title="Sort / Filter">
                 <i class="bi bi-funnel"></i>
               </button>
-              <button class="btn-icon-subtle" id="expandBtnCard3" title="Expand / Contract" onclick="ShahpuraModule.toggleExpand('card3')">
+              <button class="btn-icon-subtle" id="expandBtnCard3" title="Expand Full Deposit View" onclick="ShahpuraModule.setView('deposit_transactions')">
                 <i class="bi bi-arrows-angle-expand"></i>
               </button>
             </div>
@@ -829,40 +878,73 @@
   </div>
 
   <!-- ======================================================== -->
-  <!-- SLIDE DRAWER 2: ADD / EDIT GIVEN / DEPOSIT TRANSACTION    -->
+  <!-- SLIDE DRAWER 2: ADD / EDIT TRANSACTION (1:1 AppSheet)    -->
+  <!-- Matching Screenshots from WhatsApp & AppSheet            -->
   <!-- ======================================================== -->
   <div class="offcanvas offcanvas-end offcanvas-appsheet" tabindex="-1" id="shahpuraFormDrawer" aria-labelledby="transactionFormTitle">
     <div class="drawer-header-appsheet">
       <div class="d-flex align-items-center gap-2">
-        <span class="fs-5 text-warning"><i class="bi bi-wallet2"></i></span>
-        <h6 class="mb-0 fw-bold text-dark" id="transactionFormTitle">New Transaction</h6>
+        <button type="button" class="btn btn-link text-dark p-0 text-decoration-none fs-5 me-2" data-bs-dismiss="offcanvas" aria-label="Close">
+          <i class="bi bi-x-lg"></i>
+        </button>
+        <span class="fs-6 fw-bold text-dark" id="transactionFormTitle">Transaction</span>
       </div>
-      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn btn-outline-secondary btn-sm px-3" data-bs-dismiss="offcanvas" style="border-color: #c3b15a; color: #856404; font-weight: 500;">
+          Cancel
+        </button>
+        <button type="button" class="btn-appsheet-add px-3" onclick="ShahpuraModule.saveTransaction()">
+          Save
+        </button>
+      </div>
     </div>
 
-    <div class="offcanvas-body p-3">
+    <div class="offcanvas-body p-4">
       <input type="hidden" id="txFormType" value="Given">
       <input type="hidden" id="txFormEditId" value="">
 
-      <!-- Field 1: Date -->
+      <!-- Row 1: Related To* (Trip vs Other toggles) -->
       <div class="form-row-2col">
-        <label class="form-label-left">Date</label>
-        <div class="form-field-right">
-          <input type="text" id="txDate" class="appsheet-input font-monospace" placeholder="DD/MM/YYYY">
+        <label class="form-label-left">Related To*</label>
+        <div class="form-field-right d-flex gap-2">
+          <button type="button" id="btnRelTrip" class="btn-related-toggle active" onclick="ShahpuraModule.setFormRelatedTo('Trip')">
+            <span class="appsheet-circle-dot red-dot" id="dotRelTrip">●</span> Trip
+          </button>
+          <button type="button" id="btnRelOther" class="btn-related-toggle" onclick="ShahpuraModule.setFormRelatedTo('Other')">
+            <span class="appsheet-circle-dot red-dot" id="dotRelOther">●</span> Other
+          </button>
         </div>
       </div>
 
-      <!-- Field 2: Amount -->
+      <!-- Row 2: Date* -->
       <div class="form-row-2col">
-        <label class="form-label-left">Amount (₹)</label>
-        <div class="form-field-right">
-          <input type="number" id="txAmount" class="appsheet-input font-monospace fw-bold" placeholder="e.g. 15000" min="0">
+        <label class="form-label-left">Date*</label>
+        <div class="form-field-right position-relative">
+          <input type="text" id="txDate" class="appsheet-input font-monospace" placeholder="DD-MM-YYYY">
+          <i class="bi bi-calendar3 position-absolute end-0 top-50 translate-middle-y me-3 text-secondary pointer-events-none"></i>
         </div>
       </div>
 
-      <!-- Field 3: Truck No. (Searchable & Typable Combobox) -->
+      <!-- Row 3: Avaiable Cash is (Read-only) -->
       <div class="form-row-2col">
-        <label class="form-label-left">Truck No.</label>
+        <label class="form-label-left">Avaiable Cash is</label>
+        <div class="form-field-right">
+          <input type="text" id="txAvailableCash" class="appsheet-input font-monospace" readonly value="₹ -212,329" style="background-color: #fafafa; color: #5f6368;">
+        </div>
+      </div>
+
+      <!-- Row 4: Amount* -->
+      <div class="form-row-2col">
+        <label class="form-label-left">Amount*</label>
+        <div class="form-field-right position-relative">
+          <span class="position-absolute start-0 top-50 translate-middle-y ms-2 text-dark font-monospace fw-bold">₹</span>
+          <input type="number" id="txAmount" class="appsheet-input font-monospace fw-bold" style="padding-left: 24px;" value="0.00" step="0.01">
+        </div>
+      </div>
+
+      <!-- Row 5: Truck No.* (Shown if Trip) -->
+      <div class="form-row-2col" id="txTruckRow">
+        <label class="form-label-left">Truck No.*</label>
         <div class="form-field-right" id="txTruckComboboxWrapper">
           <input type="text" id="txTruckInput" class="appsheet-input text-uppercase font-monospace"
             placeholder="Search or enter Truck No."
@@ -877,12 +959,12 @@
         </div>
       </div>
 
-      <!-- Field 4: Driver / Contact (Searchable & Typable Combobox) -->
-      <div class="form-row-2col">
-        <label class="form-label-left">Name / Driver</label>
+      <!-- Row 6: Name* -->
+      <div class="form-row-2col" id="txDriverRow">
+        <label class="form-label-left" id="txNameLabel">Name*</label>
         <div class="form-field-right" id="txDriverComboboxWrapper">
           <input type="text" id="txDriverInput" class="appsheet-input"
-            placeholder="Search or enter Driver name"
+            placeholder="Search or enter Name"
             autocomplete="off"
             oninput="ShahpuraModule.filterDriverCombobox(this.value)"
             onfocus="ShahpuraModule.filterDriverCombobox(this.value)"
@@ -894,15 +976,15 @@
         </div>
       </div>
 
-      <!-- Field 5: Mobile No. -->
-      <div class="form-row-2col">
+      <!-- Row 7: Mobile No. -->
+      <div class="form-row-2col" id="txPhoneRow">
         <label class="form-label-left">Mobile No.</label>
         <div class="form-field-right">
           <input type="tel" id="txPhone" class="appsheet-input font-monospace" placeholder="10-digit mobile number">
         </div>
       </div>
 
-      <!-- Field 6: G.R. No. (Deposit only) -->
+      <!-- Row 8: G.R. No. (Deposit only) -->
       <div class="form-row-2col" id="txGrContainer" style="display: none;">
         <label class="form-label-left">G.R. No.</label>
         <div class="form-field-right">
@@ -910,38 +992,37 @@
         </div>
       </div>
 
-      <!-- Field 7: Origin -->
-      <div class="form-row-2col">
+      <!-- Row 9: Origin (Shown if Trip) -->
+      <div class="form-row-2col" id="txOriginRow">
         <label class="form-label-left">Origin</label>
-        <div class="form-field-right">
-          <input type="text" id="txOrigin" class="appsheet-input" placeholder="e.g. Rajsamand (Raj.)">
+        <div class="form-field-right position-relative" id="txOriginWrapper">
+          <input type="text" id="txOrigin" class="appsheet-input" placeholder="Add or search" onfocus="ShahpuraModule.showOriginDropdown()" oninput="ShahpuraModule.filterOriginDropdown(this.value)">
+          <button type="button" class="combobox-toggle-btn" onclick="ShahpuraModule.showOriginDropdown()">
+            <i class="bi bi-chevron-down small"></i>
+          </button>
+          <ul class="combobox-dropdown-menu" id="txOriginDropdownList"></ul>
         </div>
       </div>
 
-      <!-- Field 8: Destination -->
-      <div class="form-row-2col">
+      <!-- Row 10: Destination (Shown if Trip) -->
+      <div class="form-row-2col" id="txDestinationRow">
         <label class="form-label-left">Destination</label>
-        <div class="form-field-right">
-          <input type="text" id="txDestination" class="appsheet-input" placeholder="e.g. Neemrana (Raj.)">
+        <div class="form-field-right position-relative" id="txDestWrapper">
+          <input type="text" id="txDestination" class="appsheet-input" placeholder="Add or search" onfocus="ShahpuraModule.showDestDropdown()" oninput="ShahpuraModule.filterDestDropdown(this.value)">
+          <button type="button" class="combobox-toggle-btn" onclick="ShahpuraModule.showDestDropdown()">
+            <i class="bi bi-chevron-down small"></i>
+          </button>
+          <ul class="combobox-dropdown-menu" id="txDestDropdownList"></ul>
         </div>
       </div>
 
-      <!-- Field 9: Description / Remarks -->
-      <div class="form-row-2col">
+      <!-- Row 11: Description -->
+      <div class="form-row-2col" id="txDescriptionRow">
         <label class="form-label-left">Description</label>
         <div class="form-field-right">
-          <input type="text" id="txDescription" class="appsheet-input" placeholder="e.g. Advance Kharcha, DEF Sales">
+          <input type="text" id="txDescription" class="appsheet-input" placeholder="">
         </div>
       </div>
-
-      <!-- Actions -->
-      <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
-        <button type="button" class="btn btn-outline-secondary btn-sm px-3" data-bs-dismiss="offcanvas">Cancel</button>
-        <button type="button" class="btn btn-primary btn-sm px-4 fw-bold" onclick="ShahpuraModule.saveTransaction()">
-          <i class="bi bi-check-lg me-1"></i> Save
-        </button>
-      </div>
-
     </div>
   </div>
 

@@ -267,8 +267,119 @@ console.log('=== TEST SUITE: MODULE 9 - SHAHPURA & CARD 1 DRILLDOWN (1:1 APPSHEE
 
     console.log('✓ TEST 9 PASSED: Breadcrumb & View switching seamlessly returns to 3-card dashboard!\n');
 
+    // ----------------------------------------------------
+    // TEST 10: Screen 2A - Given Transactions Full Table View (1:1 Screenshot)
+    // ----------------------------------------------------
+    console.log('--- TEST 10: Screen 2A - Given Transactions Full Table View (1:1 Screenshot) ---');
+    ShahpuraModule.setView('given_transactions');
+    assert.strictEqual(ShahpuraModule.activeView, 'given_transactions');
+
+    assert.strictEqual(fullContainer.style.display, 'block', 'Full container must be visible');
+    assert(fullContainer.innerHTML.includes('Date') && fullContainer.innerHTML.includes('Truck No.'), 'Must render given table with headers');
+    assert(fullContainer.innerHTML.includes('red-dot'), 'Must render red dots');
+    assert(fullContainer.innerHTML.includes('RJ52GB5642'), 'Must contain truck RJ52GB5642');
+    assert(bc.innerHTML.includes('Given Transactions'), 'Breadcrumb must show Given Transactions');
+    assert(bc.innerHTML.includes('+ Add') || bc.innerHTML.includes('Add'), 'Breadcrumb must have Add button');
+
+    console.log('✓ TEST 10 PASSED: Screen 2A Given Transactions table view renders 1:1 matching AppSheet!\n');
+
+    // ----------------------------------------------------
+    // TEST 11: Screen 2B - Given Record Detail View (1:1 Screenshot)
+    // ----------------------------------------------------
+    console.log('--- TEST 11: Screen 2B - Given Record Detail View (1:1 Screenshot) ---');
+    const firstGiven = ShahpuraModule.allGiven[0];
+    ShahpuraModule.openGivenDetail(firstGiven.id);
+    assert.strictEqual(ShahpuraModule.activeView, 'given_detail');
+
+    assert(bc.innerHTML.includes('Shahpura Cash records Given'), 'Breadcrumb must show Shahpura Cash records Given');
+    assert(fullContainer.innerHTML.includes(firstGiven.name), 'Detail view must display driver name');
+    assert(fullContainer.innerHTML.includes(firstGiven.truckNo), 'Detail view must display truck number');
+    assert(fullContainer.innerHTML.includes('Related To'), 'Detail view must have Related To field');
+    assert(fullContainer.innerHTML.includes('tel:'), 'Detail view must have phone link');
+
+    // Test record navigation (< >)
+    ShahpuraModule.navigateGivenDetail(1);
+    assert.strictEqual(ShahpuraModule.currentDetailIndex, 1, 'Detail index must increment to 1');
+    ShahpuraModule.navigateGivenDetail(-1);
+    assert.strictEqual(ShahpuraModule.currentDetailIndex, 0, 'Detail index must decrement back to 0');
+
+    console.log('✓ TEST 11 PASSED: Screen 2B Given Record Detail view renders 1:1 matching AppSheet!\n');
+
+    // ----------------------------------------------------
+    // TEST 12: Screen 3A - Deposit Transactions Full Table View (1:1 Screenshot)
+    // ----------------------------------------------------
+    console.log('--- TEST 12: Screen 3A - Deposit Transactions Full Table View (1:1 Screenshot) ---');
+    ShahpuraModule.setView('deposit_transactions');
+    assert.strictEqual(ShahpuraModule.activeView, 'deposit_transactions');
+
+    assert(fullContainer.innerHTML.includes('G.R. No.'), 'Deposit table must have G.R. No. column');
+    assert(fullContainer.innerHTML.includes('green-dot'), 'Must render green dots');
+    assert(bc.innerHTML.includes('Deposit Transactions'), 'Breadcrumb must show Deposit Transactions');
+
+    console.log('✓ TEST 12 PASSED: Screen 3A Deposit Transactions table view renders 1:1 matching AppSheet!\n');
+
+    // ----------------------------------------------------
+    // TEST 13: Screen 3B - Deposit Record Detail View (1:1 Screenshot)
+    // ----------------------------------------------------
+    console.log('--- TEST 13: Screen 3B - Deposit Record Detail View (1:1 Screenshot) ---');
+    const firstDep = ShahpuraModule.allDeposit[0];
+    ShahpuraModule.openDepositDetail(firstDep.id);
+    assert.strictEqual(ShahpuraModule.activeView, 'deposit_detail');
+
+    assert(bc.innerHTML.includes('Shahpura Cash records Deposit'), 'Breadcrumb must show Shahpura Cash records Deposit');
+    assert(fullContainer.innerHTML.includes('green-dot'), 'Detail view must have green dots');
+    assert(fullContainer.innerHTML.includes(firstDep.name), 'Detail view must display deposit contact/payer');
+
+    // Test navigation (< >)
+    ShahpuraModule.navigateDepositDetail(1);
+    assert.strictEqual(ShahpuraModule.currentDetailIndex, 1, 'Deposit index must increment to 1');
+    ShahpuraModule.navigateDepositDetail(-1);
+    assert.strictEqual(ShahpuraModule.currentDetailIndex, 0, 'Deposit index must decrement back to 0');
+
+    console.log('✓ TEST 13 PASSED: Screen 3B Deposit Record Detail view renders 1:1 matching AppSheet!\n');
+
+    // ----------------------------------------------------
+    // TEST 14: Transaction Slide Drawer (+ Add & Edit with Trip/Other Toggles)
+    // ----------------------------------------------------
+    console.log('--- TEST 14: Transaction Slide Drawer (+ Add & Edit with Trip/Other Toggles) ---');
+    ShahpuraModule.openAddDrawer('Given');
+
+    const truckRow = getOrCreateMockElement('txTruckRow');
+    const originRow = getOrCreateMockElement('txOriginRow');
+    const destRow = getOrCreateMockElement('txDestinationRow');
+    const btnTrip = getOrCreateMockElement('btnRelTrip');
+    const btnOther = getOrCreateMockElement('btnRelOther');
+
+    // Test Trip toggle
+    ShahpuraModule.setFormRelatedTo('Trip');
+    assert.strictEqual(ShahpuraModule.currentFormRelatedTo, 'Trip');
+    assert.strictEqual(truckRow.style.display, 'flex', 'Truck row must be visible in Trip mode');
+
+    // Test Other toggle
+    ShahpuraModule.setFormRelatedTo('Other');
+    assert.strictEqual(ShahpuraModule.currentFormRelatedTo, 'Other');
+    assert.strictEqual(truckRow.style.display, 'none', 'Truck row must be hidden in Other mode');
+
+    // Test saving new transaction
+    ShahpuraModule.setFormRelatedTo('Trip');
+    getOrCreateMockElement('txAmount').value = '5000';
+    getOrCreateMockElement('txTruckInput').value = 'RJ52GB5642';
+    getOrCreateMockElement('txDriverInput').value = 'Suresh Test Driver';
+    getOrCreateMockElement('txOrigin').value = 'Rajsamand (Raj.)';
+    getOrCreateMockElement('txDestination').value = 'Neemrana (Raj.)';
+
+    const prevGivenCount = ShahpuraModule.allGiven.length;
+    await ShahpuraModule.saveTransaction();
+    assert.strictEqual(ShahpuraModule.allGiven.length, prevGivenCount + 1, 'New given transaction must be added');
+
+    console.log('✓ TEST 14 PASSED: Transaction Slide Drawer fields, Trip/Other toggle & save verified!\n');
+
+    // Return to main dashboard
+    ShahpuraModule.setView('main');
+    assert.strictEqual(ShahpuraModule.activeView, 'main');
+
     console.log('======================================================');
-    console.log('🏆 ALL 9 SHAHPURA CARD 1 DRILLDOWN TESTS PASSED 100%!');
+    console.log('🏆 ALL 14 SHAHPURA MODULE TEST SUITES PASSED 100%!');
     console.log('======================================================\n');
   } catch (err) {
     console.error('❌ TEST FAILED:', err);
