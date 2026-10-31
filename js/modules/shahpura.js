@@ -1,27 +1,43 @@
 /**
- * Module 9: Shahpura Module Controller (1:1 Google AppSheet Fidelity)
+ * Module 9: Shahpura Module Controller (1:1 Google AppSheet Visual Fidelity)
  * Features:
- * - 3-Card Responsive Dashboard Layout:
- *     Card 1: Available Cash (Full-height left card ~38%, Negative Bar Chart 0 to -250,000, 4-square grid toggle)
- *     Card 2: Given Transactions (Top-right card ~62%, Date-grouped, red dots & bold red text, sum pills)
- *     Card 3: Deposit Transactions (Bottom-right card ~62%, Date-grouped, green dots & bold green text, sum pills, G.R. No column)
- * - Single-click Expand [↗] and Collapse [↙] for every card (with 1fr full-width safety)
- * - 1:1 AppSheet 2-Column Desktop Drawers:
- *     - + Add Given Transaction (Advance / Kharcha)
- *     - + Add Deposit Transaction (Cash Inflow / DEF Sales / Freight)
- *     - Record Detail Drawer with < Previous, Next >, Edit, and Close
- * - Searchable & Typable Comboboxes with Master Trucks & Drivers and two-way auto-fill
+ * - 3-Card Responsive Dashboard Layout (Home > Shahpura)
+ * - Card 1 (Available Cash) Full Drilldown Architecture:
+ *     1. Expanded Chart View (Home > Shahpura > Available Cash)
+ *        - Full-width SVG bar chart (0 to -250,000), exact balance -₹ 2,12,329
+ *        - White dashed centerline down the bar
+ *        - High-fidelity Tooltip Card: "30/10/2026, 09:32:24 pm" | "● Avaiable Cash -212,329"
+ *        - Slanted date "30/10/2026, 09:32..." & "DateTime" vertical axis
+ *     2. Shahpura Slice Table View (Home > Shahpura > Available Cash > Shahpura Slice)
+ *        - "Search Shahpura Slice" search input
+ *        - Columns: DateTime | Amount In Hand | Avaiable Cash (● ₹ -212,329) | Amount (₹ -15,000) | ›
+ *     3. Shahpura Slice Record Detail View (Home > ... > Shahpura Slice > 10/30/2026 21:32:24)
+ *        - Clean centered card with DateTime and Avaiable Cash
+ *     4. Shahpura Slice Slide Drawer (+ Add)
+ *        - Header: ✕ | Shahpura Slice | Cancel | Save (#c3b15a)
+ *        - Fields: DateTime (calendar icon), Amount In Hand (₹), Avaiable Cash (₹), Amount (₹)
+ * - Card 2: Given Transactions (Date-grouped, red dots ●, red bold text, sum pills)
+ * - Card 3: Deposit Transactions (Date-grouped, green dots ●, green bold text, sum pills, G.R. No)
+ * - Searchable & Typable Comboboxes for Trucks & Drivers
  * - Zero Browser LocalStorage: Cloud Firestore & In-Memory RAM only.
  */
 
 const ShahpuraModule = {
-  allGiven: [],
-  allDeposit: [],
-  filteredGiven: [],
-  filteredDeposit: [],
-  card1ViewMode: 'chart', // 'chart' | 'slice'
+  // Navigation & View State
+  activeView: 'main', // 'main' | 'available_cash' | 'shahpura_slice' | 'slice_detail'
   expandedCard: null, // null | 'card1' | 'card2' | 'card3'
   searchQuery: '',
+
+  // Datasets
+  allGiven: [],
+  allDeposit: [],
+  allSlice: [],
+  filteredGiven: [],
+  filteredDeposit: [],
+  filteredSlice: [],
+
+  // Detail record states
+  currentSliceRecord: null,
   currentDetailRecord: null,
   currentDetailType: null, // 'Given' | 'Deposit'
   currentDetailIndex: -1,
@@ -31,35 +47,44 @@ const ShahpuraModule = {
   driverMasterList: [],
 
   async init() {
-    console.log('[ShahpuraModule] Initializing 1:1 AppSheet 3-card layout...');
+    console.log('[ShahpuraModule] Initializing 1:1 AppSheet Shahpura module...');
     await this.loadData();
     this.buildMasterLists();
-    this.renderCard1AvailableCash();
-    this.renderCard2GivenTransactions();
-    this.renderCard3DepositTransactions();
+    this.renderCurrentView();
     this.setupListeners();
     console.log('[ShahpuraModule] Initialized successfully.');
   },
 
   async loadData() {
     try {
-      if (typeof dbService !== 'undefined' && dbService.getAllShahpuraTransactionsAsync) {
-        const all = await dbService.getAllShahpuraTransactionsAsync();
-        this.allGiven = all.filter(t => t.type === 'Given');
-        this.allDeposit = all.filter(t => t.type === 'Deposit');
-      } else if (typeof SAMPLE_SHAHPURA_DATA !== 'undefined') {
+      if (typeof dbService !== 'undefined') {
+        if (dbService.getAllShahpuraTransactionsAsync) {
+          const all = await dbService.getAllShahpuraTransactionsAsync();
+          this.allGiven = all.filter(t => t.type === 'Given');
+          this.allDeposit = all.filter(t => t.type === 'Deposit');
+        }
+        if (dbService.getAllShahpuraSliceAsync) {
+          this.allSlice = await dbService.getAllShahpuraSliceAsync();
+        }
+      }
+      
+      if ((!this.allGiven || this.allGiven.length === 0) && typeof SAMPLE_SHAHPURA_DATA !== 'undefined') {
         this.allGiven = [...SAMPLE_SHAHPURA_DATA.givenTransactions];
         this.allDeposit = [...SAMPLE_SHAHPURA_DATA.depositTransactions];
+        this.allSlice = [...(SAMPLE_SHAHPURA_DATA.sliceRecords || [])];
       }
     } catch (err) {
       console.warn('[ShahpuraModule] loadData fallback:', err);
       if (typeof SAMPLE_SHAHPURA_DATA !== 'undefined') {
         this.allGiven = [...SAMPLE_SHAHPURA_DATA.givenTransactions];
         this.allDeposit = [...SAMPLE_SHAHPURA_DATA.depositTransactions];
+        this.allSlice = [...(SAMPLE_SHAHPURA_DATA.sliceRecords || [])];
       }
     }
+
     this.filteredGiven = [...this.allGiven];
     this.filteredDeposit = [...this.allDeposit];
+    this.filteredSlice = [...this.allSlice];
   },
 
   buildMasterLists() {
@@ -83,7 +108,6 @@ const ShahpuraModule = {
       }
     }
 
-    // Default fleet trucks & drivers
     const defaultTrucks = [
       'RJ52GB5642', 'RJ52GA8733', 'RJ52GB5061', 'RJ52GB5528',
       'RJ52GB5529', 'RJ52GB5641', 'RJ52GA6366', 'RJ52GB0721',
@@ -111,13 +135,135 @@ const ShahpuraModule = {
       totalGiven,
       totalDeposit,
       availableCash,
-      asOf: '30/10/2026, 09:32...',
-      displayBalance: '₹ ' + Math.abs(availableCash).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+      asOf: '30/10/2026, 09:32:24 pm',
+      displayDate: '30/10/2026, 09:32...',
+      displayBalance: '₹ ' + Math.abs(availableCash).toLocaleString('en-IN')
     };
   },
 
   // ========================================================
-  // CARD 1: AVAILABLE CASH (SVG Bar Chart & Slice View)
+  // VIEW SWITCHER & BREADCRUMB CONTROLLER
+  // ========================================================
+  setView(viewName, record = null) {
+    this.activeView = viewName;
+    if (record) {
+      this.currentSliceRecord = record;
+    }
+
+    // Reset expand state if returning to main
+    if (viewName === 'main') {
+      this.expandedCard = null;
+    }
+
+    this.renderBreadcrumb();
+    this.renderCurrentView();
+  },
+
+  renderBreadcrumb() {
+    const bcContainer = document.getElementById('shahpuraBreadcrumb');
+    if (!bcContainer) return;
+
+    const searchInput = document.getElementById('shahpuraSearchInput');
+
+    if (this.activeView === 'main') {
+      bcContainer.innerHTML = `
+        <div class="d-flex align-items-center gap-1">
+          <a href="../index.html" class="breadcrumb-item-home">Home</a>
+          <span class="mx-1">&gt;</span>
+          <span class="text-dark fw-medium">Shahpura</span>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <i class="bi bi-grid-3x3-gap text-secondary" style="font-size: 16px; cursor: pointer;" title="Dashboard View Layout"></i>
+        </div>
+      `;
+      if (searchInput) searchInput.placeholder = 'Search Shahpura';
+    } else if (this.activeView === 'available_cash') {
+      bcContainer.innerHTML = `
+        <div class="d-flex align-items-center gap-1">
+          <a href="../index.html" class="breadcrumb-item-home">Home</a>
+          <span class="mx-1">&gt;</span>
+          <a href="javascript:void(0)" class="breadcrumb-item-home" onclick="ShahpuraModule.setView('main')">Shahpura</a>
+          <span class="mx-1">&gt;</span>
+          <span class="text-dark fw-medium">Available Cash</span>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <button class="btn-icon-subtle" title="Return to Dashboard" onclick="ShahpuraModule.setView('main')">
+            <i class="bi bi-arrows-angle-contract"></i>
+          </button>
+        </div>
+      `;
+      if (searchInput) searchInput.placeholder = 'Search Available Cash';
+    } else if (this.activeView === 'shahpura_slice') {
+      bcContainer.innerHTML = `
+        <div class="d-flex align-items-center gap-1">
+          <a href="../index.html" class="breadcrumb-item-home">Home</a>
+          <span class="mx-1">&gt;</span>
+          <a href="javascript:void(0)" class="breadcrumb-item-home" onclick="ShahpuraModule.setView('main')">Shahpura</a>
+          <span class="mx-1">&gt;</span>
+          <a href="javascript:void(0)" class="breadcrumb-item-home" onclick="ShahpuraModule.setView('available_cash')">Available Cash</a>
+          <span class="mx-1">&gt;</span>
+          <span class="text-dark fw-medium">Shahpura Slice</span>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <button class="btn-icon-subtle" title="Return to Dashboard" onclick="ShahpuraModule.setView('main')">
+            <i class="bi bi-grid-3x3-gap"></i>
+          </button>
+        </div>
+      `;
+      if (searchInput) searchInput.placeholder = 'Search Shahpura Slice';
+    } else if (this.activeView === 'slice_detail') {
+      const slug = this.currentSliceRecord ? (this.currentSliceRecord.dateTimeSlug || '10/30/2026 21:32:24') : 'Record Detail';
+      bcContainer.innerHTML = `
+        <div class="d-flex align-items-center gap-1">
+          <a href="../index.html" class="breadcrumb-item-home">Home</a>
+          <span class="mx-1">&gt;</span>
+          <a href="javascript:void(0)" class="breadcrumb-item-home" onclick="ShahpuraModule.setView('main')">Shahpura</a>
+          <span class="mx-1">&gt;</span>
+          <a href="javascript:void(0)" class="breadcrumb-item-home" onclick="ShahpuraModule.setView('available_cash')">Available Cash</a>
+          <span class="mx-1">&gt;</span>
+          <a href="javascript:void(0)" class="breadcrumb-item-home" onclick="ShahpuraModule.setView('shahpura_slice')">Shahpura Slice</a>
+          <span class="mx-1">&gt;</span>
+          <span class="text-dark fw-medium">${slug}</span>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <button class="btn-icon-subtle" title="Expand View" onclick="ShahpuraModule.setView('shahpura_slice')">
+            <i class="bi bi-arrows-angle-expand"></i>
+          </button>
+        </div>
+      `;
+      if (searchInput) searchInput.placeholder = 'Search Record';
+    }
+  },
+
+  renderCurrentView() {
+    const mainGrid = document.getElementById('shahpuraGrid');
+    const fullContainer = document.getElementById('shahpuraFullViewContainer');
+
+    if (!mainGrid || !fullContainer) return;
+
+    if (this.activeView === 'main') {
+      mainGrid.style.display = 'grid';
+      fullContainer.style.display = 'none';
+      this.renderCard1AvailableCash();
+      this.renderCard2GivenTransactions();
+      this.renderCard3DepositTransactions();
+    } else if (this.activeView === 'available_cash') {
+      mainGrid.style.display = 'none';
+      fullContainer.style.display = 'block';
+      this.renderExpandedAvailableCashView(fullContainer);
+    } else if (this.activeView === 'shahpura_slice') {
+      mainGrid.style.display = 'none';
+      fullContainer.style.display = 'block';
+      this.renderShahpuraSliceTableView(fullContainer);
+    } else if (this.activeView === 'slice_detail') {
+      mainGrid.style.display = 'none';
+      fullContainer.style.display = 'block';
+      this.renderShahpuraSliceDetailView(fullContainer);
+    }
+  },
+
+  // ========================================================
+  // CARD 1: AVAILABLE CASH (MAIN DASHBOARD LEFT CARD)
   // ========================================================
   renderCard1AvailableCash() {
     const container = document.getElementById('card1Body');
@@ -125,13 +271,7 @@ const ShahpuraModule = {
 
     const state = this.calculateCashState();
 
-    if (this.card1ViewMode === 'slice') {
-      container.innerHTML = this.renderCard1SliceHTML(state);
-      return;
-    }
-
-    // Render 1:1 SVG Chart matching Screenshot (4).png
-    // Scale: 0 to -250,000. 0 is at top (y=40), -250,000 is at y=540.
+    // Scale 0 to -250,000
     const chartHeight = 540;
     const chartWidth = 440;
     const topY = 40;
@@ -139,7 +279,6 @@ const ShahpuraModule = {
     const totalSpanY = bottomY - topY; // 460px
     const maxVal = 250000;
 
-    // calculate bar height: availableCash is negative, e.g. -213100
     const ratio = Math.min(1, Math.max(0, Math.abs(state.availableCash) / maxVal));
     const barHeight = totalSpanY * ratio;
     const barY = topY;
@@ -169,7 +308,7 @@ const ShahpuraModule = {
     const barColor = state.availableCash < 0 ? '#cc0b0b' : '#00b11f';
 
     container.innerHTML = `
-      <div class="card1-chart-container position-relative h-100 d-flex flex-column" style="overflow: hidden;">
+      <div class="card1-chart-container position-relative h-100 d-flex flex-column" style="overflow: hidden; cursor: pointer;" onclick="ShahpuraModule.setView('available_cash')">
         <svg viewBox="0 0 ${chartWidth} 590" class="w-100 flex-grow-1" preserveAspectRatio="none" style="min-height: 440px;">
           <!-- Grid & Ticks -->
           ${gridLinesHTML}
@@ -178,16 +317,16 @@ const ShahpuraModule = {
           <rect id="svgCashBar"
             x="${barX}" y="${barY}" width="${barWidth}" height="${barHeight}"
             fill="${barColor}"
-            style="cursor: pointer; transition: opacity 0.2s;"
-            onmouseover="ShahpuraModule.showChartTooltip(event, ${state.availableCash}, ${state.totalDeposit}, ${state.totalGiven})"
-            onmousemove="ShahpuraModule.moveChartTooltip(event)"
-            onmouseout="ShahpuraModule.hideChartTooltip()"
+            style="transition: opacity 0.2s;"
           />
+
+          <!-- Vertical White Dashed Center Line -->
+          <line x1="${barX + barWidth / 2}" y1="${barY}" x2="${barX + barWidth / 2}" y2="${bottomY + 10}" stroke="#ffffff" stroke-width="1.2" stroke-dasharray="3,3" opacity="0.8" />
 
           <!-- X-Axis Timestamp Label slanted at 45 deg -->
           <g transform="translate(${barX + barWidth / 2 - 15}, ${bottomY + 45}) rotate(-45)">
             <text x="0" y="0" font-family="Roboto, sans-serif" font-size="10" fill="#5f6368" text-anchor="end">
-              ${state.asOf}
+              ${state.displayDate}
             </text>
           </g>
 
@@ -199,58 +338,206 @@ const ShahpuraModule = {
           </g>
         </svg>
 
-        <!-- Floating Tooltip Box -->
-        <div id="chartTooltip" class="appsheet-chart-tooltip" style="display: none;"></div>
+        <!-- Floating Tooltip Card matching AppSheet -->
+        <div class="card1-appsheet-floating-card shadow-sm" style="position: absolute; right: 18px; top: 38px; background: #ffffff; border: 1px solid #dadce0; border-radius: 4px; padding: 6px 12px; pointer-events: none; z-index: 5;">
+          <div style="font-size: 11px; color: #5f6368;">${state.asOf}</div>
+          <div class="d-flex align-items-center justify-content-between gap-3 mt-1">
+            <div class="d-flex align-items-center gap-1">
+              <span class="appsheet-circle-dot red-dot">●</span>
+              <span style="font-size: 12px; color: #3c4043; font-weight: 500;">Avaiable Cash</span>
+            </div>
+            <span class="fw-bold text-dark" style="font-size: 13px;">${state.availableCash.toLocaleString('en-IN')}</span>
+          </div>
+        </div>
       </div>
     `;
   },
 
-  renderCard1SliceHTML(state) {
-    return `
-      <div class="p-3" style="overflow-y: auto; height: 100%;">
-        <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
-          <span class="fw-bold text-dark fs-6">Cash Summary Slice</span>
-          <span class="badge bg-secondary">${state.asOf}</span>
+  // ========================================================
+  // SCREEN 1: AVAILABLE CASH EXPANDED VIEW (1:1 Screenshot 1)
+  // ========================================================
+  renderExpandedAvailableCashView(container) {
+    const state = this.calculateCashState();
+
+    const chartWidth = 1400;
+    const topY = 40;
+    const bottomY = 560;
+    const totalSpanY = bottomY - topY; // 520px
+    const maxVal = 250000;
+
+    const ratio = Math.min(1, Math.max(0, Math.abs(state.availableCash) / maxVal));
+    const barHeight = totalSpanY * ratio;
+    const barY = topY;
+    const barWidth = 840;
+    const barX = 260;
+
+    const ticks = [
+      { val: 0, label: '0', y: topY },
+      { val: -50000, label: '-50,000', y: topY + totalSpanY * 0.2 },
+      { val: -100000, label: '-100,000', y: topY + totalSpanY * 0.4 },
+      { val: -150000, label: '-150,000', y: topY + totalSpanY * 0.6 },
+      { val: -200000, label: '-200,000', y: topY + totalSpanY * 0.8 },
+      { val: -250000, label: '-250,000', y: bottomY }
+    ];
+
+    let gridLinesHTML = '';
+    for (const t of ticks) {
+      const isZero = t.val === 0;
+      const strokeColor = isZero ? '#70757a' : '#e0e4e8';
+      const strokeWidth = isZero ? '1.5' : '1';
+      gridLinesHTML += `
+        <line x1="60" y1="${t.y}" x2="${chartWidth - 40}" y2="${t.y}" stroke="${strokeColor}" stroke-width="${strokeWidth}" />
+        <text x="50" y="${t.y + 4}" font-family="Roboto, sans-serif" font-size="11" fill="#5f6368" text-anchor="end">${t.label}</text>
+      `;
+    }
+
+    container.innerHTML = `
+      <div class="h-100 d-flex flex-column bg-white">
+        <!-- Top Action Bar inside Expanded View -->
+        <div class="d-flex justify-content-between align-items-center px-4 py-2 border-bottom">
+          <div class="d-flex align-items-center gap-2">
+            <button class="btn btn-sm btn-outline-secondary" onclick="ShahpuraModule.setView('main')">
+              <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+            </button>
+            <span class="fs-6 fw-bold text-dark">Available Cash Chart</span>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <button class="btn-icon-bordered" title="Shahpura Slice Table View" onclick="ShahpuraModule.setView('shahpura_slice')">
+              <i class="bi bi-grid-fill"></i>
+            </button>
+            <button class="btn-appsheet-add" onclick="ShahpuraModule.openSliceAddDrawer()">
+              <i class="bi bi-plus-lg"></i> Add
+            </button>
+            <div class="v-divider"></div>
+            <button class="btn-icon-subtle" title="Filter / Sort">
+              <i class="bi bi-funnel"></i>
+            </button>
+          </div>
         </div>
 
-        <div class="row g-2 mb-3">
-          <div class="col-12">
-            <div class="p-3 rounded border text-center" style="background: #fdf2f2; border-color: #f5c2c7 !important;">
-              <div class="text-muted small fw-bold text-uppercase">Net Available Cash</div>
-              <div class="fs-4 fw-bold ${state.availableCash < 0 ? 'text-danger' : 'text-success'}">
-                ${state.availableCash < 0 ? '-' : ''}${state.displayBalance}
+        <!-- Full-Width Responsive SVG Chart -->
+        <div class="flex-grow-1 position-relative p-3" style="overflow: hidden;">
+          <svg viewBox="0 0 ${chartWidth} 680" class="w-100 h-100" preserveAspectRatio="none">
+            <!-- Grid Lines -->
+            ${gridLinesHTML}
+
+            <!-- Massive Red Bar -->
+            <rect x="${barX}" y="${barY}" width="${barWidth}" height="${barHeight}" fill="#cc0b0b" />
+
+            <!-- White Vertical Dashed Center Line -->
+            <line x1="${barX + barWidth / 2}" y1="${barY}" x2="${barX + barWidth / 2}" y2="${bottomY + 15}" stroke="#ffffff" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.85" />
+
+            <!-- X-Axis Timestamp Label slanted at 45 deg -->
+            <g transform="translate(${barX + barWidth / 2 - 20}, ${bottomY + 60}) rotate(-45)">
+              <text x="0" y="0" font-family="Roboto, sans-serif" font-size="11" fill="#5f6368" text-anchor="end">
+                ${state.displayDate}
+              </text>
+            </g>
+
+            <!-- Right Axis: DateTime rotated -->
+            <g transform="translate(${chartWidth - 15}, 65) rotate(90)">
+              <text x="0" y="0" font-family="Roboto, sans-serif" font-size="11" fill="#70757a" text-anchor="start">
+                DateTime
+              </text>
+            </g>
+          </svg>
+
+          <!-- Authentic Floating Tooltip Card matching Screenshot 1 -->
+          <div class="card1-appsheet-floating-card shadow" style="position: absolute; right: 180px; top: 45px; background: #ffffff; border: 1px solid #dadce0; border-radius: 6px; padding: 10px 16px; min-width: 180px; z-index: 10;">
+            <div style="font-size: 11px; color: #5f6368;">${state.asOf}</div>
+            <div class="d-flex align-items-center justify-content-between gap-4 mt-1">
+              <div class="d-flex align-items-center gap-1">
+                <span class="appsheet-circle-dot red-dot">●</span>
+                <span style="font-size: 13px; color: #3c4043; font-weight: 500;">Avaiable Cash</span>
               </div>
-              <div class="text-muted small">Status: ${state.availableCash < 0 ? 'Cash Deficit (Kharcha > Deposit)' : 'Cash Surplus'}</div>
-            </div>
-          </div>
-          <div class="col-6">
-            <div class="p-2 rounded border" style="background: #f2fbf4; border-color: #c3e6cb !important;">
-              <div class="small fw-bold text-success">Total Deposit (Inflow)</div>
-              <div class="fs-6 fw-bold text-success">₹ ${state.totalDeposit.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
-              <div class="text-muted" style="font-size: 11px;">${this.allDeposit.length} Deposits</div>
-            </div>
-          </div>
-          <div class="col-6">
-            <div class="p-2 rounded border" style="background: #fdf2f2; border-color: #f5c2c7 !important;">
-              <div class="small fw-bold text-danger">Total Given (Outflow)</div>
-              <div class="fs-6 fw-bold text-danger">₹ ${state.totalGiven.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
-              <div class="text-muted" style="font-size: 11px;">${this.allGiven.length} Transactions</div>
+              <span class="fw-bold text-dark fs-6">${state.availableCash.toLocaleString('en-IN')}</span>
             </div>
           </div>
         </div>
+      </div>
+    `;
+  },
 
-        <div class="table-responsive">
-          <table class="table table-sm table-bordered text-center align-middle" style="font-size: 12px;">
-            <thead class="table-light">
-              <tr>
-                <th>Date</th>
-                <th>Deposit (+)</th>
-                <th>Given (-)</th>
-                <th>Net Impact</th>
+  // ========================================================
+  // SCREEN 2: SHAHPURA SLICE TABLE VIEW (1:1 Screenshot 2)
+  // ========================================================
+  renderShahpuraSliceTableView(container) {
+    let rowsHTML = '';
+    const list = this.filteredSlice;
+
+    if (list.length === 0) {
+      rowsHTML = `
+        <tr>
+          <td colspan="5" class="text-center py-5 text-muted">
+            <i class="bi bi-inbox fs-2 text-secondary"></i>
+            <p class="mt-2 mb-0 small">No Shahpura Slice records found.</p>
+          </td>
+        </tr>
+      `;
+    } else {
+      for (const item of list) {
+        const formattedBal = (item.availableCash < 0 ? '₹ -' : '₹ ') + Math.abs(item.availableCash).toLocaleString('en-IN');
+        const formattedAmt = item.amount ? ((item.amount < 0 ? '₹ -' : '₹ ') + Math.abs(item.amount).toLocaleString('en-IN')) : '';
+        const balColor = item.availableCash < 0 ? 'color: #cc0b0b; font-weight: 700;' : 'color: #00b11f; font-weight: 700;';
+
+        rowsHTML += `
+          <tr class="appsheet-data-row" onclick="ShahpuraModule.openSliceDetail('${item.id}')" style="cursor: pointer;">
+            <td style="padding: 10px 16px; width: 220px; font-size: 13px; color: #202124;">
+              ${item.dateTime}
+            </td>
+            <td style="padding: 10px 16px; width: 180px; font-size: 13px; color: #202124;">
+              ${item.amountInHand || ''}
+            </td>
+            <td style="padding: 10px 16px; width: 180px; font-size: 13px;">
+              <span class="appsheet-circle-dot red-dot">●</span>
+              <span style="${balColor}">${formattedBal}</span>
+            </td>
+            <td style="padding: 10px 16px; width: 180px; font-size: 13px; color: #202124;">
+              ${formattedAmt}
+            </td>
+            <td style="padding: 10px 16px; text-align: right; width: 40px;">
+              <i class="bi bi-chevron-right text-secondary fs-6"></i>
+            </td>
+          </tr>
+        `;
+      }
+    }
+
+    container.innerHTML = `
+      <div class="h-100 d-flex flex-column bg-white">
+        <!-- Top Action Bar matching Screenshot 2 -->
+        <div class="d-flex justify-content-between align-items-center px-4 py-2 border-bottom">
+          <div class="d-flex align-items-center gap-2">
+            <button class="btn btn-sm btn-outline-secondary" onclick="ShahpuraModule.setView('available_cash')">
+              <i class="bi bi-arrow-left me-1"></i> Back to Chart
+            </button>
+            <span class="fs-6 fw-bold text-dark">Shahpura Slice</span>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <button class="btn-appsheet-add" onclick="ShahpuraModule.openSliceAddDrawer()">
+              <i class="bi bi-plus-lg"></i> Add
+            </button>
+            <div class="v-divider"></div>
+            <button class="btn-icon-subtle" title="Sort / Filter">
+              <i class="bi bi-funnel"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Table Container -->
+        <div class="flex-grow-1" style="overflow-y: auto;">
+          <table class="w-100" style="border-collapse: collapse;">
+            <thead>
+              <tr style="border-bottom: 1px solid #dadce0; background: #ffffff;">
+                <th style="padding: 10px 16px; text-align: left; font-size: 12px; font-weight: 600; color: #202124;">DateTime</th>
+                <th style="padding: 10px 16px; text-align: left; font-size: 12px; font-weight: 600; color: #202124;">Amount In Hand</th>
+                <th style="padding: 10px 16px; text-align: left; font-size: 12px; font-weight: 600; color: #202124;">Avaiable Cash</th>
+                <th style="padding: 10px 16px; text-align: left; font-size: 12px; font-weight: 600; color: #202124;">Amount</th>
+                <th style="padding: 10px 16px; width: 40px;"></th>
               </tr>
             </thead>
             <tbody>
-              ${this.generateSliceRows()}
+              ${rowsHTML}
             </tbody>
           </table>
         </div>
@@ -258,85 +545,125 @@ const ShahpuraModule = {
     `;
   },
 
-  generateSliceRows() {
-    const datesMap = new Map();
-    for (const g of this.allGiven) {
-      if (!datesMap.has(g.date)) datesMap.set(g.date, { deposit: 0, given: 0 });
-      datesMap.get(g.date).given += (Number(g.amount) || 0);
+  openSliceDetail(id) {
+    const r = this.allSlice.find(item => String(item.id) === String(id));
+    if (r) {
+      this.setView('slice_detail', r);
     }
-    for (const d of this.allDeposit) {
-      if (!datesMap.has(d.date)) datesMap.set(d.date, { deposit: 0, given: 0 });
-      datesMap.get(d.date).deposit += (Number(d.amount) || 0);
-    }
-
-    const sortedDates = Array.from(datesMap.keys()).sort((a, b) => {
-      const pa = a.split('/').reverse().join('-');
-      const pb = b.split('/').reverse().join('-');
-      return pb.localeCompare(pa);
-    });
-
-    return sortedDates.map(date => {
-      const item = datesMap.get(date);
-      const diff = item.deposit - item.given;
-      return `
-        <tr>
-          <td class="fw-bold">${date}</td>
-          <td class="text-success fw-bold">₹ ${item.deposit.toLocaleString('en-IN')}</td>
-          <td class="text-danger fw-bold">₹ ${item.given.toLocaleString('en-IN')}</td>
-          <td class="fw-bold ${diff < 0 ? 'text-danger' : 'text-success'}">
-            ${diff < 0 ? '-' : '+'}₹ ${Math.abs(diff).toLocaleString('en-IN')}
-          </td>
-        </tr>
-      `;
-    }).join('');
-  },
-
-  toggleCard1View() {
-    this.card1ViewMode = this.card1ViewMode === 'chart' ? 'slice' : 'chart';
-    this.renderCard1AvailableCash();
-  },
-
-  showChartTooltip(event, balance, deposit, given) {
-    const tt = document.getElementById('chartTooltip');
-    if (!tt) return;
-    const formattedBal = (balance < 0 ? '-₹ ' : '₹ ') + Math.abs(balance).toLocaleString('en-IN', { minimumFractionDigits: 2 });
-    tt.innerHTML = `
-      <div style="font-size: 11px; color: #5f6368; border-bottom: 1px solid #e0e0e0; padding-bottom: 3px; margin-bottom: 4px;">
-        <strong>Date:</strong> 30/10/2026, 09:32:00
-      </div>
-      <div style="font-size: 12px; font-weight: bold; color: ${balance < 0 ? '#cc0b0b' : '#00b11f'};">
-        Available Cash: ${formattedBal}
-      </div>
-      <div style="font-size: 11px; color: #00b11f; margin-top: 2px;">
-        Total Deposits: ₹ ${deposit.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-      </div>
-      <div style="font-size: 11px; color: #cc0b0b;">
-        Total Given: ₹ ${given.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-      </div>
-    `;
-    tt.style.display = 'block';
-    this.moveChartTooltip(event);
-  },
-
-  moveChartTooltip(event) {
-    const tt = document.getElementById('chartTooltip');
-    if (!tt) return;
-    const container = document.getElementById('card1Body');
-    if (!container) return;
-    const rect = container.getBoundingClientRect();
-    const x = event.clientX - rect.left + 15;
-    const y = event.clientY - rect.top + 15;
-    tt.style.left = `${Math.min(x, rect.width - 200)}px`;
-    tt.style.top = `${Math.min(y, rect.height - 100)}px`;
-  },
-
-  hideChartTooltip() {
-    const tt = document.getElementById('chartTooltip');
-    if (tt) tt.style.display = 'none';
   },
 
   // ========================================================
-  // CARD 2: GIVEN TRANSACTIONS (Red circles & bold red text)
+  // SCREEN 3: SHAHPURA SLICE RECORD DETAIL VIEW (1:1 Screenshot 3)
+  // ========================================================
+  renderShahpuraSliceDetailView(container) {
+    const r = this.currentSliceRecord || (this.allSlice.length > 0 ? this.allSlice[0] : null);
+    if (!r) return;
+
+    const formattedBal = (r.availableCash < 0 ? '₹-' : '₹') + Math.abs(r.availableCash).toLocaleString('en-IN');
+
+    container.innerHTML = `
+      <div class="h-100 d-flex flex-column bg-white">
+        <!-- Top Action Bar -->
+        <div class="d-flex justify-content-between align-items-center px-4 py-2 border-bottom">
+          <button class="btn btn-sm btn-outline-secondary" onclick="ShahpuraModule.setView('shahpura_slice')">
+            <i class="bi bi-arrow-left me-1"></i> Back to Shahpura Slice
+          </button>
+          <div class="d-flex align-items-center gap-2">
+            <button class="btn-icon-subtle" title="Expand View" onclick="ShahpuraModule.setView('shahpura_slice')">
+              <i class="bi bi-arrows-angle-expand"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Centered Record Detail Card matching Screenshot 3 -->
+        <div class="flex-grow-1 d-flex justify-content-start align-items-start p-4" style="background: #ffffff;">
+          <div style="width: 100%; max-width: 600px; border: 1px solid #dadce0; border-radius: 4px; padding: 18px 24px; background: #ffffff;">
+            <!-- Row 1: DateTime -->
+            <div class="d-flex align-items-center py-2" style="border-bottom: 1px solid transparent;">
+              <span style="width: 160px; font-size: 13px; color: #3c4043; font-weight: 500;">DateTime</span>
+              <span style="font-size: 14px; color: #202124; font-weight: 500;">${r.dateTime}</span>
+            </div>
+
+            <!-- Row 2: Avaiable Cash -->
+            <div class="d-flex align-items-center py-2">
+              <span style="width: 160px; font-size: 13px; color: #3c4043; font-weight: 500;">Avaiable Cash</span>
+              <div class="d-flex align-items-center gap-2">
+                <span class="appsheet-circle-dot red-dot">●</span>
+                <span class="fw-bold" style="color: #cc0b0b; font-size: 14px;">${formattedBal}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  },
+
+  // ========================================================
+  // SCREEN 4: SHAHPURA SLICE ADD DRAWER (1:1 Screenshot 4)
+  // ========================================================
+  openSliceAddDrawer() {
+    const now = new Date();
+    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const year = now.getFullYear();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const mins = String(now.getMinutes()).padStart(2, '0');
+    const secs = String(now.getSeconds()).padStart(2, '0');
+    const defaultDateTime = `${day}-${month}-${year} ${hours}:${mins}:${secs}`;
+
+    const state = this.calculateCashState();
+
+    document.getElementById('sliceInputDateTime').value = defaultDateTime;
+    document.getElementById('sliceInputAmountInHand').value = '0';
+    document.getElementById('sliceInputAvailableCash').value = Math.abs(state.availableCash);
+    document.getElementById('sliceInputAmount').value = '0';
+
+    const drawerEl = document.getElementById('shahpuraSliceAddDrawer');
+    if (drawerEl) {
+      const bs = bootstrap.Offcanvas.getOrCreateInstance(drawerEl);
+      bs.show();
+    }
+  },
+
+  async saveSliceRecord() {
+    const dt = document.getElementById('sliceInputDateTime').value.trim();
+    const inHand = document.getElementById('sliceInputAmountInHand').value.trim();
+    const avCash = Number(document.getElementById('sliceInputAvailableCash').value) || 0;
+    const amt = Number(document.getElementById('sliceInputAmount').value) || 0;
+
+    const newRecord = {
+      id: 'SLICE-' + Date.now().toString().slice(-6),
+      dateTime: dt || new Date().toLocaleString('en-GB'),
+      dateTimeSlug: dt.replace(/[-]/g, '/'),
+      amountInHand: inHand ? `₹ ${inHand}` : '',
+      availableCash: -Math.abs(avCash),
+      amount: amt ? -Math.abs(amt) : 0,
+      description: 'Manual adjustment in Shahpura Slice'
+    };
+
+    if (typeof dbService !== 'undefined' && dbService.saveShahpuraSliceRecord) {
+      await dbService.saveShahpuraSliceRecord(newRecord);
+    }
+
+    this.allSlice.unshift(newRecord);
+    this.filteredSlice = [...this.allSlice];
+
+    // Close Drawer
+    const drawerEl = document.getElementById('shahpuraSliceAddDrawer');
+    if (drawerEl) {
+      bootstrap.Offcanvas.getInstance(drawerEl)?.hide();
+    }
+
+    // Refresh view
+    this.renderCurrentView();
+
+    if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+      AppUI.showToast('Shahpura Slice entry saved successfully!', 'success');
+    }
+  },
+
+  // ========================================================
+  // CARD 2: GIVEN TRANSACTIONS (Date-Grouped, Red Format Rules)
   // ========================================================
   renderCard2GivenTransactions() {
     const container = document.getElementById('card2TableBody');
@@ -352,7 +679,6 @@ const ShahpuraModule = {
       return;
     }
 
-    // Group by Date in descending order
     const grouped = new Map();
     for (const item of this.filteredGiven) {
       if (!grouped.has(item.date)) {
@@ -373,7 +699,6 @@ const ShahpuraModule = {
       const totalAmount = items.reduce((acc, curr) => acc + (Number(curr.amount) || 0), 0);
       const formattedTotal = '₹ ' + totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-      // Group Header Row matching Screenshot (4).png
       html += `
         <tr class="appsheet-group-header-row bg-white">
           <td colspan="8" class="p-2 border-bottom">
@@ -386,7 +711,6 @@ const ShahpuraModule = {
         </tr>
       `;
 
-      // Sub-rows
       for (const row of items) {
         const formattedAmt = '₹ ' + (Number(row.amount) || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         html += `
@@ -431,7 +755,7 @@ const ShahpuraModule = {
   },
 
   // ========================================================
-  // CARD 3: DEPOSIT TRANSACTIONS (Green circles, bold green, G.R. No)
+  // CARD 3: DEPOSIT TRANSACTIONS (Date-Grouped, Green Dots & GR)
   // ========================================================
   renderCard3DepositTransactions() {
     const container = document.getElementById('card3TableBody');
@@ -447,7 +771,6 @@ const ShahpuraModule = {
       return;
     }
 
-    // Group by Date in descending order
     const grouped = new Map();
     for (const item of this.filteredDeposit) {
       if (!grouped.has(item.date)) {
@@ -468,7 +791,6 @@ const ShahpuraModule = {
       const totalAmount = items.reduce((acc, curr) => acc + (Number(curr.amount) || 0), 0);
       const formattedTotal = '₹ ' + totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-      // Group Header Row matching Screenshot (4).png
       html += `
         <tr class="appsheet-group-header-row bg-white">
           <td colspan="9" class="p-2 border-bottom">
@@ -481,7 +803,6 @@ const ShahpuraModule = {
         </tr>
       `;
 
-      // Sub-rows
       for (const row of items) {
         const formattedAmt = '₹ ' + (Number(row.amount) || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         html += `
@@ -528,6 +849,12 @@ const ShahpuraModule = {
   // EXPAND [↗] & COLLAPSE [↙] ENGINE
   // ========================================================
   toggleExpand(cardKey) {
+    if (cardKey === 'card1') {
+      // For Card 1, open full-screen Available Cash Chart view matching Image 1!
+      this.setView('available_cash');
+      return;
+    }
+
     const grid = document.getElementById('shahpuraGrid');
     if (!grid) return;
 
@@ -536,12 +863,10 @@ const ShahpuraModule = {
     const card2El = document.getElementById('shahpuraCard2');
     const card3El = document.getElementById('shahpuraCard3');
 
-    const btn1 = document.getElementById('expandBtnCard1');
     const btn2 = document.getElementById('expandBtnCard2');
     const btn3 = document.getElementById('expandBtnCard3');
 
     if (this.expandedCard === cardKey) {
-      // Collapse back to normal 3-card split layout
       this.expandedCard = null;
       grid.className = 'shahpura-grid';
       if (card1El) card1El.style.display = 'flex';
@@ -549,21 +874,12 @@ const ShahpuraModule = {
       if (card2El) card2El.style.display = 'flex';
       if (card3El) card3El.style.display = 'flex';
 
-      if (btn1) btn1.innerHTML = '<i class="bi bi-arrows-angle-expand"></i>';
       if (btn2) btn2.innerHTML = '<i class="bi bi-arrows-angle-expand"></i>';
       if (btn3) btn3.innerHTML = '<i class="bi bi-arrows-angle-expand"></i>';
     } else {
-      // Expand target card to 100% full view
       this.expandedCard = cardKey;
 
-      if (cardKey === 'card1') {
-        grid.className = 'shahpura-grid grid-expanded-card1';
-        if (card1El) card1El.style.display = 'flex';
-        if (rightStackEl) rightStackEl.style.display = 'none';
-        if (btn1) btn1.innerHTML = '<i class="bi bi-arrows-angle-contract text-primary"></i>';
-        if (btn2) btn2.innerHTML = '<i class="bi bi-arrows-angle-expand"></i>';
-        if (btn3) btn3.innerHTML = '<i class="bi bi-arrows-angle-expand"></i>';
-      } else if (cardKey === 'card2') {
+      if (cardKey === 'card2') {
         grid.className = 'shahpura-grid grid-expanded-card2';
         if (card1El) card1El.style.display = 'none';
         if (rightStackEl) {
@@ -575,7 +891,6 @@ const ShahpuraModule = {
           card2El.style.flex = '1 1 100%';
         }
         if (card3El) card3El.style.display = 'none';
-        if (btn1) btn1.innerHTML = '<i class="bi bi-arrows-angle-expand"></i>';
         if (btn2) btn2.innerHTML = '<i class="bi bi-arrows-angle-contract text-primary"></i>';
         if (btn3) btn3.innerHTML = '<i class="bi bi-arrows-angle-expand"></i>';
       } else if (cardKey === 'card3') {
@@ -590,7 +905,6 @@ const ShahpuraModule = {
           card3El.style.display = 'flex';
           card3El.style.flex = '1 1 100%';
         }
-        if (btn1) btn1.innerHTML = '<i class="bi bi-arrows-angle-expand"></i>';
         if (btn2) btn2.innerHTML = '<i class="bi bi-arrows-angle-expand"></i>';
         if (btn3) btn3.innerHTML = '<i class="bi bi-arrows-angle-contract text-primary"></i>';
       }
@@ -606,8 +920,19 @@ const ShahpuraModule = {
     if (!this.searchQuery) {
       this.filteredGiven = [...this.allGiven];
       this.filteredDeposit = [...this.allDeposit];
+      this.filteredSlice = [...this.allSlice];
     } else {
       const q = this.searchQuery;
+
+      this.filteredSlice = this.allSlice.filter(s => {
+        return (
+          (s.dateTime && s.dateTime.toLowerCase().includes(q)) ||
+          (String(s.availableCash).includes(q)) ||
+          (String(s.amount).includes(q)) ||
+          (s.description && s.description.toLowerCase().includes(q))
+        );
+      });
+
       this.filteredGiven = this.allGiven.filter(g => {
         return (
           (g.truckNo && g.truckNo.toLowerCase().includes(q)) ||
@@ -636,12 +961,17 @@ const ShahpuraModule = {
       });
     }
 
-    this.renderCard2GivenTransactions();
-    this.renderCard3DepositTransactions();
+    if (this.activeView === 'main') {
+      this.renderCard2GivenTransactions();
+      this.renderCard3DepositTransactions();
+    } else if (this.activeView === 'shahpura_slice') {
+      const container = document.getElementById('shahpuraFullViewContainer');
+      if (container) this.renderShahpuraSliceTableView(container);
+    }
   },
 
   // ========================================================
-  // RECORD DETAIL DRAWER (< Previous, Next >, Edit, Close)
+  // RECORD DETAIL DRAWER FOR GIVEN & DEPOSIT TRANSACTIONS
   // ========================================================
   openDetailDrawer(id, type) {
     const list = type === 'Given' ? this.filteredGiven : this.filteredDeposit;
@@ -782,8 +1112,7 @@ const ShahpuraModule = {
     if (formTypeEl) formTypeEl.value = type;
     if (editIdEl) editIdEl.value = '';
 
-    // Reset fields
-    const today = new Date().toLocaleDateString('en-GB'); // DD/MM/YYYY
+    const today = new Date().toLocaleDateString('en-GB');
     document.getElementById('txDate').value = today;
     document.getElementById('txAmount').value = '';
     document.getElementById('txTruckInput').value = '';
@@ -794,7 +1123,6 @@ const ShahpuraModule = {
     document.getElementById('txDestination').value = '';
     document.getElementById('txDescription').value = '';
 
-    // Show/hide GR No field based on type
     const grContainer = document.getElementById('txGrContainer');
     if (grContainer) {
       grContainer.style.display = type === 'Deposit' ? 'block' : 'none';
@@ -812,7 +1140,6 @@ const ShahpuraModule = {
     const r = list.find(item => String(item.id) === String(id));
     if (!r) return;
 
-    // Close detail drawer first if open
     const detailDrawer = document.getElementById('shahpuraDetailDrawer');
     if (detailDrawer) {
       bootstrap.Offcanvas.getInstance(detailDrawer)?.hide();
@@ -891,9 +1218,7 @@ const ShahpuraModule = {
 
     await this.loadData();
     this.buildMasterLists();
-    this.renderCard1AvailableCash();
-    this.renderCard2GivenTransactions();
-    this.renderCard3DepositTransactions();
+    this.renderCurrentView();
 
     const drawer = document.getElementById('shahpuraFormDrawer');
     if (drawer) {
@@ -918,9 +1243,7 @@ const ShahpuraModule = {
     }
 
     await this.loadData();
-    this.renderCard1AvailableCash();
-    this.renderCard2GivenTransactions();
-    this.renderCard3DepositTransactions();
+    this.renderCurrentView();
 
     if (typeof AppUI !== 'undefined' && AppUI.showToast) {
       AppUI.showToast('Transaction deleted successfully.', 'info');
@@ -950,7 +1273,6 @@ const ShahpuraModule = {
     document.getElementById('txTruckInput').value = truckNo;
     document.getElementById('txTruckDropdownList').classList.remove('show');
 
-    // Auto-fill Driver if matched
     const foundDriver = this.driverMasterList.find(d => d.truckNo === truckNo);
     if (foundDriver) {
       const driverIn = document.getElementById('txDriverInput');
@@ -987,7 +1309,6 @@ const ShahpuraModule = {
   },
 
   setupListeners() {
-    // Hide combobox dropdowns on outside click
     document.addEventListener('click', (e) => {
       const truckDrop = document.getElementById('txTruckDropdownList');
       if (truckDrop && !e.target.closest('#txTruckComboboxWrapper')) {

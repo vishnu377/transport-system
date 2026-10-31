@@ -212,6 +212,14 @@
       transition: grid-template-columns 0.25s ease;
     }
 
+    /* Full View Container (when in Card 1 Drilldowns) */
+    .shahpura-full-view {
+      display: none;
+      height: calc(100vh - var(--appsheet-topbar-h) - var(--appsheet-subbar-h));
+      background-color: #ffffff;
+      overflow: hidden;
+    }
+
     /* Expanded 100% Views */
     .shahpura-grid.grid-expanded-card1 {
       grid-template-columns: 1fr !important;
@@ -280,7 +288,7 @@
       font-weight: 600;
       border: none;
       border-radius: 4px;
-      padding: 3px 10px;
+      padding: 4px 12px;
       display: inline-flex;
       align-items: center;
       gap: 4px;
@@ -425,19 +433,6 @@
       padding: 1px 7px;
       border-radius: 4px;
       letter-spacing: 0.2px;
-    }
-
-    /* Chart Tooltip */
-    .appsheet-chart-tooltip {
-      position: absolute;
-      background-color: #ffffff;
-      border: 1px solid #dadce0;
-      border-radius: 6px;
-      padding: 8px 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      z-index: 100;
-      pointer-events: none;
-      font-family: 'Roboto', sans-serif;
     }
 
     /* Slide Drawers (AppSheet 2-Column Form) */
@@ -624,15 +619,15 @@
         <button class="btn-icon-subtle text-danger" title="System Alerts">
           <i class="bi bi-exclamation-circle-fill"></i>
         </button>
-        <button class="btn-icon-subtle" title="Sync Cloud Data" onclick="ShahpuraModule.loadData(); ShahpuraModule.renderCard1AvailableCash(); ShahpuraModule.renderCard2GivenTransactions(); ShahpuraModule.renderCard3DepositTransactions();">
+        <button class="btn-icon-subtle" title="Sync Cloud Data" onclick="ShahpuraModule.loadData(); ShahpuraModule.renderCurrentView();">
           <i class="bi bi-arrow-repeat"></i>
         </button>
         <div class="avatar-circle" title="User Profile">M</div>
       </div>
     </header>
 
-    <!-- Sub-header / Breadcrumb Bar -->
-    <div class="shahpura-subbar">
+    <!-- Sub-header / Breadcrumb Bar (Dynamic) -->
+    <div class="shahpura-subbar" id="shahpuraBreadcrumb">
       <div class="d-flex align-items-center gap-1">
         <a href="../index.html" class="breadcrumb-item-home">Home</a>
         <span class="mx-1">&gt;</span>
@@ -643,7 +638,7 @@
       </div>
     </div>
 
-    <!-- 3-Card Responsive Dashboard Grid -->
+    <!-- 3-Card Responsive Dashboard Grid (Default View) -->
     <main class="shahpura-grid" id="shahpuraGrid">
 
       <!-- ============================================== -->
@@ -651,26 +646,26 @@
       <!-- ============================================== -->
       <section class="appsheet-card" id="shahpuraCard1">
         <div class="card-header-appsheet">
-          <h2 class="card-title-appsheet" style="color: #1a73e8;">Available Cash</h2>
+          <h2 class="card-title-appsheet" style="color: #1a73e8; cursor: pointer;" onclick="ShahpuraModule.setView('available_cash')">Available Cash</h2>
           <div class="card-header-actions">
-            <button class="btn-icon-bordered" title="Toggle Slice / Chart View" onclick="ShahpuraModule.toggleCard1View()">
+            <button class="btn-icon-bordered" title="Shahpura Slice Table View" onclick="ShahpuraModule.setView('shahpura_slice')">
               <i class="bi bi-grid-fill"></i>
             </button>
-            <button class="btn-appsheet-add" onclick="ShahpuraModule.openAddDrawer('Deposit')">
+            <button class="btn-appsheet-add" onclick="ShahpuraModule.openSliceAddDrawer()">
               <i class="bi bi-plus-lg"></i> Add
             </button>
             <div class="v-divider"></div>
             <button class="btn-icon-subtle" title="Sort / Filter">
               <i class="bi bi-funnel"></i>
             </button>
-            <button class="btn-icon-subtle" id="expandBtnCard1" title="Expand / Contract" onclick="ShahpuraModule.toggleExpand('card1')">
+            <button class="btn-icon-subtle" id="expandBtnCard1" title="Expand Full Chart View" onclick="ShahpuraModule.toggleExpand('card1')">
               <i class="bi bi-arrows-angle-expand"></i>
             </button>
           </div>
         </div>
 
         <div class="card-body-scrollable" id="card1Body">
-          <!-- Chart or Slice dynamically rendered by ShahpuraModule -->
+          <!-- Chart dynamically rendered by ShahpuraModule -->
         </div>
       </section>
 
@@ -764,10 +759,77 @@
 
       </div>
     </main>
+
+    <!-- Full View Container for Card 1 Drilldowns (Available Cash Chart / Shahpura Slice Table / Detail) -->
+    <div id="shahpuraFullViewContainer" class="shahpura-full-view">
+      <!-- Dynamically populated by ShahpuraModule -->
+    </div>
   </div>
 
   <!-- ======================================================== -->
-  <!-- SLIDE DRAWER 1: ADD / EDIT TRANSACTION (AppSheet 2-Col)   -->
+  <!-- SLIDE DRAWER 1: SHAHPURA SLICE ADD (+ Add on Card 1)     -->
+  <!-- Matching Screenshot 4 (1:1 Google AppSheet Fidelity)     -->
+  <!-- ======================================================== -->
+  <div class="offcanvas offcanvas-end offcanvas-appsheet" tabindex="-1" id="shahpuraSliceAddDrawer" aria-labelledby="sliceFormTitle">
+    <!-- Header with ✕, Shahpura Slice, Cancel, Save -->
+    <div class="drawer-header-appsheet">
+      <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn btn-link text-dark p-0 text-decoration-none fs-5 me-2" data-bs-dismiss="offcanvas" aria-label="Close">
+          <i class="bi bi-x-lg"></i>
+        </button>
+        <span class="fs-6 fw-bold text-dark" id="sliceFormTitle">Shahpura Slice</span>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn btn-outline-secondary btn-sm px-3" data-bs-dismiss="offcanvas" style="border-color: #c3b15a; color: #856404; font-weight: 500;">
+          Cancel
+        </button>
+        <button type="button" class="btn-appsheet-add px-3" onclick="ShahpuraModule.saveSliceRecord()">
+          Save
+        </button>
+      </div>
+    </div>
+
+    <div class="offcanvas-body p-4">
+      <!-- Field 1: DateTime -->
+      <div class="form-row-2col">
+        <label class="form-label-left">DateTime</label>
+        <div class="form-field-right position-relative">
+          <input type="text" id="sliceInputDateTime" class="appsheet-input font-monospace" placeholder="DD-MM-YYYY HH:mm:ss" style="padding-right: 36px;">
+          <i class="bi bi-calendar3 position-absolute end-0 top-50 translate-middle-y me-3 text-secondary pointer-events-none"></i>
+        </div>
+      </div>
+
+      <!-- Field 2: Amount In Hand -->
+      <div class="form-row-2col">
+        <label class="form-label-left">Amount In Hand</label>
+        <div class="form-field-right position-relative">
+          <span class="position-absolute start-0 top-50 translate-middle-y ms-2 text-dark font-monospace fw-bold">₹</span>
+          <input type="number" id="sliceInputAmountInHand" class="appsheet-input font-monospace" style="padding-left: 24px;" value="0">
+        </div>
+      </div>
+
+      <!-- Field 3: Avaiable Cash -->
+      <div class="form-row-2col">
+        <label class="form-label-left">Avaiable Cash</label>
+        <div class="form-field-right position-relative">
+          <span class="position-absolute start-0 top-50 translate-middle-y ms-2 text-dark font-monospace fw-bold">₹</span>
+          <input type="number" id="sliceInputAvailableCash" class="appsheet-input font-monospace fw-bold" style="padding-left: 24px;" value="212329">
+        </div>
+      </div>
+
+      <!-- Field 4: Amount -->
+      <div class="form-row-2col">
+        <label class="form-label-left">Amount</label>
+        <div class="form-field-right position-relative">
+          <span class="position-absolute start-0 top-50 translate-middle-y ms-2 text-dark font-monospace fw-bold">₹</span>
+          <input type="number" id="sliceInputAmount" class="appsheet-input font-monospace" style="padding-left: 24px;" value="0">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- SLIDE DRAWER 2: ADD / EDIT GIVEN / DEPOSIT TRANSACTION    -->
   <!-- ======================================================== -->
   <div class="offcanvas offcanvas-end offcanvas-appsheet" tabindex="-1" id="shahpuraFormDrawer" aria-labelledby="transactionFormTitle">
     <div class="drawer-header-appsheet">
@@ -884,7 +946,7 @@
   </div>
 
   <!-- ======================================================== -->
-  <!-- SLIDE DRAWER 2: RECORD DETAIL VIEW (< Prev, Next >, Edit) -->
+  <!-- SLIDE DRAWER 3: TRANSACTION DETAIL VIEW (< Prev, Next >) -->
   <!-- ======================================================== -->
   <div class="offcanvas offcanvas-end offcanvas-appsheet" tabindex="-1" id="shahpuraDetailDrawer" aria-labelledby="shahpuraDetailTitle">
     <div class="drawer-header-appsheet">

@@ -1407,6 +1407,92 @@ class DBService {
     };
   }
 
+  // =========================================
+  // SHAHPURA SLICE (CARD 1 DRILLDOWN)
+  // =========================================
+  async getAllShahpuraSliceAsync() {
+    if (this.isFirebaseReady && this.db) {
+      try {
+        const snapshot = await this.db.collection('shahpura_slice').get();
+        const cloudItems = [];
+        snapshot.forEach(doc => cloudItems.push({ id: doc.id, ...doc.data() }));
+        return this.getAllShahpuraSlice(cloudItems);
+      } catch (err) {
+        console.warn('[DBService] Firebase getAllShahpuraSliceAsync fallback:', err);
+      }
+    }
+    return this.getAllShahpuraSlice([]);
+  }
+
+  getAllShahpuraSlice(cloudItems = []) {
+    let baseItems = [];
+    if (typeof window !== 'undefined' && window.SAMPLE_SHAHPURA_DATA && window.SAMPLE_SHAHPURA_DATA.sliceRecords) {
+      baseItems = window.SAMPLE_SHAHPURA_DATA.sliceRecords;
+    } else if (typeof SAMPLE_SHAHPURA_DATA !== 'undefined' && SAMPLE_SHAHPURA_DATA.sliceRecords) {
+      baseItems = SAMPLE_SHAHPURA_DATA.sliceRecords;
+    }
+
+    const sliceMap = new Map();
+    const deletedSet = (this.deletedIds && this.deletedIds.shahpuraSlice) ? this.deletedIds.shahpuraSlice : new Set();
+
+    for (const item of baseItems) {
+      if (!deletedSet.has(String(item.id))) {
+        sliceMap.set(String(item.id), { ...item });
+      }
+    }
+
+    if (this.sessionStore && this.sessionStore.shahpuraSlice) {
+      for (const [id, item] of this.sessionStore.shahpuraSlice.entries()) {
+        if (!deletedSet.has(String(id))) {
+          sliceMap.set(String(id), { ...item });
+        }
+      }
+    }
+
+    for (const item of cloudItems) {
+      if (!deletedSet.has(String(item.id))) {
+        sliceMap.set(String(item.id), { ...item });
+      }
+    }
+
+    return Array.from(sliceMap.values());
+  }
+
+  async saveShahpuraSliceRecord(item) {
+    if (!item.id) {
+      item.id = 'SLICE-' + Date.now().toString().slice(-6);
+    }
+    if (!this.sessionStore) this.sessionStore = {};
+    if (!this.sessionStore.shahpuraSlice) this.sessionStore.shahpuraSlice = new Map();
+    this.sessionStore.shahpuraSlice.set(String(item.id), item);
+
+    if (this.isFirebaseReady && this.db) {
+      try {
+        await this.db.collection('shahpura_slice').doc(String(item.id)).set(item, { merge: true });
+      } catch (err) {
+        console.warn('[DBService] Firebase saveShahpuraSliceRecord error:', err);
+      }
+    }
+    return item;
+  }
+
+  async deleteShahpuraSliceRecord(id) {
+    if (!this.deletedIds) this.deletedIds = {};
+    if (!this.deletedIds.shahpuraSlice) this.deletedIds.shahpuraSlice = new Set();
+    this.deletedIds.shahpuraSlice.add(String(id));
+    if (this.sessionStore && this.sessionStore.shahpuraSlice) {
+      this.sessionStore.shahpuraSlice.delete(String(id));
+    }
+    if (this.isFirebaseReady && this.db) {
+      try {
+        await this.db.collection('shahpura_slice').doc(String(id)).delete();
+      } catch (err) {
+        console.warn('[DBService] Firebase deleteShahpuraSliceRecord error:', err);
+      }
+    }
+    return true;
+  }
+
   // Intentionally disabled: No data is saved to browser localStorage
   seedLocalStorage() {
     // Disabled: Direct Firebase Cloud Firestore active. Zero localStorage persistence.

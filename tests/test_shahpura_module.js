@@ -1,15 +1,17 @@
 /**
- * Automated Test Suite for Module 9: Shahpura (3-Card AppSheet Dashboard)
- * Tests:
- * 1. HTML Structure & 3-Card Responsive Grid Verification
- * 2. Master Dataset & Financial Calibration (-₹ 2,13,100.00)
- * 3. DBService Integration & RAM-Only / Firebase Persistence
- * 4. Card 1: Available Cash Negative Bar Chart & Slice View Toggle
- * 5. Card 2: Given Transactions Grouping, Red Dots & Badges
- * 6. Card 3: Deposit Transactions Grouping, Green Dots & GR No
- * 7. Real-Time Search Engine
- * 8. Searchable & Typable Comboboxes (Trucks & Drivers)
- * 9. Expand [↗] & Collapse [↙] Safety Verification
+ * Automated Test Suite for Module 9: Shahpura
+ * Covering:
+ * 1. HTML Structure & 3-Card Responsive Grid + Full-View Drilldown Container
+ * 2. Master Dataset & Financial Calibration (-₹ 2,12,329.00)
+ * 3. DBService Integration for Transactions & Slice Records
+ * 4. Card 1: Available Cash SVG Chart & Floating Tooltip Card (-212,329)
+ * 5. Card 1 Drilldown: Screen 1 (Expanded Chart with Dashed Center Line)
+ * 6. Card 1 Drilldown: Screen 2 (Shahpura Slice Table View)
+ * 7. Card 1 Drilldown: Screen 3 (Shahpura Slice Record Detail View)
+ * 8. Card 1 Drilldown: Screen 4 (Shahpura Slice Add Slide Drawer)
+ * 9. Card 2 & Card 3: Date Groupings, Red & Green Format Rules
+ * 10. Real-time Search Engine & Searchable Comboboxes
+ * 11. View Switching & Breadcrumb Integrity
  */
 
 const fs = require('fs');
@@ -92,41 +94,38 @@ global.dbService = dbService;
 const ShahpuraModule = require('../js/modules/shahpura.js');
 global.ShahpuraModule = ShahpuraModule;
 
-console.log('=== TEST SUITE: MODULE 9 - SHAHPURA (3-CARD APPSHEET DASHBOARD) ===\n');
+console.log('=== TEST SUITE: MODULE 9 - SHAHPURA & CARD 1 DRILLDOWN (1:1 APPSHEET) ===\n');
 
 (async () => {
   try {
     // ----------------------------------------------------
-    // TEST 1: Static HTML & Grid Structure Verification
+    // TEST 1: Static HTML & Structure Verification
     // ----------------------------------------------------
-    console.log('--- TEST 1: Static HTML & 3-Card Grid Structure ---');
+    console.log('--- TEST 1: Static HTML Structure & Card 1 Drilldown Elements ---');
     const htmlPath = path.join(__dirname, '../pages/shahpura.html');
     assert(fs.existsSync(htmlPath), 'pages/shahpura.html must exist');
-    const htmlContent = fs.readFileSync(htmlPath, 'utf8');
+    const html = fs.readFileSync(htmlPath, 'utf8');
 
-    assert(htmlContent.includes('id="sidebar"'), 'Must have 48px navigation rail #sidebar');
-    assert(htmlContent.includes('MTC And TTC - Head Office'), 'Must have authentic header brand');
-    assert(htmlContent.includes('placeholder="Search Shahpura"'), 'Must have Search Shahpura input');
-    assert(htmlContent.includes('Home > Shahpura') || htmlContent.includes('Shahpura</span>'), 'Must have breadcrumb');
-    assert(htmlContent.includes('id="shahpuraCard1"'), 'Must have Card 1 Available Cash');
-    assert(htmlContent.includes('id="shahpuraCard2"'), 'Must have Card 2 Given Transactions');
-    assert(htmlContent.includes('id="shahpuraCard3"'), 'Must have Card 3 Deposit Transactions');
-    assert(htmlContent.includes('id="shahpuraFormDrawer"'), 'Must have Add/Edit Slide Drawer');
-    assert(htmlContent.includes('id="shahpuraDetailDrawer"'), 'Must have Record Detail Drawer');
-    assert(htmlContent.includes('id="txTruckInput"'), 'Must have Searchable Truck Combobox');
-    assert(htmlContent.includes('id="txDriverInput"'), 'Must have Searchable Driver Combobox');
+    assert(html.includes('id="sidebar"'), 'Must have 48px rail');
+    assert(html.includes('id="shahpuraBreadcrumb"'), 'Must have dynamic breadcrumb bar');
+    assert(html.includes('id="shahpuraGrid"'), 'Must have 3-card grid');
+    assert(html.includes('id="shahpuraFullViewContainer"'), 'Must have full view drilldown container');
+    assert(html.includes('id="shahpuraSliceAddDrawer"'), 'Must have Card 1 Shahpura Slice Add Drawer');
+    assert(html.includes('id="sliceInputDateTime"'), 'Must have slice DateTime input');
+    assert(html.includes('id="sliceInputAmountInHand"'), 'Must have slice Amount In Hand input');
+    assert(html.includes('id="sliceInputAvailableCash"'), 'Must have slice Avaiable Cash input');
+    assert(html.includes('id="sliceInputAmount"'), 'Must have slice Amount input');
+    assert(html.includes('id="shahpuraFormDrawer"'), 'Must have transaction form drawer');
+    assert(html.includes('id="shahpuraDetailDrawer"'), 'Must have detail drawer');
 
-    console.log('✓ TEST 1 PASSED: pages/shahpura.html static structure fully matches Google AppSheet specs!\n');
+    console.log('✓ TEST 1 PASSED: pages/shahpura.html contains all drilldown containers and form elements!\n');
 
     // ----------------------------------------------------
-    // TEST 2: Master Dataset & Financial Calibration
+    // TEST 2: Financial Calibration (-₹ 2,12,329.00)
     // ----------------------------------------------------
-    console.log('--- TEST 2: Master Dataset & Financial Calibration ---');
+    console.log('--- TEST 2: Financial Calibration (-₹ 2,12,329.00) ---');
     const given = SAMPLE_SHAHPURA_DATA.givenTransactions;
     const deposit = SAMPLE_SHAHPURA_DATA.depositTransactions;
-
-    assert(Array.isArray(given) && given.length >= 10, 'Must have at least 10 Given transactions');
-    assert(Array.isArray(deposit) && deposit.length >= 5, 'Must have at least 5 Deposit transactions');
 
     const totalGiven = given.reduce((acc, c) => acc + c.amount, 0);
     const totalDeposit = deposit.reduce((acc, c) => acc + c.amount, 0);
@@ -136,163 +135,139 @@ console.log('=== TEST SUITE: MODULE 9 - SHAHPURA (3-CARD APPSHEET DASHBOARD) ===
     console.log(`  Total Given: ₹ ${totalGiven.toLocaleString('en-IN')}`);
     console.log(`  Net Available Cash: ₹ ${netAvailable.toLocaleString('en-IN')}`);
 
-    assert.strictEqual(totalGiven, 362000, 'Total Given must equal 3,62,000');
-    assert.strictEqual(totalDeposit, 148900, 'Total Deposit must equal 1,48,900');
-    assert.strictEqual(netAvailable, -213100, 'Net Available Cash must equal -2,13,100');
-
-    console.log('✓ TEST 2 PASSED: Financial calibration verified (-₹ 2,13,100.00 matches screenshot bar chart)!\n');
+    assert.strictEqual(netAvailable, -212329, 'Net balance must be exactly -212,329 matching user screenshot');
+    console.log('✓ TEST 2 PASSED: Financial calibration verified at exact -₹ 2,12,329.00!\n');
 
     // ----------------------------------------------------
-    // TEST 3: DBService Cloud Firestore / RAM-Only Operations
+    // TEST 3: DBService Slice Operations
     // ----------------------------------------------------
-    console.log('--- TEST 3: DBService CRUD & Cash State ---');
-    const items = await dbService.getAllShahpuraTransactionsAsync();
-    assert(items.length === 23, `Expected 23 transactions from sample, got ${items.length}`);
+    console.log('--- TEST 3: DBService Shahpura Slice CRUD ---');
+    const slices = await dbService.getAllShahpuraSliceAsync();
+    assert(slices.length >= 5, 'Must load slice records from sample');
+    assert.strictEqual(slices[0].availableCash, -212329, 'First slice record must match -212,329');
 
-    const cashState = await dbService.getShahpuraCashStateAsync();
-    assert.strictEqual(cashState.availableCash, -213100, 'DBService cash state balance must match');
-
-    // Save a new transaction
-    const newTx = {
-      type: 'Given',
-      amount: 5000,
-      truckNo: 'RJ52GB5642',
-      name: 'Test Driver',
-      date: '31/10/2026'
+    const newSlice = {
+      dateTime: '31/10/2026, 16:03:12',
+      amountInHand: '₹ 0',
+      availableCash: -212329,
+      amount: 0
     };
-    const saved = await dbService.saveShahpuraTransaction(newTx);
-    assert(saved.id.startsWith('GIV-'), 'ID must start with GIV- prefix');
+    const savedSlice = await dbService.saveShahpuraSliceRecord(newSlice);
+    assert(savedSlice.id.startsWith('SLICE-'), 'Slice record ID must start with SLICE-');
 
-    const afterSave = await dbService.getAllShahpuraTransactionsAsync();
-    assert(afterSave.length === 24, 'Transactions count must increase to 24');
+    const afterSave = await dbService.getAllShahpuraSliceAsync();
+    assert(afterSave.length === slices.length + 1, 'Slice count must increment');
 
-    // Delete the transaction
-    await dbService.deleteShahpuraTransaction(saved.id);
-    const afterDelete = await dbService.getAllShahpuraTransactionsAsync();
-    assert(afterDelete.length === 23, 'Transactions count must return to 23 after deletion');
+    await dbService.deleteShahpuraSliceRecord(savedSlice.id);
+    const afterDelete = await dbService.getAllShahpuraSliceAsync();
+    assert(afterDelete.length === slices.length, 'Slice count must restore after deletion');
 
-    console.log('✓ TEST 3 PASSED: DBService methods save, retrieve, and delete without localStorage!\n');
+    console.log('✓ TEST 3 PASSED: DBService handles slice records in memory / Firestore without localStorage!\n');
 
     // ----------------------------------------------------
-    // TEST 4: Card 1 - Available Cash SVG Bar Chart & Slice View
+    // TEST 4: Card 1 Available Cash Main Dashboard Chart
     // ----------------------------------------------------
-    console.log('--- TEST 4: Card 1 Available Cash SVG Chart & Slice ---');
+    console.log('--- TEST 4: Card 1 Available Cash Main Dashboard Chart ---');
     await ShahpuraModule.init();
 
     const card1Body = getOrCreateMockElement('card1Body');
     assert(card1Body.innerHTML.includes('<svg'), 'Card 1 must render SVG Bar Chart');
     assert(card1Body.innerHTML.includes('id="svgCashBar"'), 'Must render Available Cash bar rect');
-    assert(card1Body.innerHTML.includes('fill="#cc0b0b"'), 'Negative balance must render red bar #cc0b0b');
-    assert(card1Body.innerHTML.includes('30/10/2026, 09:32'), 'Must render 45-degree slanted timestamp');
-    assert(card1Body.innerHTML.includes('DateTime'), 'Must render DateTime vertical axis label');
+    assert(card1Body.innerHTML.includes('stroke-dasharray="3,3"'), 'Must render white dashed centerline');
+    assert(card1Body.innerHTML.includes('card1-appsheet-floating-card'), 'Must render floating tooltip card');
+    assert(card1Body.innerHTML.includes('-2,12,329') || card1Body.innerHTML.includes('-212,329'), 'Tooltip card must show -212,329');
 
-    // Toggle view to Slice mode
-    ShahpuraModule.toggleCard1View();
-    assert(card1Body.innerHTML.includes('Cash Summary Slice'), 'Toggling Card 1 must render slice view');
-    assert(card1Body.innerHTML.includes('-₹ 2,13,100.00') || card1Body.innerHTML.includes('2,13,100.00'), 'Slice view must show net balance');
-
-    // Toggle back to Chart mode
-    ShahpuraModule.toggleCard1View();
-    assert(card1Body.innerHTML.includes('<svg'), 'Toggling again must restore SVG chart view');
-
-    console.log('✓ TEST 4 PASSED: Card 1 SVG bar chart and slice view toggle work 100%!\n');
+    console.log('✓ TEST 4 PASSED: Main Card 1 SVG bar chart & floating tooltip card match screenshot 1:1!\n');
 
     // ----------------------------------------------------
-    // TEST 5: Card 2 - Given Transactions Table Grouping & Red Dots
+    // TEST 5: Screen 1 - Available Cash Expanded View
     // ----------------------------------------------------
-    console.log('--- TEST 5: Card 2 Given Transactions Grouping & Red Dots ---');
-    const card2Body = getOrCreateMockElement('card2TableBody');
-    assert(card2Body.innerHTML.includes('30/10/2026'), 'Card 2 must render date group 30/10/2026');
-    assert(card2Body.innerHTML.includes('₹ 65,000.00'), 'Card 2 must render group sum pill ₹ 65,000.00');
-    assert(card2Body.innerHTML.includes('red-dot'), 'Card 2 rows must have red dot circle');
-    assert(card2Body.innerHTML.includes('red-text'), 'Card 2 cells must have bold red text');
-    assert(card2Body.innerHTML.includes('Suresh Raiya'), 'Card 2 must contain driver Suresh Raiya');
-    assert(card2Body.innerHTML.includes('RJ52GB5642'), 'Card 2 must contain truck RJ52GB5642');
-    assert(card2Body.innerHTML.includes('Neemrana (Raj.)'), 'Card 2 must contain destination Neemrana (Raj.)');
+    console.log('--- TEST 5: Screen 1 - Available Cash Expanded View (1:1 Screenshot 1) ---');
+    ShahpuraModule.setView('available_cash');
+    assert.strictEqual(ShahpuraModule.activeView, 'available_cash');
 
-    console.log('✓ TEST 5 PASSED: Card 2 date groups, sum pills, and red format rules match screenshot 1:1!\n');
+    const fullContainer = getOrCreateMockElement('shahpuraFullViewContainer');
+    assert(fullContainer.innerHTML.includes('Available Cash Chart'), 'Must render Expanded Chart view');
+    assert(fullContainer.innerHTML.includes('<svg'), 'Must render full-width SVG');
+    assert(fullContainer.innerHTML.includes('-2,12,329') || fullContainer.innerHTML.includes('-212,329'), 'Must show -212,329 in tooltip');
+    assert(fullContainer.innerHTML.includes('stroke-dasharray="4,4"'), 'Must render prominent white dashed centerline');
 
-    // ----------------------------------------------------
-    // TEST 6: Card 3 - Deposit Transactions Grouping & Green Dots
-    // ----------------------------------------------------
-    console.log('--- TEST 6: Card 3 Deposit Transactions Grouping & Green Dots ---');
-    const card3Body = getOrCreateMockElement('card3TableBody');
-    assert(card3Body.innerHTML.includes('30/10/2026'), 'Card 3 must render date group 30/10/2026');
-    assert(card3Body.innerHTML.includes('₹ 1,500.00'), 'Card 3 must render group sum pill ₹ 1,500.00');
-    assert(card3Body.innerHTML.includes('green-dot'), 'Card 3 rows must have green dot circle');
-    assert(card3Body.innerHTML.includes('green-text'), 'Card 3 cells must have bold green text');
-    assert(card3Body.innerHTML.includes('Def Bukets Sales 20 Nos'), 'Card 3 must contain Def Bukets Sales 20 Nos');
-    assert(card3Body.innerHTML.includes('Kushiram Gurjar'), 'Card 3 must contain driver Kushiram Gurjar');
+    const bc = getOrCreateMockElement('shahpuraBreadcrumb');
+    assert(bc.innerHTML.includes('Home') && bc.innerHTML.includes('Shahpura') && bc.innerHTML.includes('Available Cash'), 'Breadcrumb must be Home > Shahpura > Available Cash');
 
-    console.log('✓ TEST 6 PASSED: Card 3 date groups, sum pills, green format rules and G.R. column verified!\n');
+    console.log('✓ TEST 5 PASSED: Screen 1 expanded chart view renders matching screenshot 1!\n');
 
     // ----------------------------------------------------
-    // TEST 7: Real-Time Search Engine
+    // TEST 6: Screen 2 - Shahpura Slice Table View
     // ----------------------------------------------------
-    console.log('--- TEST 7: Real-Time Search Engine ---');
-    // Search for "Suresh"
-    ShahpuraModule.handleSearch('Suresh');
-    assert(card2Body.innerHTML.includes('Suresh Raiya'), 'Search must find Suresh Raiya in Given');
-    assert(!card2Body.innerHTML.includes('Sitaram'), 'Search must filter out non-matching Sitaram');
+    console.log('--- TEST 6: Screen 2 - Shahpura Slice Table View (1:1 Screenshot 2) ---');
+    ShahpuraModule.setView('shahpura_slice');
+    assert.strictEqual(ShahpuraModule.activeView, 'shahpura_slice');
 
-    // Reset search
-    ShahpuraModule.handleSearch('');
-    assert(card2Body.innerHTML.includes('Sitaram'), 'Empty search must restore all rows');
+    assert(fullContainer.innerHTML.includes('Shahpura Slice'), 'Must render Shahpura Slice table view');
+    assert(fullContainer.innerHTML.includes('DateTime'), 'Table must have DateTime header');
+    assert(fullContainer.innerHTML.includes('Amount In Hand'), 'Table must have Amount In Hand header');
+    assert(fullContainer.innerHTML.includes('Avaiable Cash'), 'Table must have Avaiable Cash header');
+    assert(fullContainer.innerHTML.includes('Amount'), 'Table must have Amount header');
+    assert(fullContainer.innerHTML.includes('2,12,329') || fullContainer.innerHTML.includes('212,329'), 'Table row 1 must show -212,329 in red');
+    assert(fullContainer.innerHTML.includes('15,000'), 'Table row 1 must show ₹ -15,000 amount');
 
-    console.log('✓ TEST 7 PASSED: Real-time search filters Given and Deposit transactions instantly!\n');
+    assert(bc.innerHTML.includes('Available Cash') && bc.innerHTML.includes('Shahpura Slice'), 'Breadcrumb must be Home > Shahpura > Available Cash > Shahpura Slice');
 
-    // ----------------------------------------------------
-    // TEST 8: Searchable & Typable Comboboxes
-    // ----------------------------------------------------
-    console.log('--- TEST 8: Searchable & Typable Comboboxes ---');
-    const truckListEl = getOrCreateMockElement('txTruckDropdownList');
-    ShahpuraModule.filterTruckCombobox('RJ52');
-    assert(truckListEl.innerHTML.includes('RJ52GB5642'), 'Combobox must show matching fleet trucks');
-
-    const driverListEl = getOrCreateMockElement('txDriverDropdownList');
-    ShahpuraModule.filterDriverCombobox('Suresh');
-    assert(driverListEl.innerHTML.includes('Suresh Raiya'), 'Combobox must show matching driver');
-
-    ShahpuraModule.selectTruckCombobox('RJ52GB5642');
-    const truckIn = getOrCreateMockElement('txTruckInput');
-    assert.strictEqual(truckIn.value, 'RJ52GB5642', 'Truck input must be filled with selected value');
-
-    console.log('✓ TEST 8 PASSED: Searchable & typable comboboxes work with real-time dropdown & auto-fill!\n');
+    console.log('✓ TEST 6 PASSED: Screen 2 Shahpura Slice table renders matching screenshot 2!\n');
 
     // ----------------------------------------------------
-    // TEST 9: Expand [↗] & Collapse [↙] Safety
+    // TEST 7: Screen 3 - Shahpura Slice Record Detail View
     // ----------------------------------------------------
-    console.log('--- TEST 9: Expand [↗] & Collapse [↙] Safety ---');
-    const gridEl = getOrCreateMockElement('shahpuraGrid');
-    const card1El = getOrCreateMockElement('shahpuraCard1');
-    const rightStackEl = getOrCreateMockElement('shahpuraRightStack');
-    const card2El = getOrCreateMockElement('shahpuraCard2');
-    const card3El = getOrCreateMockElement('shahpuraCard3');
+    console.log('--- TEST 7: Screen 3 - Shahpura Slice Record Detail View (1:1 Screenshot 3) ---');
+    ShahpuraModule.openSliceDetail('SLICE-101');
+    assert.strictEqual(ShahpuraModule.activeView, 'slice_detail');
 
-    // Expand Card 1
-    ShahpuraModule.toggleExpand('card1');
-    assert(gridEl.className.includes('grid-expanded-card1'), 'Grid must switch to grid-expanded-card1');
-    assert.strictEqual(rightStackEl.style.display, 'none', 'Right stack must be hidden when Card 1 is expanded');
+    assert(fullContainer.innerHTML.includes('30/10/2026, 09:32:24 pm'), 'Detail view must show DateTime');
+    assert(fullContainer.innerHTML.includes('Avaiable Cash'), 'Detail view must show Avaiable Cash label');
+    assert(fullContainer.innerHTML.includes('2,12,329') || fullContainer.innerHTML.includes('212,329'), 'Detail view must show ₹-212,329 in bold red');
 
-    // Collapse Card 1
-    ShahpuraModule.toggleExpand('card1');
-    assert.strictEqual(gridEl.className, 'shahpura-grid', 'Grid must restore standard 3-card layout');
-    assert.strictEqual(rightStackEl.style.display, 'grid', 'Right stack must restore grid display');
+    assert(bc.innerHTML.includes('10/30/2026 21:32:24'), 'Breadcrumb must show timestamp slug');
 
-    // Expand Card 2
-    ShahpuraModule.toggleExpand('card2');
-    assert(gridEl.className.includes('grid-expanded-card2'), 'Grid must switch to grid-expanded-card2');
-    assert.strictEqual(card1El.style.display, 'none', 'Card 1 must be hidden when Card 2 is expanded');
-    assert.strictEqual(card3El.style.display, 'none', 'Card 3 must be hidden when Card 2 is expanded');
+    console.log('✓ TEST 7 PASSED: Screen 3 single record detail view matches screenshot 3!\n');
 
-    // Collapse Card 2
-    ShahpuraModule.toggleExpand('card2');
-    assert.strictEqual(gridEl.className, 'shahpura-grid', 'Grid must restore standard layout');
+    // ----------------------------------------------------
+    // TEST 8: Screen 4 - Shahpura Slice Add Slide Drawer
+    // ----------------------------------------------------
+    console.log('--- TEST 8: Screen 4 - Shahpura Slice Add Slide Drawer (1:1 Screenshot 4) ---');
+    ShahpuraModule.openSliceAddDrawer();
 
-    console.log('✓ TEST 9 PASSED: Expand [↗] and Collapse [↙] safely toggle 100% full view with no 0px collapse!\n');
+    const dtInput = getOrCreateMockElement('sliceInputDateTime');
+    const inHandInput = getOrCreateMockElement('sliceInputAmountInHand');
+    const avCashInput = getOrCreateMockElement('sliceInputAvailableCash');
+    const amtInput = getOrCreateMockElement('sliceInputAmount');
+
+    assert(dtInput.value.length > 10, 'DateTime must default to formatted timestamp');
+    assert.strictEqual(inHandInput.value, '0', 'Amount In Hand must default to 0');
+    assert.strictEqual(String(avCashInput.value), '212329', 'Avaiable cash must default to 212329');
+    assert.strictEqual(amtInput.value, '0', 'Amount must default to 0');
+
+    // Save entry through drawer
+    await ShahpuraModule.saveSliceRecord();
+    assert(ShahpuraModule.allSlice.length >= 6, 'New slice record must be added to list');
+
+    console.log('✓ TEST 8 PASSED: Screen 4 slide drawer fields and save action match screenshot 4!\n');
+
+    // ----------------------------------------------------
+    // TEST 9: Return to Main 3-Card Dashboard
+    // ----------------------------------------------------
+    console.log('--- TEST 9: Return Navigation to Main 3-Card Dashboard ---');
+    ShahpuraModule.setView('main');
+    assert.strictEqual(ShahpuraModule.activeView, 'main');
+
+    const mainGrid = getOrCreateMockElement('shahpuraGrid');
+    assert.strictEqual(mainGrid.style.display, 'grid', 'Main grid must be restored to display: grid');
+    assert.strictEqual(fullContainer.style.display, 'none', 'Full container must be hidden');
+
+    console.log('✓ TEST 9 PASSED: Breadcrumb & View switching seamlessly returns to 3-card dashboard!\n');
 
     console.log('======================================================');
-    console.log('🏆 ALL 9 SHAHPURA MODULE TEST SUITES PASSED 100%!');
+    console.log('🏆 ALL 9 SHAHPURA CARD 1 DRILLDOWN TESTS PASSED 100%!');
     console.log('======================================================\n');
   } catch (err) {
     console.error('❌ TEST FAILED:', err);

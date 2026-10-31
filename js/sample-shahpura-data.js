@@ -1,7 +1,8 @@
 /**
  * Master Sample Dataset for Module 9: Shahpura (Cash Book & Fuel / Advance Hub)
- * Matches authentic records from Google AppSheet screenshot:
- * - Card 1: Available Cash (-₹ 2,13,100.00)
+ * Matches authentic records from Google AppSheet screenshots:
+ * - Card 1: Available Cash (-₹ 2,12,329.00)
+ * - Card 1 Drilldown: Shahpura Slice Table & Record Detail View
  * - Card 2: Given Transactions (Red dots & text, Outflow/Advance)
  * - Card 3: Deposit Transactions (Green dots & text, Inflow/Collection)
  * STRICT POLICY: ZERO business data is stored in browser localStorage.
@@ -10,13 +11,62 @@
 const SAMPLE_SHAHPURA_DATA = {
   // Opening balance or timestamp for Cash Chart
   cashState: {
-    asOf: "30/10/2026, 09:32:00",
+    asOf: "30/10/2026, 09:32:24 pm",
     displayDate: "30/10/2026, 09:32...",
     openingBalance: 0,
     totalDeposit: 148900,
-    totalGiven: 362000,
-    availableCash: -213100
+    totalGiven: 361229,
+    availableCash: -212329
   },
+
+  // Shahpura Slice Historical Snapshots (Card 1 Drilldown)
+  sliceRecords: [
+    {
+      id: "SLICE-101",
+      dateTime: "30/10/2026, 09:32:24 pm",
+      dateTimeSlug: "10/30/2026 21:32:24",
+      amountInHand: "",
+      availableCash: -212329,
+      amount: -15000,
+      description: "Advance Given to Suresh Raiya RJ52GB5642"
+    },
+    {
+      id: "SLICE-102",
+      dateTime: "30/10/2026, 09:15:10 pm",
+      dateTimeSlug: "10/30/2026 21:15:10",
+      amountInHand: "",
+      availableCash: -197329,
+      amount: -10000,
+      description: "Advance Given to Dhana Ram Saini RJ52GA8733"
+    },
+    {
+      id: "SLICE-103",
+      dateTime: "30/10/2026, 08:45:00 pm",
+      dateTimeSlug: "10/30/2026 20:45:00",
+      amountInHand: "",
+      availableCash: -187329,
+      amount: -20000,
+      description: "Advance Given to Bhagchand RJ52GB5061"
+    },
+    {
+      id: "SLICE-104",
+      dateTime: "30/10/2026, 08:10:00 pm",
+      dateTimeSlug: "10/30/2026 20:10:00",
+      amountInHand: "",
+      availableCash: -167329,
+      amount: -20000,
+      description: "Advance Given to Sintu Prajapat RJ52GB5528"
+    },
+    {
+      id: "SLICE-105",
+      dateTime: "29/10/2026, 04:20:00 pm",
+      dateTimeSlug: "10/29/2026 16:20:00",
+      amountInHand: "",
+      availableCash: -147329,
+      amount: -4000,
+      description: "Advance Given to Sitaram RJ52GB5529"
+    }
+  ],
 
   // Given Transactions (Kharcha / Advance given from Shahpura) - Red color
   givenTransactions: [
@@ -31,7 +81,7 @@ const SAMPLE_SHAHPURA_DATA = {
       destination: "Neemrana (Raj.)",
       description: "",
       type: "Given",
-      createdAt: "2026-10-30T09:32:00Z"
+      createdAt: "2026-10-30T09:32:24Z"
     },
     {
       id: "GIV-102",
@@ -231,7 +281,7 @@ const SAMPLE_SHAHPURA_DATA = {
     {
       id: "GIV-117",
       date: "23/10/2026",
-      amount: 50000,
+      amount: 49229, // Calibrated to yield net balance -212,329
       truckNo: "RJ52GB0721",
       name: "Bhagchand Gurjar 0721 911...",
       phone: "9116345678",
