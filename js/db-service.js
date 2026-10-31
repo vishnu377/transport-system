@@ -1294,6 +1294,119 @@ class DBService {
     return true;
   }
 
+  // =========================================
+  // MODULE 9: SHAHPURA CASH & TRANSACTIONS
+  // =========================================
+  async getAllShahpuraTransactionsAsync() {
+    if (this.isFirebaseReady && this.db) {
+      try {
+        const snapshot = await this.db.collection('shahpura_transactions').get();
+        const cloudItems = [];
+        snapshot.forEach(doc => cloudItems.push({ id: doc.id, ...doc.data() }));
+        return this.getAllShahpuraTransactions(cloudItems);
+      } catch (err) {
+        console.warn('[DBService] Firebase getAllShahpuraTransactionsAsync fallback:', err);
+      }
+    }
+    return this.getAllShahpuraTransactions([]);
+  }
+
+  getAllShahpuraTransactions(cloudItems = []) {
+    let baseItems = [];
+    if (typeof window !== 'undefined' && window.SAMPLE_SHAHPURA_DATA) {
+      const g = window.SAMPLE_SHAHPURA_DATA.givenTransactions || [];
+      const d = window.SAMPLE_SHAHPURA_DATA.depositTransactions || [];
+      baseItems = [...g, ...d];
+    } else if (typeof SAMPLE_SHAHPURA_DATA !== 'undefined') {
+      const g = SAMPLE_SHAHPURA_DATA.givenTransactions || [];
+      const d = SAMPLE_SHAHPURA_DATA.depositTransactions || [];
+      baseItems = [...g, ...d];
+    }
+
+    const txMap = new Map();
+    const deletedSet = (this.deletedIds && this.deletedIds.shahpuraTransactions) ? this.deletedIds.shahpuraTransactions : new Set();
+
+    for (const item of baseItems) {
+      if (!deletedSet.has(String(item.id))) {
+        txMap.set(String(item.id), { ...item });
+      }
+    }
+
+    if (this.sessionStore && this.sessionStore.shahpuraTransactions) {
+      for (const [id, item] of this.sessionStore.shahpuraTransactions.entries()) {
+        if (!deletedSet.has(String(id))) {
+          txMap.set(String(id), { ...item });
+        }
+      }
+    }
+
+    for (const item of cloudItems) {
+      if (!deletedSet.has(String(item.id))) {
+        txMap.set(String(item.id), { ...item });
+      }
+    }
+
+    return Array.from(txMap.values());
+  }
+
+  async saveShahpuraTransaction(item) {
+    if (!item.id) {
+      const prefix = item.type === 'Deposit' ? 'DEP-' : 'GIV-';
+      item.id = prefix + Date.now().toString().slice(-6);
+    }
+    if (!this.sessionStore) this.sessionStore = {};
+    if (!this.sessionStore.shahpuraTransactions) this.sessionStore.shahpuraTransactions = new Map();
+    this.sessionStore.shahpuraTransactions.set(String(item.id), item);
+
+    if (this.isFirebaseReady && this.db) {
+      try {
+        await this.db.collection('shahpura_transactions').doc(String(item.id)).set(item, { merge: true });
+      } catch (err) {
+        console.warn('[DBService] Firebase saveShahpuraTransaction error:', err);
+      }
+    }
+    return item;
+  }
+
+  async deleteShahpuraTransaction(id) {
+    if (!this.deletedIds) this.deletedIds = {};
+    if (!this.deletedIds.shahpuraTransactions) this.deletedIds.shahpuraTransactions = new Set();
+    this.deletedIds.shahpuraTransactions.add(String(id));
+    if (this.sessionStore && this.sessionStore.shahpuraTransactions) {
+      this.sessionStore.shahpuraTransactions.delete(String(id));
+    }
+    if (this.isFirebaseReady && this.db) {
+      try {
+        await this.db.collection('shahpura_transactions').doc(String(id)).delete();
+      } catch (err) {
+        console.warn('[DBService] Firebase deleteShahpuraTransaction error:', err);
+      }
+    }
+    return true;
+  }
+
+  async getShahpuraCashStateAsync() {
+    const all = await this.getAllShahpuraTransactionsAsync();
+    let totalGiven = 0;
+    let totalDeposit = 0;
+    for (const tx of all) {
+      const amt = Number(tx.amount) || 0;
+      if (tx.type === 'Deposit') {
+        totalDeposit += amt;
+      } else {
+        totalGiven += amt;
+      }
+    }
+    const availableCash = totalDeposit - totalGiven;
+    return {
+      totalGiven,
+      totalDeposit,
+      availableCash,
+      count: all.length,
+      asOf: new Date().toLocaleDateString('en-GB') + ', ' + new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
+    };
+  }
+
   // Intentionally disabled: No data is saved to browser localStorage
   seedLocalStorage() {
     // Disabled: Direct Firebase Cloud Firestore active. Zero localStorage persistence.

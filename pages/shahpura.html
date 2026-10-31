@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shahpura - MTC And TTC - Head Office</title>
+
+  <!-- Google Fonts: Roboto & Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5 CSS & Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+  <style>
+    :root {
+      --appsheet-topbar-h: 48px;
+      --appsheet-subbar-h: 36px;
+      --appsheet-rail-w: 48px;
+      --appsheet-gold: #c3b15a;
+      --appsheet-gold-hover: #b3a149;
+      --appsheet-border: #dadce0;
+      --appsheet-bg-gray: #f1f3f4;
+      --appsheet-text-main: #202124;
+      --appsheet-text-muted: #5f6368;
+      --appsheet-red: #cc0b0b;
+      --appsheet-green: #00b11f;
+      --appsheet-pill-bg: #dadce0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Roboto', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #eaedf1;
+      color: var(--appsheet-text-main);
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    /* 48px Slim Left Icon Rail */
+    .appsheet-rail {
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: var(--appsheet-rail-w);
+      background-color: #ffffff;
+      border-right: 1px solid var(--appsheet-border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 8px 0;
+      z-index: 1040;
+    }
+
+    .appsheet-rail-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--appsheet-text-muted);
+      border: none;
+      background: transparent;
+      margin-bottom: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s ease;
+      font-size: 18px;
+    }
+
+    .appsheet-rail-btn:hover {
+      background-color: var(--appsheet-bg-gray);
+      color: var(--appsheet-text-main);
+    }
+
+    .appsheet-rail-btn.active {
+      background-color: #e8f0fe;
+      color: #1a73e8;
+    }
+
+    /* Main Workspace Wrapper */
+    .shahpura-wrapper {
+      margin-left: var(--appsheet-rail-w);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-color: #eaedf1;
+      overflow: hidden;
+    }
+
+    /* Top Navigation Bar */
+    .shahpura-topbar {
+      height: var(--appsheet-topbar-h);
+      background-color: #ffffff;
+      border-bottom: 1px solid var(--appsheet-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      flex-shrink: 0;
+      z-index: 1030;
+    }
+
+    .app-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 500;
+      font-size: 14px;
+      color: #202124;
+      white-space: nowrap;
+    }
+
+    /* AppSheet Centered Search Input */
+    .appsheet-search-wrap {
+      flex: 1;
+      max-width: 540px;
+      margin: 0 24px;
+      position: relative;
+    }
+
+    .appsheet-search-input {
+      width: 100%;
+      height: 34px;
+      background-color: #f1f3f4;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      padding: 0 12px 0 34px;
+      font-size: 13px;
+      color: #202124;
+      outline: none;
+      transition: background-color 0.15s, border-color 0.15s;
+    }
+
+    .appsheet-search-input:focus {
+      background-color: #ffffff;
+      border-color: #1a73e8;
+      box-shadow: 0 1px 3px rgba(60,64,67,0.15);
+    }
+
+    .appsheet-search-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #5f6368;
+      font-size: 14px;
+      pointer-events: none;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .avatar-circle {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background-color: #c3b15a;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+    }
+
+    /* Sub-header / Breadcrumb Bar */
+    .shahpura-subbar {
+      height: var(--appsheet-subbar-h);
+      background-color: #ffffff;
+      border-bottom: 1px solid var(--appsheet-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      font-size: 13px;
+      color: var(--appsheet-text-muted);
+      flex-shrink: 0;
+    }
+
+    .breadcrumb-item-home {
+      color: #5f6368;
+      text-decoration: none;
+    }
+    .breadcrumb-item-home:hover {
+      text-decoration: underline;
+    }
+
+    /* 3-Card Responsive Dashboard Grid */
+    .shahpura-grid {
+      display: grid;
+      grid-template-columns: 38% 62%;
+      height: calc(100vh - var(--appsheet-topbar-h) - var(--appsheet-subbar-h));
+      gap: 10px;
+      padding: 10px;
+      background-color: #eaedf1;
+      overflow: hidden;
+      transition: grid-template-columns 0.25s ease;
+    }
+
+    /* Expanded 100% Views */
+    .shahpura-grid.grid-expanded-card1 {
+      grid-template-columns: 1fr !important;
+    }
+    .shahpura-grid.grid-expanded-card2,
+    .shahpura-grid.grid-expanded-card3 {
+      grid-template-columns: 1fr !important;
+    }
+
+    /* Dashboard Cards */
+    .appsheet-card {
+      background-color: #ffffff;
+      border-radius: 6px;
+      border: 1px solid var(--appsheet-border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 1px 2px rgba(60,64,67,0.06);
+    }
+
+    /* Card 1: Available Cash */
+    #shahpuraCard1 {
+      height: 100%;
+    }
+
+    /* Right Stack: Contains Card 2 & Card 3 */
+    .shahpura-right-stack {
+      display: grid;
+      grid-template-rows: 1fr 1fr;
+      gap: 10px;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    /* Card Header */
+    .card-header-appsheet {
+      height: 44px;
+      background-color: #ffffff;
+      border-bottom: 1px solid var(--appsheet-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      flex-shrink: 0;
+    }
+
+    .card-title-appsheet {
+      font-size: 15px;
+      font-weight: 600;
+      color: #202124;
+      margin: 0;
+      white-space: nowrap;
+    }
+
+    .card-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* AppSheet Buttons */
+    .btn-appsheet-add {
+      background-color: var(--appsheet-gold);
+      color: #202124;
+      font-size: 12px;
+      font-weight: 600;
+      border: none;
+      border-radius: 4px;
+      padding: 3px 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: background-color 0.15s;
+    }
+
+    .btn-appsheet-add:hover {
+      background-color: var(--appsheet-gold-hover);
+      color: #000000;
+    }
+
+    .btn-icon-subtle {
+      background: transparent;
+      border: 1px solid transparent;
+      color: #5f6368;
+      width: 28px;
+      height: 28px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.15s;
+    }
+
+    .btn-icon-subtle:hover {
+      background-color: #f1f3f4;
+      color: #202124;
+      border-color: #dadce0;
+    }
+
+    .btn-icon-bordered {
+      background: #ffffff;
+      border: 1px solid #dadce0;
+      color: #5f6368;
+      width: 28px;
+      height: 28px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    .btn-icon-bordered:hover {
+      background: #f8f9fa;
+      color: #202124;
+    }
+
+    .v-divider {
+      width: 1px;
+      height: 18px;
+      background-color: #dadce0;
+      margin: 0 2px;
+    }
+
+    /* Card Scrollable Content */
+    .card-body-scrollable {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: auto;
+      position: relative;
+    }
+
+    /* AppSheet Authentic Table */
+    .appsheet-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .appsheet-table thead th {
+      position: sticky;
+      top: 0;
+      background-color: #ffffff;
+      color: #5f6368;
+      font-weight: 500;
+      font-size: 12px;
+      padding: 8px 10px;
+      border-bottom: 1px solid #dadce0;
+      z-index: 10;
+      text-align: left;
+    }
+
+    .appsheet-table tbody td {
+      padding: 6px 10px;
+      border-bottom: 1px solid #f1f3f4;
+      vertical-align: middle;
+      font-size: 12px;
+    }
+
+    .appsheet-data-row {
+      cursor: pointer;
+      transition: background-color 0.12s ease;
+    }
+
+    .appsheet-data-row:hover {
+      background-color: #f8f9fa;
+    }
+
+    .appsheet-group-header-row td {
+      background-color: #ffffff;
+      border-bottom: 1px solid #dadce0;
+      padding: 7px 10px;
+    }
+
+    /* Formatting Dots & Colors */
+    .appsheet-circle-dot {
+      display: inline-block;
+      font-size: 10px;
+      margin-right: 5px;
+      vertical-align: middle;
+    }
+
+    .red-dot {
+      color: var(--appsheet-red);
+    }
+
+    .green-dot {
+      color: var(--appsheet-green);
+    }
+
+    .red-text {
+      color: var(--appsheet-red);
+      font-weight: 700;
+    }
+
+    .green-text {
+      color: var(--appsheet-green);
+      font-weight: 700;
+    }
+
+    .appsheet-sum-badge {
+      display: inline-block;
+      background-color: var(--appsheet-pill-bg);
+      color: #3c4043;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 1px 7px;
+      border-radius: 4px;
+      letter-spacing: 0.2px;
+    }
+
+    /* Chart Tooltip */
+    .appsheet-chart-tooltip {
+      position: absolute;
+      background-color: #ffffff;
+      border: 1px solid #dadce0;
+      border-radius: 6px;
+      padding: 8px 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 100;
+      pointer-events: none;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    /* Slide Drawers (AppSheet 2-Column Form) */
+    .offcanvas-appsheet {
+      width: 480px !important;
+      border-left: 1px solid #dadce0;
+      box-shadow: -4px 0 16px rgba(0,0,0,0.1);
+    }
+
+    .drawer-header-appsheet {
+      height: 48px;
+      background-color: #ffffff;
+      border-bottom: 1px solid #dadce0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+    }
+
+    .form-row-2col {
+      display: flex;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #f1f3f4;
+    }
+
+    .form-label-left {
+      width: 140px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #3c4043;
+      margin: 0;
+      flex-shrink: 0;
+    }
+
+    .form-field-right {
+      flex: 1;
+      position: relative;
+    }
+
+    .appsheet-input {
+      width: 100%;
+      height: 36px;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      padding: 0 10px;
+      font-size: 13px;
+      color: #202124;
+      outline: none;
+      background-color: #ffffff;
+    }
+
+    .appsheet-input:focus {
+      border-color: #1a73e8;
+      box-shadow: 0 0 0 2px rgba(26,115,232,0.2);
+    }
+
+    .combobox-toggle-btn {
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 32px;
+      border: none;
+      background: transparent;
+      color: #5f6368;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .combobox-dropdown-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: #ffffff;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      max-height: 220px;
+      overflow-y: auto;
+      z-index: 1050;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+      display: none;
+      list-style: none;
+      padding: 4px 0;
+      margin: 2px 0 0 0;
+    }
+
+    .combobox-dropdown-menu.show {
+      display: block;
+    }
+
+    .combobox-dropdown-menu li a {
+      display: block;
+      padding: 6px 12px;
+      color: #202124;
+      font-size: 13px;
+      text-decoration: none;
+    }
+
+    .combobox-dropdown-menu li a:hover {
+      background-color: #f1f3f4;
+    }
+
+    /* Detail Grid */
+    .appsheet-detail-grid {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #f1f3f4;
+      font-size: 13px;
+    }
+
+    .detail-label {
+      color: #5f6368;
+      font-weight: 500;
+    }
+
+    .detail-value {
+      color: #202124;
+      text-align: right;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 992px) {
+      .shahpura-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        overflow-y: auto;
+        height: auto;
+      }
+      .shahpura-wrapper {
+        overflow-y: auto;
+      }
+      #shahpuraCard1 {
+        min-height: 480px;
+      }
+      .shahpura-right-stack {
+        grid-template-rows: auto auto;
+        height: auto;
+      }
+      #shahpuraCard2, #shahpuraCard3 {
+        min-height: 380px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 48px Slim Navigation Rail on Left -->
+  <nav id="sidebar" class="appsheet-rail"></nav>
+
+  <!-- Main Workspace -->
+  <div class="shahpura-wrapper">
+
+    <!-- Top Navigation Bar (MTC And TTC - Head Office) -->
+    <header class="shahpura-topbar">
+      <div class="d-flex align-items-center">
+        <button class="btn btn-link text-dark p-0 me-3" onclick="AppUI.toggleNavDrawer()" title="Menu">
+          <i class="bi bi-list fs-4"></i>
+        </button>
+        <div class="app-brand">
+          <i class="bi bi-wallet2 text-warning fs-5"></i>
+          <span>MTC And TTC - Head Office</span>
+        </div>
+      </div>
+
+      <!-- Centered Search Bar -->
+      <div class="appsheet-search-wrap">
+        <i class="bi bi-search appsheet-search-icon"></i>
+        <input type="text" id="shahpuraSearchInput" class="appsheet-search-input" placeholder="Search Shahpura" oninput="ShahpuraModule.handleSearch(this.value)">
+      </div>
+
+      <!-- Top Right Status Icons -->
+      <div class="topbar-actions">
+        <button class="btn-icon-subtle text-danger" title="System Alerts">
+          <i class="bi bi-exclamation-circle-fill"></i>
+        </button>
+        <button class="btn-icon-subtle" title="Sync Cloud Data" onclick="ShahpuraModule.loadData(); ShahpuraModule.renderCard1AvailableCash(); ShahpuraModule.renderCard2GivenTransactions(); ShahpuraModule.renderCard3DepositTransactions();">
+          <i class="bi bi-arrow-repeat"></i>
+        </button>
+        <div class="avatar-circle" title="User Profile">M</div>
+      </div>
+    </header>
+
+    <!-- Sub-header / Breadcrumb Bar -->
+    <div class="shahpura-subbar">
+      <div class="d-flex align-items-center gap-1">
+        <a href="../index.html" class="breadcrumb-item-home">Home</a>
+        <span class="mx-1">&gt;</span>
+        <span class="text-dark fw-medium">Shahpura</span>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <i class="bi bi-grid-3x3-gap text-secondary" style="font-size: 16px; cursor: pointer;" title="Dashboard View Layout"></i>
+      </div>
+    </div>
+
+    <!-- 3-Card Responsive Dashboard Grid -->
+    <main class="shahpura-grid" id="shahpuraGrid">
+
+      <!-- ============================================== -->
+      <!-- CARD 1: AVAILABLE CASH (Left Column, Full Height) -->
+      <!-- ============================================== -->
+      <section class="appsheet-card" id="shahpuraCard1">
+        <div class="card-header-appsheet">
+          <h2 class="card-title-appsheet" style="color: #1a73e8;">Available Cash</h2>
+          <div class="card-header-actions">
+            <button class="btn-icon-bordered" title="Toggle Slice / Chart View" onclick="ShahpuraModule.toggleCard1View()">
+              <i class="bi bi-grid-fill"></i>
+            </button>
+            <button class="btn-appsheet-add" onclick="ShahpuraModule.openAddDrawer('Deposit')">
+              <i class="bi bi-plus-lg"></i> Add
+            </button>
+            <div class="v-divider"></div>
+            <button class="btn-icon-subtle" title="Sort / Filter">
+              <i class="bi bi-funnel"></i>
+            </button>
+            <button class="btn-icon-subtle" id="expandBtnCard1" title="Expand / Contract" onclick="ShahpuraModule.toggleExpand('card1')">
+              <i class="bi bi-arrows-angle-expand"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="card-body-scrollable" id="card1Body">
+          <!-- Chart or Slice dynamically rendered by ShahpuraModule -->
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- RIGHT STACK: CARD 2 (TOP) & CARD 3 (BOTTOM)     -->
+      <!-- ============================================== -->
+      <div class="shahpura-right-stack" id="shahpuraRightStack">
+
+        <!-- ============================================== -->
+        <!-- CARD 2: GIVEN TRANSACTIONS (Top Right Half)     -->
+        <!-- ============================================== -->
+        <section class="appsheet-card" id="shahpuraCard2">
+          <div class="card-header-appsheet">
+            <h2 class="card-title-appsheet">Given Transactions</h2>
+            <div class="card-header-actions">
+              <button class="btn-appsheet-add" onclick="ShahpuraModule.openAddDrawer('Given')">
+                <i class="bi bi-plus-lg"></i> Add
+              </button>
+              <div class="v-divider"></div>
+              <button class="btn-icon-subtle" title="Sort / Filter">
+                <i class="bi bi-funnel"></i>
+              </button>
+              <button class="btn-icon-subtle" id="expandBtnCard2" title="Expand / Contract" onclick="ShahpuraModule.toggleExpand('card2')">
+                <i class="bi bi-arrows-angle-expand"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="card-body-scrollable">
+            <table class="appsheet-table">
+              <thead>
+                <tr>
+                  <th style="width: 110px;">Date</th>
+                  <th style="width: 110px;">Amount</th>
+                  <th style="width: 120px;">Truck No.</th>
+                  <th style="width: 210px;">Name</th>
+                  <th style="width: 140px;">Origin</th>
+                  <th style="width: 140px;">Destination</th>
+                  <th style="width: 150px;">Description</th>
+                  <th style="width: 40px;"></th>
+                </tr>
+              </thead>
+              <tbody id="card2TableBody">
+                <!-- Rows dynamically rendered by ShahpuraModule -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- CARD 3: DEPOSIT TRANSACTIONS (Bottom Right Half) -->
+        <!-- ============================================== -->
+        <section class="appsheet-card" id="shahpuraCard3">
+          <div class="card-header-appsheet">
+            <h2 class="card-title-appsheet">Deposit Transactions</h2>
+            <div class="card-header-actions">
+              <button class="btn-appsheet-add" onclick="ShahpuraModule.openAddDrawer('Deposit')">
+                <i class="bi bi-plus-lg"></i> Add
+              </button>
+              <div class="v-divider"></div>
+              <button class="btn-icon-subtle" title="Sort / Filter">
+                <i class="bi bi-funnel"></i>
+              </button>
+              <button class="btn-icon-subtle" id="expandBtnCard3" title="Expand / Contract" onclick="ShahpuraModule.toggleExpand('card3')">
+                <i class="bi bi-arrows-angle-expand"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="card-body-scrollable">
+            <table class="appsheet-table">
+              <thead>
+                <tr>
+                  <th style="width: 110px;">Date</th>
+                  <th style="width: 110px;">Amount</th>
+                  <th style="width: 120px;">Truck No.</th>
+                  <th style="width: 200px;">Name</th>
+                  <th style="width: 80px;">G.R. No.</th>
+                  <th style="width: 140px;">Origin</th>
+                  <th style="width: 140px;">Destination</th>
+                  <th style="width: 150px;">Description</th>
+                  <th style="width: 40px;"></th>
+                </tr>
+              </thead>
+              <tbody id="card3TableBody">
+                <!-- Rows dynamically rendered by ShahpuraModule -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- SLIDE DRAWER 1: ADD / EDIT TRANSACTION (AppSheet 2-Col)   -->
+  <!-- ======================================================== -->
+  <div class="offcanvas offcanvas-end offcanvas-appsheet" tabindex="-1" id="shahpuraFormDrawer" aria-labelledby="transactionFormTitle">
+    <div class="drawer-header-appsheet">
+      <div class="d-flex align-items-center gap-2">
+        <span class="fs-5 text-warning"><i class="bi bi-wallet2"></i></span>
+        <h6 class="mb-0 fw-bold text-dark" id="transactionFormTitle">New Transaction</h6>
+      </div>
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+
+    <div class="offcanvas-body p-3">
+      <input type="hidden" id="txFormType" value="Given">
+      <input type="hidden" id="txFormEditId" value="">
+
+      <!-- Field 1: Date -->
+      <div class="form-row-2col">
+        <label class="form-label-left">Date</label>
+        <div class="form-field-right">
+          <input type="text" id="txDate" class="appsheet-input font-monospace" placeholder="DD/MM/YYYY">
+        </div>
+      </div>
+
+      <!-- Field 2: Amount -->
+      <div class="form-row-2col">
+        <label class="form-label-left">Amount (₹)</label>
+        <div class="form-field-right">
+          <input type="number" id="txAmount" class="appsheet-input font-monospace fw-bold" placeholder="e.g. 15000" min="0">
+        </div>
+      </div>
+
+      <!-- Field 3: Truck No. (Searchable & Typable Combobox) -->
+      <div class="form-row-2col">
+        <label class="form-label-left">Truck No.</label>
+        <div class="form-field-right" id="txTruckComboboxWrapper">
+          <input type="text" id="txTruckInput" class="appsheet-input text-uppercase font-monospace"
+            placeholder="Search or enter Truck No."
+            autocomplete="off"
+            oninput="ShahpuraModule.filterTruckCombobox(this.value)"
+            onfocus="ShahpuraModule.filterTruckCombobox(this.value)"
+          >
+          <button type="button" class="combobox-toggle-btn" onclick="ShahpuraModule.filterTruckCombobox('')">
+            <i class="bi bi-chevron-down small"></i>
+          </button>
+          <ul class="combobox-dropdown-menu" id="txTruckDropdownList"></ul>
+        </div>
+      </div>
+
+      <!-- Field 4: Driver / Contact (Searchable & Typable Combobox) -->
+      <div class="form-row-2col">
+        <label class="form-label-left">Name / Driver</label>
+        <div class="form-field-right" id="txDriverComboboxWrapper">
+          <input type="text" id="txDriverInput" class="appsheet-input"
+            placeholder="Search or enter Driver name"
+            autocomplete="off"
+            oninput="ShahpuraModule.filterDriverCombobox(this.value)"
+            onfocus="ShahpuraModule.filterDriverCombobox(this.value)"
+          >
+          <button type="button" class="combobox-toggle-btn" onclick="ShahpuraModule.filterDriverCombobox('')">
+            <i class="bi bi-chevron-down small"></i>
+          </button>
+          <ul class="combobox-dropdown-menu" id="txDriverDropdownList"></ul>
+        </div>
+      </div>
+
+      <!-- Field 5: Mobile No. -->
+      <div class="form-row-2col">
+        <label class="form-label-left">Mobile No.</label>
+        <div class="form-field-right">
+          <input type="tel" id="txPhone" class="appsheet-input font-monospace" placeholder="10-digit mobile number">
+        </div>
+      </div>
+
+      <!-- Field 6: G.R. No. (Deposit only) -->
+      <div class="form-row-2col" id="txGrContainer" style="display: none;">
+        <label class="form-label-left">G.R. No.</label>
+        <div class="form-field-right">
+          <input type="text" id="txGrNo" class="appsheet-input font-monospace" placeholder="Optional Bilty / GR No.">
+        </div>
+      </div>
+
+      <!-- Field 7: Origin -->
+      <div class="form-row-2col">
+        <label class="form-label-left">Origin</label>
+        <div class="form-field-right">
+          <input type="text" id="txOrigin" class="appsheet-input" placeholder="e.g. Rajsamand (Raj.)">
+        </div>
+      </div>
+
+      <!-- Field 8: Destination -->
+      <div class="form-row-2col">
+        <label class="form-label-left">Destination</label>
+        <div class="form-field-right">
+          <input type="text" id="txDestination" class="appsheet-input" placeholder="e.g. Neemrana (Raj.)">
+        </div>
+      </div>
+
+      <!-- Field 9: Description / Remarks -->
+      <div class="form-row-2col">
+        <label class="form-label-left">Description</label>
+        <div class="form-field-right">
+          <input type="text" id="txDescription" class="appsheet-input" placeholder="e.g. Advance Kharcha, DEF Sales">
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+        <button type="button" class="btn btn-outline-secondary btn-sm px-3" data-bs-dismiss="offcanvas">Cancel</button>
+        <button type="button" class="btn btn-primary btn-sm px-4 fw-bold" onclick="ShahpuraModule.saveTransaction()">
+          <i class="bi bi-check-lg me-1"></i> Save
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- SLIDE DRAWER 2: RECORD DETAIL VIEW (< Prev, Next >, Edit) -->
+  <!-- ======================================================== -->
+  <div class="offcanvas offcanvas-end offcanvas-appsheet" tabindex="-1" id="shahpuraDetailDrawer" aria-labelledby="shahpuraDetailTitle">
+    <div class="drawer-header-appsheet">
+      <div class="d-flex align-items-center gap-2">
+        <span class="fs-5 text-primary"><i class="bi bi-file-text"></i></span>
+        <h6 class="mb-0 fw-bold text-dark" id="shahpuraDetailTitle">Transaction Details</h6>
+      </div>
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body p-3" id="shahpuraDetailDrawerBody">
+      <!-- Detail content populated by ShahpuraModule -->
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- App Core & Sample Data -->
+  <script src="../js/config.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/sample-shahpura-data.js"></script>
+  <script src="../js/db-service.js"></script>
+
+  <!-- Shahpura Module Controller -->
+  <script src="../js/modules/shahpura.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Render AppSheet Slim Navigation Rail on the Left
+      if (typeof AppUI !== 'undefined') {
+        AppUI.renderSidebar('shahpura');
+      }
+
+      // 2. Initialize Shahpura Module
+      if (typeof ShahpuraModule !== 'undefined') {
+        ShahpuraModule.init();
+      }
+    });
+  </script>
+</body>
+</html>

@@ -123,7 +123,7 @@ const AppUI = {
         <a href="${pagesPath}def-urea.html" class="drawer-link ${activePage === 'def_urea' ? 'active' : ''}">
           <i class="bi bi-droplet-half text-info"></i> DEF Urea
         </a>
-        <a href="${pagesPath}cash-register.html" class="drawer-link ${(activePage === 'shahpura' || activePage === 'cash') ? 'active' : ''}">
+        <a href="${pagesPath}shahpura.html" class="drawer-link ${(activePage === 'shahpura' || activePage === 'cash') ? 'active' : ''}">
           <i class="bi bi-wallet2 text-success"></i> Shahpura (Cash Book)
         </a>
 
