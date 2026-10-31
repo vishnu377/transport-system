@@ -3,7 +3,7 @@ window.INITIAL_PARTNERSHIP = [
   {
     "id": "part_2026_10",
     "date": "31/10/2026",
-    "monthGroup": "10 Oct",
+    "monthGroup": "7 Oct",
     "year": "2026-2027",
     "previousMonthAmount": 23920904.1,
     "income": 960100.0,

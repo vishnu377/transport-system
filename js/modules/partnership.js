@@ -1,9 +1,11 @@
 /**
- * Partnership Module - Module 13: Partnership (पार्टनरशिप एवं लाभ विभाजन)
- * 1:1 Authentic Google AppSheet Directory Replication
- * Supports Split-View Year Filter (2026-2027, 2025-2026, 2024-2025), Month-Grouped Table,
- * Add / Edit Slide Drawer with Live Financial Math (Partnership Amount = Prev + Income - Expense),
- * Real-Time Search, and Zero LocalStorage Policy.
+ * Partnership Module - Module 13: Partnership (पार्टनरशिप)
+ * 1:1 Authentic Google AppSheet Replication matching screenshots
+ * - 167px Left Side View Navigation (2026-2027, 2025-2026, 2024-2025)
+ * - 620px Compact AppSheet Table grouped by Indian Financial Months (12 Mar down to 1 Apr)
+ * - Slide Drawer matching AppSheet Details Drawer (700px, 2-column inputs + lower display summary)
+ * - Live Financial Math: Partnership Amount = Previous Month Amount + Income - Expense
+ * - Zero LocalStorage Policy (In-memory + dbService/Firestore)
  */
 
 const PartnershipModule = {
@@ -13,6 +15,10 @@ const PartnershipModule = {
   filteredRecords: [],
   searchQuery: '',
   availableYears: ['2026-2027', '2025-2026', '2024-2025'],
+  standardMonthOrder: [
+    '12 Mar', '11 Feb', '10 Jan', '9 Dec', '8 Nov', 
+    '7 Oct', '6 Sep', '5 Aug', '4 Jul', '3 Jun', '2 May', '1 Apr'
+  ],
 
   // ========================================================
   // INITIALIZATION
@@ -36,7 +42,7 @@ const PartnershipModule = {
           return;
         }
       } catch (err) {
-        console.warn('[PartnershipModule] Could not fetch from dbService, using sample dataset:', err);
+        console.warn('[PartnershipModule] Could not fetch from dbService, falling back to sample data:', err);
       }
     }
 
@@ -51,7 +57,7 @@ const PartnershipModule = {
   filterRecords() {
     let list = [...this.allRecords];
 
-    // Filter by year if specific year selected
+    // Filter by year if a specific financial year is selected
     if (this.selectedYear && this.selectedYear !== 'All') {
       list = list.filter(r => r.year === this.selectedYear);
     }
@@ -80,18 +86,21 @@ const PartnershipModule = {
     if (!subbar) return;
 
     subbar.innerHTML = `
-      <div class="d-flex align-items-center gap-1">
-        <a href="../index.html" class="breadcrumb-item-home"><i class="bi bi-house-door"></i> Home</a>
-        <span class="text-muted mx-1">&gt;</span>
-        <span class="text-dark fw-medium">Partnership</span>
-        ${this.selectedYear !== 'All' ? `<span class="badge bg-light text-secondary border ms-2">${this.selectedYear}</span>` : ''}
+      <div class="d-flex align-items-center gap-2">
+        <a href="../index.html" class="breadcrumb-item-home">
+          <i class="bi bi-chevron-left" style="font-size: 11px;"></i>
+          <span>Home</span>
+        </a>
+        <span class="text-muted" style="font-size: 11px;">&gt;</span>
+        <span style="font-weight: 500; color: #202124;">Partnership</span>
+        ${this.selectedYear !== 'All' ? `<span class="badge bg-light text-secondary border ms-1" style="font-size: 11px;">${this.selectedYear}</span>` : ''}
       </div>
       <div class="d-flex align-items-center gap-2">
-        <button class="btn-appsheet-add" onclick="PartnershipModule.openAddDrawer()">
-          <i class="bi bi-plus-lg"></i> Add
+        <button class="btn-appsheet-gold" onclick="PartnershipModule.openAddDrawer()">
+          <i class="bi bi-plus-lg"></i> ADD
         </button>
         <div class="vr mx-1" style="height: 18px; color: #dadce0;"></div>
-        <button class="btn-icon-subtle" title="Sort / Filter">
+        <button class="btn-icon-subtle" onclick="PartnershipModule.toggleFilterMenu()" title="Filter Financial Year">
           <i class="bi bi-funnel"></i>
         </button>
       </div>
@@ -99,58 +108,50 @@ const PartnershipModule = {
   },
 
   // ========================================================
-  // LEFT YEAR NAVIGATION PANE
+  // 167px LEFT SIDE VIEW NAVIGATION (1:1 with Screenshot 1)
   // ========================================================
   renderYearNav() {
     const nav = document.getElementById('partnershipYearNav');
     if (!nav) return;
 
-    let html = `
-      <div class="year-item ${this.selectedYear === 'All' ? 'active' : ''}" onclick="PartnershipModule.selectYear('All')">
-        <span>All Years</span>
-        <span class="year-badge">${this.allRecords.length}</span>
-      </div>
-    `;
-
+    let html = '';
     this.availableYears.forEach(yr => {
-      const count = this.allRecords.filter(r => r.year === yr).length;
+      const isActive = (this.selectedYear === yr);
       html += `
-        <div class="year-item ${this.selectedYear === yr ? 'active' : ''}" onclick="PartnershipModule.selectYear('${yr}')">
-          <span>${yr}</span>
-          <span class="year-badge">${count}</span>
+        <div 
+          class="appsheet-view-item ${isActive ? 'active' : ''}" 
+          onclick="PartnershipModule.selectYear('${yr}')"
+          title="Filter to ${yr}">
+          ${yr}
         </div>
       `;
     });
-
-    // Summary Card at bottom of Year Nav
-    const currentTotalBalance = this.filteredRecords.length > 0 
-      ? this.filteredRecords[0].partnershipAmount || 0 
-      : 0;
-
-    html += `
-      <div class="mt-auto pt-3 border-top">
-        <div class="p-2 bg-light rounded text-center">
-          <div class="text-muted" style="font-size: 11px;">Current Balance</div>
-          <div class="fw-bold text-primary font-monospace mt-1" style="font-size: 13px;">
-            ${this.formatCurrency(currentTotalBalance)}
-          </div>
-        </div>
-      </div>
-    `;
 
     nav.innerHTML = html;
   },
 
   selectYear(yr) {
-    this.selectedYear = yr;
+    if (this.selectedYear === yr) {
+      // Toggle back to All if already selected
+      this.selectedYear = 'All';
+    } else {
+      this.selectedYear = yr;
+    }
     this.filterRecords();
     this.renderSubbar();
     this.renderYearNav();
     this.renderTableView();
   },
 
+  toggleFilterMenu() {
+    const years = ['All', ...this.availableYears];
+    const currentIndex = years.indexOf(this.selectedYear);
+    const nextIndex = (currentIndex + 1) % years.length;
+    this.selectYear(years[nextIndex]);
+  },
+
   // ========================================================
-  // TABLE VIEW (MONTH-GROUPED WITH APPSHEET STYLING)
+  // 620px COMPACT APPSHEET TABLE VIEW (1:1 with Screenshot 1)
   // ========================================================
   renderTableView() {
     const container = document.getElementById('partnershipMainContent');
@@ -158,10 +159,10 @@ const PartnershipModule = {
 
     if (this.filteredRecords.length === 0) {
       container.innerHTML = `
-        <div class="text-center py-5 text-muted">
-          <i class="bi bi-calendar-x fs-1 d-block mb-3 text-secondary"></i>
-          <h6>No partnership records found</h6>
-          <p class="small">Click <strong>+ Add</strong> to create a monthly entry.</p>
+        <div class="text-center py-5 text-muted" style="width: var(--appsheet-table-w);">
+          <i class="bi bi-table fs-2 d-block mb-2 text-secondary"></i>
+          <div style="font-size: 13px; font-weight: 500;">No partnership records found</div>
+          <div class="small text-muted mt-1">Click <strong>+ ADD</strong> to create a monthly entry.</div>
         </div>
       `;
       return;
@@ -170,40 +171,58 @@ const PartnershipModule = {
     // Group records by Month Group (e.g. '12 Mar', '11 Feb'...)
     const grouped = new Map();
     this.filteredRecords.forEach(rec => {
-      const g = rec.monthGroup || 'Other';
+      const g = rec.monthGroup || this.determineMonthGroup(rec.date);
       if (!grouped.has(g)) {
         grouped.set(g, []);
       }
       grouped.get(g).push(rec);
     });
 
-    let tbodyHtml = '';
-    grouped.forEach((records, groupName) => {
-      // Month group header with sum
-      const groupIncome = records.reduce((s, r) => s + (Number(r.income) || 0), 0);
-      const groupExpense = records.reduce((s, r) => s + (Number(r.expense) || 0), 0);
+    // Sort Month Groups according to standard Indian Financial Year descending order
+    const sortedGroups = Array.from(grouped.keys()).sort((a, b) => {
+      const idxA = this.standardMonthOrder.indexOf(a);
+      const idxB = this.standardMonthOrder.indexOf(b);
+      if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+      if (idxA !== -1) return -1;
+      if (idxB !== -1) return 1;
+      return a.localeCompare(b);
+    });
 
+    let tbodyHtml = '';
+
+    sortedGroups.forEach(groupName => {
+      const records = grouped.get(groupName);
+
+      // Group Header Row in AppSheet Table: displays Month Group in first column
       tbodyHtml += `
-        <tr class="appsheet-group-header-row">
+        <tr class="appsheet-group-row appsheet-group-header-row">
           <td colspan="5">
-            <div class="d-flex align-items-center justify-content-between">
-              <span><i class="bi bi-chevron-down small me-1"></i> ${groupName}</span>
-              <span class="badge bg-white text-secondary border font-monospace">
-                Inc: ${this.formatCurrency(groupIncome)} | Exp: ${this.formatCurrency(groupExpense)}
-              </span>
-            </div>
+            <span>${groupName}</span>
           </td>
         </tr>
       `;
 
-      records.forEach(r => {
+      // Child data rows under this month
+      records.forEach((r, idx) => {
+        const incomeFormatted = (r.income && Number(r.income) > 0)
+          ? `₹ ${this.formatNumber(r.income)}`
+          : (r.income === 0 ? '₹ 0.00' : '');
+
+        const expenseFormatted = (r.expense !== undefined && r.expense !== null)
+          ? `₹ ${this.formatNumber(r.expense)}`
+          : '';
+
+        const amountFormatted = (r.partnershipAmount !== undefined && r.partnershipAmount !== null)
+          ? `₹ ${this.formatNumber(r.partnershipAmount)}`
+          : '';
+
         tbodyHtml += `
-          <tr class="data-row" onclick="PartnershipModule.openEditDrawer('${r.id}')" title="Click to view details / edit">
-            <td style="font-weight: 500;">${r.monthGroup || '-'}</td>
-            <td class="amount-cell amount-cell-inc">${this.formatCurrency(r.income)}</td>
-            <td class="amount-cell amount-cell-exp">${this.formatCurrency(r.expense)}</td>
-            <td class="amount-cell amount-cell-part">${this.formatCurrency(r.partnershipAmount)}</td>
-            <td class="date-cell">${r.date || '-'}</td>
+          <tr class="appsheet-data-row" onclick="PartnershipModule.openEditDrawer('${r.id}')" title="Click to view details / edit">
+            <td class="cell-month"></td>
+            <td class="cell-num">${incomeFormatted}</td>
+            <td class="cell-num">${expenseFormatted}</td>
+            <td class="cell-num">${amountFormatted}</td>
+            <td class="cell-date">${r.date || '-'}</td>
           </tr>
         `;
       });
@@ -213,11 +232,11 @@ const PartnershipModule = {
       <table class="partnership-table">
         <thead>
           <tr>
-            <th style="width: 20%;">Month / Group</th>
-            <th style="width: 20%; text-align: right;">Income</th>
-            <th style="width: 20%; text-align: right;">Expense</th>
-            <th style="width: 25%; text-align: right;">Partnership Amount</th>
-            <th style="width: 15%;">Date</th>
+            <th class="col-month-hdr">Month / Group</th>
+            <th class="col-income-hdr">Income</th>
+            <th class="col-expense-hdr">Expense</th>
+            <th class="col-amount-hdr">Partnership Amount</th>
+            <th class="col-date-hdr">Date</th>
           </tr>
         </thead>
         <tbody>
@@ -227,8 +246,35 @@ const PartnershipModule = {
     `;
   },
 
+  // Helper to determine month group if missing
+  determineMonthGroup(dateStr) {
+    if (!dateStr) return 'Other';
+    const parts = dateStr.split(/[-/]/);
+    if (parts.length < 2) return 'Other';
+    const month = parseInt(parts[1], 10);
+    const mapping = {
+      4: '1 Apr', 5: '2 May', 6: '3 Jun', 7: '4 Jul', 8: '5 Aug', 9: '6 Sep',
+      10: '7 Oct', 11: '8 Nov', 12: '9 Dec', 1: '10 Jan', 2: '11 Feb', 3: '12 Mar'
+    };
+    return mapping[month] || 'Other';
+  },
+
+  // Helper to determine financial year
+  determineYear(dateStr) {
+    if (!dateStr) return '2026-2027';
+    const parts = dateStr.split(/[-/]/);
+    if (parts.length < 3) return '2026-2027';
+    const month = parseInt(parts[1], 10);
+    const yr = parseInt(parts[2], 10);
+    if (month >= 4) {
+      return `${yr}-${yr + 1}`;
+    } else {
+      return `${yr - 1}-${yr}`;
+    }
+  },
+
   // ========================================================
-  // REAL-TIME SEARCH ENGINE
+  // SEARCH ENGINE
   // ========================================================
   handleSearch(query) {
     this.searchQuery = (query || '').trim();
@@ -237,187 +283,305 @@ const PartnershipModule = {
   },
 
   // ========================================================
-  // LIVE FORMULA CALCULATION
+  // LIVE FORMULA CALCULATION (Partnership Amount = Prev + Income - Expense)
   // ========================================================
   recalcPartnershipAmount() {
-    const prev = parseFloat(document.getElementById('partInputPrevAmount').value) || 0;
-    const inc = parseFloat(document.getElementById('partInputIncome').value) || 0;
-    const exp = parseFloat(document.getElementById('partInputExpense').value) || 0;
+    const prevInput = document.getElementById('partInputPrevAmount');
+    const incInput = document.getElementById('partInputIncome');
+    const expInput = document.getElementById('partInputExpense');
+    const amtInput = document.getElementById('partInputAmount');
+
+    const prev = parseFloat(prevInput ? prevInput.value : 0) || 0;
+    const inc = parseFloat(incInput ? incInput.value : 0) || 0;
+    const exp = parseFloat(expInput ? expInput.value : 0) || 0;
 
     const net = prev + inc - exp;
 
-    const amtInput = document.getElementById('partInputAmount');
     if (amtInput) amtInput.value = net.toFixed(2);
 
-    const preview = document.getElementById('previewCalculatedAmount');
-    if (preview) preview.innerText = this.formatCurrency(net);
-  },
+    // Update Lower Summary Section (1:1 with Screenshot 2)
+    const summaryInc = document.getElementById('summaryIncome');
+    const summaryExp = document.getElementById('summaryExpense');
+    const summaryAmt = document.getElementById('summaryAmount');
 
-  onDateChange(val) {
-    // If date changes and prev amount is empty, try auto-filling from preceding record
-    if (this.allRecords.length > 0) {
-      const prevInput = document.getElementById('partInputPrevAmount');
-      if (prevInput && !prevInput.value) {
-        prevInput.value = (this.allRecords[0].partnershipAmount || 0).toFixed(2);
-        this.recalcPartnershipAmount();
-      }
-    }
+    if (summaryInc) summaryInc.textContent = this.formatNumber(inc);
+    if (summaryExp) summaryExp.textContent = this.formatNumber(exp);
+    if (summaryAmt) summaryAmt.textContent = this.formatNumber(net);
+
+    return net;
   },
 
   // ========================================================
-  // + ADD / EDIT SLIDE DRAWER (1:1 APPSHEET)
+  // SLIDE DRAWER OPERATIONS (1:1 with Screenshot 2)
   // ========================================================
   openAddDrawer() {
-    document.getElementById('formRecordId').value = '';
-    document.getElementById('partnershipDrawerTitle').innerText = 'Details';
-    
-    // Auto-prefill current date
-    const now = new Date();
-    const dStr = `${String(now.getDate()).padStart(2, '0')}-${String(now.getMonth() + 1).padStart(2, '0')}-${now.getFullYear()}`;
-    document.getElementById('partInputDate').value = dStr;
+    const drawer = document.getElementById('partnershipDrawer');
+    const backdrop = document.getElementById('appsheetBackdrop');
+    const form = document.getElementById('partDrawerForm');
+    const title = document.getElementById('drawerTitle');
+    const subTitle = document.getElementById('partnershipDrawerTitle');
+    const delWrap = document.getElementById('drawerDeleteWrap');
 
-    // Prefill previous amount from most recent record
-    const latestAmount = this.allRecords.length > 0 ? (this.allRecords[0].partnershipAmount || 0) : 0;
-    document.getElementById('partInputPrevAmount').value = latestAmount.toFixed(2);
-    document.getElementById('partInputIncome').value = '';
-    document.getElementById('partInputExpense').value = '';
-    document.getElementById('partInputAmount').value = latestAmount.toFixed(2);
-    document.getElementById('partInputNotes').value = '';
+    if (form) form.reset();
+    const idEl1 = document.getElementById('partRecordId');
+    const idEl2 = document.getElementById('formRecordId');
+    if (idEl1) idEl1.value = '';
+    if (idEl2) idEl2.value = '';
+
+    if (title) title.textContent = 'Details';
+    if (subTitle) {
+      subTitle.innerText = 'Details';
+      subTitle.textContent = 'Details';
+    }
+    if (delWrap) delWrap.style.display = 'none';
+
+    // Auto-fill previous month amount from latest entry if available
+    let latestPrevAmount = 0;
+    if (this.allRecords.length > 0) {
+      latestPrevAmount = this.allRecords[0].partnershipAmount || 0;
+    }
+
+    const prevInput = document.getElementById('partInputPrevAmount');
+    if (prevInput) prevInput.value = latestPrevAmount ? latestPrevAmount.toFixed(2) : '0.00';
+
+    // Default today's date in DD-MM-YYYY format matching Screenshot 2
+    const now = new Date();
+    const dStr = String(now.getDate()).padStart(2, '0');
+    const mStr = String(now.getMonth() + 1).padStart(2, '0');
+    const yStr = now.getFullYear();
+    const dateInput = document.getElementById('partInputDate');
+    if (dateInput) dateInput.value = `${dStr}-${mStr}-${yStr}`;
 
     this.recalcPartnershipAmount();
 
-    const drawerEl = document.getElementById('partnershipDrawer');
-    if (drawerEl && typeof bootstrap !== 'undefined') {
-      const bsDrawer = bootstrap.Offcanvas.getOrCreateInstance(drawerEl);
-      bsDrawer.show();
-    }
+    if (drawer) drawer.classList.add('open');
+    if (backdrop) backdrop.classList.add('active');
   },
 
-  openEditDrawer(recordId) {
-    const record = this.allRecords.find(r => r.id === recordId);
+  openEditDrawer(id) {
+    const record = this.allRecords.find(r => r.id === id);
     if (!record) return;
 
-    document.getElementById('formRecordId').value = record.id;
-    document.getElementById('partnershipDrawerTitle').innerText = 'Details';
-    document.getElementById('partInputDate').value = record.date || '';
-    document.getElementById('partInputPrevAmount').value = (record.previousMonthAmount || 0).toFixed(2);
-    document.getElementById('partInputIncome').value = (record.income || 0).toFixed(2);
-    document.getElementById('partInputExpense').value = (record.expense || 0).toFixed(2);
-    document.getElementById('partInputAmount').value = (record.partnershipAmount || 0).toFixed(2);
-    document.getElementById('partInputNotes').value = record.notes || '';
+    const drawer = document.getElementById('partnershipDrawer');
+    const backdrop = document.getElementById('appsheetBackdrop');
+    const title = document.getElementById('drawerTitle');
+    const subTitle = document.getElementById('partnershipDrawerTitle');
+    const delWrap = document.getElementById('drawerDeleteWrap');
 
-    this.recalcPartnershipAmount();
-
-    const drawerEl = document.getElementById('partnershipDrawer');
-    if (drawerEl && typeof bootstrap !== 'undefined') {
-      const bsDrawer = bootstrap.Offcanvas.getOrCreateInstance(drawerEl);
-      bsDrawer.show();
+    if (title) title.textContent = 'Details';
+    if (subTitle) {
+      subTitle.innerText = 'Details';
+      subTitle.textContent = 'Details';
     }
+    if (delWrap) delWrap.style.display = 'block';
+
+    const idEl1 = document.getElementById('partRecordId');
+    const idEl2 = document.getElementById('formRecordId');
+    if (idEl1) idEl1.value = record.id || '';
+    if (idEl2) idEl2.value = record.id || '';
+    
+    // Format date with hyphens matching Screenshot 2 (e.g. 31-10-2026)
+    const formattedDate = (record.date || '').replace(/\//g, '-');
+    const dateEl = document.getElementById('partInputDate');
+    if (dateEl) dateEl.value = formattedDate;
+
+    const prevEl = document.getElementById('partInputPrevAmount');
+    if (prevEl) prevEl.value = (record.previousMonthAmount !== undefined) 
+      ? Number(record.previousMonthAmount).toFixed(2) 
+      : '0.00';
+
+    const incEl = document.getElementById('partInputIncome');
+    if (incEl) incEl.value = (record.income !== undefined) 
+      ? Number(record.income).toFixed(2) 
+      : '0.00';
+
+    const expEl = document.getElementById('partInputExpense');
+    if (expEl) expEl.value = (record.expense !== undefined) 
+      ? Number(record.expense).toFixed(2) 
+      : '0.00';
+
+    const amtEl = document.getElementById('partInputAmount');
+    if (amtEl) amtEl.value = (record.partnershipAmount !== undefined) 
+      ? Number(record.partnershipAmount).toFixed(2) 
+      : '0.00';
+
+    const notesEl = document.getElementById('partInputNotes');
+    if (notesEl) notesEl.value = record.notes || '';
+
+    // Update Lower Summary
+    const summaryInc = document.getElementById('summaryIncome');
+    const summaryExp = document.getElementById('summaryExpense');
+    const summaryAmt = document.getElementById('summaryAmount');
+
+    if (summaryInc) summaryInc.textContent = this.formatNumber(record.income || 0);
+    if (summaryExp) summaryExp.textContent = this.formatNumber(record.expense || 0);
+    if (summaryAmt) summaryAmt.textContent = this.formatNumber(record.partnershipAmount || 0);
+
+    if (drawer) drawer.classList.add('open');
+    if (backdrop) backdrop.classList.add('active');
   },
 
-  async saveRecord() {
-    const id = document.getElementById('formRecordId').value.trim();
-    const dateStr = document.getElementById('partInputDate').value.trim();
-    const prevAmt = parseFloat(document.getElementById('partInputPrevAmount').value) || 0;
-    const income = parseFloat(document.getElementById('partInputIncome').value) || 0;
-    const expense = parseFloat(document.getElementById('partInputExpense').value) || 0;
-    const partAmt = parseFloat(document.getElementById('partInputAmount').value) || (prevAmt + income - expense);
-    const notes = document.getElementById('partInputNotes').value.trim();
+  closeDrawer() {
+    const drawer = document.getElementById('partnershipDrawer');
+    const backdrop = document.getElementById('appsheetBackdrop');
+    if (drawer) drawer.classList.remove('open');
+    if (backdrop) backdrop.classList.remove('active');
+  },
 
-    if (!dateStr) {
-      alert('Please enter a valid Date.');
+  async saveDrawer() {
+    const idEl1 = document.getElementById('partRecordId');
+    const idEl2 = document.getElementById('formRecordId');
+    const id = (idEl1 && idEl1.value) || (idEl2 && idEl2.value) || '';
+
+    const dateEl = document.getElementById('partInputDate');
+    const rawDate = dateEl ? dateEl.value.trim() : '';
+
+    const prevEl = document.getElementById('partInputPrevAmount');
+    const prevAmount = parseFloat(prevEl ? prevEl.value : 0) || 0;
+
+    const incEl = document.getElementById('partInputIncome');
+    const income = parseFloat(incEl ? incEl.value : 0) || 0;
+
+    const expEl = document.getElementById('partInputExpense');
+    const expense = parseFloat(expEl ? expEl.value : 0) || 0;
+
+    const notesEl = document.getElementById('partInputNotes');
+    const notes = notesEl ? notesEl.value : '';
+
+    if (!rawDate) {
+      if (typeof AppUI !== 'undefined') AppUI.showToast('Please enter a valid Date', 'warning');
       return;
     }
 
-    // Determine year & month group from date (e.g. 31/10/2026 or 31-10-2026)
-    const parts = dateStr.split(/[-/]/);
-    let yr = '2026-2027';
-    let monthGroup = '10 Oct';
+    const calculatedAmount = prevAmount + income - expense;
+    const monthGroup = this.determineMonthGroup(rawDate);
+    const year = this.determineYear(rawDate);
 
-    if (parts.length >= 3) {
-      const m = parseInt(parts[1], 10);
-      const y = parseInt(parts[2], 10);
-      const monthNames = ['', '1 Jan', '2 Feb', '3 Mar', '4 Apr', '5 May', '6 Jun', '7 Jul', '8 Aug', '9 Sep', '10 Oct', '11 Nov', '12 Dec'];
-      monthGroup = monthNames[m] || 'Month';
-
-      if (y >= 2026 && m >= 4) yr = '2026-2027';
-      else if ((y === 2026 && m <= 3) || (y === 2025 && m >= 4)) yr = '2025-2026';
-      else yr = '2024-2025';
-    }
-
-    const record = {
+    const recordData = {
       id: id || `part_${Date.now()}`,
-      date: dateStr,
+      date: rawDate,
       monthGroup: monthGroup,
-      year: yr,
-      previousMonthAmount: prevAmt,
+      year: year,
+      previousMonthAmount: prevAmount,
       income: income,
       expense: expense,
-      partnershipAmount: partAmt,
+      partnershipAmount: Number(calculatedAmount.toFixed(2)),
       notes: notes,
       updatedAt: new Date().toISOString()
     };
 
     if (id) {
+      // Update existing
       const idx = this.allRecords.findIndex(r => r.id === id);
       if (idx !== -1) {
-        this.allRecords[idx] = { ...this.allRecords[idx], ...record };
+        this.allRecords[idx] = { ...this.allRecords[idx], ...recordData };
       }
     } else {
-      this.allRecords.unshift(record);
+      // Insert new at beginning
+      this.allRecords.unshift(recordData);
     }
 
+    // Persist to dbService / Firestore
     if (typeof dbService !== 'undefined' && dbService.save) {
-      await dbService.save('partnership', record);
+      try {
+        await dbService.save('partnership', recordData);
+      } catch (err) {
+        console.warn('[PartnershipModule] Could not persist to dbService:', err);
+      }
     }
 
     this.filterRecords();
+    this.renderSubbar();
     this.renderYearNav();
     this.renderTableView();
+    this.closeDrawer();
 
-    const drawerEl = document.getElementById('partnershipDrawer');
-    if (drawerEl && typeof bootstrap !== 'undefined') {
-      const bsDrawer = bootstrap.Offcanvas.getInstance(drawerEl);
-      if (bsDrawer) bsDrawer.hide();
-    }
-
-    if (typeof AppUI !== 'undefined' && AppUI.showToast) {
-      AppUI.showToast('Partnership record saved successfully!', 'success');
-    } else {
-      console.log('[Toast SUCCESS]: Partnership record saved successfully!');
+    if (typeof AppUI !== 'undefined') {
+      AppUI.showToast('Partnership record saved successfully', 'success');
     }
   },
 
-  async deleteRecord(recordId) {
-    if (!confirm('Are you sure you want to delete this record?')) return;
+  async saveRecord() {
+    return this.saveDrawer();
+  },
 
-    this.allRecords = this.allRecords.filter(r => r.id !== recordId);
+  async deleteRecord(id) {
+    if (!id) return;
+    this.allRecords = this.allRecords.filter(r => r.id !== id);
+
     if (typeof dbService !== 'undefined' && dbService.delete) {
-      await dbService.delete('partnership', recordId);
+      try {
+        await dbService.delete('partnership', id);
+      } catch (err) {
+        console.warn('[PartnershipModule] Could not delete from dbService:', err);
+      }
     }
 
     this.filterRecords();
+    this.renderSubbar();
     this.renderYearNav();
     this.renderTableView();
+    this.closeDrawer();
+  },
 
-    if (typeof AppUI !== 'undefined' && AppUI.showToast) {
-      AppUI.showToast('Partnership record deleted.', 'info');
-    } else {
-      console.log('[Toast INFO]: Partnership record deleted.');
+  async deleteCurrentRecord() {
+    const id = document.getElementById('partRecordId').value;
+    if (!id) return;
+
+    if (!confirm('Are you sure you want to delete this monthly partnership entry?')) {
+      return;
+    }
+
+    this.allRecords = this.allRecords.filter(r => r.id !== id);
+
+    if (typeof dbService !== 'undefined' && dbService.delete) {
+      try {
+        await dbService.delete('partnership', id);
+      } catch (err) {
+        console.warn('[PartnershipModule] Could not delete from dbService:', err);
+      }
+    }
+
+    this.filterRecords();
+    this.renderSubbar();
+    this.renderYearNav();
+    this.renderTableView();
+    this.closeDrawer();
+
+    if (typeof AppUI !== 'undefined') {
+      AppUI.showToast('Partnership record deleted', 'info');
     }
   },
 
-  // Helper: Format Currency (₹)
+  async syncData() {
+    await this.loadData();
+    this.renderTableView();
+    if (typeof AppUI !== 'undefined') {
+      AppUI.showToast('Partnership data synchronized with server', 'success');
+    }
+  },
+
+  // ========================================================
+  // FORMATTING UTILITIES
+  // ========================================================
+  formatNumber(val) {
+    if (val === undefined || val === null || isNaN(val)) return '0.00';
+    const num = Number(val);
+    return num.toLocaleString('en-IN', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  },
+
   formatCurrency(val) {
-    const num = Number(val) || 0;
-    return '₹ ' + num.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    if (val === undefined || val === null || isNaN(val)) return '₹ 0.00';
+    return `₹ ${this.formatNumber(val)}`;
   }
 };
 
-// Global export
-if (typeof window !== 'undefined') {
-  window.PartnershipModule = PartnershipModule;
-}
+// Export for Node.js test environment or browser global
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = PartnershipModule;
+} else {
+  window.PartnershipModule = PartnershipModule;
 }
