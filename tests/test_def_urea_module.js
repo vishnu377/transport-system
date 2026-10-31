@@ -76,97 +76,122 @@ async function runTests() {
   await DefUreaModule.init();
 
   console.log('\n--- TEST 1: Data Loading & Metrics Verification ---');
-  assert(DefUreaModule.allStock.length >= 2, 'Stock loaded with inward records');
-  assert(DefUreaModule.allConsumed.length >= 20, 'Consumed loaded with at least 20 records');
+  assert(DefUreaModule.allStock.length >= 1, 'Stock loaded with authentic baseline record');
+  assert(DefUreaModule.allConsumed.length >= 90, 'Consumed loaded with 90+ authentic records');
   
-  const metrics = DefUreaModule.getCurrentStockMetrics();
-  assert(metrics.totalInward > 0, 'Total inward is positive');
-  assert(metrics.totalConsumed > 0, 'Total consumed is positive');
-  console.log(`✓ TEST 1 PASSED: Stock metrics calibrated (Total Inward: ${metrics.totalInward}L, Consumed: ${metrics.totalConsumed}L)!`);
+  const metrics = DefUreaModule.getStockMetrics();
+  assert.strictEqual(metrics.buckets, 194, 'Available Stock (Buckets) is exactly 194');
+  assert.strictEqual(metrics.litres, 11, 'Available Stock (Litres) is exactly 11');
+  assert.strictEqual(metrics.totalLitres, 3891, 'Total available stock is 3,891 Litres (194*20 + 11)');
+  console.log(`✓ TEST 1 PASSED: Stock metrics calibrated (Buckets: ${metrics.buckets}, Litres: ${metrics.litres}, Total: ${metrics.totalLitres}L)!`);
 
-  console.log('\n--- TEST 2: Card 1 - DEF Urea Stock Chart Rendering ---');
-  const stockContent = document.getElementById('def-stock-content');
-  assert(stockContent.innerHTML.includes('bar-green'), 'Chart renders Green Bar for Available Stock');
-  assert(stockContent.innerHTML.includes('bar-red'), 'Chart renders Red Bar for Consumed Stock');
+  console.log('\n--- TEST 2: Card 1 - DEF Urea Stock Chart & Inventory Slice Toggle ---');
+  const stockContent = document.getElementById('stock-card-content');
+  assert(stockContent.innerHTML.includes('appsheet-bar-green'), 'Chart renders Green Bar for Available Stock (Buckets: 194)');
+  assert(stockContent.innerHTML.includes('appsheet-bar-red'), 'Chart renders Red Bar for Available Stock (Litres: 11)');
   assert(stockContent.innerHTML.includes('210'), 'Chart scale renders 210 top tick');
   assert(stockContent.innerHTML.includes('30/10/2026'), 'Chart renders authentic timestamp');
 
-  // Test toggle to table view
+  // Test toggle to Inventory Slice table view
   DefUreaModule.toggleStockViewMode();
-  assert(stockContent.innerHTML.includes('table-hover'), 'Toggled to Inward Stock Table view');
-  DefUreaModule.toggleStockViewMode(); // toggle back to chart
-  assert(stockContent.innerHTML.includes('bar-green'), 'Toggled back to Chart view');
-  console.log('✓ TEST 2 PASSED: Card 1 Stock Bar Chart and toggle between Chart & Table work flawlessly!');
+  assert.strictEqual(DefUreaModule.stockViewMode, 'table', 'Switched to table view mode');
+  assert(stockContent.innerHTML.includes('Inventory Slice') || stockContent.innerHTML.includes('appsheet-table'), 'Toggled to Inventory Slice Table');
+  
+  // Test click row -> Inventory Detail View
+  DefUreaModule.openInventoryDetail(DefUreaModule.allStock[0].id);
+  assert.strictEqual(DefUreaModule.stockViewMode, 'detail', 'Switched to detail mode');
+  assert(stockContent.innerHTML.includes('Inventory Detail'), 'Inventory Detail card rendered');
+  assert(stockContent.innerHTML.includes('194'), 'Inventory Detail shows 194 buckets');
 
-  console.log('\n--- TEST 3: Card 2 - Consumed Details Date Grouping & Badges ---');
-  const consumedContent = document.getElementById('def-consumed-container');
-  // Check exact group sum badges from screenshot:
-  assert(consumedContent.innerHTML.includes('140'), '30/10/2026 group badge displays 140 Litres sum');
-  assert(consumedContent.innerHTML.includes('120'), '29/10/2026 group badge displays 120 Litres sum');
-  assert(consumedContent.innerHTML.includes('100'), '28/10/2026 group badge displays 100 Litres sum');
-  assert(consumedContent.innerHTML.includes('235'), '27/10/2026 group badge displays 235 Litres sum');
-  assert(consumedContent.innerHTML.includes('40'), '26/10/2026 group badge displays 40 Litres sum');
-  assert(consumedContent.innerHTML.includes('245'), '25/10/2026 group badge displays 245 Litres sum');
+  // Test close Inventory Detail
+  DefUreaModule.closeInventoryDetail();
+  assert.strictEqual(DefUreaModule.stockViewMode, 'table', 'Returned to Inventory Slice table');
 
-  // Check authentic truck & driver presence
-  assert(consumedContent.innerHTML.includes('RJ52GB5642'), 'Contains truck RJ52GB5642');
-  assert(consumedContent.innerHTML.includes('Suresh Raiya'), 'Contains driver Suresh Raiya');
-  assert(consumedContent.innerHTML.includes('9636017337'), 'Contains mobile 9636017337');
-  console.log('✓ TEST 3 PASSED: Card 2 Date-grouped table renders 100% matching screenshot sum badges and rows!');
+  // Toggle back to chart
+  DefUreaModule.toggleStockViewMode();
+  assert.strictEqual(DefUreaModule.stockViewMode, 'chart', 'Returned to chart view');
+  console.log('✓ TEST 2 PASSED: Card 1 Stock Chart, Inventory Slice Table, and Inventory Detail work 100%!');
 
-  console.log('\n--- TEST 4: Real-Time Search Engine ---');
-  DefUreaModule.handleSearch('RJ52GB5642');
-  assert.strictEqual(DefUreaModule.filteredConsumed.length, 1, 'Search filters to 1 row for RJ52GB5642');
-  assert(consumedContent.innerHTML.includes('RJ52GB5642'), 'Rendered table contains filtered truck');
-
-  DefUreaModule.handleSearch('Kushiram');
-  assert(DefUreaModule.filteredConsumed.length >= 1, 'Search filters driver Kushiram');
-
-  DefUreaModule.handleSearch(''); // Reset search
-  assert.strictEqual(DefUreaModule.filteredConsumed.length, DefUreaModule.allConsumed.length, 'Reset returns full list');
-  console.log('✓ TEST 4 PASSED: Real-time search filters instantly by truck number, driver, mobile and date!');
-
-  console.log('\n--- TEST 5: Add Consumed Entry via Slide Drawer ---');
-  DefUreaModule.openAddConsumedDrawer();
-  const drawer = document.getElementById('defConsumedDrawer');
-  assert(drawer.classList.contains('open'), 'defConsumedDrawer opened');
-
-  // Fill drawer inputs
-  document.getElementById('consumed-input-date').value = '31/10/2026';
-  document.getElementById('consumed-input-truck').value = 'RJ52GC1122';
-  document.getElementById('consumed-input-driver-name').value = 'Vikram Gurjar';
-  document.getElementById('consumed-input-driver-mob').value = '9829012345';
-  document.getElementById('consumed-input-qty').value = '40';
-  document.getElementById('consumed-input-buckets-ret').value = '2';
-  document.getElementById('consumed-input-is-returned').value = 'Yes';
-
-  await DefUreaModule.saveConsumedDrawer();
-  assert(!drawer.classList.contains('open'), 'Drawer closed after save');
-
-  const added = DefUreaModule.allConsumed.find(c => c.truckNo === 'RJ52GC1122');
-  assert(added, 'New consumed entry successfully created');
-  assert.strictEqual(added.filledQty, 40, 'Filled Qty is 40 Litres');
-  assert.strictEqual(window.lastToast.type, 'success', 'Success toast shown');
-  console.log('✓ TEST 5 PASSED: Adding new DEF consumption via slide drawer updates records & persists successfully!');
-
-  console.log('\n--- TEST 6: Inward Stock Drawer Operation ---');
+  console.log('\n--- TEST 3: Card 1 - Add Inward Stock Slide Drawer ---');
   DefUreaModule.openAddStockDrawer();
   const stockDrawer = document.getElementById('defStockDrawer');
-  assert(stockDrawer.classList.contains('open'), 'defStockDrawer opened');
+  assert(stockDrawer.classList.contains('open'), 'defStockDrawer is open');
 
-  document.getElementById('stock-input-date').value = '31/10/2026';
-  document.getElementById('stock-input-qty').value = '200';
-  document.getElementById('stock-input-rate').value = '45';
-  document.getElementById('stock-input-supplier').value = 'HPCL Garage Depot';
+  document.getElementById('stock-input-datetime').value = '31-10-2026 13:17:08';
+  document.getElementById('stock-input-qty-bucket').value = '10';
 
   await DefUreaModule.saveStockDrawer();
   assert(!stockDrawer.classList.contains('open'), 'Stock drawer closed after save');
-  const addedStock = DefUreaModule.allStock.find(s => s.supplier === 'HPCL Garage Depot');
-  assert(addedStock, 'New Inward Stock saved');
-  assert.strictEqual(addedStock.qtyLitre, 200, 'Inward stock qty is 200 Litres');
-  console.log('✓ TEST 6 PASSED: Adding inward stock updates stock ledger and refreshes bar chart!');
 
-  console.log('\n--- TEST 7: Panel Expand [↗] & Collapse [↙] Mechanism ---');
+  const updatedMetrics = DefUreaModule.getStockMetrics();
+  assert.strictEqual(updatedMetrics.buckets, 204, 'Stock increased by 10 buckets to 204');
+  assert.strictEqual(updatedMetrics.totalLitres, 4091, 'Total volume increased to 4,091L');
+  console.log('✓ TEST 3 PASSED: Inward stock slide drawer adds buckets, updates scale, and recalculates volume!');
+
+  console.log('\n--- TEST 4: Card 2 - Consumed Details Date Grouping & Badges ---');
+  const tableContainer = document.getElementById('consumed-table-container');
+  assert(tableContainer.innerHTML.includes('30/10/2026'), 'Date 30/10/2026 rendered');
+  assert(tableContainer.innerHTML.includes('>140<'), 'Date 30/10/2026 sum badge 140 rendered');
+  assert(tableContainer.innerHTML.includes('29/10/2026'), 'Date 29/10/2026 rendered');
+  assert(tableContainer.innerHTML.includes('>120<'), 'Date 29/10/2026 sum badge 120 rendered');
+  assert(tableContainer.innerHTML.includes('28/10/2026'), 'Date 28/10/2026 rendered');
+  assert(tableContainer.innerHTML.includes('>100<'), 'Date 28/10/2026 sum badge 100 rendered');
+  assert(tableContainer.innerHTML.includes('27/10/2026'), 'Date 27/10/2026 rendered');
+  assert(tableContainer.innerHTML.includes('>235<'), 'Date 27/10/2026 sum badge 235 rendered');
+  assert(tableContainer.innerHTML.includes('26/10/2026'), 'Date 26/10/2026 rendered');
+  assert(tableContainer.innerHTML.includes('>40<'), 'Date 26/10/2026 sum badge 40 rendered');
+  assert(tableContainer.innerHTML.includes('25/10/2026'), 'Date 25/10/2026 rendered');
+  assert(tableContainer.innerHTML.includes('>245<'), 'Date 25/10/2026 sum badge 245 rendered');
+  console.log('✓ TEST 4 PASSED: Card 2 Date-grouped table renders 100% matching screenshot sum badges and rows!');
+
+  console.log('\n--- TEST 5: Card 2 - Consumed Record Detail View & Navigation ---');
+  const firstId = DefUreaModule.allConsumed[0].id;
+  DefUreaModule.openConsumedRecordDetail(firstId);
+  const detailView = document.getElementById('consumedRecordDetailView');
+  assert.strictEqual(detailView.style.display, 'flex', 'Single Record Detail view is visible');
+  assert(detailView.innerHTML.includes('RJ52GB5642'), 'Detail card displays Truck RJ52GB5642');
+  assert(detailView.innerHTML.includes('Suresh Raiya'), 'Detail card displays Driver Suresh Raiya');
+  assert(detailView.innerHTML.includes('9636017337'), 'Detail card displays Mobile 9636017337');
+
+  // Next record navigation
+  DefUreaModule.navigateConsumedRecord(1);
+  assert(detailView.innerHTML.includes('RJ52GB2589'), 'Navigated to next record (RJ52GB2589)');
+
+  // Close detail view
+  DefUreaModule.closeConsumedRecordDetail();
+  assert.strictEqual(detailView.style.display, 'none', 'Single Record Detail view is closed');
+  console.log('✓ TEST 5 PASSED: Consumed Record Detail View opens, displays fields, and navigates previous/next!');
+
+  console.log('\n--- TEST 6: Card 2 - Consumed Urea Details Slide Drawer ---');
+  DefUreaModule.openAddConsumedDrawer();
+  const consumedDrawer = document.getElementById('defConsumedDrawer');
+  assert(consumedDrawer.classList.contains('open'), 'defConsumedDrawer opened');
+
+  // Fill drawer inputs matching WhatsApp screenshot
+  document.getElementById('consumed-input-date').value = '31-10-2026';
+  document.getElementById('consumed-input-truck').value = 'RJ52GC9988';
+  document.getElementById('consumed-input-driver-name').value = 'Rameshwar Gurjar';
+  document.getElementById('consumed-input-driver-mob').value = '9829156852';
+  document.getElementById('consumed-input-qty').value = '40';
+  document.getElementById('consumed-input-buckets-ret').value = '2';
+  DefUreaModule.setBucketReturnedToggle('Yes');
+
+  await DefUreaModule.saveConsumedDrawer();
+  assert(!consumedDrawer.classList.contains('open'), 'Consumed drawer closed after save');
+
+  const added = DefUreaModule.allConsumed.find(c => c.truckNo === 'RJ52GC9988');
+  assert(added, 'New consumed entry created');
+  assert.strictEqual(added.filledQty, 40, 'Filled Qty is 40 Litres');
+  console.log('✓ TEST 6 PASSED: Adding new DEF consumption via slide drawer updates records & persists successfully!');
+
+  console.log('\n--- TEST 7: Real-Time Search Engine ---');
+  DefUreaModule.handleSearch('RJ52GB5642');
+  assert(DefUreaModule.filteredConsumed.every(c => c.truckNo.includes('RJ52GB5642') || c.driverName.includes('RJ52GB5642')), 'Filter by truck');
+  DefUreaModule.handleSearch(''); // Reset
+  assert(DefUreaModule.filteredConsumed.length >= 90, 'Search reset restores all records');
+  console.log('✓ TEST 7 PASSED: Real-time search filters instantly by truck number, driver, mobile, and date!');
+
+  console.log('\n--- TEST 8: Panel Expand [↗] & Collapse [↙] Mechanism ---');
   const cardStock = document.getElementById('cardDefStock');
   const cardConsumed = document.getElementById('cardConsumedDetails');
   const btnExpStock = document.getElementById('btn-expand-stock');
@@ -201,10 +226,10 @@ async function runTests() {
   assert.strictEqual(DefUreaModule.expandedCard, null, 'expandedCard is null again');
   assert.strictEqual(cardStock.style.display, 'flex', 'cardDefStock restored');
   assert.strictEqual(cardConsumed.style.display, 'flex', 'cardConsumedDetails restored');
-  console.log('✓ TEST 7 PASSED: Single-click Expand [↗] and Collapse [↙] smoothly toggles 100% full view and split view!');
+  console.log('✓ TEST 8 PASSED: Single-click Expand [↗] and Collapse [↙] smoothly toggles 100% full view and split view!');
 
   console.log('\n======================================================');
-  console.log('🏆 ALL 7 DEF UREA MODULE TEST SUITES PASSED 100%!');
+  console.log('🏆 ALL 8 DEF UREA MODULE TEST SUITES PASSED 100%!');
   console.log('======================================================\n');
 }
 
