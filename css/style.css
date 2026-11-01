@@ -2287,13 +2287,13 @@ body {
   top: 10px !important;
   right: 14px !important;
   bottom: 10px !important;
-  width: 720px !important;
-  max-width: min(780px, 75vw) !important;
+  width: 580px !important;
+  max-width: min(620px, 60vw) !important;
   height: calc(100% - 20px) !important;
   max-height: calc(100% - 20px) !important;
   overflow: hidden !important;
   z-index: 1060 !important;
-  box-shadow: -6px 0 28px rgba(0, 0, 0, 0.22) !important;
+  box-shadow: -10px 0 35px rgba(0, 0, 0, 0.3) !important;
   border-radius: 4px !important;
   border: 1px solid #dadce0 !important;
   background: #ffffff !important;

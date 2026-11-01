@@ -84,12 +84,12 @@
       top: 10px !important;
       right: 14px !important;
       bottom: 10px !important;
-      width: 720px !important;
-      max-width: min(780px, 75vw) !important;
+      width: 580px !important;
+      max-width: min(620px, 60vw) !important;
       height: calc(100% - 20px) !important;
       max-height: calc(100% - 20px) !important;
       z-index: 1060 !important;
-      box-shadow: -6px 0 28px rgba(0, 0, 0, 0.22) !important;
+      box-shadow: -10px 0 35px rgba(0, 0, 0, 0.3) !important;
       border-radius: 4px !important;
       border: 1px solid #dadce0 !important;
       background: #ffffff !important;
@@ -215,13 +215,21 @@
       display: flex !important;
       flex-direction: column !important;
     }
-    #bilty-form-step1, #bilty-form-step2 {
+    /* Strict 1-Step-At-A-Time Display: NEVER Show Both Steps Simultaneously */
+    #bilty-form-step1[style*="display: none"],
+    #bilty-form-step2[style*="display: none"] {
+      display: none !important;
+    }
+    #bilty-form-step1:not([style*="display: none"]),
+    #bilty-form-step2:not([style*="display: none"]) {
       display: flex !important;
       flex-direction: column !important;
       height: 100% !important;
       max-height: 100% !important;
       overflow: hidden !important;
       background: #ffffff !important;
+      min-height: 0 !important;
+      flex: 1 1 0% !important;
     }
     #bilty-form-step1 .appsheet-form-header-bar,
     #bilty-form-step2 .appsheet-form-header-bar {
@@ -619,6 +627,15 @@
                     </div>
                   </div>
                 </div>
+                  <!-- Step 1 Footer -->
+                  <div class="appsheet-form-footer">
+                    <button type="button" class="btn-appsheet-cancel" onclick="BiltyBookingModule.closeSideDrawer()">
+                      Cancel
+                    </button>
+                    <button type="button" class="btn-appsheet-gold-save" onclick="BiltyBookingModule.proceedToStep2()">
+                      Save
+                    </button>
+                  </div>
               </div>
 
               <!-- ==================================================== -->

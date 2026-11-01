@@ -1112,12 +1112,20 @@ const BiltyBookingModule = {
     this.updateLivePreview();
   },
 
-  proceedToStep2() {
+    setStep(stepNum) {
     const step1El = document.getElementById('bilty-form-step1');
     const step2El = document.getElementById('bilty-form-step2');
-    if (step1El) step1El.style.display = 'none';
-    if (step2El) step2El.style.display = 'block';
+    if (stepNum === 1) {
+      if (step1El) step1El.style.display = 'block';
+      if (step2El) step2El.style.display = 'none';
+    } else {
+      if (step1El) step1El.style.display = 'none';
+      if (step2El) step2El.style.display = 'block';
+    }
+  },
 
+  proceedToStep2() {
+    this.setStep(2);
     const firm = document.getElementById('bilty-firm')?.value || 'TTC';
     const mtcBtn = document.getElementById('btn-seg-mtc');
     const ttcBtn = document.getElementById('btn-seg-ttc');
@@ -1146,13 +1154,10 @@ const BiltyBookingModule = {
     if (this.editTripId) {
       this.closeSideDrawer();
     } else {
-      const step1El = document.getElementById('bilty-form-step1');
-      const step2El = document.getElementById('bilty-form-step2');
-      if (step1El) step1El.style.display = 'block';
-      if (step2El) step2El.style.display = 'none';
-      const scrollContainer = document.getElementById('bilty-create-view');
-      if (scrollContainer) scrollContainer.scrollTop = 0;
+      this.setStep(1);
     }
+    const scrollContainer = document.getElementById('bilty-create-view');
+    if (scrollContainer) scrollContainer.scrollTop = 0;
   },
 
   applyStep2ConditionalRules() {
@@ -5021,6 +5026,7 @@ const BiltyBookingModule = {
       detailsCol.classList.remove('side-drawer-active');
       detailsCol.classList.remove('panel-expanded');
     }
+    this.setStep(1);
     const closeBtn = document.getElementById('btn-details-drawer-close');
     if (closeBtn) closeBtn.classList.add('d-none');
 
@@ -5111,7 +5117,14 @@ const BiltyBookingModule = {
   openCreateForm(firm = 'TTC') {
     this.editTripId = null;
     this.initNewFormDefaults();
-    
+
+    // Ensure it always opens as a clean side-drawer (not full screen)
+    const detailsCol = document.getElementById('panel-details-col');
+    if (detailsCol) detailsCol.classList.remove('panel-expanded');
+
+    // Ensure Step 1 is displayed and Step 2 is strictly hidden
+    this.setStep(1);
+
     // Set firm
     const firmEl = document.getElementById('bilty-firm');
     if (firmEl) firmEl.value = firm;
@@ -5180,10 +5193,7 @@ const BiltyBookingModule = {
       return;
     }
     // Directly show Step 2 for editing
-    const step1El = document.getElementById('bilty-form-step1');
-    const step2El = document.getElementById('bilty-form-step2');
-    if (step1El) step1El.style.display = 'none';
-    if (step2El) step2El.style.display = 'block';
+    this.setStep(2);
 
     this.loadTripForEditing(this.currentActiveBilty.id || this.currentActiveBilty.grNo);
     const titleEl = document.getElementById('form-view-title');
