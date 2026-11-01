@@ -20,8 +20,8 @@
       top: 10px !important;
       right: 14px !important;
       bottom: 10px !important;
-      width: 580px !important;
-      max-width: min(650px, 60vw) !important;
+      width: 720px !important;
+      max-width: min(780px, 75vw) !important;
       height: auto !important;
       max-height: calc(100% - 20px) !important;
       z-index: 1060 !important;
@@ -45,7 +45,7 @@
       }
     }
 
-    /* Fullscreen Expanded Mode for Bilty Details / Form */
+    /* Fullscreen Expanded Mode for Bilty Details / Form - 1:1 Image 5 */
     .panel-details-col.panel-expanded {
       position: absolute !important;
       top: 10px !important;
@@ -62,6 +62,163 @@
       background: #ffffff !important;
       display: flex !important;
       flex-direction: column !important;
+    }
+
+    /* Centered Container for Details View matching Image 5 */
+    .details-centered-wrapper {
+      width: 100%;
+      padding: 8px 18px 24px 18px;
+      background: #ffffff;
+    }
+    .panel-details-col.panel-expanded .details-centered-wrapper {
+      max-width: 680px !important;
+      margin: 16px auto 36px auto !important;
+      padding: 12px 24px 36px 24px !important;
+    }
+
+    /* Key-Value Details Table: 1:1 AppSheet Green Bullets (Image 5) */
+    .details-key-value-table {
+      width: 100% !important;
+      border-collapse: collapse !important;
+    }
+    .details-key-value-table tr {
+      border: none !important;
+    }
+    .details-key-value-table td {
+      padding: 3px 0 !important;
+      vertical-align: top !important;
+      line-height: 1.4 !important;
+    }
+    .details-key-value-table .prop-label {
+      width: 36% !important;
+      min-width: 160px !important;
+      max-width: 220px !important;
+      font-size: 12.5px !important;
+      font-weight: 500 !important;
+      color: #5f6368 !important;
+      padding-right: 14px !important;
+      white-space: nowrap !important;
+    }
+    .details-key-value-table .prop-value {
+      width: 64% !important;
+      font-size: 12.5px !important;
+      font-weight: 600 !important;
+      color: #00b11f !important;
+      word-break: break-word !important;
+    }
+    .details-key-value-table .appsheet-green-bullet {
+      color: #00b11f !important;
+      margin-right: 6px !important;
+      font-size: 9px !important;
+      vertical-align: middle !important;
+      display: inline-block !important;
+    }
+    .details-key-value-table .appsheet-green-text {
+      color: #00b11f !important;
+      font-weight: 600 !important;
+    }
+    .details-key-value-table .action-icon-btn {
+      color: #00b11f !important;
+      font-size: 15px !important;
+      padding: 0 4px !important;
+      background: transparent !important;
+      border: none !important;
+      cursor: pointer !important;
+      line-height: 1 !important;
+    }
+    .details-key-value-table .action-icon-btn:hover {
+      color: #0b8043 !important;
+    }
+
+    /* Hide bulky circular button strip to match Image 5 & save space */
+    .details-action-strip {
+      display: none !important;
+    }
+
+    /* Compact Form Styling to eliminate excessive scrolling (Images 2, 3, 4) */
+    .panel-details-col .appsheet-form-body {
+      padding: 8px 18px 24px 18px !important;
+    }
+    .panel-details-col .appsheet-form-row {
+      display: flex !important;
+      align-items: center !important;
+      min-height: 34px !important;
+      padding: 2.5px 0 !important;
+      border-bottom: 1px solid #f1f3f4 !important;
+    }
+    .panel-details-col .appsheet-form-label {
+      width: 32% !important;
+      min-width: 150px !important;
+      max-width: 220px !important;
+      font-size: 12.5px !important;
+      font-weight: 500 !important;
+      color: #4b5563 !important;
+      padding-right: 10px !important;
+      margin: 0 !important;
+    }
+    .panel-details-col .appsheet-form-control-wrap {
+      flex: 1 !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+    }
+    .panel-details-col .appsheet-input-box {
+      height: 32px !important;
+      font-size: 12.5px !important;
+      padding: 2px 8px !important;
+      border: 1px solid #dadce0 !important;
+      border-radius: 4px !important;
+    }
+    .panel-details-col .appsheet-segmented-gold {
+      height: 28px !important;
+      display: inline-flex !important;
+      border: 1px solid #dadce0 !important;
+      border-radius: 4px !important;
+      overflow: hidden !important;
+      background: #ffffff !important;
+    }
+    .panel-details-col .seg-btn {
+      height: 28px !important;
+      line-height: 26px !important;
+      padding: 0 14px !important;
+      font-size: 12px !important;
+      min-width: 55px !important;
+      border: none !important;
+      background: #ffffff !important;
+      color: #374151 !important;
+      border-right: 1px solid #dadce0 !important;
+    }
+    .panel-details-col .seg-btn:last-child {
+      border-right: none !important;
+    }
+    .panel-details-col .seg-btn.active {
+      background-color: #8d6e32 !important;
+      color: #ffffff !important;
+      font-weight: 600 !important;
+    }
+    .panel-details-col .btn-appsheet-gold-save {
+      background-color: #8d6e32 !important;
+      color: #ffffff !important;
+      font-weight: 600 !important;
+      font-size: 13px !important;
+      padding: 4px 18px !important;
+      border-radius: 4px !important;
+      border: none !important;
+    }
+    .panel-details-col .btn-appsheet-cancel {
+      background: #ffffff !important;
+      color: #374151 !important;
+      font-size: 13px !important;
+      font-weight: 500 !important;
+      border: 1px solid #dadce0 !important;
+      padding: 4px 16px !important;
+      border-radius: 4px !important;
+    }
+    .panel-details-col .btn-appsheet-quick-add {
+      height: 28px !important;
+      padding: 0 8px !important;
+      font-size: 11.5px !important;
+      border-radius: 4px !important;
     }
 
     @media (max-width: 768px) {
@@ -265,45 +422,13 @@
                 </div>
               </div>
               
-              <!-- Top Action Buttons Strip: TTC Income and Debt Record | Edit | Print | WhatsApp Driver | WhatsApp Transport -->
-              <div class="details-action-strip">
-                <div class="d-flex flex-column align-items-center" style="cursor: pointer;" onclick="BiltyBookingModule.openLedgerForActiveBilty()">
-                  <button type="button" class="details-circle-btn">
-                    <i class="bi bi-send-fill"></i>
-                  </button>
-                  <span class="details-circle-label">TTC Income<br>and Debt Record</span>
-                </div>
-                <div class="d-flex flex-column align-items-center" style="cursor: pointer;" onclick="BiltyBookingModule.editActiveBilty()">
-                  <button type="button" class="details-circle-btn">
-                    <i class="bi bi-pencil-square"></i>
-                  </button>
-                  <span class="details-circle-label">Edit</span>
-                </div>
-                <div class="d-flex flex-column align-items-center" style="cursor: pointer;" onclick="BiltyBookingModule.printActiveBilty()">
-                  <button type="button" class="details-circle-btn">
-                    <i class="bi bi-printer"></i>
-                  </button>
-                  <span class="details-circle-label">Print A4</span>
-                </div>
-                <div class="d-flex flex-column align-items-center" style="cursor: pointer;" onclick="BiltyBookingModule.shareDriverWhatsApp()">
-                  <button type="button" class="details-circle-btn" style="background: #e6f4ea; color: #1e8e3e;" title="Send WhatsApp to Driver">
-                    <i class="bi bi-whatsapp"></i>
-                  </button>
-                  <span class="details-circle-label">WhatsApp<br>Driver</span>
-                </div>
-                <div class="d-flex flex-column align-items-center" style="cursor: pointer;" onclick="BiltyBookingModule.shareTransportWhatsApp()">
-                  <button type="button" class="details-circle-btn" style="background: #e8f0fe; color: #1a73e8;" title="Send WhatsApp to Truck Owner / Transporter">
-                    <i class="bi bi-truck"></i>
-                  </button>
-                  <span class="details-circle-label">WhatsApp<br>Transport</span>
-                </div>
-              </div>
-
-              <!-- Scrollable Key-Value Properties List -->
+              <!-- Scrollable Key-Value Properties List (Image 5 Replica) -->
               <div class="panel-body-scroll" id="bilty-details-scroll">
-                <table class="details-key-value-table" id="bilty-details-kv-table">
-                  <!-- Dynamically populated properties -->
-                </table>
+                <div class="details-centered-wrapper">
+                  <table class="details-key-value-table" id="bilty-details-kv-table">
+                    <!-- Dynamically populated properties -->
+                  </table>
+                </div>
               </div>
             </div>
 

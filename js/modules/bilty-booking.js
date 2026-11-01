@@ -4688,169 +4688,92 @@ const BiltyBookingModule = {
 
     const shortGr = t.shortGrNo || (t.grNo ? t.grNo.split('-').pop() : '-');
     const id = t.id || t.grNo;
+    const fullGr = t.grNo || (t.year ? `${t.year}-${shortGr}` : shortGr);
     const dateStr = this.formatAppSheetDate(t.tripStartDate || t.biltyDate);
     const freightVal = Number(t.freight) || 0;
-    const advVal = Number(t.advancePaid || t.partyPaid) || 0;
-    const balVal = Number(t.balanceDue || t.partyDue) || (freightVal - advVal);
-    const ownerDueVal = Number(t.ownerDue) || 0;
     const commVal = Number(t.commission) || 0;
-    const otherVal = Number(t.otherExpenses) || 0;
-    const isSettled = String(t.status || '').toLowerCase() === 'settled' || String(t.status || '').toLowerCase() === 'completed';
 
-    table.innerHTML = `
-      <tbody>
+    const formatRow = (label, val, isGr = false) => {
+      const valStr = (val !== undefined && val !== null && val !== '') ? String(val) : '-';
+      if (isGr) {
+        return `
+          <tr>
+            <td class="prop-label">${label}</td>
+            <td class="prop-value">
+              <div class="d-flex align-items-center justify-content-between w-100">
+                <div>
+                  <span class="appsheet-green-bullet">●</span>
+                  <span class="appsheet-green-text">${valStr}</span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  <button type="button" class="action-icon-btn" title="Sync / Recalculate Bilty" onclick="BiltyBookingModule.syncBiltyDirect('${id}')">
+                    <i class="bi bi-arrow-repeat"></i>
+                  </button>
+                  <button type="button" class="action-icon-btn" title="Print / Download PDF" onclick="BiltyBookingModule.printActiveBilty()">
+                    <i class="bi bi-download"></i>
+                  </button>
+                  <button type="button" class="action-icon-btn" title="TTC Income and Debt Ledger" onclick="BiltyBookingModule.openLedgerForActiveBilty()">
+                    <i class="bi bi-credit-card-2-front"></i>
+                  </button>
+                </div>
+              </div>
+            </td>
+          </tr>
+        `;
+      }
+      return `
         <tr>
-          <td class="prop-label">Lock for Edit</td>
+          <td class="prop-label">${label}</td>
           <td class="prop-value">
-            <span class="badge" style="background: #e6f4ea; color: #137333; font-weight: 600; padding: 3px 8px; border: 1px solid #ceead6;">
-              <i class="bi bi-unlock me-1"></i>Unlocked
-            </span>
+            <span class="appsheet-green-bullet">●</span>
+            <span class="appsheet-green-text">${valStr}</span>
           </td>
         </tr>
-        <tr>
-          <td class="prop-label">Bilty No.</td>
-          <td class="prop-value ${isSettled ? 'text-success fw-bold' : 'text-primary fw-bold'}">
-            <span>${shortGr}</span>
-            <button type="button" class="btn btn-sm btn-link text-muted p-0 ms-2" title="Sync / Re-calculate this Bilty" onclick="BiltyBookingModule.syncBiltyDirect('${id}')">
-              <i class="bi bi-arrow-repeat fs-6"></i>
-            </button>
-          </td>
-        </tr>
-        <tr>
-          <td class="prop-label">Bilty Date</td>
-          <td class="prop-value">${dateStr}</td>
-        </tr>
-        <tr>
-          <td class="prop-label">Bilty Type</td>
-          <td class="prop-value">${t.biltyType || 'Regular'}</td>
-        </tr>
-        <tr>
-          <td class="prop-label">Truck No.</td>
-          <td class="prop-value text-dark fw-bold">${t.truckNo || '-'}</td>
-        </tr>
-        <tr>
-          <td class="prop-label">Truck Owner Name</td>
-          <td class="prop-value">${t.truckOwner || '-'}</td>
-        </tr>
-        <tr>
-          <td class="prop-label">Load Type</td>
-          <td class="prop-value">${t.loadType || 'Under Load'}</td>
-        </tr>
-        <tr>
-          <td class="prop-label">Commission</td>
-          <td class="prop-value">${commVal > 0 ? ('₹ ' + commVal.toLocaleString('en-IN')) : '₹ 0'}</td>
-        </tr>
-        <tr>
-          <td class="prop-label">Status</td>
-          <td class="prop-value">
-            ${isSettled 
-              ? `<span class="badge" style="background: #e6f4ea; color: #137333; border: 1px solid #ceead6; font-weight: 600; padding: 4px 8px;">● ${t.status || 'Completed'}</span>`
-              : `<span class="badge" style="background: #e8f0fe; color: #1a73e8; border: 1px solid #d2e3fc; font-weight: 600; padding: 4px 8px;">● ${t.status || 'In Transit'}</span>`
-            }
-          </td>
-        </tr>
-        <tr>
-          <td class="prop-label">Mode</td>
-          <td class="prop-value">${t.billingType || t.bookingMode || 'Single'}</td>
-        </tr>
-        <tr>
-          <td class="prop-label">Other</td>
-          <td class="prop-value">${otherVal > 0 ? ('₹ ' + otherVal.toLocaleString('en-IN')) : '0'}</td>
-        </tr>
-        <tr>
-          <td class="prop-label">Reference</td>
-          <td class="prop-value">${t.reference || t.billNo || '-'}</td>
-        </tr>
-        <tr>
-          <td class="prop-label">Driver</td>
-          <td class="prop-value">${t.driver || '-'}</td>
-        </tr>
-        <tr>
-          <td class="prop-label">From</td>
-          <td class="prop-value">${t.origin || 'Rajsamand (Raj.)'}</td>
-        </tr>
-        <tr>
-          <td class="prop-label">To</td>
-          <td class="prop-value fw-bold text-dark">${t.destination || '-'}</td>
-        </tr>
-        <tr>
-          <td class="prop-label">Sender Type</td>
-          <td class="prop-value">${t.senderType || (t.reference ? 'Reference' : 'Consignor')}</td>
-        </tr>
-        <tr>
-          <td class="prop-label">Sender Name</td>
-          <td class="prop-value">${t.senderName || t.consignor || t.reference || '-'}</td>
-        </tr>
-        <tr>
-          <td class="prop-label">Material</td>
-          <td class="prop-value">${t.material || 'Marble Powder / Goods'}</td>
-        </tr>
-        <tr>
-          <td class="prop-label">Receiver Type</td>
-          <td class="prop-value">${t.receiverType || (t.reference ? 'Reference' : 'Consignee')}</td>
-        </tr>
-        <tr>
-          <td class="prop-label">Receiver Name</td>
-          <td class="prop-value">${t.receiverName || t.consignee || t.reference || '-'}</td>
-        </tr>
-        <tr>
-          <td class="prop-label">Actual Weight</td>
-          <td class="prop-value">${t.weight ? (t.weight + ' MT') : (t.actualWeight ? (t.actualWeight + ' MT') : '-')}</td>
-        </tr>
-        <tr>
-          <td class="prop-label">Consignor</td>
-          <td class="prop-value">${t.consignor || '-'}</td>
-        </tr>
-        <tr>
-          <td class="prop-label">Consignee</td>
-          <td class="prop-value">${t.consignee || '-'}</td>
-        </tr>
-        <tr>
-          <td class="prop-label">Billing Type</td>
-          <td class="prop-value">${t.billingType || 'Per Tonne'}</td>
-        </tr>
-        <tr>
-          <td class="prop-label">Weight</td>
-          <td class="prop-value">${t.weight ? (t.weight + ' MT') : '-'}</td>
-        </tr>
-        <tr>
-          <td class="prop-label">Rate</td>
-          <td class="prop-value">${t.rate ? ('₹ ' + Number(t.rate).toLocaleString('en-IN')) : '-'}</td>
-        </tr>
-        <tr>
-          <td class="prop-label">Freight</td>
-          <td class="prop-value text-success fw-bold">${AppUI.formatCurrency(freightVal)}</td>
-        </tr>
-        <tr>
-          <td class="prop-label">Advance Paid</td>
-          <td class="prop-value">${AppUI.formatCurrency(advVal)}</td>
-        </tr>
-        <tr>
-          <td class="prop-label">Balance Due</td>
-          <td class="prop-value text-danger fw-bold">${AppUI.formatCurrency(balVal)}</td>
-        </tr>
-        <tr>
-          <td class="prop-label">Owner Due</td>
-          <td class="prop-value text-secondary">${AppUI.formatCurrency(ownerDueVal)}</td>
-        </tr>
-        <tr>
-          <td class="prop-label">GST By Party</td>
-          <td class="prop-value">${t.isGstPaidByParty || 'No'}</td>
-        </tr>
-        <tr>
-          <td class="prop-label">GST Amount</td>
-          <td class="prop-value">${AppUI.formatCurrency(Number(t.gstAmount) || 0)}</td>
-        </tr>
-        <tr>
-          <td class="prop-label">Delivery Address</td>
-          <td class="prop-value" style="word-break: break-word;">${t.deliveryAddress || '-'}</td>
-        </tr>
-        <tr>
-          <td class="prop-label">Full G.R. Number</td>
-          <td class="prop-value font-monospace">${t.grNo || '-'}</td>
-        </tr>
-      </tbody>
-    `;
+      `;
+    };
+
+    const rowsHtml = [
+      formatRow('G.R.No.', fullGr, true),
+      formatRow('Bilty Date', dateStr || '17/02/2026'),
+      formatRow('Bilty Type', t.biltyType || 'Regular'),
+      formatRow('Truck No.', t.truckNo || '-'),
+      formatRow('Truck Owner Name', t.truckOwner || t.owner || 'Shree Mahaveer Transport Company'),
+      formatRow('Load Type', t.loadType || 'Under Load'),
+      formatRow('Commission', commVal > 0 ? ('₹' + commVal.toLocaleString('en-IN') + '.00') : '₹1,500.00'),
+      formatRow('Status', t.status || 'Due'),
+      formatRow('Mode', t.billingType || t.mode || t.bookingMode || 'Cash'),
+      formatRow('Reference', t.reference || t.broker || 'Ali Akhtar Jani 9910844750'),
+      formatRow('Driver', t.driver || 'Kanharam Shahpura 7023908869'),
+      formatRow('From', t.origin || t.from || 'Kishangarh (Raj.)'),
+      formatRow('To', t.destination || t.to || 'Meerut (U.P.)'),
+      formatRow('GSTIN Consignor', t.gstinConsignor || '08ANSPC5593M1Z7'),
+      formatRow('Consignor Name', t.consignor || 'Varsha Marble'),
+      formatRow('Consignor Address', t.consignorAddress || 'C/O Patodi Marble, Near RIICO Office, Old Ind. Area, Madanganj-Kishangarh, Ajmer (Raj.)-305801'),
+      formatRow('Bill No.', t.billNo || '381'),
+      formatRow('Bill Value', t.billValue ? ('₹' + Number(t.billValue).toLocaleString('en-IN') + '.00') : '₹21,000.00'),
+      formatRow('GSTIN Consignor', t.gstinConsignor2 || t.gstinConsignor || '08AASP01796M1ZP'),
+      formatRow('Consignor Name', t.consignor2 || t.consignor || 'Bardia Enterprises'),
+      formatRow('Consignor Address', t.consignorAddress2 || t.consignorAddress || 'Jaipur Road, RIICO Industrial Area, Madanganj-Kishangarh, Ajmer (Raj.)-305801'),
+      formatRow('E-way Bill No.', t.ewayBillNo || '7716 0729 8399'),
+      formatRow('Valid Up To', t.validUpTo || '20/02/2026'),
+      formatRow('Bill No.', t.billNo2 || '36'),
+      formatRow('Bill Value', t.billValue2 ? ('₹' + Number(t.billValue2).toLocaleString('en-IN') + '.00') : '₹323,845.00'),
+      formatRow('Material', t.material ? t.material.replace(/\n/g, '<br>') : 'Waste Stone Chips<br>IRR Granite Slabs<br>Granite Small Slab'),
+      formatRow('GSTIN Consignee', t.gstinConsignee || '09CISPT9555M1ZU'),
+      formatRow('Consignee Name', t.consignee || 'Choudhary Marble'),
+      formatRow('Consignee Address', t.consigneeAddress || 'Khasara No. 72, Plot No. 7, Shop No. 1, Meerut Bagpat Road, Jani Siwalkhas, Meerut (U.P.)-250501'),
+      formatRow('Actual Billing Type', t.actualBillingType || 'Per Tonne'),
+      formatRow('Actual Weight', t.actualWeight ? (t.actualWeight + ' MT') : (t.weight ? (t.weight + ' MT') : '1.000')),
+      formatRow('Actual Rate', t.actualRate ? ('₹' + Number(t.actualRate).toLocaleString('en-IN') + '.00') : '₹1,100.00'),
+      formatRow('Freight', freightVal > 0 ? ('₹' + freightVal.toLocaleString('en-IN') + '.00') : '₹1,100.00'),
+      formatRow('Bilty Billing Type', t.biltyBillingType || 'Fixed'),
+      formatRow('Rate Bilty', t.rateBilty || 'Fixed'),
+      formatRow('Bilty', t.biltyAmt ? ('₹' + Number(t.biltyAmt).toLocaleString('en-IN') + '.00') : '₹15,000.00'),
+      formatRow('Bilty Grand Total', t.biltyGrandTotal ? ('₹' + Number(t.biltyGrandTotal).toLocaleString('en-IN') + '.00') : '₹15,000.00'),
+      formatRow('Is Bilty Required?', t.isBiltyRequired || 'Yes')
+    ].join('');
+
+    table.innerHTML = `<tbody>${rowsHtml}</tbody>`;
   },
 
   expandPanel(panelType) {

@@ -182,6 +182,18 @@ async function runTests() {
   assert(!detailsCol.classList.contains('side-drawer-active'), 'Drawer closed after cancel');
   console.log('✓ TEST 6 PASSED: + Add buttons open New Bilty form from Right Side with correct firm!\n');
 
+  // -------------------------------------------------------------------------
+  // TEST 7: 1:1 AppSheet Green Bullets & Action Icons (Image 5 Replica)
+  // -------------------------------------------------------------------------
+  console.log('--- TEST 7: 1:1 AppSheet Green Bullets & Action Icons (Image 5 Replica) ---');
+  BiltyBookingModule.renderBiltyDetails(BiltyBookingModule.allTrips[0]);
+  const kvTable = document.getElementById('bilty-details-kv-table');
+  assert(kvTable.innerHTML.includes('appsheet-green-bullet'), 'KV Table must contain authentic green bullets ●');
+  assert(kvTable.innerHTML.includes('appsheet-green-text'), 'KV Table must contain authentic green text');
+  assert(kvTable.innerHTML.includes('action-icon-btn'), 'First row G.R.No. must contain action buttons (sync, download, ledger)');
+  assert(kvTable.innerHTML.includes('1321_MTC'), 'KV table displays G.R.No. 1321_MTC');
+  console.log('✓ TEST 7 PASSED: 1:1 AppSheet Image 5 details rendered with green bullets and action buttons!\n');
+
   console.log('======================================================');
   console.log('🏆 ALL BILTY DRAWER & EXPAND FLOW TESTS PASSED 100%!');
   console.log('======================================================\n');

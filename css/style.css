@@ -2278,8 +2278,8 @@ body {
   top: 10px !important;
   right: 14px !important;
   bottom: 10px !important;
-  width: 580px !important;
-  max-width: min(650px, 60vw) !important;
+  width: 720px !important;
+  max-width: min(780px, 75vw) !important;
   height: auto !important;
   max-height: calc(100% - 20px) !important;
   z-index: 1060 !important;
