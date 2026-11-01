@@ -74,6 +74,22 @@ global.AppUI = {
   formatCurrency: (val) => `₹ ${Number(val || 0).toLocaleString('en-IN')}`
 };
 
+global.dbService = {
+  tripsStore: [],
+  debtsStore: [],
+  add: async (col, doc) => {
+    if (col === 'trips') global.dbService.tripsStore.push(doc);
+    if (col === 'debts') global.dbService.debtsStore.push(doc);
+    return doc;
+  },
+  update: async (col, id, doc) => doc,
+  getAll: async (col) => {
+    if (col === 'trips') return global.dbService.tripsStore;
+    if (col === 'debts') return global.dbService.debtsStore;
+    return [];
+  }
+};
+
 async function runTests() {
   console.log('=== TEST SUITE: BILTY BOOKING - EXPAND & SLIDE-IN DRAWER FLOW ===\n');
 
@@ -300,6 +316,63 @@ async function runTests() {
   assert.strictEqual(rowShip.style.display, '', 'Ship To address is shown');
 
   console.log('✓ TEST 8 PASSED: 2-Phase Bilty Flow (Screens 1-4 Setup -> Screen 5 Form) & Screens 6-9 Conditionals verified 100%!\n');
+
+  // -------------------------------------------------------------------------
+  // TEST 9: Bilty Save & Print Consignment Note Execution
+  // -------------------------------------------------------------------------
+  console.log('--- TEST 9: Bilty Save & Print Consignment Note Execution ---');
+  let printModalOpenedWith = null;
+  BiltyBookingModule.openPrintModal = function(trip) {
+    printModalOpenedWith = trip;
+    console.log(`[PrintModal]: Opened Consignment Note for G.R. ${trip.shortGrNo || trip.grNo}`);
+  };
+
+  // Reset edit state for a fresh new bilty creation
+  BiltyBookingModule.editTripId = null;
+
+  // Populate form fields for saving
+  document.getElementById('bilty-truck-no').value = 'RJ52GB5964';
+  document.getElementById('bilty-consignor').value = 'A-One Marbles Pvt Ltd';
+  document.getElementById('bilty-consignee').value = 'Krishna Granites';
+  document.getElementById('bilty-destination').value = 'Jaipur';
+  document.getElementById('bilty-origin').value = 'Rajsamand (Raj.)';
+  document.getElementById('bilty-firm').value = 'TTC';
+  document.getElementById('bilty-gr-no').value = '2026-2027-2755_TTC';
+  document.getElementById('bilty-short-gr').value = '2755_TTC';
+  document.getElementById('bilty-weight').value = '25.500';
+  document.getElementById('bilty-rate').value = '800';
+  document.getElementById('bilty-freight').value = '20400';
+  document.getElementById('bilty-commission').value = '500';
+  document.getElementById('bilty-commission-status').value = 'Paid';
+  document.getElementById('bilty-commission-mode').value = 'Cash';
+  document.getElementById('bilty-has-debt').value = 'Yes';
+  document.getElementById('bilty-debt-type').value = 'Trip Advance';
+  document.getElementById('bilty-debt-desc').value = 'Diesel cash advance';
+  document.getElementById('bilty-dispatch-from-req').value = 'No';
+  document.getElementById('bilty-ship-to-req').value = 'No';
+
+  // Execute Save
+  await BiltyBookingModule.saveAppSheetBilty();
+
+  // Verify trip was persisted
+  assert(global.dbService.tripsStore.length > 0, 'Bilty trip must be saved into trips store');
+  const savedTrip = global.dbService.tripsStore[global.dbService.tripsStore.length - 1];
+  assert.strictEqual(savedTrip.truckNo, 'RJ52GB5964', 'Truck number matches');
+  assert.strictEqual(savedTrip.shortGrNo, '2755_TTC', 'Short GR matches');
+  assert.strictEqual(savedTrip.freight, 20400, 'Freight matches');
+  assert.strictEqual(savedTrip.hasDebt, 'Yes', 'Debt toggle matches');
+
+  // Verify linked debt was created
+  assert(global.dbService.debtsStore.length > 0, 'Linked debt must be saved into debts store');
+  const savedDebt = global.dbService.debtsStore[global.dbService.debtsStore.length - 1];
+  assert.strictEqual(savedDebt.truckNo, 'RJ52GB5964');
+  assert.strictEqual(savedDebt.grNo, '2755_TTC');
+
+  // Verify print modal was opened automatically
+  assert(printModalOpenedWith !== null, 'Print modal must be triggered automatically after save');
+  assert.strictEqual(printModalOpenedWith.shortGrNo, '2755_TTC');
+
+  console.log('✓ TEST 9 PASSED: Bilty saves seamlessly without crashes and opens print consignment note modal!\n');
 
   console.log('======================================================');
   console.log('🏆 ALL BILTY DRAWER & EXPAND FLOW TESTS PASSED 100%!');

@@ -3337,7 +3337,6 @@ const BiltyBookingModule = {
         return;
       }
       await this.saveBilty('print');
-      this.switchView('dashboard');
       return;
     }
 
@@ -3850,52 +3849,67 @@ const BiltyBookingModule = {
   // SAVING ENGINE & FINANCIAL INTEGRATION
   // ----------------------------------------------------
   async saveBilty(mode = 'print') {
-    const truckNo = document.getElementById('bilty-truck-no').value.trim().toUpperCase();
-    const consignor = document.getElementById('bilty-consignor').value.trim();
-    const consignee = document.getElementById('bilty-consignee').value.trim();
-    const origin = document.getElementById('bilty-origin').value.trim();
-    const destination = document.getElementById('bilty-destination').value.trim();
-    const weight = parseFloat(document.getElementById('bilty-weight').value) || 0;
-    const rate = parseFloat(document.getElementById('bilty-rate').value) || 0;
+    const truckNo = (document.getElementById('bilty-truck-no')?.value || '').trim().toUpperCase();
+    const consignor = (document.getElementById('bilty-consignor')?.value || '').trim();
+    const consignee = (document.getElementById('bilty-consignee')?.value || '').trim();
+    const origin = (document.getElementById('bilty-origin')?.value || '').trim() || 'Rajsamand (Raj.)';
+    const destination = (document.getElementById('bilty-destination')?.value || '').trim();
+    const weight = parseFloat(document.getElementById('bilty-weight')?.value) || 0;
+    const rate = parseFloat(document.getElementById('bilty-rate')?.value) || 0;
 
     if (!truckNo) {
-      AppUI.showToast("Please enter Truck Registration Number!", "danger");
-      document.getElementById('bilty-truck-no').focus();
+      AppUI.showToast("Please enter Truck Registration Number (गाड़ी नंबर)!", "danger");
+      document.getElementById('bilty-truck-no')?.focus();
       return;
     }
     if (!consignor) {
-      AppUI.showToast("Please select or enter Consignor party!", "danger");
-      document.getElementById('bilty-consignor').focus();
+      AppUI.showToast("Please select or enter Consignor party (माल भेजने वाला)!", "danger");
+      document.getElementById('bilty-consignor')?.focus();
       return;
     }
     if (!consignee) {
-      AppUI.showToast("Please select or enter Consignee party!", "danger");
-      document.getElementById('bilty-consignee').focus();
+      AppUI.showToast("Please select or enter Consignee party (माल मंगाने वाला)!", "danger");
+      document.getElementById('bilty-consignee')?.focus();
       return;
     }
     if (!destination) {
-      AppUI.showToast("Please specify Destination!", "danger");
-      document.getElementById('bilty-destination').focus();
+      AppUI.showToast("Please specify Destination (कहाँ तक)!", "danger");
+      document.getElementById('bilty-destination')?.focus();
       return;
     }
 
-    const firm = document.getElementById('bilty-firm').value;
-    const year = document.getElementById('bilty-year').value;
-    const fullGr = document.getElementById('bilty-gr-no').value.trim();
-    const shortGr = document.getElementById('bilty-short-gr').value.trim();
+    const firm = document.getElementById('bilty-firm')?.value || 'TTC';
+    const year = document.getElementById('bilty-year')?.value || '2026-2027';
+    const shortGr = (document.getElementById('bilty-short-gr')?.value || document.getElementById('step1-display-gr')?.innerText || document.getElementById('appsheet-display-gr')?.innerText || '').trim();
+    const fullGr = (document.getElementById('bilty-gr-no')?.value || `${year}-${shortGr}`).trim();
     const grSeq = shortGr.split('_')[0] || '';
-    const date = document.getElementById('bilty-date').value || new Date().toISOString().split('T')[0];
+    const date = document.getElementById('bilty-date')?.value || new Date().toISOString().split('T')[0];
 
-    const freight = parseFloat(document.getElementById('bilty-freight').value) || (weight * rate);
-    const loadingCharges = parseFloat(document.getElementById('bilty-loading-charges').value) || 0;
-    const haltCharges = parseFloat(document.getElementById('bilty-halt-charges').value) || 0;
-    const gstPaid = document.getElementById('bilty-gst-paid-party').value;
-    const gstAmount = parseFloat(document.getElementById('bilty-gst-amount').value) || 0;
-    const gstDueAmount = parseFloat(document.getElementById('bilty-gst-due').value) || 0;
+    const freight = parseFloat(document.getElementById('bilty-freight')?.value) || (weight * rate);
+    const loadingCharges = parseFloat(document.getElementById('bilty-loading-charges')?.value) || 0;
+    const haltCharges = parseFloat(document.getElementById('bilty-hault-charges')?.value || document.getElementById('bilty-halt-charges')?.value) || 0;
+    const gstPaid = document.getElementById('bilty-gst-paid-party')?.value || (document.getElementById('bilty-is-gst')?.value === 'Yes' ? 'Yes' : 'No');
+    const gstAmount = parseFloat(document.getElementById('bilty-gst-amount')?.value) || 0;
+    const gstDueAmount = parseFloat(document.getElementById('bilty-gst-due')?.value) || 0;
     const grandTotal = freight + loadingCharges + haltCharges + (gstPaid === 'Yes' ? gstAmount : 0);
 
-    const commission = parseFloat(document.getElementById('bilty-commission').value) || 0;
-    const otherExpense = parseFloat(document.getElementById('bilty-other-expense').value) || 0;
+    const commission = parseFloat(document.getElementById('bilty-commission')?.value) || 0;
+    const commissionStatus = document.getElementById('bilty-commission-status')?.value || 'Paid';
+    const commissionMode = (commissionStatus === 'Due') ? '' : (document.getElementById('bilty-commission-mode')?.value || 'Cash');
+    const commissionDesc = (document.getElementById('bilty-commission-desc')?.value || '').trim();
+
+    const otherExpense = parseFloat(document.getElementById('bilty-other-expense')?.value) || 0;
+    const otherStatus = document.getElementById('bilty-other-status')?.value || 'Paid';
+    const otherMode = document.getElementById('bilty-other-mode')?.value || 'Cash';
+    const otherDesc = (document.getElementById('bilty-other-desc')?.value || '').trim();
+
+    const hasDebt = (document.getElementById('bilty-has-debt')?.value === 'Yes' || document.getElementById('toggle-any-debt')?.checked);
+    const debtType = document.getElementById('bilty-debt-type')?.value || '';
+    const debtDescription = (document.getElementById('bilty-debt-desc')?.value || '').trim();
+    const isDispatchFromReq = (document.getElementById('bilty-dispatch-from-req')?.value === 'Yes');
+    const dispatchFromAddress = (document.getElementById('bilty-dispatch-from')?.value || '').trim();
+    const isShipToReq = (document.getElementById('bilty-ship-to-req')?.value === 'Yes');
+    const shipToAddress = (document.getElementById('bilty-ship-to')?.value || '').trim();
 
     const biltyData = {
       id: this.editTripId || `TRIP_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
@@ -3905,57 +3919,63 @@ const BiltyBookingModule = {
       transport: firm,
       financialYear: year,
       tripStartDate: date,
-      biltyType: document.getElementById('bilty-type').value,
-      isGstApplicable: document.getElementById('bilty-is-gst').value,
+      biltyType: document.getElementById('bilty-type')?.value || 'Regular',
+      isGstApplicable: document.getElementById('bilty-is-gst')?.value || 'No',
       truckNo: truckNo,
-      truckOwner: document.getElementById('bilty-owner').value.trim() || `${truckNo} Owner`,
-      ownerMobile: document.getElementById('bilty-owner-mobile').value.trim(),
-      loadType: document.getElementById('bilty-load-type').value,
-      driver: document.getElementById('bilty-driver').value.trim() || this.lookupDriverForTruck(truckNo) || '-',
-      driverMobile: document.getElementById('bilty-driver-mobile').value.trim(),
-      reference: document.getElementById('bilty-broker').value.trim(),
+      truckOwner: (document.getElementById('bilty-owner')?.value || '').trim() || `${truckNo} Owner`,
+      ownerMobile: (document.getElementById('bilty-owner-mobile')?.value || '').trim(),
+      loadType: document.getElementById('bilty-load-type')?.value || 'Under Load',
+      driver: (document.getElementById('bilty-driver')?.value || '').trim() || this.lookupDriverForTruck(truckNo) || '-',
+      driverMobile: (document.getElementById('bilty-driver-mobile')?.value || '').trim(),
+      reference: (document.getElementById('bilty-broker')?.value || '').trim(),
 
       origin: origin,
       destination: destination,
       consignor: consignor,
-      consignorGstin: document.getElementById('bilty-consignor-gstin').value.trim(),
-      dispatchFromAddress: document.getElementById('bilty-dispatch-from').value.trim(),
+      consignorGstin: (document.getElementById('bilty-consignor-gstin')?.value || '').trim(),
+      dispatchFromAddress: dispatchFromAddress,
       consignee: consignee,
-      consigneeGstin: document.getElementById('bilty-consignee-gstin').value.trim(),
-      deliveryAddress: document.getElementById('bilty-delivery-address').value.trim(),
-      shipToAddress: document.getElementById('bilty-ship-to').value.trim(),
+      consigneeGstin: (document.getElementById('bilty-consignee-gstin')?.value || '').trim(),
+      deliveryAddress: (document.getElementById('bilty-delivery-address')?.value || shipToAddress || '').trim(),
+      shipToAddress: shipToAddress,
 
-      material: document.getElementById('bilty-material').value.trim(),
-      billNo: document.getElementById('bilty-bill-no').value.trim(),
-      invoiceValue: parseFloat(document.getElementById('bilty-invoice-value').value) || 0,
-      ewayBillNo: document.getElementById('bilty-eway-bill').value.trim(),
+      material: (document.getElementById('bilty-material')?.value || 'Marble Cut Size').trim(),
+      billNo: (document.getElementById('bilty-bill-no')?.value || '').trim(),
+      invoiceValue: parseFloat(document.getElementById('bilty-invoice-value')?.value) || 0,
+      ewayBillNo: (document.getElementById('bilty-eway-bill')?.value || '').trim(),
 
-      billingType: document.getElementById('bilty-billing-type').value,
+      billingType: document.getElementById('bilty-billing-type')?.value || 'Per Tonne',
       weight: weight,
       rate: rate,
       freight: freight,
 
-      biltyBillingType: document.getElementById('bilty-print-billing-type').value,
-      biltyWeight: parseFloat(document.getElementById('bilty-print-weight').value) || weight,
-      biltyRate: document.getElementById('bilty-print-rate').value.trim() || rate,
-      biltyAmount: document.getElementById('bilty-print-amount').value.trim() || freight,
+      biltyBillingType: document.getElementById('bilty-billing-type')?.value || 'Per Tonne',
+      biltyWeight: weight,
+      biltyRate: rate,
+      biltyAmount: freight,
 
       loadingCharges: loadingCharges,
       haltCharges: haltCharges,
-      personLiableGst: document.getElementById('bilty-person-liable-gst').value,
+      personLiableGst: document.getElementById('bilty-person-liable-gst')?.value || 'Consignor/Consignee/Transporter',
       isGstPaidByParty: gstPaid,
       gstAmount: gstAmount,
       gstDueAmount: gstDueAmount,
 
       commission: commission,
-      commissionStatus: document.getElementById('bilty-commission-status').value,
-      commissionMode: document.getElementById('bilty-commission-mode').value,
-      commissionDesc: document.getElementById('bilty-commission-desc').value.trim(),
+      commissionStatus: commissionStatus,
+      commissionMode: commissionMode,
+      commissionDesc: commissionDesc,
+
+      hasDebt: hasDebt ? 'Yes' : 'No',
+      debtType: debtType,
+      debtDescription: debtDescription,
+      isDispatchFromRequired: isDispatchFromReq ? 'Yes' : 'No',
+      isShipToRequired: isShipToReq ? 'Yes' : 'No',
 
       otherExpense: otherExpense,
-      otherStatus: document.getElementById('bilty-other-status').value,
-      otherMode: document.getElementById('bilty-other-mode').value,
-      otherDesc: document.getElementById('bilty-other-desc').value.trim(),
+      otherStatus: otherStatus,
+      otherMode: otherMode,
+      otherDesc: otherDesc,
 
       status: 'Transit',
       partyDue: grandTotal,
@@ -3979,9 +3999,8 @@ const BiltyBookingModule = {
     }
 
     // Check if Any Debt? is checked -> Automatically link to Financial Ledger!
-    const isDebtChecked = document.getElementById('toggle-any-debt').checked;
-    const debtAmount = parseFloat(document.getElementById('bilty-debt-amount').value) || 0;
-    if (isDebtChecked && debtAmount > 0) {
+    if (hasDebt && debtType) {
+      const debtAmount = parseFloat(document.getElementById('bilty-debt-amount')?.value) || commission || 0;
       const monthNames = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'];
       const dateObj = new Date(date);
       const mIdx = (dateObj.getMonth() + 9) % 12 + 1; // FY Month sequence
@@ -4002,20 +4021,23 @@ const BiltyBookingModule = {
         to: destination,
         company: firm,
         truckOwner: biltyData.truckOwner,
-        debtType: 'Cash Advance',
+        debtType: debtType || 'Trip Advance',
         dueAmount: debtAmount,
         debtAmount: debtAmount,
         totalReturned: 0,
-        debtMode: document.getElementById('bilty-debt-mode').value,
-        borrowerName: document.getElementById('bilty-debt-borrower').value.trim() || biltyData.truckOwner,
+        debtMode: commissionMode || 'Cash',
+        borrowerName: biltyData.driver || biltyData.truckOwner,
         receiverName: biltyData.driver,
-        remarks: document.getElementById('bilty-debt-remarks').value.trim() || `Advance en-route cash linked to Bilty G.R. ${fullGr}`,
+        remarks: debtDescription || `Debt linked to Bilty G.R. ${fullGr} (${debtType})`,
         returnedAmounts: []
       };
 
-      await dbService.add('debts', debtRecord);
-      console.log(" Linked Debt created in Financial Ledger:", debtRecord);
-      AppUI.showToast(`₹${debtAmount} open debt entry added to Financial Ledger!`, "info");
+      try {
+        await dbService.add('debts', debtRecord);
+        console.log(" Linked Debt created in Financial Ledger:", debtRecord);
+      } catch (dErr) {
+        console.warn("Could not save linked debt:", dErr);
+      }
     }
 
     // Reload trips data
@@ -4026,6 +4048,7 @@ const BiltyBookingModule = {
 
     this.currentActiveBilty = biltyData;
 
+    // Immediately open print preview modal
     if (mode === 'print') {
       this.openPrintModal(biltyData);
     } else if (mode === 'whatsapp') {
@@ -4035,7 +4058,7 @@ const BiltyBookingModule = {
     }
   },
 
-  saveAndWhatsApp() {
+    saveAndWhatsApp() {
     this.saveBilty('whatsapp');
   },
 
@@ -5023,11 +5046,9 @@ const BiltyBookingModule = {
     const iconForm = document.getElementById('icon-form-expand');
 
     if (isFull) {
-      // Exit full screen: return to side drawer if MTC or TTC is expanded, or normal 3-col
+      // Exit full screen: always restore side drawer if form is active or columns expanded
       detailsCol.classList.remove('panel-expanded');
-      if (isMtcExp || isTtcExp) {
-        detailsCol.classList.add('side-drawer-active');
-      }
+      detailsCol.classList.add('side-drawer-active');
       if (iconDetails) iconDetails.className = 'bi bi-arrows-angle-expand';
       if (iconForm) iconForm.className = 'bi bi-arrows-angle-expand';
       if (typeof AppUI !== 'undefined') AppUI.showToast("Bilty view restored to side panel", "info");

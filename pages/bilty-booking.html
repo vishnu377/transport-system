@@ -135,6 +135,56 @@
       display: none !important;
     }
 
+    /* Enhanced AppSheet Drawer & Scroll Layout */
+    .panel-details-col.side-drawer-active {
+      height: calc(100% - 20px) !important;
+      max-height: calc(100% - 20px) !important;
+      overflow: hidden !important;
+    }
+    .panel-details-col.side-drawer-active #bilty-create-view,
+    .panel-details-col.panel-expanded #bilty-create-view {
+      height: 100% !important;
+      max-height: 100% !important;
+      overflow: hidden !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+    #bilty-form-step1, #bilty-form-step2 {
+      display: flex !important;
+      flex-direction: column !important;
+      height: 100% !important;
+      max-height: 100% !important;
+      overflow: hidden !important;
+      background: #ffffff !important;
+    }
+    #bilty-form-step1 .appsheet-form-header-bar,
+    #bilty-form-step2 .appsheet-form-header-bar {
+      flex-shrink: 0 !important;
+      position: sticky !important;
+      top: 0 !important;
+      z-index: 50 !important;
+      background: #ffffff !important;
+      border-bottom: 1px solid #e5e7eb !important;
+      padding: 8px 18px !important;
+    }
+    #bilty-form-step1 .appsheet-form-body,
+    #bilty-form-step2 .appsheet-form-body {
+      flex: 1 !important;
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
+      padding: 10px 18px 24px 18px !important;
+    }
+    .panel-details-col .appsheet-form-footer {
+      flex-shrink: 0 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: flex-end !important;
+      gap: 10px !important;
+      padding: 10px 18px !important;
+      background: #f9fafb !important;
+      border-top: 1px solid #e5e7eb !important;
+    }
+
     /* Compact Form Styling to eliminate excessive scrolling (Images 2, 3, 4) */
     .panel-details-col .appsheet-form-body {
       padding: 8px 18px 24px 18px !important;
@@ -982,9 +1032,6 @@
                 </div>
               </div>
 
-            </div>
-          </div>
-
         <!-- AppSheet Dynamic Datalists for 586 Trucks, 3,396 Parties, Destinations & Fleet -->
         <datalist id="fleetTrucksList"></datalist>
         <datalist id="truckOwnersList"></datalist>
@@ -1024,8 +1071,6 @@
           </div>
           <button type="submit" id="bilty-submit-btn"></button>
         </div>
-
-      </div> <!-- End .appsheet-form-view-container -->
 
       </div> <!-- End #bilty-create-view -->
           </div> <!-- End #panel-details-col -->

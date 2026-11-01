@@ -2280,8 +2280,9 @@ body {
   bottom: 10px !important;
   width: 720px !important;
   max-width: min(780px, 75vw) !important;
-  height: auto !important;
+  height: calc(100% - 20px) !important;
   max-height: calc(100% - 20px) !important;
+  overflow: hidden !important;
   z-index: 1060 !important;
   box-shadow: -6px 0 28px rgba(0, 0, 0, 0.22) !important;
   border-radius: 4px !important;
