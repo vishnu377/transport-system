@@ -25,13 +25,15 @@ class MockElement {
     this.id = id;
     this.tagName = tagName.toUpperCase();
     this.innerHTML = '';
-    this.innerText = '';
+    this._innerText = '';
     this.value = '';
     this.className = '';
     this.classList = new MockClassList();
     this.style = {};
     this.attributes = {};
   }
+  set innerText(val) { this._innerText = String(val != null ? val : ''); }
+  get innerText() { return this._innerText; }
   querySelectorAll(sel) { return []; }
   querySelector(sel) { return null; }
   setAttribute(k, v) { this.attributes[k] = v; }
@@ -193,6 +195,111 @@ async function runTests() {
   assert(kvTable.innerHTML.includes('action-icon-btn'), 'First row G.R.No. must contain action buttons (sync, download, ledger)');
   assert(kvTable.innerHTML.includes('1321_MTC'), 'KV table displays G.R.No. 1321_MTC');
   console.log('✓ TEST 7 PASSED: 1:1 AppSheet Image 5 details rendered with green bullets and action buttons!\n');
+
+  // -------------------------------------------------------------------------
+  // TEST 8: 2-Step Bilty Creation Flow & Exact Conditional Field Logic (Screens 1 to 9)
+  // -------------------------------------------------------------------------
+  console.log('--- TEST 8: 2-Step Bilty Creation Flow & Conditional Fields (Screens 1 to 9) ---');
+  const step1 = document.getElementById('bilty-form-step1');
+  const step2 = document.getElementById('bilty-form-step2');
+  const rowGst = document.getElementById('row-step1-gst');
+  const rowMode = document.getElementById('row-bilty-mode');
+  const rowDebtType = document.getElementById('row-debt-type');
+  const rowDebtDesc = document.getElementById('row-debt-desc');
+  const rowDisp = document.getElementById('row-dispatch-from-address');
+  const rowShip = document.getElementById('row-ship-to-address');
+
+  // 8A. Click Add -> Opens Step 1 (Screens 1, 2, 3, 4)
+  await BiltyBookingModule.openCreateForm('TTC');
+  assert.strictEqual(step1.style.display, 'block', 'Step 1 must be displayed (block)');
+  assert.strictEqual(step2.style.display, 'none', 'Step 2 must be hidden (none)');
+  assert.strictEqual(document.getElementById('bilty-type').value, 'Regular', 'Default bilty type is Regular');
+  assert.strictEqual(rowGst.style.display, '', 'GST row visible when Regular');
+
+  // 8B. Screen 2: Selecting URP hides GST row
+  BiltyBookingModule.setStep1BiltyType('URP');
+  assert.strictEqual(document.getElementById('bilty-type').value, 'URP');
+  assert.strictEqual(rowGst.style.display, 'none', 'GST row must be hidden when URP is selected');
+  assert.strictEqual(document.getElementById('bilty-is-gst').value, 'No', 'GST auto-set to No when URP');
+
+  // Switch back to Regular -> GST row is visible
+  BiltyBookingModule.setStep1BiltyType('Regular');
+  assert.strictEqual(rowGst.style.display, '', 'GST row visible when Regular');
+
+  // 8C. Screen 3 & 4: Transport switch updates firm & live G.R.No
+  await BiltyBookingModule.setStep1Transport('MTC');
+  assert.strictEqual(document.getElementById('bilty-firm').value, 'MTC');
+  assert(document.getElementById('step1-display-gr').innerText.length > 0, 'Sequential G.R.No generated for MTC');
+
+  await BiltyBookingModule.setStep1Transport('TTC');
+  assert.strictEqual(document.getElementById('bilty-firm').value, 'TTC');
+  assert(document.getElementById('step1-display-gr').innerText.length > 0, 'Sequential G.R.No generated for TTC');
+
+  // 8D. Screen 5: Save on Step 1 advances to Step 2
+  BiltyBookingModule.proceedToStep2();
+  assert.strictEqual(step1.style.display, 'none', 'Step 1 must be hidden after proceeding');
+  assert.strictEqual(step2.style.display, 'block', 'Step 2 must be displayed');
+  assert.strictEqual(document.getElementById('appsheet-display-gr').innerText, document.getElementById('step1-display-gr').innerText, 'G.R.No carried from Step 1 to Step 2');
+
+  // 8E. Screen 7: When Status is 'Due', Mode is hidden; when 'Paid', Mode is visible
+  BiltyBookingModule.setAppSheetStatus('Due');
+  assert.strictEqual(rowMode.style.display, 'none', 'Mode row MUST be hidden when Status is Due');
+  BiltyBookingModule.setAppSheetStatus('Paid');
+  assert.strictEqual(rowMode.style.display, '', 'Mode row MUST be visible when Status is Paid');
+
+  // 8F. Screen 8: When Any Debt is 'Yes', Debt Type & Description appear; when 'No', hidden
+  BiltyBookingModule.setAppSheetDebtToggle(true);
+  assert.strictEqual(document.getElementById('bilty-has-debt').value, 'Yes');
+  assert.strictEqual(rowDebtType.style.display, '', 'Debt Type row visible when Any Debt is Yes');
+  assert.strictEqual(rowDebtDesc.style.display, '', 'Debt Description row visible when Any Debt is Yes');
+
+  BiltyBookingModule.setAppSheetDebtToggle(false);
+  assert.strictEqual(document.getElementById('bilty-has-debt').value, 'No');
+  assert.strictEqual(rowDebtType.style.display, 'none', 'Debt Type row hidden when Any Debt is No');
+  assert.strictEqual(rowDebtDesc.style.display, 'none', 'Debt Description row hidden when Any Debt is No');
+
+  // 8G. Screen 9: When Dispatch From address required is 'Yes', input appears; when 'No', hidden
+  BiltyBookingModule.setAppSheetDispatchFromToggle(true);
+  assert.strictEqual(document.getElementById('bilty-dispatch-from-req').value, 'Yes');
+  assert.strictEqual(rowDisp.style.display, '', 'Dispatch From Address row visible when required');
+
+  BiltyBookingModule.setAppSheetDispatchFromToggle(false);
+  assert.strictEqual(document.getElementById('bilty-dispatch-from-req').value, 'No');
+  assert.strictEqual(rowDisp.style.display, 'none', 'Dispatch From Address row hidden when not required');
+
+  // 8H. Screen 9: When Ship To address required is 'Yes', input appears; when 'No', hidden
+  BiltyBookingModule.setAppSheetShipToToggle(true);
+  assert.strictEqual(document.getElementById('bilty-ship-to-req').value, 'Yes');
+  assert.strictEqual(rowShip.style.display, '', 'Ship To Address row visible when required');
+
+  BiltyBookingModule.setAppSheetShipToToggle(false);
+  assert.strictEqual(document.getElementById('bilty-ship-to-req').value, 'No');
+  assert.strictEqual(rowShip.style.display, 'none', 'Ship To Address row hidden when not required');
+
+  // 8I. Editing existing bilty opens Step 2 directly with all conditional rows applied
+  BiltyBookingModule.currentActiveBilty = {
+    id: 'trip_due_with_debt',
+    grNo: '2755_TTC',
+    shortGrNo: '2755_TTC',
+    transport: 'TTC',
+    commissionStatus: 'Due',
+    hasDebt: 'Yes',
+    debtType: 'Trip Advance',
+    debtDescription: 'Road advance for driver',
+    dispatchFromAddress: 'Kishangarh Yard #4',
+    shipToAddress: 'Ahmedabad Warehouse #2'
+  };
+  BiltyBookingModule.allTrips.push(BiltyBookingModule.currentActiveBilty);
+  BiltyBookingModule.editActiveBilty();
+
+  assert.strictEqual(step1.style.display, 'none', 'Step 1 must be hidden when editing');
+  assert.strictEqual(step2.style.display, 'block', 'Step 2 must be open directly when editing');
+  assert.strictEqual(rowMode.style.display, 'none', 'Mode is hidden because Status is Due');
+  assert.strictEqual(rowDebtType.style.display, '', 'Debt Type is shown because hasDebt is Yes');
+  assert.strictEqual(rowDisp.style.display, '', 'Dispatch From address is shown');
+  assert.strictEqual(rowShip.style.display, '', 'Ship To address is shown');
+
+  console.log('✓ TEST 8 PASSED: 2-Phase Bilty Flow (Screens 1-4 Setup -> Screen 5 Form) & Screens 6-9 Conditionals verified 100%!\n');
 
   console.log('======================================================');
   console.log('🏆 ALL BILTY DRAWER & EXPAND FLOW TESTS PASSED 100%!');

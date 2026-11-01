@@ -427,6 +427,9 @@ const BiltyBookingModule = {
     const shortGrEl = document.getElementById('bilty-short-gr');
     if (shortGrEl) shortGrEl.value = first.shortGr;
 
+    const step1Display = document.getElementById('step1-display-gr');
+    if (step1Display) step1Display.innerText = String(first.seq);
+
     const appsheetDisplay = document.getElementById('appsheet-display-gr');
     if (appsheetDisplay) {
       if (this.extraSellers && this.extraSellers.length > 0) {
@@ -436,7 +439,7 @@ const BiltyBookingModule = {
         const last = seqs[seqs.length - 1];
         appsheetDisplay.innerHTML = `<span class="badge bg-warning-subtle text-dark border border-warning px-2 py-1">${first.seq} – ${last.seq} (${count} GRs Allocated)</span>`;
       } else {
-        appsheetDisplay.innerText = first.seq;
+        appsheetDisplay.innerText = String(first.seq);
       }
     }
 
@@ -1053,8 +1056,179 @@ const BiltyBookingModule = {
   },
 
   // ----------------------------------------------------
-  // AUTHENTIC GOOGLE APPSHEET REACTIVE FORM METHODS
+  // AUTHENTIC GOOGLE APPSHEET REACTIVE FORM METHODS & STEP WORKFLOW
   // ----------------------------------------------------
+  setStep1BiltyType(type, btnEl) {
+    const input = document.getElementById('bilty-type');
+    if (input) input.value = type;
+    if (btnEl && btnEl.parentElement) {
+      btnEl.parentElement.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
+      btnEl.classList.add('active');
+    }
+    const gstRow = document.getElementById('row-step1-gst');
+    const gstInput = document.getElementById('bilty-is-gst');
+    if (type === 'URP') {
+      if (gstRow) gstRow.style.display = 'none';
+      if (gstInput) gstInput.value = 'No';
+    } else {
+      if (gstRow) gstRow.style.display = '';
+    }
+    this.updateLivePreview();
+  },
+
+  setStep1Gst(val, btnEl) {
+    const input = document.getElementById('bilty-is-gst');
+    if (input) input.value = val;
+    if (btnEl && btnEl.parentElement) {
+      btnEl.parentElement.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
+      btnEl.classList.add('active');
+    }
+    this.updateLivePreview();
+  },
+
+  async setStep1Transport(firm, btnEl) {
+    await this.generateBiltyNumber();
+    const firmInput = document.getElementById('bilty-firm');
+    if (firmInput) firmInput.value = firm;
+    if (btnEl && btnEl.parentElement) {
+      btnEl.parentElement.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
+      btnEl.classList.add('active');
+    }
+    // Also sync Step 2 transport segmented button
+    const mtcBtn = document.getElementById('btn-seg-mtc');
+    const ttcBtn = document.getElementById('btn-seg-ttc');
+    if (firm === 'MTC') {
+      if (mtcBtn) mtcBtn.classList.add('active');
+      if (ttcBtn) ttcBtn.classList.remove('active');
+    } else {
+      if (ttcBtn) ttcBtn.classList.add('active');
+      if (mtcBtn) mtcBtn.classList.remove('active');
+    }
+    const grLabel = document.getElementById('appsheet-gr-label');
+    if (grLabel) grLabel.innerText = `${firm} G.R.No. *`;
+    const step1GrLabel = document.getElementById('step1-gr-label');
+    if (step1GrLabel) step1GrLabel.innerText = `${firm} G.R.No. *`;
+    this.generateBiltyNumber();
+    this.updateLivePreview();
+  },
+
+  proceedToStep2() {
+    const step1El = document.getElementById('bilty-form-step1');
+    const step2El = document.getElementById('bilty-form-step2');
+    if (step1El) step1El.style.display = 'none';
+    if (step2El) step2El.style.display = 'block';
+
+    const firm = document.getElementById('bilty-firm')?.value || 'TTC';
+    const mtcBtn = document.getElementById('btn-seg-mtc');
+    const ttcBtn = document.getElementById('btn-seg-ttc');
+    if (firm === 'MTC') {
+      if (mtcBtn) mtcBtn.classList.add('active');
+      if (ttcBtn) ttcBtn.classList.remove('active');
+    } else {
+      if (ttcBtn) ttcBtn.classList.add('active');
+      if (mtcBtn) mtcBtn.classList.remove('active');
+    }
+
+    const step1Gr = document.getElementById('step1-display-gr')?.innerText;
+    const appsheetDisplay = document.getElementById('appsheet-display-gr');
+    if (step1Gr && appsheetDisplay) appsheetDisplay.innerText = step1Gr;
+
+    const titleEl = document.getElementById('form-view-title');
+    if (titleEl) titleEl.innerText = 'Bilty Details';
+
+    this.applyStep2ConditionalRules();
+
+    const scrollContainer = document.getElementById('bilty-create-view');
+    if (scrollContainer) scrollContainer.scrollTop = 0;
+  },
+
+  backToStep1() {
+    if (this.editTripId) {
+      this.closeSideDrawer();
+    } else {
+      const step1El = document.getElementById('bilty-form-step1');
+      const step2El = document.getElementById('bilty-form-step2');
+      if (step1El) step1El.style.display = 'block';
+      if (step2El) step2El.style.display = 'none';
+      const scrollContainer = document.getElementById('bilty-create-view');
+      if (scrollContainer) scrollContainer.scrollTop = 0;
+    }
+  },
+
+  applyStep2ConditionalRules() {
+    // Rule 1: Mode is hidden when Status == 'Due' (Screen 7)
+    const commStatus = document.getElementById('bilty-commission-status')?.value || 'Paid';
+    const modeRow = document.getElementById('row-bilty-mode');
+    if (modeRow) modeRow.style.display = (commStatus === 'Due') ? 'none' : '';
+
+    // Rule 2: Debt Type & Description shown when Any Debt == 'Yes' (Screen 8)
+    const hasDebt = (document.getElementById('bilty-has-debt')?.value === 'Yes');
+    const rowDebtType = document.getElementById('row-debt-type');
+    const rowDebtDesc = document.getElementById('row-debt-desc');
+    if (rowDebtType) rowDebtType.style.display = hasDebt ? '' : 'none';
+    if (rowDebtDesc) rowDebtDesc.style.display = hasDebt ? '' : 'none';
+
+    // Rule 3: Dispatch From Address shown when required == 'Yes' (Screen 9)
+    const dispReq = (document.getElementById('bilty-dispatch-from-req')?.value === 'Yes');
+    const rowDisp = document.getElementById('row-dispatch-from-address');
+    if (rowDisp) rowDisp.style.display = dispReq ? '' : 'none';
+
+    // Rule 4: Ship To Address shown when required == 'Yes' (Screen 9)
+    const shipReq = (document.getElementById('bilty-ship-to-req')?.value === 'Yes');
+    const rowShip = document.getElementById('row-ship-to-address');
+    if (rowShip) rowShip.style.display = shipReq ? '' : 'none';
+  },
+
+  setAppSheetStatus(status, btnEl) {
+    const input = document.getElementById('bilty-commission-status');
+    if (input) input.value = status;
+    if (btnEl && btnEl.parentElement) {
+      btnEl.parentElement.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
+      btnEl.classList.add('active');
+    }
+    const modeRow = document.getElementById('row-bilty-mode');
+    if (modeRow) modeRow.style.display = (status === 'Due') ? 'none' : '';
+    this.updateLivePreview();
+  },
+
+  setAppSheetDebtToggle(hasDebt, btnEl) {
+    const input = document.getElementById('bilty-has-debt');
+    if (input) input.value = hasDebt ? 'Yes' : 'No';
+    if (btnEl && btnEl.parentElement) {
+      btnEl.parentElement.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
+      btnEl.classList.add('active');
+    }
+    const rowDebtType = document.getElementById('row-debt-type');
+    const rowDebtDesc = document.getElementById('row-debt-desc');
+    if (rowDebtType) rowDebtType.style.display = hasDebt ? '' : 'none';
+    if (rowDebtDesc) rowDebtDesc.style.display = hasDebt ? '' : 'none';
+    this.updateLivePreview();
+  },
+
+  setAppSheetDispatchFromToggle(isReq, btnEl) {
+    const input = document.getElementById('bilty-dispatch-from-req');
+    if (input) input.value = isReq ? 'Yes' : 'No';
+    if (btnEl && btnEl.parentElement) {
+      btnEl.parentElement.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
+      btnEl.classList.add('active');
+    }
+    const rowDisp = document.getElementById('row-dispatch-from-address');
+    if (rowDisp) rowDisp.style.display = isReq ? '' : 'none';
+    this.updateLivePreview();
+  },
+
+  setAppSheetShipToToggle(isReq, btnEl) {
+    const input = document.getElementById('bilty-ship-to-req');
+    if (input) input.value = isReq ? 'Yes' : 'No';
+    if (btnEl && btnEl.parentElement) {
+      btnEl.parentElement.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
+      btnEl.classList.add('active');
+    }
+    const rowShip = document.getElementById('row-ship-to-address');
+    if (rowShip) rowShip.style.display = isReq ? '' : 'none';
+    this.updateLivePreview();
+  },
+
   setAppSheetSegment(fieldId, val, btnEl) {
     const input = document.getElementById(fieldId);
     if (input) {
@@ -1085,48 +1259,18 @@ const BiltyBookingModule = {
   },
 
   setAppSheetDebt(isDebt, btnEl) {
-    const toggle = document.getElementById('toggle-any-debt');
-    if (toggle) toggle.checked = isDebt;
-    if (btnEl && btnEl.parentElement) {
-      btnEl.parentElement.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
-      btnEl.classList.add('active');
-    }
-    const box = document.getElementById('bilty-debt-box');
-    if (box) {
-      if (isDebt) box.classList.remove('d-none');
-      else box.classList.add('d-none');
-    }
+    this.setAppSheetDebtToggle(isDebt, btnEl);
   },
 
   setAppSheetDispatchFrom(isReq, btnEl) {
-    const toggle = document.getElementById('toggle-dispatch-from');
-    if (toggle) toggle.checked = isReq;
-    if (btnEl && btnEl.parentElement) {
-      btnEl.parentElement.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
-      btnEl.classList.add('active');
-    }
-    const box = document.getElementById('dispatch-from-box');
-    if (box) {
-      if (isReq) box.classList.remove('d-none');
-      else box.classList.add('d-none');
-    }
+    this.setAppSheetDispatchFromToggle(isReq, btnEl);
   },
 
   setAppSheetShipTo(isReq, btnEl) {
-    const toggle = document.getElementById('toggle-ship-to');
-    if (toggle) toggle.checked = isReq;
-    if (btnEl && btnEl.parentElement) {
-      btnEl.parentElement.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
-      btnEl.classList.add('active');
-    }
-    const box = document.getElementById('ship-to-box');
-    if (box) {
-      if (isReq) box.classList.remove('d-none');
-      else box.classList.add('d-none');
-    }
+    this.setAppSheetShipToToggle(isReq, btnEl);
   },
 
-  onTruckSelect(truckNo) {
+    onTruckSelect(truckNo) {
     if (!truckNo || truckNo.length < 3) return;
     truckNo = truckNo.trim().toUpperCase();
     const truckInput = document.getElementById('bilty-truck-no');
@@ -4950,8 +5094,43 @@ const BiltyBookingModule = {
     // Set firm
     const firmEl = document.getElementById('bilty-firm');
     if (firmEl) firmEl.value = firm;
-    
-    // Set segmented button
+
+    // Ensure Step 1 is displayed and Step 2 is hidden
+    const step1El = document.getElementById('bilty-form-step1');
+    const step2El = document.getElementById('bilty-form-step2');
+    if (step1El) step1El.style.display = 'block';
+    if (step2El) step2El.style.display = 'none';
+
+    // Reset Step 1 defaults: Bilty Type = Regular
+    const biltyTypeEl = document.getElementById('bilty-type');
+    if (biltyTypeEl) biltyTypeEl.value = 'Regular';
+    const regBtn = document.getElementById('btn-step1-regular');
+    const urpBtn = document.getElementById('btn-step1-urp');
+    if (regBtn) regBtn.classList.add('active');
+    if (urpBtn) urpBtn.classList.remove('active');
+
+    // Reset Step 1 GST row: shown, default No
+    const gstRow = document.getElementById('row-step1-gst');
+    if (gstRow) gstRow.style.display = '';
+    const gstInput = document.getElementById('bilty-is-gst');
+    if (gstInput) gstInput.value = 'No';
+    const gstNoBtn = document.getElementById('btn-step1-gst-no');
+    const gstYesBtn = document.getElementById('btn-step1-gst-yes');
+    if (gstNoBtn) gstNoBtn.classList.add('active');
+    if (gstYesBtn) gstYesBtn.classList.remove('active');
+
+    // Step 1 Transport segmented buttons
+    const mtcStep1 = document.getElementById('btn-step1-mtc');
+    const ttcStep1 = document.getElementById('btn-step1-ttc');
+    if (firm === 'MTC') {
+      if (mtcStep1) mtcStep1.classList.add('active');
+      if (ttcStep1) ttcStep1.classList.remove('active');
+    } else {
+      if (ttcStep1) ttcStep1.classList.add('active');
+      if (mtcStep1) mtcStep1.classList.remove('active');
+    }
+
+    // Step 2 Transport segmented buttons
     const mtcBtn = document.getElementById('btn-seg-mtc');
     const ttcBtn = document.getElementById('btn-seg-ttc');
     if (firm === 'MTC') {
@@ -4964,6 +5143,8 @@ const BiltyBookingModule = {
 
     const grLabel = document.getElementById('appsheet-gr-label');
     if (grLabel) grLabel.innerText = `${firm} G.R.No. *`;
+    const step1GrLabel = document.getElementById('step1-gr-label');
+    if (step1GrLabel) step1GrLabel.innerText = `${firm} G.R.No. *`;
 
     const titleEl = document.getElementById('form-view-title');
     if (titleEl) titleEl.innerText = `New ${firm} Bilty`;
@@ -4977,9 +5158,16 @@ const BiltyBookingModule = {
       AppUI.showToast("Please select a bilty first to edit.", "warning");
       return;
     }
+    // Directly show Step 2 for editing
+    const step1El = document.getElementById('bilty-form-step1');
+    const step2El = document.getElementById('bilty-form-step2');
+    if (step1El) step1El.style.display = 'none';
+    if (step2El) step2El.style.display = 'block';
+
     this.loadTripForEditing(this.currentActiveBilty.id || this.currentActiveBilty.grNo);
     const titleEl = document.getElementById('form-view-title');
     if (titleEl) titleEl.innerText = `Edit Bilty (${this.currentActiveBilty.shortGrNo || this.currentActiveBilty.grNo || ''})`;
+    this.applyStep2ConditionalRules();
     this.openSideDrawer('create');
   },
 
@@ -5806,6 +5994,67 @@ const BiltyBookingModule = {
       const el = document.getElementById('extra-buyers-list');
       if (el) el.innerHTML = '';
     }
+
+    // Sync AppSheet segmented toggles for Status, Mode, Debt, Dispatch, Ship To
+    const commStatus = trip.commissionStatus || 'Paid';
+    const btnPaid = document.getElementById('btn-status-paid');
+    const btnDue = document.getElementById('btn-status-due');
+    if (commStatus === 'Due') {
+      if (btnDue) btnDue.classList.add('active');
+      if (btnPaid) btnPaid.classList.remove('active');
+    } else {
+      if (btnPaid) btnPaid.classList.add('active');
+      if (btnDue) btnDue.classList.remove('active');
+    }
+
+    const hasDebt = (trip.hasDebt === 'Yes' || trip.hasDebt === true) ? 'Yes' : 'No';
+    const debtInput = document.getElementById('bilty-has-debt');
+    if (debtInput) debtInput.value = hasDebt;
+    const btnDebtNo = document.getElementById('btn-debt-no');
+    const btnDebtYes = document.getElementById('btn-debt-yes');
+    if (hasDebt === 'Yes') {
+      if (btnDebtYes) btnDebtYes.classList.add('active');
+      if (btnDebtNo) btnDebtNo.classList.remove('active');
+    } else {
+      if (btnDebtNo) btnDebtNo.classList.add('active');
+      if (btnDebtYes) btnDebtYes.classList.remove('active');
+    }
+    const debtTypeInput = document.getElementById('bilty-debt-type');
+    if (debtTypeInput && trip.debtType) debtTypeInput.value = trip.debtType;
+    const debtDescInput = document.getElementById('bilty-debt-desc');
+    if (debtDescInput) debtDescInput.value = trip.debtDescription || trip.debtDesc || '';
+
+    const hasDispatch = (trip.dispatchFromAddress && trip.dispatchFromAddress.trim().length > 0) ? 'Yes' : 'No';
+    const dispReqInput = document.getElementById('bilty-dispatch-from-req');
+    if (dispReqInput) dispReqInput.value = hasDispatch;
+    const btnDispNo = document.getElementById('btn-dispatch-no');
+    const btnDispYes = document.getElementById('btn-dispatch-yes');
+    if (hasDispatch === 'Yes') {
+      if (btnDispYes) btnDispYes.classList.add('active');
+      if (btnDispNo) btnDispNo.classList.remove('active');
+    } else {
+      if (btnDispNo) btnDispNo.classList.add('active');
+      if (btnDispYes) btnDispYes.classList.remove('active');
+    }
+    const dispAddrInput = document.getElementById('bilty-dispatch-from');
+    if (dispAddrInput) dispAddrInput.value = trip.dispatchFromAddress || '';
+
+    const hasShip = (trip.shipToAddress && trip.shipToAddress.trim().length > 0) ? 'Yes' : 'No';
+    const shipReqInput = document.getElementById('bilty-ship-to-req');
+    if (shipReqInput) shipReqInput.value = hasShip;
+    const btnShipNo = document.getElementById('btn-shipto-no');
+    const btnShipYes = document.getElementById('btn-shipto-yes');
+    if (hasShip === 'Yes') {
+      if (btnShipYes) btnShipYes.classList.add('active');
+      if (btnShipNo) btnShipNo.classList.remove('active');
+    } else {
+      if (btnShipNo) btnShipNo.classList.add('active');
+      if (btnShipYes) btnShipYes.classList.remove('active');
+    }
+    const shipAddrInput = document.getElementById('bilty-ship-to');
+    if (shipAddrInput) shipAddrInput.value = trip.shipToAddress || '';
+
+    this.applyStep2ConditionalRules();
 
     this.recalculateAllTotals();
     this.recalculateFreightAndTotals();
