@@ -14,6 +14,70 @@
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/print.css">
   <style>
+
+    /* ZERO MAIN-WINDOW SCROLL LOCKDOWN: Fixed AppSheet Workspace */
+    html, body {
+      height: 100% !important;
+      max-height: 100vh !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      overflow: hidden !important;
+    }
+    #main-content {
+      height: 100vh !important;
+      max-height: 100vh !important;
+      overflow: hidden !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+    main.page-container {
+      flex: 1 1 0% !important;
+      height: calc(100vh - 90px) !important;
+      max-height: calc(100vh - 90px) !important;
+      min-height: 0 !important;
+      overflow: hidden !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+    #bilty-dashboard-view {
+      flex: 1 1 0% !important;
+      height: 100% !important;
+      max-height: 100% !important;
+      min-height: 0 !important;
+      overflow: hidden !important;
+      position: relative !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+    .appsheet-3panel-container {
+      flex: 1 1 0% !important;
+      height: 100% !important;
+      max-height: 100% !important;
+      min-height: 0 !important;
+      overflow: hidden !important;
+      display: flex !important;
+      flex-direction: row !important;
+      gap: 12px !important;
+      padding: 10px 14px !important;
+      box-sizing: border-box !important;
+      position: relative !important;
+    }
+    .panel-mtc-col, .panel-ttc-col, .panel-details-col {
+      height: 100% !important;
+      max-height: 100% !important;
+      min-height: 0 !important;
+      overflow: hidden !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+    #mtc-panel-feed, #ttc-panel-feed, #bilty-details-scroll {
+      flex: 1 1 0% !important;
+      overflow-y: auto !important;
+      min-height: 0 !important;
+    }
+
     /* Slide-in Right Drawer for Bilty Details and New Bilty Form */
     .panel-details-col.side-drawer-active {
       position: absolute !important;
@@ -22,7 +86,7 @@
       bottom: 10px !important;
       width: 720px !important;
       max-width: min(780px, 75vw) !important;
-      height: auto !important;
+      height: calc(100% - 20px) !important;
       max-height: calc(100% - 20px) !important;
       z-index: 1060 !important;
       box-shadow: -6px 0 28px rgba(0, 0, 0, 0.22) !important;
@@ -31,6 +95,7 @@
       background: #ffffff !important;
       display: flex !important;
       flex-direction: column !important;
+      overflow: hidden !important;
       animation: biltySlideInRight 0.22s cubic-bezier(0.1, 0.9, 0.2, 1) !important;
     }
 
@@ -52,9 +117,9 @@
       left: 14px !important;
       right: 14px !important;
       bottom: 10px !important;
-      width: auto !important;
+      width: calc(100% - 28px) !important;
       max-width: none !important;
-      height: auto !important;
+      height: calc(100% - 20px) !important;
       max-height: calc(100% - 20px) !important;
       z-index: 1070 !important;
       box-shadow: 0 4px 32px rgba(0, 0, 0, 0.25) !important;
@@ -62,6 +127,7 @@
       background: #ffffff !important;
       display: flex !important;
       flex-direction: column !important;
+      overflow: hidden !important;
     }
 
     /* Centered Container for Details View matching Image 5 */
@@ -483,7 +549,7 @@
             </div>
 
             <!-- SUB-VIEW B: INLINE CREATE/EDIT FORM (Inside Side Box) -->
-            <div id="bilty-create-view" style="display: none; height: 100%; overflow-y: auto;">
+            <div id="bilty-create-view" style="display: none; height: 100%; max-height: 100%; overflow: hidden; flex: 1; flex-direction: column; min-height: 0;">
               
               <!-- ==================================================== -->
               <!-- STEP 1: INITIAL SETUP WIZARD (Screens 1, 2, 3, 4)     -->

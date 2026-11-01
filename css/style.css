@@ -2085,20 +2085,29 @@ body {
   font-weight: 600;
 }
 
-/* Responsive adjustment for Mobile/Tablet */
+/* Responsive adjustment for Mobile/Tablet: Keep 3-panel fixed height and desktop fidelity */
 @media (max-width: 992px) {
   .appsheet-3panel-container {
-    flex-direction: column;
-    height: auto;
-    overflow: visible;
+    flex-direction: row !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
   }
-  .panel-mtc-col,
-  .panel-ttc-col,
+  .panel-mtc-col {
+    min-width: 250px !important;
+    width: 280px !important;
+    height: 100% !important;
+  }
+  .panel-ttc-col {
+    min-width: 360px !important;
+    width: 400px !important;
+    height: 100% !important;
+  }
   .panel-details-col {
-    width: 100% !important;
-    min-width: 100% !important;
-    height: auto;
-    max-height: 450px;
+    min-width: 320px !important;
+    width: 360px !important;
+    height: 100% !important;
   }
 }
 
