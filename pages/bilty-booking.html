@@ -13,6 +13,65 @@
   <!-- Custom TMS Theme & Print Stylesheet -->
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/print.css">
+  <style>
+    /* Slide-in Right Drawer for Bilty Details and New Bilty Form */
+    .panel-details-col.side-drawer-active {
+      position: absolute !important;
+      top: 10px !important;
+      right: 14px !important;
+      bottom: 10px !important;
+      width: 580px !important;
+      max-width: min(650px, 60vw) !important;
+      height: auto !important;
+      max-height: calc(100% - 20px) !important;
+      z-index: 1060 !important;
+      box-shadow: -6px 0 28px rgba(0, 0, 0, 0.22) !important;
+      border-radius: 4px !important;
+      border: 1px solid #dadce0 !important;
+      background: #ffffff !important;
+      display: flex !important;
+      flex-direction: column !important;
+      animation: biltySlideInRight 0.22s cubic-bezier(0.1, 0.9, 0.2, 1) !important;
+    }
+
+    @keyframes biltySlideInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    /* Fullscreen Expanded Mode for Bilty Details / Form */
+    .panel-details-col.panel-expanded {
+      position: absolute !important;
+      top: 10px !important;
+      left: 14px !important;
+      right: 14px !important;
+      bottom: 10px !important;
+      width: auto !important;
+      max-width: none !important;
+      height: auto !important;
+      max-height: calc(100% - 20px) !important;
+      z-index: 1070 !important;
+      box-shadow: 0 4px 32px rgba(0, 0, 0, 0.25) !important;
+      border-radius: 4px !important;
+      background: #ffffff !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+
+    @media (max-width: 768px) {
+      .panel-details-col.side-drawer-active {
+        width: calc(100vw - 28px) !important;
+        max-width: 100vw !important;
+        left: 14px !important;
+      }
+    }
+  </style>
 </head>
 <body>
 
@@ -146,7 +205,12 @@
           <!-- PANEL 2 (Middle): TTC and SMTC -->
           <div class="appsheet-panel-card panel-ttc-col">
             <div class="appsheet-panel-card-header">
-              <span class="panel-header-title">TTC and SMTC</span>
+              <div class="d-flex align-items-center gap-2">
+                <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 d-none" id="btn-ttc-back" onclick="BiltyBookingModule.expandPanel('ttc')" title="Back to 3-Column View" style="font-size: 11px;">
+                  <i class="bi bi-chevron-left"></i> Back
+                </button>
+                <span class="panel-header-title" style="cursor: pointer;" onclick="BiltyBookingModule.expandPanel('ttc')" title="Click to Expand TTC and SMTC View">TTC and SMTC</span>
+              </div>
               <div class="d-flex align-items-center gap-1">
                 <button type="button" class="btn-appsheet-add" onclick="BiltyBookingModule.openCreateForm('TTC')">
                   <i class="bi bi-plus"></i> Add
@@ -184,7 +248,12 @@
             <!-- SUB-VIEW A: KEY-VALUE DETAILS -->
             <div id="col3-details-view" style="display: flex; flex-direction: column; height: 100%;">
               <div class="appsheet-panel-card-header">
-                <span class="panel-header-title">Bilty Details</span>
+                <div class="d-flex align-items-center gap-2">
+                  <button type="button" class="btn btn-sm text-muted p-0 border-0 d-none" id="btn-details-drawer-close" onclick="BiltyBookingModule.closeSideDrawer()" title="Close Details" style="font-size: 15px;">
+                    <i class="bi bi-x-lg"></i>
+                  </button>
+                  <span class="panel-header-title">Bilty Details</span>
+                </div>
                 <div class="d-flex align-items-center gap-1">
                   <button type="button" class="btn-appsheet-add" onclick="BiltyBookingModule.openCreateForm()">
                     <i class="bi bi-plus"></i> Add
@@ -192,7 +261,7 @@
                   <button class="btn btn-sm text-muted p-1 border-0" onclick="BiltyBookingModule.navigateBilty(-1)" title="Previous"><i class="bi bi-chevron-left"></i></button>
                   <button class="btn btn-sm text-muted p-1 border-0" onclick="BiltyBookingModule.navigateBilty(1)" title="Next"><i class="bi bi-chevron-right"></i></button>
                   <button class="btn btn-sm text-muted p-1 border-0" onclick="BiltyBookingModule.editActiveBilty()" title="Edit"><i class="bi bi-pencil"></i></button>
-                  <button class="btn btn-sm text-muted p-1 border-0" onclick="BiltyBookingModule.expandPanel('details')" title="Expand"><i class="bi bi-arrows-angle-expand"></i></button>
+                  <button class="btn btn-sm text-muted p-1 border-0" id="btn-details-expand" onclick="BiltyBookingModule.toggleDetailsExpand()" title="Expand Full Screen"><i class="bi bi-arrows-angle-expand" id="icon-details-expand"></i></button>
                 </div>
               </div>
               
@@ -245,13 +314,16 @@
           <!-- Top Header Bar: ✕ Bilty Details | Cancel | Save (Gold Pill) -->
           <div class="appsheet-form-header-bar">
             <div class="d-flex align-items-center gap-2">
-              <button type="button" class="appsheet-form-close-btn" onclick="BiltyBookingModule.switchView('dashboard')" title="Cancel & Return">
+              <button type="button" class="appsheet-form-close-btn" onclick="BiltyBookingModule.closeSideDrawer()" title="Cancel & Return">
                 <i class="bi bi-x-lg"></i>
               </button>
-              <h5 class="appsheet-form-title mb-0">Bilty Details</h5>
+              <h5 class="appsheet-form-title mb-0" id="form-view-title">Bilty Details</h5>
             </div>
             <div class="d-flex align-items-center gap-2">
-              <button type="button" class="btn-appsheet-cancel" onclick="BiltyBookingModule.switchView('dashboard')">
+              <button class="btn btn-sm text-muted p-1 border-0" id="btn-form-expand" onclick="BiltyBookingModule.toggleDetailsExpand()" title="Expand Full Screen">
+                <i class="bi bi-arrows-angle-expand" id="icon-form-expand"></i>
+              </button>
+              <button type="button" class="btn-appsheet-cancel" onclick="BiltyBookingModule.closeSideDrawer()">
                 Cancel
               </button>
               <button type="button" class="btn-appsheet-gold-save" onclick="BiltyBookingModule.saveAppSheetBilty()">

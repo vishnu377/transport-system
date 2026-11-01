@@ -4671,6 +4671,15 @@ const BiltyBookingModule = {
     });
 
     this.renderBiltyDetails(trip);
+
+    // If MTC or TTC is expanded, open Bilty Details as right side drawer
+    const mtcCol = document.querySelector('.panel-mtc-col');
+    const ttcCol = document.querySelector('.panel-ttc-col');
+    const isExpanded = (mtcCol && mtcCol.classList.contains('panel-expanded')) || 
+                       (ttcCol && ttcCol.classList.contains('panel-expanded'));
+    if (isExpanded) {
+      this.openSideDrawer('details');
+    }
   },
 
   renderBiltyDetails(t) {
@@ -4850,48 +4859,117 @@ const BiltyBookingModule = {
     const detailsCol = document.getElementById('panel-details-col');
     const mtcIcon = document.getElementById('icon-mtc-expand');
     const ttcIcon = document.getElementById('icon-ttc-expand');
+    const btnMtcBack = document.getElementById('btn-mtc-back');
+    const btnTtcBack = document.getElementById('btn-ttc-back');
 
     if (panelType === 'mtc' && mtcCol) {
       const isExp = mtcCol.classList.contains('panel-expanded');
       document.querySelectorAll('.appsheet-panel-card').forEach(c => c.classList.remove('panel-expanded'));
       if (ttcIcon) ttcIcon.className = 'bi bi-arrows-angle-expand';
+      if (btnTtcBack) btnTtcBack.classList.add('d-none');
       
       if (isExp) {
         mtcCol.classList.remove('panel-expanded');
         if (mtcIcon) mtcIcon.className = 'bi bi-arrows-angle-expand';
+        if (btnMtcBack) btnMtcBack.classList.add('d-none');
+        this.closeSideDrawer();
         AppUI.showToast("MTC 3-column view restored", "info");
       } else {
         mtcCol.classList.add('panel-expanded');
         if (mtcIcon) mtcIcon.className = 'bi bi-arrows-angle-contract';
+        if (btnMtcBack) btnMtcBack.classList.remove('d-none');
+        this.closeSideDrawer();
         AppUI.showToast("MTC expanded full-screen view (7 Columns)", "info");
       }
     } else if (panelType === 'ttc' && ttcCol) {
       const isExp = ttcCol.classList.contains('panel-expanded');
       document.querySelectorAll('.appsheet-panel-card').forEach(c => c.classList.remove('panel-expanded'));
       if (mtcIcon) mtcIcon.className = 'bi bi-arrows-angle-expand';
+      if (btnMtcBack) btnMtcBack.classList.add('d-none');
 
       if (isExp) {
         ttcCol.classList.remove('panel-expanded');
         if (ttcIcon) ttcIcon.className = 'bi bi-arrows-angle-expand';
+        if (btnTtcBack) btnTtcBack.classList.add('d-none');
+        this.closeSideDrawer();
         AppUI.showToast("TTC column restored", "info");
       } else {
         ttcCol.classList.add('panel-expanded');
         if (ttcIcon) ttcIcon.className = 'bi bi-arrows-angle-contract';
+        if (btnTtcBack) btnTtcBack.classList.remove('d-none');
+        this.closeSideDrawer();
         AppUI.showToast("TTC column expanded full-screen", "info");
       }
     } else if (panelType === 'details' && detailsCol) {
-      const isExp = detailsCol.classList.contains('panel-expanded');
-      document.querySelectorAll('.appsheet-panel-card').forEach(c => c.classList.remove('panel-expanded'));
-      if (mtcIcon) mtcIcon.className = 'bi bi-arrows-angle-expand';
-      if (ttcIcon) ttcIcon.className = 'bi bi-arrows-angle-expand';
+      this.toggleDetailsExpand();
+    }
+  },
 
-      if (isExp) {
-        detailsCol.classList.remove('panel-expanded');
-        AppUI.showToast("Bilty details restored", "info");
-      } else {
-        detailsCol.classList.add('panel-expanded');
-        AppUI.showToast("Bilty details expanded full-screen", "info");
+  openSideDrawer(viewType = 'details') {
+    const detailsCol = document.getElementById('panel-details-col');
+    if (!detailsCol) return;
+
+    detailsCol.classList.add('side-drawer-active');
+    const closeBtn = document.getElementById('btn-details-drawer-close');
+    if (closeBtn) closeBtn.classList.remove('d-none');
+
+    const iconDetails = document.getElementById('icon-details-expand');
+    const iconForm = document.getElementById('icon-form-expand');
+    if (iconDetails) iconDetails.className = 'bi bi-arrows-angle-expand';
+    if (iconForm) iconForm.className = 'bi bi-arrows-angle-expand';
+
+    if (viewType === 'create') {
+      this.showSideBoxForm(true);
+    } else {
+      this.showSideBoxForm(false);
+    }
+  },
+
+  closeSideDrawer() {
+    const detailsCol = document.getElementById('panel-details-col');
+    if (detailsCol) {
+      detailsCol.classList.remove('side-drawer-active');
+      detailsCol.classList.remove('panel-expanded');
+    }
+    const closeBtn = document.getElementById('btn-details-drawer-close');
+    if (closeBtn) closeBtn.classList.add('d-none');
+
+    this.showSideBoxForm(false);
+
+    const iconDetails = document.getElementById('icon-details-expand');
+    const iconForm = document.getElementById('icon-form-expand');
+    if (iconDetails) iconDetails.className = 'bi bi-arrows-angle-expand';
+    if (iconForm) iconForm.className = 'bi bi-arrows-angle-expand';
+  },
+
+  toggleDetailsExpand() {
+    const detailsCol = document.getElementById('panel-details-col');
+    if (!detailsCol) return;
+
+    const mtcCol = document.querySelector('.panel-mtc-col');
+    const ttcCol = document.querySelector('.panel-ttc-col');
+    const isMtcExp = mtcCol && mtcCol.classList.contains('panel-expanded');
+    const isTtcExp = ttcCol && ttcCol.classList.contains('panel-expanded');
+    const isFull = detailsCol.classList.contains('panel-expanded');
+
+    const iconDetails = document.getElementById('icon-details-expand');
+    const iconForm = document.getElementById('icon-form-expand');
+
+    if (isFull) {
+      // Exit full screen: return to side drawer if MTC or TTC is expanded, or normal 3-col
+      detailsCol.classList.remove('panel-expanded');
+      if (isMtcExp || isTtcExp) {
+        detailsCol.classList.add('side-drawer-active');
       }
+      if (iconDetails) iconDetails.className = 'bi bi-arrows-angle-expand';
+      if (iconForm) iconForm.className = 'bi bi-arrows-angle-expand';
+      if (typeof AppUI !== 'undefined') AppUI.showToast("Bilty view restored to side panel", "info");
+    } else {
+      // Enter full screen
+      detailsCol.classList.add('panel-expanded');
+      if (iconDetails) iconDetails.className = 'bi bi-arrows-angle-contract';
+      if (iconForm) iconForm.className = 'bi bi-arrows-angle-contract';
+      if (typeof AppUI !== 'undefined') AppUI.showToast("Bilty view expanded to full screen", "info");
     }
   },
 
@@ -4964,8 +5042,11 @@ const BiltyBookingModule = {
     const grLabel = document.getElementById('appsheet-gr-label');
     if (grLabel) grLabel.innerText = `${firm} G.R.No. *`;
 
+    const titleEl = document.getElementById('form-view-title');
+    if (titleEl) titleEl.innerText = `New ${firm} Bilty`;
+
     this.generateBiltyNumber();
-    this.showSideBoxForm(true);
+    this.openSideDrawer('create');
   },
 
   editActiveBilty() {
@@ -4974,7 +5055,9 @@ const BiltyBookingModule = {
       return;
     }
     this.loadTripForEditing(this.currentActiveBilty.id || this.currentActiveBilty.grNo);
-    this.showSideBoxForm(true);
+    const titleEl = document.getElementById('form-view-title');
+    if (titleEl) titleEl.innerText = `Edit Bilty (${this.currentActiveBilty.shortGrNo || this.currentActiveBilty.grNo || ''})`;
+    this.openSideDrawer('create');
   },
 
   printActiveBilty() {
@@ -6661,9 +6744,19 @@ _Issued via MTC & TTC Enterprise Logistics ERP_`;
   }
 };
 
+// Export for Node.js test environment or browser global
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = BiltyBookingModule;
+}
+if (typeof window !== 'undefined') {
+  window.BiltyBookingModule = BiltyBookingModule;
+}
+
 // Auto-initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-  if (typeof BiltyBookingModule !== 'undefined') {
-    BiltyBookingModule.init();
-  }
-});
+if (typeof document !== 'undefined' && document.addEventListener) {
+  document.addEventListener('DOMContentLoaded', () => {
+    if (typeof BiltyBookingModule !== 'undefined' && typeof window !== 'undefined' && window.location) {
+      BiltyBookingModule.init();
+    }
+  });
+}
