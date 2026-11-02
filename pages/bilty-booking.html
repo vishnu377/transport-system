@@ -641,20 +641,481 @@
               <!-- ==================================================== -->
               <!-- STEP 2: FULL BILTY DETAILS FORM (Screen 5, 6, 7, 8, 9) -->
               <!-- ==================================================== -->
-              <div id="bilty-form-step2" class="appsheet-form-view-container my-0" style="display: none;">
-                <!-- Header Bar: ✕ Bilty Details | Expand | Cancel | Save -->
-                <div class="appsheet-form-header-bar">
-                  <div class="d-flex align-items-center gap-2">
-                    <button type="button" class="appsheet-form-close-btn" onclick="BiltyBookingModule.closeSideDrawer()" title="Cancel & Return">
-                      <i class="bi bi-x-lg"></i>
-                    </button>
-                    <h5 class="appsheet-form-title mb-0" id="form-view-title">Bilty Details</h5>
+                <!-- STEP 2: FULL BILTY DETAILS FORM (1:1 Video Replica)   -->
+                <!-- Exact Match of Video Frames 054s, 199s, 314s         -->
+                <!-- ==================================================== -->
+                <div id="bilty-form-step2" class="appsheet-form-view-container my-0" style="display: none;">
+                  <!-- Header Bar: ✕  Bilty Details | Expand | Cancel | Save -->
+                  <div class="appsheet-form-header-bar">
+                    <div class="d-flex align-items-center gap-2">
+                      <button type="button" class="appsheet-form-close-btn" onclick="BiltyBookingModule.backToStep1()" title="Back to Step 1">
+                        <i class="bi bi-x-lg"></i>
+                      </button>
+                      <h5 class="appsheet-form-title mb-0" id="form-view-title">Bilty Details</h5>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                      <button class="btn btn-sm text-muted p-1 border-0" id="btn-form-expand" onclick="BiltyBookingModule.toggleDetailsExpand()" title="Expand Full Screen">
+                        <i class="bi bi-arrows-angle-expand" id="icon-form-expand"></i>
+                      </button>
+                      <button type="button" class="btn-appsheet-cancel" onclick="BiltyBookingModule.backToStep1()" title="Back to Step 1 Setup">
+                        Cancel
+                      </button>
+                      <button type="button" class="btn-appsheet-gold-save" onclick="BiltyBookingModule.saveAppSheetBilty()">
+                        Save
+                      </button>
+                    </div>
                   </div>
-                  <div class="d-flex align-items-center gap-2">
-                    <button class="btn btn-sm text-muted p-1 border-0" id="btn-form-expand" onclick="BiltyBookingModule.toggleDetailsExpand()" title="Expand Full Screen">
-                      <i class="bi bi-arrows-angle-expand" id="icon-form-expand"></i>
-                    </button>
-                    <button type="button" class="btn-appsheet-cancel" onclick="BiltyBookingModule.backToStep1()" title="Back to Step 1 Setup">
+
+                  <!-- Step 2 Form Body (Exact Video Field Order) -->
+                  <div class="appsheet-form-body">
+                    <!-- 1. Bilty Date * -->
+                    <div class="appsheet-form-row">
+                      <label class="appsheet-form-label">Bilty Date *</label>
+                      <div class="appsheet-form-control-wrap">
+                        <div class="position-relative" style="max-width: 260px; width: 100%;">
+                          <input type="date" id="bilty-date" class="appsheet-input-box fw-semibold" required>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- 2. Who will pay GST? * (Shown when Is GST Applicable is Yes - Video frame_314s) -->
+                    <div class="appsheet-form-row" id="row-bilty-gst-payer" style="display: none;">
+                      <label class="appsheet-form-label">Who will pay GST? *</label>
+                      <div class="appsheet-form-control-wrap">
+                        <div class="appsheet-segmented-gold" id="seg-gst-payer">
+                          <button type="button" class="seg-btn active" id="btn-payer-consignor" onclick="BiltyBookingModule.setAppSheetSegment('bilty-gst-payer', 'Consignor', this)">Consignor</button>
+                          <button type="button" class="seg-btn" id="btn-payer-consignee" onclick="BiltyBookingModule.setAppSheetSegment('bilty-gst-payer', 'Consignee', this)">Consignee</button>
+                        </div>
+                        <input type="hidden" id="bilty-gst-payer" value="Consignor">
+                      </div>
+                    </div>
+
+                    <!-- 3. Transport * (Carried from Step 1) -->
+                    <div class="appsheet-form-row">
+                      <label class="appsheet-form-label">Transport *</label>
+                      <div class="appsheet-form-control-wrap">
+                        <div class="appsheet-segmented-gold" id="seg-transport">
+                          <button type="button" class="seg-btn" id="btn-seg-mtc" onclick="BiltyBookingModule.setAppSheetTransport('MTC', this)">MTC</button>
+                          <button type="button" class="seg-btn active" id="btn-seg-ttc" onclick="BiltyBookingModule.setAppSheetTransport('TTC', this)">TTC</button>
+                          <button type="button" class="seg-btn" id="btn-seg-smtc" onclick="BiltyBookingModule.setAppSheetTransport('SMTC', this)">SMTC</button>
+                        </div>
+                        <input type="hidden" id="bilty-firm" value="TTC">
+                        <input type="hidden" id="bilty-year" value="2026-2027">
+                      </div>
+                    </div>
+
+                    <!-- 4. G.R.No. * -->
+                    <div class="appsheet-form-row">
+                      <label class="appsheet-form-label" id="appsheet-gr-label">G.R.No. *</label>
+                      <div class="appsheet-form-control-wrap">
+                        <span class="appsheet-text-value font-monospace fs-6" id="appsheet-display-gr">2762</span>
+                        <input type="hidden" id="bilty-gr-no" value="2026-2027-2762_TTC">
+                        <input type="hidden" id="bilty-short-gr" value="2762_TTC">
+                      </div>
+                    </div>
+
+                    <!-- Hidden carriers for Bilty Type and GST from Step 1 -->
+                    <input type="hidden" id="bilty-type" value="Regular">
+                    <input type="hidden" id="bilty-is-gst" value="No">
+
+                    <!-- 5. Truck No. * -->
+                    <div class="appsheet-form-row">
+                      <label class="appsheet-form-label">Truck No. *</label>
+                      <div class="appsheet-form-control-wrap">
+                        <div class="d-flex align-items-center gap-2 w-100" style="max-width: 440px;">
+                          <div class="position-relative flex-grow-1">
+                            <input type="text" id="bilty-truck-no" list="fleetTrucksList" class="appsheet-input-box font-monospace text-uppercase fw-bold" placeholder="Select or type Truck No." oninput="BiltyBookingModule.onTruckSelect(this.value)" autocomplete="off" required>
+                          </div>
+                          <button type="button" class="btn-appsheet-quick-add" onclick="BiltyBookingModule.quickAddModal('truck')" title="Add New Truck">
+                            <i class="bi bi-pencil-square text-warning"></i> New
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- 6. Status * (Paid / Due) - Video frame_054s & 134s -->
+                    <div class="appsheet-form-row">
+                      <label class="appsheet-form-label">Status *</label>
+                      <div class="appsheet-form-control-wrap">
+                        <div class="appsheet-segmented-gold" id="seg-comm-status">
+                          <button type="button" class="seg-btn active" id="btn-status-paid" onclick="BiltyBookingModule.setAppSheetStatus('Paid', this)">Paid</button>
+                          <button type="button" class="seg-btn" id="btn-status-due" onclick="BiltyBookingModule.setAppSheetStatus('Due', this)">Due</button>
+                        </div>
+                        <input type="hidden" id="bilty-commission-status" value="Paid">
+                      </div>
+                    </div>
+
+                    <!-- 7. Mode * (Cash / Online) - HIDDEN WHEN STATUS IS DUE - Video frame_134s -->
+                    <div class="appsheet-form-row" id="row-bilty-mode">
+                      <label class="appsheet-form-label">Mode *</label>
+                      <div class="appsheet-form-control-wrap">
+                        <div class="appsheet-segmented-gold" id="seg-comm-mode">
+                          <button type="button" class="seg-btn active" onclick="BiltyBookingModule.setAppSheetSegment('bilty-commission-mode', 'Cash', this)">Cash</button>
+                          <button type="button" class="seg-btn" onclick="BiltyBookingModule.setAppSheetSegment('bilty-commission-mode', 'Online', this)">Online</button>
+                        </div>
+                        <input type="hidden" id="bilty-commission-mode" value="Cash">
+                      </div>
+                    </div>
+
+                    <!-- 8. Commission Description - Video frame_054s -->
+                    <div class="appsheet-form-row">
+                      <label class="appsheet-form-label">Commission Description</label>
+                      <div class="appsheet-form-control-wrap">
+                        <input type="text" id="bilty-commission-desc" class="appsheet-input-box" placeholder="e.g. Brokerage paid at loading site" style="max-width: 480px;">
+                      </div>
+                    </div>
+
+                    <!-- 9. Any Debt? (No / Yes) - Video frame_179s -->
+                    <div class="appsheet-form-row">
+                      <label class="appsheet-form-label">Any Debt?</label>
+                      <div class="appsheet-form-control-wrap">
+                        <div class="appsheet-segmented-gold" id="seg-any-debt">
+                          <button type="button" class="seg-btn active" id="btn-debt-no" onclick="BiltyBookingModule.setAppSheetDebtToggle(false, this)">No</button>
+                          <button type="button" class="seg-btn" id="btn-debt-yes" onclick="BiltyBookingModule.setAppSheetDebtToggle(true, this)">Yes</button>
+                        </div>
+                        <input type="hidden" id="bilty-has-debt" value="No">
+                      </div>
+                    </div>
+
+                    <!-- 9A. Debt Type * (Dropdown: SHOWN WHEN ANY DEBT IS YES) -->
+                    <div class="appsheet-form-row" id="row-debt-type" style="display: none;">
+                      <label class="appsheet-form-label">Debt Type *</label>
+                      <div class="appsheet-form-control-wrap">
+                        <select id="bilty-debt-type" class="appsheet-input-box" style="max-width: 280px;">
+                          <option value="Trip Advance" selected>Trip Advance</option>
+                          <option value="Diesel Debt">Diesel Debt</option>
+                          <option value="Toll / Fastag Debt">Toll / Fastag Debt</option>
+                          <option value="Driver Debt">Driver Debt</option>
+                          <option value="Commission Debt">Commission Debt</option>
+                          <option value="Other Debt">Other Debt</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <!-- 9B. Debt Description (SHOWN WHEN ANY DEBT IS YES) -->
+                    <div class="appsheet-form-row" id="row-debt-desc" style="display: none;">
+                      <label class="appsheet-form-label">Debt Description</label>
+                      <div class="appsheet-form-control-wrap">
+                        <input type="text" id="bilty-debt-desc" class="appsheet-input-box" placeholder="Enter debt details / reason" style="max-width: 480px;">
+                      </div>
+                    </div>
+
+                    <!-- 10. GSTIN Consignor - Video frame_054s -->
+                    <div class="appsheet-form-row align-start">
+                      <label class="appsheet-form-label pt-2">GSTIN Consignor</label>
+                      <div class="appsheet-form-control-wrap flex-column align-items-start">
+                        <div class="d-flex align-items-center gap-2 w-100" style="max-width: 480px;">
+                          <div class="position-relative flex-grow-1">
+                            <input type="text" id="bilty-consignor" list="consignorsGstinList" class="appsheet-input-box" placeholder="Search or select GSTIN / Consignor" oninput="BiltyBookingModule.onConsignorSelect(this.value)" onchange="BiltyBookingModule.onConsignorSelect(this.value)" autocomplete="off">
+                            <input type="hidden" id="bilty-consignor-gstin">
+                          </div>
+                          <button type="button" class="btn-appsheet-quick-add" onclick="BiltyBookingModule.quickAddModal('consignor')" title="Add New Consignor / Party">
+                            <i class="bi bi-pencil-square text-warning"></i> New
+                          </button>
+                        </div>
+                        <div id="appsheet-consignor-address-box" class="w-100 mt-2 p-2 px-3 bg-light rounded border border-secondary-subtle small d-flex align-items-center justify-content-between" style="max-width: 480px; min-height: 38px;">
+                          <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-geo-alt-fill text-danger"></i>
+                            <span id="appsheet-consignor-address-text" class="text-muted fst-italic">Loading address...</span>
+                          </div>
+                          <span class="badge bg-secondary-subtle text-secondary" id="appsheet-consignor-gstin-badge">GST: ---</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- 11. E-way Bill No. - Video frame_054s & 199s -->
+                    <div class="appsheet-form-row">
+                      <label class="appsheet-form-label">E-way Bill No.</label>
+                      <div class="appsheet-form-control-wrap">
+                        <input type="text" id="bilty-eway-bill" class="appsheet-input-box font-monospace" placeholder="e.g. 751652374578" style="max-width: 340px;">
+                      </div>
+                    </div>
+
+                    <!-- 12. Bill No. - Video frame_054s & 199s -->
+                    <div class="appsheet-form-row">
+                      <label class="appsheet-form-label">Bill No.</label>
+                      <div class="appsheet-form-control-wrap">
+                        <input type="text" id="bilty-bill-no" class="appsheet-input-box font-monospace" placeholder="e.g. 1722" style="max-width: 240px;">
+                      </div>
+                    </div>
+
+                    <!-- 13. Bill Value - Video frame_054s & 199s -->
+                    <div class="appsheet-form-row">
+                      <label class="appsheet-form-label">Bill Value</label>
+                      <div class="appsheet-form-control-wrap">
+                        <div class="input-group" style="max-width: 240px;">
+                          <span class="input-group-text bg-light text-muted" style="border: 1px solid #d1d5db; border-right: none; font-size: 13px;">₹</span>
+                          <input type="number" id="bilty-invoice-value" class="appsheet-input-box" placeholder="0.00" value="0" step="any" style="border-top-left-radius: 0; border-bottom-left-radius: 0;">
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- 14. Is Dispatch From address required? - Video frame_054s & 199s -->
+                    <div class="appsheet-form-row">
+                      <label class="appsheet-form-label">Is Dispatch From address required?</label>
+                      <div class="appsheet-form-control-wrap">
+                        <div class="appsheet-segmented-gold" id="seg-dispatch-from">
+                          <button type="button" class="seg-btn active" id="btn-dispatch-no" onclick="BiltyBookingModule.setAppSheetDispatchFromToggle(false, this)">No</button>
+                          <button type="button" class="seg-btn" id="btn-dispatch-yes" onclick="BiltyBookingModule.setAppSheetDispatchFromToggle(true, this)">Yes</button>
+                        </div>
+                        <input type="hidden" id="bilty-dispatch-from-req" value="No">
+                      </div>
+                    </div>
+
+                    <!-- 14A. Dispatch From Address * (SHOWN WHEN REQUIRED) -->
+                    <div class="appsheet-form-row" id="row-dispatch-from-address" style="display: none;">
+                      <label class="appsheet-form-label">Dispatch From Address *</label>
+                      <div class="appsheet-form-control-wrap">
+                        <input type="text" id="bilty-dispatch-from" class="appsheet-input-box" placeholder="Enter alternate Dispatch/Loading Address" style="max-width: 480px;">
+                      </div>
+                    </div>
+
+                    <!-- 15. Material * - Video frame_199s -->
+                    <div class="appsheet-form-row">
+                      <label class="appsheet-form-label">Material *</label>
+                      <div class="appsheet-form-control-wrap">
+                        <div class="w-100" style="max-width: 380px;">
+                          <input type="text" id="bilty-material" list="materialsList" class="appsheet-input-box fw-semibold" value="Marble Cut Size" required>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- 16. GSTIN Consignee - Video frame_199s & 234s -->
+                    <div class="appsheet-form-row align-start">
+                      <label class="appsheet-form-label pt-2">GSTIN Consignee</label>
+                      <div class="appsheet-form-control-wrap flex-column align-items-start">
+                        <div class="d-flex align-items-center gap-2 w-100" style="max-width: 480px;">
+                          <div class="position-relative flex-grow-1">
+                            <input type="text" id="bilty-consignee" list="consigneesGstinList" class="appsheet-input-box" placeholder="Search or select GSTIN / Consignee" oninput="BiltyBookingModule.onConsigneeSelect(this.value)" onchange="BiltyBookingModule.onConsigneeSelect(this.value)" autocomplete="off">
+                            <input type="hidden" id="bilty-consignee-gstin">
+                            <input type="hidden" id="bilty-delivery-address">
+                          </div>
+                          <button type="button" class="btn-appsheet-quick-add" onclick="BiltyBookingModule.quickAddModal('consignee')" title="Add New Consignee / Party">
+                            <i class="bi bi-pencil-square text-warning"></i> New
+                          </button>
+                        </div>
+                        <div id="appsheet-consignee-address-box" class="w-100 mt-2 p-2 px-3 bg-light rounded border border-secondary-subtle small d-flex align-items-center justify-content-between" style="max-width: 480px; min-height: 38px;">
+                          <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-geo-alt-fill text-success"></i>
+                            <span id="appsheet-consignee-address-text" class="text-muted fst-italic">Delivery address...</span>
+                          </div>
+                          <span class="badge bg-secondary-subtle text-secondary" id="appsheet-consignee-gstin-badge">GST: ---</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- 17. Is Ship To address required? - Video frame_199s & 224s -->
+                    <div class="appsheet-form-row">
+                      <label class="appsheet-form-label">Is Ship To address required?</label>
+                      <div class="appsheet-form-control-wrap">
+                        <div class="appsheet-segmented-gold" id="seg-ship-to">
+                          <button type="button" class="seg-btn active" id="btn-shipto-no" onclick="BiltyBookingModule.setAppSheetShipToToggle(false, this)">No</button>
+                          <button type="button" class="seg-btn" id="btn-shipto-yes" onclick="BiltyBookingModule.setAppSheetShipToToggle(true, this)">Yes</button>
+                        </div>
+                        <input type="hidden" id="bilty-ship-to-req" value="No">
+                      </div>
+                    </div>
+
+                    <!-- 17A. Ship To Address * (SHOWN WHEN REQUIRED) - Video frame_224s -->
+                    <div class="appsheet-form-row" id="row-ship-to-address" style="display: none;">
+                      <label class="appsheet-form-label">Ship To Address *</label>
+                      <div class="appsheet-form-control-wrap">
+                        <input type="text" id="bilty-ship-to" class="appsheet-input-box" placeholder="Enter alternate Ship To / Unloading Site Address" style="max-width: 480px;">
+                      </div>
+                    </div>
+
+                    <!-- 18. Actual Billing Type * - Video frame_199s & 219s -->
+                    <div class="appsheet-form-row">
+                      <label class="appsheet-form-label">Actual Billing Type *</label>
+                      <div class="appsheet-form-control-wrap">
+                        <select id="bilty-billing-type" class="appsheet-input-box" style="max-width: 260px;" onchange="BiltyBookingModule.recalculateFreightAndTotals()">
+                          <option value="Per Tonne" selected>Per Tonne</option>
+                          <option value="Fixed">Fixed</option>
+                          <option value="To be Billed">To be Billed</option>
+                          <option value="Fixed-Non GST">Fixed-Non GST</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <!-- 19. Actual Weight * - Video frame_199s -->
+                    <div class="appsheet-form-row">
+                      <label class="appsheet-form-label">Actual Weight *</label>
+                      <div class="appsheet-form-control-wrap">
+                        <div class="input-group" style="max-width: 240px;">
+                          <input type="number" id="bilty-weight" class="appsheet-input-box font-monospace fw-bold" placeholder="0.000" step="any" oninput="BiltyBookingModule.recalculateFreightAndTotals()" required>
+                          <span class="input-group-text bg-light text-muted" style="border: 1px solid #d1d5db; border-left: none; font-size: 13px;">MT</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- 20. Actual Rate * - Video frame_199s -->
+                    <div class="appsheet-form-row">
+                      <label class="appsheet-form-label">Actual Rate *</label>
+                      <div class="appsheet-form-control-wrap">
+                        <div class="input-group" style="max-width: 240px;">
+                          <span class="input-group-text bg-light text-muted" style="border: 1px solid #d1d5db; border-right: none; font-size: 13px;">₹</span>
+                          <input type="number" id="bilty-rate" class="appsheet-input-box font-monospace fw-bold" placeholder="0.00" step="any" oninput="BiltyBookingModule.recalculateFreightAndTotals()" required>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- 21. Freight * - Video frame_199s -->
+                    <div class="appsheet-form-row">
+                      <label class="appsheet-form-label">Freight *</label>
+                      <div class="appsheet-form-control-wrap">
+                        <div class="input-group" style="max-width: 240px;">
+                          <span class="input-group-text bg-light text-muted" style="border: 1px solid #d1d5db; border-right: none; font-size: 13px;">₹</span>
+                          <input type="number" id="bilty-freight" class="appsheet-input-box font-monospace fw-bold" placeholder="0.00" step="any" style="border-top-left-radius: 0; border-bottom-left-radius: 0;" readonly>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- 22. Halt Charges - Video frame_199s -->
+                    <div class="appsheet-form-row">
+                      <label class="appsheet-form-label">Halt Charges</label>
+                      <div class="appsheet-form-control-wrap">
+                        <div class="input-group" style="max-width: 240px;">
+                          <span class="input-group-text bg-light text-muted" style="border: 1px solid #d1d5db; border-right: none; font-size: 13px;">₹</span>
+                          <input type="number" id="bilty-halt" class="appsheet-input-box" value="0" step="any" oninput="BiltyBookingModule.recalculateFreightAndTotals()">
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- 23. Loading Charges - Video frame_199s -->
+                    <div class="appsheet-form-row">
+                      <label class="appsheet-form-label">Loading Charges</label>
+                      <div class="appsheet-form-control-wrap">
+                        <div class="input-group" style="max-width: 240px;">
+                          <span class="input-group-text bg-light text-muted" style="border: 1px solid #d1d5db; border-right: none; font-size: 13px;">₹</span>
+                          <input type="number" id="bilty-loading-charges" class="appsheet-input-box" value="0" step="any" oninput="BiltyBookingModule.recalculateFreightAndTotals()">
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- 24. Bilty Billing Type * - Video frame_199s -->
+                    <div class="appsheet-form-row">
+                      <label class="appsheet-form-label">Bilty Billing Type *</label>
+                      <div class="appsheet-form-control-wrap">
+                        <select id="bilty-final-billing-type" class="appsheet-input-box" style="max-width: 260px;">
+                          <option value="Paid" selected>Paid</option>
+                          <option value="To Pay">To Pay</option>
+                          <option value="T.B.B. (To Be Billed)">T.B.B. (To Be Billed)</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <!-- 25. IGST / CGST / SGST (Shown when GST is Yes) -->
+                    <div id="row-gst-tax-breakup" style="display: none;">
+                      <div class="appsheet-form-row">
+                        <label class="appsheet-form-label">IGST Amount</label>
+                        <div class="appsheet-form-control-wrap">
+                          <input type="text" id="bilty-igst-display" class="appsheet-input-box font-monospace" readonly value="₹ 0.00" style="max-width: 240px;">
+                        </div>
+                      </div>
+                      <div class="appsheet-form-row">
+                        <label class="appsheet-form-label">CGST Amount</label>
+                        <div class="appsheet-form-control-wrap">
+                          <input type="text" id="bilty-cgst-display" class="appsheet-input-box font-monospace" readonly value="₹ 0.00" style="max-width: 240px;">
+                        </div>
+                      </div>
+                      <div class="appsheet-form-row">
+                        <label class="appsheet-form-label">SGST Amount</label>
+                        <div class="appsheet-form-control-wrap">
+                          <input type="text" id="bilty-sgst-display" class="appsheet-input-box font-monospace" readonly value="₹ 0.00" style="max-width: 240px;">
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Vehicle & Routing Details (From, To, Driver, Owner, Reference, Load Type, Commission) -->
+                    <details class="mt-3 pt-2 border-top" style="border-top: 1px dashed #d1d5db !important;">
+                      <summary class="text-muted small fw-bold py-1" style="cursor: pointer;">
+                        <i class="bi bi-truck me-1"></i> Vehicle & Routing Details (Auto-filled from Truck & Consignment)
+                      </summary>
+                      <div class="pt-2">
+                        <!-- Origin & Destination -->
+                        <div class="appsheet-form-row">
+                          <label class="appsheet-form-label">From *</label>
+                          <div class="appsheet-form-control-wrap">
+                            <input type="text" id="bilty-origin" class="appsheet-input-box" value="Rajsamand (Raj.)" style="max-width: 380px;">
+                          </div>
+                        </div>
+                        <div class="appsheet-form-row">
+                          <label class="appsheet-form-label">To *</label>
+                          <div class="appsheet-form-control-wrap">
+                            <input type="text" id="bilty-destination" list="destinationsList" class="appsheet-input-box" placeholder="Select destination..." style="max-width: 380px;">
+                          </div>
+                        </div>
+                        <!-- Truck Owner & Mobile -->
+                        <div class="appsheet-form-row" id="row-truck-owner">
+                          <label class="appsheet-form-label">Truck Owner *</label>
+                          <div class="appsheet-form-control-wrap">
+                            <span class="appsheet-chip-owner" id="appsheet-truck-owner-chip">
+                              <i class="bi bi-building text-muted me-1"></i>
+                              <span id="appsheet-owner-text">Shree Mahaveer Transport Company</span>
+                            </span>
+                            <input type="hidden" id="bilty-owner" value="Shree Mahaveer Transport Company">
+                          </div>
+                        </div>
+                        <div class="appsheet-form-row" id="row-truck-owner-mobile">
+                          <label class="appsheet-form-label">Owner Mobile *</label>
+                          <div class="appsheet-form-control-wrap">
+                            <span class="appsheet-text-value font-monospace" id="appsheet-owner-mobile-text">9414659401</span>
+                            <input type="hidden" id="bilty-owner-mobile" value="9414659401">
+                          </div>
+                        </div>
+                        <!-- Driver & Mobile -->
+                        <div class="appsheet-form-row">
+                          <label class="appsheet-form-label">Driver *</label>
+                          <div class="appsheet-form-control-wrap">
+                            <input type="text" id="bilty-driver" list="driversList" class="appsheet-input-box" placeholder="Driver name" oninput="BiltyBookingModule.onDriverSelect(this.value)" style="max-width: 380px;">
+                          </div>
+                        </div>
+                        <div class="appsheet-form-row" id="row-driver-mobile">
+                          <label class="appsheet-form-label">Driver Mobile *</label>
+                          <div class="appsheet-form-control-wrap">
+                            <span class="appsheet-text-value font-monospace" id="appsheet-driver-mobile-text">6377445099</span>
+                            <input type="hidden" id="bilty-driver-mobile" value="6377445099">
+                          </div>
+                        </div>
+                        <!-- Broker / Reference -->
+                        <div class="appsheet-form-row">
+                          <label class="appsheet-form-label">Reference *</label>
+                          <div class="appsheet-form-control-wrap">
+                            <input type="text" id="bilty-broker" list="brokersList" class="appsheet-input-box" placeholder="Broker / Reference" oninput="BiltyBookingModule.onReferenceSelect(this.value)" style="max-width: 380px;">
+                          </div>
+                        </div>
+                        <div class="appsheet-form-row" id="row-reference-mobile">
+                          <label class="appsheet-form-label">Ref Mobile *</label>
+                          <div class="appsheet-form-control-wrap">
+                            <span class="appsheet-text-value font-monospace" id="appsheet-broker-mobile-text">7976808636</span>
+                            <input type="hidden" id="bilty-broker-mobile" value="7976808636">
+                          </div>
+                        </div>
+                        <!-- Load Type & Commission -->
+                        <div class="appsheet-form-row">
+                          <label class="appsheet-form-label">Load Type *</label>
+                          <div class="appsheet-form-control-wrap">
+                            <div class="appsheet-segmented-gold" id="seg-load-type">
+                              <button type="button" class="seg-btn active" onclick="BiltyBookingModule.setAppSheetSegment('bilty-load-type', 'Under Load', this)">Under Load</button>
+                              <button type="button" class="seg-btn" onclick="BiltyBookingModule.setAppSheetSegment('bilty-load-type', 'Over Load', this)">Over Load</button>
+                            </div>
+                            <input type="hidden" id="bilty-load-type" value="Under Load">
+                          </div>
+                        </div>
+                        <div class="appsheet-form-row">
+                          <label class="appsheet-form-label">Commission *</label>
+                          <div class="appsheet-form-control-wrap">
+                            <input type="number" id="bilty-commission" class="appsheet-input-box" value="0" step="any" style="max-width: 240px;">
+                          </div>
+                        </div>
+                        <input type="hidden" id="bilty-consignment-mode" value="single">
+                      </div>
+                    </details>
+                  </div>
+
+                  <!-- Bottom Footer Bar: Cancel | Save (Gold Pill) -->
+                  <div class="appsheet-form-footer">
+                    <button type="button" class="btn-appsheet-cancel" onclick="BiltyBookingModule.backToStep1()">
                       Cancel
                     </button>
                     <button type="button" class="btn-appsheet-gold-save" onclick="BiltyBookingModule.saveAppSheetBilty()">
@@ -663,459 +1124,7 @@
                   </div>
                 </div>
 
-                <!-- Step 2 Form Body (Compact AppSheet 2-Column Layout) -->
-                <div class="appsheet-form-body">
-                  <!-- 1. Bilty Date * -->
-                  <div class="appsheet-form-row">
-                    <label class="appsheet-form-label">Bilty Date *</label>
-                    <div class="appsheet-form-control-wrap">
-                      <div class="position-relative" style="max-width: 260px; width: 100%;">
-                        <input type="date" id="bilty-date" class="appsheet-input-box fw-semibold" required>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- 2. Transport * (Carried from Step 1) -->
-                  <div class="appsheet-form-row">
-                    <label class="appsheet-form-label">Transport *</label>
-                    <div class="appsheet-form-control-wrap">
-                      <div class="appsheet-segmented-gold" id="seg-transport">
-                        <button type="button" class="seg-btn" id="btn-seg-mtc" onclick="BiltyBookingModule.setAppSheetTransport('MTC', this)">MTC</button>
-                        <button type="button" class="seg-btn active" id="btn-seg-ttc" onclick="BiltyBookingModule.setAppSheetTransport('TTC', this)">TTC</button>
-                        <button type="button" class="seg-btn" id="btn-seg-smtc" onclick="BiltyBookingModule.setAppSheetTransport('SMTC', this)">SMTC</button>
-                      </div>
-                      <input type="hidden" id="bilty-firm" value="TTC">
-                      <input type="hidden" id="bilty-year" value="2026-2027">
-                    </div>
-                  </div>
-
-                  <!-- 3. G.R.No. * -->
-                  <div class="appsheet-form-row">
-                    <label class="appsheet-form-label" id="appsheet-gr-label">G.R.No. *</label>
-                    <div class="appsheet-form-control-wrap">
-                      <span class="appsheet-text-value font-monospace fs-6" id="appsheet-display-gr">2755</span>
-                      <input type="hidden" id="bilty-gr-no" value="2026-2027-2755_TTC">
-                      <input type="hidden" id="bilty-short-gr" value="2755_TTC">
-                    </div>
-                  </div>
-
-                  <!-- Hidden carriers for Bilty Type and GST from Step 1 -->
-                  <input type="hidden" id="bilty-type" value="Regular">
-                  <input type="hidden" id="bilty-is-gst" value="No">
-
-                  <!-- 4. Truck No. * -->
-                  <div class="appsheet-form-row">
-                    <label class="appsheet-form-label">Truck No. *</label>
-                    <div class="appsheet-form-control-wrap">
-                      <div class="d-flex align-items-center gap-2 w-100" style="max-width: 440px;">
-                        <div class="position-relative flex-grow-1">
-                          <input type="text" id="bilty-truck-no" list="fleetTrucksList" class="appsheet-input-box font-monospace text-uppercase fw-bold" placeholder="Select or type Truck No. (e.g. RJ52GB5964)" oninput="BiltyBookingModule.onTruckSelect(this.value)" autocomplete="off" required>
-                        </div>
-                        <button type="button" class="btn-appsheet-quick-add" onclick="BiltyBookingModule.quickAddModal('truck')" title="Add New Truck">
-                          <i class="bi bi-plus-circle-fill text-warning"></i> + New
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- 5. Truck Owner Name * -->
-                  <div class="appsheet-form-row" id="row-truck-owner">
-                    <label class="appsheet-form-label">Truck Owner Name *</label>
-                    <div class="appsheet-form-control-wrap">
-                      <span class="appsheet-chip-owner" id="appsheet-truck-owner-chip">
-                        <i class="bi bi-building text-muted me-1"></i>
-                        <span id="appsheet-owner-text">Shree Mahaveer Transport Company</span>
-                      </span>
-                      <input type="hidden" id="bilty-owner" value="Shree Mahaveer Transport Company">
-                    </div>
-                  </div>
-
-                  <!-- 6. Truck Owner Mobile No. * -->
-                  <div class="appsheet-form-row" id="row-truck-owner-mobile">
-                    <label class="appsheet-form-label">Truck Owner Mobile No. *</label>
-                    <div class="appsheet-form-control-wrap">
-                      <span class="appsheet-text-value font-monospace" id="appsheet-owner-mobile-text">9414659401</span>
-                      <input type="hidden" id="bilty-owner-mobile" value="9414659401">
-                    </div>
-                  </div>
-
-                  <!-- 7. Reference * -->
-                  <div class="appsheet-form-row">
-                    <label class="appsheet-form-label">Reference *</label>
-                    <div class="appsheet-form-control-wrap">
-                      <div class="d-flex align-items-center gap-2 w-100" style="max-width: 440px;">
-                        <div class="position-relative flex-grow-1">
-                          <input type="text" id="bilty-broker" list="brokersList" class="appsheet-input-box" placeholder="Select or type broker name" oninput="BiltyBookingModule.onReferenceSelect(this.value)">
-                        </div>
-                        <button type="button" class="btn-appsheet-quick-add" onclick="BiltyBookingModule.quickAddModal('broker')" title="Add New Reference / Broker">
-                          <i class="bi bi-plus-circle-fill text-warning"></i> + New
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- 8. Reference Mobile No. * -->
-                  <div class="appsheet-form-row" id="row-reference-mobile">
-                    <label class="appsheet-form-label">Reference Mobile No. *</label>
-                    <div class="appsheet-form-control-wrap">
-                      <span class="appsheet-text-value font-monospace" id="appsheet-broker-mobile-text">7976808636</span>
-                      <input type="hidden" id="bilty-broker-mobile" value="7976808636">
-                    </div>
-                  </div>
-
-                  <!-- 9. Load Type * -->
-                  <div class="appsheet-form-row">
-                    <label class="appsheet-form-label">Load Type *</label>
-                    <div class="appsheet-form-control-wrap">
-                      <div class="appsheet-segmented-gold" id="seg-load-type">
-                        <button type="button" class="seg-btn active" onclick="BiltyBookingModule.setAppSheetSegment('bilty-load-type', 'Under Load', this)">Under Load</button>
-                        <button type="button" class="seg-btn" onclick="BiltyBookingModule.setAppSheetSegment('bilty-load-type', 'Over Load', this)">Over Load</button>
-                      </div>
-                      <input type="hidden" id="bilty-load-type" value="Under Load">
-                    </div>
-                  </div>
-
-                  <!-- 10. Commission * -->
-                  <div class="appsheet-form-row">
-                    <label class="appsheet-form-label">Commission *</label>
-                    <div class="appsheet-form-control-wrap">
-                      <div class="input-group" style="max-width: 240px;">
-                        <span class="input-group-text bg-light text-muted" style="border: 1px solid #d1d5db; border-right: none; font-size: 13px;">₹</span>
-                        <input type="number" id="bilty-commission" class="appsheet-input-box" value="0" step="any" style="border-top-left-radius: 0; border-bottom-left-radius: 0;">
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- 11. Status * (Paid / Due) - Screen 7 Conditional -->
-                  <div class="appsheet-form-row">
-                    <label class="appsheet-form-label">Status *</label>
-                    <div class="appsheet-form-control-wrap">
-                      <div class="appsheet-segmented-gold" id="seg-comm-status">
-                        <button type="button" class="seg-btn active" id="btn-status-paid" onclick="BiltyBookingModule.setAppSheetStatus('Paid', this)">Paid</button>
-                        <button type="button" class="seg-btn" id="btn-status-due" onclick="BiltyBookingModule.setAppSheetStatus('Due', this)">Due</button>
-                      </div>
-                      <input type="hidden" id="bilty-commission-status" value="Paid">
-                    </div>
-                  </div>
-
-                  <!-- 12. Mode * (Cash / Online) - Screen 7 Conditional: HIDDEN WHEN STATUS IS DUE -->
-                  <div class="appsheet-form-row" id="row-bilty-mode">
-                    <label class="appsheet-form-label">Mode *</label>
-                    <div class="appsheet-form-control-wrap">
-                      <div class="appsheet-segmented-gold" id="seg-comm-mode">
-                        <button type="button" class="seg-btn active" onclick="BiltyBookingModule.setAppSheetSegment('bilty-commission-mode', 'Cash', this)">Cash</button>
-                        <button type="button" class="seg-btn" onclick="BiltyBookingModule.setAppSheetSegment('bilty-commission-mode', 'Online', this)">Online</button>
-                      </div>
-                      <input type="hidden" id="bilty-commission-mode" value="Cash">
-                    </div>
-                  </div>
-
-                  <!-- 13. Commission Description -->
-                  <div class="appsheet-form-row">
-                    <label class="appsheet-form-label">Commission Description</label>
-                    <div class="appsheet-form-control-wrap">
-                      <input type="text" id="bilty-commission-desc" class="appsheet-input-box" placeholder="e.g. Brokerage paid at loading site" style="max-width: 480px;">
-                    </div>
-                  </div>
-
-                  <!-- 14. Any Debt? (No / Yes) - Screen 8 Conditional -->
-                  <div class="appsheet-form-row">
-                    <label class="appsheet-form-label">Any Debt?</label>
-                    <div class="appsheet-form-control-wrap">
-                      <div class="appsheet-segmented-gold" id="seg-any-debt">
-                        <button type="button" class="seg-btn active" id="btn-debt-no" onclick="BiltyBookingModule.setAppSheetDebtToggle(false, this)">No</button>
-                        <button type="button" class="seg-btn" id="btn-debt-yes" onclick="BiltyBookingModule.setAppSheetDebtToggle(true, this)">Yes</button>
-                      </div>
-                      <input type="hidden" id="bilty-has-debt" value="No">
-                    </div>
-                  </div>
-
-                  <!-- 14A. Debt Type * (Dropdown: SHOWN WHEN ANY DEBT IS YES) - Screen 8 -->
-                  <div class="appsheet-form-row" id="row-debt-type" style="display: none;">
-                    <label class="appsheet-form-label">Debt Type *</label>
-                    <div class="appsheet-form-control-wrap">
-                      <select id="bilty-debt-type" class="appsheet-input-box" style="max-width: 280px;">
-                        <option value="Trip Advance" selected>Trip Advance</option>
-                        <option value="Diesel Debt">Diesel Debt</option>
-                        <option value="Toll / Fastag Debt">Toll / Fastag Debt</option>
-                        <option value="Driver Debt">Driver Debt</option>
-                        <option value="Commission Debt">Commission Debt</option>
-                        <option value="Other Debt">Other Debt</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <!-- 14B. Debt Description (SHOWN WHEN ANY DEBT IS YES) - Screen 8 -->
-                  <div class="appsheet-form-row" id="row-debt-desc" style="display: none;">
-                    <label class="appsheet-form-label">Debt Description</label>
-                    <div class="appsheet-form-control-wrap">
-                      <input type="text" id="bilty-debt-desc" class="appsheet-input-box" placeholder="Enter debt details / reason" style="max-width: 480px;">
-                    </div>
-                  </div>
-
-                  <!-- 15. Driver * -->
-                  <div class="appsheet-form-row">
-                    <label class="appsheet-form-label">Driver *</label>
-                    <div class="appsheet-form-control-wrap">
-                      <div class="d-flex align-items-center gap-2 w-100" style="max-width: 440px;">
-                        <div class="position-relative flex-grow-1">
-                          <input type="text" id="bilty-driver" list="driversList" class="appsheet-input-box" placeholder="Select or type driver name" oninput="BiltyBookingModule.onDriverSelect(this.value)">
-                        </div>
-                        <button type="button" class="btn-appsheet-quick-add" onclick="BiltyBookingModule.quickAddModal('driver')" title="Add New Driver">
-                          <i class="bi bi-plus-circle-fill text-warning"></i> + New
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- 16. Driver Mobile No. * -->
-                  <div class="appsheet-form-row" id="row-driver-mobile">
-                    <label class="appsheet-form-label">Driver Mobile No. *</label>
-                    <div class="appsheet-form-control-wrap">
-                      <span class="appsheet-text-value font-monospace" id="appsheet-driver-mobile-text">6377445099</span>
-                      <input type="hidden" id="bilty-driver-mobile" value="6377445099">
-                    </div>
-                  </div>
-
-                  <input type="hidden" id="bilty-consignment-mode" value="single">
-
-                  <!-- 17. From * -->
-                  <div class="appsheet-form-row">
-                    <label class="appsheet-form-label">From *</label>
-                    <div class="appsheet-form-control-wrap">
-                      <div class="w-100" style="max-width: 380px;">
-                        <input type="text" id="bilty-origin" class="appsheet-input-box" value="Rajsamand (Raj.)" required>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- 18. To * -->
-                  <div class="appsheet-form-row">
-                    <label class="appsheet-form-label">To *</label>
-                    <div class="appsheet-form-control-wrap">
-                      <div class="w-100" style="max-width: 380px;">
-                        <input type="text" id="bilty-destination" list="destinationsList" class="appsheet-input-box" placeholder="Select destination city..." required>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- 19. GSTIN Consignor -->
-                  <div class="appsheet-form-row align-start">
-                    <label class="appsheet-form-label pt-2">GSTIN Consignor</label>
-                    <div class="appsheet-form-control-wrap flex-column align-items-start">
-                      <div class="d-flex align-items-center gap-2 w-100" style="max-width: 480px;">
-                        <div class="position-relative flex-grow-1">
-                          <input type="text" id="bilty-consignor" list="consignorsGstinList" class="appsheet-input-box" placeholder="Select or type GSTIN / Party Name" oninput="BiltyBookingModule.onConsignorSelect(this.value)" onchange="BiltyBookingModule.onConsignorSelect(this.value)" autocomplete="off">
-                          <input type="hidden" id="bilty-consignor-gstin">
-                        </div>
-                        <button type="button" class="btn-appsheet-quick-add" onclick="BiltyBookingModule.quickAddModal('consignor')" title="Add New Consignor / Party">
-                          <i class="bi bi-plus-circle-fill text-warning"></i> + New
-                        </button>
-                      </div>
-                      <div id="appsheet-consignor-address-box" class="w-100 mt-2 p-2 px-3 bg-light rounded border border-secondary-subtle small d-flex align-items-center justify-content-between" style="max-width: 480px; min-height: 38px;">
-                        <div class="d-flex align-items-center gap-2">
-                          <i class="bi bi-geo-alt-fill text-danger"></i>
-                          <span id="appsheet-consignor-address-text" class="text-muted fst-italic">Select Consignor / GSTIN to view loading address</span>
-                        </div>
-                        <span class="badge bg-secondary-subtle text-secondary" id="appsheet-consignor-gstin-badge">GST: ---</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- 20. E-way Bill No. -->
-                  <div class="appsheet-form-row">
-                    <label class="appsheet-form-label">E-way Bill No.</label>
-                    <div class="appsheet-form-control-wrap">
-                      <input type="text" id="bilty-eway-bill" class="appsheet-input-box font-monospace" placeholder="e.g. 751652374578" style="max-width: 340px;">
-                    </div>
-                  </div>
-
-                  <!-- 21. Bill No. -->
-                  <div class="appsheet-form-row">
-                    <label class="appsheet-form-label">Bill No.</label>
-                    <div class="appsheet-form-control-wrap">
-                      <input type="text" id="bilty-bill-no" class="appsheet-input-box font-monospace" placeholder="e.g. 1722" style="max-width: 240px;">
-                    </div>
-                  </div>
-
-                  <!-- 22. Bill Value -->
-                  <div class="appsheet-form-row">
-                    <label class="appsheet-form-label">Bill Value</label>
-                    <div class="appsheet-form-control-wrap">
-                      <div class="input-group" style="max-width: 240px;">
-                        <span class="input-group-text bg-light text-muted" style="border: 1px solid #d1d5db; border-right: none; font-size: 13px;">₹</span>
-                        <input type="number" id="bilty-invoice-value" class="appsheet-input-box" placeholder="0.00" value="0" step="any" style="border-top-left-radius: 0; border-bottom-left-radius: 0;">
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- 23. Is Dispatch From address required? - Screen 9 Conditional -->
-                  <div class="appsheet-form-row">
-                    <label class="appsheet-form-label">Is Dispatch From address required?</label>
-                    <div class="appsheet-form-control-wrap">
-                      <div class="appsheet-segmented-gold" id="seg-dispatch-from">
-                        <button type="button" class="seg-btn active" id="btn-dispatch-no" onclick="BiltyBookingModule.setAppSheetDispatchFromToggle(false, this)">No</button>
-                        <button type="button" class="seg-btn" id="btn-dispatch-yes" onclick="BiltyBookingModule.setAppSheetDispatchFromToggle(true, this)">Yes</button>
-                      </div>
-                      <input type="hidden" id="bilty-dispatch-from-req" value="No">
-                    </div>
-                  </div>
-
-                  <!-- 23A. Dispatch From Address * (SHOWN WHEN REQUIRED) - Screen 9 -->
-                  <div class="appsheet-form-row" id="row-dispatch-from-address" style="display: none;">
-                    <label class="appsheet-form-label">Dispatch From Address *</label>
-                    <div class="appsheet-form-control-wrap">
-                      <input type="text" id="bilty-dispatch-from" class="appsheet-input-box" placeholder="Enter alternate Dispatch/Loading Address" style="max-width: 480px;">
-                    </div>
-                  </div>
-
-                  <!-- 24. Material * -->
-                  <div class="appsheet-form-row">
-                    <label class="appsheet-form-label">Material *</label>
-                    <div class="appsheet-form-control-wrap">
-                      <div class="w-100" style="max-width: 380px;">
-                        <input type="text" id="bilty-material" list="materialsList" class="appsheet-input-box fw-semibold" value="Marble Cut Size" required>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- 25. GSTIN Consignee -->
-                  <div class="appsheet-form-row align-start">
-                    <label class="appsheet-form-label pt-2">GSTIN Consignee</label>
-                    <div class="appsheet-form-control-wrap flex-column align-items-start">
-                      <div class="d-flex align-items-center gap-2 w-100" style="max-width: 480px;">
-                        <div class="position-relative flex-grow-1">
-                          <input type="text" id="bilty-consignee" list="consigneesGstinList" class="appsheet-input-box" placeholder="Select or type GSTIN / Party Name" oninput="BiltyBookingModule.onConsigneeSelect(this.value)" onchange="BiltyBookingModule.onConsigneeSelect(this.value)" autocomplete="off">
-                          <input type="hidden" id="bilty-consignee-gstin">
-                          <input type="hidden" id="bilty-delivery-address">
-                        </div>
-                        <button type="button" class="btn-appsheet-quick-add" onclick="BiltyBookingModule.quickAddModal('consignee')" title="Add New Consignee / Party">
-                          <i class="bi bi-plus-circle-fill text-warning"></i> + New
-                        </button>
-                      </div>
-                      <div id="appsheet-consignee-address-box" class="w-100 mt-2 p-2 px-3 bg-light rounded border border-secondary-subtle small d-flex align-items-center justify-content-between" style="max-width: 480px; min-height: 38px;">
-                        <div class="d-flex align-items-center gap-2">
-                          <i class="bi bi-geo-alt-fill text-success"></i>
-                          <span id="appsheet-consignee-address-text" class="text-muted fst-italic">Select Consignee / GSTIN to view delivery address</span>
-                        </div>
-                        <span class="badge bg-secondary-subtle text-secondary" id="appsheet-consignee-gstin-badge">GST: ---</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- 26. Is Ship To address required? - Screen 9 Conditional -->
-                  <div class="appsheet-form-row">
-                    <label class="appsheet-form-label">Is Ship To address required?</label>
-                    <div class="appsheet-form-control-wrap">
-                      <div class="appsheet-segmented-gold" id="seg-ship-to">
-                        <button type="button" class="seg-btn active" id="btn-shipto-no" onclick="BiltyBookingModule.setAppSheetShipToToggle(false, this)">No</button>
-                        <button type="button" class="seg-btn" id="btn-shipto-yes" onclick="BiltyBookingModule.setAppSheetShipToToggle(true, this)">Yes</button>
-                      </div>
-                      <input type="hidden" id="bilty-ship-to-req" value="No">
-                    </div>
-                  </div>
-
-                  <!-- 26A. Ship To Address * (SHOWN WHEN REQUIRED) - Screen 9 -->
-                  <div class="appsheet-form-row" id="row-ship-to-address" style="display: none;">
-                    <label class="appsheet-form-label">Ship To Address *</label>
-                    <div class="appsheet-form-control-wrap">
-                      <input type="text" id="bilty-ship-to" class="appsheet-input-box" placeholder="Enter alternate Ship To / Unloading Site Address" style="max-width: 480px;">
-                    </div>
-                  </div>
-
-                  <!-- 27. Actual Billing Type * -->
-                  <div class="appsheet-form-row">
-                    <label class="appsheet-form-label">Actual Billing Type *</label>
-                    <div class="appsheet-form-control-wrap">
-                      <select id="bilty-billing-type" class="appsheet-input-box" style="max-width: 260px;" onchange="BiltyBookingModule.recalculateFreightAndTotals()">
-                        <option value="Per Tonne" selected>Per Tonne</option>
-                        <option value="Fixed">Fixed</option>
-                        <option value="To be Billed">To be Billed</option>
-                        <option value="Fixed-Non GST">Fixed-Non GST</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <!-- 28. Actual Weight * -->
-                  <div class="appsheet-form-row">
-                    <label class="appsheet-form-label">Actual Weight *</label>
-                    <div class="appsheet-form-control-wrap">
-                      <div class="input-group" style="max-width: 240px;">
-                        <input type="number" id="bilty-weight" class="appsheet-input-box font-monospace fw-bold" placeholder="0.000" step="any" oninput="BiltyBookingModule.recalculateFreightAndTotals()" required>
-                        <span class="input-group-text bg-light text-muted" style="border: 1px solid #d1d5db; border-left: none; font-size: 13px;">MT</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- 29. Actual Rate * -->
-                  <div class="appsheet-form-row">
-                    <label class="appsheet-form-label">Actual Rate *</label>
-                    <div class="appsheet-form-control-wrap">
-                      <div class="input-group" style="max-width: 240px;">
-                        <span class="input-group-text bg-light text-muted" style="border: 1px solid #d1d5db; border-right: none; font-size: 13px;">₹</span>
-                        <input type="number" id="bilty-rate" class="appsheet-input-box font-monospace fw-bold" placeholder="0.00" step="any" oninput="BiltyBookingModule.recalculateFreightAndTotals()" required>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- 30. Freight * -->
-                  <div class="appsheet-form-row">
-                    <label class="appsheet-form-label">Freight *</label>
-                    <div class="appsheet-form-control-wrap">
-                      <div class="input-group" style="max-width: 240px;">
-                        <span class="input-group-text bg-light text-muted" style="border: 1px solid #d1d5db; border-right: none; font-size: 13px;">₹</span>
-                        <input type="number" id="bilty-freight" class="appsheet-input-box font-monospace fw-bold text-success" placeholder="0.00" step="any" required>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- 31. Hault Charges -->
-                  <div class="appsheet-form-row">
-                    <label class="appsheet-form-label">Hault Charges</label>
-                    <div class="appsheet-form-control-wrap">
-                      <div class="input-group" style="max-width: 240px;">
-                        <span class="input-group-text bg-light text-muted" style="border: 1px solid #d1d5db; border-right: none; font-size: 13px;">₹</span>
-                        <input type="number" id="bilty-hault-charges" class="appsheet-input-box" value="0" step="any" oninput="BiltyBookingModule.recalculateFreightAndTotals()">
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- 32. Loading Charges -->
-                  <div class="appsheet-form-row">
-                    <label class="appsheet-form-label">Loading Charges</label>
-                    <div class="appsheet-form-control-wrap">
-                      <div class="input-group" style="max-width: 240px;">
-                        <span class="input-group-text bg-light text-muted" style="border: 1px solid #d1d5db; border-right: none; font-size: 13px;">₹</span>
-                        <input type="number" id="bilty-loading-charges" class="appsheet-input-box" value="0" step="any" oninput="BiltyBookingModule.recalculateFreightAndTotals()">
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- 33. Bilty Billing Type * -->
-                  <div class="appsheet-form-row">
-                    <label class="appsheet-form-label">Bilty Billing Type *</label>
-                    <div class="appsheet-form-control-wrap">
-                      <select id="bilty-billing-category" class="appsheet-input-box" style="max-width: 260px;">
-                        <option value="Fixed" selected>Fixed</option>
-                        <option value="Per Tonne">Per Tonne</option>
-                      </select>
-                    </div>
-                  </div>
-
-                </div>
-
-                <!-- Bottom Footer Bar: Cancel | Save (Gold Pill) -->
-                <div class="appsheet-form-footer">
-                  <button type="button" class="btn-appsheet-cancel" onclick="BiltyBookingModule.backToStep1()">
-                    Cancel
-                  </button>
-                  <button type="button" class="btn-appsheet-gold-save" onclick="BiltyBookingModule.saveAppSheetBilty()">
-                    Save
-                  </button>
-                </div>
-              </div>
-
-        <!-- AppSheet Dynamic Datalists for 586 Trucks, 3,396 Parties, Destinations & Fleet -->
+          <!-- AppSheet Dynamic Datalists for 586 Trucks, 3,396 Parties, Destinations & Fleet -->
         <datalist id="fleetTrucksList"></datalist>
         <datalist id="truckOwnersList"></datalist>
         <datalist id="driversList"></datalist>

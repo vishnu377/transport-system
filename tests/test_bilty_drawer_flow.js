@@ -275,6 +275,15 @@ async function runTests() {
   assert.strictEqual(step2.style.display, 'block', 'Step 2 must be displayed');
   assert.strictEqual(document.getElementById('appsheet-display-gr').innerText, document.getElementById('step1-display-gr').innerText, 'G.R.No carried from Step 1 to Step 2');
 
+  // 8D2. Video frame_314s: When GST is Yes, 'Who will pay GST?' row is visible
+  document.getElementById('bilty-is-gst').value = 'Yes';
+  BiltyBookingModule.applyStep2ConditionalRules();
+  assert.strictEqual(document.getElementById('row-bilty-gst-payer').style.display, '', 'Who will pay GST row visible when GST is Yes');
+
+  document.getElementById('bilty-is-gst').value = 'No';
+  BiltyBookingModule.applyStep2ConditionalRules();
+  assert.strictEqual(document.getElementById('row-bilty-gst-payer').style.display, 'none', 'Who will pay GST row hidden when GST is No');
+
   // 8E. Screen 7: When Status is 'Due', Mode is hidden; when 'Paid', Mode is visible
   BiltyBookingModule.setAppSheetStatus('Due');
   assert.strictEqual(rowMode.style.display, 'none', 'Mode row MUST be hidden when Status is Due');
