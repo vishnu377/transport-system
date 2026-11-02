@@ -607,14 +607,14 @@
                       </div>
                     </div>
                   </div>
-
-                  <!-- 3. Transport * (MTC / TTC) - Screen 3 & 4 -->
-                  <div class="appsheet-form-row">
+                  <!-- 3. Transport * (MTC / TTC / SMTC) - Screen 3 & 4 -->
+                  <div class="appsheet-form-row" id="row-step1-transport">
                     <label class="appsheet-form-label">Transport *</label>
                     <div class="appsheet-form-control-wrap">
                       <div class="appsheet-segmented-gold" id="seg-step1-transport">
                         <button type="button" class="seg-btn" id="btn-step1-mtc" onclick="BiltyBookingModule.setStep1Transport('MTC', this)">MTC</button>
                         <button type="button" class="seg-btn active" id="btn-step1-ttc" onclick="BiltyBookingModule.setStep1Transport('TTC', this)">TTC</button>
+                        <button type="button" class="seg-btn" id="btn-step1-smtc" onclick="BiltyBookingModule.setStep1Transport('SMTC', this)">SMTC</button>
                       </div>
                     </div>
                   </div>

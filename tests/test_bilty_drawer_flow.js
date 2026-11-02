@@ -232,24 +232,42 @@ async function runTests() {
   assert.strictEqual(document.getElementById('bilty-type').value, 'Regular', 'Default bilty type is Regular');
   assert.strictEqual(rowGst.style.display, '', 'GST row visible when Regular');
 
-  // 8B. Screen 2: Selecting URP hides GST row
+  // 8B. Screen 1 & 2: Selecting URP hides GST and Transport rows & gives negative -284 sequence
   BiltyBookingModule.setStep1BiltyType('URP');
   assert.strictEqual(document.getElementById('bilty-type').value, 'URP');
   assert.strictEqual(rowGst.style.display, 'none', 'GST row must be hidden when URP is selected');
+  assert.strictEqual(document.getElementById('row-step1-transport').style.display, 'none', 'Transport row must be hidden when URP is selected');
+  assert.strictEqual(document.getElementById('step1-display-gr').innerText, '-284', 'URP generates authentic negative counter -284');
+  assert.strictEqual(document.getElementById('step1-gr-label').innerText, 'URP *', 'URP label shows URP *');
   assert.strictEqual(document.getElementById('bilty-is-gst').value, 'No', 'GST auto-set to No when URP');
 
-  // Switch back to Regular -> GST row is visible
+  // Switch back to Regular -> GST & Transport rows are visible
   BiltyBookingModule.setStep1BiltyType('Regular');
   assert.strictEqual(rowGst.style.display, '', 'GST row visible when Regular');
+  assert.strictEqual(document.getElementById('row-step1-transport').style.display, '', 'Transport row visible when Regular');
 
-  // 8C. Screen 3 & 4: Transport switch updates firm & live G.R.No
+  // 8C. Screen 3 & 4: Transport switch updates firm & live G.R.No (MTC: 2, TTC: 2761, SMTC: 260)
   await BiltyBookingModule.setStep1Transport('MTC');
   assert.strictEqual(document.getElementById('bilty-firm').value, 'MTC');
-  assert(document.getElementById('step1-display-gr').innerText.length > 0, 'Sequential G.R.No generated for MTC');
+  assert(document.getElementById('step1-display-gr').innerText.length > 0, 'MTC generates sequential G.R.No');
+  assert.strictEqual(document.getElementById('step1-gr-label').innerText, 'MTC *');
+
+  await BiltyBookingModule.setStep1Transport('SMTC');
+  assert.strictEqual(document.getElementById('bilty-firm').value, 'SMTC');
+  assert.strictEqual(document.getElementById('step1-display-gr').innerText, '260', 'SMTC sequential G.R.No is 260');
+  assert.strictEqual(document.getElementById('step1-gr-label').innerText, 'SMTC *');
 
   await BiltyBookingModule.setStep1Transport('TTC');
   assert.strictEqual(document.getElementById('bilty-firm').value, 'TTC');
-  assert(document.getElementById('step1-display-gr').innerText.length > 0, 'Sequential G.R.No generated for TTC');
+  assert(document.getElementById('step1-display-gr').innerText.length > 0, 'TTC sequential G.R.No generated');
+  assert.strictEqual(document.getElementById('step1-gr-label').innerText, 'TTC *');
+
+  // Screen 10: Is GST Applicable = Yes automatically selects SMTC firm (260)
+  BiltyBookingModule.setStep1Gst('Yes');
+  assert.strictEqual(document.getElementById('bilty-firm').value, 'SMTC', 'GST Yes auto-routes to SMTC firm');
+  assert.strictEqual(document.getElementById('step1-display-gr').innerText, '260', 'SMTC GR is 260');
+  BiltyBookingModule.setStep1Gst('No');
+  assert.strictEqual(document.getElementById('bilty-firm').value, 'TTC', 'GST No routes back to TTC');
 
   // 8D. Screen 5: Save on Step 1 advances to Step 2
   BiltyBookingModule.proceedToStep2();

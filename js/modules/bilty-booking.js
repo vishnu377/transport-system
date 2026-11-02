@@ -371,6 +371,26 @@ const BiltyBookingModule = {
   // SEQUENTIAL G.R. NUMBER GENERATOR
   // ----------------------------------------------------
   getNextGrSequences(firm = 'TTC', year = '2026-2027', count = 1) {
+    if (firm === 'URP') {
+      let minSeq = -283;
+      (this.allTrips || []).forEach(t => {
+        if (t.biltyType === 'URP' || (t.grNo && t.grNo.includes('URP'))) {
+          const s = parseInt(t.grSeq || (t.shortGrNo ? t.shortGrNo.split('_')[0] : 0), 10);
+          if (!isNaN(s) && s < minSeq) {
+            minSeq = s;
+          }
+        }
+      });
+      const results = [];
+      for (let i = 1; i <= count; i++) {
+        const seq = (minSeq === -283 && i === 1) ? -284 : minSeq - i;
+        const shortGr = `${seq}_URP`;
+        const fullGr = `${year}-${shortGr}`;
+        results.push({ seq, shortGr, fullGr });
+      }
+      return results;
+    }
+
     let maxSeq = 0;
     (this.allTrips || []).forEach(t => {
       let tFirm = t.transport;
@@ -379,9 +399,14 @@ const BiltyBookingModule = {
         else if (t.grNo.includes('MTC')) tFirm = 'MTC';
         else tFirm = 'TTC';
       }
-      const tYear = t.financialYear || (t.grNo && t.grNo.startsWith('2026-2027') ? '2026-2027' : '');
+      let tYear = t.financialYear;
+      if (!tYear && t.grNo) {
+        const m = t.grNo.match(/^(\d{4}-\d{4})/);
+        if (m) tYear = m[1];
+      }
+      const yearMatches = tYear ? (tYear === year) : true;
       
-      if (tFirm === firm && (tYear === year || !tYear)) {
+      if (tFirm === firm && yearMatches) {
         const seq = parseInt(t.grSeq || (t.shortGrNo ? t.shortGrNo.split('_')[0] : 0), 10);
         if (!isNaN(seq) && seq > maxSeq && seq < 100000) {
           maxSeq = seq;
@@ -391,9 +416,9 @@ const BiltyBookingModule = {
 
     // Fallback baseline if starting fresh
     if (maxSeq === 0) {
-      if (firm === 'TTC') maxSeq = 2207;
-      else if (firm === 'SMTC') maxSeq = 217;
-      else if (firm === 'MTC') maxSeq = 1406;
+      if (firm === 'TTC') maxSeq = 2760;
+      else if (firm === 'SMTC') maxSeq = 259;
+      else if (firm === 'MTC') maxSeq = 1;
       else maxSeq = 100;
     }
 
@@ -408,7 +433,8 @@ const BiltyBookingModule = {
   },
 
   async generateBiltyNumber() {
-    const firm = document.getElementById('bilty-firm')?.value || 'TTC';
+    const biltyType = document.getElementById('bilty-type')?.value || 'Regular';
+    const firm = (biltyType === 'URP') ? 'URP' : (document.getElementById('bilty-firm')?.value || 'TTC');
     const year = document.getElementById('bilty-year')?.value || '2026-2027';
 
     let count = 1;
@@ -429,6 +455,11 @@ const BiltyBookingModule = {
 
     const step1Display = document.getElementById('step1-display-gr');
     if (step1Display) step1Display.innerText = String(first.seq);
+
+    const step1GrLabel = document.getElementById('step1-gr-label');
+    if (step1GrLabel) {
+      step1GrLabel.innerText = (biltyType === 'URP') ? 'URP *' : `${firm} *`;
+    }
 
     const appsheetDisplay = document.getElementById('appsheet-display-gr');
     if (appsheetDisplay) {
@@ -1066,13 +1097,17 @@ const BiltyBookingModule = {
       btnEl.classList.add('active');
     }
     const gstRow = document.getElementById('row-step1-gst');
+    const transportRow = document.getElementById('row-step1-transport');
     const gstInput = document.getElementById('bilty-is-gst');
     if (type === 'URP') {
       if (gstRow) gstRow.style.display = 'none';
+      if (transportRow) transportRow.style.display = 'none';
       if (gstInput) gstInput.value = 'No';
     } else {
       if (gstRow) gstRow.style.display = '';
+      if (transportRow) transportRow.style.display = '';
     }
+    this.generateBiltyNumber();
     this.updateLivePreview();
   },
 
@@ -1083,32 +1118,43 @@ const BiltyBookingModule = {
       btnEl.parentElement.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
       btnEl.classList.add('active');
     }
+    if (val === 'Yes') {
+      this.setStep1Transport('SMTC');
+    } else {
+      const currentFirm = document.getElementById('bilty-firm')?.value;
+      if (currentFirm === 'SMTC') {
+        this.setStep1Transport('TTC');
+      }
+    }
     this.updateLivePreview();
   },
 
   async setStep1Transport(firm, btnEl) {
-    await this.generateBiltyNumber();
     const firmInput = document.getElementById('bilty-firm');
     if (firmInput) firmInput.value = firm;
-    if (btnEl && btnEl.parentElement) {
-      btnEl.parentElement.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
-      btnEl.classList.add('active');
-    }
-    // Also sync Step 2 transport segmented button
+    
+    // Sync Step 1 segmented buttons
+    const s1Mtc = document.getElementById('btn-step1-mtc');
+    const s1Ttc = document.getElementById('btn-step1-ttc');
+    const s1Smtc = document.getElementById('btn-step1-smtc');
+    if (s1Mtc) s1Mtc.classList.toggle('active', firm === 'MTC');
+    if (s1Ttc) s1Ttc.classList.toggle('active', firm === 'TTC');
+    if (s1Smtc) s1Smtc.classList.toggle('active', firm === 'SMTC');
+
+    // Also sync Step 2 transport segmented buttons
     const mtcBtn = document.getElementById('btn-seg-mtc');
     const ttcBtn = document.getElementById('btn-seg-ttc');
-    if (firm === 'MTC') {
-      if (mtcBtn) mtcBtn.classList.add('active');
-      if (ttcBtn) ttcBtn.classList.remove('active');
-    } else {
-      if (ttcBtn) ttcBtn.classList.add('active');
-      if (mtcBtn) mtcBtn.classList.remove('active');
-    }
+    const smtcBtn = document.getElementById('btn-seg-smtc');
+    if (mtcBtn) mtcBtn.classList.toggle('active', firm === 'MTC');
+    if (ttcBtn) ttcBtn.classList.toggle('active', firm === 'TTC');
+    if (smtcBtn) smtcBtn.classList.toggle('active', firm === 'SMTC');
+
     const grLabel = document.getElementById('appsheet-gr-label');
     if (grLabel) grLabel.innerText = `${firm} G.R.No. *`;
     const step1GrLabel = document.getElementById('step1-gr-label');
-    if (step1GrLabel) step1GrLabel.innerText = `${firm} G.R.No. *`;
-    this.generateBiltyNumber();
+    if (step1GrLabel) step1GrLabel.innerText = `${firm} *`;
+
+    await this.generateBiltyNumber();
     this.updateLivePreview();
   },
 
@@ -1129,12 +1175,19 @@ const BiltyBookingModule = {
     const firm = document.getElementById('bilty-firm')?.value || 'TTC';
     const mtcBtn = document.getElementById('btn-seg-mtc');
     const ttcBtn = document.getElementById('btn-seg-ttc');
+    const smtcBtn = document.getElementById('btn-seg-smtc');
     if (firm === 'MTC') {
       if (mtcBtn) mtcBtn.classList.add('active');
+      if (ttcBtn) ttcBtn.classList.remove('active');
+      if (smtcBtn) smtcBtn.classList.remove('active');
+    } else if (firm === 'SMTC') {
+      if (smtcBtn) smtcBtn.classList.add('active');
+      if (mtcBtn) mtcBtn.classList.remove('active');
       if (ttcBtn) ttcBtn.classList.remove('active');
     } else {
       if (ttcBtn) ttcBtn.classList.add('active');
       if (mtcBtn) mtcBtn.classList.remove('active');
+      if (smtcBtn) smtcBtn.classList.remove('active');
     }
 
     const step1Gr = document.getElementById('step1-display-gr')?.innerText;
