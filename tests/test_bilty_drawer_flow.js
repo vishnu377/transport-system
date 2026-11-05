@@ -262,10 +262,17 @@ async function runTests() {
   assert(document.getElementById('step1-display-gr').innerText.length > 0, 'TTC sequential G.R.No generated');
   assert.strictEqual(document.getElementById('step1-gr-label').innerText, 'TTC *');
 
-  // Screen 10: Is GST Applicable = Yes automatically selects SMTC firm (260)
+  // Screen 10 & User Case 5: When GST = Yes, SMTC option appears, but unselected keeps TTC
   BiltyBookingModule.setStep1Gst('Yes');
-  assert.strictEqual(document.getElementById('bilty-firm').value, 'SMTC', 'GST Yes auto-routes to SMTC firm');
-  assert.strictEqual(document.getElementById('step1-display-gr').innerText, '260', 'SMTC GR is 260');
+  assert.strictEqual(document.getElementById('row-step1-smtc-wrap').style.display, '', 'SMTC row visible when GST Yes');
+  assert.strictEqual(document.getElementById('bilty-firm').value, 'TTC', 'Unselected SMTC keeps TTC as active firm (Case 5)');
+
+  // Clicking SMTC activates SMTC firm
+  await BiltyBookingModule.setStep1SmtcToggle();
+  assert.strictEqual(document.getElementById('bilty-firm').value, 'SMTC', 'Clicking SMTC routes to SMTC firm');
+  assert.strictEqual(document.getElementById('step1-gr-label').innerText, 'SMTC *');
+
+  // Setting GST to No routes back to TTC
   BiltyBookingModule.setStep1Gst('No');
   assert.strictEqual(document.getElementById('bilty-firm').value, 'TTC', 'GST No routes back to TTC');
 

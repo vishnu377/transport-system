@@ -685,8 +685,18 @@ const BiltyBookingModule = {
     }
 
     const grandTotal = freight + loading + halt + gst;
-    document.getElementById('bilty-grand-total').value = grandTotal ? grandTotal.toFixed(2) : '0.00';
+    const gtInput = document.getElementById('bilty-grand-total');
+    if (gtInput) gtInput.value = grandTotal ? grandTotal.toFixed(2) : '0.00';
 
+    const isGst = (document.getElementById('bilty-is-gst')?.value === 'Yes');
+    const igstVal = isGst ? (freight * 0.05) : 0;
+    const igstEl = document.getElementById('bilty-igst-display');
+    if (igstEl) igstEl.value = '\u20B9 ' + igstVal.toFixed(2);
+
+    const grandTotalDisplay = document.getElementById('bilty-grand-total-display');
+    if (grandTotalDisplay) grandTotalDisplay.value = '\u20B9 ' + grandTotal.toFixed(2);
+
+    this.updateRateBiltyDisplay();
     this.recalculateAllTotals();
     this.updateLivePreview();
   },
@@ -1098,16 +1108,31 @@ const BiltyBookingModule = {
     }
     const gstRow = document.getElementById('row-step1-gst');
     const transportRow = document.getElementById('row-step1-transport');
+    const smtcWrap = document.getElementById('row-step1-smtc-wrap');
     const gstInput = document.getElementById('bilty-is-gst');
+    
     if (type === 'URP') {
       if (gstRow) gstRow.style.display = 'none';
       if (transportRow) transportRow.style.display = 'none';
+      if (smtcWrap) smtcWrap.style.display = 'none';
       if (gstInput) gstInput.value = 'No';
+      const firmEl = document.getElementById('bilty-firm');
+      if (firmEl) firmEl.value = 'URP';
+      const step1Display = document.getElementById('step1-display-gr');
+      if (step1Display) step1Display.innerText = '-284';
+      const step1GrLabel = document.getElementById('step1-gr-label');
+      if (step1GrLabel) step1GrLabel.innerText = 'URP *';
+      const grNoEl = document.getElementById('bilty-gr-no');
+      if (grNoEl) grNoEl.value = '2026-2027--284_URP';
+      const shortGrEl = document.getElementById('bilty-short-gr');
+      if (shortGrEl) shortGrEl.value = '-284_URP';
     } else {
       if (gstRow) gstRow.style.display = '';
       if (transportRow) transportRow.style.display = '';
+      const isGst = (gstInput && gstInput.value === 'Yes');
+      if (smtcWrap) smtcWrap.style.display = isGst ? '' : 'none';
+      this.generateBiltyNumber();
     }
-    this.generateBiltyNumber();
     this.updateLivePreview();
   },
 
@@ -1118,25 +1143,24 @@ const BiltyBookingModule = {
       btnEl.parentElement.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
       btnEl.classList.add('active');
     }
-    const s1Mtc = document.getElementById('btn-step1-mtc');
-    const s1Ttc = document.getElementById('btn-step1-ttc');
-    const s1Smtc = document.getElementById('btn-step1-smtc');
+    const smtcWrap = document.getElementById('row-step1-smtc-wrap');
+    const smtcBtn = document.getElementById('btn-step1-smtc');
 
     if (val === 'Yes') {
-      if (s1Mtc) s1Mtc.style.display = 'none';
-      if (s1Ttc) s1Ttc.style.display = 'none';
-      if (s1Smtc) {
-        s1Smtc.style.display = '';
-        s1Smtc.classList.add('active');
+      if (smtcWrap) smtcWrap.style.display = '';
+      // Case 5: keep current Row 3 selection (MTC or TTC) active unless SMTC button is explicitly clicked
+      if (smtcBtn) smtcBtn.classList.remove('active');
+      const currentFirm = document.getElementById('bilty-firm')?.value || 'TTC';
+      if (currentFirm === 'SMTC') {
+        this.setStep1Transport('TTC');
+      } else {
+        this.setStep1Transport(currentFirm);
       }
-      this.setStep1Transport('SMTC');
     } else {
-      if (s1Mtc) s1Mtc.style.display = '';
-      if (s1Ttc) s1Ttc.style.display = '';
-      if (s1Smtc) s1Smtc.style.display = 'none';
+      if (smtcWrap) smtcWrap.style.display = 'none';
+      if (smtcBtn) smtcBtn.classList.remove('active');
       const currentFirm = document.getElementById('bilty-firm')?.value;
       if (currentFirm === 'SMTC' || !currentFirm) {
-        if (s1Ttc) s1Ttc.classList.add('active');
         this.setStep1Transport('TTC');
       } else {
         this.setStep1Transport(currentFirm);
@@ -1149,13 +1173,15 @@ const BiltyBookingModule = {
     const firmInput = document.getElementById('bilty-firm');
     if (firmInput) firmInput.value = firm;
     
-    // Sync Step 1 segmented buttons
+    // Sync Row 3 buttons
     const s1Mtc = document.getElementById('btn-step1-mtc');
     const s1Ttc = document.getElementById('btn-step1-ttc');
-    const s1Smtc = document.getElementById('btn-step1-smtc');
     if (s1Mtc) s1Mtc.classList.toggle('active', firm === 'MTC');
     if (s1Ttc) s1Ttc.classList.toggle('active', firm === 'TTC');
-    if (s1Smtc) s1Smtc.classList.toggle('active', firm === 'SMTC');
+
+    // Deactivate SMTC in Row 3B
+    const s1Smtc = document.getElementById('btn-step1-smtc');
+    if (s1Smtc) s1Smtc.classList.remove('active');
 
     // Also sync Step 2 transport segmented buttons
     const mtcBtn = document.getElementById('btn-seg-mtc');
@@ -1172,6 +1198,77 @@ const BiltyBookingModule = {
 
     await this.generateBiltyNumber();
     this.updateLivePreview();
+  },
+
+  async setStep1SmtcToggle(btnEl) {
+    const smtcBtn = btnEl || document.getElementById('btn-step1-smtc');
+    const firmInput = document.getElementById('bilty-firm');
+    const s1Mtc = document.getElementById('btn-step1-mtc');
+    const s1Ttc = document.getElementById('btn-step1-ttc');
+
+    const isCurrentlyActive = smtcBtn && smtcBtn.classList.contains('active');
+    if (isCurrentlyActive) {
+      // Toggle off SMTC -> revert to TTC or MTC
+      smtcBtn.classList.remove('active');
+      const fallbackFirm = (s1Mtc && s1Mtc.classList.contains('active')) ? 'MTC' : 'TTC';
+      await this.setStep1Transport(fallbackFirm);
+    } else {
+      // Activate SMTC
+      if (smtcBtn) smtcBtn.classList.add('active');
+      if (s1Mtc) s1Mtc.classList.remove('active');
+      if (s1Ttc) s1Ttc.classList.remove('active');
+      if (firmInput) firmInput.value = 'SMTC';
+
+      const mtcBtn = document.getElementById('btn-seg-mtc');
+      const ttcBtn = document.getElementById('btn-seg-ttc');
+      const smtcBtn2 = document.getElementById('btn-seg-smtc');
+      if (mtcBtn) mtcBtn.classList.remove('active');
+      if (ttcBtn) ttcBtn.classList.remove('active');
+      if (smtcBtn2) smtcBtn2.classList.add('active');
+
+      const grLabel = document.getElementById('appsheet-gr-label');
+      if (grLabel) grLabel.innerText = `SMTC G.R.No. *`;
+      const step1GrLabel = document.getElementById('step1-gr-label');
+      if (step1GrLabel) step1GrLabel.innerText = `SMTC *`;
+
+      await this.generateBiltyNumber();
+      this.updateLivePreview();
+    }
+  },
+
+  setDebtFrom(val, btnEl) {
+    const input = document.getElementById('bilty-debt-from');
+    if (input) input.value = val;
+    if (btnEl && btnEl.parentElement) {
+      btnEl.parentElement.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
+      btnEl.classList.add('active');
+    }
+  },
+
+  updateRateBiltyDisplay() {
+    const bType = document.getElementById('bilty-final-billing-type')?.value || 'Fixed';
+    const rateBiltyInput = document.getElementById('bilty-rate-bilty');
+    const invalidWarning = document.getElementById('rate-bilty-invalid-warning');
+    const freight = parseFloat(document.getElementById('bilty-freight')?.value) || 0;
+
+    if (!rateBiltyInput) return;
+
+    if (bType === 'Fixed') {
+      rateBiltyInput.value = 'Fixed';
+      if (invalidWarning) invalidWarning.classList.add('d-none');
+    } else if (bType === 'To be Billed') {
+      rateBiltyInput.value = 'To be Billed';
+      if (invalidWarning) invalidWarning.classList.add('d-none');
+    } else {
+      // Per Tonne or Fixed-Non GST
+      if (freight > 0) {
+        rateBiltyInput.value = `₹ ${freight.toFixed(2)}`;
+        if (invalidWarning) invalidWarning.classList.add('d-none');
+      } else {
+        rateBiltyInput.value = '₹ 0.00';
+        if (invalidWarning) invalidWarning.classList.remove('d-none');
+      }
+    }
   },
 
     setStep(stepNum) {
@@ -1244,12 +1341,18 @@ const BiltyBookingModule = {
     const modeRow = document.getElementById('row-bilty-mode');
     if (modeRow) modeRow.style.display = (commStatus === 'Due') ? 'none' : '';
 
-    // Rule 2: Debt Type & Description shown when Any Debt == 'Yes' (Screen 8 & Video frame_179s)
+    // Rule 2: Debt Type, Amount, From & Description shown when Any Debt == 'Yes'
     const hasDebt = (document.getElementById('bilty-has-debt')?.value === 'Yes');
     const rowDebtType = document.getElementById('row-debt-type');
+    const rowDebtAmt = document.getElementById('row-debt-amount');
+    const rowDebtFrom = document.getElementById('row-debt-from');
     const rowDebtDesc = document.getElementById('row-debt-desc');
-    if (rowDebtType) rowDebtType.style.display = hasDebt ? '' : 'none';
-    if (rowDebtDesc) rowDebtDesc.style.display = hasDebt ? '' : 'none';
+    const dStyle = hasDebt ? '' : 'none';
+    if (rowDebtType) rowDebtType.style.display = dStyle;
+    if (rowDebtAmt) rowDebtAmt.style.display = dStyle;
+    if (rowDebtFrom) rowDebtFrom.style.display = dStyle;
+    if (rowDebtDesc) rowDebtDesc.style.display = dStyle;
+    this.updateRateBiltyDisplay();
 
     // Rule 3: Dispatch From Address shown when required == 'Yes' (Screen 9 & Video frame_199s)
     const dispReq = (document.getElementById('bilty-dispatch-from-req')?.value === 'Yes');
@@ -1520,6 +1623,10 @@ const BiltyBookingModule = {
         addressText.innerHTML = `<strong>${party.name}:</strong> ${fullAddr}`;
         addressText.classList.remove('text-muted', 'fst-italic');
       }
+      const cNameInput = document.getElementById('bilty-consignor-name');
+      if (cNameInput) cNameInput.value = party.name || '';
+      const cAddrInput = document.getElementById('bilty-consignor-address');
+      if (cAddrInput) cAddrInput.value = fullAddr || '';
     } else {
       // Check if raw 15-digit GSTIN was entered
       if (/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/i.test(val)) {
@@ -4105,11 +4212,11 @@ const BiltyBookingModule = {
         to: destination,
         company: firm,
         truckOwner: biltyData.truckOwner,
-        debtType: debtType || 'Trip Advance',
+        debtType: debtType || 'Advance',
         dueAmount: debtAmount,
         debtAmount: debtAmount,
         totalReturned: 0,
-        debtMode: commissionMode || 'Cash',
+        debtMode: document.getElementById('bilty-debt-from')?.value || commissionMode || 'Cash',
         borrowerName: biltyData.driver || biltyData.truckOwner,
         receiverName: biltyData.driver,
         remarks: debtDescription || `Debt linked to Bilty G.R. ${fullGr} (${debtType})`,
@@ -4132,14 +4239,10 @@ const BiltyBookingModule = {
 
     this.currentActiveBilty = biltyData;
 
-    // Immediately open print preview modal
-    if (mode === 'print') {
-      this.openPrintModal(biltyData);
-    } else if (mode === 'whatsapp') {
-      this.shareOnWhatsApp(biltyData);
-    } else {
-      this.resetForm();
-    }
+    // Close side drawer and IMMEDIATELY OPEN OFFICIAL PRINT PREVIEW MODAL!
+    this.closeSideDrawer();
+    this.openPrintModal(biltyData);
+    AppUI.showToast(`Bilty ${biltyData.grNo} saved & print view ready!`, "success");
   },
 
     saveAndWhatsApp() {
@@ -5237,42 +5340,31 @@ const BiltyBookingModule = {
     const ttcStep1 = document.getElementById('btn-step1-ttc');
     const smtcStep1 = document.getElementById('btn-step1-smtc');
 
+    const smtcWrap = document.getElementById('row-step1-smtc-wrap');
     if (firm === 'SMTC') {
       if (gstInput) gstInput.value = 'Yes';
       if (gstYesBtn) gstYesBtn.classList.add('active');
       if (gstNoBtn) gstNoBtn.classList.remove('active');
-      if (mtcStep1) mtcStep1.style.display = 'none';
-      if (ttcStep1) ttcStep1.style.display = 'none';
-      if (smtcStep1) {
-        smtcStep1.style.display = '';
-        smtcStep1.classList.add('active');
-      }
+      if (smtcWrap) smtcWrap.style.display = '';
+      if (smtcStep1) smtcStep1.classList.add('active');
+      if (mtcStep1) mtcStep1.classList.remove('active');
+      if (ttcStep1) ttcStep1.classList.remove('active');
     } else if (firm === 'MTC') {
       if (gstInput) gstInput.value = 'No';
       if (gstNoBtn) gstNoBtn.classList.add('active');
       if (gstYesBtn) gstYesBtn.classList.remove('active');
-      if (mtcStep1) {
-        mtcStep1.style.display = '';
-        mtcStep1.classList.add('active');
-      }
-      if (ttcStep1) {
-        ttcStep1.style.display = '';
-        ttcStep1.classList.remove('active');
-      }
-      if (smtcStep1) smtcStep1.style.display = 'none';
+      if (smtcWrap) smtcWrap.style.display = 'none';
+      if (smtcStep1) smtcStep1.classList.remove('active');
+      if (mtcStep1) mtcStep1.classList.add('active');
+      if (ttcStep1) ttcStep1.classList.remove('active');
     } else {
       if (gstInput) gstInput.value = 'No';
       if (gstNoBtn) gstNoBtn.classList.add('active');
       if (gstYesBtn) gstYesBtn.classList.remove('active');
-      if (ttcStep1) {
-        ttcStep1.style.display = '';
-        ttcStep1.classList.add('active');
-      }
-      if (mtcStep1) {
-        mtcStep1.style.display = '';
-        mtcStep1.classList.remove('active');
-      }
-      if (smtcStep1) smtcStep1.style.display = 'none';
+      if (smtcWrap) smtcWrap.style.display = 'none';
+      if (smtcStep1) smtcStep1.classList.remove('active');
+      if (ttcStep1) ttcStep1.classList.add('active');
+      if (mtcStep1) mtcStep1.classList.remove('active');
     }
 
     // Step 2 Transport segmented buttons

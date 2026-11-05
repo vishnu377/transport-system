@@ -607,23 +607,32 @@
                       </div>
                     </div>
                   </div>
-                  <!-- 3. Transport * (MTC / TTC / SMTC) - Screen 3 & 4 -->
+                  <!-- 3. Transport * (MTC / TTC) - Screen 3 & 4 -->
                   <div class="appsheet-form-row" id="row-step1-transport">
                     <label class="appsheet-form-label">Transport *</label>
                     <div class="appsheet-form-control-wrap">
                       <div class="appsheet-segmented-gold" id="seg-step1-transport">
                         <button type="button" class="seg-btn" id="btn-step1-mtc" onclick="BiltyBookingModule.setStep1Transport('MTC', this)">MTC</button>
                         <button type="button" class="seg-btn active" id="btn-step1-ttc" onclick="BiltyBookingModule.setStep1Transport('TTC', this)">TTC</button>
-                        <button type="button" class="seg-btn" id="btn-step1-smtc" onclick="BiltyBookingModule.setStep1Transport('SMTC', this)">SMTC</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- 3B. Transport SMTC (Shown ONLY when Is GST Applicable is Yes) -->
+                  <div class="appsheet-form-row" id="row-step1-smtc-wrap" style="display: none;">
+                    <label class="appsheet-form-label">Transport</label>
+                    <div class="appsheet-form-control-wrap">
+                      <div class="appsheet-segmented-gold" id="seg-step1-smtc">
+                        <button type="button" class="seg-btn" id="btn-step1-smtc" onclick="BiltyBookingModule.setStep1SmtcToggle(this)">SMTC</button>
                       </div>
                     </div>
                   </div>
 
                   <!-- 4. G.R.No. * (Live Sequential Counter) - Screen 4 -->
                   <div class="appsheet-form-row">
-                    <label class="appsheet-form-label" id="step1-gr-label">G.R.No. *</label>
+                    <label class="appsheet-form-label" id="step1-gr-label">TTC *</label>
                     <div class="appsheet-form-control-wrap">
-                      <span class="appsheet-text-value font-monospace fs-6 fw-bold" id="step1-display-gr">2755</span>
+                      <span class="appsheet-text-value font-monospace fs-6 fw-bold" id="step1-display-gr">2797</span>
                     </div>
                   </div>
                 </div>
@@ -782,17 +791,37 @@
                       <label class="appsheet-form-label">Debt Type *</label>
                       <div class="appsheet-form-control-wrap">
                         <select id="bilty-debt-type" class="appsheet-input-box" style="max-width: 280px;">
-                          <option value="Trip Advance" selected>Trip Advance</option>
-                          <option value="Diesel Debt">Diesel Debt</option>
-                          <option value="Toll / Fastag Debt">Toll / Fastag Debt</option>
-                          <option value="Driver Debt">Driver Debt</option>
-                          <option value="Commission Debt">Commission Debt</option>
-                          <option value="Other Debt">Other Debt</option>
+                          <option value="Advance" selected>Advance</option>
+                          <option value="Loading">Loading</option>
+                          <option value="In Hand">In Hand</option>
                         </select>
                       </div>
                     </div>
 
-                    <!-- 9B. Debt Description (SHOWN WHEN ANY DEBT IS YES) -->
+                    <!-- 9B. Debt Amount * (SHOWN WHEN ANY DEBT IS YES) -->
+                    <div class="appsheet-form-row" id="row-debt-amount" style="display: none;">
+                      <label class="appsheet-form-label">Debt Amount *</label>
+                      <div class="appsheet-form-control-wrap">
+                        <div class="input-group" style="max-width: 240px;">
+                          <span class="input-group-text bg-light text-muted" style="border: 1px solid #d1d5db; border-right: none; font-size: 13px;">₹</span>
+                          <input type="number" id="bilty-debt-amount" class="appsheet-input-box font-monospace fw-bold" placeholder="0.00" value="0" step="any" style="border-top-left-radius: 0; border-bottom-left-radius: 0;">
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- 9C. Debt From * (Cash / Bank) (SHOWN WHEN ANY DEBT IS YES) -->
+                    <div class="appsheet-form-row" id="row-debt-from" style="display: none;">
+                      <label class="appsheet-form-label">Debt From *</label>
+                      <div class="appsheet-form-control-wrap">
+                        <div class="appsheet-segmented-gold" id="seg-debt-from">
+                          <button type="button" class="seg-btn active" id="btn-debtfrom-cash" onclick="BiltyBookingModule.setDebtFrom('Cash', this)">Cash</button>
+                          <button type="button" class="seg-btn" id="btn-debtfrom-bank" onclick="BiltyBookingModule.setDebtFrom('Bank', this)">Bank</button>
+                        </div>
+                        <input type="hidden" id="bilty-debt-from" value="Cash">
+                      </div>
+                    </div>
+
+                    <!-- 9D. Debt Description (SHOWN WHEN ANY DEBT IS YES) -->
                     <div class="appsheet-form-row" id="row-debt-desc" style="display: none;">
                       <label class="appsheet-form-label">Debt Description</label>
                       <div class="appsheet-form-control-wrap">
@@ -800,25 +829,38 @@
                       </div>
                     </div>
 
-                    <!-- 10. GSTIN Consignor - Video frame_054s -->
+                    <!-- 10. GSTIN Consignor (Dropdown or Type) -->
                     <div class="appsheet-form-row align-start">
-                      <label class="appsheet-form-label pt-2">GSTIN Consignor</label>
+                      <label class="appsheet-form-label pt-2">GSTIN Consignor *</label>
                       <div class="appsheet-form-control-wrap flex-column align-items-start">
                         <div class="d-flex align-items-center gap-2 w-100" style="max-width: 480px;">
                           <div class="position-relative flex-grow-1">
-                            <input type="text" id="bilty-consignor" list="consignorsGstinList" class="appsheet-input-box" placeholder="Search or select GSTIN / Consignor" oninput="BiltyBookingModule.onConsignorSelect(this.value)" onchange="BiltyBookingModule.onConsignorSelect(this.value)" autocomplete="off">
+                            <input type="text" id="bilty-consignor" list="consignorsGstinList" class="appsheet-input-box font-monospace fw-bold" placeholder="Select or type GSTIN" oninput="BiltyBookingModule.onConsignorSelect(this.value)" onchange="BiltyBookingModule.onConsignorSelect(this.value)" autocomplete="off">
                             <input type="hidden" id="bilty-consignor-gstin">
                           </div>
                           <button type="button" class="btn-appsheet-quick-add" onclick="BiltyBookingModule.quickAddModal('consignor')" title="Add New Consignor / Party">
                             <i class="bi bi-pencil-square text-warning"></i> New
                           </button>
                         </div>
-                        <div id="appsheet-consignor-address-box" class="w-100 mt-2 p-2 px-3 bg-light rounded border border-secondary-subtle small d-flex align-items-center justify-content-between" style="max-width: 480px; min-height: 38px;">
-                          <div class="d-flex align-items-center gap-2">
-                            <i class="bi bi-geo-alt-fill text-danger"></i>
-                            <span id="appsheet-consignor-address-text" class="text-muted fst-italic">Loading address...</span>
-                          </div>
-                          <span class="badge bg-secondary-subtle text-secondary" id="appsheet-consignor-gstin-badge">GST: ---</span>
+                      </div>
+                    </div>
+
+                    <!-- 10B. Consignor Name (Auto-filled dynamically) -->
+                    <div class="appsheet-form-row">
+                      <label class="appsheet-form-label">Consignor Name *</label>
+                      <div class="appsheet-form-control-wrap">
+                        <input type="text" id="bilty-consignor-name" class="appsheet-input-box fw-semibold" placeholder="Auto-populated from party" style="max-width: 480px;" readonly>
+                      </div>
+                    </div>
+
+                    <!-- 10C. Consignor Address (Auto-filled dynamically) -->
+                    <div class="appsheet-form-row">
+                      <label class="appsheet-form-label">Consignor Address</label>
+                      <div class="appsheet-form-control-wrap">
+                        <input type="text" id="bilty-consignor-address" class="appsheet-input-box text-muted" placeholder="Consignor Address" style="max-width: 480px;" readonly>
+                        <div id="appsheet-consignor-address-box" class="d-none">
+                          <span id="appsheet-consignor-address-text"></span>
+                          <span id="appsheet-consignor-gstin-badge"></span>
                         </div>
                       </div>
                     </div>
@@ -880,13 +922,13 @@
                       </div>
                     </div>
 
-                    <!-- 16. GSTIN Consignee - Video frame_199s & 234s -->
+                    <!-- 16. GSTIN Consignee (Dropdown or Type) -->
                     <div class="appsheet-form-row align-start">
-                      <label class="appsheet-form-label pt-2">GSTIN Consignee</label>
+                      <label class="appsheet-form-label pt-2">GSTIN Consignee *</label>
                       <div class="appsheet-form-control-wrap flex-column align-items-start">
                         <div class="d-flex align-items-center gap-2 w-100" style="max-width: 480px;">
                           <div class="position-relative flex-grow-1">
-                            <input type="text" id="bilty-consignee" list="consigneesGstinList" class="appsheet-input-box" placeholder="Search or select GSTIN / Consignee" oninput="BiltyBookingModule.onConsigneeSelect(this.value)" onchange="BiltyBookingModule.onConsigneeSelect(this.value)" autocomplete="off">
+                            <input type="text" id="bilty-consignee" list="consigneesGstinList" class="appsheet-input-box font-monospace fw-bold" placeholder="Select or type GSTIN" oninput="BiltyBookingModule.onConsigneeSelect(this.value)" onchange="BiltyBookingModule.onConsigneeSelect(this.value)" autocomplete="off">
                             <input type="hidden" id="bilty-consignee-gstin">
                             <input type="hidden" id="bilty-delivery-address">
                           </div>
@@ -894,12 +936,25 @@
                             <i class="bi bi-pencil-square text-warning"></i> New
                           </button>
                         </div>
-                        <div id="appsheet-consignee-address-box" class="w-100 mt-2 p-2 px-3 bg-light rounded border border-secondary-subtle small d-flex align-items-center justify-content-between" style="max-width: 480px; min-height: 38px;">
-                          <div class="d-flex align-items-center gap-2">
-                            <i class="bi bi-geo-alt-fill text-success"></i>
-                            <span id="appsheet-consignee-address-text" class="text-muted fst-italic">Delivery address...</span>
-                          </div>
-                          <span class="badge bg-secondary-subtle text-secondary" id="appsheet-consignee-gstin-badge">GST: ---</span>
+                      </div>
+                    </div>
+
+                    <!-- 16B. Consignee Name (Auto-filled dynamically) -->
+                    <div class="appsheet-form-row">
+                      <label class="appsheet-form-label">Consignee Name *</label>
+                      <div class="appsheet-form-control-wrap">
+                        <input type="text" id="bilty-consignee-name" class="appsheet-input-box fw-semibold" placeholder="Auto-populated from party" style="max-width: 480px;" readonly>
+                      </div>
+                    </div>
+
+                    <!-- 16C. Consignee Address (Auto-filled dynamically) -->
+                    <div class="appsheet-form-row">
+                      <label class="appsheet-form-label">Consignee Address</label>
+                      <div class="appsheet-form-control-wrap">
+                        <input type="text" id="bilty-consignee-address" class="appsheet-input-box text-muted" placeholder="Consignee Address" style="max-width: 480px;" readonly>
+                        <div id="appsheet-consignee-address-box" class="d-none">
+                          <span id="appsheet-consignee-address-text"></span>
+                          <span id="appsheet-consignee-gstin-badge"></span>
                         </div>
                       </div>
                     </div>
@@ -992,19 +1047,31 @@
                       </div>
                     </div>
 
-                    <!-- 24. Bilty Billing Type * - Video frame_199s -->
+                    <!-- 25. Bilty Billing Type * (Fixed, Per Tonne, To be Billed, Fixed-Non GST) -->
                     <div class="appsheet-form-row">
                       <label class="appsheet-form-label">Bilty Billing Type *</label>
                       <div class="appsheet-form-control-wrap">
-                        <select id="bilty-final-billing-type" class="appsheet-input-box" style="max-width: 260px;">
-                          <option value="Paid" selected>Paid</option>
-                          <option value="To Pay">To Pay</option>
-                          <option value="T.B.B. (To Be Billed)">T.B.B. (To Be Billed)</option>
+                        <select id="bilty-final-billing-type" class="appsheet-input-box" style="max-width: 260px;" onchange="BiltyBookingModule.updateRateBiltyDisplay()">
+                          <option value="Fixed" selected>Fixed</option>
+                          <option value="Per Tonne">Per Tonne</option>
+                          <option value="To be Billed">To be Billed</option>
+                          <option value="Fixed-Non GST">Fixed-Non GST</option>
                         </select>
                       </div>
                     </div>
 
-                    <!-- 25. IGST / CGST / SGST (Shown when GST is Yes) -->
+                    <!-- 25B. Rate Bilty (Dynamic reaction) -->
+                    <div class="appsheet-form-row" id="row-rate-bilty">
+                      <label class="appsheet-form-label">Rate Bilty *</label>
+                      <div class="appsheet-form-control-wrap flex-column align-items-start">
+                        <input type="text" id="bilty-rate-bilty" class="appsheet-input-box font-monospace fw-bold" readonly value="Fixed" style="max-width: 260px;">
+                        <div id="rate-bilty-invalid-warning" class="text-danger small mt-1 fw-bold d-none">
+                          <i class="bi bi-exclamation-triangle-fill me-1"></i> This entry is invalid
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- 26. IGST & Grand Total (Shown when GST is Yes) -->
                     <div id="row-gst-tax-breakup" style="display: none;">
                       <div class="appsheet-form-row">
                         <label class="appsheet-form-label">IGST Amount</label>
@@ -1013,15 +1080,20 @@
                         </div>
                       </div>
                       <div class="appsheet-form-row">
-                        <label class="appsheet-form-label">CGST Amount</label>
+                        <label class="appsheet-form-label">Bilty Grand Total</label>
                         <div class="appsheet-form-control-wrap">
-                          <input type="text" id="bilty-cgst-display" class="appsheet-input-box font-monospace" readonly value="₹ 0.00" style="max-width: 240px;">
+                          <input type="text" id="bilty-grand-total-display" class="appsheet-input-box font-monospace fw-bold text-success fs-6" readonly value="₹ 0.00" style="max-width: 240px;">
                         </div>
                       </div>
-                      <div class="appsheet-form-row">
-                        <label class="appsheet-form-label">SGST Amount</label>
-                        <div class="appsheet-form-control-wrap">
-                          <input type="text" id="bilty-sgst-display" class="appsheet-input-box font-monospace" readonly value="₹ 0.00" style="max-width: 240px;">
+                    </div>
+
+                    <!-- 27. Action Generated (● Generated Bilty) -->
+                    <div class="appsheet-form-row">
+                      <label class="appsheet-form-label">Action Generated</label>
+                      <div class="appsheet-form-control-wrap">
+                        <div class="d-flex align-items-center gap-2 py-1">
+                          <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: #198754;"></span>
+                          <span class="fw-bold text-success" style="font-size: 14px;">Generated Bilty</span>
                         </div>
                       </div>
                     </div>
