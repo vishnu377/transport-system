@@ -701,7 +701,7 @@
                           <button type="button" class="seg-btn" id="btn-seg-smtc" onclick="BiltyBookingModule.setAppSheetTransport('SMTC', this)">SMTC</button>
                         </div>
                         <input type="hidden" id="bilty-firm" value="TTC">
-                        <input type="hidden" id="bilty-year" value="2026-2027">
+                        <input type="hidden" id="bilty-year" value="2026-2027"> 
                       </div>
                     </div>
 
@@ -841,7 +841,7 @@
                     <div class="appsheet-form-row">
                       <label class="appsheet-form-label">Consignor Name *</label>
                       <div class="appsheet-form-control-wrap">
-                        <input type="text" id="bilty-consignor-name" class="appsheet-input-box fw-semibold" placeholder="Auto-populated from party" style="max-width: 480px;" readonly>
+                        <input type="text" id="bilty-consignor-name" class="appsheet-input-box fw-semibold" placeholder="Auto-populated from party (editable)" style="max-width: 480px;">
                       </div>
                     </div>
 
@@ -849,7 +849,7 @@
                     <div class="appsheet-form-row">
                       <label class="appsheet-form-label">Consignor Address</label>
                       <div class="appsheet-form-control-wrap">
-                        <input type="text" id="bilty-consignor-address" class="appsheet-input-box text-muted" placeholder="Consignor Address" style="max-width: 480px;" readonly>
+                        <input type="text" id="bilty-consignor-address" class="appsheet-input-box text-muted" placeholder="Consignor Address (editable)" style="max-width: 480px;">
                         <div id="appsheet-consignor-address-box" class="d-none">
                           <span id="appsheet-consignor-address-text"></span>
                           <span id="appsheet-consignor-gstin-badge"></span>
@@ -935,7 +935,7 @@
                     <div class="appsheet-form-row">
                       <label class="appsheet-form-label">Consignee Name *</label>
                       <div class="appsheet-form-control-wrap">
-                        <input type="text" id="bilty-consignee-name" class="appsheet-input-box fw-semibold" placeholder="Auto-populated from party" style="max-width: 480px;" readonly>
+                        <input type="text" id="bilty-consignee-name" class="appsheet-input-box fw-semibold" placeholder="Auto-populated from party (editable)" style="max-width: 480px;">
                       </div>
                     </div>
 
@@ -943,7 +943,7 @@
                     <div class="appsheet-form-row">
                       <label class="appsheet-form-label">Consignee Address</label>
                       <div class="appsheet-form-control-wrap">
-                        <input type="text" id="bilty-consignee-address" class="appsheet-input-box text-muted" placeholder="Consignee Address" style="max-width: 480px;" readonly>
+                        <input type="text" id="bilty-consignee-address" class="appsheet-input-box text-muted" placeholder="Consignee Address (editable)" style="max-width: 480px;">
                         <div id="appsheet-consignee-address-box" class="d-none">
                           <span id="appsheet-consignee-address-text"></span>
                           <span id="appsheet-consignee-gstin-badge"></span>
@@ -1445,29 +1445,7 @@
       <div class="modal-content border-0 shadow">
         
         <div class="modal-header bg-dark text-white">
-          <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 w-100 me-2">
-            <h6 class="modal-title fw-bold mb-0"><i class="bi bi-printer me-2"></i> Official Consignment Note (Lorry Receipt)</h6>
-            
-            <div class="d-flex align-items-center flex-wrap gap-2">
-              <!-- Orientation Selector: सीधी (Portrait) vs आड़ी (Landscape) -->
-              <div class="btn-group btn-group-sm" role="group" title="प्रिंट की दिशा चुनें (Choose Orientation)">
-                <button type="button" class="btn btn-warning active fw-bold px-3" id="btn-orient-landscape" onclick="BiltyBookingModule.setPrintOrientation('landscape')">
-                  <i class="bi bi-file-earmark-landscape me-1"></i> आड़ी (Landscape)
-                </button>
-                <button type="button" class="btn btn-outline-light px-3" id="btn-orient-portrait" onclick="BiltyBookingModule.setPrintOrientation('portrait')">
-                  <i class="bi bi-file-earmark me-1"></i> सीधी (Portrait)
-                </button>
-              </div>
-
-              <!-- Copy Selector -->
-              <div class="btn-group btn-group-sm" role="group">
-                <button type="button" class="btn btn-outline-light active" id="btn-copy-consignor" onclick="BiltyBookingModule.setPrintCopy('CONSIGNOR COPY')">Consignor Copy</button>
-                <button type="button" class="btn btn-outline-light" id="btn-copy-consignee" onclick="BiltyBookingModule.setPrintCopy('CONSIGNEE COPY')">Consignee Copy</button>
-                <button type="button" class="btn btn-outline-light" id="btn-copy-driver" onclick="BiltyBookingModule.setPrintCopy('DRIVER COPY')">Driver Copy</button>
-                <button type="button" class="btn btn-outline-light" id="btn-copy-office" onclick="BiltyBookingModule.setPrintCopy('OFFICE COPY')">Office Copy</button>
-              </div>
-            </div>
-          </div>
+          <h6 class="modal-title fw-bold mb-0"><i class="bi bi-printer me-2"></i> Official Consignment Note (Lorry Receipt)</h6>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
 

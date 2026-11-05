@@ -403,6 +403,15 @@ const BiltyBookingModule = {
     }
 
     this.setLoadType('Under Load');
+
+    // Clear party inputs for clean new form state
+    ['bilty-consignor', 'bilty-consignor-gstin', 'bilty-consignor-name', 'bilty-consignor-address',
+     'bilty-consignee', 'bilty-consignee-gstin', 'bilty-consignee-name', 'bilty-consignee-address',
+     'bilty-delivery-address', 'bilty-destination', 'bilty-bill-no', 'bilty-invoice-value',
+     'bilty-eway-bill', 'bilty-debt-desc'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
   },
 
   // ----------------------------------------------------
@@ -1701,10 +1710,26 @@ const BiltyBookingModule = {
     const consigneeInput = document.getElementById('bilty-consignee');
     if (consigneeInput && consigneeInput.value !== val) consigneeInput.value = val;
 
+    let searchGstin = '';
+    let searchName = val;
+    if (val.includes(' - ')) {
+      const parts = val.split(' - ');
+      searchGstin = parts[0].trim();
+      searchName = parts.slice(1).join(' - ').trim();
+    }
+
     let party = null;
     const partiesList = this.parties || [];
+    if (searchGstin) {
+      party = partiesList.find(p => p.gstin && p.gstin.toUpperCase() === searchGstin.toUpperCase());
+    }
+    if (!party && searchName) {
+      party = partiesList.find(p => p.name && p.name.toLowerCase() === searchName.toLowerCase());
+    }
     // A. Search by GSTIN match
-    party = partiesList.find(p => p.gstin && p.gstin.toUpperCase() === val.toUpperCase());
+    if (!party) {
+      party = partiesList.find(p => p.gstin && p.gstin.toUpperCase() === val.toUpperCase());
+    }
     // B. Search by exact Name match
     if (!party) {
       party = partiesList.find(p => p.name && p.name.toLowerCase() === val.toLowerCase());
@@ -1719,12 +1744,16 @@ const BiltyBookingModule = {
     }
     // D. Search in past trips
     if (!party) {
-      const tripMatch = (this.allTrips || []).find(t => t.consignee && (t.consignee === val || (t.consigneeGstin && t.consigneeGstin === val)));
+      const tripMatch = (this.allTrips || []).find(t => t.consignee && (
+        t.consignee.toLowerCase() === val.toLowerCase() ||
+        t.consignee.toLowerCase() === searchName.toLowerCase() ||
+        (t.consigneeGstin && (t.consigneeGstin.toUpperCase() === val.toUpperCase() || t.consigneeGstin.toUpperCase() === searchGstin.toUpperCase()))
+      ));
       if (tripMatch) {
         party = {
           name: tripMatch.consignee,
           gstin: tripMatch.consigneeGstin || '',
-          address: tripMatch.deliveryAddress || tripMatch.destination || '',
+          address: tripMatch.deliveryAddress || tripMatch.consigneeAddress || tripMatch.destination || '',
           city: tripMatch.destination || ''
         };
       }
@@ -1735,15 +1764,22 @@ const BiltyBookingModule = {
     const addressText = document.getElementById('appsheet-consignee-address-text');
     const gstinBadge = document.getElementById('appsheet-consignee-gstin-badge');
     const destInput = document.getElementById('bilty-destination');
+    const eNameInput = document.getElementById('bilty-consignee-name');
+    const eAddrInput = document.getElementById('bilty-consignee-address');
 
     if (party) {
-      if (gstinInput) gstinInput.value = party.gstin || '';
-      if (gstinBadge) gstinBadge.innerText = party.gstin ? `GST: ${party.gstin}` : 'GST: URP';
-      
-      const fullAddr = [party.address, party.city, party.state].filter(Boolean).join(', ') || party.address || '';
+      const cleanGst = this.sanitizeGstin(party.gstin);
+      const cleanName = this.sanitizeText(party.name);
+      const fullAddr = this.sanitizeText([party.address, party.city, party.state].filter(Boolean).join(', ') || party.address || '');
+
+      if (gstinInput) gstinInput.value = (cleanGst === 'URP' || cleanGst === '-') ? '' : cleanGst;
+      if (gstinBadge) gstinBadge.innerText = (cleanGst && cleanGst !== 'URP') ? `GST: ${cleanGst}` : 'GST: URP';
+      if (eNameInput) eNameInput.value = cleanName;
+      if (eAddrInput) eAddrInput.value = fullAddr;
       if (addrInput) addrInput.value = fullAddr;
+
       if (addressText) {
-        addressText.innerHTML = `<strong>${party.name}:</strong> ${fullAddr || 'Address on record'}`;
+        addressText.innerHTML = `<strong>${cleanName}:</strong> ${fullAddr || 'Address on record'}`;
         addressText.classList.remove('text-muted', 'fst-italic');
       }
       if (party.city && destInput && (!destInput.value || destInput.value.length < 3)) {
@@ -1757,6 +1793,8 @@ const BiltyBookingModule = {
           addressText.innerText = `GSTIN: ${val.toUpperCase()}`;
           addressText.classList.remove('text-muted', 'fst-italic');
         }
+      } else {
+        if (eNameInput) eNameInput.value = this.sanitizeText(searchName || val);
       }
     }
     this.updateLivePreview();
@@ -6159,8 +6197,17 @@ const BiltyBookingModule = {
     document.getElementById('bilty-destination').value = trip.destination || '';
     document.getElementById('bilty-consignor').value = trip.consignor || '';
     document.getElementById('bilty-consignor-gstin').value = trip.consignorGstin || '';
+    const cNameEl = document.getElementById('bilty-consignor-name');
+    if (cNameEl) cNameEl.value = trip.consignor || '';
+    const cAddrEl = document.getElementById('bilty-consignor-address');
+    if (cAddrEl) cAddrEl.value = trip.consignorAddress || '';
+
     document.getElementById('bilty-consignee').value = trip.consignee || '';
     document.getElementById('bilty-consignee-gstin').value = trip.consigneeGstin || '';
+    const eNameEl = document.getElementById('bilty-consignee-name');
+    if (eNameEl) eNameEl.value = trip.consignee || '';
+    const eAddrEl = document.getElementById('bilty-consignee-address');
+    if (eAddrEl) eAddrEl.value = trip.consigneeAddress || trip.deliveryAddress || '';
     document.getElementById('bilty-delivery-address').value = trip.deliveryAddress || '';
 
     document.getElementById('bilty-material').value = trip.material || 'Marble Powder';
@@ -6357,10 +6404,10 @@ const BiltyBookingModule = {
   // ----------------------------------------------------
   // PIXEL-PERFECT OFFICIAL A4 BILTY PRINT GENERATOR
   // ----------------------------------------------------
-  printOrientation: 'portrait',
+  printOrientation: 'landscape',
 
   setPrintOrientation(orientation = 'landscape') {
-    this.printOrientation = orientation;
+    this.printOrientation = 'landscape';
     const btnPortrait = document.getElementById('btn-orient-portrait');
     const btnLandscape = document.getElementById('btn-orient-landscape');
     const previewContainer = document.getElementById('bilty-print-preview');
@@ -6372,48 +6419,27 @@ const BiltyBookingModule = {
       document.head.appendChild(styleEl);
     }
 
-    if (orientation === 'landscape') {
-      if (btnLandscape) {
-        btnLandscape.className = 'btn btn-warning active fw-bold px-3';
-      }
-      if (btnPortrait) {
-        btnPortrait.className = 'btn btn-outline-light px-3';
-      }
-      if (styleEl) {
-        styleEl.innerHTML = `@media print { @page { size: A4 landscape !important; margin: 6mm 8mm !important; } }`;
-      }
-      if (typeof document !== 'undefined' && document.body && document.body.classList) {
-        document.body.classList.remove('print-portrait');
-        document.body.classList.add('print-landscape');
-      }
-      if (previewContainer && previewContainer.classList) {
-        previewContainer.classList.remove('preview-portrait');
-        previewContainer.classList.add('preview-landscape');
-      }
-    } else {
-      // Default: सीधी (Portrait)
-      if (btnPortrait) {
-        btnPortrait.className = 'btn btn-warning active fw-bold px-3';
-      }
-      if (btnLandscape) {
-        btnLandscape.className = 'btn btn-outline-light px-3';
-      }
-      if (styleEl) {
-        styleEl.innerHTML = `@media print { @page { size: A4 portrait !important; margin: 8mm 6mm !important; } }`;
-      }
-      if (typeof document !== 'undefined' && document.body && document.body.classList) {
-        document.body.classList.remove('print-landscape');
-        document.body.classList.add('print-portrait');
-      }
-      if (previewContainer && previewContainer.classList) {
-        previewContainer.classList.remove('preview-landscape');
-        previewContainer.classList.add('preview-portrait');
-      }
+    if (btnLandscape) {
+      btnLandscape.className = 'btn btn-warning active fw-bold px-3';
+    }
+    if (btnPortrait) {
+      btnPortrait.className = 'btn btn-outline-light px-3';
+    }
+    if (styleEl) {
+      styleEl.innerHTML = `@media print { @page { size: A4 landscape !important; margin: 5mm 6mm !important; } .bilty-official-doc { width: 100% !important; max-width: 100% !important; margin: 0 auto !important; } }`;
+    }
+    if (typeof document !== 'undefined' && document.body && document.body.classList) {
+      document.body.classList.remove('print-portrait');
+      document.body.classList.add('print-landscape');
+    }
+    if (previewContainer && previewContainer.classList) {
+      previewContainer.classList.remove('preview-portrait');
+      previewContainer.classList.add('preview-landscape');
     }
   },
 
   triggerPrint() {
-    this.setPrintOrientation(this.printOrientation || 'portrait');
+    this.setPrintOrientation('landscape');
     setTimeout(() => {
       window.print();
     }, 100);
@@ -6570,7 +6596,7 @@ const BiltyBookingModule = {
 
   printAllMultiBilties() {
     this.selectMultiPrintTab('all');
-    this.setPrintOrientation(this.printOrientation || 'portrait');
+    this.setPrintOrientation('landscape');
     setTimeout(() => {
       window.print();
     }, 150);
@@ -6825,7 +6851,7 @@ const BiltyBookingModule = {
                 ` : `
                   <div class="ttc-field-title" style="font-size: 10px; font-weight: bold; color: #000;">CONSIGNOR NAME &amp; ADDRESS</div>
                   <div class="ttc-field-val-main" style="font-size: 11.5px; font-weight: bold; line-height: 1.35;">${consignorFullText}</div>
-                  ${trip.isDispatchFromRequired === 'Yes' && trip.dispatchFromAddress ? `<div class="ttc-field-dispatch" style="font-size: 10.5px; font-weight: bold; margin-top: 2px; color: #222;">Dispatch From: ${this.sanitizeText(trip.dispatchFromAddress)}</div>` : ''}
+                  ${(trip.dispatchFromAddress || trip.dispatchFrom) && trip.isDispatchFromRequired !== 'No' ? `<div class="ttc-field-dispatch" style="font-size: 10.5px; font-weight: bold; margin-top: 2px; color: #222;">Dispatch From: ${this.sanitizeText(trip.dispatchFromAddress || trip.dispatchFrom)}</div>` : ''}
                 `}
               </td>
               <td class="ttc-cell-date" style="border: 1px solid #000; padding: 5px 6px; vertical-align: top;">

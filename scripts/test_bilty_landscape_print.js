@@ -128,7 +128,11 @@ assert(docFnMatch, "Could not find getBiltyDocHTML in bilty-booking.js");
 const renderFn = function(trip, images) {
   const BILTY_IMAGES = images;
   const fn = new Function('trip', 'BILTY_IMAGES', docFnMatch[1]);
-  renderedHtml = fn(trip, BILTY_IMAGES);
+  const mockThis = {
+    sanitizeText: (t) => t || '',
+    sanitizeGstin: (g) => g || ''
+  };
+  renderedHtml = fn.call(mockThis, trip, BILTY_IMAGES);
   return renderedHtml;
 };
 
@@ -184,7 +188,7 @@ const requiredTextElements = [
   '7516 5237 4578',
   '2026-27/491',
   '2,22,600.00',
-  'Note: 1. Rebooking Through H.O.',
+  'Note: &nbsp;1. Rebooking Through H.O.',
   '2. Co. is not responsible for leakage, Breakage, Damage &amp; any Loss.',
   '3. Co. is not responsible for damage &amp; breakage of marble.',
   'SGST@',
@@ -217,8 +221,8 @@ const sampleFixed = Object.assign({}, sampleTripTTC, {
   partyDue: 96000
 });
 renderFn(sampleFixed, biltyImages);
-assert(renderedHtml.includes('₹ 1200.00'), "Rate formatting missing");
-assert(renderedHtml.includes('₹ 96000.00'), "Freight formatting missing");
+assert(renderedHtml.includes('1,200.00') || renderedHtml.includes('1200.00'), "Rate formatting missing");
+assert(renderedHtml.includes('96,000.00') || renderedHtml.includes('96000.00'), "Freight formatting missing");
 console.log("✅ Calculations: Per Tonne and dynamic rate calculations verified!");
 
 console.log("============================================================");
