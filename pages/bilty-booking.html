@@ -636,15 +636,7 @@
                     </div>
                   </div>
                 </div>
-                  <!-- Step 1 Footer -->
-                  <div class="appsheet-form-footer">
-                    <button type="button" class="btn-appsheet-cancel" onclick="BiltyBookingModule.closeSideDrawer()">
-                      Cancel
-                    </button>
-                    <button type="button" class="btn-appsheet-gold-save" onclick="BiltyBookingModule.proceedToStep2()">
-                      Save
-                    </button>
-                  </div>
+
               </div>
 
               <!-- ==================================================== -->
@@ -1185,15 +1177,7 @@
                     </details>
                   </div>
 
-                  <!-- Bottom Footer Bar: Cancel | Save (Gold Pill) -->
-                  <div class="appsheet-form-footer">
-                    <button type="button" class="btn-appsheet-cancel" onclick="BiltyBookingModule.backToStep1()">
-                      Cancel
-                    </button>
-                    <button type="button" class="btn-appsheet-gold-save" onclick="BiltyBookingModule.saveAppSheetBilty()">
-                      Save
-                    </button>
-                  </div>
+
                 </div>
 
           <!-- AppSheet Dynamic Datalists for 586 Trucks, 3,396 Parties, Destinations & Fleet -->
@@ -1467,11 +1451,11 @@
             <div class="d-flex align-items-center flex-wrap gap-2">
               <!-- Orientation Selector: सीधी (Portrait) vs आड़ी (Landscape) -->
               <div class="btn-group btn-group-sm" role="group" title="प्रिंट की दिशा चुनें (Choose Orientation)">
-                <button type="button" class="btn btn-warning active fw-bold px-3" id="btn-orient-portrait" onclick="BiltyBookingModule.setPrintOrientation('portrait')">
-                  <i class="bi bi-file-earmark me-1"></i> सीधी (Portrait)
-                </button>
-                <button type="button" class="btn btn-outline-light px-3" id="btn-orient-landscape" onclick="BiltyBookingModule.setPrintOrientation('landscape')">
+                <button type="button" class="btn btn-warning active fw-bold px-3" id="btn-orient-landscape" onclick="BiltyBookingModule.setPrintOrientation('landscape')">
                   <i class="bi bi-file-earmark-landscape me-1"></i> आड़ी (Landscape)
+                </button>
+                <button type="button" class="btn btn-outline-light px-3" id="btn-orient-portrait" onclick="BiltyBookingModule.setPrintOrientation('portrait')">
+                  <i class="bi bi-file-earmark me-1"></i> सीधी (Portrait)
                 </button>
               </div>
 
@@ -1501,7 +1485,7 @@
           </div>
         </div>
 
-        <div class="modal-body p-4 bg-secondary-subtle preview-portrait" id="bilty-print-preview" style="max-height: 80vh; overflow-y: auto;">
+        <div class="modal-body p-4 bg-secondary-subtle preview-landscape" id="bilty-print-preview" style="max-height: 80vh; overflow-y: auto;">
           <!-- Pixel-Perfect A4 Consignment Note HTML -->
         </div>
 

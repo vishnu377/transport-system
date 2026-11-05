@@ -13,6 +13,27 @@
  */
 
 const BiltyBookingModule = {
+  sanitizeText(val) {
+    if (val === null || val === undefined) return '';
+    return String(val)
+      .replace(/#NAME\?/gi, '')
+      .replace(/^[‘'"]+|[‘'"><]+$/g, '')
+      .replace(/[><]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  },
+
+  sanitizeGstin(val) {
+    if (val === null || val === undefined) return '-';
+    const clean = String(val)
+      .replace(/#NAME\?/gi, '')
+      .replace(/[‘'"><]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+    if (!clean || clean.toLowerCase() === 'urp' || clean === '-') return 'URP';
+    return clean;
+  },
+
   // State
   allTrips: [],
   filteredTrips: [],
@@ -294,20 +315,37 @@ const BiltyBookingModule = {
 
     (this.parties || []).forEach(p => {
       if (!p || !p.name) return;
-      optionsHTML += `<option value="${p.name}" data-gstin="${p.gstin || ''}" data-address="${p.address || ''}">${p.name}</option>`;
+      const cName = this.sanitizeText(p.name);
+      const cGstin = this.sanitizeGstin(p.gstin);
+      const cAddr = this.sanitizeText(p.address || '');
+      if (!cName) return;
+
+      optionsHTML += `<option value="${cName}" data-gstin="${cGstin !== 'URP' ? cGstin : ''}" data-address="${cAddr}">${cName}</option>`;
       
-      if (p.gstin) {
-        partyOptionsSet.add(`${p.gstin} - ${p.name}`);
-        partyOptionsSet.add(p.gstin);
+      if (cGstin && cGstin !== 'URP' && cGstin !== '-') {
+        partyOptionsSet.add(`${cGstin} - ${cName}`);
+        partyOptionsSet.add(cGstin);
       }
-      partyOptionsSet.add(p.name);
+      partyOptionsSet.add(cName);
     });
 
     (this.allTrips || []).slice(0, 1000).forEach(t => {
-      if (t.consignor) partyOptionsSet.add(t.consignor);
-      if (t.consignee) partyOptionsSet.add(t.consignee);
-      if (t.consignorGstin) partyOptionsSet.add(t.consignorGstin);
-      if (t.consigneeGstin) partyOptionsSet.add(t.consigneeGstin);
+      if (t.consignor) {
+        const clean = this.sanitizeText(t.consignor);
+        if (clean) partyOptionsSet.add(clean);
+      }
+      if (t.consignee) {
+        const clean = this.sanitizeText(t.consignee);
+        if (clean) partyOptionsSet.add(clean);
+      }
+      if (t.consignorGstin) {
+        const clean = this.sanitizeGstin(t.consignorGstin);
+        if (clean && clean !== 'URP' && clean !== '-') partyOptionsSet.add(clean);
+      }
+      if (t.consigneeGstin) {
+        const clean = this.sanitizeGstin(t.consigneeGstin);
+        if (clean && clean !== 'URP' && clean !== '-') partyOptionsSet.add(clean);
+      }
     });
 
     const datalistOptionsHTML = Array.from(partyOptionsSet).sort().map(val => `<option value="${val}">`).join('');
@@ -1581,15 +1619,28 @@ const BiltyBookingModule = {
     const consignorInput = document.getElementById('bilty-consignor');
     if (consignorInput && consignorInput.value !== val) consignorInput.value = val;
 
+    let searchGstin = '';
+    let searchName = val;
+    if (val.includes(' - ')) {
+      const parts = val.split(' - ');
+      searchGstin = parts[0].trim();
+      searchName = parts.slice(1).join(' - ').trim();
+    }
+
     let party = null;
     const partiesList = this.parties || [];
-    // A. Search by GSTIN match
-    party = partiesList.find(p => p.gstin && p.gstin.toUpperCase() === val.toUpperCase());
-    // B. Search by exact Name match
+    if (searchGstin) {
+      party = partiesList.find(p => p.gstin && p.gstin.toUpperCase() === searchGstin.toUpperCase());
+    }
+    if (!party && searchName) {
+      party = partiesList.find(p => p.name && p.name.toLowerCase() === searchName.toLowerCase());
+    }
+    if (!party) {
+      party = partiesList.find(p => p.gstin && p.gstin.toUpperCase() === val.toUpperCase());
+    }
     if (!party) {
       party = partiesList.find(p => p.name && p.name.toLowerCase() === val.toLowerCase());
     }
-    // C. Search by partial or "GSTIN - Name" combined string
     if (!party) {
       party = partiesList.find(p => {
         if (p.gstin && val.toUpperCase().includes(p.gstin.toUpperCase())) return true;
@@ -1597,14 +1648,13 @@ const BiltyBookingModule = {
         return false;
       });
     }
-    // D. Search in past trips
     if (!party) {
       const tripMatch = (this.allTrips || []).find(t => t.consignor && (t.consignor === val || (t.consignorGstin && t.consignorGstin === val)));
       if (tripMatch) {
         party = {
           name: tripMatch.consignor,
           gstin: tripMatch.consignorGstin || '',
-          address: tripMatch.origin || 'Rajsamand (Raj.)',
+          address: tripMatch.consignorAddress || tripMatch.origin || 'Rajsamand (Raj.)',
           city: tripMatch.origin || 'Rajsamand'
         };
       }
@@ -1613,22 +1663,24 @@ const BiltyBookingModule = {
     const gstinInput = document.getElementById('bilty-consignor-gstin');
     const addressText = document.getElementById('appsheet-consignor-address-text');
     const gstinBadge = document.getElementById('appsheet-consignor-gstin-badge');
+    const cNameInput = document.getElementById('bilty-consignor-name');
+    const cAddrInput = document.getElementById('bilty-consignor-address');
 
     if (party) {
-      if (gstinInput) gstinInput.value = party.gstin || '';
-      if (gstinBadge) gstinBadge.innerText = party.gstin ? `GST: ${party.gstin}` : 'GST: URP';
-      
-      const fullAddr = [party.address, party.city, party.state].filter(Boolean).join(', ') || party.address || 'Address on record';
+      const cleanGst = this.sanitizeGstin(party.gstin);
+      const cleanName = this.sanitizeText(party.name);
+      const fullAddr = this.sanitizeText([party.address, party.city, party.state].filter(Boolean).join(', ') || party.address || 'Rajsamand (Raj.)');
+
+      if (gstinInput) gstinInput.value = (cleanGst === 'URP' || cleanGst === '-') ? '' : cleanGst;
+      if (gstinBadge) gstinBadge.innerText = (cleanGst && cleanGst !== 'URP') ? `GST: ${cleanGst}` : 'GST: URP';
+      if (cNameInput) cNameInput.value = cleanName;
+      if (cAddrInput) cAddrInput.value = fullAddr;
+
       if (addressText) {
-        addressText.innerHTML = `<strong>${party.name}:</strong> ${fullAddr}`;
+        addressText.innerHTML = `<strong>${cleanName}:</strong> ${fullAddr}`;
         addressText.classList.remove('text-muted', 'fst-italic');
       }
-      const cNameInput = document.getElementById('bilty-consignor-name');
-      if (cNameInput) cNameInput.value = party.name || '';
-      const cAddrInput = document.getElementById('bilty-consignor-address');
-      if (cAddrInput) cAddrInput.value = fullAddr || '';
     } else {
-      // Check if raw 15-digit GSTIN was entered
       if (/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/i.test(val)) {
         if (gstinInput) gstinInput.value = val.toUpperCase();
         if (gstinBadge) gstinBadge.innerText = `GST: ${val.toUpperCase()}`;
@@ -1636,6 +1688,8 @@ const BiltyBookingModule = {
           addressText.innerText = `GSTIN: ${val.toUpperCase()}`;
           addressText.classList.remove('text-muted', 'fst-italic');
         }
+      } else {
+        if (cNameInput) cNameInput.value = this.sanitizeText(val);
       }
     }
     this.updateLivePreview();
@@ -4040,8 +4094,13 @@ const BiltyBookingModule = {
   // ----------------------------------------------------
   async saveBilty(mode = 'print') {
     const truckNo = (document.getElementById('bilty-truck-no')?.value || '').trim().toUpperCase();
-    const consignor = (document.getElementById('bilty-consignor')?.value || '').trim();
-    const consignee = (document.getElementById('bilty-consignee')?.value || '').trim();
+    const rawConsignorInput = (document.getElementById('bilty-consignor')?.value || '').trim();
+    const consignorName = (document.getElementById('bilty-consignor-name')?.value || '').trim();
+    let consignor = consignorName || (rawConsignorInput.includes(' - ') ? rawConsignorInput.split(' - ').slice(1).join(' - ').trim() : rawConsignorInput);
+
+    const rawConsigneeInput = (document.getElementById('bilty-consignee')?.value || '').trim();
+    const consigneeName = (document.getElementById('bilty-consignee-name')?.value || '').trim();
+    let consignee = consigneeName || (rawConsigneeInput.includes(' - ') ? rawConsigneeInput.split(' - ').slice(1).join(' - ').trim() : rawConsigneeInput);
     const origin = (document.getElementById('bilty-origin')?.value || '').trim() || 'Rajsamand (Raj.)';
     const destination = (document.getElementById('bilty-destination')?.value || '').trim();
     const weight = parseFloat(document.getElementById('bilty-weight')?.value) || 0;
@@ -4123,10 +4182,12 @@ const BiltyBookingModule = {
       origin: origin,
       destination: destination,
       consignor: consignor,
-      consignorGstin: (document.getElementById('bilty-consignor-gstin')?.value || '').trim(),
+      consignorGstin: (document.getElementById('bilty-consignor-gstin')?.value || (rawConsignorInput.includes(' - ') ? rawConsignorInput.split(' - ')[0].trim() : '')).trim(),
+      consignorAddress: (document.getElementById('bilty-consignor-address')?.value || '').trim(),
       dispatchFromAddress: dispatchFromAddress,
       consignee: consignee,
-      consigneeGstin: (document.getElementById('bilty-consignee-gstin')?.value || '').trim(),
+      consigneeGstin: (document.getElementById('bilty-consignee-gstin')?.value || (rawConsigneeInput.includes(' - ') ? rawConsigneeInput.split(' - ')[0].trim() : '')).trim(),
+      consigneeAddress: (document.getElementById('bilty-consignee-address')?.value || document.getElementById('bilty-delivery-address')?.value || shipToAddress || '').trim(),
       deliveryAddress: (document.getElementById('bilty-delivery-address')?.value || shipToAddress || '').trim(),
       shipToAddress: shipToAddress,
 
@@ -6298,7 +6359,7 @@ const BiltyBookingModule = {
   // ----------------------------------------------------
   printOrientation: 'portrait',
 
-  setPrintOrientation(orientation = 'portrait') {
+  setPrintOrientation(orientation = 'landscape') {
     this.printOrientation = orientation;
     const btnPortrait = document.getElementById('btn-orient-portrait');
     const btnLandscape = document.getElementById('btn-orient-landscape');
@@ -6384,7 +6445,7 @@ const BiltyBookingModule = {
 
   openPrintModal(trip) {
     this.currentActiveBilty = trip;
-    this.setPrintOrientation('portrait');
+    this.setPrintOrientation('landscape');
 
     // Check if this trip belongs to a multi-GR batch
     if (trip && trip.tripGroupId) {
@@ -6413,7 +6474,7 @@ const BiltyBookingModule = {
   openMultiPrintModal(trips) {
     this.currentBatchTrips = trips;
     this.activeBatchIndex = 'all';
-    this.setPrintOrientation('portrait');
+    this.setPrintOrientation('landscape');
 
     const tabsBar = document.getElementById('multi-bilty-tabs-bar');
     if (tabsBar) tabsBar.classList.remove('d-none');
@@ -6547,7 +6608,7 @@ const BiltyBookingModule = {
       gstNo = '08AAACS5678Q1Z3';
     }
 
-    let displayDate = trip.tripStartDate || trip.biltyDate || '26/09/2026';
+    let displayDate = trip.tripStartDate || trip.biltyDate || '04/11/2026';
     if (displayDate.includes('-')) {
       const parts = displayDate.split('-');
       if (parts.length === 3) displayDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
@@ -6559,6 +6620,9 @@ const BiltyBookingModule = {
     const truckSrc = (typeof BILTY_IMAGES !== 'undefined' && BILTY_IMAGES.truck) 
       ? BILTY_IMAGES.truck 
       : '../assets/bilty_template/img_1_X11.png';
+    const eagleSrc = (typeof BILTY_IMAGES !== 'undefined' && BILTY_IMAGES.eagle) 
+      ? BILTY_IMAGES.eagle 
+      : '../assets/bilty_template/img_2_X8.png';
 
     const isMultiSeller = (trip.sellerList && trip.sellerList.length > 1) || 
                           (trip.extraSellers && trip.extraSellers.length > 0) ||
@@ -6586,11 +6650,11 @@ const BiltyBookingModule = {
       ];
     }
 
-    // Clean G.R. Number (e.g. 2229 instead of 2026-2027-2229_TTC)
-    const cleanGrNo = trip.shortGrNo || (trip.grNo ? String(trip.grNo).split('_')[0].split('-').pop() : '2229');
+    // Clean G.R. Number (1:1 with authentic 2026-2027-2789_TTC.pdf which displays pure number e.g. 2789)
+    const cleanGrNo = trip.grSeq || (trip.shortGrNo ? trip.shortGrNo.split('_')[0] : (trip.grNo ? String(trip.grNo).split('_')[0].split('-').pop() : '2789'));
 
     // Material
-    const displayMaterial = trip.material || 'Rajganar Marble Cut Size';
+    const displayMaterial = this.sanitizeText(trip.material) || 'Marble Slabs';
 
     // Weight formatted cleanly
     let displayWeight = trip.weight || 'As per weight slip';
@@ -6617,17 +6681,17 @@ const BiltyBookingModule = {
     // Freight formatted cleanly
     let displayFreight = '₹ 25,000.00';
     if (trip.freight && !isNaN(Number(trip.freight))) {
-      displayFreight = '₹' + Number(trip.freight).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+      displayFreight = '₹ ' + Number(trip.freight).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
     } else if (trip.freight) {
       displayFreight = String(trip.freight);
     }
 
     // Invoice value formatted cleanly
-    let invValFormatted = '238,537.00';
+    let invValFormatted = '286,858.00';
     if (trip.invoiceValue && !isNaN(Number(trip.invoiceValue))) {
       invValFormatted = Number(trip.invoiceValue).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
     } else if (trip.invoiceValue) {
-      invValFormatted = String(trip.invoiceValue);
+      invValFormatted = String(trip.invoiceValue).replace('₹', '').trim();
     }
 
     // Grand total formatted cleanly
@@ -6638,151 +6702,182 @@ const BiltyBookingModule = {
       grandTotalVal = Number(trip.freight).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
     }
 
-    let consignorGstinContent = trip.consignorGstin || '08AAQFR7025N1ZH';
+    // Resolve & Clean Party Details
+    let consignorName = this.sanitizeText(trip.consignor || '');
+    let consignorAddr = this.sanitizeText(trip.consignorAddress || '');
+    let consignorGstin = this.sanitizeGstin(trip.consignorGstin || '');
+
+    if (/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/i.test(consignorName)) {
+      if (!consignorGstin || consignorGstin === 'URP' || consignorGstin === '-') consignorGstin = consignorName;
+      const pt = (this.parties || []).find(p => p.gstin && p.gstin.toUpperCase() === consignorName.toUpperCase());
+      if (pt) {
+        consignorName = this.sanitizeText(pt.name);
+        if (!consignorAddr) consignorAddr = this.sanitizeText([pt.address, pt.city, pt.state].filter(Boolean).join(', ') || pt.address || '');
+      }
+    }
+
+    let consigneeName = this.sanitizeText(trip.consignee || '');
+    let consigneeAddr = this.sanitizeText(trip.consigneeAddress || trip.deliveryAddress || trip.destination || '');
+    let consigneeGstin = this.sanitizeGstin(trip.consigneeGstin || '');
+
+    if (/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/i.test(consigneeName)) {
+      if (!consigneeGstin || consigneeGstin === 'URP' || consigneeGstin === '-') consigneeGstin = consigneeName;
+      const pt = (this.parties || []).find(p => p.gstin && p.gstin.toUpperCase() === consigneeName.toUpperCase());
+      if (pt) {
+        consigneeName = this.sanitizeText(pt.name);
+        if (!consigneeAddr) consigneeAddr = this.sanitizeText([pt.address, pt.city, pt.state].filter(Boolean).join(', ') || pt.address || '');
+      }
+    }
+
+    let consignorGstinContent = consignorGstin;
     if (isMultiSeller && sellersList.length > 0) {
       consignorGstinContent = sellersList.map((s, idx) => {
-        return `<span style="white-space:nowrap;"><span style="font-weight:normal; font-size:9px;">S${idx+1}:</span> ${s.consignorGstin || '-'}</span>`;
+        return `<span style="white-space:nowrap;"><span style="font-weight:normal; font-size:9.5px;">S${idx+1}:</span> ${this.sanitizeGstin(s.consignorGstin) || '-'}</span>`;
       }).join(' &nbsp;|&nbsp; ');
     }
+
+    const consignorFullText = consignorAddr 
+      ? `${consignorName} ${consignorAddr}` 
+      : (consignorName || 'SHREE RAM MARBLE Araji No.497/2,497/3 Chhapar Kheri Rajsamand,RAJASTHAN-313334');
+
+    const consigneeFullText = consigneeAddr 
+      ? `${consigneeName} ${consigneeAddr}` 
+      : (consigneeName || 'NEW JAI SHREE MARBLES 58 CANTT Bareilly,UTTAR PRADESH-243001');
+
+    const originText = this.sanitizeText(trip.origin) || 'Rajsamand (Raj.)';
+    const destText = this.sanitizeText(trip.destination) || 'Bareilly (U.P.)';
 
     const html = `
       <div class="bilty-official-doc shadow-sm">
         
-        <!-- Sacred Tokens for Blessings & Compatibility -->
-        <div class="bilty-sacred-header" style="display:none;">
-          <div class="bilty-sacred-side">॥ शुभ लाभ ॥</div>
-          <div class="bilty-sacred-center">
-            <div class="bilty-ganesha-emblem"></div>
-            <span class="bilty-ganesha-mantra">॥ श्री गणेशाय नमः ॥</span>
-          </div>
-          <div class="bilty-sacred-side">॥ श्री सांवरिया सेठाय नमः ॥</div>
-        </div>
-
-        <!-- TOP HEADER SECTION (1:1 Replica of Official Consignment Note) -->
+        <!-- TOP HEADER SECTION (1:1 Replica of Official Consignment Note 2026-2027-2789_TTC.pdf) -->
         <div class="bilty-ttc-header">
-          <!-- Left: GST Info & Ganesha / Emblem -->
+          <!-- Left: GST Info & Ganesha Emblem -->
           <div class="ttc-header-left">
             <div class="ttc-gst-code">Rajasthan GST Code: ${gstCode}</div>
             <div class="ttc-gstin">GSTIN: ${gstNo}</div>
-            <div class="ttc-ganesha-box" style="margin-top: 6px;">
-              <img src="${ganeshaSrc}" alt="Emblem" class="ttc-img-ganesha" style="height: 64px; object-fit: contain;">
+            <div class="ttc-ganesha-box" style="margin-top: 4px;">
+              <img src="${ganeshaSrc}" alt="Lord Ganesha" class="ttc-img-ganesha" style="height: 66px; width: auto; object-fit: contain;">
             </div>
           </div>
 
-          <!-- Center: Jurisdiction & Boxed Brand Banner (Exact match of PDF) -->
+          <!-- Center: Jurisdiction, Flying Eagle & Boxed Brand Banner (Exact match of PDF) -->
           <div class="ttc-header-center" style="display: flex; flex-direction: column; align-items: center; justify-content: flex-start;">
-            <div class="ttc-jurisdiction" style="font-size: 11px; font-weight: bold; margin-bottom: 6px;">All Subject to RAJSAMAND Jurisdiction</div>
-            <div class="ttc-brand-box" style="border: 1.5px solid #000; padding: 6px 12px; text-align: center; width: 100%; box-sizing: border-box; background: #fff;">
-              <h1 class="ttc-firm-name" style="font-size: 19px; font-weight: 900; letter-spacing: 0.5px; margin: 0; line-height: 1.15; font-family: Arial, sans-serif;">${firmTitle}</h1>
-              <div class="ttc-firm-subtitle" style="font-size: 9.5px; font-weight: bold; margin-top: 3px; letter-spacing: 0.3px;">${subtitle}</div>
-              <div class="ttc-firm-address" style="font-size: 9.5px; font-weight: bold; margin-top: 2px;">${address}</div>
+            <div class="ttc-jurisdiction" style="font-size: 11.5px; font-weight: bold; margin-bottom: 2px;">All Subject to RAJSAMAND Jurisdiction</div>
+            <div class="ttc-eagle-box" style="margin: 1px auto 3px auto;">
+              <img src="${eagleSrc}" alt="Eagle Emblem" class="ttc-img-eagle" style="height: 22px; width: auto; object-fit: contain; display: block; margin: 0 auto;">
+            </div>
+            <div class="ttc-brand-box" style="border: 1.5px solid #000; padding: 5px 10px; text-align: center; width: 96%; box-sizing: border-box; background: #fff;">
+              <h1 class="ttc-firm-name" style="font-size: 21px; font-weight: 900; letter-spacing: 0.5px; margin: 0; line-height: 1.15; font-family: Arial, sans-serif;">${firmTitle}</h1>
+              <div class="ttc-firm-subtitle" style="font-size: 11px; font-weight: bold; margin-top: 2px; letter-spacing: 0.3px;">${subtitle}</div>
+              <div class="ttc-firm-address" style="font-size: 11px; font-weight: bold; margin-top: 2px;">${address}</div>
             </div>
           </div>
 
-          <!-- Right: Contacts & Real Commercial Truck -->
+          <!-- Right: Mobiles, Email & Commercial Truck -->
           <div class="ttc-header-right">
             <div class="ttc-mobiles">${mob1}</div>
             <div class="ttc-mobiles-2">${mob2}</div>
             <div class="ttc-email">${email}</div>
-            <div class="ttc-truck-box" style="margin-top: 4px; display: flex; justify-content: flex-end;">
-              <img src="${truckSrc}" alt="Commercial Truck" class="ttc-img-truck" style="height: 62px; object-fit: contain;">
+            <div class="ttc-truck-box" style="margin-top: 2px; display: flex; justify-content: flex-end;">
+              <img src="${truckSrc}" alt="Commercial Truck" class="ttc-img-truck" style="height: 60px; width: auto; object-fit: contain;">
             </div>
           </div>
         </div>
 
-        <!-- MAIN CONSIGNMENT TABLE GRID (1:1 Exact Match of PDF Screenshot) -->
+        <!-- MAIN CONSIGNMENT TABLE GRID (1:1 Exact Match of 2026-2027-2789_TTC.pdf) -->
         <table class="ttc-grid-table" style="width: 100%; border-collapse: collapse; border: 1.5px solid #000; margin-bottom: 0;">
           <tbody>
-            <!-- Row 1: Consignor GSTIN (54%), Truck No (23%), GR No (23%) -->
+            <!-- Row 1: Consignor GSTIN (50%), Truck No (25%), GR No (25%) -->
             <tr>
-              <td class="ttc-cell-gstin" style="width: 54%; border: 1px solid #000; padding: 4px 6px;">
-                <div class="ttc-field-title" style="font-size: 9.5px; font-weight: bold; color: #000;">${isMultiSeller ? 'CONSIGNOR GSTIN(S)' : 'CONSIGNOR GSTIN'}</div>
-                <div class="ttc-field-val-bold" style="font-size: 11px; font-weight: bold; margin-top: 1px;">${consignorGstinContent}</div>
+              <td class="ttc-cell-gstin" style="width: 50%; border: 1px solid #000; padding: 4px 6px;">
+                <div class="ttc-field-title" style="font-size: 10px; font-weight: bold; color: #000;">${isMultiSeller ? 'CONSIGNOR GSTIN(S)' : 'CONSIGNOR GSTIN'}</div>
+                <div class="ttc-field-val-bold" style="font-size: 12px; font-weight: bold; margin-top: 1px;">${consignorGstinContent}</div>
               </td>
-              <td class="ttc-cell-truck" style="width: 23%; border: 1px solid #000; padding: 4px 6px;">
+              <td class="ttc-cell-truck" style="width: 25%; border: 1px solid #000; padding: 4px 6px;">
                 <div class="ttc-inline-item" style="display: flex; align-items: baseline; gap: 4px;">
-                  <span class="ttc-label-inline" style="font-size: 10.5px; font-weight: bold;">TRUCK NO.:</span>
-                  <span class="ttc-val-inline" style="font-size: 11.5px; font-weight: bold;">${trip.truckNo || '-'}</span>
+                  <span class="ttc-label-inline" style="font-size: 11px; font-weight: bold;">TRUCK NO.:</span>
+                  <span class="ttc-val-inline" style="font-size: 12px; font-weight: bold;">${trip.truckNo || '-'}</span>
                 </div>
               </td>
-              <td class="ttc-cell-gr" style="width: 23%; border: 1px solid #000; padding: 4px 6px;">
+              <td class="ttc-cell-gr" style="width: 25%; border: 1px solid #000; padding: 4px 6px;">
                 <div class="ttc-inline-item" style="display: flex; align-items: baseline; gap: 4px;">
-                  <span class="ttc-label-inline" style="font-size: 10.5px; font-weight: bold;">G.R. NO.:</span>
-                  <span class="ttc-val-inline" style="font-size: 11.5px; font-weight: bold;">${cleanGrNo}</span>
+                  <span class="ttc-label-inline" style="font-size: 11px; font-weight: bold;">G.R. NO.:</span>
+                  <span class="ttc-val-inline" style="font-size: 12px; font-weight: bold;">${cleanGrNo}</span>
                 </div>
               </td>
             </tr>
 
-            <!-- Row 2: Consignor Name & Address (colspan 2 = 77%), DATE & FROM (23%) -->
+            <!-- Row 2: Consignor Name & Address (colspan 2 = 75%), DATE & FROM (25%) -->
             <tr>
               <td colspan="2" class="ttc-cell-consignor" style="border: 1px solid #000; padding: 5px 6px; vertical-align: top;">
                 ${isMultiSeller ? `
-                  <div class="ttc-field-title" style="font-size: 9.5px; font-weight: bold; margin-bottom: 2px;">CONSIGNOR(S) NAME &amp; ADDRESS (${sellersList.length} SELLERS CONSOLIDATED)</div>
+                  <div class="ttc-field-title" style="font-size: 10px; font-weight: bold; margin-bottom: 2px;">CONSIGNOR(S) NAME &amp; ADDRESS (${sellersList.length} SELLERS CONSOLIDATED)</div>
                   <div class="consolidated-sellers-list" style="display: flex; flex-direction: column; gap: 3px;">
                     ${sellersList.map((s, idx) => `
-                      <div style="font-size: 10px; line-height: 1.3; ${idx > 0 ? 'border-top: 1px dashed #cbd5e1; padding-top: 2px;' : ''}">
-                        <span class="badge bg-secondary text-white me-1" style="font-size: 8px; padding: 1px 3px; vertical-align: middle;">S${idx + 1}</span>
-                        <strong style="color: #000;">${s.consignor || '---'}</strong>
-                        ${s.consignorGstin ? `<span class="text-muted ms-1" style="font-size: 9px;">(GST: ${s.consignorGstin})</span>` : ''}
+                      <div style="font-size: 10.5px; line-height: 1.3; ${idx > 0 ? 'border-top: 1px dashed #cbd5e1; padding-top: 2px;' : ''}">
+                        <span class="badge bg-secondary text-white me-1" style="font-size: 8.5px; padding: 1px 4px; vertical-align: middle;">S${idx + 1}</span>
+                        <strong style="color: #000;">${this.sanitizeText(s.consignor) || '---'}</strong>
+                        ${s.consignorGstin ? `<span class="text-muted ms-1" style="font-size: 9.5px;">(GST: ${this.sanitizeGstin(s.consignorGstin)})</span>` : ''}
                       </div>
                     `).join('')}
                   </div>
                 ` : `
-                  <div class="ttc-field-title" style="font-size: 9.5px; font-weight: bold; color: #000;">CONSIGNOR NAME &amp; ADDRESS</div>
-                  <div class="ttc-field-val-main" style="font-size: 11px; font-weight: bold; line-height: 1.3;">${trip.consignor || '---'}</div>
-                  ${trip.isDispatchFromRequired === 'Yes' && trip.dispatchFromAddress ? `<div class="ttc-field-dispatch" style="font-size: 10px; font-weight: bold; margin-top: 2px; color: #333;">Dispatch From: ${trip.dispatchFromAddress}</div>` : ''}
+                  <div class="ttc-field-title" style="font-size: 10px; font-weight: bold; color: #000;">CONSIGNOR NAME &amp; ADDRESS</div>
+                  <div class="ttc-field-val-main" style="font-size: 11.5px; font-weight: bold; line-height: 1.35;">${consignorFullText}</div>
+                  ${trip.isDispatchFromRequired === 'Yes' && trip.dispatchFromAddress ? `<div class="ttc-field-dispatch" style="font-size: 10.5px; font-weight: bold; margin-top: 2px; color: #222;">Dispatch From: ${this.sanitizeText(trip.dispatchFromAddress)}</div>` : ''}
                 `}
               </td>
               <td class="ttc-cell-date" style="border: 1px solid #000; padding: 5px 6px; vertical-align: top;">
                 <div class="ttc-inline-item" style="display: flex; align-items: baseline; gap: 4px; margin-bottom: 6px;">
-                  <span class="ttc-label-inline" style="font-size: 10.5px; font-weight: bold;">DATE:</span>
+                  <span class="ttc-label-inline" style="font-size: 11px; font-weight: bold;">DATE:</span>
                   <span class="ttc-val-inline" style="font-size: 11.5px; font-weight: bold;">${displayDate}</span>
                 </div>
                 <div class="ttc-inline-item" style="display: flex; align-items: baseline; gap: 4px;">
-                  <span class="ttc-label-inline" style="font-size: 10.5px; font-weight: bold;">FROM:</span>
-                  <span class="ttc-val-inline" style="font-size: 11.5px; font-weight: bold;">${trip.origin || 'Rajsamand (Raj.)'}</span>
+                  <span class="ttc-label-inline" style="font-size: 11px; font-weight: bold;">FROM:</span>
+                  <span class="ttc-val-inline" style="font-size: 11.5px; font-weight: bold;">${originText}</span>
                 </div>
               </td>
             </tr>
 
-            <!-- Row 3: Consignee Name & Address + GST (colspan 2 = 77%), TO Station (23%) -->
+            <!-- Row 3: Consignee Name & Address + GST (colspan 2 = 75%), TO Station (25%) -->
             <tr>
               <td colspan="2" class="ttc-cell-consignee" style="border: 1px solid #000; padding: 5px 6px; vertical-align: top;">
-                <div class="ttc-field-title" style="font-size: 9.5px; font-weight: bold; color: #000;">CONSIGNEE NAME &amp; ADDRESS</div>
-                <div class="ttc-field-val-main" style="font-size: 11px; font-weight: bold; line-height: 1.3;">${trip.consignee || '---'}</div>
+                <div class="ttc-field-title" style="font-size: 10px; font-weight: bold; color: #000;">CONSIGNEE NAME &amp; ADDRESS</div>
+                <div class="ttc-field-val-main" style="font-size: 11.5px; font-weight: bold; line-height: 1.35;">${consigneeFullText}</div>
                 <div class="ttc-inline-item" style="display: flex; align-items: baseline; gap: 4px; margin-top: 4px;">
-                  <span class="ttc-label-inline" style="font-size: 10px; font-weight: bold;">CONSIGNEE GST No.:</span>
-                  <span class="ttc-val-inline" style="font-size: 11px; font-weight: bold;">${trip.consigneeGstin || '-'}</span>
+                  <span class="ttc-label-inline" style="font-size: 10.5px; font-weight: bold;">CONSIGNEE GST No.:</span>
+                  <span class="ttc-val-inline" style="font-size: 11.5px; font-weight: bold;">${consigneeGstin}</span>
                 </div>
               </td>
               <td class="ttc-cell-to" style="border: 1px solid #000; padding: 5px 6px; vertical-align: middle;">
                 <div class="ttc-inline-item" style="display: flex; align-items: baseline; gap: 4px;">
-                  <span class="ttc-label-inline" style="font-size: 10.5px; font-weight: bold;">TO:</span>
-                  <span class="ttc-val-inline" style="font-size: 11.5px; font-weight: bold;">${trip.destination || '---'}</span>
+                  <span class="ttc-label-inline" style="font-size: 11px; font-weight: bold;">TO:</span>
+                  <span class="ttc-val-inline" style="font-size: 11.5px; font-weight: bold;">${destText}</span>
                 </div>
               </td>
             </tr>
           </tbody>
         </table>
 
-        <!-- GOODS PARTICULAR TABLE (1:1 Exact Match of PDF Screenshot) -->
+        <!-- GOODS PARTICULAR TABLE (1:1 Exact Match of 2026-2027-2789_TTC.pdf) -->
         <table class="ttc-goods-table" style="width: 100%; border-collapse: collapse; border-left: 1.5px solid #000; border-right: 1.5px solid #000; border-bottom: 1.5px solid #000; border-top: none; margin-top: -1px;">
           <thead>
             <tr style="background: #fff;">
-              <th style="width: 24%; border: 1px solid #000; padding: 5px 4px; font-size: 10.5px; font-weight: bold; text-align: center;">PERSON LIABLE FOR PAYING GST</th>
-              <th style="width: 28%; border: 1px solid #000; padding: 5px 4px; font-size: 10.5px; font-weight: bold; text-align: center;">Material</th>
-              <th style="width: 15%; border: 1px solid #000; padding: 5px 4px; font-size: 10.5px; font-weight: bold; text-align: center;">Weight<br>(Tonne)</th>
-              <th style="width: 15%; border: 1px solid #000; padding: 5px 4px; font-size: 10.5px; font-weight: bold; text-align: center;">RATE<br>Per Tonne</th>
-              <th style="width: 18%; border: 1px solid #000; padding: 5px 4px; font-size: 10.5px; font-weight: bold; text-align: center;">FREIGHT<br>To Pay</th>
+              <th style="width: 25%; border: 1px solid #000; padding: 5px 4px; font-size: 11px; font-weight: bold; text-align: center;">PERSON LIABLE FOR PAYING GST</th>
+              <th style="width: 30%; border: 1px solid #000; padding: 5px 4px; font-size: 11px; font-weight: bold; text-align: center;">Material</th>
+              <th style="width: 15%; border: 1px solid #000; padding: 5px 4px; font-size: 11px; font-weight: bold; text-align: center;">Weight<br>(Tonne)</th>
+              <th style="width: 15%; border: 1px solid #000; padding: 5px 4px; font-size: 11px; font-weight: bold; text-align: center;">RATE<br>Per Tonne</th>
+              <th style="width: 15%; border: 1px solid #000; padding: 5px 4px; font-size: 11px; font-weight: bold; text-align: center;">FREIGHT<br>To Pay</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td class="text-center fw-bold" style="border: 1px solid #000; padding: 8px 4px; font-size: 11px; vertical-align: middle;">${trip.personLiableGst || 'Consignor/Consignee/Transporter'}</td>
-              <td class="text-center fw-bold" style="border: 1px solid #000; padding: 8px 4px; font-size: 11px; vertical-align: middle;">${displayMaterial}</td>
-              <td class="text-center fw-bold" style="border: 1px solid #000; padding: 8px 4px; font-size: 11px; vertical-align: middle;">${displayWeight}</td>
-              <td class="text-center fw-bold" style="border: 1px solid #000; padding: 8px 4px; font-size: 11px; vertical-align: middle;">${displayRate}</td>
-              <td class="text-center fw-bold" style="border: 1px solid #000; padding: 8px 4px; font-size: 11px; vertical-align: middle;">${displayFreight}</td>
+              <td class="text-center fw-bold" style="border: 1px solid #000; padding: 8px 4px; font-size: 11.5px; vertical-align: middle;">${trip.personLiableGst || trip.gstPayer || 'Consignor/Consignee/Transporter'}</td>
+              <td class="text-center fw-bold" style="border: 1px solid #000; padding: 8px 4px; font-size: 11.5px; vertical-align: middle;">${displayMaterial}</td>
+              <td class="text-center fw-bold" style="border: 1px solid #000; padding: 8px 4px; font-size: 11.5px; vertical-align: middle;">${displayWeight}</td>
+              <td class="text-center fw-bold" style="border: 1px solid #000; padding: 8px 4px; font-size: 11.5px; vertical-align: middle;">${displayRate}</td>
+              <td class="text-center fw-bold" style="border: 1px solid #000; padding: 8px 4px; font-size: 11.5px; vertical-align: middle;">${displayFreight}</td>
             </tr>
           </tbody>
         </table>
@@ -6806,23 +6901,23 @@ const BiltyBookingModule = {
             <table class="ttc-invoice-table" style="border: 1px solid #000; border-collapse: collapse; width: 100%; margin: 4px 0;">
               <thead>
                 <tr style="background: #fff;">
-                  <th style="border: 1px solid #000; font-size: 10px; font-weight: bold; padding: 2px 4px; text-align: center; width: 44%;">E-way Bill No.</th>
-                  <th style="border: 1px solid #000; font-size: 10px; font-weight: bold; padding: 2px 4px; text-align: center; width: 26%;">Bill No.</th>
-                  <th style="border: 1px solid #000; font-size: 10px; font-weight: bold; padding: 2px 4px; text-align: center; width: 30%;">Value</th>
+                  <th style="border: 1px solid #000; font-size: 10.5px; font-weight: bold; padding: 2px 4px; text-align: center; width: 44%;">E-way Bill No.</th>
+                  <th style="border: 1px solid #000; font-size: 10.5px; font-weight: bold; padding: 2px 4px; text-align: center; width: 26%;">Bill No.</th>
+                  <th style="border: 1px solid #000; font-size: 10.5px; font-weight: bold; padding: 2px 4px; text-align: center; width: 30%;">Value</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td style="border: 1px solid #000; font-size: 10.5px; font-weight: bold; padding: 4px; text-align: center;">${trip.ewayBillNo || '7716 7397 7435'}</td>
-                  <td style="border: 1px solid #000; font-size: 10.5px; font-weight: bold; padding: 4px; text-align: center;">${trip.billNo || '22'}</td>
-                  <td style="border: 1px solid #000; font-size: 10.5px; font-weight: bold; padding: 4px; text-align: center;">₹${invValFormatted}</td>
+                  <td style="border: 1px solid #000; font-size: 11px; font-weight: bold; padding: 4px; text-align: center;">${trip.ewayBillNo || '7616 8755 0133'}</td>
+                  <td style="border: 1px solid #000; font-size: 11px; font-weight: bold; padding: 4px; text-align: center;">${trip.billNo || '71'}</td>
+                  <td style="border: 1px solid #000; font-size: 11px; font-weight: bold; padding: 4px; text-align: center;">₹ ${invValFormatted}</td>
                 </tr>
               </tbody>
             </table>
 
-            <!-- Notes Block -->
-            <div class="ttc-notes-block" style="font-size: 9px; font-weight: bold; line-height: 1.3; margin-top: 4px;">
-              <div class="ttc-note-line">Note: 1. Rebooking Through H.O.</div>
+            <!-- Notes Block (1:1 with Original) -->
+            <div class="ttc-notes-block" style="font-size: 9.5px; font-weight: bold; line-height: 1.35; margin-top: 4px;">
+              <div class="ttc-note-line">Note: &nbsp;1. Rebooking Through H.O.</div>
               <div class="ttc-note-sub" style="padding-left: 28px;">2. Co. is not responsible for leakage, Breakage, Damage &amp; any Loss.</div>
               <div class="ttc-note-sub" style="padding-left: 28px;">3. Co. is not responsible for damage &amp; breakage of marble.</div>
             </div>
@@ -6834,37 +6929,37 @@ const BiltyBookingModule = {
             <table class="ttc-tax-table" style="width: 100%; border-collapse: collapse; border: none;">
               <tbody>
                 <tr>
-                  <td class="ttc-tax-label" style="border-bottom: 1px solid #000; padding: 3px 6px; font-size: 10.5px; font-weight: bold; width: 45%;">SGST@</td>
-                  <td class="ttc-tax-rate" style="border-bottom: 1px solid #000; padding: 3px 6px; font-size: 10.5px; font-weight: bold; width: 25%; text-align: center;">${trip.sgstRate || '0.00%'}</td>
-                  <td class="ttc-tax-amount" style="border-bottom: 1px solid #000; padding: 3px 6px; font-size: 10.5px; font-weight: bold; width: 30%; text-align: right;">₹ ${(Number(trip.sgstAmount) || 0).toFixed(2)}</td>
+                  <td class="ttc-tax-label" style="border-bottom: 1px solid #000; padding: 3px 6px; font-size: 11px; font-weight: bold; width: 45%;">SGST@</td>
+                  <td class="ttc-tax-rate" style="border-bottom: 1px solid #000; padding: 3px 6px; font-size: 11px; font-weight: bold; width: 25%; text-align: center;">${trip.sgstRate || '0.00%'}</td>
+                  <td class="ttc-tax-amount" style="border-bottom: 1px solid #000; padding: 3px 6px; font-size: 11px; font-weight: bold; width: 30%; text-align: right;">₹ ${(Number(trip.sgstAmount) || 0).toFixed(2)}</td>
                 </tr>
                 <tr>
-                  <td class="ttc-tax-label" style="border-bottom: 1px solid #000; padding: 3px 6px; font-size: 10.5px; font-weight: bold;">CGST@</td>
-                  <td class="ttc-tax-rate" style="border-bottom: 1px solid #000; padding: 3px 6px; font-size: 10.5px; font-weight: bold; text-align: center;">${trip.cgstRate || '0.00%'}</td>
-                  <td class="ttc-tax-amount" style="border-bottom: 1px solid #000; padding: 3px 6px; font-size: 10.5px; font-weight: bold; text-align: right;">₹ ${(Number(trip.cgstAmount) || 0).toFixed(2)}</td>
+                  <td class="ttc-tax-label" style="border-bottom: 1px solid #000; padding: 3px 6px; font-size: 11px; font-weight: bold;">CGST@</td>
+                  <td class="ttc-tax-rate" style="border-bottom: 1px solid #000; padding: 3px 6px; font-size: 11px; font-weight: bold; text-align: center;">${trip.cgstRate || '0.00%'}</td>
+                  <td class="ttc-tax-amount" style="border-bottom: 1px solid #000; padding: 3px 6px; font-size: 11px; font-weight: bold; text-align: right;">₹ ${(Number(trip.cgstAmount) || 0).toFixed(2)}</td>
                 </tr>
                 <tr>
-                  <td class="ttc-tax-label" style="border-bottom: 1px solid #000; padding: 3px 6px; font-size: 10.5px; font-weight: bold;">IGST@</td>
-                  <td class="ttc-tax-rate" style="border-bottom: 1px solid #000; padding: 3px 6px; font-size: 10.5px; font-weight: bold; text-align: center;">${trip.igstRate || '0.00%'}</td>
-                  <td class="ttc-tax-amount" style="border-bottom: 1px solid #000; padding: 3px 6px; font-size: 10.5px; font-weight: bold; text-align: right;">₹ ${(Number(trip.igstAmount) || 0).toFixed(2)}</td>
+                  <td class="ttc-tax-label" style="border-bottom: 1px solid #000; padding: 3px 6px; font-size: 11px; font-weight: bold;">IGST@</td>
+                  <td class="ttc-tax-rate" style="border-bottom: 1px solid #000; padding: 3px 6px; font-size: 11px; font-weight: bold; text-align: center;">${trip.igstRate || '0.00%'}</td>
+                  <td class="ttc-tax-amount" style="border-bottom: 1px solid #000; padding: 3px 6px; font-size: 11px; font-weight: bold; text-align: right;">₹ ${(Number(trip.igstAmount) || 0).toFixed(2)}</td>
                 </tr>
                 <tr>
-                  <td class="ttc-tax-label" colspan="2" style="border-bottom: 1px solid #000; padding: 3px 6px; font-size: 10.5px; font-weight: bold;">Loading Charges</td>
-                  <td class="ttc-tax-amount" style="border-bottom: 1px solid #000; padding: 3px 6px; font-size: 10.5px; font-weight: bold; text-align: right;">₹ ${(Number(trip.loadingCharges) || 0).toFixed(2)}</td>
+                  <td class="ttc-tax-label" colspan="2" style="border-bottom: 1px solid #000; padding: 3px 6px; font-size: 11px; font-weight: bold;">Loading Charges</td>
+                  <td class="ttc-tax-amount" style="border-bottom: 1px solid #000; padding: 3px 6px; font-size: 11px; font-weight: bold; text-align: right;">₹ ${(Number(trip.loadingCharges) || 0).toFixed(2)}</td>
                 </tr>
                 <tr>
-                  <td class="ttc-tax-label" colspan="2" style="border-bottom: 1px solid #000; padding: 3px 6px; font-size: 10.5px; font-weight: bold;">Halt Charges</td>
-                  <td class="ttc-tax-amount" style="border-bottom: 1px solid #000; padding: 3px 6px; font-size: 10.5px; font-weight: bold; text-align: right;">₹ ${(Number(trip.haltCharges) || 0).toFixed(2)}</td>
+                  <td class="ttc-tax-label" colspan="2" style="border-bottom: 1px solid #000; padding: 3px 6px; font-size: 11px; font-weight: bold;">Halt Charges</td>
+                  <td class="ttc-tax-amount" style="border-bottom: 1px solid #000; padding: 3px 6px; font-size: 11px; font-weight: bold; text-align: right;">₹ ${(Number(trip.haltCharges) || 0).toFixed(2)}</td>
                 </tr>
                 <tr class="ttc-row-grand-total" style="background: #fff;">
-                  <td class="ttc-tax-label fw-bold" colspan="2" style="border-bottom: 1px solid #000; padding: 4px 6px; font-size: 11.5px; font-weight: 900;">GRAND TOTAL</td>
-                  <td class="ttc-tax-amount fw-bold" style="border-bottom: 1px solid #000; padding: 4px 6px; font-size: 11.5px; font-weight: 900; text-align: right;">₹${grandTotalVal}</td>
+                  <td class="ttc-tax-label fw-bold" colspan="2" style="border-bottom: 1px solid #000; padding: 4px 6px; font-size: 12px; font-weight: 900;">GRAND TOTAL</td>
+                  <td class="ttc-tax-amount fw-bold" style="border-bottom: 1px solid #000; padding: 4px 6px; font-size: 12px; font-weight: 900; text-align: right;">₹ ${grandTotalVal}</td>
                 </tr>
               </tbody>
             </table>
 
-            <!-- Signature Area -->
-            <div class="ttc-signature-area" style="text-align: right; padding: 22px 20px 4px 0; font-weight: bold; font-size: 11px;">
+            <!-- Signature Area (1:1 with Original) -->
+            <div class="ttc-signature-area" style="text-align: right; padding: 20px 24px 4px 0; font-weight: bold; font-size: 11.5px;">
               <div class="ttc-sign-title">Booking Clerk</div>
             </div>
           </div>
@@ -6872,7 +6967,7 @@ const BiltyBookingModule = {
         </div>
 
         <!-- BOTTOM FULL-WIDTH STRIP -->
-        <div class="ttc-daily-service-bar" style="border: 1.5px solid #000; border-top: none; padding: 4px; text-align: center; font-weight: bold; font-size: 10.5px; background: #fff; margin-top: -1px;">
+        <div class="ttc-daily-service-bar" style="border: 1.5px solid #000; border-top: none; padding: 4px; text-align: center; font-weight: bold; font-size: 11px; background: #fff; margin-top: -1px;">
           Daily Service: Delhi, Himachal, Haryana, Punjab, U.P., Gujrat, Rajasthan, etc.
         </div>
 
