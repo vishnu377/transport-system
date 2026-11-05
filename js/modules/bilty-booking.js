@@ -1623,9 +1623,22 @@ const BiltyBookingModule = {
   },
 
   onConsignorSelect(val) {
-    if (!val) return;
-    val = val.trim();
+    const cNameInput = document.getElementById('bilty-consignor-name');
+    const cAddrInput = document.getElementById('bilty-consignor-address');
+    const gstinInput = document.getElementById('bilty-consignor-gstin');
+    const addressText = document.getElementById('appsheet-consignor-address-text');
+    const gstinBadge = document.getElementById('appsheet-consignor-gstin-badge');
     const consignorInput = document.getElementById('bilty-consignor');
+
+    if (!val) {
+      if (cNameInput) cNameInput.value = '';
+      if (cAddrInput) cAddrInput.value = '';
+      if (gstinInput) gstinInput.value = '';
+      if (addressText) addressText.innerText = '';
+      if (gstinBadge) gstinBadge.innerText = '';
+      return;
+    }
+    val = val.trim();
     if (consignorInput && consignorInput.value !== val) consignorInput.value = val;
 
     let searchGstin = '';
@@ -1636,44 +1649,66 @@ const BiltyBookingModule = {
       searchName = parts.slice(1).join(' - ').trim();
     }
 
+    const cleanVal = val.toUpperCase();
+    const cleanSearchGstin = searchGstin.toUpperCase();
+    const cleanSearchName = searchName.toLowerCase();
+
     let party = null;
-    const partiesList = this.parties || [];
-    if (searchGstin) {
-      party = partiesList.find(p => p.gstin && p.gstin.toUpperCase() === searchGstin.toUpperCase());
-    }
-    if (!party && searchName) {
-      party = partiesList.find(p => p.name && p.name.toLowerCase() === searchName.toLowerCase());
-    }
-    if (!party) {
-      party = partiesList.find(p => p.gstin && p.gstin.toUpperCase() === val.toUpperCase());
+    const partiesList = (this.parties && this.parties.length > 0)
+      ? this.parties
+      : ((typeof window !== 'undefined' && Array.isArray(window.INITIAL_EXCEL_PARTIES)) ? window.INITIAL_EXCEL_PARTIES : []);
+
+    // 1. Match by GSTIN exact
+    if (cleanSearchGstin) {
+      party = partiesList.find(p => p.gstin && p.gstin.trim().toUpperCase() === cleanSearchGstin);
     }
     if (!party) {
-      party = partiesList.find(p => p.name && p.name.toLowerCase() === val.toLowerCase());
+      party = partiesList.find(p => p.gstin && p.gstin.trim().toUpperCase() === cleanVal);
+    }
+
+    // 2. Match by exact Name
+    if (!party && cleanSearchName) {
+      party = partiesList.find(p => p.name && p.name.trim().toLowerCase() === cleanSearchName);
     }
     if (!party) {
-      party = partiesList.find(p => {
-        if (p.gstin && val.toUpperCase().includes(p.gstin.toUpperCase())) return true;
-        if (p.name && val.toLowerCase().includes(p.name.toLowerCase())) return true;
-        return false;
+      party = partiesList.find(p => p.name && p.name.trim().toLowerCase() === val.toLowerCase());
+    }
+
+    // 3. Match by partial GSTIN (>= 5 chars)
+    if (!party && cleanVal.length >= 5) {
+      party = partiesList.find(p => p.gstin && p.gstin.trim().toUpperCase().includes(cleanVal));
+    }
+
+    // 4. Match by party name contains (>= 3 chars)
+    if (!party && cleanSearchName.length >= 3) {
+      party = partiesList.find(p => p.name && p.name.toLowerCase().includes(cleanSearchName));
+    }
+
+    // 5. Match in past trips
+    if (!party) {
+      const tripsList = (this.allTrips && this.allTrips.length > 0)
+        ? this.allTrips
+        : ((typeof window !== 'undefined' && Array.isArray(window.INITIAL_EXCEL_TRIPS)) ? window.INITIAL_EXCEL_TRIPS : []);
+      const tripMatch = tripsList.find(t => {
+        const cGst = (t.consigneeGstin || '').trim().toUpperCase();
+        const sGst = (t.consignorGstin || '').trim().toUpperCase();
+        const cNm = (t.consignee || '').trim().toLowerCase();
+        const sNm = (t.consignor || '').trim().toLowerCase();
+        return (cleanSearchGstin && (sGst === cleanSearchGstin || cGst === cleanSearchGstin)) ||
+               (cleanVal && (sGst === cleanVal || cGst === cleanVal)) ||
+               (cleanSearchName && (sNm === cleanSearchName || cNm === cleanSearchName || sNm.includes(cleanSearchName) || cNm.includes(cleanSearchName)));
       });
-    }
-    if (!party) {
-      const tripMatch = (this.allTrips || []).find(t => t.consignor && (t.consignor === val || (t.consignorGstin && t.consignorGstin === val)));
       if (tripMatch) {
+        const isConsignorMatch = (tripMatch.consignorGstin && tripMatch.consignorGstin.toUpperCase() === cleanVal) ||
+                                 (tripMatch.consignor && tripMatch.consignor.toLowerCase().includes(cleanSearchName));
         party = {
-          name: tripMatch.consignor,
-          gstin: tripMatch.consignorGstin || '',
-          address: tripMatch.consignorAddress || tripMatch.origin || 'Rajsamand (Raj.)',
-          city: tripMatch.origin || 'Rajsamand'
+          name: isConsignorMatch ? tripMatch.consignor : (tripMatch.consignee || tripMatch.consignor),
+          gstin: isConsignorMatch ? (tripMatch.consignorGstin || '') : (tripMatch.consigneeGstin || ''),
+          address: isConsignorMatch ? (tripMatch.consignorAddress || tripMatch.origin || 'Rajsamand (Raj.)') : (tripMatch.deliveryAddress || tripMatch.consigneeAddress || tripMatch.destination || 'Rajsamand (Raj.)'),
+          city: isConsignorMatch ? (tripMatch.origin || 'Rajsamand') : (tripMatch.destination || 'Rajsamand')
         };
       }
     }
-
-    const gstinInput = document.getElementById('bilty-consignor-gstin');
-    const addressText = document.getElementById('appsheet-consignor-address-text');
-    const gstinBadge = document.getElementById('appsheet-consignor-gstin-badge');
-    const cNameInput = document.getElementById('bilty-consignor-name');
-    const cAddrInput = document.getElementById('bilty-consignor-address');
 
     if (party) {
       const cleanGst = this.sanitizeGstin(party.gstin);
@@ -1705,9 +1740,25 @@ const BiltyBookingModule = {
   },
 
   onConsigneeSelect(val) {
-    if (!val) return;
-    val = val.trim();
+    const eNameInput = document.getElementById('bilty-consignee-name');
+    const eAddrInput = document.getElementById('bilty-consignee-address');
+    const gstinInput = document.getElementById('bilty-consignee-gstin');
+    const addrInput = document.getElementById('bilty-delivery-address');
+    const addressText = document.getElementById('appsheet-consignee-address-text');
+    const gstinBadge = document.getElementById('appsheet-consignee-gstin-badge');
+    const destInput = document.getElementById('bilty-destination');
     const consigneeInput = document.getElementById('bilty-consignee');
+
+    if (!val) {
+      if (eNameInput) eNameInput.value = '';
+      if (eAddrInput) eAddrInput.value = '';
+      if (gstinInput) gstinInput.value = '';
+      if (addrInput) addrInput.value = '';
+      if (addressText) addressText.innerText = '';
+      if (gstinBadge) gstinBadge.innerText = '';
+      return;
+    }
+    val = val.trim();
     if (consigneeInput && consigneeInput.value !== val) consigneeInput.value = val;
 
     let searchGstin = '';
@@ -1718,54 +1769,66 @@ const BiltyBookingModule = {
       searchName = parts.slice(1).join(' - ').trim();
     }
 
+    const cleanVal = val.toUpperCase();
+    const cleanSearchGstin = searchGstin.toUpperCase();
+    const cleanSearchName = searchName.toLowerCase();
+
     let party = null;
-    const partiesList = this.parties || [];
-    if (searchGstin) {
-      party = partiesList.find(p => p.gstin && p.gstin.toUpperCase() === searchGstin.toUpperCase());
+    const partiesList = (this.parties && this.parties.length > 0)
+      ? this.parties
+      : ((typeof window !== 'undefined' && Array.isArray(window.INITIAL_EXCEL_PARTIES)) ? window.INITIAL_EXCEL_PARTIES : []);
+
+    // 1. Match by GSTIN exact (from searchGstin or raw val)
+    if (cleanSearchGstin) {
+      party = partiesList.find(p => p.gstin && p.gstin.trim().toUpperCase() === cleanSearchGstin);
     }
-    if (!party && searchName) {
-      party = partiesList.find(p => p.name && p.name.toLowerCase() === searchName.toLowerCase());
-    }
-    // A. Search by GSTIN match
     if (!party) {
-      party = partiesList.find(p => p.gstin && p.gstin.toUpperCase() === val.toUpperCase());
+      party = partiesList.find(p => p.gstin && p.gstin.trim().toUpperCase() === cleanVal);
     }
-    // B. Search by exact Name match
-    if (!party) {
-      party = partiesList.find(p => p.name && p.name.toLowerCase() === val.toLowerCase());
+
+    // 2. Match by exact Name
+    if (!party && cleanSearchName) {
+      party = partiesList.find(p => p.name && p.name.trim().toLowerCase() === cleanSearchName);
     }
-    // C. Search by partial or "GSTIN - Name" combined string
     if (!party) {
-      party = partiesList.find(p => {
-        if (p.gstin && val.toUpperCase().includes(p.gstin.toUpperCase())) return true;
-        if (p.name && val.toLowerCase().includes(p.name.toLowerCase())) return true;
-        return false;
+      party = partiesList.find(p => p.name && p.name.trim().toLowerCase() === val.toLowerCase());
+    }
+
+    // 3. Match by partial GSTIN (>= 5 chars)
+    if (!party && cleanVal.length >= 5) {
+      party = partiesList.find(p => p.gstin && p.gstin.trim().toUpperCase().includes(cleanVal));
+    }
+
+    // 4. Match by party name contains (>= 3 chars)
+    if (!party && cleanSearchName.length >= 3) {
+      party = partiesList.find(p => p.name && p.name.toLowerCase().includes(cleanSearchName));
+    }
+
+    // 5. Match in past trips (checks both consignee and consignor records)
+    if (!party) {
+      const tripsList = (this.allTrips && this.allTrips.length > 0)
+        ? this.allTrips
+        : ((typeof window !== 'undefined' && Array.isArray(window.INITIAL_EXCEL_TRIPS)) ? window.INITIAL_EXCEL_TRIPS : []);
+      const tripMatch = tripsList.find(t => {
+        const cGst = (t.consigneeGstin || '').trim().toUpperCase();
+        const sGst = (t.consignorGstin || '').trim().toUpperCase();
+        const cNm = (t.consignee || '').trim().toLowerCase();
+        const sNm = (t.consignor || '').trim().toLowerCase();
+        return (cleanSearchGstin && (cGst === cleanSearchGstin || sGst === cleanSearchGstin)) ||
+               (cleanVal && (cGst === cleanVal || sGst === cleanVal)) ||
+               (cleanSearchName && (cNm === cleanSearchName || sNm === cleanSearchName || cNm.includes(cleanSearchName) || sNm.includes(cleanSearchName)));
       });
-    }
-    // D. Search in past trips
-    if (!party) {
-      const tripMatch = (this.allTrips || []).find(t => t.consignee && (
-        t.consignee.toLowerCase() === val.toLowerCase() ||
-        t.consignee.toLowerCase() === searchName.toLowerCase() ||
-        (t.consigneeGstin && (t.consigneeGstin.toUpperCase() === val.toUpperCase() || t.consigneeGstin.toUpperCase() === searchGstin.toUpperCase()))
-      ));
       if (tripMatch) {
+        const isConsigneeMatch = (tripMatch.consigneeGstin && tripMatch.consigneeGstin.toUpperCase() === cleanVal) ||
+                                (tripMatch.consignee && tripMatch.consignee.toLowerCase().includes(cleanSearchName));
         party = {
-          name: tripMatch.consignee,
-          gstin: tripMatch.consigneeGstin || '',
-          address: tripMatch.deliveryAddress || tripMatch.consigneeAddress || tripMatch.destination || '',
-          city: tripMatch.destination || ''
+          name: isConsigneeMatch ? tripMatch.consignee : (tripMatch.consignor || tripMatch.consignee),
+          gstin: isConsigneeMatch ? (tripMatch.consigneeGstin || '') : (tripMatch.consignorGstin || ''),
+          address: isConsigneeMatch ? (tripMatch.deliveryAddress || tripMatch.consigneeAddress || tripMatch.destination || '') : (tripMatch.consignorAddress || tripMatch.origin || ''),
+          city: isConsigneeMatch ? (tripMatch.destination || '') : (tripMatch.origin || '')
         };
       }
     }
-
-    const gstinInput = document.getElementById('bilty-consignee-gstin');
-    const addrInput = document.getElementById('bilty-delivery-address');
-    const addressText = document.getElementById('appsheet-consignee-address-text');
-    const gstinBadge = document.getElementById('appsheet-consignee-gstin-badge');
-    const destInput = document.getElementById('bilty-destination');
-    const eNameInput = document.getElementById('bilty-consignee-name');
-    const eAddrInput = document.getElementById('bilty-consignee-address');
 
     if (party) {
       const cleanGst = this.sanitizeGstin(party.gstin);
@@ -6426,7 +6489,7 @@ const BiltyBookingModule = {
       btnPortrait.className = 'btn btn-outline-light px-3';
     }
     if (styleEl) {
-      styleEl.innerHTML = `@media print { @page { size: A4 landscape !important; margin: 5mm 6mm !important; } .bilty-official-doc { width: 100% !important; max-width: 100% !important; margin: 0 auto !important; } }`;
+      styleEl.innerHTML = `@page { size: A4 landscape; margin: 5mm 6mm; } @media print { @page { size: A4 landscape; margin: 5mm 6mm; } html, body { width: 100% !important; height: auto !important; margin: 0 !important; padding: 0 !important; } .bilty-official-doc { width: 100% !important; max-width: 100% !important; margin: 0 auto !important; } }`;
     }
     if (typeof document !== 'undefined' && document.body && document.body.classList) {
       document.body.classList.remove('print-portrait');
@@ -6762,16 +6825,10 @@ const BiltyBookingModule = {
       }).join(' &nbsp;|&nbsp; ');
     }
 
-    const consignorFullText = consignorAddr 
-      ? `${consignorName} ${consignorAddr}` 
-      : (consignorName || 'SHREE RAM MARBLE Araji No.497/2,497/3 Chhapar Kheri Rajsamand,RAJASTHAN-313334');
-
-    const consigneeFullText = consigneeAddr 
-      ? `${consigneeName} ${consigneeAddr}` 
-      : (consigneeName || 'NEW JAI SHREE MARBLES 58 CANTT Bareilly,UTTAR PRADESH-243001');
-
+    const consignorFullText = [consignorName, consignorAddr].filter(Boolean).join(' ') || consignorName || '-';
+    const consigneeFullText = [consigneeName, consigneeAddr].filter(Boolean).join(' ') || consigneeName || '-';
     const originText = this.sanitizeText(trip.origin) || 'Rajsamand (Raj.)';
-    const destText = this.sanitizeText(trip.destination) || 'Bareilly (U.P.)';
+    const destText = this.sanitizeText(trip.destination) || '-';
 
     const html = `
       <div class="bilty-official-doc shadow-sm">
@@ -6934,8 +6991,8 @@ const BiltyBookingModule = {
               </thead>
               <tbody>
                 <tr>
-                  <td style="border: 1px solid #000; font-size: 11px; font-weight: bold; padding: 4px; text-align: center;">${trip.ewayBillNo || '7616 8755 0133'}</td>
-                  <td style="border: 1px solid #000; font-size: 11px; font-weight: bold; padding: 4px; text-align: center;">${trip.billNo || '71'}</td>
+                  <td style="border: 1px solid #000; font-size: 11px; font-weight: bold; padding: 4px; text-align: center;">${this.sanitizeText(trip.ewayBillNo) || '-'}</td>
+                  <td style="border: 1px solid #000; font-size: 11px; font-weight: bold; padding: 4px; text-align: center;">${this.sanitizeText(trip.billNo) || '-'}</td>
                   <td style="border: 1px solid #000; font-size: 11px; font-weight: bold; padding: 4px; text-align: center;">₹ ${invValFormatted}</td>
                 </tr>
               </tbody>

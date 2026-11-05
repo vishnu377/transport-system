@@ -12,16 +12,18 @@
   <link rel="stylesheet" href="../css/appsheet-theme.css">
   <!-- Custom TMS Theme & Print Stylesheet -->
   <link rel="stylesheet" href="../css/style.css">
-  <link rel="stylesheet" href="../css/print.css">
+  <link rel="stylesheet" href="../css/print.css?v=20261105_v3">
   <style>
 
-    /* ZERO MAIN-WINDOW SCROLL LOCKDOWN: Fixed AppSheet Workspace */
-    html, body {
-      height: 100% !important;
-      max-height: 100vh !important;
-      margin: 0 !important;
-      padding: 0 !important;
-      overflow: hidden !important;
+    /* ZERO MAIN-WINDOW SCROLL LOCKDOWN: Fixed AppSheet Workspace (Screen only) */
+    @media screen {
+      html, body {
+        height: 100% !important;
+        max-height: 100vh !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+      }
     }
     #main-content {
       height: 100vh !important;
@@ -841,7 +843,7 @@
                     <div class="appsheet-form-row">
                       <label class="appsheet-form-label">Consignor Name *</label>
                       <div class="appsheet-form-control-wrap">
-                        <input type="text" id="bilty-consignor-name" class="appsheet-input-box fw-semibold" placeholder="Auto-populated from party (editable)" style="max-width: 480px;">
+                        <input type="text" id="bilty-consignor-name" class="appsheet-input-box fw-semibold" placeholder="Auto-populated from party (editable)" style="max-width: 480px;" oninput="BiltyBookingModule.updateLivePreview()">
                       </div>
                     </div>
 
@@ -849,7 +851,7 @@
                     <div class="appsheet-form-row">
                       <label class="appsheet-form-label">Consignor Address</label>
                       <div class="appsheet-form-control-wrap">
-                        <input type="text" id="bilty-consignor-address" class="appsheet-input-box text-muted" placeholder="Consignor Address (editable)" style="max-width: 480px;">
+                        <input type="text" id="bilty-consignor-address" class="appsheet-input-box text-muted" placeholder="Consignor Address (editable)" style="max-width: 480px;" oninput="BiltyBookingModule.updateLivePreview()">
                         <div id="appsheet-consignor-address-box" class="d-none">
                           <span id="appsheet-consignor-address-text"></span>
                           <span id="appsheet-consignor-gstin-badge"></span>
@@ -935,7 +937,7 @@
                     <div class="appsheet-form-row">
                       <label class="appsheet-form-label">Consignee Name *</label>
                       <div class="appsheet-form-control-wrap">
-                        <input type="text" id="bilty-consignee-name" class="appsheet-input-box fw-semibold" placeholder="Auto-populated from party (editable)" style="max-width: 480px;">
+                        <input type="text" id="bilty-consignee-name" class="appsheet-input-box fw-semibold" placeholder="Auto-populated from party (editable)" style="max-width: 480px;" oninput="BiltyBookingModule.updateLivePreview()">
                       </div>
                     </div>
 
@@ -943,7 +945,7 @@
                     <div class="appsheet-form-row">
                       <label class="appsheet-form-label">Consignee Address</label>
                       <div class="appsheet-form-control-wrap">
-                        <input type="text" id="bilty-consignee-address" class="appsheet-input-box text-muted" placeholder="Consignee Address (editable)" style="max-width: 480px;">
+                        <input type="text" id="bilty-consignee-address" class="appsheet-input-box text-muted" placeholder="Consignee Address (editable)" style="max-width: 480px;" oninput="BiltyBookingModule.updateLivePreview()">
                         <div id="appsheet-consignee-address-box" class="d-none">
                           <span id="appsheet-consignee-address-text"></span>
                           <span id="appsheet-consignee-gstin-badge"></span>
@@ -1550,6 +1552,6 @@
   <script src="../js/db-service.js?v=20261008_bilty_quick_add_v5"></script>
   <script src="../js/app.js?v=20261008_bilty_quick_add_v5"></script>
   <script src="../assets/bilty_template/bilty_assets.js?v=20261008_bilty_quick_add_v5"></script>
-  <script src="../js/modules/bilty-booking.js?v=20261008_bilty_quick_add_v5"></script>
+  <script src="../js/modules/bilty-booking.js?v=20261105_v3"></script>
 </body>
 </html>

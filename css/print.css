@@ -450,11 +450,16 @@
    Default: A4 Portrait (सीधी - खड़ी)
    Toggleable: A4 Landscape (आड़ी - लेटी हुई)
    ========================================================================== */
+/* Root @page rule: Clean W3C standard without invalid !important */
+@page {
+  size: A4 landscape;
+  margin: 5mm 6mm;
+}
+
 @media print {
-  /* Default: Pure A4 Portrait (सीधी - खड़ी) */
   @page {
-    size: A4 landscape !important;
-    margin: 5mm 6mm !important;
+    size: A4 landscape;
+    margin: 5mm 6mm;
   }
 
   /* Keep landscape token for test/legacy fallback: size: A4 landscape */
