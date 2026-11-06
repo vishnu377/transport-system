@@ -6612,57 +6612,6 @@ const BiltyBookingModule = {
       previewContainer.classList.add('preview-landscape');
     }
   },
-
-  downloadBiltyPDF(id) {
-    const trip = (id ? this.allTrips.find(t => String(t.id) === String(id) || String(t.grNo) === String(id)) : null) || this.currentActiveBilty;
-    if (!trip) {
-      if (typeof AppUI !== 'undefined' && AppUI.showToast) AppUI.showToast("Please select a bilty to download!", "warning");
-      return;
-    }
-
-    const fullGr = trip.grNo || trip.shortGrNo || 'Consignment_Note';
-    const cleanFileName = String(fullGr).replace(/[^a-zA-Z0-9_-]/g, '_');
-
-    if (typeof html2pdf !== 'function') {
-      if (typeof AppUI !== 'undefined' && AppUI.showToast) AppUI.showToast("PDF generator loading, opening print...", "info");
-      this.triggerPrint();
-      return;
-    }
-
-    if (typeof AppUI !== 'undefined' && AppUI.showToast) {
-      AppUI.showToast("Generating straight A4 Landscape PDF...", "info");
-    }
-
-    const container = document.createElement('div');
-    container.style.position = 'fixed';
-    container.style.left = '-9999px';
-    container.style.top = '0';
-    container.style.width = '1040px';
-    container.style.background = '#ffffff';
-    container.style.zIndex = '-9999';
-    container.innerHTML = this.getBiltyDocHTML(trip);
-    document.body.appendChild(container);
-
-    const opt = {
-      margin:       [3, 4, 3, 4],
-      filename:     `${cleanFileName}.pdf`,
-      image:        { type: 'jpeg', quality: 0.98 },
-      html2canvas:  { scale: 2, useCORS: true, logging: false },
-      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
-    };
-
-    html2pdf().set(opt).from(container).save().then(() => {
-      if (document.body.contains(container)) document.body.removeChild(container);
-      if (typeof AppUI !== 'undefined' && AppUI.showToast) {
-        AppUI.showToast(`Bilty ${cleanFileName}.pdf downloaded successfully!`, "success");
-      }
-    }).catch(err => {
-      console.error('html2pdf error:', err);
-      if (document.body.contains(container)) document.body.removeChild(container);
-      this.triggerPrint();
-    });
-  },
-
   triggerPrint() {
     this.setPrintOrientation('landscape');
 
@@ -6687,27 +6636,30 @@ const BiltyBookingModule = {
       } catch (e) {}
     }
 
-    // Isolated Hidden Print IFrame for 100% True A4 Landscape Print (Eliminates SPA interference)
+    // Isolated Print Frame for 100% True A4 Landscape Print (Eliminates SPA background interference)
     let printFrame = document.getElementById('bilty-isolated-print-frame');
-    if (!printFrame) {
-      printFrame = document.createElement('iframe');
-      printFrame.id = 'bilty-isolated-print-frame';
-      printFrame.style.position = 'fixed';
-      printFrame.style.right = '0';
-      printFrame.style.bottom = '0';
-      printFrame.style.width = '0';
-      printFrame.style.height = '0';
-      printFrame.style.border = '0';
-      printFrame.style.visibility = 'hidden';
-      document.body.appendChild(printFrame);
+    if (printFrame && printFrame.parentNode) {
+      printFrame.parentNode.removeChild(printFrame);
     }
+    printFrame = document.createElement('iframe');
+    printFrame.id = 'bilty-isolated-print-frame';
+    printFrame.style.position = 'fixed';
+    printFrame.style.left = '0';
+    printFrame.style.top = '0';
+    printFrame.style.width = '100%';
+    printFrame.style.height = '100%';
+    printFrame.style.border = '0';
+    printFrame.style.zIndex = '-99999';
+    printFrame.style.opacity = '0.01';
+    printFrame.style.pointerEvents = 'none';
+    document.body.appendChild(printFrame);
 
     const isolatedHTML = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <title>${fullGr}</title>
-  <link rel="stylesheet" href="../css/print.css?v=20261106_v7">
+  <link rel="stylesheet" href="../css/print.css?v=20261106_v8">
   <style>
     @page {
       size: 297mm 210mm;
