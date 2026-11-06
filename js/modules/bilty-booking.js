@@ -6489,7 +6489,7 @@ const BiltyBookingModule = {
       btnPortrait.className = 'btn btn-outline-light px-3';
     }
     if (styleEl) {
-      styleEl.innerHTML = `@page { size: A4 landscape; margin: 5mm 6mm; } @media print { @page { size: A4 landscape; margin: 5mm 6mm; } html, body { width: 100% !important; height: auto !important; margin: 0 !important; padding: 0 !important; } .bilty-official-doc { width: 100% !important; max-width: 100% !important; margin: 0 auto !important; } }`;
+      styleEl.innerHTML = `@page { size: 297mm 210mm; size: A4 landscape; margin: 4mm 5mm; } @media print { @page { size: 297mm 210mm; size: A4 landscape; margin: 4mm 5mm; } html, body { width: 100% !important; height: auto !important; margin: 0 !important; padding: 0 !important; } .bilty-official-doc { width: 100% !important; max-width: 100% !important; max-height: 200mm !important; page-break-inside: avoid !important; break-inside: avoid !important; margin: 0 auto !important; } }`;
     }
     if (typeof document !== 'undefined' && document.body && document.body.classList) {
       document.body.classList.remove('print-portrait');
@@ -6783,13 +6783,45 @@ const BiltyBookingModule = {
       invValFormatted = String(trip.invoiceValue).replace('₹', '').trim();
     }
 
-    // Grand total formatted cleanly
-    let grandTotalVal = displayFreight.replace('₹', '').trim();
-    if (trip.partyDue && !isNaN(Number(trip.partyDue))) {
-      grandTotalVal = Number(trip.partyDue).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-    } else if (trip.freight && !isNaN(Number(trip.freight))) {
-      grandTotalVal = Number(trip.freight).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    // Intelligent GST & Tax Calculations for both new & historical trips
+    let sgstRate = trip.sgstRate || '0.00%';
+    let sgstAmount = Number(trip.sgstAmount) || 0;
+    let cgstRate = trip.cgstRate || '0.00%';
+    let cgstAmount = Number(trip.cgstAmount) || 0;
+    let igstRate = trip.igstRate || '0.00%';
+    let igstAmount = Number(trip.igstAmount) || 0;
+
+    const totalGstRaw = Number(trip.gstAmount) || 0;
+    const freightNum = (trip.freight && !isNaN(Number(trip.freight))) ? Number(trip.freight) : 0;
+
+    if (totalGstRaw > 0 && sgstAmount === 0 && cgstAmount === 0 && igstAmount === 0) {
+      // Historical trip with lump-sum gstAmount: determine intra-state (SGST+CGST) vs inter-state (IGST)
+      const destStr = String(trip.destination || '').toLowerCase();
+      const isRajasthan = destStr.includes('raj') || destStr.includes('rajasthan');
+      const calcPct = freightNum > 0 ? Math.round((totalGstRaw / freightNum) * 100) : 18;
+      
+      if (isRajasthan) {
+        const halfPct = (calcPct / 2).toFixed(1).replace('.0', '');
+        sgstRate = `${halfPct}.00%`;
+        cgstRate = `${halfPct}.00%`;
+        sgstAmount = totalGstRaw / 2;
+        cgstAmount = totalGstRaw / 2;
+      } else {
+        igstRate = `${calcPct}.00%`;
+        igstAmount = totalGstRaw;
+      }
     }
+
+    // Grand total formatted cleanly
+    let grandTotalNum = 0;
+    if (trip.total && !isNaN(Number(trip.total)) && Number(trip.total) > 0) {
+      grandTotalNum = Number(trip.total);
+    } else if (trip.partyDue && !isNaN(Number(trip.partyDue)) && Number(trip.partyDue) > 0) {
+      grandTotalNum = Number(trip.partyDue);
+    } else if (freightNum > 0) {
+      grandTotalNum = freightNum + sgstAmount + cgstAmount + igstAmount + (Number(trip.loadingCharges) || 0) + (Number(trip.haltCharges) || 0);
+    }
+    const grandTotalVal = grandTotalNum > 0 ? grandTotalNum.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : displayFreight.replace('₹', '').trim();
 
     // Resolve & Clean Party Details
     let consignorName = this.sanitizeText(trip.consignor || '');
@@ -6840,7 +6872,7 @@ const BiltyBookingModule = {
             <div class="ttc-gst-code">Rajasthan GST Code: ${gstCode}</div>
             <div class="ttc-gstin">GSTIN: ${gstNo}</div>
             <div class="ttc-ganesha-box" style="margin-top: 4px;">
-              <img src="${ganeshaSrc}" alt="Lord Ganesha" class="ttc-img-ganesha" style="height: 66px; width: auto; object-fit: contain;">
+              <img src="${ganeshaSrc}" alt="Lord Ganesha" class="ttc-img-ganesha" style="height: 56px; width: auto; object-fit: contain;">
             </div>
           </div>
 
@@ -6863,7 +6895,7 @@ const BiltyBookingModule = {
             <div class="ttc-mobiles-2">${mob2}</div>
             <div class="ttc-email">${email}</div>
             <div class="ttc-truck-box" style="margin-top: 2px; display: flex; justify-content: flex-end;">
-              <img src="${truckSrc}" alt="Commercial Truck" class="ttc-img-truck" style="height: 60px; width: auto; object-fit: contain;">
+              <img src="${truckSrc}" alt="Commercial Truck" class="ttc-img-truck" style="height: 50px; width: auto; object-fit: contain;">
             </div>
           </div>
         </div>
@@ -7012,19 +7044,19 @@ const BiltyBookingModule = {
             <table class="ttc-tax-table" style="width: 100%; border-collapse: collapse; border: none;">
               <tbody>
                 <tr>
-                  <td class="ttc-tax-label" style="border-bottom: 1px solid #000; padding: 3px 6px; font-size: 11px; font-weight: bold; width: 45%;">SGST@</td>
-                  <td class="ttc-tax-rate" style="border-bottom: 1px solid #000; padding: 3px 6px; font-size: 11px; font-weight: bold; width: 25%; text-align: center;">${trip.sgstRate || '0.00%'}</td>
-                  <td class="ttc-tax-amount" style="border-bottom: 1px solid #000; padding: 3px 6px; font-size: 11px; font-weight: bold; width: 30%; text-align: right;">₹ ${(Number(trip.sgstAmount) || 0).toFixed(2)}</td>
+                  <td class="ttc-tax-label" style="border-bottom: 1px solid #000; padding: 2.5px 5px; font-size: 11px; font-weight: bold; width: 45%;">SGST@</td>
+                  <td class="ttc-tax-rate" style="border-bottom: 1px solid #000; padding: 2.5px 5px; font-size: 11px; font-weight: bold; width: 25%; text-align: center;">${sgstRate}</td>
+                  <td class="ttc-tax-amount" style="border-bottom: 1px solid #000; padding: 2.5px 5px; font-size: 11px; font-weight: bold; width: 30%; text-align: right;">₹ ${sgstAmount.toFixed(2)}</td>
                 </tr>
                 <tr>
-                  <td class="ttc-tax-label" style="border-bottom: 1px solid #000; padding: 3px 6px; font-size: 11px; font-weight: bold;">CGST@</td>
-                  <td class="ttc-tax-rate" style="border-bottom: 1px solid #000; padding: 3px 6px; font-size: 11px; font-weight: bold; text-align: center;">${trip.cgstRate || '0.00%'}</td>
-                  <td class="ttc-tax-amount" style="border-bottom: 1px solid #000; padding: 3px 6px; font-size: 11px; font-weight: bold; text-align: right;">₹ ${(Number(trip.cgstAmount) || 0).toFixed(2)}</td>
+                  <td class="ttc-tax-label" style="border-bottom: 1px solid #000; padding: 2.5px 5px; font-size: 11px; font-weight: bold;">CGST@</td>
+                  <td class="ttc-tax-rate" style="border-bottom: 1px solid #000; padding: 2.5px 5px; font-size: 11px; font-weight: bold; text-align: center;">${cgstRate}</td>
+                  <td class="ttc-tax-amount" style="border-bottom: 1px solid #000; padding: 2.5px 5px; font-size: 11px; font-weight: bold; text-align: right;">₹ ${cgstAmount.toFixed(2)}</td>
                 </tr>
                 <tr>
-                  <td class="ttc-tax-label" style="border-bottom: 1px solid #000; padding: 3px 6px; font-size: 11px; font-weight: bold;">IGST@</td>
-                  <td class="ttc-tax-rate" style="border-bottom: 1px solid #000; padding: 3px 6px; font-size: 11px; font-weight: bold; text-align: center;">${trip.igstRate || '0.00%'}</td>
-                  <td class="ttc-tax-amount" style="border-bottom: 1px solid #000; padding: 3px 6px; font-size: 11px; font-weight: bold; text-align: right;">₹ ${(Number(trip.igstAmount) || 0).toFixed(2)}</td>
+                  <td class="ttc-tax-label" style="border-bottom: 1px solid #000; padding: 2.5px 5px; font-size: 11px; font-weight: bold;">IGST@</td>
+                  <td class="ttc-tax-rate" style="border-bottom: 1px solid #000; padding: 2.5px 5px; font-size: 11px; font-weight: bold; text-align: center;">${igstRate}</td>
+                  <td class="ttc-tax-amount" style="border-bottom: 1px solid #000; padding: 2.5px 5px; font-size: 11px; font-weight: bold; text-align: right;">₹ ${igstAmount.toFixed(2)}</td>
                 </tr>
                 <tr>
                   <td class="ttc-tax-label" colspan="2" style="border-bottom: 1px solid #000; padding: 3px 6px; font-size: 11px; font-weight: bold;">Loading Charges</td>
@@ -7042,7 +7074,7 @@ const BiltyBookingModule = {
             </table>
 
             <!-- Signature Area (1:1 with Original) -->
-            <div class="ttc-signature-area" style="text-align: right; padding: 20px 24px 4px 0; font-weight: bold; font-size: 11.5px;">
+            <div class="ttc-signature-area" style="text-align: right; padding: 10px 20px 2px 0; font-weight: bold; font-size: 11.5px;">
               <div class="ttc-sign-title">Booking Clerk</div>
             </div>
           </div>
