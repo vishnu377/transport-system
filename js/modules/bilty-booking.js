@@ -4940,7 +4940,7 @@ const BiltyBookingModule = {
             <!-- 2. Bilty Number (Always visible in compact and expanded) -->
             <div class="d-flex align-items-center mtc-col-gr">
               ${dotHtml}
-              <span class="fw-bold" style="font-size: 11.5px; color: ${biltyColor};">${shortGr}</span>
+              <span class="fw-bold" style="font-size: 11.5px; color: ${biltyColor};">${shortGr}</span>${t.financialYear ? `<span class="badge bg-light text-secondary border ms-1" style="font-size: 8.5px; font-weight: 600;">${t.financialYear.replace('20', '').replace('-20', '-')}</span>` : ''}
             </div>
 
             <!-- 3. Truck Number (Visible in expanded) -->
@@ -5124,7 +5124,7 @@ const BiltyBookingModule = {
               ${actionIconsHtml}
             </td>
             <td class="fw-bold" style="color: ${biltyColor}; white-space: nowrap;">
-              ${dotSpan}<span>${shortGr}</span>
+              ${dotSpan}<span>${shortGr}</span>${t.financialYear ? `<span class="badge bg-light text-secondary border ms-1" style="font-size: 8.5px; font-weight: 600;">${t.financialYear.replace('20', '').replace('-20', '-')}</span>` : ''}
             </td>
             <td style="color: ${biltyColor}; font-weight: ${isSettled ? '600' : 'normal'}; white-space: nowrap;">
               ${dotSpan}<span>${truckNo}</span>
@@ -5248,44 +5248,45 @@ const BiltyBookingModule = {
       `;
     };
 
+    const cObj = (t.consignors && t.consignors[0]) || (t.sellerList && t.sellerList[0]) || null;
+    const cName = t.consignor || (cObj && (cObj.name || cObj.consignor)) || '-';
+    const cGstin = t.consignorGstin || t.gstinConsignor || (cObj && cObj.gstin) || '-';
+    const cAddr = t.consignorAddress || (cObj && cObj.address) || '-';
+
+    const eName = t.consignee || '-';
+    const eGstin = t.consigneeGstin || t.gstinConsignee || '-';
+    const eAddr = t.consigneeAddress || t.deliveryAddress || t.destination || '-';
+
     const rowsHtml = [
       formatRow('G.R.No.', fullGr, true),
-      formatRow('Bilty Date', dateStr || '17/02/2026'),
+      formatRow('Financial Year', t.financialYear || '-'),
+      formatRow('Bilty Date', dateStr || '-'),
       formatRow('Bilty Type', t.biltyType || 'Regular'),
       formatRow('Truck No.', t.truckNo || '-'),
-      formatRow('Truck Owner Name', t.truckOwner || t.owner || 'Shree Mahaveer Transport Company'),
+      formatRow('Truck Owner Name', t.truckOwner || t.owner || '-'),
       formatRow('Load Type', t.loadType || 'Under Load'),
-      formatRow('Commission', commVal > 0 ? ('₹' + commVal.toLocaleString('en-IN') + '.00') : '₹1,500.00'),
+      formatRow('Commission', commVal > 0 ? ('₹' + commVal.toLocaleString('en-IN') + '.00') : '-'),
       formatRow('Status', t.status || 'Due'),
       formatRow('Mode', t.billingType || t.mode || t.bookingMode || 'Cash'),
-      formatRow('Reference', t.reference || t.broker || 'Ali Akhtar Jani 9910844750'),
-      formatRow('Driver', t.driver || 'Kanharam Shahpura 7023908869'),
-      formatRow('From', t.origin || t.from || 'Kishangarh (Raj.)'),
-      formatRow('To', t.destination || t.to || 'Meerut (U.P.)'),
-      formatRow('GSTIN Consignor', t.gstinConsignor || '08ANSPC5593M1Z7'),
-      formatRow('Consignor Name', t.consignor || 'Varsha Marble'),
-      formatRow('Consignor Address', t.consignorAddress || 'C/O Patodi Marble, Near RIICO Office, Old Ind. Area, Madanganj-Kishangarh, Ajmer (Raj.)-305801'),
-      formatRow('Bill No.', t.billNo || '381'),
-      formatRow('Bill Value', t.billValue ? ('₹' + Number(t.billValue).toLocaleString('en-IN') + '.00') : '₹21,000.00'),
-      formatRow('GSTIN Consignor', t.gstinConsignor2 || t.gstinConsignor || '08AASP01796M1ZP'),
-      formatRow('Consignor Name', t.consignor2 || t.consignor || 'Bardia Enterprises'),
-      formatRow('Consignor Address', t.consignorAddress2 || t.consignorAddress || 'Jaipur Road, RIICO Industrial Area, Madanganj-Kishangarh, Ajmer (Raj.)-305801'),
-      formatRow('E-way Bill No.', t.ewayBillNo || '7716 0729 8399'),
-      formatRow('Valid Up To', t.validUpTo || '20/02/2026'),
-      formatRow('Bill No.', t.billNo2 || '36'),
-      formatRow('Bill Value', t.billValue2 ? ('₹' + Number(t.billValue2).toLocaleString('en-IN') + '.00') : '₹323,845.00'),
-      formatRow('Material', t.material ? t.material.replace(/\n/g, '<br>') : 'Waste Stone Chips<br>IRR Granite Slabs<br>Granite Small Slab'),
-      formatRow('GSTIN Consignee', t.gstinConsignee || '09CISPT9555M1ZU'),
-      formatRow('Consignee Name', t.consignee || 'Choudhary Marble'),
-      formatRow('Consignee Address', t.consigneeAddress || 'Khasara No. 72, Plot No. 7, Shop No. 1, Meerut Bagpat Road, Jani Siwalkhas, Meerut (U.P.)-250501'),
-      formatRow('Actual Billing Type', t.actualBillingType || 'Per Tonne'),
-      formatRow('Actual Weight', t.actualWeight ? (t.actualWeight + ' MT') : (t.weight ? (t.weight + ' MT') : '1.000')),
-      formatRow('Actual Rate', t.actualRate ? ('₹' + Number(t.actualRate).toLocaleString('en-IN') + '.00') : '₹1,100.00'),
-      formatRow('Freight', freightVal > 0 ? ('₹' + freightVal.toLocaleString('en-IN') + '.00') : '₹1,100.00'),
-      formatRow('Bilty Billing Type', t.biltyBillingType || 'Fixed'),
-      formatRow('Rate Bilty', t.rateBilty || 'Fixed'),
-      formatRow('Bilty', t.biltyAmt ? ('₹' + Number(t.biltyAmt).toLocaleString('en-IN') + '.00') : '₹15,000.00'),
-      formatRow('Bilty Grand Total', t.biltyGrandTotal ? ('₹' + Number(t.biltyGrandTotal).toLocaleString('en-IN') + '.00') : '₹15,000.00'),
+      formatRow('Reference', t.reference || t.broker || '-'),
+      formatRow('Driver', t.driver || '-'),
+      formatRow('From', t.origin || t.from || 'Rajsamand (Raj.)'),
+      formatRow('To', t.destination || t.to || '-'),
+      formatRow('GSTIN Consignor', cGstin),
+      formatRow('Consignor Name', cName),
+      formatRow('Consignor Address', cAddr),
+      formatRow('Bill No.', t.billNo || '-'),
+      formatRow('Bill Value', (t.billValue || t.invoiceValue) ? ('₹' + Number(t.billValue || t.invoiceValue).toLocaleString('en-IN') + '.00') : '-'),
+      formatRow('E-way Bill No.', t.ewayBillNo || '-'),
+      formatRow('Material', t.material ? t.material.replace(/\n/g, '<br>') : '-'),
+      formatRow('GSTIN Consignee', eGstin),
+      formatRow('Consignee Name', eName),
+      formatRow('Consignee Address', eAddr),
+      formatRow('Actual Billing Type', t.actualBillingType || t.billingType || 'Per Tonne'),
+      formatRow('Actual Weight', t.actualWeight ? (t.actualWeight + ' MT') : (t.weight ? (t.weight + ' MT') : '-')),
+      formatRow('Actual Rate', t.actualRate ? ('₹' + Number(t.actualRate).toLocaleString('en-IN') + '.00') : (t.rate ? ('₹' + Number(t.rate).toLocaleString('en-IN') + '.00') : '-')),
+      formatRow('Freight', freightVal > 0 ? ('₹' + freightVal.toLocaleString('en-IN') + '.00') : '-'),
+      formatRow('Bilty Grand Total', (t.total || t.partyDue || freightVal > 0) ? ('₹' + Number(t.total || t.partyDue || freightVal).toLocaleString('en-IN') + '.00') : '-'),
       formatRow('Is Bilty Required?', t.isBiltyRequired || 'Yes')
     ].join('');
 
@@ -6824,9 +6825,10 @@ const BiltyBookingModule = {
     const grandTotalVal = grandTotalNum > 0 ? grandTotalNum.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : displayFreight.replace('₹', '').trim();
 
     // Resolve & Clean Party Details
-    let consignorName = this.sanitizeText(trip.consignor || '');
-    let consignorAddr = this.sanitizeText(trip.consignorAddress || '');
-    let consignorGstin = this.sanitizeGstin(trip.consignorGstin || '');
+    const cObj = (trip.consignors && trip.consignors[0]) || (sellersList && sellersList[0]) || null;
+    let consignorName = this.sanitizeText(trip.consignor || (cObj && (cObj.name || cObj.consignor)) || '');
+    let consignorAddr = this.sanitizeText(trip.consignorAddress || (cObj && cObj.address) || '');
+    let consignorGstin = this.sanitizeGstin(trip.consignorGstin || trip.gstinConsignor || (cObj && cObj.gstin) || '');
 
     if (/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/i.test(consignorName)) {
       if (!consignorGstin || consignorGstin === 'URP' || consignorGstin === '-') consignorGstin = consignorName;
@@ -6839,7 +6841,7 @@ const BiltyBookingModule = {
 
     let consigneeName = this.sanitizeText(trip.consignee || '');
     let consigneeAddr = this.sanitizeText(trip.consigneeAddress || trip.deliveryAddress || trip.destination || '');
-    let consigneeGstin = this.sanitizeGstin(trip.consigneeGstin || '');
+    let consigneeGstin = this.sanitizeGstin(trip.consigneeGstin || trip.gstinConsignee || '');
 
     if (/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/i.test(consigneeName)) {
       if (!consigneeGstin || consigneeGstin === 'URP' || consigneeGstin === '-') consigneeGstin = consigneeName;

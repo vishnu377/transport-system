@@ -84,6 +84,33 @@ assert(htmlRegular.includes('₹ 0.00'), "Non-GST trip tax amount must be ₹ 0.
 assert(htmlRegular.includes('099027'), "Bill no 099027 rendered cleanly");
 console.log("✔ TEST 3 PASSED: Non-GST trip correctly shows 0.00% tax and Grand Total matching freight!");
 
+// 4. Test GR 2298 Authentic Resolution (Consignors Array & gstinConsignee)
+const trip2298 = {
+  id: "TRIP_2026_2027_2298",
+  grNo: "2026-2027-2298_TTC",
+  shortGrNo: "2298",
+  transport: "TTC",
+  truckNo: "RJ26GA8214",
+  destination: "Kanpur (U.P.)",
+  consignors: [
+    {
+      gstin: "08AADFS0700G1Z5",
+      consignor: "Shree Om Shiv Minerals",
+      name: "Shree Om Shiv Minerals",
+      address: "Ind. Area, Dayla-Kalan Road, Village Jetpura, ..."
+    }
+  ],
+  gstinConsignee: "09AQJPA5130G1Z6",
+  consignee: "Agarwal Tiles & Granites",
+  freight: 153805
+};
+const html2298 = renderFn(trip2298);
+assert(html2298.includes('Shree Om Shiv Minerals'), "Must resolve consignor from consignors array");
+assert(html2298.includes('08AADFS0700G1Z5'), "Must resolve consignor GSTIN from consignors array");
+assert(html2298.includes('Agarwal Tiles & Granites'), "Must render consignee name");
+assert(html2298.includes('09AQJPA5130G1Z6'), "Must resolve consignee GSTIN from gstinConsignee field");
+console.log("✔ TEST 4 PASSED: GR 2298 authentic consignors array & gstinConsignee rendered 100% cleanly!");
+
 console.log("==================================================================");
 console.log("🏆 ALL BILTY HISTORICAL GST SPLIT & PRINT PARITY TESTS PASSED!   ");
 console.log("==================================================================");
