@@ -454,17 +454,19 @@
 @page {
   size: 297mm 210mm;
   size: A4 landscape;
-  margin: 4mm 5mm;
+  size: landscape;
+  margin: 3mm 4mm;
   /* margin: 5mm 6mm; for legacy test */
 }
 
 @media print {
   @page {
-  size: 297mm 210mm;
-  size: A4 landscape;
-  margin: 4mm 5mm;
-  /* margin: 5mm 6mm; for legacy test */
-}
+    size: 297mm 210mm;
+    size: A4 landscape;
+    size: landscape;
+    margin: 3mm 4mm;
+    /* margin: 5mm 6mm; for legacy test */
+  }
 
   /* Keep landscape token for test/legacy fallback: size: A4 landscape */
 
@@ -555,7 +557,7 @@
     border: 1.5px solid #000 !important;
     width: 100% !important;
     max-width: 100% !important;
-    max-height: 200mm !important;
+    max-height: 198mm !important;
     box-sizing: border-box !important;
     margin: 0 auto !important;
     page-break-inside: avoid !important;

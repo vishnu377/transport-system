@@ -6601,7 +6601,7 @@ const BiltyBookingModule = {
       btnPortrait.className = 'btn btn-outline-light px-3';
     }
     if (styleEl) {
-      styleEl.innerHTML = `@page { size: 297mm 210mm; size: A4 landscape; margin: 4mm 5mm; } @media print { @page { size: 297mm 210mm; size: A4 landscape; margin: 4mm 5mm; } html, body { width: 100% !important; height: auto !important; margin: 0 !important; padding: 0 !important; } .bilty-official-doc { width: 100% !important; max-width: 100% !important; max-height: 200mm !important; page-break-inside: avoid !important; break-inside: avoid !important; margin: 0 auto !important; } }`;
+      styleEl.innerHTML = `@page { size: 297mm 210mm; size: A4 landscape; size: landscape; margin: 3mm 4mm; } @media print { @page { size: 297mm 210mm; size: A4 landscape; size: landscape; margin: 3mm 4mm; } html, body { width: 100% !important; height: auto !important; margin: 0 !important; padding: 0 !important; } .bilty-official-doc { width: 100% !important; max-width: 100% !important; max-height: 198mm !important; page-break-inside: avoid !important; break-inside: avoid !important; margin: 0 auto !important; } .ttc-daily-service-bar { page-break-inside: avoid !important; break-inside: avoid !important; page-break-before: avoid !important; break-before: avoid !important; } }`;
     }
     if (typeof document !== 'undefined' && document.body && document.body.classList) {
       document.body.classList.remove('print-portrait');
@@ -6615,9 +6615,114 @@ const BiltyBookingModule = {
 
   triggerPrint() {
     this.setPrintOrientation('landscape');
-    setTimeout(() => {
-      window.print();
-    }, 100);
+
+    const trip = this.currentActiveBilty;
+    if (!trip || typeof document === 'undefined') {
+      if (typeof window !== 'undefined' && window.print) {
+        setTimeout(() => window.print(), 100);
+      }
+      return;
+    }
+
+    const fullGr = trip.grNo || trip.shortGrNo || 'Consignment_Note';
+    const docHtml = this.getBiltyDocHTML(trip);
+
+    // Retrieve active print CSS
+    let printCssText = '';
+    const linkEl = document.querySelector('link[href*="print.css"]');
+    if (linkEl && linkEl.sheet) {
+      try {
+        const rules = linkEl.sheet.cssRules || linkEl.sheet.rules;
+        for (let r of rules) printCssText += r.cssText + '\n';
+      } catch (e) {}
+    }
+
+    // Isolated Hidden Print IFrame for 100% True A4 Landscape Print (Eliminates SPA interference)
+    let printFrame = document.getElementById('bilty-isolated-print-frame');
+    if (!printFrame) {
+      printFrame = document.createElement('iframe');
+      printFrame.id = 'bilty-isolated-print-frame';
+      printFrame.style.position = 'fixed';
+      printFrame.style.right = '0';
+      printFrame.style.bottom = '0';
+      printFrame.style.width = '0';
+      printFrame.style.height = '0';
+      printFrame.style.border = '0';
+      printFrame.style.visibility = 'hidden';
+      document.body.appendChild(printFrame);
+    }
+
+    const isolatedHTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>${fullGr}</title>
+  <link rel="stylesheet" href="../css/print.css?v=20261106_v6">
+  <style>
+    @page {
+      size: 297mm 210mm;
+      size: A4 landscape;
+      size: landscape;
+      margin: 3mm 4mm;
+    }
+    @media print {
+      @page {
+        size: 297mm 210mm;
+        size: A4 landscape;
+        size: landscape;
+        margin: 3mm 4mm;
+      }
+      html, body {
+        width: 100% !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #fff !important;
+      }
+      .bilty-official-doc {
+        width: 100% !important;
+        max-width: 100% !important;
+        max-height: 198mm !important;
+        margin: 0 auto !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      .ttc-daily-service-bar {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        page-break-before: avoid !important;
+        break-before: avoid !important;
+      }
+    }
+    ${printCssText}
+  </style>
+</head>
+<body class="print-landscape">
+  <div class="preview-landscape" style="width: 100%; max-width: 100%; margin: 0 auto;">
+    ${docHtml}
+  </div>
+</body>
+</html>`;
+
+    try {
+      const frameDoc = printFrame.contentWindow.document;
+      frameDoc.open();
+      frameDoc.write(isolatedHTML);
+      frameDoc.close();
+
+      setTimeout(() => {
+        try {
+          printFrame.contentWindow.focus();
+          printFrame.contentWindow.print();
+        } catch (err) {
+          window.print();
+        }
+      }, 150);
+    } catch (e) {
+      setTimeout(() => {
+        window.print();
+      }, 100);
+    }
   },
 
   setPrintCopy(copyTitle) {
