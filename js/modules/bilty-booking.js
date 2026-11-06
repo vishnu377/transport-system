@@ -6601,7 +6601,7 @@ const BiltyBookingModule = {
       btnPortrait.className = 'btn btn-outline-light px-3';
     }
     if (styleEl) {
-      styleEl.innerHTML = `@page { size: 297mm 210mm; size: A4 landscape; size: landscape; margin: 3mm 4mm; } @media print { @page { size: 297mm 210mm; size: A4 landscape; size: landscape; margin: 3mm 4mm; } html, body { width: 100% !important; height: auto !important; margin: 0 !important; padding: 0 !important; } .bilty-official-doc { width: 100% !important; max-width: 100% !important; max-height: 198mm !important; page-break-inside: avoid !important; break-inside: avoid !important; margin: 0 auto !important; } .ttc-daily-service-bar { page-break-inside: avoid !important; break-inside: avoid !important; page-break-before: avoid !important; break-before: avoid !important; } }`;
+      styleEl.innerHTML = `@page { size: 297mm 210mm; size: A4 landscape; margin: 3mm 4mm; } @media print { @page { size: 297mm 210mm; size: A4 landscape; margin: 3mm 4mm; } html, body { width: 100% !important; height: auto !important; margin: 0 !important; padding: 0 !important; } .bilty-official-doc { width: 100% !important; max-width: 100% !important; max-height: 198mm !important; page-break-inside: avoid !important; break-inside: avoid !important; margin: 0 auto !important; } .ttc-daily-service-bar { page-break-inside: avoid !important; break-inside: avoid !important; page-break-before: avoid !important; break-before: avoid !important; } }`;
     }
     if (typeof document !== 'undefined' && document.body && document.body.classList) {
       document.body.classList.remove('print-portrait');
@@ -6611,6 +6611,56 @@ const BiltyBookingModule = {
       previewContainer.classList.remove('preview-portrait');
       previewContainer.classList.add('preview-landscape');
     }
+  },
+
+  downloadBiltyPDF(id) {
+    const trip = (id ? this.allTrips.find(t => String(t.id) === String(id) || String(t.grNo) === String(id)) : null) || this.currentActiveBilty;
+    if (!trip) {
+      if (typeof AppUI !== 'undefined' && AppUI.showToast) AppUI.showToast("Please select a bilty to download!", "warning");
+      return;
+    }
+
+    const fullGr = trip.grNo || trip.shortGrNo || 'Consignment_Note';
+    const cleanFileName = String(fullGr).replace(/[^a-zA-Z0-9_-]/g, '_');
+
+    if (typeof html2pdf !== 'function') {
+      if (typeof AppUI !== 'undefined' && AppUI.showToast) AppUI.showToast("PDF generator loading, opening print...", "info");
+      this.triggerPrint();
+      return;
+    }
+
+    if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+      AppUI.showToast("Generating straight A4 Landscape PDF...", "info");
+    }
+
+    const container = document.createElement('div');
+    container.style.position = 'fixed';
+    container.style.left = '-9999px';
+    container.style.top = '0';
+    container.style.width = '1040px';
+    container.style.background = '#ffffff';
+    container.style.zIndex = '-9999';
+    container.innerHTML = this.getBiltyDocHTML(trip);
+    document.body.appendChild(container);
+
+    const opt = {
+      margin:       [3, 4, 3, 4],
+      filename:     `${cleanFileName}.pdf`,
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2, useCORS: true, logging: false },
+      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
+    };
+
+    html2pdf().set(opt).from(container).save().then(() => {
+      if (document.body.contains(container)) document.body.removeChild(container);
+      if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+        AppUI.showToast(`Bilty ${cleanFileName}.pdf downloaded successfully!`, "success");
+      }
+    }).catch(err => {
+      console.error('html2pdf error:', err);
+      if (document.body.contains(container)) document.body.removeChild(container);
+      this.triggerPrint();
+    });
   },
 
   triggerPrint() {
@@ -6657,19 +6707,17 @@ const BiltyBookingModule = {
 <head>
   <meta charset="utf-8">
   <title>${fullGr}</title>
-  <link rel="stylesheet" href="../css/print.css?v=20261106_v6">
+  <link rel="stylesheet" href="../css/print.css?v=20261106_v7">
   <style>
     @page {
       size: 297mm 210mm;
       size: A4 landscape;
-      size: landscape;
       margin: 3mm 4mm;
     }
     @media print {
       @page {
         size: 297mm 210mm;
         size: A4 landscape;
-        size: landscape;
         margin: 3mm 4mm;
       }
       html, body {

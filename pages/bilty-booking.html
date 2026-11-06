@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="../css/appsheet-theme.css">
   <!-- Custom TMS Theme & Print Stylesheet -->
   <link rel="stylesheet" href="../css/style.css">
-  <link rel="stylesheet" href="../css/print.css?v=20261106_v6">
+  <link rel="stylesheet" href="../css/print.css?v=20261106_v7">
   <style>
 
     /* ZERO MAIN-WINDOW SCROLL LOCKDOWN: Fixed AppSheet Workspace (Screen only) */
@@ -1473,6 +1473,9 @@
           <button type="button" class="btn btn-success d-flex align-items-center gap-1" onclick="BiltyBookingModule.shareOnWhatsApp()">
             <i class="bi bi-whatsapp"></i> <span>Share on WhatsApp</span>
           </button>
+            <button type="button" class="btn btn-outline-success btn-sm px-3 fw-bold d-flex align-items-center gap-1" onclick="BiltyBookingModule.downloadBiltyPDF()" title="सीधी A4 Landscape PDF तुरंत डाउनलोड करें">
+              <i class="bi bi-download"></i> <span>Download Landscape PDF</span>
+            </button>
           <div class="d-flex gap-2">
             <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
             <button type="button" class="btn btn-outline-primary btn-sm px-3 fw-bold d-none" id="btn-print-all-grs" onclick="BiltyBookingModule.printAllMultiBilties()">
@@ -1534,6 +1537,8 @@
   
   <!-- SheetJS for Excel Export -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <!-- html2pdf.js for Direct 1-Click Straight A4 Landscape PDF Download -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -1552,6 +1557,6 @@
   <script src="../js/db-service.js?v=20261008_bilty_quick_add_v5"></script>
   <script src="../js/app.js?v=20261008_bilty_quick_add_v5"></script>
   <script src="../assets/bilty_template/bilty_assets.js?v=20261008_bilty_quick_add_v5"></script>
-  <script src="../js/modules/bilty-booking.js?v=20261106_v6"></script>
+  <script src="../js/modules/bilty-booking.js?v=20261106_v7"></script>
 </body>
 </html>
