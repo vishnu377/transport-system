@@ -3437,9 +3437,11 @@ const BiltyBookingModule = {
           destination: b.destination,
           consignor: consignor,
           consignorGstin: consignorGstin,
+          consignorAddress: (document.getElementById('bilty-consignor-address')?.value || '').trim() || origin,
           dispatchFromAddress: dispatchFrom,
           consignee: b.consignee,
           consigneeGstin: b.consigneeGstin || '',
+          consigneeAddress: b.deliveryAddress || b.destination || '',
           deliveryAddress: b.deliveryAddress || '',
           shipToAddress: b.deliveryAddress || '',
 
@@ -3655,9 +3657,11 @@ const BiltyBookingModule = {
         destination: destination,
         consignor: s1Consignor,
         consignorGstin: consignorGstins.join(', ') || allSellers[0].consignorGstin || '',
+        consignorAddress: (document.getElementById('bilty-consignor-address')?.value || '').trim(),
         dispatchFromAddress: dispatchLocations.join(' | ') || allSellers[0].dispatchFromAddress || 'Rajsamand (Raj.)',
         consignee: consignee,
         consigneeGstin: consigneeGstin,
+        consigneeAddress: deliveryAddress,
         deliveryAddress: deliveryAddress,
         shipToAddress: deliveryAddress,
 
@@ -3829,9 +3833,11 @@ const BiltyBookingModule = {
           destination: b.destination,
           consignor: consignor,
           consignorGstin: consignorGstin,
+          consignorAddress: (document.getElementById('bilty-consignor-address')?.value || '').trim() || origin,
           dispatchFromAddress: dispatchFrom,
           consignee: b.consignee,
           consigneeGstin: b.consigneeGstin || '',
+          consigneeAddress: b.deliveryAddress || b.destination || '',
           deliveryAddress: b.deliveryAddress || '',
           shipToAddress: b.deliveryAddress || '',
 
@@ -7251,13 +7257,16 @@ const BiltyBookingModule = {
                 ${isMultiSeller ? `
                   <div class="ttc-field-title" style="font-size: 10px; font-weight: bold; margin-bottom: 2px;">CONSIGNOR(S) NAME &amp; ADDRESS (${sellersList.length} SELLERS CONSOLIDATED)</div>
                   <div class="consolidated-sellers-list" style="display: flex; flex-direction: column; gap: 3px;">
-                    ${sellersList.map((s, idx) => `
+                    ${sellersList.map((s, idx) => {
+                      const sAddr = this.sanitizeText(s.dispatchFromAddress || s.consignorAddress || s.address || '');
+                      return `
                       <div style="font-size: 10.5px; line-height: 1.3; ${idx > 0 ? 'border-top: 1px dashed #cbd5e1; padding-top: 2px;' : ''}">
                         <span class="badge bg-secondary text-white me-1" style="font-size: 8.5px; padding: 1px 4px; vertical-align: middle;">S${idx + 1}</span>
                         <strong style="color: #000;">${this.sanitizeText(s.consignor) || '---'}</strong>
+                        ${sAddr ? `<span style="font-size: 10px; color: #334155;">, ${sAddr}</span>` : ''}
                         ${s.consignorGstin ? `<span class="text-muted ms-1" style="font-size: 9.5px;">(GST: ${this.sanitizeGstin(s.consignorGstin)})</span>` : ''}
                       </div>
-                    `).join('')}
+                    `;}).join('')}
                   </div>
                 ` : `
                   <div class="ttc-field-title" style="font-size: 10px; font-weight: bold; color: #000;">CONSIGNOR NAME &amp; ADDRESS</div>
