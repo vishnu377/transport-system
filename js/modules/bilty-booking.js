@@ -5376,7 +5376,7 @@ const BiltyBookingModule = {
       formatRow('Truck No.', t.truckNo || '-'),
       formatRow('Truck Owner Name', t.truckOwner || t.owner || '-'),
       formatRow('Load Type', t.loadType || 'Under Load'),
-      formatRow('Commission', commVal > 0 ? ('₹' + commVal.toLocaleString('en-IN') + '.00') : '-'),
+      formatRow('Commission', (t.commission !== undefined && t.commission !== null && String(t.commission).trim() !== '') ? ('₹' + Number(t.commission || 0).toLocaleString('en-IN') + '.00' + (t.commissionStatus ? ` (${t.commissionStatus})` : '')) : '-'),
       formatRow('Status', t.status || 'Due'),
       formatRow('Mode', t.billingType || t.mode || t.bookingMode || 'Cash'),
       formatRow('Reference', t.reference || t.broker || '-'),
