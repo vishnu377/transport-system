@@ -6612,6 +6612,54 @@ const BiltyBookingModule = {
       previewContainer.classList.add('preview-landscape');
     }
   },
+
+  downloadBiltyPDF(id) {
+    const trip = (id ? this.allTrips.find(t => String(t.id) === String(id) || String(t.grNo) === String(id)) : null) || this.currentActiveBilty;
+    if (!trip) {
+      if (typeof AppUI !== 'undefined' && AppUI.showToast) AppUI.showToast("Please select a bilty to download!", "warning");
+      return;
+    }
+
+    const fullGr = trip.grNo || trip.shortGrNo || 'Consignment_Note';
+    const cleanFileName = String(fullGr).replace(/[^a-zA-Z0-9_-]/g, '_');
+
+    if (typeof html2pdf !== 'function') {
+      if (typeof AppUI !== 'undefined' && AppUI.showToast) AppUI.showToast("PDF generator loading, opening print...", "info");
+      this.triggerPrint();
+      return;
+    }
+
+    if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+      AppUI.showToast("Generating straight A4 Landscape PDF...", "info");
+    }
+
+    // Capture the visible bilty document in the modal
+    const previewDoc = document.querySelector('#bilty-print-preview .bilty-official-doc') || document.getElementById('bilty-print-preview');
+    if (!previewDoc) {
+      this.triggerPrint();
+      return;
+    }
+
+    const opt = {
+      margin:       [3, 4, 3, 4],
+      filename:     `${cleanFileName}.pdf`,
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2, useCORS: true, scrollY: 0, scrollX: 0 },
+      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
+    };
+
+    html2pdf().set(opt).from(previewDoc).save().then(() => {
+      if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+        AppUI.showToast(`Bilty ${cleanFileName}.pdf downloaded successfully!`, "success");
+      }
+    }).catch(err => {
+      console.error('html2pdf error:', err);
+      if (typeof AppUI !== 'undefined' && AppUI.showToast) {
+        AppUI.showToast("Could not download directly, opening print view...", "warning");
+      }
+      this.triggerPrint();
+    });
+  },
   triggerPrint() {
     this.setPrintOrientation('landscape');
 
@@ -6659,7 +6707,7 @@ const BiltyBookingModule = {
 <head>
   <meta charset="utf-8">
   <title>${fullGr}</title>
-  <link rel="stylesheet" href="../css/print.css?v=20261106_v8">
+  <link rel="stylesheet" href="../css/print.css?v=20261109_v1">
   <style>
     @page {
       size: 297mm 210mm;
