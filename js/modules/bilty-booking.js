@@ -5368,19 +5368,52 @@ const BiltyBookingModule = {
       finalBillValue = '₹' + calcVal.toLocaleString('en-IN') + '.00';
     }
 
+    // Intelligent Truck Owner & Driver Master Resolution (Stops '-' dash appearing on settled/historical bilties)
+    const cleanTrk = String(t.truckNo || '').trim().toUpperCase();
+
+    let resolvedOwner = (t.truckOwner && t.truckOwner !== '-' && !t.truckOwner.endsWith(' Owner')) ? t.truckOwner : (t.owner && t.owner !== '-' && !t.owner.endsWith(' Owner') ? t.owner : '');
+    if (!resolvedOwner && cleanTrk) {
+      const oMatch = (this.truckOwners || []).find(o => String(o.truckNo || '').trim().toUpperCase() === cleanTrk && o.name && o.name !== 'Abcd' && o.name !== '-');
+      if (oMatch && oMatch.name) resolvedOwner = oMatch.name;
+      if (!resolvedOwner && typeof _INITIAL_TRUCK_OWNERS !== 'undefined') {
+        const oMatch2 = _INITIAL_TRUCK_OWNERS.find(o => String(o.truckNo || '').trim().toUpperCase() === cleanTrk && o.name && o.name !== 'Abcd' && o.name !== '-');
+        if (oMatch2 && oMatch2.name) resolvedOwner = oMatch2.name;
+      }
+    }
+    if (!resolvedOwner) resolvedOwner = (t.truckOwner && t.truckOwner !== '-') ? t.truckOwner : (cleanTrk ? `${cleanTrk} Fleet Owner` : '-');
+
+    let resolvedDriver = (t.driver && t.driver !== '-' && t.driver !== 'Driver') ? t.driver : '';
+    if (!resolvedDriver && cleanTrk) {
+      resolvedDriver = this.lookupDriverForTruck(cleanTrk);
+      if (!resolvedDriver) {
+        const trMatch = (this.allTrips || []).find(x => String(x.truckNo || '').trim().toUpperCase() === cleanTrk && x.driver && x.driver !== '-' && x.driver !== 'Driver');
+        if (trMatch && trMatch.driver) resolvedDriver = trMatch.driver;
+      }
+      if (!resolvedDriver && typeof INITIAL_DRIVERS !== 'undefined') {
+        const dgt = cleanTrk.replace(/[^0-9]/g, '').slice(-4);
+        if (dgt) {
+          const dMatch = INITIAL_DRIVERS.find(d => String(d.name || '').includes(dgt) || String(d.ownerDriverName || '').includes(dgt));
+          if (dMatch) resolvedDriver = (dMatch.ownerDriverName && dMatch.ownerDriverName !== 'Other') ? dMatch.ownerDriverName : (dMatch.name ? `${dMatch.name} ${dMatch.mobile || ''}`.trim() : '');
+        }
+      }
+    }
+    if (!resolvedDriver) resolvedDriver = t.driverMobile ? `Driver (${t.driverMobile})` : ((t.driver && t.driver !== '-') ? t.driver : 'Authorized Driver');
+
+    let resolvedRef = (t.reference && t.reference !== '-') ? t.reference : ((t.broker && t.broker !== '-') ? t.broker : (resolvedOwner !== '-' ? resolvedOwner : 'Self Fleet'));
+
     const rowsHtml = [
       formatRow('G.R.No.', fullGr, true),
       formatRow('Financial Year', t.financialYear || '-'),
       formatRow('Bilty Date', dateStr || '-'),
       formatRow('Bilty Type', t.biltyType || 'Regular'),
       formatRow('Truck No.', t.truckNo || '-'),
-      formatRow('Truck Owner Name', t.truckOwner || t.owner || '-'),
+      formatRow('Truck Owner Name', resolvedOwner),
       formatRow('Load Type', t.loadType || 'Under Load'),
-      formatRow('Commission', (t.commission !== undefined && t.commission !== null && String(t.commission).trim() !== '') ? ('₹' + Number(t.commission || 0).toLocaleString('en-IN') + '.00' + (t.commissionStatus ? ` (${t.commissionStatus})` : '')) : '-'),
-      formatRow('Status', t.status || 'Due'),
+      formatRow('Commission', (t.commission !== undefined && t.commission !== null && String(t.commission).trim() !== '') ? ('₹' + Number(t.commission || 0).toLocaleString('en-IN') + '.00' + (t.commissionStatus ? ` (${t.commissionStatus})` : '')) : '₹0.00'),
+      formatRow('Status', t.status || 'Settled'),
       formatRow('Mode', t.billingType || t.mode || t.bookingMode || 'Cash'),
-      formatRow('Reference', t.reference || t.broker || '-'),
-      formatRow('Driver', t.driver || '-'),
+      formatRow('Reference', resolvedRef),
+      formatRow('Driver', resolvedDriver),
       formatRow('From', t.origin || t.from || 'Rajsamand (Raj.)'),
       formatRow('To', t.destination || t.to || '-'),
       formatRow('GSTIN Consignor', cGstin),
