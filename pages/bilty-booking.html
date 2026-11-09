@@ -906,6 +906,19 @@
                       </div>
                     </div>
 
+                    <!-- Extra Sellers Container (Multiple Factories ➔ 1 Consolidated GR) -->
+                    <div id="extra-sellers-container" class="my-2 p-2 rounded bg-light-subtle border border-dashed">
+                      <div id="extra-sellers-list"></div>
+                      <div class="appsheet-form-row pt-1 mb-0">
+                        <div class="appsheet-form-label"></div>
+                        <div class="appsheet-form-control-wrap">
+                          <button type="button" class="btn btn-outline-primary btn-sm fw-bold d-inline-flex align-items-center gap-1 shadow-sm" id="btn-add-extra-seller" onclick="BiltyBookingModule.addExtraSeller()">
+                            <i class="bi bi-plus-circle-fill"></i> <span>+ Add Another Seller (2nd फैक्ट्री जोड़ें - 1 ही GR रहेगा)</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
                     <!-- 15. Material * - Video frame_199s -->
                     <div class="appsheet-form-row">
                       <label class="appsheet-form-label">Material *</label>
@@ -970,6 +983,19 @@
                       <label class="appsheet-form-label">Ship To Address *</label>
                       <div class="appsheet-form-control-wrap">
                         <input type="text" id="bilty-ship-to" class="appsheet-input-box" placeholder="Enter alternate Ship To / Unloading Site Address" style="max-width: 480px;">
+                      </div>
+                    </div>
+
+                    <!-- Extra Buyers Container (Multiple Consignees ➔ Multiple GRs Batch) -->
+                    <div id="extra-buyers-container" class="my-2 p-2 rounded bg-light-subtle border border-dashed">
+                      <div id="extra-buyers-list"></div>
+                      <div class="appsheet-form-row pt-1 mb-0">
+                        <div class="appsheet-form-label"></div>
+                        <div class="appsheet-form-control-wrap">
+                          <button type="button" class="btn btn-outline-primary btn-sm fw-bold d-inline-flex align-items-center gap-1 shadow-sm" id="btn-add-extra-buyer" onclick="BiltyBookingModule.addExtraBuyer()">
+                            <i class="bi bi-plus-circle-fill"></i> <span>+ Add Another Buyer (2nd पार्टी जोड़ें - 2 अलग GR बनेंगे)</span>
+                          </button>
+                        </div>
                       </div>
                     </div>
 
