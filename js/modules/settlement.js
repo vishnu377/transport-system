@@ -902,23 +902,44 @@ const SettlementModule = {
     const firmBadge = document.getElementById('detail-firm-badge');
     if (firmBadge) firmBadge.innerText = t.transport || 'TTC';
 
-    // CARD 2: Consignor/s
+    // CARD 2: Consignor/s (Supports Multi-Seller sellerList & AppSheet consignors[])
     const consignorTable = document.getElementById('detail-consignor-table');
     if (consignorTable) {
-      consignorTable.innerHTML = `
+      const sellers = (Array.isArray(t.sellerList) && t.sellerList.length > 0)
+        ? t.sellerList.map(s => ({
+            gstin: s.consignorGstin || '-',
+            name: s.consignor || '-',
+            address: s.dispatchFromAddress || s.consignorAddress || t.origin || 'Rajsamand (Raj.)'
+          }))
+        : (Array.isArray(t.consignors) && t.consignors.length > 0)
+          ? t.consignors.map(c => ({
+              gstin: c.gstin || c.consignorGstin || '-',
+              name: c.consignor || c.name || '-',
+              address: c.address || c.dispatchFromAddress || t.origin || 'Rajsamand (Raj.)'
+            }))
+          : [{
+              gstin: t.consignorGstin || '08AABCT2345M1Z8',
+              name: t.consignor || 'MTC & TTC Consignor',
+              address: t.consignorAddress || t.dispatchFromAddress || t.deliveryAddress || t.origin || 'Rajsamand (Raj.)'
+            }];
+
+      consignorTable.innerHTML = sellers.map((s, idx) => `
         <tr>
-          <td>${t.consignorGstin || '08AABCT2345M1Z8'}</td>
-          <td class="fw-bold">${t.consignor || 'MTC & TTC Consignor'}</td>
-          <td>${t.deliveryAddress || t.origin || 'Rajsamand (Raj.)'}</td>
+          <td>${s.gstin}</td>
+          <td class="fw-bold">${sellers.length > 1 ? `<span class="badge bg-secondary me-1">S${idx + 1}</span>` : ''}${s.name}</td>
+          <td>${s.address}</td>
         </tr>
-      `;
+      `).join('');
     }
 
     // CARD 3: Consignee & Freight
+    const billTotal = (Number(t.total) > 0)
+      ? Number(t.total)
+      : (totalFreight + (Number(t.loadingCharges) || 0) + (Number(t.haltCharges) || 0) + ((t.isGstPaidByParty === 'Yes' || Number(t.gstAmount) > 0) ? (Number(t.gstAmount) || 0) : 0));
     setText('d-consignee-name', t.consignee || '-');
     setText('d-consignee-gstin', t.consigneeGstin || '09AAACB3132G1ZP');
-    setText('d-delivery-address', t.deliveryAddress || t.destination || '-');
-    setText('d-freight-amount', `₹${totalFreight.toLocaleString('en-IN')}`);
+    setText('d-delivery-address', t.consigneeAddress || t.deliveryAddress || t.destination || '-');
+    setText('d-freight-amount', `₹${billTotal.toLocaleString('en-IN')}`);
     setText('d-party-due', `₹${pDue.toLocaleString('en-IN')}`);
 
     // CARD 4: Freight & Vehicle Owner
@@ -929,12 +950,15 @@ const SettlementModule = {
     // CARD 5: Owner Payment Subtable
     const ownerPayBody = document.getElementById('d-owner-payments-tbody');
     if (ownerPayBody) {
+      const ownerSettledAmt = (Array.isArray(t.ownerPayments) && t.ownerPayments.length > 0)
+        ? t.ownerPayments.reduce((s, p) => s + (Number(p.amountPaid || p.amount) || 0), 0)
+        : (Number(t.ownerTotalPayment || t.ownerFreight) || Math.max(0, totalFreight - (Number(t.commission) || 0)));
       if (isSettled || oDue === 0) {
         ownerPayBody.innerHTML = `
           <tr>
             <td class="fw-bold text-success">● Settled</td>
             <td>Full Freight Settlement</td>
-            <td class="text-end fw-bold text-success">₹${(totalFreight * 0.9).toLocaleString('en-IN')}</td>
+            <td class="text-end fw-bold text-success">₹${ownerSettledAmt.toLocaleString('en-IN')}</td>
             <td>Bank / Cash</td>
           </tr>
         `;
@@ -958,11 +982,12 @@ const SettlementModule = {
     const custPayBody = document.getElementById('d-customer-payments-tbody');
     if (custPayBody) {
       if (isSettled || pDue === 0) {
+        const custPaidDisplay = Number(t.partyPaid) > 0 ? Number(t.partyPaid) : billTotal;
         custPayBody.innerHTML = `
           <tr>
             <td class="fw-bold text-success">● Paid in Full</td>
             <td>Party Clearance</td>
-            <td class="text-end fw-bold text-success">₹${totalFreight.toLocaleString('en-IN')}</td>
+            <td class="text-end fw-bold text-success">₹${custPaidDisplay.toLocaleString('en-IN')}</td>
             <td>Direct / NEFT</td>
           </tr>
         `;
@@ -1066,14 +1091,39 @@ const SettlementModule = {
 
     const t = this.allTrips.find(x => x.id === tripId || x.grNo === tripId);
     if (t) {
+      const payDate = document.getElementById('rop-date')?.value || new Date().toISOString().slice(0, 10);
+      const payMode = document.getElementById('rop-mode')?.value || 'Cash';
       const currentODue = Number(t.ownerDue) || 0;
       t.ownerDue = Math.max(0, currentODue - amt);
+      if (!Array.isArray(t.ownerPayments)) t.ownerPayments = [];
+      t.ownerPayments.unshift({
+        paymentDate: payDate,
+        amountPaid: amt,
+        mode: payMode,
+        beneficiary: t.truckOwner || t.ownerName || 'Truck Owner'
+      });
       if (this.isTripSettled(t)) {
         t.status = 'Settled';
       }
 
       try {
         await dbService.update('trips', t.id, t);
+        if (typeof dbService.add === 'function') {
+          await dbService.add('payments', {
+            id: `OPAY_SET_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
+            type: 'owner',
+            date: payDate,
+            firm: t.transport || 'TTC',
+            ownerName: t.truckOwner || t.ownerName || '-',
+            truckNo: t.truckNo || '',
+            grNo: t.grNo,
+            stage: 'Settlement',
+            amount: amt,
+            mode: payMode,
+            refNo: document.getElementById('rop-ref')?.value || '',
+            remarks: document.getElementById('rop-remarks')?.value || `Owner payout via Settlement (${t.grNo})`
+          });
+        }
       } catch (err) {
         console.warn('Local update saved:', err);
       }

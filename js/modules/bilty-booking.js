@@ -3296,6 +3296,73 @@ const BiltyBookingModule = {
   },
 
   // ----------------------------------------------------
+  // SHARED FINANCIAL & DEBT HELPERS (SINGLE + MULTI-GR)
+  // ----------------------------------------------------
+  computeMultiPartyGst(baseFreight, fallbackFreight = 0) {
+    const isGstApp = document.getElementById('bilty-is-gst')?.value || 'No';
+    const gstPaid = document.getElementById('bilty-gst-paid-party')?.value || (isGstApp === 'Yes' ? 'Yes' : 'No');
+    const formGst = parseFloat(document.getElementById('bilty-gst-amount')?.value) || 0;
+    const formFreight = parseFloat(document.getElementById('bilty-freight')?.value) || fallbackFreight || 0;
+    if (gstPaid === 'Yes' && baseFreight > 0) {
+      const ratePct = (formFreight > 0 && formGst > 0) ? (formGst / formFreight) : 0.05;
+      return {
+        isGstPaidByParty: 'Yes',
+        gstAmount: Number((baseFreight * ratePct).toFixed(2))
+      };
+    }
+    return { isGstPaidByParty: 'No', gstAmount: 0 };
+  },
+
+  buildLinkedDebtRecord({ date, year, firm, shortGr, fullGr, truckNo, truckOwner, origin, destination, driver, commissionMode, debtAmount, debtType, debtDescription, tripGroupId }) {
+    const safeDate = date || new Date().toISOString().split('T')[0];
+    const monthNames = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'];
+    const dateObj = new Date(safeDate);
+    const mIdx = !isNaN(dateObj.getTime()) ? ((dateObj.getMonth() + 9) % 12 + 1) : 1;
+    const monthKey = `${mIdx} ${monthNames[(mIdx - 1) % 12]}`;
+
+    const parts = safeDate.split('-');
+    const displayDate = (parts.length === 3) ? `${parts[2]}/${parts[1]}/${parts[0]}` : safeDate;
+    const debtMode = document.getElementById('bilty-debt-mode')?.value
+      || document.getElementById('bilty-debt-from')?.value
+      || commissionMode
+      || 'Cash';
+    const borrower = document.getElementById('bilty-debt-borrower')?.value.trim() || driver || truckOwner || '-';
+    const remarks = debtDescription
+      || document.getElementById('bilty-debt-remarks')?.value.trim()
+      || `Debt linked to Bilty G.R. ${fullGr || shortGr} (${debtType || 'Trip Advance'})`;
+
+    const record = {
+      id: `DEBT_BILTY_${Date.now()}_${Math.random().toString(36).substr(2, 3)}`,
+      date: safeDate,
+      displayDate,
+      fy: year || '2026-2027',
+      monthKey,
+      grNo: shortGr,
+      truckNo,
+      from: origin || 'Rajsamand (Raj.)',
+      to: destination || '-',
+      company: firm || 'TTC',
+      truckOwner: truckOwner || `${truckNo} Owner`,
+      debtType: debtType || 'Trip Advance',
+      dueAmount: Number(debtAmount) || 0,
+      debtAmount: Number(debtAmount) || 0,
+      amount: Number(debtAmount) || 0,
+      totalReturned: 0,
+      debtMode,
+      mode: debtMode,
+      borrowerName: borrower,
+      borrower,
+      receiverName: driver || borrower,
+      remarks,
+      description: remarks,
+      status: 'Pending',
+      returnedAmounts: []
+    };
+    if (tripGroupId) record.tripGroupId = tripGroupId;
+    return record;
+  },
+
+  // ----------------------------------------------------
   // UNIFIED SAVING ENGINE FOR SINGLE & MULTI-GR BILTY
   // ----------------------------------------------------
   async saveAppSheetBilty() {
@@ -3411,6 +3478,10 @@ const BiltyBookingModule = {
         const wt = parseFloat(b.weight) || 0;
         const rt = parseFloat(b.rate) || 0;
         const fr = (b.billingType === 'Fixed') ? rt : (wt * rt);
+        const bLoading = parseFloat(b.loadingCharges) || 0;
+        const bHalt = parseFloat(b.haltCharges) || 0;
+        const bGst = this.computeMultiPartyGst(fr);
+        const bTotal = fr + bLoading + bHalt + bGst.gstAmount;
 
         const comm = (i === 0) ? tripCommission : 0;
         const oth = (i === 0) ? tripOtherExpense : 0;
@@ -3425,6 +3496,8 @@ const BiltyBookingModule = {
           tripStartDate: date,
           biltyType: biltyType,
           isGstApplicable: isGstApplicable,
+          isGstPaidByParty: bGst.isGstPaidByParty,
+          gstAmount: bGst.gstAmount,
           truckNo: truckNo,
           truckOwner: truckOwner,
           ownerMobile: ownerMobile,
@@ -3454,8 +3527,9 @@ const BiltyBookingModule = {
           weight: wt,
           rate: rt,
           freight: fr,
-          loadingCharges: parseFloat(b.loadingCharges) || 0,
-          haltCharges: parseFloat(b.haltCharges) || 0,
+          loadingCharges: bLoading,
+          haltCharges: bHalt,
+          total: bTotal,
 
           biltyBillingType: b.billingType || 'Per Tonne',
           biltyWeight: wt,
@@ -3473,9 +3547,9 @@ const BiltyBookingModule = {
           otherDesc: tripOtherDesc,
 
           status: 'Transit',
-          partyDue: fr,
+          partyDue: bTotal,
           partyPaid: 0,
-          ownerDue: fr - comm,
+          ownerDue: Math.max(0, fr - comm),
 
           tripGroupId: tripGroupId,
           isMultiGr: true,
@@ -3495,23 +3569,18 @@ const BiltyBookingModule = {
         return;
       }
 
-      const isDebtChecked = document.getElementById('toggle-any-debt')?.checked;
+      const isDebtChecked = document.getElementById('toggle-any-debt')?.checked || document.getElementById('bilty-has-debt')?.value === 'Yes';
+      const debtType = document.getElementById('bilty-debt-type')?.value || 'Trip Advance';
       const debtAmount = parseFloat(document.getElementById('bilty-debt-amount')?.value) || 0;
       if (isDebtChecked && debtAmount > 0) {
         const primaryGr = seqs[0].shortGr;
-        const debtRecord = {
-          id: `DEBT_BILTY_${Date.now()}`,
-          date: date,
-          description: `Advance / Debt on Trip ${primaryGr} (${truckNo}) - Multi-Buyer Batch (${tripsToSave.length} GRs)`,
-          borrower: document.getElementById('bilty-debt-borrower')?.value.trim() || driver,
-          amount: debtAmount,
-          mode: document.getElementById('bilty-debt-mode')?.value || 'Cash',
-          status: 'Pending',
-          remarks: document.getElementById('bilty-debt-remarks')?.value.trim() || 'Booked with Multi-GR bilty',
-          truckNo: truckNo,
-          grNo: primaryGr,
-          tripGroupId: tripGroupId
-        };
+        const debtRecord = this.buildLinkedDebtRecord({
+          date, year, firm, shortGr: primaryGr, fullGr: seqs[0].fullGr,
+          truckNo, truckOwner, origin, destination: allBuyers[0].destination,
+          driver, commissionMode: tripCommissionMode, debtAmount, debtType,
+          debtDescription: `Advance / Debt on Trip ${primaryGr} (${truckNo}) - Multi-Buyer Batch (${tripsToSave.length} GRs)`,
+          tripGroupId
+        });
         try {
           await dbService.add('debts', debtRecord);
         } catch (dErr) {
@@ -3521,6 +3590,9 @@ const BiltyBookingModule = {
 
       AppUI.showToast(`All ${tripsToSave.length} Bilties saved successfully (${seqs.map(s => s.shortGr).join(', ')})!`, "success");
       await this.loadAllData();
+      this.updateKPIs();
+      this.applyRegisterFilters();
+      this.renderAppSheet3Panels();
       this.openMultiPrintModal(tripsToSave);
       return;
     }
@@ -3633,7 +3705,8 @@ const BiltyBookingModule = {
         if (s.dispatchFromAddress && !dispatchLocations.includes(s.dispatchFromAddress)) dispatchLocations.push(s.dispatchFromAddress);
       });
 
-      const grandDue = totalFreight + totalLoading + totalHalt;
+      const msGst = this.computeMultiPartyGst(totalFreight, s1Freight);
+      const grandDue = totalFreight + totalLoading + totalHalt + msGst.gstAmount;
 
       const singleTripData = {
         id: this.editTripId || `TRIP_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
@@ -3645,6 +3718,8 @@ const BiltyBookingModule = {
         tripStartDate: date,
         biltyType: biltyType,
         isGstApplicable: isGstApplicable,
+        isGstPaidByParty: msGst.isGstPaidByParty,
+        gstAmount: msGst.gstAmount,
         truckNo: truckNo,
         truckOwner: truckOwner,
         ownerMobile: ownerMobile,
@@ -3676,6 +3751,7 @@ const BiltyBookingModule = {
         freight: totalFreight,
         loadingCharges: totalLoading,
         haltCharges: totalHalt,
+        total: grandDue,
 
         biltyBillingType: s1BillingType,
         biltyWeight: totalWeight,
@@ -3695,7 +3771,7 @@ const BiltyBookingModule = {
         status: 'Transit',
         partyDue: grandDue,
         partyPaid: 0,
-        ownerDue: totalFreight - tripCommission,
+        ownerDue: Math.max(0, totalFreight - tripCommission),
 
         // Consolidated multi-seller metadata
         isConsolidated: true,
@@ -3717,21 +3793,16 @@ const BiltyBookingModule = {
         return;
       }
 
-      const isDebtChecked = document.getElementById('toggle-any-debt')?.checked;
+      const isDebtChecked = document.getElementById('toggle-any-debt')?.checked || document.getElementById('bilty-has-debt')?.value === 'Yes';
+      const debtType = document.getElementById('bilty-debt-type')?.value || 'Trip Advance';
       const debtAmount = parseFloat(document.getElementById('bilty-debt-amount')?.value) || 0;
       if (isDebtChecked && debtAmount > 0) {
-        const debtRecord = {
-          id: `DEBT_BILTY_${Date.now()}`,
-          date: date,
-          description: `Advance / Debt on Trip ${grInfo.shortGr} (${truckNo}) - Consolidated Bilty (${allSellers.length} Sellers)`,
-          borrower: document.getElementById('bilty-debt-borrower')?.value.trim() || driver,
-          amount: debtAmount,
-          mode: document.getElementById('bilty-debt-mode')?.value || 'Cash',
-          status: 'Pending',
-          remarks: document.getElementById('bilty-debt-remarks')?.value.trim() || 'Booked with Consolidated Bilty',
-          truckNo: truckNo,
-          grNo: grInfo.shortGr
-        };
+        const debtRecord = this.buildLinkedDebtRecord({
+          date, year, firm, shortGr: grInfo.shortGr, fullGr: grInfo.fullGr,
+          truckNo, truckOwner, origin: 'Rajsamand (Raj.)', destination,
+          driver, commissionMode: tripCommissionMode, debtAmount, debtType,
+          debtDescription: `Advance / Debt on Trip ${grInfo.shortGr} (${truckNo}) - Consolidated Bilty (${allSellers.length} Sellers)`
+        });
         try {
           await dbService.add('debts', debtRecord);
         } catch (dErr) {
@@ -3741,6 +3812,9 @@ const BiltyBookingModule = {
 
       AppUI.showToast(`Single Consolidated Bilty saved successfully (${grInfo.shortGr}) with ${allSellers.length} Sellers!`, "success");
       await this.loadAllData();
+      this.updateKPIs();
+      this.applyRegisterFilters();
+      this.renderAppSheet3Panels();
       this.currentActiveBilty = singleTripData;
       this.openPrintModal(singleTripData);
       return;
@@ -3806,6 +3880,10 @@ const BiltyBookingModule = {
         const wt = parseFloat(b.weight) || 0;
         const rt = parseFloat(b.rate) || 0;
         const fr = (b.billingType === 'Fixed') ? rt : (wt * rt);
+        const bLoading = parseFloat(b.loadingCharges) || 0;
+        const bHalt = parseFloat(b.haltCharges) || 0;
+        const bGst = this.computeMultiPartyGst(fr);
+        const bTotal = fr + bLoading + bHalt + bGst.gstAmount;
 
         // Commission & Other expenses applied ONCE on primary GR (GR #1)
         const comm = (i === 0) ? tripCommission : 0;
@@ -3821,6 +3899,8 @@ const BiltyBookingModule = {
           tripStartDate: date,
           biltyType: biltyType,
           isGstApplicable: isGstApplicable,
+          isGstPaidByParty: bGst.isGstPaidByParty,
+          gstAmount: bGst.gstAmount,
           truckNo: truckNo,
           truckOwner: truckOwner,
           ownerMobile: ownerMobile,
@@ -3850,8 +3930,9 @@ const BiltyBookingModule = {
           weight: wt,
           rate: rt,
           freight: fr,
-          loadingCharges: parseFloat(b.loadingCharges) || 0,
-          haltCharges: parseFloat(b.haltCharges) || 0,
+          loadingCharges: bLoading,
+          haltCharges: bHalt,
+          total: bTotal,
 
           biltyBillingType: b.billingType || 'Per Tonne',
           biltyWeight: wt,
@@ -3869,9 +3950,9 @@ const BiltyBookingModule = {
           otherDesc: tripOtherDesc,
 
           status: 'Transit',
-          partyDue: fr,
+          partyDue: bTotal,
           partyPaid: 0,
-          ownerDue: fr - comm,
+          ownerDue: Math.max(0, fr - comm),
 
           tripGroupId: tripGroupId,
           isMultiGr: true,
@@ -3895,23 +3976,18 @@ const BiltyBookingModule = {
       }
 
       // Check Any Debt? -> create single linked ledger debt for the vehicle trip
-      const isDebtChecked = document.getElementById('toggle-any-debt')?.checked;
+      const isDebtChecked = document.getElementById('toggle-any-debt')?.checked || document.getElementById('bilty-has-debt')?.value === 'Yes';
+      const debtType = document.getElementById('bilty-debt-type')?.value || 'Trip Advance';
       const debtAmount = parseFloat(document.getElementById('bilty-debt-amount')?.value) || 0;
       if (isDebtChecked && debtAmount > 0) {
         const primaryGr = seqs[0].shortGr;
-        const debtRecord = {
-          id: `DEBT_BILTY_${Date.now()}`,
-          date: date,
-          description: `Advance / Debt on Trip ${primaryGr} (${truckNo}) - Multi-Buyer Batch (${tripsToSave.length} GRs)`,
-          borrower: document.getElementById('bilty-debt-borrower')?.value.trim() || driver,
-          amount: debtAmount,
-          mode: document.getElementById('bilty-debt-mode')?.value || 'Cash',
-          status: 'Pending',
-          remarks: document.getElementById('bilty-debt-remarks')?.value.trim() || 'Booked with Multi-GR bilty',
-          truckNo: truckNo,
-          grNo: primaryGr,
-          tripGroupId: tripGroupId
-        };
+        const debtRecord = this.buildLinkedDebtRecord({
+          date, year, firm, shortGr: primaryGr, fullGr: seqs[0].fullGr,
+          truckNo, truckOwner, origin, destination: this.multiBuyers[0].destination,
+          driver, commissionMode: tripCommissionMode, debtAmount, debtType,
+          debtDescription: `Advance / Debt on Trip ${primaryGr} (${truckNo}) - Multi-Buyer Batch (${tripsToSave.length} GRs)`,
+          tripGroupId
+        });
         try {
           await dbService.add('debts', debtRecord);
         } catch (dErr) {
@@ -3923,6 +3999,9 @@ const BiltyBookingModule = {
 
       // Reload dataset and open multi-print modal
       await this.loadAllData();
+      this.updateKPIs();
+      this.applyRegisterFilters();
+      this.renderAppSheet3Panels();
       this.openMultiPrintModal(tripsToSave);
       return;
     }
@@ -4007,7 +4086,8 @@ const BiltyBookingModule = {
         if (s.dispatchFromAddress && !dispatchLocations.includes(s.dispatchFromAddress)) dispatchLocations.push(s.dispatchFromAddress);
       });
 
-      const grandDue = totalFreight + totalLoading + totalHalt;
+      const msGst = this.computeMultiPartyGst(totalFreight, this.multiSellers[0]?.freight || 0);
+      const grandDue = totalFreight + totalLoading + totalHalt + msGst.gstAmount;
 
       const singleTripData = {
         id: this.editTripId || `TRIP_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
@@ -4019,6 +4099,8 @@ const BiltyBookingModule = {
         tripStartDate: date,
         biltyType: biltyType,
         isGstApplicable: isGstApplicable,
+        isGstPaidByParty: msGst.isGstPaidByParty,
+        gstAmount: msGst.gstAmount,
         truckNo: truckNo,
         truckOwner: truckOwner,
         ownerMobile: ownerMobile,
@@ -4034,6 +4116,7 @@ const BiltyBookingModule = {
         dispatchFromAddress: dispatchLocations.join(' | ') || this.multiSellers[0].dispatchFromAddress || 'Rajsamand (Raj.)',
         consignee: consignee,
         consigneeGstin: consigneeGstin,
+        consigneeAddress: deliveryAddress,
         deliveryAddress: deliveryAddress,
         shipToAddress: deliveryAddress,
 
@@ -4048,6 +4131,7 @@ const BiltyBookingModule = {
         freight: totalFreight,
         loadingCharges: totalLoading,
         haltCharges: totalHalt,
+        total: grandDue,
 
         biltyBillingType: this.multiSellers[0].billingType || 'Per Tonne',
         biltyWeight: totalWeight,
@@ -4067,7 +4151,7 @@ const BiltyBookingModule = {
         status: 'Transit',
         partyDue: grandDue,
         partyPaid: 0,
-        ownerDue: totalFreight - tripCommission,
+        ownerDue: Math.max(0, totalFreight - tripCommission),
 
         // Consolidated multi-seller metadata
         isConsolidated: true,
@@ -4090,22 +4174,17 @@ const BiltyBookingModule = {
       }
 
       // Check Any Debt?
-      const isDebtChecked = document.getElementById('toggle-any-debt')?.checked;
+      const isDebtChecked = document.getElementById('toggle-any-debt')?.checked || document.getElementById('bilty-has-debt')?.value === 'Yes';
+      const debtType = document.getElementById('bilty-debt-type')?.value || 'Trip Advance';
       const debtAmount = parseFloat(document.getElementById('bilty-debt-amount')?.value) || 0;
       if (isDebtChecked && debtAmount > 0) {
         const primaryGr = grInfo.shortGr;
-        const debtRecord = {
-          id: `DEBT_BILTY_${Date.now()}`,
-          date: date,
-          description: `Advance / Debt on Trip ${primaryGr} (${truckNo}) - Multi-Seller Consolidated (${this.multiSellers.length} Sellers)`,
-          borrower: document.getElementById('bilty-debt-borrower')?.value.trim() || driver,
-          amount: debtAmount,
-          mode: document.getElementById('bilty-debt-mode')?.value || 'Cash',
-          status: 'Pending',
-          remarks: document.getElementById('bilty-debt-remarks')?.value.trim() || 'Booked with Consolidated Bilty',
-          truckNo: truckNo,
-          grNo: primaryGr
-        };
+        const debtRecord = this.buildLinkedDebtRecord({
+          date, year, firm, shortGr: primaryGr, fullGr: grInfo.fullGr,
+          truckNo, truckOwner, origin: 'Rajsamand (Raj.)', destination,
+          driver, commissionMode: tripCommissionMode, debtAmount, debtType,
+          debtDescription: `Advance / Debt on Trip ${primaryGr} (${truckNo}) - Multi-Seller Consolidated (${this.multiSellers.length} Sellers)`
+        });
         try {
           await dbService.add('debts', debtRecord);
         } catch (dErr) {
@@ -4115,6 +4194,9 @@ const BiltyBookingModule = {
 
       AppUI.showToast(`Consolidated Multi-Seller Bilty saved successfully (${grInfo.shortGr})!`, "success");
       await this.loadAllData();
+      this.updateKPIs();
+      this.applyRegisterFilters();
+      this.renderAppSheet3Panels();
       this.currentActiveBilty = singleTripData;
       this.openPrintModal(singleTripData);
       return;
@@ -4407,10 +4489,11 @@ const BiltyBookingModule = {
       otherMode: otherMode,
       otherDesc: otherDesc,
 
+      total: grandTotal,
       status: 'Transit',
       partyDue: grandTotal,
       partyPaid: 0,
-      ownerDue: freight - commission
+      ownerDue: Math.max(0, freight - commission)
     };
 
     // Save Bilty / Trip to database
@@ -4431,36 +4514,11 @@ const BiltyBookingModule = {
     // Check if Any Debt? is checked -> Automatically link to Financial Ledger!
     if (hasDebt && debtType) {
       const debtAmount = parseFloat(document.getElementById('bilty-debt-amount')?.value) || commission || 0;
-      const monthNames = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'];
-      const dateObj = new Date(date);
-      const mIdx = (dateObj.getMonth() + 9) % 12 + 1; // FY Month sequence
-      const monthKey = `${mIdx} ${monthNames[(dateObj.getMonth() + 9) % 12]}`;
-
-      const [y, m, d] = date.split('-');
-      const displayDate = `${d}/${m}/${y}`;
-
-      const debtRecord = {
-        id: `DEBT_BILTY_${Date.now()}`,
-        date: date,
-        displayDate: displayDate,
-        fy: year,
-        monthKey: monthKey,
-        grNo: shortGr,
-        truckNo: truckNo,
-        from: origin,
-        to: destination,
-        company: firm,
-        truckOwner: biltyData.truckOwner,
-        debtType: debtType || 'Advance',
-        dueAmount: debtAmount,
-        debtAmount: debtAmount,
-        totalReturned: 0,
-        debtMode: document.getElementById('bilty-debt-from')?.value || commissionMode || 'Cash',
-        borrowerName: biltyData.driver || biltyData.truckOwner,
-        receiverName: biltyData.driver,
-        remarks: debtDescription || `Debt linked to Bilty G.R. ${fullGr} (${debtType})`,
-        returnedAmounts: []
-      };
+      const debtRecord = this.buildLinkedDebtRecord({
+        date, year, firm, shortGr, fullGr,
+        truckNo, truckOwner: biltyData.truckOwner, origin, destination,
+        driver: biltyData.driver, commissionMode, debtAmount, debtType, debtDescription
+      });
 
       try {
         await dbService.add('debts', debtRecord);

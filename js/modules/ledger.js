@@ -7694,13 +7694,21 @@ const LedgerModule = {
     }
 
     const events = [];
+    const linkedRecIds = new Set(partyPayments.map(p => p.linkedRecId).filter(Boolean));
+    const partyTripGrs = new Set(partyTrips.map(t => t.grNo).filter(Boolean));
+
     partyTrips.forEach(t => {
+      const baseFr = Number(t.freight || t.biltyAmount) || 0;
+      const extras = (Number(t.loadingCharges) || 0) + (Number(t.haltCharges) || 0);
+      const gstAdd = (t.isGstPaidByParty === 'Yes' || Number(t.gstAmount) > 0) ? (Number(t.gstAmount) || 0) : 0;
+      const debitAmt = (Number(t.total) > 0) ? Number(t.total) : (baseFr + extras + gstAdd);
+
       events.push({
         date: t.tripStartDate || '2026-01-01',
         firm: t.transport,
         ref: t.grNo,
-        particulars: `Freight: ${t.truckNo} (${t.origin} to ${t.destination}) - ${t.material}`,
-        debit: Number(t.freight) || 0,
+        particulars: `Freight: ${t.truckNo} (${t.origin} to ${t.destination}) - ${t.material}${gstAdd > 0 ? ' (Incl. GST)' : ''}`,
+        debit: debitAmt,
         credit: 0
       });
     });
@@ -7713,6 +7721,22 @@ const LedgerModule = {
         particulars: `Payment Received via ${p.mode} ${p.bankAccount ? `(${p.bankAccount})` : ''} ${p.remarks ? `- ${p.remarks}` : ''}`,
         debit: 0,
         credit: Number(p.amount) || 0
+      });
+    });
+
+    // Also include Trip-linked Consignee Payments (CPAY_*) if not yet mirrored in allPayments
+    (this.allReceivedPayments || []).forEach(rp => {
+      if (!rp || !String(rp.id || '').startsWith('CPAY_')) return;
+      if (linkedRecIds.has(rp.id)) return;
+      if (!partyTripGrs.has(rp.grNo)) return;
+      if (firmFilter !== 'ALL' && rp.beneficiary && rp.beneficiary !== firmFilter) return;
+      events.push({
+        date: rp.date || rp.paymentDate,
+        firm: rp.beneficiary || 'TTC',
+        ref: `Against ${rp.grNo}`,
+        particulars: `Payment Received via ${rp.mode || 'Cash'} ${rp.toBank ? `(${rp.toBank})` : ''} ${rp.description ? `- ${rp.description}` : ''}`,
+        debit: 0,
+        credit: Number(rp.amount || rp.amountPaid) || 0
       });
     });
 
@@ -7782,7 +7806,7 @@ const LedgerModule = {
       <div><strong>Contact:</strong> ${owner.mobile} ${owner.mobile1 ? `, ${owner.mobile1}` : ''}</div>
     `;
 
-    let ownerTrips = this.allTrips.filter(t => (owner.trucks || []).includes(t.truckNo));
+    let ownerTrips = this.allTrips.filter(t => (owner.trucks || []).includes(t.truckNo) || t.truckOwner === owner.name || t.ownerName === owner.name);
     if (firmFilter !== 'ALL') {
       ownerTrips = ownerTrips.filter(t => t.transport === firmFilter);
     }
@@ -7794,12 +7818,15 @@ const LedgerModule = {
 
     const events = [];
     ownerTrips.forEach(t => {
+      const baseFr = Number(t.freight || t.biltyAmount) || 0;
+      const comm = Number(t.commission) || 0;
+      const netOwnerCredit = Number(t.ownerBalancePayable || t.ownerTotalPayment || t.ownerFreight) || Math.max(0, baseFr - comm);
       events.push({
         date: t.tripStartDate || '2026-01-01',
         firm: t.transport,
         ref: t.grNo,
-        particulars: `Freight Payable: Truck ${t.truckNo} (${t.origin} to ${t.destination}) - Net after diesel/adv`,
-        credit: Number(t.ownerBalancePayable || t.freight) || 0,
+        particulars: `Freight Payable: Truck ${t.truckNo} (${t.origin} to ${t.destination})${comm > 0 ? ` (Net after Comm ₹${comm})` : ''}`,
+        credit: netOwnerCredit,
         debit: 0
       });
     });

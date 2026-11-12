@@ -1911,8 +1911,9 @@ const TripsModule = {
     const opOwnTel2 = document.getElementById('op-owner-tel2');
     if (opOwnTel2) opOwnTel2.href = `tel:${ownMob2}`;
 
+    const billTotal = this.getTripBillTotal(t);
     setHtml('op-freight', `<span class="blue-bullet">●</span> ₹ ${totalFreight.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
-    setHtml('op-total-freight', `<span class="blue-bullet">●</span> ₹ ${totalFreight.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+    setHtml('op-total-freight', `<span class="blue-bullet">●</span> ₹ ${billTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
     setHtml('op-paid-amount', `<span class="blue-bullet">●</span> ₹ ${partyPaid.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
 
     const opDueEl = document.getElementById('op-due-amount');
@@ -1949,18 +1950,19 @@ const TripsModule = {
       statusSelect.value = tripStatus;
     }
 
-    // Consignor/s table in Open View
+    // Consignor/s table in Open View (Supports Multi-Seller & AppSheet consignors[])
+    const opConsignors = this.getTripConsignorsList(t);
     const opConsignorTbody = document.getElementById('op-consignor-tbody');
     const opConsignorCount = document.getElementById('op-consignor-count');
-    if (opConsignorCount) opConsignorCount.innerText = '1';
+    if (opConsignorCount) opConsignorCount.innerText = String(opConsignors.length);
     if (opConsignorTbody) {
-      opConsignorTbody.innerHTML = `
+      opConsignorTbody.innerHTML = opConsignors.map(c => `
         <tr style="cursor: pointer;" onclick="TripsModule.expandConsignorDetails()">
-          <td class="fw-bold">${consignorName}</td>
-          <td>${consignorAddr}</td>
-          <td class="text-muted">${consignorGstin}</td>
+          <td class="fw-bold">${c.name}</td>
+          <td>${c.address}</td>
+          <td class="text-muted">${c.gstin}</td>
         </tr>
-      `;
+      `).join('');
     }
 
     // Payment table in Open View
@@ -2183,18 +2185,19 @@ const TripsModule = {
     setHtml('sp-owner-total-payment', `<span class="green-bullet">●</span> ₹ ${ownerTotalPay.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
     setHtml('sp-pod-date', `<span class="green-bullet">●</span> ${podDateFormatted}`);
 
-    // Populate Right Pane Card 1: Consignor/s
+    // Populate Right Pane Card 1: Consignor/s (Supports Multi-Seller & AppSheet consignors[])
+    const spConsignors = this.getTripConsignorsList(t);
     const spConsignorTbody = document.getElementById('sp-consignor-tbody');
     const spConsignorCount = document.getElementById('sp-consignor-count');
-    if (spConsignorCount) spConsignorCount.innerText = '1';
+    if (spConsignorCount) spConsignorCount.innerText = String(spConsignors.length);
     if (spConsignorTbody) {
-      spConsignorTbody.innerHTML = `
+      spConsignorTbody.innerHTML = spConsignors.map(c => `
         <tr style="cursor: pointer;" onclick="TripsModule.openSettledPartyView()">
-          <td class="fw-bold">${consignorName}</td>
-          <td>${consignorAddr}</td>
-          <td class="text-muted">${consignorGstin}</td>
+          <td class="fw-bold">${c.name}</td>
+          <td>${c.address}</td>
+          <td class="text-muted">${c.gstin}</td>
         </tr>
-      `;
+      `).join('');
     }
 
     // Populate Right Pane Card 2: Payment
@@ -3059,10 +3062,12 @@ const TripsModule = {
       createdAt: new Date().toISOString()
     };
 
-    // Calculate new balances
+    // Calculate new balances preserving Loading, Halt & GST in total due
     const newPaid = Number(t.partyPaid || 0) + amt;
-    const currentFreight = Number(t.biltyAmount || t.freight || 0);
-    const newDue = Math.max(0, currentFreight - newPaid);
+    const currentDue = (t.partyDue !== undefined && t.partyDue !== null)
+      ? (Number(t.partyDue) || 0)
+      : Math.max(0, this.getTripBillTotal(t) - (Number(t.partyPaid) || 0));
+    const newDue = Math.max(0, currentDue - amt);
 
     t.partyPaid = newPaid;
     t.partyDue = newDue;
@@ -3073,10 +3078,26 @@ const TripsModule = {
       t.status = 'Settled';
     }
 
+    const ledgerPaymentRecord = {
+      id: `PAY_TRIP_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
+      type: 'party',
+      date,
+      firm: t.transport || 'TTC',
+      partyName: t.consignee || t.consignor || '-',
+      grNo: t.grNo,
+      amount: amt,
+      mode,
+      refNo: fromBank,
+      bankAccount: toBank,
+      remarks: desc,
+      linkedRecId: paymentRecord.id
+    };
+
     // Direct write to Firebase Cloud Firestore and LocalStorage
     try {
       if (typeof dbService !== 'undefined' && dbService.add) {
         await dbService.add('receivedPayments', paymentRecord);
+        await dbService.add('payments', ledgerPaymentRecord);
         await dbService.update('trips', t.id, {
           partyPaid: newPaid,
           partyDue: newDue,
@@ -4732,6 +4753,38 @@ const TripsModule = {
     }
   },
 
+  getTripBillTotal(t) {
+    if (!t) return 0;
+    if (Number(t.total) > 0) return Number(t.total);
+    const base = Number(t.freight || t.biltyAmount || 0);
+    const extras = (Number(t.loadingCharges) || 0) + (Number(t.haltCharges) || 0);
+    const gst = (t.isGstPaidByParty === 'Yes' || Number(t.gstAmount) > 0) ? (Number(t.gstAmount) || 0) : 0;
+    return base + extras + gst;
+  },
+
+  getTripConsignorsList(t) {
+    if (!t) return [];
+    if (Array.isArray(t.sellerList) && t.sellerList.length > 0) {
+      return t.sellerList.map(s => ({
+        name: s.consignor || s.name || '-',
+        address: s.dispatchFromAddress || s.consignorAddress || s.address || t.origin || 'Rajsamand (Raj.)',
+        gstin: s.consignorGstin || s.gstin || '-'
+      }));
+    }
+    if (Array.isArray(t.consignors) && t.consignors.length > 0) {
+      return t.consignors.map(c => ({
+        name: c.consignor || c.name || '-',
+        address: c.address || c.dispatchFromAddress || t.origin || 'Rajsamand (Raj.)',
+        gstin: c.gstin || c.consignorGstin || '-'
+      }));
+    }
+    return [{
+      name: t.consignor || 'Megha Mineral',
+      address: t.consignorAddress || t.dispatchFromAddress || t.deliveryAddress || t.origin || 'Rajsamand (Raj.)',
+      gstin: t.consignorGstin || '02BLAPS4407D1ZO'
+    }];
+  },
+
   async saveOwnerPayment() {
     const tripId = document.getElementById('rop-trip-id')?.value;
     const amt = parseFloat(document.getElementById('rop-amount')?.value) || 0;
@@ -4742,14 +4795,39 @@ const TripsModule = {
 
     const t = this.allTrips.find(x => x.id === tripId || x.grNo === tripId);
     if (t) {
+      const payDate = document.getElementById('rop-date')?.value || new Date().toISOString().slice(0, 10);
+      const payMode = document.getElementById('rop-mode')?.value || 'Cash';
       const currentODue = Number(t.ownerDue) || 0;
       t.ownerDue = Math.max(0, currentODue - amt);
+      if (!Array.isArray(t.ownerPayments)) t.ownerPayments = [];
+      t.ownerPayments.unshift({
+        paymentDate: payDate,
+        amountPaid: amt,
+        mode: payMode,
+        beneficiary: t.truckOwner || t.ownerName || 'Truck Owner'
+      });
       if (this.isTripSettled(t)) {
         t.status = 'Settled';
       }
 
       try {
         await dbService.update('trips', t.id, t);
+        if (typeof dbService.add === 'function') {
+          await dbService.add('payments', {
+            id: `OPAY_TRIP_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
+            type: 'owner',
+            date: payDate,
+            firm: t.transport || 'TTC',
+            ownerName: t.truckOwner || t.ownerName || '-',
+            truckNo: t.truckNo || '',
+            grNo: t.grNo,
+            stage: 'Settlement',
+            amount: amt,
+            mode: payMode,
+            refNo: document.getElementById('rop-ref')?.value || '',
+            remarks: document.getElementById('rop-remarks')?.value || `Owner payout for GR ${t.grNo}`
+          });
+        }
       } catch (e) {
         console.warn('Local update saved:', e);
       }
