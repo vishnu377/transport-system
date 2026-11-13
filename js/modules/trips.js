@@ -576,7 +576,48 @@ const TripsModule = {
     // Update bullet colors on left FY labels (Blue for Open, Teal for Rate Difference, Green for Settled/Trips/Freight/GST)
     const isBlueMode = (this.workflowTab === 'open');
     const isTealMode = (this.workflowTab === 'rate-diff');
-    ['2026-2027', '2025-2026', '2024-2025'].forEach(fy => {
+
+    // Dynamic future & custom FY discovery from live trips (e.g. 2027-2028, 2028-2029)
+    const fyPillContainer = (typeof document !== 'undefined' && typeof document.getElementById === 'function')
+      ? document.getElementById('fy-pill-group')
+      : null;
+    const discoveredFYs = new Set(['2026-2027', '2025-2026', '2024-2025']);
+    if (this.allTrips && Array.isArray(this.allTrips)) {
+      this.allTrips.forEach(t => {
+        const fy = this.getTripFinancialYear(t);
+        if (fy && /^\d{4}-\d{4}$/.test(fy)) discoveredFYs.add(fy);
+      });
+    }
+
+    if (fyPillContainer) {
+      const sortedNewerFYs = Array.from(discoveredFYs)
+        .filter(fy => !['2026-2027', '2025-2026', '2024-2025'].includes(fy))
+        .sort().reverse();
+      sortedNewerFYs.forEach(fy => {
+        if (!fyPillContainer.querySelector(`[data-fy="${fy}"]`)) {
+          const div = document.createElement('div');
+          div.className = `appsheet-trips-sidebar-item ${this.currentFY === fy ? 'active' : ''}`;
+          div.setAttribute('data-fy', fy);
+          div.onclick = () => this.filterByFY(fy);
+          div.innerHTML = `
+            <span class="d-flex align-items-center">
+              <span class="appsheet-chevron me-1" style="font-size: 10px;">▶</span>
+              <span class="appsheet-bullet ${isTealMode ? 'teal-bullet' : (isBlueMode ? 'blue-bullet' : 'green-bullet')} me-1">●</span>
+              <span class="fw-semibold">${fy}</span>
+            </span>
+            <span class="appsheet-drill-badge" id="fy-count-${fy.replace(/[^a-zA-Z0-9]/g, '')}">₹ 0.00</span>
+          `;
+          const allItem = fyPillContainer.querySelector('[data-fy="All"]');
+          if (allItem && allItem.nextSibling) {
+            fyPillContainer.insertBefore(div, allItem.nextSibling);
+          } else {
+            fyPillContainer.appendChild(div);
+          }
+        }
+      });
+    }
+
+    Array.from(discoveredFYs).forEach(fy => {
       const itemEl = (typeof document !== 'undefined' && typeof document.querySelector === 'function')
         ? document.querySelector(`#fy-pill-group .appsheet-trips-sidebar-item[data-fy="${fy}"]`)
         : null;
@@ -599,6 +640,19 @@ const TripsModule = {
           } else {
             if (textEl.classList) textEl.classList.add('text-success');
             if (textEl.style) textEl.style.color = '';
+          }
+        }
+        if (!['2026-2027', '2025-2026', '2024-2025'].includes(fy)) {
+          const badgeEl = itemEl.querySelector('.appsheet-drill-badge');
+          if (badgeEl) {
+            const fyTrips = (this.allTrips || []).filter(t => this.getTripFinancialYear(t) === fy);
+            let sum = 0;
+            if (this.workflowTab === 'open') {
+              sum = fyTrips.filter(t => this.isTripOpen(t)).reduce((acc, t) => acc + (Number(t.partyDue || t.total || t.freight) || 0), 0);
+            } else {
+              sum = fyTrips.filter(t => this.isTripSettled(t)).reduce((acc, t) => acc + (Number(t.freight || t.total) || 0), 0);
+            }
+            badgeEl.innerHTML = `<span class="appsheet-bullet ${isBlueMode ? 'blue-bullet' : 'green-bullet'}">●</span> ₹ ${sum.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
           }
         }
       }

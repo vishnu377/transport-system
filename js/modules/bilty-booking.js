@@ -550,10 +550,23 @@ const BiltyBookingModule = {
     return results;
   },
 
+  computeFinancialYear(dateStr) {
+    const raw = dateStr || document.getElementById('bilty-date')?.value || new Date().toISOString().split('T')[0];
+    const d = new Date(raw);
+    if (!isNaN(d.getTime())) {
+      const y = d.getFullYear();
+      const m = d.getMonth() + 1; // 1 to 12
+      return m >= 4 ? `${y}-${y + 1}` : `${y - 1}-${y}`;
+    }
+    return document.getElementById('bilty-year')?.value || '2026-2027';
+  },
+
   async generateBiltyNumber() {
     const biltyType = document.getElementById('bilty-type')?.value || 'Regular';
     const firm = (biltyType === 'URP') ? 'URP' : (document.getElementById('bilty-firm')?.value || 'TTC');
-    const year = document.getElementById('bilty-year')?.value || '2026-2027';
+    const year = this.computeFinancialYear();
+    const yearInput = document.getElementById('bilty-year');
+    if (yearInput) yearInput.value = year;
 
     let count = 1;
     if (this.extraBuyers && this.extraBuyers.length > 0) {
@@ -660,6 +673,11 @@ const BiltyBookingModule = {
 
     if (dateEl) {
       dateEl.addEventListener('change', () => {
+        const fy = this.computeFinancialYear(dateEl.value);
+        if (yearEl) yearEl.value = fy;
+        const fyBadge = document.getElementById('header-fy-badge');
+        if (fyBadge) fyBadge.innerText = `FY ${fy}`;
+        if (!this.editTripId) this.generateBiltyNumber();
         this.updateLivePreview();
       });
     }
@@ -3374,8 +3392,8 @@ const BiltyBookingModule = {
     }
 
     const firm = document.getElementById('bilty-firm')?.value || 'TTC';
-    const year = document.getElementById('bilty-year')?.value || '2026-2027';
     const date = document.getElementById('bilty-date')?.value || new Date().toISOString().split('T')[0];
+    const year = this.computeFinancialYear(date);
     const truckOwner = (document.getElementById('bilty-owner')?.value || '').trim() || `${truckNo} Owner`;
     const ownerMobile = (document.getElementById('bilty-owner-mobile')?.value || '').trim();
     const driver = (document.getElementById('bilty-driver')?.value || '').trim() || this.lookupDriverForTruck(truckNo) || '-';
